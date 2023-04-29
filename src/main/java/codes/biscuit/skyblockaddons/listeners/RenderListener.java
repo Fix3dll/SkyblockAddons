@@ -43,6 +43,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntitySpider;
@@ -67,7 +68,7 @@ import javax.vecmath.Vector3d;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.util.*;
 
@@ -117,6 +118,7 @@ public class RenderListener {
     private static EntityCaveSpider caveSpider;
     private static EntityWolf sven;
     private static EntityEnderman enderman;
+    private static EntityBlaze inferno;
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
 
@@ -314,7 +316,7 @@ public class RenderListener {
                     break;
                 case NO_ARROWS_LEFT_ALERT:
                     if (arrowsLeft != -1) {
-                        Translations.getMessage("messages.noArrowsLeft", TextUtils.NUMBER_FORMAT.format(arrowsLeft));
+                        Translations.getMessage("messages.noArrowsLeft", TextUtils.formatNumber(arrowsLeft));
                     }
                     break;
             }
@@ -673,22 +675,22 @@ public class RenderListener {
         String text;
         int color = main.getConfigValues().getColor(feature);
         if (feature == Feature.MANA_TEXT) {
-            text = NUMBER_FORMAT.format(getAttribute(Attribute.MANA)) + "/" + NUMBER_FORMAT.format(getAttribute(Attribute.MAX_MANA));
+            text = TextUtils.formatNumber(getAttribute(Attribute.MANA)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_MANA));
 
         } else if (feature == Feature.OVERFLOW_MANA) {
             if (getAttribute(Attribute.OVERFLOW_MANA) != 0 || buttonLocation != null) {
-                text = getAttribute(Attribute.OVERFLOW_MANA) + "ʬ";
+                text = TextUtils.formatNumber(getAttribute(Attribute.OVERFLOW_MANA)) + "ʬ";
             } else {
                 return;
             }
         } else if (feature == Feature.HEALTH_TEXT) {
-            text = NUMBER_FORMAT.format(getAttribute(Attribute.HEALTH)) + "/" + NUMBER_FORMAT.format(getAttribute(Attribute.MAX_HEALTH));
+            text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
         } else if (feature == Feature.CRIMSON_ARMOR_ABILITY_STACKS) {
             text = getCrimsonArmorAbilityStacks();
             if (text == null) return;
 
         } else if (feature == Feature.DEFENCE_TEXT) {
-            text = NUMBER_FORMAT.format(getAttribute(Attribute.DEFENCE));
+            text = TextUtils.formatNumber(getAttribute(Attribute.DEFENCE));
 
         } else if (feature == Feature.OTHER_DEFENCE_STATS) {
             text = main.getPlayerListener().getActionBarParser().getOtherDefense();
@@ -700,13 +702,13 @@ public class RenderListener {
             }
 
         } else if (feature == Feature.EFFECTIVE_HEALTH_TEXT) {
-            text = NUMBER_FORMAT.format(Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F)));
+            text = TextUtils.formatNumber(Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F)));
 
         } else if (feature == Feature.DRILL_FUEL_TEXT) {
             if (!ItemUtils.isDrill(mc.thePlayer.getHeldItem())) {
                 return;
             }
-            text = (getAttribute(Attribute.FUEL) + "/" + getAttribute(Attribute.MAX_FUEL)).replaceAll("000$", "k");
+            text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));//.replaceAll("000$", "k");
         } else if (feature == Feature.DEFENCE_PERCENTAGE) {
             double doubleDefence = getAttribute(Attribute.DEFENCE);
             double percentage = ((doubleDefence / 100) / ((doubleDefence / 100) + 1)) * 100; //Taken from https://hypixel.net/threads/how-armor-works-and-the-diminishing-return-of-higher-defence.2178928/
@@ -714,7 +716,7 @@ public class RenderListener {
             text = bigDecimal + "%";
 
         } else if (feature == Feature.SPEED_PERCENTAGE) {
-            String walkSpeed = NUMBER_FORMAT.format(Minecraft.getMinecraft().thePlayer.capabilities.getWalkSpeed() * 1000);
+            String walkSpeed = TextUtils.formatNumber(Minecraft.getMinecraft().thePlayer.capabilities.getWalkSpeed() * 1000);
             text = walkSpeed.substring(0, Math.min(walkSpeed.length(), 3));
 
             if (text.endsWith(".")) text = text.substring(0, text.indexOf('.')); //remove trailing periods
@@ -726,7 +728,7 @@ public class RenderListener {
             if (buttonLocation == null) {
                 if (healthUpdate != null) {
                     color = healthUpdate > 0 ? ColorCode.GREEN.getColor() : ColorCode.RED.getColor();
-                    text = (healthUpdate > 0 ? "+" : "-") + NUMBER_FORMAT.format(Math.abs(healthUpdate));
+                    text = (healthUpdate > 0 ? "+" : "-") + TextUtils.formatNumber(Math.abs(healthUpdate));
                 } else {
                     return;
                 }
@@ -948,10 +950,10 @@ public class RenderListener {
             text = Integer.toString(deaths);
 
         } else if (feature == Feature.ROCK_PET_TRACKER) {
-            text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getOresMined());
+            text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getOresMined());
 
         } else if (feature == Feature.DOLPHIN_PET_TRACKER) {
-            text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled());
+            text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled());
 
         } else if (feature == Feature.DUNGEONS_SECRETS_DISPLAY) {
             if (buttonLocation == null && !main.getUtils().isInDungeon()) {
@@ -1179,10 +1181,15 @@ public class RenderListener {
             renderItem(dungeonMilestone.getDungeonClass().getItem(), x, y);
             FontRendererHook.setupFeatureFont(feature);
             DrawUtils.drawText(text, x + 18, y, color);
-            double amount = Double.parseDouble(dungeonMilestone.getValue());
-            DecimalFormat formatter = new DecimalFormat("#,###");
-            DrawUtils.drawText(formatter.format(amount), x + 18 + mc.fontRendererObj.getStringWidth(text) / 2F
-                    - mc.fontRendererObj.getStringWidth(formatter.format(amount)) / 2F, y + 9, color);
+            Number amount;
+            try {
+                amount = NUMBER_FORMAT.parse(dungeonMilestone.getValue());
+            } catch (ParseException e) {
+                amount = -1;
+            }
+            String formattedAmount = TextUtils.formatNumber(amount);
+            DrawUtils.drawText(formattedAmount, x + 18 + mc.fontRendererObj.getStringWidth(text) / 2F
+                    - mc.fontRendererObj.getStringWidth(formattedAmount) / 2F, y + 9, color);
             FontRendererHook.endFeatureFont();
 
         } else if (feature == Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY) {
@@ -1525,7 +1532,7 @@ public class RenderListener {
             slayerBoss = SlayerBoss.REVENANT;
         } else if (feature == Feature.TARANTULA_SLAYER_TRACKER) {
             if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_SPIDERS_DEN) &&
-                    (quest != EnumUtils.SlayerQuest.TARANTULA_BROODFATHER || location != Location.SPIDERS_DEN)) {
+                    (quest != EnumUtils.SlayerQuest.TARANTULA_BROODFATHER || (location != Location.SPIDER_MOUND && location != Location.ARACHNES_BURROW && location != Location.ARACHNES_SANCTUARY))) {
                 return;
             }
 
@@ -1550,6 +1557,15 @@ public class RenderListener {
             colorByRarity = config.isEnabled(Feature.ENDERMAN_COLOR_BY_RARITY);
             textMode = config.isEnabled(Feature.ENDERMAN_TEXT_MODE);
             slayerBoss = SlayerBoss.VOIDGLOOM;
+        } else if (feature == Feature.INFERNO_SLAYER_TRACKER) {
+            if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_CRIMSON) &&
+                    (quest != EnumUtils.SlayerQuest.INFERNO_DEMONLORD || (location != Location.CRIMSON_ISLE && location != Location.STRONGHOLD && location != Location.SMOLDERING_TOMB && location != Location.THE_WASTELAND))) {
+                return;
+            }
+
+            colorByRarity = config.isEnabled(Feature.INFERNO_COLOR_BY_RARITY);
+            textMode = config.isEnabled(Feature.INFERNO_TEXT_MODE);
+            slayerBoss = SlayerBoss.INFERNO;
         } else {
             return;
         }
@@ -1636,6 +1652,9 @@ public class RenderListener {
             } else if (feature == Feature.VOIDGLOOM_SLAYER_TRACKER) {
                 entityRenderY = 25;
                 textCenterX = 20;
+            } else if (feature == Feature.INFERNO_SLAYER_TRACKER) {
+                entityRenderY = 25;
+                textCenterX = 20;
             } else {
                 entityRenderY = 36;
                 textCenterX = 15;
@@ -1716,6 +1735,16 @@ public class RenderListener {
                 GlStateManager.scale(.7, .7, 1);
                 drawEntity(enderman, (x + 15) / .7F, (y + 51) / .7F, -30);
                 GlStateManager.scale(1 / .7, 1 / .7, 1);
+
+            } else if (feature == Feature.INFERNO_SLAYER_TRACKER) {
+                if (inferno == null) {
+                    inferno = new EntityBlaze(Utils.getDummyWorld());
+                    inferno.setOnFire(true);
+
+                }
+                GlStateManager.color(1, 1, 1, 1);
+                inferno.ticksExisted = (int) main.getNewScheduler().getTotalTicks();
+                drawEntity(inferno, x + 15, y + 53, -15);
 
             } else {
                 if (sven == null) {
@@ -2234,18 +2263,18 @@ public class RenderListener {
         double healIncrease = powerOrb.getHealIncrease() * 100;
 
         List<String> display = new LinkedList<>();
-        display.add(String.format("§c+%s ❤/s", TextUtils.formatDouble(healthRegen)));
+        display.add(String.format("§c+%s ❤/s", TextUtils.formatNumber(healthRegen)));
         if (powerOrb.getManaRegen() > 0) {
             float maxMana = main.getUtils().getAttributes().get(Attribute.MAX_MANA).getValue();
             float manaRegen = (float) Math.floor(maxMana / 50);
             manaRegen = (float) (manaRegen + manaRegen * powerOrb.getManaRegen());
-            display.add(String.format("§b+%s ✎/s", TextUtils.formatDouble(manaRegen)));
+            display.add(String.format("§b+%s ✎/s", TextUtils.formatNumber(manaRegen)));
         }
         if (powerOrb.getStrength() > 0) {
             display.add(String.format("§4+%d ❁", powerOrb.getStrength()));
         }
         if (healIncrease > 0) {
-            display.add(String.format("§2+%s%% Healing", TextUtils.formatDouble(healIncrease)));
+            display.add(String.format("§2+%s%% Healing", TextUtils.formatNumber(healIncrease)));
         }
 
         Optional<String> longestLine = display.stream().max(Comparator.comparingInt(String::length));

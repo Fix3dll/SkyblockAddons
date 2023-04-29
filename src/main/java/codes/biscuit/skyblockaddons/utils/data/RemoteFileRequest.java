@@ -69,6 +69,8 @@ public class RemoteFileRequest<T> {
 
     private static String getVersionedCDNBaseURL() {
         return String.format(DataUtils.useFallbackCDN ? DataConstants.FALLBACK_CDN_BASE_URL : DataConstants.CDN_BASE_URL,
-                SkyblockAddons.VERSION.substring(0, StringUtils.ordinalIndexOf(SkyblockAddons.VERSION, ".", 2)));
+               //SkyblockAddons.VERSION.substring(0, StringUtils.ordinalIndexOf(SkyblockAddons.VERSION, ".", 2))
+                "main"
+        );
     }
 }

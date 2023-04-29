@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.Feature;
 import com.google.gson.JsonObject;
 import net.minecraft.util.IChatComponent;
 
@@ -21,7 +22,11 @@ public class TextUtils {
      * Hypixel uses US number format.
      */
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-
+    /**
+     * Number format with thousands separators disabled, used for displaying numbers in Hypixel's old (no separators)
+     * style
+     */
+    public static final NumberFormat NUMBER_FORMAT_NO_GROUPING = NumberFormat.getInstance(Locale.US);
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-ORZ]");
     private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("[♲Ⓑ⚒ቾ]+");
     private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[[^\\[\\]]*\\]");
@@ -41,17 +46,26 @@ public class TextUtils {
         suffixes.put(1_000_000, "M");
         suffixes.put(1_000_000_000, "B");
         NUMBER_FORMAT.setMaximumFractionDigits(2);
+        NUMBER_FORMAT_NO_GROUPING.setMaximumFractionDigits(2);
+        NUMBER_FORMAT_NO_GROUPING.setGroupingUsed(false);
     }
 
     /**
-     * Formats a double number to look better with commas every 3 digits and up to two decimal places.
+     * Formats a number to look better with commas every 3 digits (if the {@code NUMBER_SEPARATORS} mod feature is enabled)
+     * and up to two decimal places.
      * For example: {@code 1,006,789.5}
      *
      * @param number Number to format
      * @return Formatted string
      */
-    public static String formatDouble(double number) {
-        return NUMBER_FORMAT.format(number);
+    public static String formatNumber(Number number) {
+        // This null check is here for TextUtilsTests
+        if (SkyblockAddons.getInstance() == null ||
+                SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.NUMBER_SEPARATORS)) {
+            return NUMBER_FORMAT.format(number);
+        } else {
+            return NUMBER_FORMAT_NO_GROUPING.format(number);
+        }
     }
 
     /**
@@ -177,7 +191,7 @@ public class TextUtils {
                     parsedDouble *= 1_000_000_000_000L;
             }
 
-            matcher.appendReplacement(sb, NUMBER_FORMAT.format(parsedDouble));
+            matcher.appendReplacement(sb, TextUtils.formatNumber(parsedDouble));
         }
         matcher.appendTail(sb);
 

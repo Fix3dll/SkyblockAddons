@@ -36,9 +36,9 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 String coinString = " Coin";
 
                 if (coins == 1) {
-                    return TextUtils.formatDouble(coins) + coinString;
+                    return TextUtils.formatNumber(coins) + coinString;
                 } else {
-                    return TextUtils.formatDouble(coins) + coinString + 's';
+                    return TextUtils.formatNumber(coins) + coinString + 's';
                 }
             }),
 
@@ -48,9 +48,9 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 String bitString = " Bit";
 
                 if (bits == 1) {
-                    return TextUtils.formatDouble(bits) + bitString;
+                    return TextUtils.formatNumber(bits) + bitString;
                 } else {
-                    return TextUtils.formatDouble(bits) + bitString + 's';
+                    return TextUtils.formatNumber(bits) + bitString + 's';
                 }
             }),
 
@@ -107,6 +107,8 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                     if (slayerQuest == EnumUtils.SlayerQuest.REVENANT_HORROR) return DiscordStatus.valueOf("REVENANT").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.SVEN_PACKMASTER) return DiscordStatus.valueOf("SVEN").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER) return DiscordStatus.valueOf("TARANTULA").displayMessageSupplier.get();
+                    if (slayerQuest == EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH) return DiscordStatus.valueOf("VOIDGLOOM").displayMessageSupplier.get();
+                    if (slayerQuest == EnumUtils.SlayerQuest.INFERNO_DEMONLORD) return DiscordStatus.valueOf("INFERNO").displayMessageSupplier.get();
                 }
 
                 if ("AUTO_STATUS".equals(main.getConfigValues().getDiscordAutoDefault().name())) { // Avoid self reference.

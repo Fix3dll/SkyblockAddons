@@ -9,7 +9,9 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import org.apache.logging.log4j.Logger;
 
+import java.text.ParseException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +24,13 @@ import java.util.stream.Collectors;
  * This class contains a set of utility methods for Skyblock Dungeons.
  */
 public class DungeonManager {
-
-    private static final Pattern PATTERN_MILESTONE = Pattern.compile("^.+?(Healer|Tank|Mage|Archer|Berserk) Milestone .+?([❶-❿]).+?§r§.(\\d+)§.§7 .+?");
+    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Pattern PATTERN_MILESTONE = Pattern.compile("^.+?(Healer|Tank|Mage|Archer|Berserk) Milestone .+?([❶-❿]).+?§r§.(\\d,.)§.§7 .+?");
     private static final Pattern PATTERN_COLLECTED_ESSENCES = Pattern.compile("§.+?(\\d+) (Wither|Spider|Undead|Dragon|Gold|Diamond|Ice) Essence");
     private static final Pattern PATTERN_BONUS_ESSENCE = Pattern.compile("^§.+?[^You] .+?found a .+?(Wither|Spider|Undead|Dragon|Gold|Diamond|Ice) Essence.+?");
     private static final Pattern PATTERN_SALVAGE_ESSENCES = Pattern.compile("\\+(?<essenceNum>[0-9]+) (?<essenceType>Wither|Spider|Undead|Dragon|Gold|Diamond|Ice) Essence!");
     private static final Pattern PATTERN_SECRETS = Pattern.compile("§7([0-9]+)/([0-9]+) Secrets");
-    private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("^§.\\[(?<classLetter>.)] (?<name>[\\w§]+) (?:§.)*?§(?<healthColor>.)(?<health>[\\w]+)(?:§c❤)?");
+    private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("^§.\\[(?<classLetter>.)] (?<name>[\\w§]+) (?:§.)*?§(?<healthColor>.)(?<health>[\\w,]+)(?:§c❤)?");
     private static final Pattern PLAYER_LIST_INFO_DEATHS_PATTERN = Pattern.compile("Deaths: \\((?<deaths>\\d+)\\)");
 
     /** The last dungeon server the player played on */
@@ -223,7 +225,12 @@ public class DungeonManager {
             if (healthText.equals("DEAD")) {
                 health = 0;
             } else {
-                health = Integer.parseInt(healthText);
+                try {
+                    health = TextUtils.NUMBER_FORMAT.parse(healthText).intValue();
+                } catch (ParseException ex) {
+                    logger.error("Failed to parse player "+ name + " health: " + healthText, ex);
+                    return;
+                }
             }
 
             for (DungeonPlayer player: teammates.values()) {
