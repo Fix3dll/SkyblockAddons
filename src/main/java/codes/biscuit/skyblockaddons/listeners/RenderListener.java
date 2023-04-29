@@ -21,8 +21,6 @@ import codes.biscuit.skyblockaddons.features.spookyevent.CandyType;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabListRenderer;
-import codes.biscuit.skyblockaddons.features.tabtimers.TabEffect;
-import codes.biscuit.skyblockaddons.features.tabtimers.TabEffectManager;
 import codes.biscuit.skyblockaddons.gui.*;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
 import codes.biscuit.skyblockaddons.misc.Updater;
@@ -1982,123 +1980,6 @@ public class RenderListener {
             DrawUtils.drawText(")", currentX, fixedY + 5, color);
             FontRendererHook.endFeatureFont();
 
-            drawnCount++;
-        }
-
-        main.getUtils().restoreGLOptions();
-    }
-
-    public void drawPotionEffectTimers(float scale, ButtonLocation buttonLocation) {
-        float x = main.getConfigValues().getActualX(Feature.TAB_EFFECT_TIMERS);
-        float y = main.getConfigValues().getActualY(Feature.TAB_EFFECT_TIMERS);
-
-        TabEffectManager tabEffect = TabEffectManager.getInstance();
-
-        List<TabEffect> potionTimers = tabEffect.getPotionTimers();
-        List<TabEffect> powerupTimers = tabEffect.getPowerupTimers();
-
-        if (buttonLocation == null) {
-            if (potionTimers.isEmpty() && powerupTimers.isEmpty() && TabEffectManager.getInstance().getEffectCount() == 0) {
-                return;
-            }
-        } else { // When editing GUI draw dummy timers.
-            potionTimers = TabEffectManager.getDummyPotionTimers();
-            powerupTimers = TabEffectManager.getDummyPowerupTimers();
-        }
-
-        EnumUtils.AnchorPoint anchorPoint = main.getConfigValues().getAnchorPoint(Feature.TAB_EFFECT_TIMERS);
-        boolean topDown = (anchorPoint == EnumUtils.AnchorPoint.TOP_LEFT || anchorPoint == EnumUtils.AnchorPoint.TOP_RIGHT);
-
-        int totalEffects = TabEffectManager.getDummyPotionTimers().size() + TabEffectManager.getDummyPowerupTimers().size() + 1; // + 1 to account for the "x Effects Active" line
-        int spacer = (!TabEffectManager.getDummyPotionTimers().isEmpty() && !TabEffectManager.getDummyPowerupTimers().isEmpty()) ? 3 : 0;
-
-        int lineHeight = 8 + 1; // 1 pixel between each line.
-
-        //9 px per effect + 3px spacer between Potions and Powerups if both exist.
-        int height = (totalEffects * lineHeight) + spacer - 1; // -1 Because last line doesn't need a pixel under.
-        int width = 156; //String width of "Enchanting XP Boost III 1:23:45"
-
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
-
-        if (buttonLocation != null) {
-            buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        }
-
-        main.getUtils().enableStandardGLOptions();
-
-        boolean alignRight = (anchorPoint == EnumUtils.AnchorPoint.TOP_RIGHT || anchorPoint == EnumUtils.AnchorPoint.BOTTOM_RIGHT);
-
-        int color = main.getConfigValues().getColor(Feature.TAB_EFFECT_TIMERS);
-
-        Minecraft mc = Minecraft.getMinecraft();
-
-        // Draw the "x Effects Active" line
-        FontRendererHook.setupFeatureFont(Feature.TAB_EFFECT_TIMERS);
-        int effectCount = TabEffectManager.getInstance().getEffectCount();
-        String text = effectCount == 1 ? Translations.getMessage("messages.effectActive") :
-                Translations.getMessage("messages.effectsActive", String.valueOf(effectCount));
-        float lineY;
-        if (topDown) {
-            lineY = y;
-        } else {
-            lineY = y + height - 8;
-        }
-        if (alignRight) {
-            DrawUtils.drawText(text, x + width - mc.fontRendererObj.getStringWidth(text), lineY, color);
-        } else {
-            DrawUtils.drawText(text, x, lineY, color);
-        }
-        FontRendererHook.endFeatureFont();
-
-        int drawnCount = 1; // 1 to account for the line above
-        for (TabEffect potion : potionTimers) {
-            if (topDown) {
-                lineY = y + drawnCount * lineHeight;
-            } else {
-                lineY = y + height - drawnCount * lineHeight - 8;
-            }
-
-            String effect = potion.getEffect();
-            String duration = potion.getDurationForDisplay();
-
-            if (alignRight) {
-                FontRendererHook.setupFeatureFont(Feature.TAB_EFFECT_TIMERS);
-                DrawUtils.drawText(duration + " ", x + width - mc.fontRendererObj.getStringWidth(duration + " ")
-                        - mc.fontRendererObj.getStringWidth(effect.trim()), lineY, color);
-                FontRendererHook.endFeatureFont();
-                DrawUtils.drawText(effect.trim(), x + width - mc.fontRendererObj.getStringWidth(effect.trim()), lineY, color);
-            } else {
-                DrawUtils.drawText(effect, x, lineY, color);
-                FontRendererHook.setupFeatureFont(Feature.TAB_EFFECT_TIMERS);
-                DrawUtils.drawText(duration, x + mc.fontRendererObj.getStringWidth(effect), lineY, color);
-                FontRendererHook.endFeatureFont();
-            }
-            drawnCount++;
-        }
-        for (TabEffect powerUp : powerupTimers) {
-            if (topDown) {
-                lineY = y + spacer + drawnCount * lineHeight;
-            } else {
-                lineY = y + height - drawnCount * lineHeight - spacer - 8;
-            }
-
-            String effect = powerUp.getEffect();
-            String duration = powerUp.getDurationForDisplay();
-
-            if (alignRight) {
-                FontRendererHook.setupFeatureFont(Feature.TAB_EFFECT_TIMERS);
-                DrawUtils.drawText(duration + " ", x + width - mc.fontRendererObj.getStringWidth(duration + " ")
-                        - mc.fontRendererObj.getStringWidth(effect.trim()), lineY, color);
-                FontRendererHook.endFeatureFont();
-                DrawUtils.drawText(effect, x + width - mc.fontRendererObj.getStringWidth(effect.trim()), lineY, color);
-            } else {
-                DrawUtils.drawText(effect, x, lineY, color);
-                FontRendererHook.setupFeatureFont(Feature.TAB_EFFECT_TIMERS);
-                DrawUtils.drawText(duration, x + mc.fontRendererObj.getStringWidth(effect), lineY, color);
-                FontRendererHook.endFeatureFont();
-            }
             drawnCount++;
         }
 

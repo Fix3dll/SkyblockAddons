@@ -5,7 +5,6 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.SkillType;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
-import codes.biscuit.skyblockaddons.features.tabtimers.TabEffectManager;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -26,8 +25,9 @@ public class TabListParser {
 
     public static String HYPIXEL_ADVERTISEMENT_CONTAINS = "HYPIXEL.NET";
 
-    private static final Pattern GOD_POTION_PATTERN = Pattern.compile("You have a God Potion active! (?<timer>\\d{0,2}:?\\d{1,2}:\\d{2})");
+    private static final Pattern GOD_POTION_PATTERN = Pattern.compile("You have a God Potion active! (?<timer>(?:\\d+(?: Hours| Minutes|m \\d+s))|(?:\\d+s))");
     private static final Pattern ACTIVE_EFFECTS_PATTERN = Pattern.compile("Active Effects(?:§.)*(?:\\n(?:§.)*§7.+)*");
+    private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effects\\.");
     private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
     private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[0-9dhms ]+)");
     private static final Pattern RAIN_TIME_PATTERN_S = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
@@ -42,9 +42,10 @@ public class TabListParser {
     public static void parse() {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (!main.getUtils().isOnSkyblock() || (!main.getConfigValues().isEnabled(Feature.COMPACT_TAB_LIST) &&
-                (!main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) || main.getUtils().getLocation() != Location.BIRCH_PARK) &&
-                main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER) && main.getConfigValues().isEnabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP))) {
+        if (!main.getUtils().isOnSkyblock() || (!main.getConfigValues().isEnabled(Feature.COMPACT_TAB_LIST)
+                && (!main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) || main.getUtils().getLocation() != Location.BIRCH_PARK)
+                && main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER)
+                && main.getConfigValues().isEnabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP))) {
             renderColumns = null;
             return;
         }
@@ -118,7 +119,7 @@ public class TabListParser {
             return null;
         }
 
-        ParsedTabColumn column = new ParsedTabColumn("§2§lOther");
+        ParsedTabColumn column = new ParsedTabColumn("§2§lOthers");
 
         String footer = tabList.footer.getFormattedText();
         //System.out.println(footer);
@@ -126,9 +127,11 @@ public class TabListParser {
         // Make active effects/booster cookie status compact...
         Matcher m = GOD_POTION_PATTERN.matcher(tabList.footer.getUnformattedText());
         if (m.find()) {
-            footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + TabEffectManager.getInstance().getEffectCount() + "\n§cGod Potion§r: " + m.group("timer"));
+            footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e32 \n§cGod Potion§r: " + m.group("timer"));
         } else {
-            footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + TabEffectManager.getInstance().getEffectCount());
+            Matcher countm = EFFECT_COUNT_PATTERN.matcher(tabList.footer.getUnformattedText());
+            if (countm.find())
+                footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + countm.group("effectCount"));
         }
 
         Matcher matcher = COOKIE_BUFF_PATTERN.matcher(footer);

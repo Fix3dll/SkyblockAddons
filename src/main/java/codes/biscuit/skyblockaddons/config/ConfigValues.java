@@ -146,7 +146,7 @@ public class ConfigValues {
                     Language configLanguage = Language.getFromPath(languageKey);
                     if (configLanguage != null) {
                         setLanguage(configLanguage); // TODO Will this crash?
-//                        language.setValue(configLanguage);
+                        //language.setValue(configLanguage);
                     }
                 }
             } catch (Exception ex) {

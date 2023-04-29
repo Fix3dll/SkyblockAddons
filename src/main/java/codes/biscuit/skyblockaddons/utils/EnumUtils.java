@@ -272,7 +272,7 @@ public class EnumUtils {
                 /*Feature.CRAFTING_PATTERNS, */Feature.POWER_ORB_STATUS_DISPLAY),
         //GARY("GARY_", "github.com/occanowey", Feature.ONLY_MINE_VALUABLES_NETHER)),
         P0KE("P0ke", "p0ke.dev", Feature.ZEALOT_COUNTER),
-        BERISAN("Berisan", "github.com/Berisan", Feature.TAB_EFFECT_TIMERS),
+        //BERISAN("Berisan", "github.com/Berisan", Feature.TAB_EFFECT_TIMERS),
         MYNAMEISJEFF("MyNameIsJeff", "github.com/My-Name-Is-Jeff", Feature.SHOW_BROKEN_FRAGMENTS),
         DJTHEREDSTONER("DJtheRedstoner", "github.com/DJtheRedstoner", Feature.LEGENDARY_SEA_CREATURE_WARNING, Feature.HIDE_SVEN_PUP_NAMETAGS),
         //ANTONIO32A("Antonio32A", "github.com/Antonio32A", Feature.ONLY_BREAK_LOGS_PARK),

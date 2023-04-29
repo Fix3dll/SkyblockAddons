@@ -24,7 +24,6 @@ import codes.biscuit.skyblockaddons.features.fishParticles.FishParticleManager;
 import codes.biscuit.skyblockaddons.features.powerorbs.PowerOrbManager;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
-import codes.biscuit.skyblockaddons.features.tabtimers.TabEffectManager;
 import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
@@ -620,8 +619,6 @@ public class PlayerListener {
                         // If above mana cap, do nothing
                     }
 
-                    this.parseTabList();
-
                     if (main.getConfigValues().isEnabled(Feature.DUNGEON_DEATH_COUNTER) && main.getUtils().isInDungeon()
                             && main.getDungeonManager().isPlayerListInfoEnabled()) {
                         main.getDungeonManager().updateDeathsFromPlayerListInfo();
@@ -697,24 +694,6 @@ public class PlayerListener {
                 } else if (timerTick > 20) { // To keep the timer going from 1 to 21 only.
                     timerTick = 1;
                 }
-            }
-        }
-    }
-
-    // TODO Feature Rewrite
-    public void parseTabList() {
-        IChatComponent tabFooterChatComponent = Minecraft.getMinecraft().ingameGUI.getTabList().footer;
-
-        String tabFooterString = null;
-        String strippedTabFooterString = null;
-        if (tabFooterChatComponent != null) {
-            tabFooterString = tabFooterChatComponent.getFormattedText();
-            strippedTabFooterString = TextUtils.stripColor(tabFooterString);
-        }
-
-        if (main.getUtils().isOnSkyblock()) {
-            if (main.getConfigValues().isEnabled(Feature.TAB_EFFECT_TIMERS)) {
-                TabEffectManager.getInstance().update(tabFooterString, strippedTabFooterString);
             }
         }
     }
