@@ -97,7 +97,7 @@
       "nbtName": "cubism"
     },
     "dedication": {
-      "goodLevel": 3,
+      "goodLevel": 0,
       "loreName": "Dedication",
       "maxLevel": 4,
       "nbtName": "dedication"
@@ -217,7 +217,7 @@
       "nbtName": "giant_killer"
     },
     "green thumb": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Green Thumb",
       "maxLevel": 5,
       "nbtName": "green_thumb"
@@ -747,7 +747,7 @@
       "nbtName": "ultimate_flash"
     },
     "habanero tactics": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Habanero Tactics",
       "maxLevel": 5,
       "nbtName": "ultimate_habanero_tactics"
