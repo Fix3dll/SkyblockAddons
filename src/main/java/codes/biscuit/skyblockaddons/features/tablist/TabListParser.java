@@ -29,7 +29,7 @@ public class TabListParser {
     private static final Pattern ACTIVE_EFFECTS_PATTERN = Pattern.compile("Active Effects(?:§.)*(?:\\n(?:§.)*§7.+)*");
     private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effects\\.");
     private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
-    private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[0-9dhms ]+)");
+    private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f\\d+(?: Days| Hours| Minutes|m \\d+s)|(?:\\d+s))");
     private static final Pattern RAIN_TIME_PATTERN_S = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
     private static final Pattern CANDY_PATTERN_S = Pattern.compile("Your Candy: (?<green>[0-9,]+) Green, (?<purple>[0-9,]+) Purple \\((?<points>[0-9,]+) pts\\.\\)");
     private static final Pattern SKILL_LEVEL_S = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
@@ -112,6 +112,7 @@ public class TabListParser {
         return columns;
     }
 
+    private static final Pattern TABLIST_S = Pattern.compile("(?i)§S");
     public static ParsedTabColumn parseFooterAsColumn() {
         GuiPlayerTabOverlay tabList = Minecraft.getMinecraft().ingameGUI.getTabList();
 
@@ -121,8 +122,7 @@ public class TabListParser {
 
         ParsedTabColumn column = new ParsedTabColumn("§2§lOthers");
 
-        String footer = tabList.footer.getFormattedText();
-        //System.out.println(footer);
+        String footer = TABLIST_S.matcher(tabList.footer.getFormattedText()).replaceAll("");
 
         // Make active effects/booster cookie status compact...
         Matcher m = GOD_POTION_PATTERN.matcher(tabList.footer.getUnformattedText());
@@ -177,12 +177,12 @@ public class TabListParser {
         for (ParsedTabColumn column : columns) {
             ParsedTabSection currentSection = null;
             for (String line : column.getLines()) {
-
                 // Empty lines reset the current section
                 if (TextUtils.trimWhitespaceAndResets(line).isEmpty()) {
                     currentSection = null;
                     continue;
                 }
+
                 String stripped = TextUtils.stripColor(line).trim();
                 if (parsedRainTime == null && (m = RAIN_TIME_PATTERN_S.matcher(stripped)).matches()) {
                     parsedRainTime = m.group("time");
