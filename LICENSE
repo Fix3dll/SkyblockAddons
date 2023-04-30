@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2023 Biscuit Development
+Copyright (c) 2023 Fix3dll
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-
+This project is fork of SkyblockAddons mod, which was written by Biscuit team and they announced to be end of life, which is
+available under the MIT license. The full license available at https://github.com/BiscuitDevelopment/SkyblockAddons/blob/main/LICENSE
 
 This product bundles the files /gradle/wrapper/gradle-wrapper.jar, /gradle/wrapper/gradle-wrapper.properties,
 /gradlew, and /gradlew.bat, which are available under the Apache 2.0 license. The full license is available at
