@@ -90,8 +90,7 @@ public enum SlayerDrop {
     DUPLEX("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.COMMON, "ultimate_reiterate", 1),
     HIGH_CLASS_ARCHFIEND_DICE("High Class Archfiend Dice", "HIGH_CLASS_ARCHFIEND_DICE", ItemRarity.LEGENDARY, "9c3c19b2-84e6-3eb6-8aec-450e133a569a"/*change*/, "915f7c313bca9c2f958e68ab14ab393867d67503affff8f20cb13fbe917fd31"),
     WILSON_ENGINEERING_PLANS(Items.paper, "Wilson's Engineering Plans", "WILSON_ENGINEERING_PLANS", ItemRarity.LEGENDARY, true),
-    SUBZERO_INVERTER("Subzero Inverter", "SUBZERO_INVERTER", ItemRarity.LEGENDARY, "5ab20327-b51e-36b3-b65a-a772bc225067", "1cf677ca6209961e81beeb3aa274e0ec8d21d36778e5a94b80b1d8425b04ac6e"),
-    SOS_FLARE(Items.fireworks, "SOS Flare", "SOS_FLARE", ItemRarity.EPIC, true);
+    SUBZERO_INVERTER("Subzero Inverter", "SUBZERO_INVERTER", ItemRarity.LEGENDARY, "5ab20327-b51e-36b3-b65a-a772bc225067", "1cf677ca6209961e81beeb3aa274e0ec8d21d36778e5a94b80b1d8425b04ac6e");
 
     @Getter
     private final String skyblockID;
