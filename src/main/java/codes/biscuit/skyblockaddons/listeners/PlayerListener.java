@@ -24,6 +24,7 @@ import codes.biscuit.skyblockaddons.features.fishParticles.FishParticleManager;
 import codes.biscuit.skyblockaddons.features.powerorbs.PowerOrbManager;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
+import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
 import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
@@ -90,7 +91,6 @@ public class PlayerListener {
 
     private static final Pattern NO_ARROWS_LEFT_PATTERN = Pattern.compile("(?:§r)?§cYou don't have any more Arrows left in your Quiver!§r");
     private static final Pattern ONLY_HAVE_ARROWS_LEFT_PATTERN = Pattern.compile("(?:§r)?§cYou only have (?<arrows>[0-9]+) Arrows left in your Quiver!§r");
-    private static final String ENCHANT_LINE_STARTS_WITH = "§5§o§9";
     private static final Pattern ABILITY_CHAT_PATTERN = Pattern.compile("§r§aUsed §r§6[A-Za-z ]+§r§a! §r§b\\([0-9]+ Mana\\)§r");
     private static final Pattern PROFILE_CHAT_PATTERN = Pattern.compile("You are playing on profile: ([A-Za-z]+).*");
     private static final Pattern SWITCH_PROFILE_CHAT_PATTERN = Pattern.compile("Your profile was changed to: ([A-Za-z]+).*");
@@ -132,7 +132,6 @@ public class PlayerListener {
             Utils.getBlockMetaId(Blocks.wool, EnumDyeColor.GRAY.getMetadata()));
 
     private long lastWorldJoin = -1;
-    private long lastBoss = -1;
     private long lastBal = -1;
     private long lastBroodmother = -1;
     private int balTick = -1;
@@ -168,11 +167,10 @@ public class PlayerListener {
 
     // For caching for the PROFILE_TYPE_IN_CHAT feature, saves the last MAX_SIZE names.
     private final LinkedHashMap<String, String> namesWithSymbols = new LinkedHashMap<String, String>(){
-        private final int MAX_SIZE = 80;
-
         protected boolean removeEldestEntry(Map.Entry<String, String> eldest)
         {
-            return size() > MAX_SIZE;
+            // MAX_SIZE = 80
+            return size() > 80;
         }
     };
 
@@ -185,7 +183,6 @@ public class PlayerListener {
 
         if (entity == Minecraft.getMinecraft().thePlayer) {
             lastWorldJoin = Minecraft.getSystemTime();
-            lastBoss = -1;
             timerTick = 1;
             main.getInventoryUtils().resetPreviousInventory();
             countedEndermen.clear();
@@ -443,22 +440,12 @@ public class PlayerListener {
 
                 } else if ((matcher = PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
                     String profile = matcher.group(1);
-
-                    // TODO: Slothpixel can no longer handle our queries
-/*                    if (!profile.equals(main.getUtils().getProfileName())) {
-                        APIManager.getInstance().onProfileSwitch(profile);
-                    }*/
-
                     main.getUtils().setProfileName(profile);
 
                 } else if ((matcher = SWITCH_PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
                     String profile = matcher.group(1);
-
-/*                    if (!profile.equals(main.getUtils().getProfileName())) {
-                        APIManager.getInstance().onProfileSwitch(profile);
-                    }*/
-
                     main.getUtils().setProfileName(profile);
+
                 }
             }
         }
@@ -469,12 +456,12 @@ public class PlayerListener {
         String username = TextUtils.stripColor(unformattedText.split(":")[0]);
         // Remove chat channel prefix
         if(username.contains(">")){
-            username = username.substring(username.indexOf('>')+1);
+            username = username.substring(username.indexOf('>')+1).trim();
         }
-        // Remove rank prefix and guild rank suffix if exists
-        username = TextUtils.trimWhitespaceAndResets(username.replaceAll("\\[[^\\[\\]]*\\]",""));
         // Check if stripped username is a real username or the player
         if (TextUtils.isUsername(username) || username.equals("**MINECRAFTUSERNAME**")) {
+            // Remove rank prefix and guild rank suffix if exists
+            username = TextUtils.stripUsername(username);
             EntityPlayer chattingPlayer = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(username);
             // Put player in cache if found nearby
             if(chattingPlayer != null) {
@@ -484,7 +471,10 @@ public class PlayerListener {
             else {
                 Collection<NetworkPlayerInfo> networkPlayerInfos = Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap();
                 String finalUsername = username;
-                Optional<NetworkPlayerInfo> result = networkPlayerInfos.stream().filter(npi -> npi.getDisplayName() != null).filter(npi -> TextUtils.stripUsername(npi.getDisplayName().getUnformattedText()).equals(finalUsername)).findAny();
+                Optional<NetworkPlayerInfo> result = networkPlayerInfos.stream()
+                        .filter(npi -> npi.getDisplayName() != null)
+                        .filter(npi -> TabStringType.usernameFromLine(npi.getDisplayName().getFormattedText()).equals(finalUsername))
+                        .findAny();
                 // Put in cache if found
                 if(result.isPresent()){
                     namesWithSymbols.put(username, result.get().getDisplayName().getFormattedText());
@@ -497,14 +487,16 @@ public class PlayerListener {
                 String suffix = " ";
                 if(main.getConfigValues().isEnabled(Feature.SHOW_PROFILE_TYPE)){
                     Matcher m = PROFILE_TYPE_SYMBOL.matcher(usernameWithSymbols);
-                    if(m.find()){
-                        suffix+=m.group(0);
+                    if(m.find()) {
+                        suffix +=  m.group(0);
                     }
                 }
                 if(main.getConfigValues().isEnabled(Feature.SHOW_NETHER_FACTION)){
                     Matcher m = NETHER_FACTION_SYMBOL.matcher(usernameWithSymbols);
-                    if(m.find()){
-                        suffix+=m.group(0);
+                    if(m.find()) {
+                        if (!suffix.equals(" "))
+                            suffix += " ";
+                        suffix += m.group(0);
                     }
                 }
                 if(!suffix.equals(" ")) {

@@ -28,15 +28,15 @@ public class TextUtils {
      */
     public static final NumberFormat NUMBER_FORMAT_NO_GROUPING = NumberFormat.getInstance(Locale.US);
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-ORZ]");
-    private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("[♲Ⓑ⚒ቾ]+");
-    private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[[^\\[\\]]*\\]");
+    private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("\\[✌\\]|[♲Ⓑ⚒ቾ]+");
+    private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[\\d+\\]");
     private static final Pattern REPEATED_COLOR_PATTERN = Pattern.compile("(?i)(§[0-9A-FK-ORZ])+");
     private static final Pattern NUMBERS_SLASHES = Pattern.compile("[^0-9 /]");
     private static final Pattern SCOREBOARD_CHARACTERS = Pattern.compile("[^a-z A-Z:0-9_/'.!§\\[\\]❤]");
     private static final Pattern FLOAT_CHARACTERS = Pattern.compile("[^.0-9\\-]");
     private static final Pattern INTEGER_CHARACTERS = Pattern.compile("[^0-9]");
     private static final Pattern TRIM_WHITESPACE_RESETS = Pattern.compile("^(?:\\s|§r)*|(?:\\s|§r)*$");
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("[A-Za-z0-9_]+");
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^(?:\\[.+?\\] )?(?<username>\\w+)(?: \\[.+?\\])?$");
     private static final Pattern RESET_CODE_PATTERN = Pattern.compile("(?i)§R");
     private static final Pattern MAGNITUDE_PATTERN = Pattern.compile("(\\d[\\d,.]*\\d*)+([kKmMbBtT])");
 
@@ -90,14 +90,28 @@ public class TextUtils {
     /**
      * Strips icons and colors and trims spaces from a potential username
      * @param input Text to strip from
-     * @return Stripped Text
+     * @return Stripped text. If the username is not found, the input returns back.
      */
     public static String stripUsername(String input) {
-        return trimWhitespaceAndResets(stripIcons(stripColor(stripPrefix((input)))));
+        Matcher usernameMatcher = USERNAME_PATTERN.matcher(input);
+        if (usernameMatcher.matches())
+            return usernameMatcher.group("username");
+        else
+            return input;
     }
 
     public static String stripPrefix(String input) {
         return STRIP_PREFIX_PATTERN.matcher(input).replaceAll("");
+    }
+
+    /**
+     * Checks if text matches a Minecraft username
+     *
+     * @param input Text to check
+     * @return Whether this input can be Minecraft username or not
+     */
+    public static boolean isUsername(String input) {
+        return USERNAME_PATTERN.matcher(input).matches();
     }
 
     /**
@@ -153,7 +167,7 @@ public class TextUtils {
     /**
      * Converts all numbers with magnitudes in a given string, e.g. "10k" -> "10000" and "10M" -> "10000000." Magnitudes
      * are not case-sensitive.
-     *
+     * <p>
      * <b>Supported magnitudes:</b>
      * <p>k - thousand</p>
      * <p>m - million</p>
@@ -302,16 +316,6 @@ public class TextUtils {
      */
     public static String trimWhitespaceAndResets(String input) {
         return TRIM_WHITESPACE_RESETS.matcher(input).replaceAll("");
-    }
-
-    /**
-     * Checks if text matches a Minecraft username
-     *
-     * @param input Text to check
-     * @return Whether this input can be Minecraft username or not
-     */
-    public static boolean isUsername(String input) {
-        return USERNAME_PATTERN.matcher(input).matches();
     }
 
     /**
@@ -477,7 +481,7 @@ public class TextUtils {
 
     /**
      * Recursively searches for a chat component to transform based on a given Predicate.
-     *
+     * <p>
      * Important to note that this function will stop on the first successful transformation, unlike {@link #transformAllChatComponents(IChatComponent, Consumer)}
      * @param chatComponent root chat component
      * @param action predicate that transforms a component and reports a successful transformation
