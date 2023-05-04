@@ -86,7 +86,7 @@ public enum SlayerDrop {
     ARCHFIEND_DICE("Archfiend Dice", "ARCHFIEND_DICE", ItemRarity.EPIC, "9c3c19b2-84e6-3eb6-8aec-450e133a569a", "6e22c298e7c6336af17909ac1f1ee6834b58b1a3cc99aba255ca7eaeb476173"),
     FIRE_ASPECT("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.COMMON, "fire_aspect", 3),
     FIERY_BURST_RUNE("Fiery Burst Rune I", "RUNE", "FIERY_BURST", ItemRarity.LEGENDARY, "983fd05e-d9e2-3dbc-9185-28e3138ccb34", "8d620e4e3d3abfed6ad81a58a56bcd085d9e9efc803cabb21fa6c9e3969e2d2e"),
-    FLAWED_OPAL_GEMSTONE("Flawed Opal Gemstone", "FLAWED_OPAL_GEM", ItemRarity.UNCOMMON, "f1fa016a-e25d-3e5b-90c5-b9928ecf14c4", "eadc3bcdd7c701b63f8b8b4a96e429316a08388669d9a98c1a98791729b961df"),
+    FLAWED_OPAL_GEMSTONE("❂ Flawed Opal Gemstone", "FLAWED_OPAL_GEM", ItemRarity.UNCOMMON, "f1fa016a-e25d-3e5b-90c5-b9928ecf14c4", "eadc3bcdd7c701b63f8b8b4a96e429316a08388669d9a98c1a98791729b961df"),
     DUPLEX("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.COMMON, "ultimate_reiterate", 1),
     HIGH_CLASS_ARCHFIEND_DICE("High Class Archfiend Dice", "HIGH_CLASS_ARCHFIEND_DICE", ItemRarity.LEGENDARY, "9c3c19b2-84e6-3eb6-8aec-450e133a569a"/*change*/, "915f7c313bca9c2f958e68ab14ab393867d67503affff8f20cb13fbe917fd31"),
     WILSON_ENGINEERING_PLANS(Items.paper, "Wilson's Engineering Plans", "WILSON_ENGINEERING_PLANS", ItemRarity.LEGENDARY, true),

@@ -343,9 +343,7 @@ public class EnumUtils {
 
     @Getter
     public enum Social {
-        YOUTUBE("youtube", "https://www.youtube.com/channel/UCYmE9-052frn0wQwqa6i8_Q"),
-        DISCORD("discord", "https://biscuit.codes/discord"),
-        GITHUB("github", "https://github.com/BiscuitDevelopment/SkyblockAddons");
+        GITHUB("github", "https://github.com/Fix3dll/SkyblockAddons");
         // Patreon removed due to ending of private betas
         // PATREON("patreon", "https://www.patreon.com/biscuitdev");
 
