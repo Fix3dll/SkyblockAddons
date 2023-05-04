@@ -24,14 +24,14 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build --no-daemon
     - name: Read Project Version
-      id: read_project_version
-      uses: christian-draeger/read-properties@1.0.1
+      id: read_properties
+      uses: christian-draeger/read-properties@1.1.1
       with:
         path: gradle.properties
-        property: version
+        properties: version
     - name: Upload Artifact
       env:
-        project_version: ${{ steps.read_project_version.outputs.value }}
+        project_version: ${{ steps.read_properties.outputs.value }}
       uses: actions/upload-artifact@v3
       with:
         name: build_artifacts
