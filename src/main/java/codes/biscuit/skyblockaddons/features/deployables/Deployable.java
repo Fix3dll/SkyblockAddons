@@ -16,7 +16,7 @@ public enum Deployable {
 
     // Flares
     WARNING_FLARE(0.0, 10, 10, 0, 0,  "22e2bf6c1ec330247927ba63479e5872ac66b06903c86c82b52dac9f1c971458", 40*40, "warning"),
-    ALERT_FLARE(0.5, 30, 25, 10, 0,  "9d2bf9864720d87fd06b84efa80b795c48ed539b16523c3b1f1990b40c003f6b", 40*40, "alert"),
+    ALERT_FLARE(0.5, 20, 20, 10, 0,  "9d2bf9864720d87fd06b84efa80b795c48ed539b16523c3b1f1990b40c003f6b", 40*40, "alert"),
     SOS_FLARE(1.25, 30, 25, 10, 5,  "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b", 40*40, "sos");
 
     /**
