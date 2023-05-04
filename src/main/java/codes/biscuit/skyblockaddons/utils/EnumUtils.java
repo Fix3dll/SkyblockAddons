@@ -92,13 +92,13 @@ public class EnumUtils {
         }
     }
 
-    public enum PowerOrbDisplayStyle {
-        DETAILED("settings.powerOrbStyle.detailed"),
-        COMPACT("settings.powerOrbStyle.compact");
+    public enum DeployableDisplayStyle {
+        DETAILED("settings.deployableStyle.detailed"),
+        COMPACT("settings.deployableStyle.compact");
 
         private final String TRANSLATION_KEY;
 
-        PowerOrbDisplayStyle(String translationKey) {
+        DeployableDisplayStyle(String translationKey) {
             this.TRANSLATION_KEY = translationKey;
         }
 
@@ -106,7 +106,7 @@ public class EnumUtils {
             return Translations.getMessage(TRANSLATION_KEY);
         }
 
-        public PowerOrbDisplayStyle getNextType() {
+        public DeployableDisplayStyle getNextType() {
             int nextType = ordinal() + 1;
             if (nextType > values().length - 1) {
                 nextType = 0;
@@ -162,7 +162,7 @@ public class EnumUtils {
         BACKPACK_STYLE("settings.backpackStyle", -1),
         SHOW_ONLY_WHEN_HOLDING_SHIFT("settings.showOnlyWhenHoldingShift", 18),
         MAKE_INVENTORY_COLORED("settings.makeBackpackInventoriesColored", 43),
-        POWER_ORB_DISPLAY_STYLE("settings.powerOrbDisplayStyle", -1),
+        DEPLOYABLE_DISPLAY_STYLE("settings.deployableDisplayStyle", -1),
         CHANGE_BAR_COLOR_WITH_POTIONS("settings.changeBarColorForPotions", 46),
         ENABLE_MESSAGE_WHEN_ACTION_PREVENTED("settings.enableMessageWhenActionPrevented", -1),
         ENABLE_CAKE_BAG_PREVIEW("settings.showCakeBagPreview", 71),
@@ -215,6 +215,7 @@ public class EnumUtils {
         CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD("settings.changeDungeonMapZoomWithKeyboard", 215),
         SHOW_PROFILE_TYPE( "settings.showProfileType", 219),
         SHOW_NETHER_FACTION("settings.showNetherFaction", 220),
+		HIDE_WHEN_NOT_IN_CRIMSON("settings.hideWhenNotDoingQuest", 222),
         ZEALOT_SPAWN_AREAS_ONLY("settings.zealotSpawnAreasOnly", -1),
 
         DISCORD_RP_STATE(0),
@@ -267,11 +268,11 @@ public class EnumUtils {
         COMNIEMEER("comniemeer", "github.com/comniemeer", Feature.JUNGLE_AXE_COOLDOWN),
         KEAGEL("Keagel", "github.com/Keagel"/*, Feature.ONLY_MINE_ORES_DEEP_CAVERNS*/, Feature.DISABLE_MAGICAL_SOUP_MESSAGES),
         SUPERHIZE("SuperHiZe", "github.com/superhize", Feature.SPECIAL_ZEALOT_ALERT),
-        DIDI_SKYWALKER("DidiSkywalker", "twitter.com/didiskywalker", Feature.ITEM_PICKUP_LOG, Feature.HEALTH_UPDATES, Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS,
-                /*Feature.CRAFTING_PATTERNS, */Feature.POWER_ORB_STATUS_DISPLAY),
+        DIDI_SKYWALKER("DidiSkywalker", "twitter.com/didiskywalker", Feature.ITEM_PICKUP_LOG, Feature.HEALTH_UPDATES, Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS
+                /*Feature.CRAFTING_PATTERNS, Feature.POWER_ORB_STATUS_DISPLAY*/),
         //GARY("GARY_", "github.com/occanowey", Feature.ONLY_MINE_VALUABLES_NETHER)),
         P0KE("P0ke", "p0ke.dev", Feature.ZEALOT_COUNTER),
-        BERISAN("Berisan", "github.com/Berisan", Feature.TAB_EFFECT_TIMERS),
+        //BERISAN("Berisan", "github.com/Berisan", Feature.TAB_EFFECT_TIMERS),
         MYNAMEISJEFF("MyNameIsJeff", "github.com/My-Name-Is-Jeff", Feature.SHOW_BROKEN_FRAGMENTS),
         DJTHEREDSTONER("DJtheRedstoner", "github.com/DJtheRedstoner", Feature.LEGENDARY_SEA_CREATURE_WARNING, Feature.HIDE_SVEN_PUP_NAMETAGS),
         //ANTONIO32A("Antonio32A", "github.com/Antonio32A", Feature.ONLY_BREAK_LOGS_PARK),
@@ -294,7 +295,8 @@ public class EnumUtils {
         TIMOLOB("TimoLob", "github.com/TimoLob", Feature.BROOD_MOTHER_ALERT),
         NOPOTHEGAMER("NopoTheGamer", "twitch.tv/nopothegamer", Feature.BAL_BOSS_ALERT),
         CATFACE("CatFace","github.com/CattoFace",Feature.PLAYER_SYMBOLS_IN_CHAT),
-        HANNIBAL2("Hannibal2", "github.com/hannibal00212", Feature.CRIMSON_ARMOR_ABILITY_STACKS, Feature.HIDE_TRUE_DEFENSE);
+        HANNIBAL2("Hannibal2", "github.com/hannibal00212", Feature.CRIMSON_ARMOR_ABILITY_STACKS, Feature.HIDE_TRUE_DEFENSE),
+        JASON54("jason54jg", "github.com/jason54jg", Feature.INFERNO_SLAYER_TRACKER, Feature.INFERNO_COLOR_BY_RARITY, Feature.INFERNO_TEXT_MODE);
 
         private final Set<Feature> features;
         private final String author;
@@ -329,7 +331,7 @@ public class EnumUtils {
         PICKUP_LOG,
         DEFENCE_ICON,
         REVENANT_PROGRESS,
-        POWER_ORB_DISPLAY,
+        DEPLOYABLE_DISPLAY,
         TICKER,
         BAIT_LIST_DISPLAY,
         TAB_EFFECT_TIMERS,
@@ -341,9 +343,7 @@ public class EnumUtils {
 
     @Getter
     public enum Social {
-        YOUTUBE("youtube", "https://www.youtube.com/channel/UCYmE9-052frn0wQwqa6i8_Q"),
-        DISCORD("discord", "https://biscuit.codes/discord"),
-        GITHUB("github", "https://github.com/BiscuitDevelopment/SkyblockAddons");
+        GITHUB("github", "https://github.com/Fix3dll/SkyblockAddons");
         // Patreon removed due to ending of private betas
         // PATREON("patreon", "https://www.patreon.com/biscuitdev");
 

@@ -110,8 +110,8 @@ public class SkyblockAddonsGui extends GuiScreen {
         max = features.size() - skip - displayCount <= 0;
         buttonList.add(new ButtonArrow(width / 2 - 15 + 50, height - 70, main, ButtonArrow.ArrowType.RIGHT, max));
 
-        buttonList.add(new ButtonSocial(width / 2 + 200, 30, main, EnumUtils.Social.YOUTUBE));
-        buttonList.add(new ButtonSocial(width / 2 + 175, 30, main, EnumUtils.Social.DISCORD));
+        //buttonList.add(new ButtonSocial(width / 2 + 200, 30, main, EnumUtils.Social.YOUTUBE));
+        //buttonList.add(new ButtonSocial(width / 2 + 175, 30, main, EnumUtils.Social.DISCORD));
         buttonList.add(new ButtonSocial(width / 2 + 150, 30, main, EnumUtils.Social.GITHUB));
         // buttonList.add(new ButtonSocial(width / 2 + 125, 30, main, EnumUtils.Social.PATREON));
 
@@ -355,12 +355,8 @@ public class SkyblockAddonsGui extends GuiScreen {
         DrawUtils.drawModalRectWithCustomSizedTexture(scaledResolution.getScaledWidth()/2F-width/2F, 5, 0, 0, width, height, width, height, true);
 
         GlStateManager.color(1,1,1, 1);
-        String version = "v" + SkyblockAddons.VERSION.replace("beta", "b") + " by Biscut";
+        String version = "v" + SkyblockAddons.VERSION.replace("beta", "b") + " unofficial";
         drawScaledString(gui, version, 55, defaultBlue, 1.3, 170 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(version), false);
-
-        if (gui instanceof SkyblockAddonsGui) {
-            drawScaledString(gui, "Special Credits: InventiveTalent - Magma Boss Timer API", gui.height - 22, defaultBlue, 1, 0);
-        }
 
         SkyblockAddons.getInstance().getUtils().restoreGLOptions();
     }

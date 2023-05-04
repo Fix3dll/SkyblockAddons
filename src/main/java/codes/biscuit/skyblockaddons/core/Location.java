@@ -13,6 +13,8 @@ public enum Location {
     // TODO: Jsonify all of these
     ISLAND("Your Island"), // TODO RPC
     GUEST_ISLAND("'s Island", "island"), // TODO RPC
+    GARDEN("The Garden"),
+    GARDEN_PLOT("Plot"), //TODO RPC
 
     // Hub
     AUCTION_HOUSE("Auction House"),
@@ -113,11 +115,16 @@ public enum Location {
     OVERGROWN_MUSHROOM_CAVE("Overgrown Mushroom Cave"),
     JAKES_HOUSE("Jake's House"),
     SHEPHERDS_KEEP("Shepherds Keep"),
-    TRAPPERS_DEN("Trappers Den"),
+    TRAPPERS_DEN("Trapper's Den"),
 
+    // Spider's Den
     SPIDERS_DEN("Spider's Den"),
-
-    BLAZING_FORTRESS("Blazing Fortress"),
+    SPIDER_MOUND("Spider Mound"),
+    ARACHNES_BURROW("Arachne's Burrow"),
+    ARACHNES_SANCTUARY("Arachnes's Sanctuary"),
+    GRANDMAS_HOUSE("Grandma's House"),
+    ARCHAEOLOGISTS_CAMP("Archaeologist's Camp"),
+    GRAVEL_MINES("Gravel Mines"),
 
     // The End
     THE_END("The End"),
@@ -127,8 +134,18 @@ public enum Location {
     VOID_SLATE("Void Slate"),
 
     // Jerry's workshop
+    // TODO check is it correct
     JERRY_POND("Jerry Pond"), // TODO RPC
     JERRYS_WORKSHOP("Jerry's Workshop"), // TODO RPC
+    MOUNT_JERRY("Mount Jerry"),
+    GARYS_SHACK("Gary's Shack"),
+    GLACIAL_CAVE("Glacial Cave"),
+    TERRYS_SHACK("Terry's Shack"),
+    HOT_SPRINGS("Hot Springs"),
+    REFLECTIVE_POND("Reflective Pond"),
+    SUNKEN_JERRY_POND("Sunken Jerry Pond"),
+    SHERRYS_SHOWROOM("Sherry's Showroom"),
+    EINARYS_EMPORIUM("Einary's Emporium"),
 
     // Dungeons
     THE_CATACOMBS("The Catacombs"), // TODO RPC

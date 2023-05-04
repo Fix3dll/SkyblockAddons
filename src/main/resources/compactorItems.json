@@ -5,6 +5,12 @@
     "skullId": "8fa8272c-7171-3ff6-a997-b46ed76a3bf7",
     "texture": "5cb7c21cc43dc17678ee6f16591ffaab1f637c37f4f6bbd8cea497451d76db6d"
   },
+  "BOX_OF_SEEDS": {
+    "itemId": "skull",
+    "displayName": "§9Box of Seeds",
+    "skullId": "44418bf4-766c-38cd-ba44-67747ec44b5d",
+    "texture": "2c3f854bb65265ab3ff2e362669a5f806ab84dc240a4b99f9a62ab7267728ba3"
+  },
   "CLAY": {
     "itemId": "clay",
     "displayName": "§fClay",
@@ -20,6 +26,12 @@
     "displayName": "§9Concentrated Stone",
     "skullId": "1587c455-6bba-3195-b978-834d07e6f98e",
     "texture": "8c8637bc0628f5710f85b8d0679cc2c19afe0e1089b248b6fdb67f687ae81dc2"
+  },
+  "CONDENSED_FERMENTO": {
+    "itemId": "skull",
+    "displayName": "§6Condensed Fermento",
+    "skullId": "69818e53-bdd5-3f68-b5b5-c1b6fc058985",
+    "texture": "8233d3a70d82eee1caaa58c16b83ee6224e8bfc7cda636793853e041a1fbaa6b"
   },
   "DIAMOND_BLOCK": {
     "itemId": "diamond_block",

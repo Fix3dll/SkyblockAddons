@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.features.tablist;
 
-import codes.biscuit.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
@@ -90,7 +89,7 @@ public class TabListRenderer {
                 int savedX = middleX;
 
                 if (tabLine.getType() == TabStringType.PLAYER) {
-                    NetworkPlayerInfo networkPlayerInfo = mc.getNetHandler().getPlayerInfo(TextUtils.stripUsername(tabLine.getText()));
+                    NetworkPlayerInfo networkPlayerInfo = mc.getNetHandler().getPlayerInfo(TabStringType.usernameFromLine(tabLine.getText()));
                     if (networkPlayerInfo != null) {
                         EntityPlayer entityPlayer = mc.theWorld.getPlayerEntityByUUID(networkPlayerInfo.getGameProfile().getId());
 

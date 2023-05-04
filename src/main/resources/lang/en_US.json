@@ -18,7 +18,7 @@
     "resetLocations": "Reset Locations",
     "minionStopWarning": "\"Minion Cannot Reach\" Warning",
     "hidePlayersNearNPCs": "Hide Players Near Important NPCs",
-    "backpackStyle": "Backpack Style: %style%",
+    "backpackStyle": "Backpack Style",
     "backpackStyles": {
       "regular": "Regular",
       "compact": "Compact"
@@ -73,9 +73,9 @@
     "specialZealotAlert": "Special Zealot Alert",
     "enableMessageWhenActionPrevented": "Show a Message When an Action is Prevented",
     "hidePetHealthBar": "Hide Pet Health Bar",
-    "powerOrbDisplay": "Power Orb Display",
-    "powerOrbDisplayStyle": "Power Orb Style: %style%",
-    "powerOrbStyle": {
+    "deployableDisplay": "Deployable Display",
+    "deployableDisplayStyle": "Deployable Style",
+    "deployableStyle": {
       "detailed": "Detailed",
       "compact": "Compact"
     },
@@ -223,7 +223,10 @@
     "hideTrueDefense": "Hide True Defense",
     "showProfileType": "Show Profile Type",
     "showNetherFaction": "Show Nether Faction",
-    "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas"
+    "numberSeparators": "Number Separators",
+    "showProfileTypeInChat": "Show Profile Type In Chat",
+    "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas",
+    "infernoSlayerTracker": "Slayer Tracker - Inferno/Blaze"
   },
   "messages": {
     "enchants": "Enchants",
@@ -670,6 +673,7 @@
     "tarantula": "Tarantula Broodfather:",
     "sven": "Sven Packmaster:",
     "voidgloom": "Voidgloom Seraph:",
+	"inferno": "Inferno Demonlord:",
     "bossesKilled": "Bosses Killed"
   },
   "warpMenu": {

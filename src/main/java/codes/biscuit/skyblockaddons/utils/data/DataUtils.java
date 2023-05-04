@@ -409,6 +409,7 @@ public class DataUtils {
         if (SkyblockAddons.getInstance().getConfigValues().getLanguage() != Language.ENGLISH) {
             remoteRequests.add(new LocalizedStringsRequest(SkyblockAddons.getInstance().getConfigValues().getLanguage()));
         }
+        // TODO fork and update data repo
         remoteRequests.add(new EnchantedItemListsRequest());
         remoteRequests.add(new ContainersRequest());
         remoteRequests.add(new CompactorItemsRequest());

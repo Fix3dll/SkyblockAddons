@@ -89,7 +89,7 @@ public class Utils {
     /**
      * Matches the active slayer quest type line on the Skyblock scoreboard
      */
-    private static final Pattern SLAYER_TYPE_REGEX = Pattern.compile("(?<type>Tarantula Broodfather|Revenant Horror|Sven Packmaster|Voidgloom Seraph) (?<level>[IV]+)");
+    private static final Pattern SLAYER_TYPE_REGEX = Pattern.compile("(?<type>Tarantula Broodfather|Revenant Horror|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord) (?<level>[IV]+)");
     /**
      * Matches the active slayer quest progress line on the Skyblock scoreboard
      */
@@ -138,6 +138,11 @@ public class Utils {
      * The player's current location in Skyblock
      */
     @Getter private Location location = Location.UNKNOWN;
+
+    /**
+     * Custom garden plot name
+     */
+    @Getter private String customPlotName = "";
 
     /**
      * The skyblock profile that the player is currently on. Ex. "Grapefruit"
@@ -281,7 +286,6 @@ public class Utils {
                     String strippedScoreboardLine = ScoreboardManager.getStrippedScoreboardLines().get(lineNumber);
                     Matcher matcher;
 
-                    //noinspection RedundantSuppression
                     switch (lineNumber) {
                         case 0:
                             // Server ID
@@ -323,6 +327,11 @@ public class Utils {
                                                 continue;
                                             }
                                             location = loopLocation;
+                                            foundLocation = true;
+                                            break;
+                                        } else if (loopLocation == Location.GARDEN_PLOT && strippedScoreboardLine.contains("Plot:")) {
+                                            // TODO RPC
+                                            location = Location.GARDEN;
                                             foundLocation = true;
                                             break;
                                         }
@@ -497,9 +506,6 @@ public class Utils {
 
             lastCompletion = completion;
         }
-    }
-
-    private void onCoinsChange(double coinsChange) {
     }
 
     public int getDefaultColor(float alphaFloat) {
@@ -793,10 +799,6 @@ public class Utils {
             try {
                 double oldCoins = purse;
                 purse = TextUtils.NUMBER_FORMAT.parse(matcher.group("coins")).doubleValue();
-
-                if (oldCoins != purse) {
-                    onCoinsChange(purse - oldCoins);
-                }
             } catch (NumberFormatException | ParseException e) {
                 purse = 0;
             }
