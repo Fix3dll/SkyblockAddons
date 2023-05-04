@@ -7,7 +7,7 @@
   </a>
 </p>
 
-Skyblock Addons has reached end of life. This fork contains unofficial updates from me. You can reach latest unofficial build [here](https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/unofficial-update/SkyblockAddons%20v1.7.2.zip).
+Skyblock Addons has reached end of life. This fork contains unofficial updates from me. You can reach latest unofficial build [here](https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip).
 
 Special Credits
 -----
