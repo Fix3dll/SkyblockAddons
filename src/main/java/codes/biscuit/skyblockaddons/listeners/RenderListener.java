@@ -12,8 +12,8 @@ import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonType;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonsSince;
 import codes.biscuit.skyblockaddons.features.healingcircle.HealingCircleManager;
-import codes.biscuit.skyblockaddons.features.powerorbs.PowerOrb;
-import codes.biscuit.skyblockaddons.features.powerorbs.PowerOrbManager;
+import codes.biscuit.skyblockaddons.features.deployables.Deployable;
+import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerBoss;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerDrop;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
@@ -2059,34 +2059,34 @@ public class RenderListener {
         main.getUtils().restoreGLOptions();
     }
 
-    public void drawPowerOrbStatus(Minecraft mc, float scale, ButtonLocation buttonLocation) {
-        PowerOrbManager.PowerOrbEntry activePowerOrb = PowerOrbManager.getInstance().getActivePowerOrb();
+    public void drawDeployableStatus(Minecraft mc, float scale, ButtonLocation buttonLocation) {
+        DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (buttonLocation != null) {
-            activePowerOrb = PowerOrbManager.DUMMY_POWER_ORB_ENTRY;
+            activeDeployable = DeployableManager.DUMMY_POWER_ORB_ENTRY;
         }
-        if (activePowerOrb != null) {
-            PowerOrb powerOrb = activePowerOrb.getPowerOrb();
-            int seconds = activePowerOrb.getSeconds();
+        if (activeDeployable != null) {
+            Deployable deployable = activeDeployable.getDeployable();
+            int seconds = activeDeployable.getSeconds();
 
-            EnumUtils.PowerOrbDisplayStyle displayStyle = main.getConfigValues().getPowerOrbDisplayStyle();
-            if (displayStyle == EnumUtils.PowerOrbDisplayStyle.DETAILED) {
-                drawDetailedPowerOrbStatus(mc, scale, buttonLocation, powerOrb, seconds);
+            EnumUtils.DeployableDisplayStyle displayStyle = main.getConfigValues().getDeployableDisplayStyle();
+            if (displayStyle == EnumUtils.DeployableDisplayStyle.DETAILED) {
+                drawDetailedDeployableStatus(mc, scale, buttonLocation, deployable, seconds);
             } else {
-                drawCompactPowerOrbStatus(mc, scale, buttonLocation, powerOrb, seconds);
+                drawCompactDeployableStatus(mc, scale, buttonLocation, deployable, seconds);
             }
         }
     }
 
     /**
-     * Displays the power orb display in a compact way with only the amount of seconds to the right of the icon.
+     * Displays the deployable display in a compact way with only the amount of seconds to the right of the icon.
      * <p>
-     * --
+     * ----
      * |  | XXs
-     * --
+     * ----
      */
-    private void drawCompactPowerOrbStatus(Minecraft mc, float scale, ButtonLocation buttonLocation, PowerOrb powerOrb, int seconds) {
-        float x = main.getConfigValues().getActualX(Feature.POWER_ORB_STATUS_DISPLAY);
-        float y = main.getConfigValues().getActualY(Feature.POWER_ORB_STATUS_DISPLAY);
+    private void drawCompactDeployableStatus(Minecraft mc, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
+        float x = main.getConfigValues().getActualX(Feature.DEPLOYABLE_STATUS_DISPLAY);
+        float y = main.getConfigValues().getActualY(Feature.DEPLOYABLE_STATUS_DISPLAY);
 
         String secondsString = String.format("§e%ss", seconds);
         int spacing = 1;
@@ -2102,8 +2102,8 @@ public class RenderListener {
         }
 
         Entity entity = null;
-        if (PowerOrbManager.getInstance().getActivePowerOrb() != null && PowerOrbManager.getInstance().getActivePowerOrb().getUuid() != null) {
-            entity = Utils.getEntityByUUID(PowerOrbManager.getInstance().getActivePowerOrb().getUuid());
+        if (DeployableManager.getInstance().getActiveDeployable() != null && DeployableManager.getInstance().getActiveDeployable().getUuid() != null) {
+            entity = Utils.getEntityByUUID(DeployableManager.getInstance().getActiveDeployable().getUuid());
         }
 
         if (entity == null && buttonLocation != null) {
@@ -2113,9 +2113,9 @@ public class RenderListener {
         main.getUtils().enableStandardGLOptions();
 
         if (entity instanceof EntityArmorStand) {
-            drawPowerOrbArmorStand((EntityArmorStand) entity, x + 1, y + 4);
+            drawDeployableArmorStand((EntityArmorStand) entity, x + 1, y + 4);
         } else {
-            mc.getTextureManager().bindTexture(powerOrb.getResourceLocation());
+            mc.getTextureManager().bindTexture(deployable.getResourceLocation());
             DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
@@ -2125,37 +2125,58 @@ public class RenderListener {
     }
 
     /**
-     * Displays the power orb with detailed stats about the boost you're receiving.
+     * Displays the deployable with detailed stats about the boost you're receiving.
      * <p>
-     * --  +X ❤/s
+     * ---- +X ❤/s
      * |  | +X ✎/s
-     * --  +X ❁
+     * ---- +X ❁
      * XXs
      */
-    private void drawDetailedPowerOrbStatus(Minecraft mc, float scale, ButtonLocation buttonLocation, PowerOrb powerOrb, int seconds) {
-        float x = main.getConfigValues().getActualX(Feature.POWER_ORB_STATUS_DISPLAY);
-        float y = main.getConfigValues().getActualY(Feature.POWER_ORB_STATUS_DISPLAY);
-
-        float maxHealth = main.getUtils().getAttributes().get(Attribute.MAX_HEALTH).getValue();
-        float healthRegen = (float) (maxHealth * powerOrb.getHealthRegen());
-        if (main.getUtils().getSlayerQuest() == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER && main.getUtils().getSlayerQuestLevel() >= 2) {
-            healthRegen *= 0.5; // Tarantula boss 2+ reduces healing by 50%.
-        }
-        double healIncrease = powerOrb.getHealIncrease() * 100;
+    private void drawDetailedDeployableStatus(Minecraft mc, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
+        float x = main.getConfigValues().getActualX(Feature.DEPLOYABLE_STATUS_DISPLAY);
+        float y = main.getConfigValues().getActualY(Feature.DEPLOYABLE_STATUS_DISPLAY);
 
         List<String> display = new LinkedList<>();
-        display.add(String.format("§c+%s ❤/s", TextUtils.formatNumber(healthRegen)));
-        if (powerOrb.getManaRegen() > 0) {
+
+        if (deployable.getHealthRegen() > 0.0) {
+            float maxHealth = main.getUtils().getAttributes().get(Attribute.MAX_HEALTH).getValue();
+            float healthRegen = (float) (maxHealth * deployable.getHealthRegen());
+            if (main.getUtils().getSlayerQuest() == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER && main.getUtils().getSlayerQuestLevel() >= 2) {
+                healthRegen *= 0.5; // Tarantula boss 2+ reduces healing by 50%.
+            }
+            display.add(String.format("§c+%s ❤/s", TextUtils.formatNumber(healthRegen)));
+        }
+
+        if (deployable.getManaRegen() > 0.0) {
             float maxMana = main.getUtils().getAttributes().get(Attribute.MAX_MANA).getValue();
-            float manaRegen = (float) Math.floor(maxMana / 50);
-            manaRegen = (float) (manaRegen + manaRegen * powerOrb.getManaRegen());
+            float manaRegen = (float) (maxMana * deployable.getManaRegen() * 2.0 / 100.0);
             display.add(String.format("§b+%s ✎/s", TextUtils.formatNumber(manaRegen)));
         }
-        if (powerOrb.getStrength() > 0) {
-            display.add(String.format("§4+%d ❁", powerOrb.getStrength()));
+
+        if (deployable.getStrength() > 0) {
+            display.add(String.format("§c+%d ❁", deployable.getStrength()));
         }
-        if (healIncrease > 0) {
-            display.add(String.format("§2+%s%% Healing", TextUtils.formatNumber(healIncrease)));
+
+        if (deployable.getVitality() > 0.0) {
+            double vit = deployable.getVitality();
+            display.add(String.format("§4+%s ♨", vit % 1 == 0.0 ? Integer.toString((int) vit) : vit));
+        }
+
+        if (deployable.getMending() > 0.0) {
+            double mending = deployable.getMending();
+            display.add(String.format("§a+%s ☄", mending % 1 == 0.0 ? Integer.toString((int) mending) : mending));
+        }
+
+        if (deployable.getTrueDefense() > 0) {
+            display.add(String.format("§f+%s ❂", deployable.getTrueDefense()));
+        }
+
+        if (deployable.getFerocity() > 0) {
+            display.add(String.format("§c+%s ⫽", deployable.getFerocity()));
+        }
+
+        if (deployable.getBonusAttackSpeed() > 0) {
+            display.add(String.format("§e+%s%% ⚔", deployable.getBonusAttackSpeed()));
         }
 
         Optional<String> longestLine = display.stream().max(Comparator.comparingInt(String::length));
@@ -2172,14 +2193,15 @@ public class RenderListener {
         x = transformXY(x, width, scale);
         y = transformXY(y, height, scale);
 
+        float startY = Math.round(y + (iconAndSecondsHeight / 2f) - (effectsHeight / 2f));
         if (buttonLocation != null) {
-            buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
+            buttonLocation.checkHoveredAndDrawBox(x, x + width, startY, startY + height, scale);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
 
         Entity entity = null;
-        if (PowerOrbManager.getInstance().getActivePowerOrb() != null && PowerOrbManager.getInstance().getActivePowerOrb().getUuid() != null) {
-            entity = Utils.getEntityByUUID(PowerOrbManager.getInstance().getActivePowerOrb().getUuid());
+        if (DeployableManager.getInstance().getActiveDeployable() != null && DeployableManager.getInstance().getActiveDeployable().getUuid() != null) {
+            entity = Utils.getEntityByUUID(DeployableManager.getInstance().getActiveDeployable().getUuid());
         }
 
         if (entity == null && buttonLocation != null) {
@@ -2189,16 +2211,15 @@ public class RenderListener {
         main.getUtils().enableStandardGLOptions();
 
         if (entity instanceof EntityArmorStand) {
-            drawPowerOrbArmorStand((EntityArmorStand) entity, x + 1, y + 4);
+            drawDeployableArmorStand((EntityArmorStand) entity, x + 1, y + 4);
         } else {
-            mc.getTextureManager().bindTexture(powerOrb.getResourceLocation());
+            mc.getTextureManager().bindTexture(deployable.getResourceLocation());
             DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
         String secondsString = String.format("§e%ss", seconds);
         DrawUtils.drawText(secondsString, Math.round(x + (iconSize / 2F) - (mc.fontRendererObj.getStringWidth(secondsString) / 2F)), y + iconSize, ColorCode.WHITE.getColor(255));
 
-        float startY = Math.round(y + (iconAndSecondsHeight / 2f) - (effectsHeight / 2f));
         for (int i = 0; i < display.size(); i++) {
             DrawUtils.drawText(display.get(i), x + iconSize + 2, startY + (i * (mc.fontRendererObj.FONT_HEIGHT + spacingBetweenLines)), ColorCode.WHITE.getColor(255));
         }
@@ -2400,9 +2421,9 @@ public class RenderListener {
         }
     }
 
-    private void drawPowerOrbArmorStand(EntityArmorStand powerOrbArmorStand, float x, float y) {
-        float prevRenderYawOffset = powerOrbArmorStand.renderYawOffset;
-        float prevPrevRenderYawOffset = powerOrbArmorStand.prevRenderYawOffset;
+    private void drawDeployableArmorStand(EntityArmorStand deployableArmorStand, float x, float y) {
+        float prevRenderYawOffset = deployableArmorStand.renderYawOffset;
+        float prevPrevRenderYawOffset = deployableArmorStand.prevRenderYawOffset;
 
         GlStateManager.pushMatrix();
 
@@ -2422,12 +2443,12 @@ public class RenderListener {
         boolean shadowsEnabled = rendermanager.isRenderShadow();
         rendermanager.setRenderShadow(false);
 
-        powerOrbArmorStand.setInvisible(true);
+        deployableArmorStand.setInvisible(true);
         float yaw = System.currentTimeMillis() % 1750 / 1750F * 360F;
-        powerOrbArmorStand.renderYawOffset = yaw;
-        powerOrbArmorStand.prevRenderYawOffset = yaw;
+        deployableArmorStand.renderYawOffset = yaw;
+        deployableArmorStand.prevRenderYawOffset = yaw;
 
-        rendermanager.renderEntityWithPosYaw(powerOrbArmorStand, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        rendermanager.renderEntityWithPosYaw(deployableArmorStand, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
         rendermanager.setRenderShadow(shadowsEnabled);
 
         RenderHelper.disableStandardItemLighting();
@@ -2438,8 +2459,8 @@ public class RenderListener {
 
         GlStateManager.popMatrix();
 
-        powerOrbArmorStand.renderYawOffset = prevRenderYawOffset;
-        powerOrbArmorStand.prevRenderYawOffset = prevPrevRenderYawOffset;
+        deployableArmorStand.renderYawOffset = prevRenderYawOffset;
+        deployableArmorStand.prevRenderYawOffset = prevPrevRenderYawOffset;
     }
 
     private void drawEntity(EntityLivingBase entity, float x, float y, float yaw) {
@@ -2479,9 +2500,9 @@ public class RenderListener {
 
         radiantDummyArmorStand = new EntityArmorStand(Utils.getDummyWorld());
 
-        ItemStack orbItemStack = ItemUtils.createSkullItemStack(null, null, "3ae3572b-2679-40b4-ba50-14dd58cbbbf7", "7ab4c4d6ee69bc24bba2b8faf67b9f704a06b01aa93f3efa6aef7a9696c4feef");
+        ItemStack deployableItemStack = ItemUtils.createSkullItemStack(null, null, "3ae3572b-2679-40b4-ba50-14dd58cbbbf7", "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b");
 
-        radiantDummyArmorStand.setCurrentItemOrArmor(4, orbItemStack);
+        radiantDummyArmorStand.setCurrentItemOrArmor(4, deployableItemStack);
 
         return radiantDummyArmorStand;
     }

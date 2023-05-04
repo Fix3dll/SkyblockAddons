@@ -92,13 +92,13 @@ public class EnumUtils {
         }
     }
 
-    public enum PowerOrbDisplayStyle {
-        DETAILED("settings.powerOrbStyle.detailed"),
-        COMPACT("settings.powerOrbStyle.compact");
+    public enum DeployableDisplayStyle {
+        DETAILED("settings.deployableStyle.detailed"),
+        COMPACT("settings.deployableStyle.compact");
 
         private final String TRANSLATION_KEY;
 
-        PowerOrbDisplayStyle(String translationKey) {
+        DeployableDisplayStyle(String translationKey) {
             this.TRANSLATION_KEY = translationKey;
         }
 
@@ -106,7 +106,7 @@ public class EnumUtils {
             return Translations.getMessage(TRANSLATION_KEY);
         }
 
-        public PowerOrbDisplayStyle getNextType() {
+        public DeployableDisplayStyle getNextType() {
             int nextType = ordinal() + 1;
             if (nextType > values().length - 1) {
                 nextType = 0;
@@ -162,7 +162,7 @@ public class EnumUtils {
         BACKPACK_STYLE("settings.backpackStyle", -1),
         SHOW_ONLY_WHEN_HOLDING_SHIFT("settings.showOnlyWhenHoldingShift", 18),
         MAKE_INVENTORY_COLORED("settings.makeBackpackInventoriesColored", 43),
-        POWER_ORB_DISPLAY_STYLE("settings.powerOrbDisplayStyle", -1),
+        DEPLOYABLE_DISPLAY_STYLE("settings.deployableDisplayStyle", -1),
         CHANGE_BAR_COLOR_WITH_POTIONS("settings.changeBarColorForPotions", 46),
         ENABLE_MESSAGE_WHEN_ACTION_PREVENTED("settings.enableMessageWhenActionPrevented", -1),
         ENABLE_CAKE_BAG_PREVIEW("settings.showCakeBagPreview", 71),
@@ -268,8 +268,8 @@ public class EnumUtils {
         COMNIEMEER("comniemeer", "github.com/comniemeer", Feature.JUNGLE_AXE_COOLDOWN),
         KEAGEL("Keagel", "github.com/Keagel"/*, Feature.ONLY_MINE_ORES_DEEP_CAVERNS*/, Feature.DISABLE_MAGICAL_SOUP_MESSAGES),
         SUPERHIZE("SuperHiZe", "github.com/superhize", Feature.SPECIAL_ZEALOT_ALERT),
-        DIDI_SKYWALKER("DidiSkywalker", "twitter.com/didiskywalker", Feature.ITEM_PICKUP_LOG, Feature.HEALTH_UPDATES, Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS,
-                /*Feature.CRAFTING_PATTERNS, */Feature.POWER_ORB_STATUS_DISPLAY),
+        DIDI_SKYWALKER("DidiSkywalker", "twitter.com/didiskywalker", Feature.ITEM_PICKUP_LOG, Feature.HEALTH_UPDATES, Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS
+                /*Feature.CRAFTING_PATTERNS, Feature.POWER_ORB_STATUS_DISPLAY*/),
         //GARY("GARY_", "github.com/occanowey", Feature.ONLY_MINE_VALUABLES_NETHER)),
         P0KE("P0ke", "p0ke.dev", Feature.ZEALOT_COUNTER),
         //BERISAN("Berisan", "github.com/Berisan", Feature.TAB_EFFECT_TIMERS),
@@ -331,7 +331,7 @@ public class EnumUtils {
         PICKUP_LOG,
         DEFENCE_ICON,
         REVENANT_PROGRESS,
-        POWER_ORB_DISPLAY,
+        DEPLOYABLE_DISPLAY,
         TICKER,
         BAIT_LIST_DISPLAY,
         TAB_EFFECT_TIMERS,

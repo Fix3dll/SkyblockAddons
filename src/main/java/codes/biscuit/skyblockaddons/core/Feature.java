@@ -67,7 +67,7 @@ public enum Feature {
     HIDE_PET_HEALTH_BAR(63, "settings.hidePetHealthBar", null, false),
     // Release v1.4
     DISABLE_MAGICAL_SOUP_MESSAGES(64, "settings.disableMagicalSoupMessage", null,true),
-    POWER_ORB_STATUS_DISPLAY(65, "settings.powerOrbDisplay", new GuiFeatureData(EnumUtils.DrawType.POWER_ORB_DISPLAY, null), false, EnumUtils.FeatureSetting.POWER_ORB_DISPLAY_STYLE),
+    DEPLOYABLE_STATUS_DISPLAY(65, "settings.deployableDisplay", new GuiFeatureData(EnumUtils.DrawType.DEPLOYABLE_DISPLAY, null), false, EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE),
     ZEALOT_COUNTER(66, "settings.zealotCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), false, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     TICKER_CHARGES_DISPLAY(67, "settings.tickerChargesDisplay", new GuiFeatureData(EnumUtils.DrawType.TICKER, null), false),
     NO_ARROWS_LEFT_ALERT(69, "settings.noArrowsLeftAlert", new GuiFeatureData(ColorCode.RED), false),
@@ -281,7 +281,7 @@ public enum Feature {
     private static final Set<Feature> guiFeatures = new LinkedHashSet<>(Arrays.asList(DRILL_FUEL_BAR, SKILL_PROGRESS_BAR, MANA_BAR, HEALTH_BAR,
             MANA_TEXT, OVERFLOW_MANA, DEFENCE_ICON, DEFENCE_TEXT, EFFECTIVE_HEALTH_TEXT,
             DEFENCE_PERCENTAGE, HEALTH_TEXT, SKELETON_BAR, HEALTH_UPDATES, ITEM_PICKUP_LOG, DARK_AUCTION_TIMER, SKILL_DISPLAY, SPEED_PERCENTAGE,
-            SLAYER_INDICATOR, POWER_ORB_STATUS_DISPLAY, ZEALOT_COUNTER, TICKER_CHARGES_DISPLAY, SHOW_TOTAL_ZEALOT_COUNT, SHOW_SUMMONING_EYE_COUNT,
+            SLAYER_INDICATOR, DEPLOYABLE_STATUS_DISPLAY, ZEALOT_COUNTER, TICKER_CHARGES_DISPLAY, SHOW_TOTAL_ZEALOT_COUNT, SHOW_SUMMONING_EYE_COUNT,
             SHOW_AVERAGE_ZEALOTS_PER_EYE, BIRCH_PARK_RAINMAKER_TIMER, ENDSTONE_PROTECTOR_DISPLAY, BAIT_LIST, DUNGEONS_MAP_DISPLAY, SHOW_DUNGEON_MILESTONE,
             DUNGEONS_COLLECTED_ESSENCES_DISPLAY, REVENANT_SLAYER_TRACKER, TARANTULA_SLAYER_TRACKER, SVEN_SLAYER_TRACKER, DRAGON_STATS_TRACKER, DUNGEON_DEATH_COUNTER,
             ROCK_PET_TRACKER, DOLPHIN_PET_TRACKER, DUNGEONS_SECRETS_DISPLAY, CANDY_POINTS_COUNTER, DRILL_FUEL_TEXT, INFERNO_SLAYER_TRACKER,
@@ -396,8 +396,8 @@ public enum Feature {
                 main.getRenderListener().drawIcon(scale, mc, buttonLocation);
             } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.REVENANT_PROGRESS) {
                 main.getRenderListener().drawRevenantIndicator(scale, mc, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.POWER_ORB_DISPLAY) {
-                main.getRenderListener().drawPowerOrbStatus(mc, scale, buttonLocation);
+            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.DEPLOYABLE_DISPLAY) {
+                main.getRenderListener().drawDeployableStatus(mc, scale, buttonLocation);
             } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.TICKER) {
                 main.getRenderListener().drawScorpionFoilTicker(mc, scale, buttonLocation);
             } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.PROXIMITY_INDICATOR) {

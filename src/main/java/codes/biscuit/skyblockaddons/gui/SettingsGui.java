@@ -217,8 +217,8 @@ public class SettingsGui extends GuiScreen {
             closingGui = true;
             Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(feature, page, lastPage, lastTab, settings));
             closingGui = false;
-        } else if (feature == Feature.POWER_ORB_STATUS_DISPLAY && abstractButton instanceof ButtonSolid) {
-            main.getConfigValues().setPowerOrbDisplayStyle(main.getConfigValues().getPowerOrbDisplayStyle().getNextType());
+        } else if (feature == Feature.DEPLOYABLE_STATUS_DISPLAY && abstractButton instanceof ButtonSolid) {
+            main.getConfigValues().setDeployableDisplayStyle(main.getConfigValues().getDeployableDisplayStyle().getNextType());
             closingGui = true;
             Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(feature, page, lastPage, lastTab, settings));
             closingGui = false;
@@ -313,7 +313,8 @@ public class SettingsGui extends GuiScreen {
         } else if (setting == EnumUtils.FeatureSetting.BACKPACK_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
-            buttonList.add(new ButtonSolid(x, y, 140, 20, Translations.getMessage("settings.backpackStyle"), main, feature));
+            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("settings.backpackStyle"), true, 0xFFFFFFFF));
+            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
         } else if (setting == EnumUtils.FeatureSetting.ENABLE_MESSAGE_WHEN_ACTION_PREVENTED) {
             boxWidth = 31;
             x = halfWidth - (boxWidth / 2);
@@ -322,10 +323,11 @@ public class SettingsGui extends GuiScreen {
 
 
             buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.enableMessageWhenActionPrevented"), main, settingFeature));
-        } else if (setting == EnumUtils.FeatureSetting.POWER_ORB_DISPLAY_STYLE) {
+        } else if (setting == EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
-            buttonList.add(new ButtonSolid(x, y, 140, 20, Translations.getMessage("settings.powerOrbDisplayStyle"), main, feature));
+            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("settings.deployableDisplayStyle"), true, 0xFFFFFFFF));
+            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
         } else if (setting == EnumUtils.FeatureSetting.DISCORD_RP_DETAILS || setting == EnumUtils.FeatureSetting.DISCORD_RP_STATE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);

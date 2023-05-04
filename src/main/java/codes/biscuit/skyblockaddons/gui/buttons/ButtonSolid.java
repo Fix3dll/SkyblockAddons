@@ -39,6 +39,10 @@ public class ButtonSolid extends ButtonText {
             displayString = main.getConfigValues().getChromaMode().getMessage();
         } else if (feature == Feature.WARNING_TIME) {
             displayString = main.getConfigValues().getWarningSeconds()+"s";
+        } else if (feature == Feature.SHOW_BACKPACK_PREVIEW) {
+            displayString = main.getConfigValues().getBackpackStyle().getMessage();
+        } else if (feature == Feature.DEPLOYABLE_STATUS_DISPLAY) {
+            displayString = main.getConfigValues().getDeployableDisplayStyle().getMessage();
         } else if (feature == Feature.TURN_ALL_FEATURES_CHROMA) {
             boolean enable = false;
             for (Feature loopFeature : Feature.values()) {

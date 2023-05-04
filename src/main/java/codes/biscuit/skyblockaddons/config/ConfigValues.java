@@ -66,7 +66,7 @@ public class ConfigValues {
     private Map<Feature, EnumUtils.AnchorPoint> anchorPoints = new EnumMap<>(Feature.class);
     private final MutableObject<Language> language = new MutableObject<>(Language.ENGLISH);
     private final MutableObject<EnumUtils.BackpackStyle> backpackStyle = new MutableObject<>(EnumUtils.BackpackStyle.GUI);
-    private final MutableObject<EnumUtils.PowerOrbDisplayStyle> powerOrbDisplayStyle = new MutableObject<>(EnumUtils.PowerOrbDisplayStyle.COMPACT);
+    private final MutableObject<EnumUtils.DeployableDisplayStyle> deployableDisplayStyle = new MutableObject<>(EnumUtils.DeployableDisplayStyle.COMPACT);
     private final MutableObject<EnumUtils.TextStyle> textStyle = new MutableObject<>(EnumUtils.TextStyle.STYLE_ONE);
     private final Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
     @Getter
@@ -155,7 +155,7 @@ public class ConfigValues {
             }
 
             deserializeEnumValueFromOrdinal(backpackStyle, "backpackStyle");
-            deserializeEnumValueFromOrdinal(powerOrbDisplayStyle, "powerOrbStyle");
+            deserializeEnumValueFromOrdinal(deployableDisplayStyle, "deployableStyle");
             deserializeEnumEnumMapFromIDS(anchorPoints, "anchorPoints", Feature.class, EnumUtils.AnchorPoint.class);
             deserializeEnumNumberMapFromID(guiScales, "guiScales", Feature.class, float.class);
 
@@ -390,7 +390,7 @@ public class ConfigValues {
                 saveConfig.addProperty("textStyle", textStyle.getValue().ordinal());
                 saveConfig.addProperty("language", language.getValue().getPath());
                 saveConfig.addProperty("backpackStyle", backpackStyle.getValue().ordinal());
-                saveConfig.addProperty("powerOrbStyle", powerOrbDisplayStyle.getValue().ordinal());
+                saveConfig.addProperty("deployableStyle", deployableDisplayStyle.getValue().ordinal());
 
                 JsonArray chromaFeaturesArray = new JsonArray();
                 for (Feature feature : chromaFeatures) {
@@ -956,12 +956,12 @@ public class ConfigValues {
         this.backpackStyle.setValue(backpackStyle);
     }
 
-    public EnumUtils.PowerOrbDisplayStyle getPowerOrbDisplayStyle() {
-        return powerOrbDisplayStyle.getValue();
+    public EnumUtils.DeployableDisplayStyle getDeployableDisplayStyle() {
+        return deployableDisplayStyle.getValue();
     }
 
-    public void setPowerOrbDisplayStyle(EnumUtils.PowerOrbDisplayStyle powerOrbDisplayStyle) {
-        this.powerOrbDisplayStyle.setValue(powerOrbDisplayStyle);
+    public void setDeployableDisplayStyle(EnumUtils.DeployableDisplayStyle deployableDisplayStyle) {
+        this.deployableDisplayStyle.setValue(deployableDisplayStyle);
     }
 
     public EnumUtils.TextStyle getTextStyle() {

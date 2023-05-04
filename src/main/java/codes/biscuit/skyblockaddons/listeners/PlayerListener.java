@@ -21,7 +21,7 @@ import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
 import codes.biscuit.skyblockaddons.features.fishParticles.FishParticleManager;
-import codes.biscuit.skyblockaddons.features.powerorbs.PowerOrbManager;
+import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
@@ -726,32 +726,40 @@ public class PlayerListener {
             }
         }
 
-        if (entity instanceof EntityArmorStand && entity.hasCustomName()) {
-            PowerOrbManager.getInstance().detectPowerOrb(entity);
+        if (entity instanceof EntityArmorStand) {
+            DeployableManager.getInstance().detectDeployables((EntityArmorStand) entity);
 
-            if (main.getUtils().getLocation() == Location.ISLAND) {
-                int cooldown = main.getConfigValues().getWarningSeconds() * 1000 + 5000;
-                if (main.getConfigValues().isEnabled(Feature.MINION_FULL_WARNING) &&
-                        entity.getCustomNameTag().equals("§cMy storage is full! :(")) {
-                    long now = System.currentTimeMillis();
-                    if (now - lastMinionSound > cooldown) {
-                        lastMinionSound = now;
-                        main.getUtils().playLoudSound("random.pop", 1);
-                        main.getRenderListener().setSubtitleFeature(Feature.MINION_FULL_WARNING);
-                        main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                    }
-                } else if (main.getConfigValues().isEnabled(Feature.MINION_STOP_WARNING)) {
-                    Matcher matcher = MINION_CANT_REACH_PATTERN.matcher(entity.getCustomNameTag());
-                    if (matcher.matches()) {
+            if (entity.hasCustomName()){
+                if (main.getUtils().getLocation() == Location.ISLAND) {
+                    int cooldown = main.getConfigValues().getWarningSeconds() * 1000 + 5000;
+                    if (main.getConfigValues().isEnabled(Feature.MINION_FULL_WARNING) &&
+                            entity.getCustomNameTag().equals("§cMy storage is full! :(")) {
                         long now = System.currentTimeMillis();
                         if (now - lastMinionSound > cooldown) {
                             lastMinionSound = now;
-                            main.getUtils().playLoudSound("random.orb", 1);
+                            main.getUtils().playLoudSound("random.pop", 1);
+                            main.getRenderListener().setSubtitleFeature(Feature.MINION_FULL_WARNING);
+                            main.getScheduler().schedule(
+                                    Scheduler.CommandType.RESET_SUBTITLE_FEATURE
+                                    , main.getConfigValues().getWarningSeconds())
+                            ;
+                        }
+                    } else if (main.getConfigValues().isEnabled(Feature.MINION_STOP_WARNING)) {
+                        Matcher matcher = MINION_CANT_REACH_PATTERN.matcher(entity.getCustomNameTag());
+                        if (matcher.matches()) {
+                            long now = System.currentTimeMillis();
+                            if (now - lastMinionSound > cooldown) {
+                                lastMinionSound = now;
+                                main.getUtils().playLoudSound("random.orb", 1);
 
-                            String mobName = matcher.group("mobName");
-                            main.getRenderListener().setCannotReachMobName(mobName);
-                            main.getRenderListener().setSubtitleFeature(Feature.MINION_STOP_WARNING);
-                            main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+                                String mobName = matcher.group("mobName");
+                                main.getRenderListener().setCannotReachMobName(mobName);
+                                main.getRenderListener().setSubtitleFeature(Feature.MINION_STOP_WARNING);
+                                main.getScheduler().schedule(
+                                        Scheduler.CommandType.RESET_SUBTITLE_FEATURE
+                                        , main.getConfigValues().getWarningSeconds()
+                                );
+                            }
                         }
                     }
                 }
