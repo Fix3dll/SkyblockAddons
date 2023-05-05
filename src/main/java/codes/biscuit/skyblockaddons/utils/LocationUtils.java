@@ -11,49 +11,41 @@ import java.util.List;
  */
 public class LocationUtils {
     // List of sublocations of the Dwarven Mines
-    private static final List<Location> dwarvenLocations = new ArrayList<>(Arrays.asList(Location.DWARVEN_MINES, Location.DWARVEN_VILLAGE, Location.GATES_TO_THE_MINES, Location.THE_LIFT,
-            Location.THE_FORGE, Location.FORGE_BASIN, Location.LAVA_SPRINGS, Location.PALACE_BRIDGE, Location.ROYAL_PALACE,
-            Location.ARISTOCRAT_PASSAGE, Location.HANGING_TERRACE, Location.CLIFFSIDE_VEINS, Location.RAMPARTS_QUARRY,
-            Location.DIVANS_GATEWAY, Location.FAR_RESERVE, Location.GOBLIN_BURROWS, Location.UPPER_MINES, Location.ROYAL_MINES,
-            Location.MINERS_GUILD, Location.GREAT_ICE_WALL, Location.THE_MIST, Location.CC_MINECARTS_CO, Location.GRAND_LIBRARY,
-            Location.HANGING_COURT));
+    private static final List<Location> dwarvenLocations = new ArrayList<>(Arrays.asList(Location.DWARVEN_MINES, Location.DWARVEN_VILLAGE,
+            Location.GATES_TO_THE_MINES, Location.THE_LIFT, Location.THE_FORGE, Location.FORGE_BASIN, Location.LAVA_SPRINGS,
+            Location.PALACE_BRIDGE, Location.ROYAL_PALACE, Location.ARISTOCRAT_PASSAGE, Location.HANGING_TERRACE, Location.CLIFFSIDE_VEINS,
+            Location.RAMPARTS_QUARRY, Location.DIVANS_GATEWAY, Location.FAR_RESERVE, Location.GOBLIN_BURROWS, Location.UPPER_MINES,
+            Location.ROYAL_MINES, Location.MINERS_GUILD, Location.GREAT_ICE_WALL, Location.THE_MIST, Location.CC_MINECARTS_CO,
+            Location.GRAND_LIBRARY, Location.HANGING_COURT));
    // List of sublocations of the Crystal Hollows
     private static final List<Location> hollowsLocations = new ArrayList<>(Arrays.asList(Location.MAGMA_FIELDS,
            Location.CRYSTAL_HOLLOWS, Location.CRYSTAL_NUCLEUS, Location.JUNGLE, Location.MITHRIL_DEPOSITS, Location.GOBLIN_HOLDOUT,
            Location.PRECURSOR_REMNANT, Location.FAIRY_GROTTO, Location.KHAZAD_DUM, Location.JUNGLE_TEMPLE, Location.MINES_OF_DIVAN,
            Location.GOBLIN_QUEEN_DEN, Location.LOST_PRECURSOR_CITY));
+    // List of sublocations of the Spiders Den
+    private static final List<Location> spiderDenLocations = new ArrayList<>(Arrays.asList(Location.SPIDERS_DEN, Location.SPIDER_MOUND,
+            Location.ARACHNES_SANCTUARY, Location.ARACHNES_BURROW, Location.GRANDMAS_HOUSE, Location.ARCHAEOLOGISTS_CAMP, Location.GRAVEL_MINES));
     // List of locations that spawn zealots/zealot variants
     private static final List<Location> zealotSpawnLocations = new ArrayList<>(Arrays.asList(Location.DRAGONS_NEST, Location.ZEALOT_BRUISER_HIDEOUT));
 
     /**
      *
-     * @param locationName - The location name
+     * @param location - The current location
      * @return true if this sublocation is located within Dwarven Mines location
      */
-    public static boolean isInDwarvenMines(String locationName) {
-        for (Location location : dwarvenLocations) {
-            if (location.getScoreboardName().equals(locationName)) {
-                return true;
-            }
-        }
-        return false;
-    }
- //same thing but for hollows
-    public static boolean isInCrystalHollows(String locationName) {
-        for (Location location : hollowsLocations) {
-            if (location.getScoreboardName().equals(locationName)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isInDwarvenMines(Location location) {
+        return dwarvenLocations.contains(location);
     }
 
-    public static boolean isZealotSpawnLocation(String locationName) {
-        for (Location location : zealotSpawnLocations) {
-            if (location.getScoreboardName().equals(locationName)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isInCrystalHollows(Location location) {
+        return hollowsLocations.contains(location);
+    }
+
+    public static boolean isInSpidersDen(Location location) {
+        return spiderDenLocations.contains(location);
+    }
+
+    public static boolean isZealotSpawnLocation(Location location) {
+        return zealotSpawnLocations.contains(location);
     }
 }

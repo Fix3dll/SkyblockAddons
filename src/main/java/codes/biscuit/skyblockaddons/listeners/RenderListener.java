@@ -826,14 +826,14 @@ public class RenderListener {
 
         } else if (feature == Feature.ZEALOT_COUNTER) {
             if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_ZEALOT_SPAWN_AREAS_ONLY) &&
-                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation().getScoreboardName()) && buttonLocation == null) {
+                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
                 return;
             }
             text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getKills());
 
         } else if (feature == Feature.SHOW_TOTAL_ZEALOT_COUNT) {
             if (main.getConfigValues().isEnabled(Feature.SHOW_TOTAL_ZEALOT_COUNT_ZEALOT_SPAWN_AREAS_ONLY) &&
-                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation().getScoreboardName()) && buttonLocation == null) {
+                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
                 return;
             }
             if (main.getPersistentValuesManager().getPersistentValues().getTotalKills() <= 0) {
@@ -844,14 +844,14 @@ public class RenderListener {
 
         } else if (feature == Feature.SHOW_SUMMONING_EYE_COUNT) {
             if (main.getConfigValues().isEnabled(Feature.SHOW_SUMMONING_EYE_COUNT_ZEALOT_SPAWN_AREAS_ONLY) &&
-                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation().getScoreboardName()) && buttonLocation == null) {
+                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
                 return;
             }
             text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount());
 
         } else if (feature == Feature.SHOW_AVERAGE_ZEALOTS_PER_EYE) {
             if (main.getConfigValues().isEnabled(Feature.SHOW_AVERAGE_ZEALOTS_PER_EYE_ZEALOT_SPAWN_AREAS_ONLY) &&
-                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation().getScoreboardName()) && buttonLocation == null) {
+                    !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
                 return;
             }
             int summoningEyeCount = main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount();
@@ -1341,7 +1341,7 @@ public class RenderListener {
 
         } else if (feature == Feature.FETCHUR_TODAY) {
             boolean showDwarven = main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_ONLY_IN_DWARVENS) ||
-                    LocationUtils.isInDwarvenMines(main.getUtils().getLocation().getScoreboardName());
+                    LocationUtils.isInDwarvenMines(main.getUtils().getLocation());
             boolean showInventory = main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_INVENTORY_OPEN_ONLY) ||
                     Minecraft.getMinecraft().currentScreen != null;
             FetchurManager.FetchurItem fetchurItem = FetchurManager.getInstance().getCurrentFetchurItem();

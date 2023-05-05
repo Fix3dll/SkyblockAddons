@@ -836,11 +836,10 @@ public class PlayerListener {
         Entity entity = e.entity;
 
         // Detect Brood Mother spawn
-        if(main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && main.getUtils().getLocation()==Location.SPIDERS_DEN) {
+        if(main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
             if(entity.hasCustomName() && entity.posY > 165) {
                 if(entity.getName().contains("Brood Mother") && (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000)) { //Brood Mother
                     lastBroodmother = System.currentTimeMillis();
-//                  main.getUtils().sendMessage("Broodmother spawned."); //testers said to remove message
                     main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
                     main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                     main.getUtils().playLoudSound("random.orb", 0.5);
@@ -850,7 +849,7 @@ public class PlayerListener {
         if (main.getUtils().isOnSkyblock()) {
             Minecraft mc = Minecraft.getMinecraft();
             for (Entity cubes : mc.theWorld.loadedEntityList) {
-                if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && main.getUtils().isOnSkyblock() && LocationUtils.isInCrystalHollows(main.getUtils().getLocation().getScoreboardName())) {
+                if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && main.getUtils().isOnSkyblock() && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
                     if (cubes instanceof EntityMagmaCube) {
                         EntitySlime magma = (EntitySlime) cubes;
                         if (magma.getSlimeSize() > 10) { // Find a big bal boss
