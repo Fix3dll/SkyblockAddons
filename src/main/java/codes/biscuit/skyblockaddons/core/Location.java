@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.core;
 
 import com.google.common.collect.Sets;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -10,7 +11,6 @@ import java.util.Set;
  */
 @Getter
 public enum Location {
-    // TODO: Jsonify all of these
     ISLAND("Your Island"), // TODO RPC
     GUEST_ISLAND("'s Island", "island"), // TODO RPC
     GARDEN("The Garden"),
@@ -23,8 +23,6 @@ public enum Location {
     CANVAS_ROOM("Canvas Room"),
     COAL_MINE("Coal Mine"),
     COLOSSEUM("Colosseum"),
-    COLOSSEUM_ARENA("Colosseum Arena", "colosseum"),
-    DUEL_ZONE("Duel Zone", "colosseum"),
     ELECTION_ROOM("Election Room"),
     FARM("Farm"),
     FASHION_SHOP("Fashion Shop"),
@@ -32,7 +30,7 @@ public enum Location {
     FLOWER_HOUSE("Flower House"),
     FOREST("Forest"),
     GRAVEYARD("Graveyard"),
-    HIGH_LEVEL("High Level"),
+    UNINCORPORATED("Unincorporated"),
     LIBRARY("Library"),
     MOUNTAIN("Mountain"),
     RUINS("Ruins"),
@@ -41,6 +39,9 @@ public enum Location {
     WILDERNESS("Wilderness"),
     WIZARD_TOWER("Wizard Tower"),
     CATACOMBS_ENTRANCE("Catacombs Entrance"),
+    MUSEUM("Museum"),
+    THAUMATURGIST("Thaumaturgist"),
+    HEXATORUM("Hexatorum"),
 
     // The Park
     BIRCH_PARK("Birch Park"),
@@ -50,17 +51,18 @@ public enum Location {
     DARK_THICKET("Dark Thicket"),
     JUNGLE_ISLAND("Jungle Island"),
     HOWLING_CAVE("Howling Cave"),
+    LONELY_ISLAND("Lonely Island"),
 
     GOLD_MINE("Gold Mine"),
 
     // Deep Caverns
     DEEP_CAVERNS("Deep Caverns"), // TODO RPC
-    GUNPOWDER_MINES("Gunpowder Mines"), // TODO RPC
-    LAPIS_QUARRY("Lapis Quarry"), // TODO RPC
-    PIGMAN_DEN("Pigmen's Den"), // TODO RPC
-    SLIMEHILL("Slimehill"),
-    DIAMOND_RESERVE("Diamond Reserve"),
-    OBSIDIAN_SANCTUARY("Obsidian Sanctuary"),
+    GUNPOWDER_MINES("Gunpowder Mines", "deep-caverns"), // TODO RPC
+    LAPIS_QUARRY("Lapis Quarry", "deep-caverns"), // TODO RPC
+    PIGMAN_DEN("Pigmen's Den", "deep-caverns"), // TODO RPC
+    SLIMEHILL("Slimehill", "deep-caverns"),
+    DIAMOND_RESERVE("Diamond Reserve", "deep-caverns"),
+    OBSIDIAN_SANCTUARY("Obsidian Sanctuary", "deep-caverns"),
 
     // Dwarven mines
     DWARVEN_MINES("Dwarven Mines"),
@@ -106,35 +108,34 @@ public enum Location {
     THE_BARN("The Barn"),
 
     // Mushroom Island
-    MUSHROOM_DESERT("Mushroom Desert"),
-    DESERT_SETTLEMENT("Desert Settlement"),
-    TREASURE_HUNTER_CAMP("Treasure Hunter Camp"),
-    OASIS("Oasis"),
-    MUSHROOM_GORGE("Mushroom Gorge"),
-    GLOWING_MUSHROOM_CAVE("Glowing Mushroom Cave"),
-    OVERGROWN_MUSHROOM_CAVE("Overgrown Mushroom Cave"),
-    JAKES_HOUSE("Jake's House"),
-    SHEPHERDS_KEEP("Shepherds Keep"),
-    TRAPPERS_DEN("Trapper's Den"),
+    MUSHROOM_DESERT("Mushroom Desert", "mushroom-desert"),
+    DESERT_SETTLEMENT("Desert Settlement", "mushroom-desert"),
+    TREASURE_HUNTER_CAMP("Treasure Hunter Camp", "mushroom-desert"),
+    OASIS("Oasis", "mushroom-desert"),
+    MUSHROOM_GORGE("Mushroom Gorge", "mushroom-desert"),
+    GLOWING_MUSHROOM_CAVE("Glowing Mushroom Cave", "mushroom-desert"),
+    OVERGROWN_MUSHROOM_CAVE("Overgrown Mushroom Cave", "mushroom-desert"),
+    JAKES_HOUSE("Jake's House", "mushroom-desert"),
+    SHEPHERDS_KEEP("Shepherds Keep", "mushroom-desert"),
+    TRAPPERS_DEN("Trapper's Den", "mushroom-desert"),
 
     // Spider's Den
     SPIDERS_DEN("Spider's Den"),
-    SPIDER_MOUND("Spider Mound"),
-    ARACHNES_BURROW("Arachne's Burrow"),
-    ARACHNES_SANCTUARY("Arachnes's Sanctuary"),
-    GRANDMAS_HOUSE("Grandma's House"),
-    ARCHAEOLOGISTS_CAMP("Archaeologist's Camp"),
-    GRAVEL_MINES("Gravel Mines"),
+    SPIDER_MOUND("Spider Mound", "spiders-den"),
+    ARACHNES_BURROW("Arachne's Burrow", "spiders-den"),
+    ARACHNES_SANCTUARY("Arachnes's Sanctuary", "spiders-den"),
+    GRANDMAS_HOUSE("Grandma's House", "spiders-den"),
+    ARCHAEOLOGISTS_CAMP("Archaeologist's Camp", "spiders-den"),
+    GRAVEL_MINES("Gravel Mines", "spiders-den"),
 
     // The End
     THE_END("The End"),
     DRAGONS_NEST("Dragon's Nest"),
-    VOID_SEPULTURE("Void Sepulture"),
-    ZEALOT_BRUISER_HIDEOUT("Zealot Bruiser Hideout"),
-    VOID_SLATE("Void Slate"),
+    VOID_SEPULTURE("Void Sepulture", "the-end"),
+    ZEALOT_BRUISER_HIDEOUT("Zealot Bruiser Hideout", "the-end"),
+    VOID_SLATE("Void Slate", "the-end"),
 
     // Jerry's workshop
-    // TODO check is it correct
     JERRY_POND("Jerry Pond"), // TODO RPC
     JERRYS_WORKSHOP("Jerry's Workshop"), // TODO RPC
     MOUNT_JERRY("Mount Jerry"),
@@ -193,6 +194,7 @@ public enum Location {
     MAGE_COUNCIL("Mage Council"),
     PLHLEGBLAST_POOL("Plhlegblast Pool"),
     SMOLDERING_TOMB("Smoldering Tomb"),
+    THE_DUKEDOM("The Dukedom"),
 
     /*
     Out of Bounds
@@ -207,7 +209,7 @@ public enum Location {
     /**
      * The name of this location as shown on the in-game scoreboard.
      */
-    private final String scoreboardName;
+    @Setter private String scoreboardName;
 
     private final String discordIconKey;
 

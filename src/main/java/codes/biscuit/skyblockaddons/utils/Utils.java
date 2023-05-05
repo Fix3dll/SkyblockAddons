@@ -10,7 +10,6 @@ import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
 import codes.biscuit.skyblockaddons.features.itemdrops.ItemDropChecker;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.Block;
@@ -45,8 +44,6 @@ import org.lwjgl.util.vector.Matrix4f;
 import javax.vecmath.Vector3d;
 import java.awt.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.FloatBuffer;
 import java.text.ParseException;
 import java.util.List;
@@ -272,12 +269,6 @@ public class Utils {
                     MinecraftForge.EVENT_BUS.post(new SkyblockJoinedEvent());
                 }
 
-                // If the title line ends with "GUEST", then the player is visiting someone else's island.
-                if (strippedScoreboardTitle.endsWith("GUEST")) {
-                    location = Location.GUEST_ISLAND;
-                    foundLocation = true;
-                }
-
                 String timeString = null;
                 String dateString = null;
 
@@ -320,9 +311,21 @@ public class Utils {
                                     foundLocation = true;
                                 } else {
                                     for (Location loopLocation : Location.values()) {
+                                        // If the title line ends with "GUEST", then the player is visiting someone else's island.
+                                        if (strippedScoreboardTitle.endsWith("GUEST")) {
+                                            location = Location.GUEST_ISLAND;
+                                            location.setScoreboardName(
+                                                    "Visiting \""
+                                                            + strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
+                                                            .replace("'s Island", "").trim()
+                                                            + "\" island"
+                                            );
+                                            foundLocation = true;
+                                            break;
+                                        }
+
                                         if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
-                                            // TODO: Special case causes Dwarven Village to map to Village since endsWith...idk if
-                                            //  changing to "equals" will mess it up for other locations
+                                            // Special case causes Dwarven Village to map to Village
                                             if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
                                                 continue;
                                             }
@@ -330,8 +333,10 @@ public class Utils {
                                             foundLocation = true;
                                             break;
                                         } else if (loopLocation == Location.GARDEN_PLOT && strippedScoreboardLine.contains("Plot:")) {
-                                            // TODO RPC
-                                            location = Location.GARDEN;
+                                            location = Location.GARDEN_PLOT;
+                                            location.setScoreboardName(
+                                                    strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
+                                            );
                                             foundLocation = true;
                                             break;
                                         }
