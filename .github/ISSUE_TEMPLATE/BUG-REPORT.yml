@@ -8,14 +8,6 @@ body:
       value: |
         Please note that we do not provide support for clients other than Forge.
         We will not fix compatibility issues with other clients.
-  - type: input
-    id: contact
-    attributes:
-      label: Discord Username
-      description: |
-        Please join our [Discord server](https://discord.gg/zWyr3f5GXz) and enter your
-        Discord username below. We may ping you if we require additional info about this bug.
-      placeholder: User#1234
   - type: textarea
     id: description
     attributes:
@@ -29,12 +21,8 @@ body:
       label: SBA Version
       multiple: false
       options:
+       - 1.8.0-beta.1
        - 1.7.2
-       - 1.7.1
-       - 1.7.0
-       - 1.6.x
-       - 1.5.x
-       - \<1.5
     validations:
       required: true
   - type: textarea
@@ -62,7 +50,7 @@ body:
       description: |
         If your game crashed, please paste the crash report below.
         Please see our [guide](https://github.com/BiscuitDevelopment/SkyblockAddons/wiki/How-to-Find-Your-Crash-Reports-and-Logs) to locate your crash reports.
-        If your crash report has a name starting with `hs_err_pid`, **do not post it here!** It contains your login credentials. Message us on Discord instead.
+        If your crash report has a name starting with `hs_err_pid`, **do not post it here!** It contains your login credentials.
   - type: markdown
     attributes:
       value: |
