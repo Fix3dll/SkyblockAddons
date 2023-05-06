@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import com.google.gson.JsonObject;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IChatComponent;
 
 import java.nio.charset.StandardCharsets;
@@ -273,7 +274,7 @@ public class TextUtils {
     }
 
     /**
-     * @param textureURL The texture ID/hash that is in the texture URL (not including http://textures.minecraft.net/texture/)
+     * @param textureURL texture ID/hash that is in the texture URL (not including http://textures.minecraft.net/texture/)
      * @return A json string including the texture URL as a skin texture (used in NBT)
      */
     public static String encodeSkinTextureURL(String textureURL) {
@@ -287,6 +288,31 @@ public class TextUtils {
         root.add("textures", textures);
 
         return Base64.getEncoder().encodeToString(SkyblockAddons.getGson().toJson(root).getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * @param nbtTag SkullOwner nbt that is contains texture in Base64 format
+     * @return if nbtTag not null decoded Json string else empty string
+     */
+    public static String decodeSkinTexture(NBTTagCompound nbtTag) {
+        if (nbtTag == null)
+            return "";
+
+        String textureBase64 = nbtTag.getCompoundTag("Properties").getTagList("textures", 10).getCompoundTagAt(0)
+                .getString("Value");
+
+        if (textureBase64.isEmpty())
+            return "";
+
+        return new String(
+                Base64.getDecoder().decode(
+                        // Getting before '=' to avoid IllegalArgumentException. No padding needed
+                        textureBase64.contains("=")
+                                ? textureBase64.substring(0, textureBase64.indexOf('='))
+                                : textureBase64
+                ),
+                StandardCharsets.UTF_8
+        );
     }
 
     public static String abbreviate(int number) {

@@ -23,28 +23,50 @@ public class LocationUtils {
            Location.PRECURSOR_REMNANT, Location.FAIRY_GROTTO, Location.KHAZAD_DUM, Location.JUNGLE_TEMPLE, Location.MINES_OF_DIVAN,
            Location.GOBLIN_QUEEN_DEN, Location.LOST_PRECURSOR_CITY));
     // List of sublocations of the Spiders Den
-    private static final List<Location> spiderDenLocations = new ArrayList<>(Arrays.asList(Location.SPIDERS_DEN, Location.SPIDER_MOUND,
+    private static final List<Location> spidersDenLocations = new ArrayList<>(Arrays.asList(Location.SPIDERS_DEN, Location.SPIDER_MOUND,
             Location.ARACHNES_SANCTUARY, Location.ARACHNES_BURROW, Location.GRANDMAS_HOUSE, Location.ARCHAEOLOGISTS_CAMP, Location.GRAVEL_MINES));
+    // List of sublocations of the Winter Island
+    private static final List<Location> winterIslandLocations = new ArrayList<>(Arrays.asList(Location.JERRYS_WORKSHOP, Location.JERRY_POND,
+            Location. MOUNT_JERRY, Location. GARYS_SHACK, Location.GLACIAL_CAVE, Location.TERRYS_SHACK, Location.HOT_SPRINGS,
+            Location.REFLECTIVE_POND, Location.SUNKEN_JERRY_POND, Location.SHERRYS_SHOWROOM, Location. EINARYS_EMPORIUM));
     // List of locations that spawn zealots/zealot variants
     private static final List<Location> zealotSpawnLocations = new ArrayList<>(Arrays.asList(Location.DRAGONS_NEST, Location.ZEALOT_BRUISER_HIDEOUT));
 
     /**
-     *
-     * @param location - The current location
+     * @param location current location
      * @return true if this sublocation is located within Dwarven Mines location
      */
     public static boolean isInDwarvenMines(Location location) {
         return dwarvenLocations.contains(location);
     }
 
+    /**
+     * @param location current location
+     * @return true if this sublocation is located within Crystal Hollows location
+     */
     public static boolean isInCrystalHollows(Location location) {
         return hollowsLocations.contains(location);
     }
 
+    /**
+     * @param location current location
+     * @return true if this sublocation is located within Spiders Den location
+     */
     public static boolean isInSpidersDen(Location location) {
-        return spiderDenLocations.contains(location);
+        return spidersDenLocations.contains(location);
     }
 
+    /**
+     * @param location current location
+     * @return true if this sublocation is located within Winter Island location
+     */
+    public static boolean isInWinterIsland(Location location) {
+        return winterIslandLocations.contains(location);
+    }
+    /**
+     * @param location current location
+     * @return true if this sublocation is located within zealot spawns location
+     */
     public static boolean isZealotSpawnLocation(Location location) {
         return zealotSpawnLocations.contains(location);
     }

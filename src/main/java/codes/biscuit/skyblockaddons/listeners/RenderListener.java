@@ -2063,6 +2063,8 @@ public class RenderListener {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (buttonLocation != null) {
             activeDeployable = DeployableManager.DUMMY_POWER_ORB_ENTRY;
+            activeDeployable.getDeployable().setCritChance(1);
+            activeDeployable.getDeployable().setCritDmg(5);
         }
         if (activeDeployable != null) {
             Deployable deployable = activeDeployable.getDeployable();
@@ -2137,6 +2139,8 @@ public class RenderListener {
         float y = main.getConfigValues().getActualY(Feature.DEPLOYABLE_STATUS_DISPLAY);
 
         List<String> display = new LinkedList<>();
+        // Counts already long strings
+        int passIndex = 0;
 
         if (deployable.getHealthRegen() > 0.0) {
             float maxHealth = main.getUtils().getAttributes().get(Attribute.MAX_HEALTH).getValue();
@@ -2145,38 +2149,70 @@ public class RenderListener {
                 healthRegen *= 0.5; // Tarantula boss 2+ reduces healing by 50%.
             }
             display.add(String.format("§c+%s ❤/s", TextUtils.formatNumber(healthRegen)));
+            passIndex++;
         }
 
         if (deployable.getManaRegen() > 0.0) {
             float maxMana = main.getUtils().getAttributes().get(Attribute.MAX_MANA).getValue();
             float manaRegen = (float) (maxMana * deployable.getManaRegen() * 2.0 / 100.0);
             display.add(String.format("§b+%s ✎/s", TextUtils.formatNumber(manaRegen)));
+            passIndex++;
         }
 
         if (deployable.getStrength() > 0) {
-            display.add(String.format("§c+%d ❁", deployable.getStrength()));
+            display.add(String.format("§c+%d ❁ ", deployable.getStrength()));
         }
 
         if (deployable.getVitality() > 0.0) {
             double vit = deployable.getVitality();
-            display.add(String.format("§4+%s ♨", vit % 1 == 0.0 ? Integer.toString((int) vit) : vit));
+            display.add(String.format("§4+%s ♨ ", vit % 1 == 0.0 ? Integer.toString((int) vit) : vit));
         }
 
         if (deployable.getMending() > 0.0) {
             double mending = deployable.getMending();
-            display.add(String.format("§a+%s ☄", mending % 1 == 0.0 ? Integer.toString((int) mending) : mending));
+            display.add(String.format("§a+%s ☄ ", mending % 1 == 0.0 ? Integer.toString((int) mending) : mending));
         }
 
         if (deployable.getTrueDefense() > 0) {
-            display.add(String.format("§f+%s ❂", deployable.getTrueDefense()));
+            display.add(String.format("§f+%s ❂ ", deployable.getTrueDefense()));
         }
 
         if (deployable.getFerocity() > 0) {
-            display.add(String.format("§c+%s ⫽", deployable.getFerocity()));
+            display.add(String.format("§c+%s ⫽ ", deployable.getFerocity()));
         }
 
         if (deployable.getBonusAttackSpeed() > 0) {
-            display.add(String.format("§e+%s%% ⚔", deployable.getBonusAttackSpeed()));
+            display.add(String.format("§e+%s%% ⚔ ", deployable.getBonusAttackSpeed()));
+        }
+
+        if (deployable.getCritDmg() > 0) {
+            display.add(String.format("§9+%s ☠ ", deployable.getCritDmg()));
+        }
+
+        if (deployable.getCritChance() > 0) {
+            display.add(String.format("§9+%s ☣ ", deployable.getCritChance()));
+        }
+
+        // For better visual (maybe?)
+        if (main.getConfigValues().isEnabled(Feature.EXPAND_DEPLOYABLE_STATUS) && display.size() > 5) {
+            List<String> displayCopy = new LinkedList<>(display);
+            display.clear();
+
+            // Firstly add mana and health strings which already long
+            for (int i = 0; i < passIndex; i++)
+                display.add(displayCopy.get(i));
+
+            // Concatenate the remaining strings in pairs
+            for (int i = passIndex; i < displayCopy.size() - 1; i += 2) {
+                if (i - 1 < displayCopy.size()) {
+                    display.add(displayCopy.get(i) + displayCopy.get(i + 1));
+                }
+            }
+
+            // Last touch
+            if ((displayCopy.size() - passIndex) % 2 != 0) {
+                display.add(displayCopy.get(displayCopy.size() - 1));
+            }
         }
 
         Optional<String> longestLine = display.stream().max(Comparator.comparingInt(String::length));
@@ -2195,7 +2231,7 @@ public class RenderListener {
 
         float startY = Math.round(y + (iconAndSecondsHeight / 2f) - (effectsHeight / 2f));
         if (buttonLocation != null) {
-            buttonLocation.checkHoveredAndDrawBox(x, x + width, startY, startY + height, scale);
+            buttonLocation.checkHoveredAndDrawBox(x, x + width, startY - spacingBetweenLines, startY + height, scale);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
 

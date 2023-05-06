@@ -226,7 +226,8 @@
     "numberSeparators": "Number Separators",
     "showProfileTypeInChat": "Show Profile Type In Chat",
     "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas",
-    "infernoSlayerTracker": "Slayer Tracker - Inferno/Blaze"
+    "infernoSlayerTracker": "Slayer Tracker - Inferno/Blaze",
+    "expandDeployableStatus": "Show stats in 2 columns on detailed status"
   },
   "messages": {
     "enchants": "Enchants",

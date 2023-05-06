@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.features.deployables;
 
+import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
@@ -7,10 +8,9 @@ import lombok.RequiredArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ReportedException;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @author DidiSkywalker
  */
 public class DeployableManager {
-    private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\\\"url\\\"\\s?:\\s?\\\".+/(?<textureId>\\w+)\\\"");
+    private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s?:\\s?\".+/(?<textureId>\\w+)\"");
     private static final Pattern POWER_ORB_PATTERN = Pattern.compile("[A-Za-z ]* (?<seconds>[0-9]*)s");
 
     /** The DeployableManager instance. */
@@ -104,6 +104,10 @@ public class DeployableManager {
                             }
                         }
 
+                        // Skip if more than 2 tick has passed since placement
+                        if (entityArmorStand.ticksExisted < 3)
+                            setJalapenoBook(orb);
+
                         put(orb, seconds, orbArmorStand == null ? null : orbArmorStand.getUniqueID());
                     }
                 }
@@ -116,37 +120,28 @@ public class DeployableManager {
                 if (entityArmorStand.getCurrentArmor(3) == null)
                     return;
 
-                String textureBase64;
-                try {
-                    textureBase64 = entityArmorStand.getCurrentArmor(3).getSubCompound("SkullOwner", false)
-                            .getCompoundTag("Properties").getTagList("textures", 10).getCompoundTagAt(0)
-                            .getString("Value");
-                } catch (NullPointerException|ReportedException ex) {
-                    // entity head texture is empty
-                    return;
-                }
-
-                String decodedTextureUrl =  new String(
-                        Base64.getDecoder().decode(
-                                // Getting before '=' to avoid IllegalArgumentException. No padding needed
-                                textureBase64.contains("=")
-                                        ? textureBase64.substring(0, textureBase64.indexOf('='))
-                                        : textureBase64
-                        ),
-                        StandardCharsets.UTF_8
+                String decodedTextureUrl = TextUtils.decodeSkinTexture(
+                        entityArmorStand.getCurrentArmor(3).getSubCompound("SkullOwner", false)
                 );
+
+                if (decodedTextureUrl.isEmpty())
+                    return;
 
                 Deployable flare;
                 Matcher matcher = TEXTURE_URL_PATTERN.matcher(decodedTextureUrl);
-                if (matcher.find()) {
+                if (matcher.find())
                     flare = Deployable.getByTextureId(matcher.group("textureId"));
-                } else
+                else
                     return;
 
-                // Default exist time of flares
-                int seconds = 180;
-
                 if (flare != null && flare.isInRadius(entityArmorStand.getDistanceSqToEntity(Minecraft.getMinecraft().thePlayer))) {
+                    // Skip if more than 2 tick has passed since placement
+                    if (entityArmorStand.ticksExisted < 3)
+                        setJalapenoBook(flare);
+
+                    // Default exist time of flares
+                    int seconds = 180;
+
                     // 1 tick = 50ms
                     seconds -= entityArmorStand.ticksExisted * 50 / 1000;
 
@@ -162,6 +157,19 @@ public class DeployableManager {
         virtualArmorStand.setCurrentItemOrArmor(4, armorStandToClone.getEquipmentInSlot(4));
 
         return virtualArmorStand;
+    }
+
+    public void setJalapenoBook(Deployable deployable) {
+        NBTTagCompound heldEA = ItemUtils.getExtraAttributes(Minecraft.getMinecraft().thePlayer.getHeldItem());
+        if (heldEA != null) {
+            if (heldEA.getInteger("jalapeno_count") == 1) {
+                deployable.setCritChance(1);
+                deployable.setCritDmg(5);
+            }
+        } else {
+            deployable.setCritChance(0);
+            deployable.setCritDmg(0);
+        }
     }
 
     @Getter @RequiredArgsConstructor

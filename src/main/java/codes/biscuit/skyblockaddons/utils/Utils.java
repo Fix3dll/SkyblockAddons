@@ -377,7 +377,7 @@ public class Utils {
                         parseSlayerProgress(strippedScoreboardLine);
                     }
 
-                    if (!foundJerryWave && (location == Location.JERRYS_WORKSHOP || location == Location.JERRY_POND)) {
+                    if (!foundJerryWave && LocationUtils.isInWinterIsland(location)) {
                         if (strippedScoreboardLine.startsWith("Wave")) {
                             foundJerryWave = true;
 

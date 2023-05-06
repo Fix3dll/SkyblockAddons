@@ -67,7 +67,7 @@ public enum Feature {
     HIDE_PET_HEALTH_BAR(63, "settings.hidePetHealthBar", null, false),
     // Release v1.4
     DISABLE_MAGICAL_SOUP_MESSAGES(64, "settings.disableMagicalSoupMessage", null,true),
-    DEPLOYABLE_STATUS_DISPLAY(65, "settings.deployableDisplay", new GuiFeatureData(EnumUtils.DrawType.DEPLOYABLE_DISPLAY, null), false, EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE),
+    DEPLOYABLE_STATUS_DISPLAY(65, "settings.deployableDisplay", new GuiFeatureData(EnumUtils.DrawType.DEPLOYABLE_DISPLAY, null), false, EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE, EnumUtils.FeatureSetting.EXPAND_DEPLOYABLE_STATUS),
     ZEALOT_COUNTER(66, "settings.zealotCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), false, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     TICKER_CHARGES_DISPLAY(67, "settings.tickerChargesDisplay", new GuiFeatureData(EnumUtils.DrawType.TICKER, null), false),
     NO_ARROWS_LEFT_ALERT(69, "settings.noArrowsLeftAlert", new GuiFeatureData(ColorCode.RED), false),
@@ -222,6 +222,7 @@ public enum Feature {
     INFERNO_SLAYER_TRACKER(223, "settings.infernoSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_CRIMSON),
     INFERNO_COLOR_BY_RARITY(224, null, false),
     INFERNO_TEXT_MODE(225, null, true),
+    EXPAND_DEPLOYABLE_STATUS(226, null, false),
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
     WARP_ADVANCED_MODE(-1, "settings.advancedMode", null, true),

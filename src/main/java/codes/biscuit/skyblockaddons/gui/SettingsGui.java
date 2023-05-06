@@ -302,7 +302,7 @@ public class SettingsGui extends GuiScreen {
             if (feature == Feature.DARK_AUCTION_TIMER) {
                 settingFeature = Feature.SHOW_DARK_AUCTION_TIMER_IN_OTHER_GAMES;
             } else if  (feature == Feature.FARM_EVENT_TIMER) {
-                    settingFeature = Feature.SHOW_FARM_EVENT_TIMER_IN_OTHER_GAMES;
+                settingFeature = Feature.SHOW_FARM_EVENT_TIMER_IN_OTHER_GAMES;
             } else if (feature == Feature.DROP_CONFIRMATION) {
                 settingFeature = Feature.DOUBLE_DROP_IN_OTHER_GAMES;
             } else if (feature == Feature.OUTBID_ALERT_SOUND) {
@@ -321,13 +321,22 @@ public class SettingsGui extends GuiScreen {
 
             Feature settingFeature = null;
 
-
             buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.enableMessageWhenActionPrevented"), main, settingFeature));
         } else if (setting == EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("settings.deployableDisplayStyle"), true, 0xFFFFFFFF));
             buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
+        } else if (setting == EnumUtils.FeatureSetting.EXPAND_DEPLOYABLE_STATUS) {
+            boxWidth = 31;
+            x = halfWidth - (boxWidth / 2);
+            y = getRowHeightSetting(row);
+
+            Feature settingFeature;
+            if (main.getConfigValues().getDeployableDisplayStyle().equals(EnumUtils.DeployableDisplayStyle.DETAILED)) {
+                settingFeature = Feature.EXPAND_DEPLOYABLE_STATUS;
+                buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.expandDeployableStatus"), main, settingFeature));
+            }
         } else if (setting == EnumUtils.FeatureSetting.DISCORD_RP_DETAILS || setting == EnumUtils.FeatureSetting.DISCORD_RP_STATE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
