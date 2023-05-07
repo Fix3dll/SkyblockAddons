@@ -43,6 +43,8 @@ public enum Location {
     THAUMATURGIST("Thaumaturgist"),
     HEXATORUM("Hexatorum"),
 
+    DARK_AUCTION("Dark Auction"),
+
     // The Park
     BIRCH_PARK("Birch Park"),
     SPRUCE_WOODS("Spruce Woods"),

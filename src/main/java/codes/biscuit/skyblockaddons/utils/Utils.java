@@ -328,6 +328,8 @@ public class Utils {
                                             // Special case causes Dwarven Village to map to Village
                                             if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
                                                 continue;
+                                            } else if (loopLocation == Location.JERRY_POND && strippedScoreboardLine.contains("Sunken")) {
+                                                continue;
                                             }
                                             location = loopLocation;
                                             foundLocation = true;
