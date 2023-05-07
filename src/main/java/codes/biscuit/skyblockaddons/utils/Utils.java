@@ -314,12 +314,13 @@ public class Utils {
                                         // If the title line ends with "GUEST", then the player is visiting someone else's island.
                                         if (strippedScoreboardTitle.endsWith("GUEST")) {
                                             location = Location.GUEST_ISLAND;
-                                            location.setScoreboardName(
-                                                    "Visiting \""
-                                                            + strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
-                                                            .replace("'s Island", "").trim()
-                                                            + "\" island"
-                                            );
+                                            String islandName = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+
+                                            if (strippedScoreboardLine.contains("'s Island") || strippedScoreboardLine.contains("'s Garden"))
+                                                location.setScoreboardName("Visiting " + islandName);
+                                            else
+                                                location.setScoreboardName("Visiting \"" + islandName.trim() + "\" island");
+
                                             foundLocation = true;
                                             break;
                                         }
