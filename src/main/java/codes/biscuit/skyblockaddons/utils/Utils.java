@@ -72,17 +72,10 @@ public class Utils {
     private static final Set<String> SKYBLOCK_IN_ALL_LANGUAGES = Sets.newHashSet("SKYBLOCK", "\u7A7A\u5C9B\u751F\u5B58", "\u7A7A\u5CF6\u751F\u5B58");
 
     /**
-     * Matches the server ID (mini##/Mega##) line on the Skyblock scoreboard
+     * Matches the server ID (m##/M##) line on the Skyblock scoreboard
      */
-    private static final Pattern SERVER_REGEX = Pattern.compile("(?<serverType>[Mm])(?<serverCode>[0-9]+[A-Z])$");
-    /**
-     * Matches the coins balance (purse/piggy bank) line on the Skyblock scoreboard
-     */
-    private static final Pattern PURSE_REGEX = Pattern.compile("(?:Purse|Piggy): (?<coins>[0-9.,]*)");
-    /**
-     * Matches the bits balance line on the Skyblock scoreboard
-     */
-    private static final Pattern BITS_REGEX = Pattern.compile("Bits: (?<bits>[0-9,]*)");
+    // TODO dungeon room coordinates can be used
+    private static final Pattern SERVER_REGEX = Pattern.compile("^\\d+/\\d+/\\d+ (?<serverType>[Mm])(?<serverCode>[0-9]+[A-Z]+) ?(?:(?<x>-?\\d+),(?<z>-?\\d+))?$");
     /**
      * Matches the active slayer quest type line on the Skyblock scoreboard
      */
@@ -91,6 +84,14 @@ public class Utils {
      * Matches the active slayer quest progress line on the Skyblock scoreboard
      */
     private static final Pattern SLAYER_PROGRESS_REGEX = Pattern.compile("(?<progress>[0-9.k]*)/(?<total>[0-9.k]*) (?:Kills|Combat XP)$");
+    /**
+     * Matches the date line on the Skyblock scoreboard
+     */
+    private static final Pattern DATE_PATTERN = Pattern.compile("(?<month>[\\w ]+) (?<day>\\d{1,2})(?:th|st|nd|rd)");
+    /**
+     * Matches the time line on the Skyblock scoreboard
+     */
+    private static final Pattern TIME_PATTERN = Pattern.compile("(?<hour>\\d{1,2}):(?<minute>\\d{2})(?<period>am|pm)");
 
     /**
      * A dummy world object used for spawning fake entities for GUI features without affecting the actual world
@@ -134,12 +135,12 @@ public class Utils {
     /**
      * The player's current location in Skyblock
      */
-    @Getter private Location location = Location.UNKNOWN;
+    private Location location = Location.UNKNOWN;
 
     /**
-     * Custom garden plot name
+     * Dungeon floor information from the scoreboard
      */
-    @Getter private String customPlotName = "";
+    private String dungeonFloor = "";
 
     /**
      * The skyblock profile that the player is currently on. Ex. "Grapefruit"
@@ -163,8 +164,8 @@ public class Utils {
     private boolean usingFSRcontainerPreviewTexture = false;
 
     private SkyblockDate currentDate = new SkyblockDate(SkyblockDate.SkyblockMonth.EARLY_WINTER, 1, 1, 1, "am");
-    private double purse = 0;
-    private double bits = 0;
+    private double purse = 0.0;
+    private double bits = 0.0;
     private int jerryWave = -1;
 
     private boolean alpha;
@@ -237,17 +238,27 @@ public class Utils {
         return false;
     }
 
+    /**
+     * In some special cases (ex. Jacob Contest on the Garden) scoreboard lines are compressed
+     *  to provide space. Replaced the old "switch-case" structure with "if-else" to provide
+     *  more flexibility and readability.
+     */
     public void parseSidebar() {
         boolean foundScoreboard = false;
+        boolean foundSkyblockTitle = false;
 
-        boolean foundActiveSoup = false;
+        boolean foundServerID = false;
+        boolean foundDate = false;
         boolean foundLocation = false;
+        boolean foundTime = false;
+        boolean foundCoins = false;
+        boolean foundBits = false;
+
         boolean foundJerryWave = false;
         boolean foundAlphaIP = false;
         boolean foundInDungeon = false;
         boolean foundSlayerQuest = false;
         boolean foundBossAlive = false;
-        boolean foundSkyblockTitle = false;
 
         // TODO: This can be optimized more.
         if (isOnHypixel() && ScoreboardManager.hasScoreboard()) {
@@ -269,113 +280,126 @@ public class Utils {
                     MinecraftForge.EVENT_BUS.post(new SkyblockJoinedEvent());
                 }
 
-                String timeString = null;
-                String dateString = null;
+                Matcher dateMatcher = null;
 
                 for (int lineNumber = 0; lineNumber < ScoreboardManager.getNumberOfLines(); lineNumber++) {
                     String scoreboardLine = ScoreboardManager.getScoreboardLines().get(lineNumber);
                     String strippedScoreboardLine = ScoreboardManager.getStrippedScoreboardLines().get(lineNumber);
-                    Matcher matcher;
 
-                    switch (lineNumber) {
-                        case 0:
-                            // Server ID
-                            matcher = SERVER_REGEX.matcher(strippedScoreboardLine);
+                    // Don't waste resources with empty strings
+                    if (strippedScoreboardLine.isEmpty())
+                        continue;
 
-                            if (matcher.find()) {
-                                String serverType = matcher.group("serverType");
-                                if (serverType.equals("m")) {
-                                    serverID = "mini" + matcher.group("serverCode");
-                                } else if (serverType.equals("M")) {
-                                    serverID = "mega" + matcher.group("serverCode");
-                                }
-                            }
-                            break;
-                        case 1:
-                            // This is a blank line.
-                            break;
-                        case 2:
-                            // Date
-                            dateString = strippedScoreboardLine;
-                            break;
-                        case 3:
-                            // Time
-                            timeString = strippedScoreboardLine;
-                            break;
-                        case 4:
-                            // Location
-                            if (!foundLocation) {
-                                // Catacombs contains the floor number so it's a special case...
-                                if (strippedScoreboardLine.contains(Location.THE_CATACOMBS.getScoreboardName())) {
-                                    location = Location.THE_CATACOMBS;
-                                    foundLocation = true;
-                                } else {
-                                    for (Location loopLocation : Location.values()) {
-                                        // If the title line ends with "GUEST", then the player is visiting someone else's island.
-                                        if (strippedScoreboardTitle.endsWith("GUEST")) {
-                                            location = Location.GUEST_ISLAND;
-                                            String islandName = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                    // No need to try to find serverID after line 0
+                    if (!foundServerID && lineNumber < 1) {
+                        Matcher matcher = SERVER_REGEX.matcher(strippedScoreboardLine);
 
-                                            if (strippedScoreboardLine.contains("'s Island") || strippedScoreboardLine.contains("'s Garden"))
-                                                location.setScoreboardName("Visiting " + islandName);
-                                            else
-                                                location.setScoreboardName("Visiting \"" + islandName.trim() + "\" island");
-
-                                            foundLocation = true;
-                                            break;
-                                        }
-
-                                        if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
-                                            // Special case causes Dwarven Village to map to Village
-                                            if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
-                                                continue;
-                                            } else if (loopLocation == Location.JERRY_POND && strippedScoreboardLine.contains("Sunken")) {
-                                                continue;
-                                            }
-                                            location = loopLocation;
-                                            foundLocation = true;
-                                            break;
-                                        } else if (loopLocation == Location.GARDEN_PLOT && strippedScoreboardLine.contains("Plot:")) {
-                                            location = Location.GARDEN_PLOT;
-                                            location.setScoreboardName(
-                                                    strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
-                                            );
-                                            foundLocation = true;
-                                            break;
-                                        }
-                                    }
-                                }
+                        if (matcher.find()) {
+                            String serverType = matcher.group("serverType");
+                            if (serverType.equals("m")) {
+                                serverID = "mini" + matcher.group("serverCode");
+                            } else if (serverType.equals("M")) {
+                                serverID = "mega" + matcher.group("serverCode");
                             }
-                            break;
-                        case 5:
-                            // This is a blank line.
-                            //noinspection DuplicateBranchesInSwitch
-                            break;
-                        case 6:
-                            /*
-                             If the player has Mushroom Soup active, this line will show the remaining duration.
-                             This shifts the following lines down.
-                             */
-                            if (strippedScoreboardLine.startsWith("Flight")) {
-                                foundActiveSoup = true;
-                            } else {
-                                parseCoins(strippedScoreboardLine);
-                            }
-                            break;
-                        case 7:
-                            if (foundActiveSoup) {
-                                parseCoins(strippedScoreboardLine);
-                            } else {
-                                parseBits(strippedScoreboardLine);
-                            }
-                            break;
-                        case 8:
-                            if (foundActiveSoup) {
-                                parseBits(strippedScoreboardLine);
-                            }
-                            break;
+                            foundServerID = true;
+                        }
                     }
 
+                    // No need to try to find date after line 2
+                    if (!foundDate && lineNumber < 3) {
+                        Matcher dateM = DATE_PATTERN.matcher(strippedScoreboardLine);
+                        if (dateM.find()) {
+                            dateMatcher = dateM;
+                            foundDate = true;
+                        }
+                    }
+
+                    // No need to try to find date after line 3
+                    if (foundDate && !foundTime && lineNumber < 4) {
+                        Matcher timeM = TIME_PATTERN.matcher(strippedScoreboardLine);
+                        if (timeM.find()) {
+                            currentDate = SkyblockDate.parse(dateMatcher, timeM);
+                            foundTime = true;
+                        } else {
+                            currentDate = SkyblockDate.parse(dateMatcher);
+                        }
+                    }
+
+                    // No need to try to find location after line 4
+                    if (!foundLocation && lineNumber < 5 && strippedScoreboardLine.contains("\u23E3")) {
+                        String fullLocStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+
+                        // If the title line ends with "GUEST", then the player is visiting someone else's island.
+                        if (strippedScoreboardTitle.endsWith("GUEST")) {
+                            location = Location.GUEST_ISLAND;
+
+                            if (strippedScoreboardLine.contains("'s Island") || strippedScoreboardLine.contains("'s Garden"))
+                                location.setScoreboardName("Visiting " + fullLocStr);
+                            else
+                                location.setScoreboardName("Visiting \"" + fullLocStr.trim() + "\" island");
+
+                            foundLocation = true;
+                        // Catacombs contains the floor number, so it's a special case...
+                        } else if (strippedScoreboardLine.contains(Location.THE_CATACOMBS.getScoreboardName())) {
+                            location = Location.THE_CATACOMBS;
+
+                            // Ex. The Catacombs (F1), The Catacombs (F5) => " (F1)", " (F5)"
+                            dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
+
+                            foundLocation = true;
+                        } else {
+                            for (Location loopLocation : Location.values()) {
+                                if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
+                                    // Special case causes Dwarven Village to map to Village
+                                    if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
+                                        continue;
+                                    } else if (loopLocation == Location.JERRY_POND && strippedScoreboardLine.contains("Sunken")) {
+                                        continue;
+                                    }
+                                    location = loopLocation;
+                                    foundLocation = true;
+                                    break;
+                                } else if (loopLocation == Location.GARDEN_PLOT && strippedScoreboardLine.contains("Plot:")) {
+                                    location = Location.GARDEN_PLOT;
+                                    location.setScoreboardName(
+                                            strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
+                                    );
+                                    foundLocation = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    // No need to try to find purse after line 7
+                    if (!foundCoins && lineNumber < 8) {
+                        if (strippedScoreboardLine.startsWith("Piggy:") || strippedScoreboardLine.contains("Purse:")) {
+                            String purseStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                            try {
+                                purse = TextUtils.NUMBER_FORMAT.parse(purseStr).doubleValue();
+                            } catch (ParseException ex) {
+                                //logger.error("Failed to parse purse (" + ex.getMessage() + ")", ex);
+                                purse = 0.0;
+                            }
+                            foundCoins = true;
+                        }
+                    }
+
+                    // No need to try to find bits after line 8
+                    if (!foundBits && lineNumber < 9) {
+                        if (strippedScoreboardLine.startsWith("Bits:")) {
+                            String bitsStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                            try {
+                                bits = TextUtils.NUMBER_FORMAT.parse(bitsStr).doubleValue();
+                            } catch (ParseException ex) {
+                                //logger.error("Failed to parse bits (" + ex.getMessage() + ")", ex);
+                                bits = 0.0;
+                            }
+                            foundBits = true;
+                        }
+                    }
+
+                    // Lines after old switch-case
                     if (strippedScoreboardLine.endsWith("Combat XP") || strippedScoreboardLine.endsWith("Kills")) {
                         parseSlayerProgress(strippedScoreboardLine);
                     }
@@ -407,10 +431,10 @@ public class Utils {
                         main.getDungeonManager().setLastServerId(serverID);
                     }
 
-                    matcher = SLAYER_TYPE_REGEX.matcher(strippedScoreboardLine);
-                    if (matcher.matches()) {
-                        String type = matcher.group("type");
-                        String levelRomanNumeral = matcher.group("level");
+                    Matcher slayerMatcher = SLAYER_TYPE_REGEX.matcher(strippedScoreboardLine);
+                    if (slayerMatcher.matches()) {
+                        String type = slayerMatcher.group("type");
+                        String levelRomanNumeral = slayerMatcher.group("level");
 
                         EnumUtils.SlayerQuest detectedSlayerQuest = EnumUtils.SlayerQuest.fromName(type);
                         if (detectedSlayerQuest != null) {
@@ -445,9 +469,8 @@ public class Utils {
                         alpha = true;
                         profileName = "Alpha";
                     }
-                }
 
-                currentDate = SkyblockDate.parse(dateString, timeString);
+                }
             }
             if (!foundLocation) {
                 location = Location.UNKNOWN;
@@ -792,47 +815,5 @@ public class Utils {
 
     public static int getBlockMetaId(Block block, int meta) {
         return Block.getStateId(block.getStateFromMeta(meta));
-    }
-
-    /**
-     * Parses the player's coins balance from a given scoreboard line. The balance will be set to 0 if parsing fails.
-     *
-     * @param strippedScoreboardLine the scoreboard line (without formatting codes) to parse coins from
-     */
-    private void parseCoins(String strippedScoreboardLine) {
-        // The player's coins balance
-        Matcher matcher = PURSE_REGEX.matcher(strippedScoreboardLine);
-
-        if (matcher.matches()) {
-            try {
-                double oldCoins = purse;
-                purse = TextUtils.NUMBER_FORMAT.parse(matcher.group("coins")).doubleValue();
-            } catch (NumberFormatException | ParseException e) {
-                purse = 0;
-            }
-        }
-    }
-
-    /**
-     * Parses the player's bits balance from a given scoreboard line. The balance will be set to 0 if parsing fails.
-     *
-     * @param strippedScoreboardLine the scoreboard line (without formatting codes) to parse bits from
-     */
-    private void parseBits(String strippedScoreboardLine) {
-        // If the line is empty, the player has no bits.
-        if (strippedScoreboardLine.isEmpty()) {
-            bits = 0;
-            return;
-        }
-
-        Matcher matcher = BITS_REGEX.matcher(strippedScoreboardLine);
-
-        if (matcher.matches()) {
-            try {
-                bits = TextUtils.NUMBER_FORMAT.parse(matcher.group("bits")).doubleValue();
-            } catch (ParseException ignored) {
-                bits = 0;
-            }
-        }
     }
 }

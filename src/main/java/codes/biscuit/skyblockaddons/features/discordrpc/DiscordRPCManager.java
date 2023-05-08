@@ -79,7 +79,7 @@ public class DiscordRPCManager implements IPCListener {
 
         // Early Winter 10th, 12:10am - Village
         String largeImageDescription = String.format("%s - %s", skyblockDateString, location.getScoreboardName());
-        String smallImageDescription = String.format("Using SkyblockAddons v%s", SkyblockAddons.VERSION+" by Biscuit | Icons by Hypixel Packs HQ");
+        String smallImageDescription = String.format("Using SkyblockAddons v%s", SkyblockAddons.VERSION+" | Icons by Hypixel Packs HQ");
         RichPresence presence = new RichPresence.Builder()
                 .setState(stateLine.getDisplayString(EnumUtils.DiscordStatusEntry.STATE))
                 .setDetails(detailsLine.getDisplayString(EnumUtils.DiscordStatusEntry.DETAILS))

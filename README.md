@@ -7,7 +7,7 @@
   </a>
 </p>
 
-Skyblock Addons has reached end of life. This fork contains unofficial updates from me. You can reach latest unofficial builds from Github Actions. If you don't know how to download latest build artifacts from Github Actions you can use this link: https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip
+Skyblock Addons has reached end of life. This fork contains unofficial updates from me. You can reach latest unofficial builds from GitHub Actions. If you don't know how to download latest build artifacts from GitHub Actions you can use this link: https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip
 
 Special Credits
 -----

@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.core;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class represents a date (excluding the year) and time in Skyblock.
@@ -16,31 +15,28 @@ import java.util.regex.Pattern;
  * <p>9:10pm ☽</p>
  */
 public class SkyblockDate {
-
-    private static final Pattern DATE_PATTERN = Pattern.compile("(?<month>[\\w ]+) (?<day>\\d{1,2})(?:th|st|nd|rd)");
-    private static final Pattern TIME_PATTERN = Pattern.compile("(?<hour>\\d{1,2}):(?<minute>\\d\\d)(?<period>am|pm)");
-
-    public static SkyblockDate parse(String dateString, String timeString) {
-        if(dateString == null || timeString == null) {
+    public static SkyblockDate parse(Matcher dateMatcher) {
+        if(dateMatcher == null) {
             return null;
         }
 
-        Matcher dateMatcher = DATE_PATTERN.matcher(dateString.trim());
-        Matcher timeMatcher = TIME_PATTERN.matcher(timeString.trim());
-        int day = 1;
-        int hour = 0;
-        int minute = 0;
-        String month = SkyblockMonth.EARLY_SPRING.scoreboardString;
-        String period = "am";
-        if(dateMatcher.find()) {
-            month = dateMatcher.group("month");
-            day = Integer.parseInt(dateMatcher.group("day"));
+        int day = Integer.parseInt(dateMatcher.group("day"));
+        String month = dateMatcher.group("month");
+
+        return new SkyblockDate(SkyblockMonth.fromName(month), day);
+    }
+
+    public static SkyblockDate parse(Matcher dateMatcher, Matcher timeMatcher) {
+        if(dateMatcher == null || timeMatcher == null) {
+            return null;
         }
-        if(timeMatcher.find()) {
-            hour = Integer.parseInt(timeMatcher.group("hour"));
-            minute = Integer.parseInt(timeMatcher.group("minute"));
-            period = timeMatcher.group("period");
-        }
+
+        int day = Integer.parseInt(dateMatcher.group("day"));
+        int hour = Integer.parseInt(timeMatcher.group("hour"));
+        int minute = Integer.parseInt(timeMatcher.group("minute"));
+        String month = dateMatcher.group("month");
+        String period = timeMatcher.group("period");
+
         return new SkyblockDate(SkyblockMonth.fromName(month), day, hour, minute, period);
     }
 
@@ -49,6 +45,14 @@ public class SkyblockDate {
     private final int HOUR;
     private final int MINUTE;
     private final String PERIOD;
+
+    public SkyblockDate(SkyblockMonth month, int day) {
+        MONTH = month;
+        DAY = day;
+        HOUR = -1;
+        MINUTE = -1;
+        PERIOD = "";
+    }
 
     public SkyblockDate(SkyblockMonth month, int day, int hour, int minute, String period) {
         MONTH = month;
@@ -115,11 +119,16 @@ public class SkyblockDate {
             monthName = null;
         }
 
-        return String.format("%s %s, %d:%s%s",
-                monthName,
-                DAY + TextUtils.getOrdinalSuffix(DAY),
-                HOUR,
-                TextUtils.formatNumber(MINUTE),
-                PERIOD);
+        if (HOUR == -1 || MINUTE == -1)
+            return String.format("%s %s",
+                    monthName,
+                    DAY + TextUtils.getOrdinalSuffix(DAY));
+        else
+            return String.format("%s %s, %d:%s%s",
+                    monthName,
+                    DAY + TextUtils.getOrdinalSuffix(DAY),
+                    HOUR,
+                    MINUTE == 0 ? "00" : MINUTE,
+                    PERIOD);
     }
 }

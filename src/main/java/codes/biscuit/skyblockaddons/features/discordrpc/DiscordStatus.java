@@ -7,7 +7,9 @@ import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -25,6 +27,9 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 // Don't display "Your Island."
                 if (location == Location.ISLAND) {
                     return "Private Island";
+                } else if (location == Location.THE_CATACOMBS) {
+                    return Location.THE_CATACOMBS.getScoreboardName()
+                            + SkyblockAddons.getInstance().getUtils().getDungeonFloor();
                 } else {
                     return location.getScoreboardName();
                 }
@@ -33,34 +38,32 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
     PURSE("discordStatus.titlePurse", "discordStatus.descriptionPurse",
             () -> {
                 double coins = SkyblockAddons.getInstance().getUtils().getPurse();
-                String coinString = " Coin";
 
-                if (coins == 1) {
-                    return TextUtils.formatNumber(coins) + coinString;
-                } else {
-                    return TextUtils.formatNumber(coins) + coinString + 's';
-                }
+                if (coins == 1)
+                    return TextUtils.formatNumber(coins) + " Coin";
+                else
+                    return TextUtils.formatNumber(coins) + " Coins";
             }),
 
     BITS("discordStatus.titleBits", "discordStatus.descriptionBits",
             ()-> {
                 double bits = SkyblockAddons.getInstance().getUtils().getBits();
-                String bitString = " Bit";
 
-                if (bits == 1) {
-                    return TextUtils.formatNumber(bits) + bitString;
-                } else {
-                    return TextUtils.formatNumber(bits) + bitString + 's';
-                }
+                if (bits == 1)
+                    return TextUtils.formatNumber(bits) + " Bit";
+                else
+                    return TextUtils.formatNumber(bits) + " Bits";
             }),
 
     STATS("discordStatus.titleStats", "discordStatus.descriptionStats",
             () -> {
-                float health = SkyblockAddons.getInstance().getUtils().getAttributes().get(Attribute.HEALTH).getValue();
-                float defense = SkyblockAddons.getInstance().getUtils().getAttributes().get(Attribute.DEFENCE).getValue();
-                float mana = SkyblockAddons.getInstance().getUtils().getAttributes().get(Attribute.MANA).getValue();
-//                return String.format("%d\u2764 %d\u2748 %d\u270E", health, defense, mana);
-                return String.format("%.2f H - %.2f D - %.2f M", health, defense, mana);
+                final Map<Attribute, MutableFloat> attributes = SkyblockAddons.getInstance().getUtils().getAttributes();
+
+                String health = TextUtils.formatNumber(attributes.get(Attribute.HEALTH).getValue());
+                String defense = TextUtils.formatNumber(attributes.get(Attribute.DEFENCE).getValue());
+                String mana = TextUtils.formatNumber(attributes.get(Attribute.MANA).getValue());
+
+                return String.format("%s\u2764 %s\u2748 %s\u270E", health, defense, mana);
             }),
 
     ZEALOTS("discordStatus.titleZealots", "discordStatus.descriptionZealots",
