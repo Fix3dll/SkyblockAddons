@@ -118,6 +118,7 @@ public enum Location {
     GLOWING_MUSHROOM_CAVE("Glowing Mushroom Cave", "mushroom-desert"),
     OVERGROWN_MUSHROOM_CAVE("Overgrown Mushroom Cave", "mushroom-desert"),
     JAKES_HOUSE("Jake's House", "mushroom-desert"),
+    DESERT_MOUNTAIN("Desert Mountain", "mushroom-desert"),
     SHEPHERDS_KEEP("Shepherds Keep", "mushroom-desert"),
     TRAPPERS_DEN("Trapper's Den", "mushroom-desert"),
 

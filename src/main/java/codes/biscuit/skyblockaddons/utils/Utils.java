@@ -133,6 +133,11 @@ public class Utils {
     private boolean onSkyblock;
 
     /**
+     * Whether the player is doing Trapper quest
+     */
+    private boolean isTrackingAnimal = false;
+
+    /**
      * The player's current location in Skyblock
      */
     private Location location = Location.UNKNOWN;
@@ -254,6 +259,7 @@ public class Utils {
         boolean foundCoins = false;
         boolean foundBits = false;
 
+        boolean foundTrackingAnimal = false;
         boolean foundJerryWave = false;
         boolean foundAlphaIP = false;
         boolean foundInDungeon = false;
@@ -355,6 +361,8 @@ public class Utils {
                                         continue;
                                     } else if (loopLocation == Location.JERRY_POND && strippedScoreboardLine.contains("Sunken")) {
                                         continue;
+                                    } else if (loopLocation == Location.MOUNTAIN && strippedScoreboardLine.contains("Desert")) {
+                                        continue;
                                     }
                                     location = loopLocation;
                                     foundLocation = true;
@@ -396,6 +404,14 @@ public class Utils {
                                 bits = 0.0;
                             }
                             foundBits = true;
+                        }
+                    }
+
+                    // Tracker Mob Location line comes after coins always
+                    if (foundCoins && !foundTrackingAnimal) {
+                        if (strippedScoreboardLine.equals("Tracker Mob Location:")) {
+                            isTrackingAnimal = true;
+                            foundTrackingAnimal = true;
                         }
                     }
 
@@ -471,6 +487,9 @@ public class Utils {
                     }
 
                 }
+            }
+            if (!foundTrackingAnimal) {
+                isTrackingAnimal = false;
             }
             if (!foundLocation) {
                 location = Location.UNKNOWN;
