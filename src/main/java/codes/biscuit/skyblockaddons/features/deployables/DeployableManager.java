@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.features.deployables;
 
-import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
@@ -8,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 
 import java.util.*;
@@ -104,10 +102,6 @@ public class DeployableManager {
                             }
                         }
 
-                        // Skip if more than 2 tick has passed since placement
-                        if (entityArmorStand.ticksExisted < 3)
-                            setJalapenoBook(orb);
-
                         put(orb, seconds, orbArmorStand == null ? null : orbArmorStand.getUniqueID());
                     }
                 }
@@ -135,13 +129,8 @@ public class DeployableManager {
                     return;
 
                 if (flare != null && flare.isInRadius(entityArmorStand.getDistanceSqToEntity(Minecraft.getMinecraft().thePlayer))) {
-                    // Skip if more than 2 tick has passed since placement
-                    if (entityArmorStand.ticksExisted < 3)
-                        setJalapenoBook(flare);
-
                     // Default exist time of flares
                     int seconds = 180;
-
                     // 1 tick = 50ms
                     seconds -= entityArmorStand.ticksExisted * 50 / 1000;
 
@@ -157,19 +146,6 @@ public class DeployableManager {
         virtualArmorStand.setCurrentItemOrArmor(4, armorStandToClone.getEquipmentInSlot(4));
 
         return virtualArmorStand;
-    }
-
-    public void setJalapenoBook(Deployable deployable) {
-        NBTTagCompound heldEA = ItemUtils.getExtraAttributes(Minecraft.getMinecraft().thePlayer.getHeldItem());
-        if (heldEA != null) {
-            if (heldEA.getInteger("jalapeno_count") == 1) {
-                deployable.setCritChance(1);
-                deployable.setCritDmg(5);
-            }
-        } else {
-            deployable.setCritChance(0);
-            deployable.setCritDmg(0);
-        }
     }
 
     @Getter @RequiredArgsConstructor

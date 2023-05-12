@@ -1475,7 +1475,7 @@ public class RenderListener {
 
         int longestLineWidth = 0;
         for (Map.Entry<BaitManager.BaitType, Integer> entry : baits.entrySet()) {
-            longestLineWidth = Math.max(longestLineWidth, Minecraft.getMinecraft().fontRendererObj.getStringWidth(String.valueOf(entry.getValue())));
+            longestLineWidth = Math.max(longestLineWidth, mc.fontRendererObj.getStringWidth(String.valueOf(entry.getValue())));
         }
 
         float x = main.getConfigValues().getActualX(Feature.BAIT_LIST);
@@ -2063,8 +2063,6 @@ public class RenderListener {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (buttonLocation != null) {
             activeDeployable = DeployableManager.DUMMY_POWER_ORB_ENTRY;
-            activeDeployable.getDeployable().setCritChance(1);
-            activeDeployable.getDeployable().setCritDmg(5);
         }
         if (activeDeployable != null) {
             Deployable deployable = activeDeployable.getDeployable();
@@ -2185,16 +2183,8 @@ public class RenderListener {
             display.add(String.format("§e+%s%% ⚔ ", deployable.getBonusAttackSpeed()));
         }
 
-        if (deployable.getCritDmg() > 0) {
-            display.add(String.format("§9+%s ☠ ", deployable.getCritDmg()));
-        }
-
-        if (deployable.getCritChance() > 0) {
-            display.add(String.format("§9+%s ☣ ", deployable.getCritChance()));
-        }
-
         // For better visual (maybe?)
-        if (main.getConfigValues().isEnabled(Feature.EXPAND_DEPLOYABLE_STATUS) && display.size() > 5) {
+        if (main.getConfigValues().isEnabled(Feature.EXPAND_DEPLOYABLE_STATUS) && display.size() > 3) {
             List<String> displayCopy = new LinkedList<>(display);
             display.clear();
 

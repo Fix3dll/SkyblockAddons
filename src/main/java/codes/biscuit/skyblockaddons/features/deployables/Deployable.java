@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.features.deployables;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -68,14 +67,6 @@ public enum Deployable {
      * Entity textureId for detect Flares
      */
     private String textureId = "";
-    /**
-     * Amount of CD given by the Jalapeno Book
-     */
-    @Setter private int critDmg = 0;
-    /**
-     * Amount of CC given by the Jalapeno Book
-     */
-     @Setter private int critChance = 0;
 
     // Orbs
     Deployable(String display, double healthRegen, double manaRegen, int strength, double vitality, double mending, int rangeSquared, String resourcePath) {
