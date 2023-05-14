@@ -379,8 +379,8 @@ public class Utils {
                         }
                     }
 
-                    // No need to try to find purse after line 7
-                    if (!foundCoins && lineNumber < 8) {
+                    // No need to try to find purse after line 8
+                    if (!foundCoins && lineNumber < 9) {
                         if (strippedScoreboardLine.startsWith("Piggy:") || strippedScoreboardLine.contains("Purse:")) {
                             String purseStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
                             try {
@@ -393,8 +393,8 @@ public class Utils {
                         }
                     }
 
-                    // No need to try to find bits after line 8
-                    if (!foundBits && lineNumber < 9) {
+                    // No need to try to find bits after line 9
+                    if (!foundBits && lineNumber < 10) {
                         if (strippedScoreboardLine.startsWith("Bits:")) {
                             String bitsStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
                             try {
