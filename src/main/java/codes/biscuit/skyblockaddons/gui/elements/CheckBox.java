@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.elements;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.features.craftingpatterns.CraftingPattern;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
@@ -79,7 +78,6 @@ public class CheckBox {
 
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
-        Minecraft.getMinecraft().getTextureManager().bindTexture(CraftingPattern.ICONS);
         GlStateManager.color(1, 1, 1, 1F);
 
         if (value) {

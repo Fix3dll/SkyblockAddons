@@ -4,7 +4,6 @@ import codes.biscuit.hypixellocalizationlib.HypixelLanguage;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.FetchurManager;
 import codes.biscuit.skyblockaddons.features.backpacks.CompressedStorage;
-import codes.biscuit.skyblockaddons.features.craftingpatterns.CraftingPattern;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTrackerData;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTrackerData;
 import lombok.Getter;
@@ -41,7 +40,6 @@ public class PersistentValuesManager {
         private Map<String, CompressedStorage> storageCache = new HashMap<>();
 
         private boolean blockCraftingIncompletePatterns = true; // unused after crafting pattern removal
-        private CraftingPattern selectedCraftingPattern = CraftingPattern.FREE; // unused after crafting pattern removal
 
         private int oresMined = 0;
         private int seaCreaturesKilled = 0;

@@ -25,11 +25,11 @@ public class TabListParser {
 
     public static String HYPIXEL_ADVERTISEMENT_CONTAINS = "HYPIXEL.NET";
 
-    private static final Pattern GOD_POTION_PATTERN = Pattern.compile("You have a God Potion active! (?<timer>(?:\\d+(?: Hours| Minutes|m \\d+s))|(?:\\d+s))");
+    private static final Pattern GOD_POTION_PATTERN = Pattern.compile("You have a God Potion active! (?<timer>[\\w ]+)");
     private static final Pattern ACTIVE_EFFECTS_PATTERN = Pattern.compile("Active Effects(?:§.)*(?:\\n(?:§.)*§7.+)*");
     private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effects\\.");
     private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
-    private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f\\d+(?: Days| Hours| Minutes|m \\d+s)|(?:\\d+s))");
+    private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[\\w ]+)");
     private static final Pattern RAIN_TIME_PATTERN_S = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
     private static final Pattern CANDY_PATTERN_S = Pattern.compile("Your Candy: (?<green>[0-9,]+) Green, (?<purple>[0-9,]+) Purple \\((?<points>[0-9,]+) pts\\.\\)");
     private static final Pattern SKILL_LEVEL_S = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");

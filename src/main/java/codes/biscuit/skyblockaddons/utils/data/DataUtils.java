@@ -9,8 +9,6 @@ import codes.biscuit.skyblockaddons.core.seacreatures.SeaCreatureManager;
 import codes.biscuit.skyblockaddons.exceptions.DataLoadingException;
 import codes.biscuit.skyblockaddons.features.SkillXpManager;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
-import codes.biscuit.skyblockaddons.features.enchantedItemBlacklist.EnchantedItemLists;
-import codes.biscuit.skyblockaddons.features.enchantedItemBlacklist.EnchantedItemPlacementBlocker;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
@@ -157,16 +155,6 @@ public class DataUtils {
 
         // Localized Strings
         loadLocalizedStrings(false);
-
-        // Enchanted Item Blacklist
-        path = "/enchantedItemLists.json";
-        try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
-                InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
-                        StandardCharsets.UTF_8)){
-            EnchantedItemPlacementBlocker.setItemLists(gson.fromJson(inputStreamReader, EnchantedItemLists.class));
-        } catch (Exception ex) {
-            handleLocalFileReadException(path,ex);
-        }
 
         // Containers
         path = "/containers.json";
@@ -410,7 +398,6 @@ public class DataUtils {
             remoteRequests.add(new LocalizedStringsRequest(SkyblockAddons.getInstance().getConfigValues().getLanguage()));
         }
         // TODO fork and update data repo
-        remoteRequests.add(new EnchantedItemListsRequest());
         remoteRequests.add(new ContainersRequest());
         remoteRequests.add(new CompactorItemsRequest());
         remoteRequests.add(new SeaCreaturesRequest());
