@@ -154,6 +154,7 @@ public enum Location {
     // Dungeons
     THE_CATACOMBS("The Catacombs"), // TODO RPC
     DUNGEON_HUB("Dungeon Hub"), // TODO RPC
+    KUUDRAS_HOLLOW("Kuudra's Hollow"),
 
     // Crimson Isle
     CRIMSON_ISLE("Crimson Isle"),
@@ -174,7 +175,6 @@ public enum Location {
     MINION_SHOP("Minion Shop"),
     CHIEFS_HUT("Chief's Hut"),
     FORGOTTEN_SKULL("Forgotten Skull"),
-    KUUDRAS_END("Kuudra's End"),
     MAGMA_CHAMBER("Magma Chamber"),
     MYSTIC_MARSH("Mystic Marsh"),
     ODGERS_HUT("Odger's Hut"),

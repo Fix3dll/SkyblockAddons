@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 
 /**
  * Statuses that are shown on the Discord RPC feature
- *
  * This file has LF line endings because ForgeGradle is weird and will throw a NullPointerException if it's CRLF.
  */
 public enum DiscordStatus implements ButtonSelect.SelectItem {
@@ -25,10 +24,13 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 Location location = SkyblockAddons.getInstance().getUtils().getLocation();
 
                 // Don't display "Your Island."
-                if (location == Location.ISLAND) {
+                if (location.equals(Location.ISLAND)) {
                     return "Private Island";
-                } else if (location == Location.THE_CATACOMBS) {
+                } else if (location.equals(Location.THE_CATACOMBS)) {
                     return Location.THE_CATACOMBS.getScoreboardName()
+                            + SkyblockAddons.getInstance().getUtils().getDungeonFloor();
+                } else if (location.equals(Location.KUUDRAS_HOLLOW)) {
+                    return Location.KUUDRAS_HOLLOW.getScoreboardName()
                             + SkyblockAddons.getInstance().getUtils().getDungeonFloor();
                 } else {
                     return location.getScoreboardName();

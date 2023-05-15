@@ -353,6 +353,14 @@ public class Utils {
                             dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
 
                             foundLocation = true;
+                        // Kuudra's Hollow contains the tier number, so it's a special too
+                        } else if (strippedScoreboardLine.contains(Location.KUUDRAS_HOLLOW.getScoreboardName())) {
+                            location = Location.KUUDRAS_HOLLOW;
+
+                            // Ex. Kuudra's Hollow (T1), The Kuudra's Hollow (T2) => " (T1)", " (T2)"
+                            dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
+
+                            foundLocation = true;
                         } else {
                             for (Location loopLocation : Location.values()) {
                                 if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {

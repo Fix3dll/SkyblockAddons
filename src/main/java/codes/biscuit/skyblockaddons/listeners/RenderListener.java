@@ -1548,7 +1548,8 @@ public class RenderListener {
             slayerBoss = SlayerBoss.SVEN;
         } else if (feature == Feature.VOIDGLOOM_SLAYER_TRACKER) {
             if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_END) &&
-                    (quest != EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH || (location != Location.THE_END && location != Location.DRAGONS_NEST && location != Location.VOID_SEPULTURE))) {
+                    (quest != EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH || main.getUtils().getLocation() == Location.VOID_SLATE
+                            || !LocationUtils.isInTheEnd(main.getUtils().getLocation()))) {
                 return;
             }
 
