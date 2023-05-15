@@ -1,10 +1,8 @@
 package codes.biscuit.skyblockaddons.utils.data;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.exceptions.LoadingException;
 import lombok.Getter;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
@@ -35,7 +33,7 @@ public class RemoteFileRequest<T> {
 
     public RemoteFileRequest(@NonNull String requestPath, @NonNull ResponseHandler<T> responseHandler,
                              boolean essential, boolean usingCustomUrl) {
-        REQUEST_URL = usingCustomUrl ? requestPath : getVersionedCDNBaseURL() + requestPath;
+        REQUEST_URL = usingCustomUrl ? requestPath : getCDNBaseURL() + requestPath;
         RESPONSE_HANDLER = responseHandler;
         FETCH_CALLBACK = new DataFetchCallback<>(URI.create(REQUEST_URL));
         ESSENTIAL = essential;
@@ -67,10 +65,7 @@ public class RemoteFileRequest<T> {
         return futureTask.isDone();
     }
 
-    private static String getVersionedCDNBaseURL() {
-        return String.format(DataUtils.useFallbackCDN ? DataConstants.FALLBACK_CDN_BASE_URL : DataConstants.CDN_BASE_URL,
-               //SkyblockAddons.VERSION.substring(0, StringUtils.ordinalIndexOf(SkyblockAddons.VERSION, ".", 2))
-                "main"
-        );
+    private static String getCDNBaseURL() {
+        return DataUtils.useFallbackCDN ? DataConstants.FALLBACK_CDN_BASE_URL : DataConstants.CDN_BASE_URL;
     }
 }
