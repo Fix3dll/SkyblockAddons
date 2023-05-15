@@ -902,8 +902,8 @@ public class RenderListener {
             }
 
         } else if (feature == Feature.ENDSTONE_PROTECTOR_DISPLAY) {
-            if (((main.getUtils().getLocation() != Location.THE_END && main.getUtils().getLocation() != Location.DRAGONS_NEST)
-                    || EndstoneProtectorManager.getMinibossStage() == null || !EndstoneProtectorManager.isCanDetectSkull()) && buttonLocation == null) {
+            if ((!LocationUtils.isInTheEnd(main.getUtils().getLocation()) || EndstoneProtectorManager.getMinibossStage() == null
+                    || !EndstoneProtectorManager.isCanDetectSkull()) && buttonLocation == null) {
                 return;
             }
 

@@ -27,6 +27,9 @@ public class LocationUtils {
     // List of sublocations of the Spiders Den
     private static final EnumSet<Location> spidersDenLocations = EnumSet.of(Location.SPIDERS_DEN, Location.SPIDER_MOUND,
             Location.ARACHNES_SANCTUARY, Location.ARACHNES_BURROW, Location.GRANDMAS_HOUSE, Location.ARCHAEOLOGISTS_CAMP, Location.GRAVEL_MINES);
+    // List of sublocations of The End
+    private static final EnumSet<Location> theEndLocations = EnumSet.of(Location.THE_END, Location.DRAGONS_NEST,
+            Location.VOID_SEPULTURE, Location.ZEALOT_BRUISER_HIDEOUT, Location.VOID_SLATE);
     // List of sublocations of the Winter Island
     private static final EnumSet<Location> winterIslandLocations = EnumSet.of(Location.JERRYS_WORKSHOP, Location.JERRY_POND,
             Location. MOUNT_JERRY, Location. GARYS_SHACK, Location.GLACIAL_CAVE, Location.TERRYS_SHACK, Location.HOT_SPRINGS,
@@ -56,6 +59,14 @@ public class LocationUtils {
      */
     public static boolean isInSpidersDen(Location location) {
         return spidersDenLocations.contains(location);
+    }
+
+    /**
+     * @param location current location
+     * @return true if this sublocation is located within The End location
+     */
+    public static boolean isInTheEnd(Location location) {
+        return theEndLocations.contains(location);
     }
 
     /**
