@@ -13,7 +13,7 @@ public enum InventoryType {
     ADVANCED_REFORGING("Reforge Item (Advanced)", "Reforge Item (Advanced)"),
     BAKER("Baker", "Baker"),
     CRAFTING_TABLE("Craft Item", "Craft Item"),
-    SALVAGING("Salvage Dungeon Item", "Salvage Dungeon Item"),
+    SALVAGING("Salvage Item", "Salvage Item"),
     ULTRASEQUENCER("Ultrasequencer", "Ultrasequencer \\((?<type>[a-zA-Z]+)\\)"),
     CHRONOMATRON("Chronomatron", "Chronomatron \\((?<type>[a-zA-Z]+)\\)"),
     SUPERPAIRS("Superpairs", "Superpairs \\((?<type>[a-zA-Z]+)\\)"),
