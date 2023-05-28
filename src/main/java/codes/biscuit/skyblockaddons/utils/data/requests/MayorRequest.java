@@ -18,8 +18,9 @@ public class MayorRequest extends RemoteFileRequest<JsonObject> {
     @Override
     public void load() throws InterruptedException, ExecutionException, RuntimeException {
         SkyblockAddons main = SkyblockAddons.getInstance();
+        String mayorName = getResult().get("mayor").getAsJsonObject().get("name").getAsString();
         main.getUtils().setMayor(
-                getResult().get("mayor").getAsJsonObject().get("name").getAsString()
+                mayorName == null ? "" : mayorName
         );
     }
 }
