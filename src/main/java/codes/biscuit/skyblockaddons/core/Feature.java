@@ -170,7 +170,7 @@ public enum Feature {
     TREVOR_HIGHLIGHT_TRACKED_ENTITY(174, "settings.trevorTheTrapper.highlightTrackedEntity", null, false),
     TREVOR_SHOW_QUEST_COOLDOWN(175, "settings.trevorTheTrapper.showQuestCooldown", null, false),
     HIDE_ENCHANT_DESCRIPTION(176, "settings.hideEnchantDescription", null, true),
-    TREVOR_THE_TRAPPER_FEATURES(177, "settings.trevorTheTrapper.title", null, false, EnumUtils.FeatureSetting.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR, EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY, EnumUtils.FeatureSetting.TREVOR_SHOW_QUEST_COOLDOWN),
+    TREVOR_THE_TRAPPER_FEATURES(177, "settings.trevorTheTrapper.title", null, false, EnumUtils.FeatureSetting.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR, EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY, EnumUtils.FeatureSetting.TREVOR_SHOW_QUEST_COOLDOWN, EnumUtils.FeatureSetting.TREVOR_SHOW_LOCATION_ON_CHAT),
     FETCHUR_TODAY(178, "settings.fetchurToday", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), false, EnumUtils.FeatureSetting.SHOW_FETCHUR_ITEM_NAME, EnumUtils.FeatureSetting.SHOW_FETCHUR_ONLY_IN_DWARVENS, EnumUtils.FeatureSetting.SHOW_FETCHUR_INVENTORY_OPEN_ONLY, EnumUtils.FeatureSetting.WARN_WHEN_FETCHUR_CHANGES),
     SHOW_FETCHUR_ONLY_IN_DWARVENS(179, "settings.showFetchurOnlyInDwarven", null, true),
     SHOW_FETCHUR_ITEM_NAME(180, "settings.showFetchurItemName", null, true),
@@ -223,6 +223,7 @@ public enum Feature {
     INFERNO_COLOR_BY_RARITY(224, null, false),
     INFERNO_TEXT_MODE(225, null, true),
     EXPAND_DEPLOYABLE_STATUS(226, null, false),
+    TREVOR_SHOW_LOCATION_ON_CHAT(227, "settings.trevorTheTrapper.showLocationOnChat", null, false),
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
     WARP_ADVANCED_MODE(-1, "settings.advancedMode", null, true),

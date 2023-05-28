@@ -218,6 +218,7 @@ public class EnumUtils {
 		HIDE_WHEN_NOT_IN_CRIMSON("settings.hideWhenNotDoingQuest", 222),
         ZEALOT_SPAWN_AREAS_ONLY("settings.zealotSpawnAreasOnly", -1),
         EXPAND_DEPLOYABLE_STATUS("settings.expandDeployableStatus", -1),
+        TREVOR_SHOW_LOCATION_ON_CHAT("settings.trevorTheTrapper.showLocationOnChat", 227),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

@@ -21,6 +21,7 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent.Specials.Pre;
@@ -45,6 +46,7 @@ public class FeatureTrackerQuest {
     private static final ResourceLocation TICKER_SYMBOL = new ResourceLocation("skyblockaddons", "tracker.png");
     private static TrackerRarity trackingAnimalRarity = null;
     private static TrackedEntity entityToOutline = null;
+    private static boolean announcedOnChat = false;
 
     public FeatureTrackerQuest() {
 
@@ -59,7 +61,9 @@ public class FeatureTrackerQuest {
      */
     // TODO: This should not be static after the feature refactor
     public static void drawTrackerLocationIndicator(Minecraft mc, float scale, ButtonLocation buttonLocation) {
-        if (buttonLocation != null || main.getUtils().isTrackingAnimal()) {
+        if ((main.getConfigValues().isEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES)
+                && main.getConfigValues().isEnabled(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
+                && main.getUtils().isTrackingAnimal()) || buttonLocation != null) {
             RenderListener listener = main.getRenderListener();
             float x = main.getConfigValues().getActualX(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR);
             float y = main.getConfigValues().getActualY(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR);
@@ -133,8 +137,7 @@ public class FeatureTrackerQuest {
     @SubscribeEvent
     public void onEntityEvent(LivingUpdateEvent e) {
         Entity entity = e.entity;
-        if (isTrackerConditionsMet() && (main.getConfigValues().isEnabled(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
-                || main.getConfigValues().isEnabled(Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY))) {
+        if (isTrackerConditionsMet()) {
             if (trackingAnimalRarity != null && entity instanceof EntityArmorStand && entity.hasCustomName()) {
                 Matcher m = TRACKED_ANIMAL_NAME_PATTERN.matcher(TextUtils.stripColor(entity.getCustomNameTag()));
                 if (m.matches()) {
@@ -143,12 +146,21 @@ public class FeatureTrackerQuest {
                         return;
                     TrackerType animalType = TrackerType.getFromString(m.group("animal"));
                     if (animalType != null) {
-                        TrackedEntity trackedEntity = new TrackedEntity((EntityArmorStand) entity, animalType, rarity);
-                        trackedEntity.attachAnimal(Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(EntityAnimal.class,
-                                new AxisAlignedBB(entity.posX - 2, entity.posY - 2, entity.posZ - 2, entity.posX + 2, entity.posY + 2, entity.posZ + 2)));
-                        // TODO can be improved
-                        if (trackedEntity.getAnimal() != null)
-                            entityToOutline = trackedEntity;
+                        if (main.getConfigValues().isEnabled(Feature.TREVOR_SHOW_LOCATION_ON_CHAT) && !announcedOnChat) {
+                            main.getUtils().sendMessage(EnumChatFormatting.GREEN + "Location of the hunt: ("
+                                            + (int) entity.posX + ", " + (int) entity.posY + ", " + (int) entity.posZ + ")"
+                                    , true);
+                            announcedOnChat = true;
+                        }
+                        if (main.getConfigValues().isEnabled(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
+                                || main.getConfigValues().isEnabled(Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY)) {
+                            TrackedEntity trackedEntity = new TrackedEntity((EntityArmorStand) entity, animalType, rarity);
+                            trackedEntity.attachAnimal(Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(EntityAnimal.class,
+                                    new AxisAlignedBB(entity.posX - 2, entity.posY - 2, entity.posZ - 2, entity.posX + 2, entity.posY + 2, entity.posZ + 2)));
+                            // TODO can be improved
+                            if (trackedEntity.getAnimal() != null)
+                                entityToOutline = trackedEntity;
+                        }
                     }
                 }
             }
@@ -157,7 +169,7 @@ public class FeatureTrackerQuest {
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent e) {
-        if (isTrackerConditionsMet() && e.type != 2) {
+        if (LocationUtils.isInMushroomDesert(main.getUtils().getLocation()) && e.type != 2) {
             String stripped = TextUtils.stripColor(e.message.getFormattedText());
             // Once the player has started the hunt, start some timers
             Matcher matcher = TREVOR_FIND_ANIMAL_PATTERN.matcher(stripped);
@@ -209,12 +221,12 @@ public class FeatureTrackerQuest {
     private void onQuestEnded() {
         entityToOutline = null;
         trackingAnimalRarity = null;
+        announcedOnChat = false;
     }
 
     private boolean isTrackerConditionsMet() {
-        return SkyblockAddons.getInstance().getUtils().isOnSkyblock()
-                && LocationUtils.isInMushroomDesert(main.getUtils().getLocation())
-                && SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES);
+        return main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES)
+                && LocationUtils.isInMushroomDesert(main.getUtils().getLocation());
     }
 
 
