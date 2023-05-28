@@ -143,6 +143,11 @@ public class Utils {
     private Location location = Location.UNKNOWN;
 
     /**
+     * The current mayor name from Hypixel API
+     */
+    private String mayor = "";
+
+    /**
      * Dungeon floor information from the scoreboard
      */
     private String dungeonFloor = "";

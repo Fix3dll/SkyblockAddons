@@ -181,8 +181,11 @@ public class FeatureTrackerQuest {
                 trackingAnimalRarity = TrackerRarity.getFromString(rarity);
                 // The player has 10 minutes to kill the animal
                 CooldownManager.put("TREVOR_THE_TRAPPER_HUNT", 600000);
-                // The player has 30 seconds before they can receive another animal after killing the current one
-                CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 30000);
+                // The player has cooldown before they can receive another animal after killing the current one
+                if (main.getUtils().getMayor().equals("Finnegan"))
+                    CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 30000);
+                else
+                    CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 60000);
             }
             // Once the player has killed the animal, remove the hunt timer
             else if (ANIMAL_DIED_PATTERN.matcher(stripped).matches() || ANIMAL_KILLED_PATTERN.matcher(stripped).matches()) {

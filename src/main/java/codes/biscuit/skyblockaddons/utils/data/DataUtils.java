@@ -404,6 +404,7 @@ public class DataUtils {
         remoteRequests.add(new EnchantmentsRequest());
         remoteRequests.add(new CooldownsRequest());
         remoteRequests.add(new SkillXpRequest());
+        remoteRequests.add(new MayorRequest());
     }
 
     /**
