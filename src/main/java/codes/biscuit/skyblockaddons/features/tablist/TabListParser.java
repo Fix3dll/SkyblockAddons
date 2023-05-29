@@ -27,7 +27,7 @@ public class TabListParser {
 
     private static final Pattern GOD_POTION_PATTERN = Pattern.compile("You have a God Potion active! (?<timer>[\\w ]+)");
     private static final Pattern ACTIVE_EFFECTS_PATTERN = Pattern.compile("Active Effects(?:§.)*(?:\\n(?:§.)*§7.+)*");
-    private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effects\\.");
+    private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effect");
     private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
     private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[\\w ]+)");
     private static final Pattern RAIN_TIME_PATTERN_S = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
@@ -127,7 +127,7 @@ public class TabListParser {
         // Make active effects/booster cookie status compact...
         Matcher m = GOD_POTION_PATTERN.matcher(tabList.footer.getUnformattedText());
         if (m.find()) {
-            footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e32 \n§cGod Potion§r: " + m.group("timer"));
+            footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: \n§cGod Potion§r: " + m.group("timer"));
         } else {
             Matcher countm = EFFECT_COUNT_PATTERN.matcher(tabList.footer.getUnformattedText());
             if (countm.find())

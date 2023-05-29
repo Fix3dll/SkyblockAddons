@@ -20,7 +20,7 @@ public class MayorRequest extends RemoteFileRequest<JsonObject> {
         SkyblockAddons main = SkyblockAddons.getInstance();
         String mayorName = getResult().get("mayor").getAsJsonObject().get("name").getAsString();
         main.getUtils().setMayor(
-                mayorName == null ? "" : mayorName
+                mayorName == null ? "Fix3dll" : mayorName
         );
     }
 }

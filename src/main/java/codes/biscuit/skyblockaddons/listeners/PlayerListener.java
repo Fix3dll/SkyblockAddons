@@ -52,6 +52,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.event.HoverEvent;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ContainerChest;
@@ -213,6 +214,24 @@ public class PlayerListener {
         String formattedText = e.message.getFormattedText();
         String unformattedText = e.message.getUnformattedText();
         String strippedText = TextUtils.stripColor(formattedText);
+
+        // Skytils mayor detection from chat adaption for Java
+        // https://github.com/Skytils/SkytilsMod/blob/1.x/src/main/kotlin/gg/skytils/skytilsmod/features/impl/handlers/MayorInfo.kt#L96
+        if (unformattedText.equals("§eEverybody unlocks §6exclusive §eperks! §a§l[HOVER TO VIEW]")) {
+            if (!main.getUtils().isAlpha()) {
+                HoverEvent hoverEvent = e.message.getChatStyle().getChatHoverEvent();
+                if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
+                    return;
+
+                String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
+                String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
+
+                if (!mayorName.startsWith(main.getUtils().getMayor())) {
+                    main.getUtils().setMayor(mayorName);
+                    logger.info("Mayor changed to " + mayorName);
+                }
+            }
+        }
 
         if (formattedText.startsWith("§7Sending to server ")) {
             lastSkyblockServerJoinAttempt = Minecraft.getSystemTime();
@@ -945,6 +964,20 @@ public class PlayerListener {
                 }
             }
             insertAt = Math.max(0, insertAt);
+
+            InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+
+            if (inventoryType != null && inventoryType.equals(InventoryType.CALENDAR)
+                    && hoveredItem.getItem().equals(Items.skull) && hoveredItem.getDisplayName().contains("Mayor ")) {
+
+                String mayorName = hoveredItem.getDisplayName();
+                mayorName = mayorName.substring(mayorName.indexOf(' ') + 1);
+
+                if (!mayorName.startsWith(main.getUtils().getMayor())) {
+                    main.getUtils().setMayor(mayorName);
+                    logger.info("Mayor changed to " + mayorName);
+                }
+            }
 
             NBTTagCompound extraAttributes = ItemUtils.getExtraAttributes(hoveredItem);
             if (extraAttributes != null) {

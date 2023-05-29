@@ -14,17 +14,15 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.*;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ReportedException;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,6 +36,7 @@ import java.util.regex.Pattern;
  * Utility methods related to player inventories
  */
 public class InventoryUtils {
+    private static final Logger logger = SkyblockAddons.getLogger();
 
     /** Slot index the SkyBlock menu is at. */
     private static final int SKYBLOCK_MENU_SLOT = 8;
@@ -439,6 +438,18 @@ public class InventoryUtils {
             Matcher m = inventoryTypeItr.getInventoryPattern().matcher(chestName);
             if (m.matches()) {
                 if (m.groupCount() > 0) {
+                    if (inventoryTypeItr.equals(InventoryType.MAYOR)) {
+                        try {
+                            String mayorName = m.group("mayor");
+                            if (!mayorName.startsWith(main.getUtils().getMayor())) {
+                                main.getUtils().setMayor(mayorName);
+                                logger.info("Mayor changed to " + mayorName);
+                            }
+                        } catch (IllegalStateException|IllegalArgumentException e) {
+                            logger.warn("Could not detect mayor in Mayor Menu");
+                        } break;
+                    }
+
                     try {
                         inventoryPageNum = Integer.parseInt(m.group("page"));
                     } catch (Exception e) {

@@ -23,6 +23,9 @@ SOFTWARE.
 This project is fork of SkyblockAddons mod, which was written by Biscuit team and they announced to be end of life, which is
 available under the MIT license. The full license available at https://github.com/BiscuitDevelopment/SkyblockAddons/blob/main/LICENSE
 
+This project contains Java adoption of some codes from Skytils, which is available under the AGPL-3.0 license. The full
+license is available at https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md
+
 This product bundles the files /gradle/wrapper/gradle-wrapper.jar, /gradle/wrapper/gradle-wrapper.properties,
 /gradlew, and /gradlew.bat, which are available under the Apache 2.0 license. The full license is available at
 dependencyLicenses/gradle/APACHE_2.0.txt.

@@ -143,9 +143,11 @@ public class Utils {
     private Location location = Location.UNKNOWN;
 
     /**
-     * The current mayor name from Hypixel API
+     * The current mayor name
+     * <br>
+     * <i>We don't leave it blank for startsWith() cases in case the Mayor is not found</i>
      */
-    private String mayor = "";
+    private String mayor = "Fix3dll";
 
     /**
      * Dungeon floor information from the scoreboard

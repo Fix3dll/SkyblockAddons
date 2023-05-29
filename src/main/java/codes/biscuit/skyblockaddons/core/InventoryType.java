@@ -20,7 +20,9 @@ public enum InventoryType {
     STORAGE("Storage", "Storage"),
     STORAGE_BACKPACK("BackpackStorage", "(?<type>[a-zA-Z]+) Backpack ?✦? \\(Slot #(?<page>\\d+)\\)"),
     SKILL_TYPE_MENU("Skill Type Menu", "(?<type>[a-zA-Z]+) Skill"),
-    ENDER_CHEST("EnderChest", "Ender Chest \\((?<page>\\d+)/\\d+\\)");
+    ENDER_CHEST("EnderChest", "Ender Chest \\((?<page>\\d+)/\\d+\\)"),
+    MAYOR("Mayor", "Mayor (?<mayor>.*)"),
+    CALENDAR("Calendar", "Calendar and Events");
 
     @Getter
     private final String inventoryName;
