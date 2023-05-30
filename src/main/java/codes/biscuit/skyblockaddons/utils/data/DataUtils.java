@@ -258,6 +258,17 @@ public class DataUtils {
         }
     }
 
+    public static void loadOnlineData(RemoteFileRequest<?> request) {
+        request.execute(futureRequestExecutionService);
+
+        try {
+            loadOnlineFile(request);
+        } catch (InterruptedException | ExecutionException | NullPointerException | IllegalArgumentException e) {
+            logger.error(String.format("Failed to load \"%s\" from the server.",
+                    getFileNameFromUrlString(request.getURL())));
+        }
+    }
+
     /**
      * Loads a received online data file into the mod.
      *

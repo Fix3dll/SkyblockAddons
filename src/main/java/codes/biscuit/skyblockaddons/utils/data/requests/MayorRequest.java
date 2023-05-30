@@ -1,6 +1,8 @@
 package codes.biscuit.skyblockaddons.utils.data.requests;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
+import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.JsonObject;
@@ -19,8 +21,18 @@ public class MayorRequest extends RemoteFileRequest<JsonObject> {
     public void load() throws InterruptedException, ExecutionException, RuntimeException {
         SkyblockAddons main = SkyblockAddons.getInstance();
         String mayorName = getResult().get("mayor").getAsJsonObject().get("name").getAsString();
-        main.getUtils().setMayor(
-                mayorName == null ? "Fix3dll" : mayorName
-        );
+
+        main.getUtils().setMayor(mayorName == null ? "Fix3dll" : mayorName);
+
+        // Jerry's Perkpocalypse mayor updater
+        main.getNewScheduler().runAsync(new SkyblockRunnable() {
+            @Override
+            public void run() {
+                if (main.getUtils().getMayor().startsWith("Jerry") && System.currentTimeMillis() > main.getUtils().getJerryMayorUpdateTime()) {
+                    DataUtils.loadOnlineData(new JerryMayorRequest());
+                    SkyblockAddons.getLogger().info("Jerry Mayor switched to " + main.getUtils().getJerryMayor());
+                }
+            }
+        }, 0, 60 * 20);
     }
 }

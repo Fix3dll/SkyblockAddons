@@ -145,9 +145,21 @@ public class Utils {
     /**
      * The current mayor name
      * <br>
-     * <i>We don't leave it blank for startsWith() cases in case the Mayor is not found</i>
+     * <i>We don't leave it blank in case the Mayor is not found</i>
      */
     private String mayor = "Fix3dll";
+
+    /**
+     * The current Jerry's Perkpocalypse mayor
+     * <br>
+     * <i>We don't leave it blank in case the Mayor is not found</i>
+     */
+    private String jerryMayor = "Fix3dll";
+
+    /**
+     * The current Jerry's Perkpocalypse mayor update timestamp
+     */
+    private long jerryMayorUpdateTime = 0L;
 
     /**
      * Dungeon floor information from the scoreboard
