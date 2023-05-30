@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.JsonObject;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.concurrent.ExecutionException;
 
@@ -30,7 +31,11 @@ public class MayorRequest extends RemoteFileRequest<JsonObject> {
             public void run() {
                 if (main.getUtils().getMayor().startsWith("Jerry") && System.currentTimeMillis() > main.getUtils().getJerryMayorUpdateTime()) {
                     DataUtils.loadOnlineData(new JerryMayorRequest());
-                    SkyblockAddons.getLogger().info("Jerry Mayor switched to " + main.getUtils().getJerryMayor());
+
+                    String name = main.getUtils().getJerryMayor();
+                    SkyblockAddons.getLogger().info("Jerry's Perkpocalypse mayor switched to " + name);
+                    if (main.getUtils().isOnSkyblock())
+                        main.getUtils().sendMessage(EnumChatFormatting.GREEN + "Jerry's Perkpocalypse mayor switched to " + name, true);
                 }
             }
         }, 0, 60 * 20);
