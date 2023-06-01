@@ -199,6 +199,15 @@ public class DungeonManager {
     }
 
     /**
+     * @param type Essence type
+     * @param number Total number of essences
+     */
+    public void setSalvagedEssences(EssenceType type, String number) {
+        int amount = Integer.parseInt(number);
+        salvagedEssences.put(type, amount);
+    }
+
+    /**
      * This method parses dungeon player stats displayed on the scoreboard sidebar and stores them as {@code DungeonPlayer}
      * objects. It first determines if the given line represents a dungeon player's stats. If so, it then parses all the
      * stats from the line. Finally, it creates a new {@code DungeonPlayer} object containing the parsed stats or updates

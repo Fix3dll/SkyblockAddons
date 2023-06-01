@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.utils.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
+import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
@@ -13,7 +14,6 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
@@ -209,9 +209,11 @@ public class GuiChestHook {
 
         InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().getInventoryType();
 
-        if (inventoryType == InventoryType.SALVAGING) {
+        // Essences from TabListParser#parseSections
+        if (main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER) && inventoryType == InventoryType.SALVAGING
+                && main.getUtils().getLocation().equals(Location.DUNGEON_HUB)) {
             int ySize = 222 - 108 + 6 * 18;
-            float x = guiLeft - 69 - 5;
+            float x = guiLeft - 117 - 5;
             float y = guiTop + ySize / 2F - 72 / 2F;
 
             SkyblockAddons.getInstance().getRenderListener().drawCollectedEssences(x, y, false, false);

@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.features.tablist;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.EssenceType;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.SkillType;
@@ -173,9 +174,11 @@ public class TabListParser {
         parsedRainTime = null;
         boolean foundSpooky = false;
         boolean parsedSkill = false;
+        boolean foundEssenceSection = false;
         Matcher m;
         for (ParsedTabColumn column : columns) {
             ParsedTabSection currentSection = null;
+            int foundEssences = 0;
             for (String line : column.getLines()) {
                 // Empty lines reset the current section
                 if (TextUtils.trimWhitespaceAndResets(line).isEmpty()) {
@@ -198,6 +201,45 @@ public class TabListParser {
                     int level = Integer.parseInt(m.group("level"));
                     main.getSkillXpManager().setSkillLevel(skillType, level);
                     parsedSkill = true;
+                }
+
+                if (!foundEssenceSection && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER) && stripped.contains("Essence: ("))
+                    foundEssenceSection = true;
+
+                if (foundEssenceSection) {
+                    stripped = stripped.trim();
+                    String num = stripped.substring(stripped.indexOf(" ") + 1);
+
+                    // End of essence detection as all essences are found
+                    if (foundEssences == EssenceType.values().length)
+                        foundEssenceSection = false;
+                    else {
+                        if (stripped.contains("Wither:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.WITHER, num);
+                            foundEssences++;
+                        } else if (stripped.contains("Spider:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.SPIDER, num);
+                            foundEssences++;
+                        } else if (stripped.contains("Undead:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.UNDEAD, num);
+                            foundEssences++;
+                        } else if (stripped.contains("Dragon:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.DRAGON, num);
+                            foundEssences++;
+                        } else if (stripped.contains("Gold:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.GOLD, num);
+                            foundEssences++;
+                        } else if (stripped.contains("Diamond:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.DIAMOND, num);
+                            foundEssences++;
+                        } else if (stripped.contains("Ice:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.ICE, num);
+                            foundEssences++;
+                        } else if (stripped.contains("Crimson:")) {
+                            main.getDungeonManager().setSalvagedEssences(EssenceType.CRIMSON, num);
+                            foundEssences++;
+                        }
+                    }
                 }
 
                 if (currentSection == null) {
