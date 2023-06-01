@@ -103,7 +103,7 @@ public class BaitManager {
         HOT("§aHot Bait", "HOT_BAIT", "e1eada20-e1b5-39ee-8dcb-b527054e33e3", "213c6899d97109c6cacbbcdd01e8900abaf46432f197595baa15ad137d5fb9ba"),
         OBFUSCATED_FISH_1("§f§kObfuscated 1", "OBFUSCATED_FISH_1", "6044c06f-fb6e-3de8-9e7f-485b0edfdf3a", "e1f4d91e1bf8d3c4258fe0f28ec2fa40670e25ba06ac4b5cb1abf52a83731a9c"),
         OBFUSCATED_FISH_2("§a§kObfuscated 2", "OBFUSCATED_FISH_2", "53807fee-2e39-3230-bdd1-3efcf0be73a9", "4631953a0351988029b90e838181e4e563d782e470ea33b8c612756f730625c2"),
-        OBFUSCATED_FISH_3("§9§kObfuscated 3", "OBFUSCATED_FISH_3", "c3701fb3-bd25-3772-b684-8572068672ff", "3c800c71b925587213382eeaaa426ed63112503e278ff9f5b3d39dbdb95d31d0")
+        //OBFUSCATED_FISH_3("§9§kObfuscated 3", "OBFUSCATED_FISH_3", "c3701fb3-bd25-3772-b684-8572068672ff", "3c800c71b925587213382eeaaa426ed63112503e278ff9f5b3d39dbdb95d31d0")
         ;
 
         private final String itemID;
