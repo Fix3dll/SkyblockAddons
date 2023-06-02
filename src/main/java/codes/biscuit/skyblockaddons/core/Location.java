@@ -18,6 +18,8 @@ public enum Location {
 
     // Hub
     AUCTION_HOUSE("Auction House"),
+    SHENS_AUCTION("Shen's Auction"),
+    REGALIA_ROOM("Regalia Room"),
     BANK("Bank"),
     BAZAAR("Bazaar Alley"), // TODO RPC
     CANVAS_ROOM("Canvas Room"),

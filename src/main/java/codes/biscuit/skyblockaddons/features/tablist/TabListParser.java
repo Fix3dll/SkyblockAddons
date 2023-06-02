@@ -133,6 +133,8 @@ public class TabListParser {
             Matcher countm = EFFECT_COUNT_PATTERN.matcher(tabList.footer.getUnformattedText());
             if (countm.find())
                 footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + countm.group("effectCount"));
+            else
+                footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e0");
         }
 
         Matcher matcher = COOKIE_BUFF_PATTERN.matcher(footer);
