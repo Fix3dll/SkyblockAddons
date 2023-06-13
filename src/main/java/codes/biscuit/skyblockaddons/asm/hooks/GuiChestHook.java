@@ -220,8 +220,8 @@ public class GuiChestHook {
         }
 
         if (SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.REFORGE_FILTER)) {
-            if ((inventoryType== InventoryType.BASIC_REFORGING) &&
-                    textFieldMatches != null) {
+            if ((inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING)
+                    && textFieldMatches != null) {
 
                 int defaultBlue = main.getUtils().getDefaultBlue(255);
                 int x = guiLeft - 160;
@@ -270,8 +270,8 @@ public class GuiChestHook {
         InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().getInventoryType();
 
         if (inventoryType != null) {
-            if (SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.REFORGE_FILTER) && inventoryType ==
-                    InventoryType.BASIC_REFORGING) {
+            if (SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.REFORGE_FILTER)
+                    && (inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING)) {
                 int xPos = guiLeft - 160;
                 if (xPos<0) {
                     xPos = 20;
@@ -337,7 +337,7 @@ public class GuiChestHook {
         if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.REFORGE_FILTER)) {
             InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
-            if (inventoryType== InventoryType.BASIC_REFORGING) {
+            if (inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING) {
                 if (keyCode != mc.gameSettings.keyBindInventory.getKeyCode() ||
                         (!textFieldMatches.isFocused() && !textFieldExclusions.isFocused())) {
                     processTextFields(typedChar, keyCode);
@@ -374,18 +374,21 @@ public class GuiChestHook {
                 if (slotIn != null && !slotIn.inventory.equals(mc.thePlayer.inventory) && slotIn.getHasStack()) {
                     InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
-                    if (slotIn.getSlotIndex() == 22 && (inventoryType == InventoryType.BASIC_REFORGING)) {
-                        Slot itemSlot = slots.getSlot(13);
+                    Slot itemSlot = null;
+                    if (slotIn.getSlotIndex() == 22 && inventoryType == InventoryType.BASIC_REFORGING) {
+                        itemSlot = slots.getSlot(13);
+                    } else if (slotIn.getSlotIndex() == 48 && inventoryType == InventoryType.HEX_REFORGING) {
+                        itemSlot = slots.getSlot(19);
+                    }
 
-                        if (itemSlot != null && itemSlot.getHasStack()) {
-                            ItemStack item = itemSlot.getStack();
-                            if (item.hasDisplayName()) {
-                                String reforge = ItemUtils.getReforge(item);
-                                if (reforge != null) {
-                                    if (main.getUtils().enchantReforgeMatches(reforge)) {
-                                        main.getUtils().playLoudSound("random.orb", 0.1);
-                                        returnValue.cancel();
-                                    }
+                    if (itemSlot != null && itemSlot.getHasStack()) {
+                        ItemStack item = itemSlot.getStack();
+                        if (item.hasDisplayName()) {
+                            String reforge = ItemUtils.getReforge(item);
+                            if (reforge != null) {
+                                if (main.getUtils().enchantReforgeMatches(reforge)) {
+                                    main.getUtils().playLoudSound("random.orb", 0.1);
+                                    returnValue.cancel();
                                 }
                             }
                         }
@@ -486,13 +489,17 @@ public class GuiChestHook {
 
         if (main.getConfigValues().isEnabled(Feature.SHOW_REFORGE_OVERLAY)) {
             if (guiChest.inventorySlots.inventorySlots.size() > 13) {
-                Slot slot = guiChest.inventorySlots.inventorySlots.get(13);
-                if (slot != null) {
+                InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
+                Slot slot = inventoryType == InventoryType.HEX_REFORGING
+                        ? guiChest.inventorySlots.inventorySlots.get(19)
+                        : guiChest.inventorySlots.inventorySlots.get(13);
+
+                if (slot != null) {
                     ItemStack item = slot.getStack();
                     if (item != null) {
                         String reforge = null;
-                        if (main.getInventoryUtils().getInventoryType() == InventoryType.BASIC_REFORGING) {
+                        if (inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING) {
                             reforge = ItemUtils.getReforge(item);
                         }
 

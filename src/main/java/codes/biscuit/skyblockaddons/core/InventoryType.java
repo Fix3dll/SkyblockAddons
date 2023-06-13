@@ -8,11 +8,8 @@ import java.util.regex.Pattern;
  * This is an enum containing different menus in Skyblock. It's used in logic where the menu the player is in matters.
  */
 public enum InventoryType {
-    ENCHANTMENT_TABLE("Enchant Item", "Enchant Item"),
     BASIC_REFORGING("Reforge Item", "Reforge Item"),
-    ADVANCED_REFORGING("Reforge Item (Advanced)", "Reforge Item (Advanced)"),
-    BAKER("Baker", "Baker"),
-    CRAFTING_TABLE("Craft Item", "Craft Item"),
+    HEX_REFORGING("Hex Reforge", "The Hex ➜ Reforges"),
     SALVAGING("Salvage Item", "Salvage Item"),
     ULTRASEQUENCER("Ultrasequencer", "Ultrasequencer \\((?<type>[a-zA-Z]+)\\)"),
     CHRONOMATRON("Chronomatron", "Chronomatron \\((?<type>[a-zA-Z]+)\\)"),
