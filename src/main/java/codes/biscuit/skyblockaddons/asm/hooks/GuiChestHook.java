@@ -438,16 +438,9 @@ public class GuiChestHook {
                     GlStateManager.color(color.getR(), color.getG(), color.getB(), 1);
                     return;
                 }
-            } else if (lowerChestInventory.getDisplayName().getUnformattedText().contains("Bank")) {
-                ItemStack item = mc.thePlayer.getHeldItem(); // easter egg question mark
-                if (item != null && item.hasDisplayName() && item.getDisplayName().contains("Piggy Bank")) {
-                    BackpackColor color = BackpackColor.PINK;
-                    GlStateManager.color(color.getR(), color.getG(), color.getB(), 1);
-                }
-                return;
             }
         }
-        GlStateManager.color(colorRed,colorGreen,colorBlue,colorAlpha);
+        GlStateManager.color(colorRed, colorGreen, colorBlue, colorAlpha);
     }
 
     public static int drawString(FontRenderer fontRenderer, String text, int x, int y, int color) {

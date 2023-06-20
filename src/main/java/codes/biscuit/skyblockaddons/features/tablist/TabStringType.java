@@ -12,7 +12,7 @@ public enum TabStringType {
     TEXT,
     PLAYER;
 
-    private static final Pattern USERNAME_TAB_PATTERN = Pattern.compile("^\\[(?<sblevel>\\d+)] (?<username>\\w+)(?: (?<subfix>[♲Ⓑ⚒ቾ]|\\[✌]))?(?: (?<faction>[⚒ቾ]))?(?: \\((?<dungeonClass>\\w+) ?(?<classLvl>\\w+)?\\))?$");
+    private static final Pattern USERNAME_TAB_PATTERN = Pattern.compile("^\\[(?<sblevel>\\d+)] (?:\\[\\w+] )?(?<username>\\w+)(?: (?<subfix>[♲Ⓑ⚒ቾ]|\\[✌]))?(?: (?<faction>[⚒ቾ]))?(?: \\((?<dungeonClass>\\w+) ?(?<classLvl>\\w+)?\\))?$");
     public static TabStringType fromLine(String line) {
         String strippedLine = TextUtils.stripColor(line);
 

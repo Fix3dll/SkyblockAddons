@@ -29,15 +29,15 @@ public class TextUtils {
      */
     public static final NumberFormat NUMBER_FORMAT_NO_GROUPING = NumberFormat.getInstance(Locale.US);
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-ORZ]");
-    private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("\\[✌\\]|[♲Ⓑ⚒ቾ]+");
-    private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[\\d+\\]");
+    private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("\\[✌]|[♲Ⓑ⚒ቾ]+");
+    private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[\\d+]");
     private static final Pattern REPEATED_COLOR_PATTERN = Pattern.compile("(?i)(§[0-9A-FK-ORZ])+");
     private static final Pattern NUMBERS_SLASHES = Pattern.compile("[^0-9 /]");
     private static final Pattern SCOREBOARD_CHARACTERS = Pattern.compile("[^a-z A-Z:0-9_/'.!§\\[\\]❤]");
     private static final Pattern FLOAT_CHARACTERS = Pattern.compile("[^.0-9\\-]");
     private static final Pattern INTEGER_CHARACTERS = Pattern.compile("[^0-9]");
     private static final Pattern TRIM_WHITESPACE_RESETS = Pattern.compile("^(?:\\s|§r)*|(?:\\s|§r)*$");
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^(?:\\[.+?\\] )?(?<username>\\w+)(?: \\[.+?\\])?$");
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^(?:\\[.+?] )?(?<username>\\w+)(?: \\[.+?])?$");
     private static final Pattern RESET_CODE_PATTERN = Pattern.compile("(?i)§R");
     private static final Pattern MAGNITUDE_PATTERN = Pattern.compile("(\\d[\\d,.]*\\d*)+([kKmMbBtT])");
 
