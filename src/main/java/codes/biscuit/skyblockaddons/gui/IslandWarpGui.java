@@ -363,6 +363,7 @@ public class IslandWarpGui extends GuiScreen {
         CRYPT("crypt", "Crypts", Island.HUB, 550, 100),
         DUNGEON_HUB("dungeon_hub", "Dungeon Hub", Island.HUB, false, 400, 175),
         MUSEUM("museum", "Museum", Island.HUB, true, 310, 200),
+        RIFT("wizard_tower", "Wizard Tower", Island.HUB, true, 475, 200),
 
         SPIDERS_DEN("spider", Translations.getMessage("warpMenu.spawn"), Island.SPIDERS_DEN, true, 345, 240),
         SPIDERS_DEN_NEST("nest", "Top of Nest", Island.SPIDERS_DEN, 450, 30),
