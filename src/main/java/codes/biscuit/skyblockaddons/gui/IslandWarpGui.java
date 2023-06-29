@@ -361,6 +361,7 @@ public class IslandWarpGui extends GuiScreen {
         CASTLE("castle", "Castle", Island.HUB, 130, 80),
         DARK_AUCTION("da", "Sirius Shack", Island.HUB, 385, 415),
         CRYPT("crypt", "Crypts", Island.HUB, 550, 100),
+        WIZARD_TOWER("wizard", "Wizard Tower", Island.HUB, 475, 260),
         DUNGEON_HUB("dungeon_hub", "Dungeon Hub", Island.HUB, false, 400, 175),
         MUSEUM("museum", "Museum", Island.HUB, true, 310, 200),
 
