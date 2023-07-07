@@ -130,7 +130,12 @@ public class Utils {
     /**
      * Whether the player is on skyblock.
      */
-    private boolean onSkyblock;
+    private boolean onSkyblock = false;
+
+    /**
+     * Whether the player is on rift dimension.
+     */
+    private boolean onRift = false;
 
     /**
      * Whether the player is doing Trapper quest
@@ -190,6 +195,7 @@ public class Utils {
     private SkyblockDate currentDate = new SkyblockDate(SkyblockDate.SkyblockMonth.EARLY_WINTER, 1, 1, 1, "am");
     private double purse = 0.0;
     private double bits = 0.0;
+    private double motes = 0.0;
     private int jerryWave = -1;
 
     private boolean alpha;
@@ -351,54 +357,66 @@ public class Utils {
                     }
 
                     // No need to try to find location after line 4
-                    if (!foundLocation && lineNumber < 5 && strippedScoreboardLine.contains("\u23E3")) {
-                        String fullLocStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                    if (!foundLocation && lineNumber < 5) {
+                        if (strippedScoreboardLine.contains("\u23E3")) {
+                            onRift = false;
+                            String fullLocStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
 
-                        // If the title line ends with "GUEST", then the player is visiting someone else's island.
-                        if (strippedScoreboardTitle.endsWith("GUEST")) {
-                            location = Location.GUEST_ISLAND;
+                            // If the title line ends with "GUEST", then the player is visiting someone else's island.
+                            if (strippedScoreboardTitle.endsWith("GUEST")) {
+                                location = Location.GUEST_ISLAND;
+                                location.setScoreboardName(fullLocStr);
+                                foundLocation = true;
 
-                            if (strippedScoreboardLine.contains("'s Island") || strippedScoreboardLine.contains("'s Garden"))
-                                location.setScoreboardName("Visiting " + fullLocStr);
-                            else
-                                location.setScoreboardName("Visiting \"" + fullLocStr.trim() + "\" island");
+                            // Catacombs contains the floor number, so it's a special case...
+                            } else if (strippedScoreboardLine.contains(Location.THE_CATACOMBS.getScoreboardName())) {
+                                location = Location.THE_CATACOMBS;
 
-                            foundLocation = true;
-                        // Catacombs contains the floor number, so it's a special case...
-                        } else if (strippedScoreboardLine.contains(Location.THE_CATACOMBS.getScoreboardName())) {
-                            location = Location.THE_CATACOMBS;
+                                // Ex. The Catacombs (F1), The Catacombs (F5) => " (F1)", " (F5)"
+                                dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
+                                foundLocation = true;
 
-                            // Ex. The Catacombs (F1), The Catacombs (F5) => " (F1)", " (F5)"
-                            dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
+                            // Kuudra's Hollow contains the tier number, so it's a special too
+                            } else if (strippedScoreboardLine.contains(Location.KUUDRAS_HOLLOW.getScoreboardName())) {
+                                location = Location.KUUDRAS_HOLLOW;
 
-                            foundLocation = true;
-                        // Kuudra's Hollow contains the tier number, so it's a special too
-                        } else if (strippedScoreboardLine.contains(Location.KUUDRAS_HOLLOW.getScoreboardName())) {
-                            location = Location.KUUDRAS_HOLLOW;
+                                // Ex. Kuudra's Hollow (T1), The Kuudra's Hollow (T2) => " (T1)", " (T2)"
+                                dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
+                                foundLocation = true;
 
-                            // Ex. Kuudra's Hollow (T1), The Kuudra's Hollow (T2) => " (T1)", " (T2)"
-                            dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
+                            } else {
+                                for (Location loopLocation : Location.values()) {
+                                    // Continuation of enum was reserved for Rift Dimension
+                                    if (loopLocation.equals(Location.UNKNOWN))
+                                        break;
 
-                            foundLocation = true;
-                        } else {
-                            for (Location loopLocation : Location.values()) {
-                                if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
-                                    // Special case causes Dwarven Village to map to Village
-                                    if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
-                                        continue;
-                                    } else if (loopLocation == Location.JERRY_POND && strippedScoreboardLine.contains("Sunken")) {
-                                        continue;
-                                    } else if (loopLocation == Location.MOUNTAIN && strippedScoreboardLine.contains("Desert")) {
-                                        continue;
+                                    if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
+                                        // Special case causes Dwarven Village to map to Village
+                                        if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
+                                            continue;
+                                        } else if (loopLocation == Location.JERRY_POND && strippedScoreboardLine.contains("Sunken")) {
+                                            continue;
+                                        } else if (loopLocation == Location.MOUNTAIN && strippedScoreboardLine.contains("Desert")) {
+                                            continue;
+                                        }
+                                        location = loopLocation;
+                                        foundLocation = true;
+                                        break;
+                                    } else if (loopLocation == Location.GARDEN_PLOT && strippedScoreboardLine.contains("Plot:")) {
+                                        location = Location.GARDEN_PLOT;
+                                        location.setScoreboardName(
+                                                strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
+                                        );
+                                        foundLocation = true;
+                                        break;
                                     }
+                                }
+                            }
+                        } else if (strippedScoreboardLine.contains("\u0444")) {
+                            onRift = true;
+                            for (Location loopLocation : LocationUtils.getRiftLocations()) {
+                                if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
                                     location = loopLocation;
-                                    foundLocation = true;
-                                    break;
-                                } else if (loopLocation == Location.GARDEN_PLOT && strippedScoreboardLine.contains("Plot:")) {
-                                    location = Location.GARDEN_PLOT;
-                                    location.setScoreboardName(
-                                            strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
-                                    );
                                     foundLocation = true;
                                     break;
                                 }
@@ -408,7 +426,7 @@ public class Utils {
 
                     // No need to try to find purse after line 8
                     if (!foundCoins && lineNumber < 9) {
-                        if (strippedScoreboardLine.startsWith("Piggy:") || strippedScoreboardLine.contains("Purse:")) {
+                        if (!onRift && (strippedScoreboardLine.startsWith("Piggy:") || strippedScoreboardLine.contains("Purse:"))) {
                             String purseStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
                             try {
                                 purse = TextUtils.NUMBER_FORMAT.parse(purseStr).doubleValue();
@@ -417,11 +435,20 @@ public class Utils {
                                 purse = 0.0;
                             }
                             foundCoins = true;
+                        } else if (onRift && strippedScoreboardLine.startsWith("Motes:")) {
+                            String motesStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                            try {
+                                motes = TextUtils.NUMBER_FORMAT.parse(motesStr).doubleValue();
+                            } catch (ParseException ex) {
+                                //logger.error("Failed to parse purse (" + ex.getMessage() + ")", ex);
+                                motes = 0.0;
+                            }
+                            foundCoins = true;
                         }
                     }
 
                     // No need to try to find bits after line 9
-                    if (!foundBits && lineNumber < 10) {
+                    if (!onRift && !foundBits && lineNumber < 10) {
                         if (strippedScoreboardLine.startsWith("Bits:")) {
                             String bitsStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
                             try {
@@ -435,7 +462,7 @@ public class Utils {
                     }
 
                     // Tracker Mob Location line comes after coins always
-                    if (foundCoins && !foundTrackingAnimal) {
+                    if (!onRift && foundCoins && !foundTrackingAnimal) {
                         if (strippedScoreboardLine.equals("Tracker Mob Location:")) {
                             isTrackingAnimal = true;
                             foundTrackingAnimal = true;
@@ -447,7 +474,7 @@ public class Utils {
                         parseSlayerProgress(strippedScoreboardLine);
                     }
 
-                    if (!foundJerryWave && LocationUtils.isInWinterIsland(location)) {
+                    if (!onRift && !foundJerryWave && LocationUtils.isInWinterIsland(location)) {
                         if (strippedScoreboardLine.startsWith("Wave")) {
                             foundJerryWave = true;
 
@@ -463,7 +490,7 @@ public class Utils {
                         }
                     }
 
-                    if (!foundInDungeon && strippedScoreboardLine.startsWith("Cleared: ")) {
+                    if (!onRift && !foundInDungeon && strippedScoreboardLine.startsWith("Cleared: ")) {
                         foundInDungeon = true;
                         inDungeon = true;
 

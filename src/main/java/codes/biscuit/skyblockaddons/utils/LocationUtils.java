@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.core.Location;
+import lombok.Getter;
 
 import java.util.EnumSet;
 
@@ -15,27 +16,44 @@ public class LocationUtils {
             Location.RAMPARTS_QUARRY, Location.DIVANS_GATEWAY, Location.FAR_RESERVE, Location.GOBLIN_BURROWS, Location.UPPER_MINES,
             Location.ROYAL_MINES, Location.MINERS_GUILD, Location.GREAT_ICE_WALL, Location.THE_MIST, Location.CC_MINECARTS_CO,
             Location.GRAND_LIBRARY, Location.HANGING_COURT);
+
    // List of sublocations of the Crystal Hollows
     private static final EnumSet<Location> hollowsLocations = EnumSet.of(Location.MAGMA_FIELDS,
            Location.CRYSTAL_HOLLOWS, Location.CRYSTAL_NUCLEUS, Location.JUNGLE, Location.MITHRIL_DEPOSITS, Location.GOBLIN_HOLDOUT,
            Location.PRECURSOR_REMNANT, Location.FAIRY_GROTTO, Location.KHAZAD_DUM, Location.JUNGLE_TEMPLE, Location.MINES_OF_DIVAN,
            Location.GOBLIN_QUEEN_DEN, Location.LOST_PRECURSOR_CITY);
+
     // List of sublocations of the Mushroom Desert
     private static final EnumSet<Location> mushroomDesertLocations = EnumSet.of(Location.MUSHROOM_DESERT, Location.TRAPPERS_DEN,
             Location.DESERT_SETTLEMENT, Location.GLOWING_MUSHROOM_CAVE, Location.MUSHROOM_GORGE, Location.OVERGROWN_MUSHROOM_CAVE,
             Location.DESERT_MOUNTAIN, Location.SHEPHERDS_KEEP, Location.OASIS, Location.JAKES_HOUSE, Location.TREASURE_HUNTER_CAMP);
+
     // List of sublocations of the Spiders Den
     private static final EnumSet<Location> spidersDenLocations = EnumSet.of(Location.SPIDERS_DEN, Location.SPIDER_MOUND,
             Location.ARACHNES_SANCTUARY, Location.ARACHNES_BURROW, Location.GRANDMAS_HOUSE, Location.ARCHAEOLOGISTS_CAMP, Location.GRAVEL_MINES);
+
     // List of sublocations of The End
     private static final EnumSet<Location> theEndLocations = EnumSet.of(Location.THE_END, Location.DRAGONS_NEST,
             Location.VOID_SEPULTURE, Location.ZEALOT_BRUISER_HIDEOUT, Location.VOID_SLATE);
+
     // List of sublocations of the Winter Island
     private static final EnumSet<Location> winterIslandLocations = EnumSet.of(Location.JERRYS_WORKSHOP, Location.JERRY_POND,
             Location. MOUNT_JERRY, Location. GARYS_SHACK, Location.GLACIAL_CAVE, Location.TERRYS_SHACK, Location.HOT_SPRINGS,
             Location.REFLECTIVE_POND, Location.SUNKEN_JERRY_POND, Location.SHERRYS_SHOWROOM, Location. EINARYS_EMPORIUM);
+
     // List of locations that spawn zealots/zealot variants
     private static final EnumSet<Location> zealotSpawnLocations = EnumSet.of(Location.DRAGONS_NEST, Location.ZEALOT_BRUISER_HIDEOUT);
+
+    // List of zones in Rift Dimension
+    @Getter private static final EnumSet<Location> riftLocations = EnumSet.of(Location.WIZARD_TOWER, Location.WYLD_WOODS,
+            Location.ENIGMAS_CRIB, Location.BROKEN_CAGE, Location.SHIFTED_TAVERN, Location.PUMPGROTTO, Location.THE_BASTION,
+            Location.OTHERSIDE, Location.BLACK_LAGOON, Location.LAGOON_CAVE, Location.LAGOON_HUT, Location.LEECHES_LAIR,
+            Location.AROUND_COLOSSEUM, Location.RIFT_GALLERY_ENTRANCE, Location.RIFT_GALLERY, Location.WEST_VILLAGE,
+            Location.DOLPHIN_TRAINER, Location.CAKE_HOUSE, Location.INFESTED_HOUSE, Location.MIRRORVERSE, Location.DREADFARM,
+            Location.GREAT_BEANSTALK, Location.VILLAGE_PLAZA, Location.TAYLORS, Location.LONELY_TERRACE, Location.MURDER_HOUSE,
+            Location.BOOK_IN_A_BOOK, Location.HALF_EATEN_CAVE, Location.YOUR_ISLAND, Location.EMPTY_BANK, Location.BARRY_CENTER,
+            Location.BARRY_HQ, Location.DEJA_VU_ALLEY, Location.LIVING_CAVE, Location.LIVING_STILLNESS, Location.COLOSSEUM,
+            Location.BARRIER_STREET, Location.PHOTON_PATHWAY, Location.STILLGORE_CHATEAU, Location.OUBLIETTE, Location.FAIRYLOSOPHER_TOWER);
 
     /**
      * @param location current location

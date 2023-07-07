@@ -21,19 +21,22 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
     NONE("discordStatus.titleNone", "discordStatus.descriptionNone", () -> null),
     LOCATION("discordStatus.titleLocation", "discordStatus.descriptionLocation",
             () -> {
-                Location location = SkyblockAddons.getInstance().getUtils().getLocation();
+                SkyblockAddons main = SkyblockAddons.getInstance();
+                Location location = main.getUtils().getLocation();
 
                 // Don't display "Your Island."
                 if (location.equals(Location.ISLAND)) {
-                    return "Private Island";
+                    return "\u23E3 ".concat("Private Island");
                 } else if (location.equals(Location.THE_CATACOMBS)) {
-                    return Location.THE_CATACOMBS.getScoreboardName()
-                            + SkyblockAddons.getInstance().getUtils().getDungeonFloor();
+                    return "\u23E3 ".concat(Location.THE_CATACOMBS.getScoreboardName())
+                            .concat(main.getUtils().getDungeonFloor());
                 } else if (location.equals(Location.KUUDRAS_HOLLOW)) {
-                    return Location.KUUDRAS_HOLLOW.getScoreboardName()
-                            + SkyblockAddons.getInstance().getUtils().getDungeonFloor();
+                    return "\u23E3 ".concat(Location.KUUDRAS_HOLLOW.getScoreboardName())
+                            .concat(main.getUtils().getDungeonFloor());
                 } else {
-                    return location.getScoreboardName();
+                    return SkyblockAddons.getInstance().getUtils().isOnRift()
+                            ? "\u0444 ".concat(location.getScoreboardName())
+                            : "\u23E3 ".concat(location.getScoreboardName());
                 }
             }),
 
@@ -55,6 +58,16 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                     return TextUtils.formatNumber(bits) + " Bit";
                 else
                     return TextUtils.formatNumber(bits) + " Bits";
+            }),
+
+    MOTES("discordStatus.titleMotes", "discordStatus.descriptionMotes",
+            ()-> {
+                double motes = SkyblockAddons.getInstance().getUtils().getMotes();
+
+                if (motes == 1)
+                    return TextUtils.formatNumber(motes) + " Mote";
+                else
+                    return TextUtils.formatNumber(motes) + " Motes";
             }),
 
     STATS("discordStatus.titleStats", "discordStatus.descriptionStats",
@@ -114,6 +127,9 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                     if (slayerQuest == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER) return DiscordStatus.valueOf("TARANTULA").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH) return DiscordStatus.valueOf("VOIDGLOOM").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.INFERNO_DEMONLORD) return DiscordStatus.valueOf("INFERNO").displayMessageSupplier.get();
+                }
+                if (main.getUtils().isOnRift()) {
+                    return DiscordStatus.valueOf("MOTES").displayMessageSupplier.get();
                 }
 
                 if ("AUTO_STATUS".equals(main.getConfigValues().getDiscordAutoDefault().name())) { // Avoid self reference.

@@ -205,11 +205,55 @@ public enum Location {
     Out of Bounds
     This is a valid location in Skyblock, it isn't a placeholder or a made up location.
     It actually displays when the player is out of bounds.
-     */
+    */
     NONE("None"),
 
     // This is used when the mod is unable to retrieve the player's location from the sidebar.
-    UNKNOWN("Unknown");
+    UNKNOWN("Unknown"),
+
+    // RIFT DIMENSION
+    /* existing ones
+    WIZARD_TOWER("Wizard Tower"),
+    THE_BASTION("The Bastion"),
+    COLOSSEUM("Colosseum"),*/
+    WYLD_WOODS("Wyld Woods"),
+    ENIGMAS_CRIB("Enigma's Crib"),
+    BROKEN_CAGE("Broken Cage"),
+    SHIFTED_TAVERN("Shifted Tavern"),
+    PUMPGROTTO("Pumpgrotto"),
+    OTHERSIDE("Otherside"),
+    BLACK_LAGOON("Black Lagoon"),
+    LAGOON_CAVE("Lagoon Cave"),
+    LAGOON_HUT("Lagoon Hut"),
+    LEECHES_LAIR("Leeches Lair"),
+    AROUND_COLOSSEUM("Leeches Lair"),
+    RIFT_GALLERY_ENTRANCE("Rift Gallery Entrance"),
+    RIFT_GALLERY("Rift Gallery"),
+    WEST_VILLAGE("West Village"),
+    DOLPHIN_TRAINER("Dolphin Trainer"),
+    CAKE_HOUSE("Cake House"),
+    INFESTED_HOUSE("Infested House"),
+    MIRRORVERSE("Mirrorverse"),
+    DREADFARM("Dreadfarm"),
+    GREAT_BEANSTALK("Great Beanstalk"),
+    VILLAGE_PLAZA("Village Plaza"),
+    TAYLORS("Taylor's"),
+    LONELY_TERRACE("Lonely Terrace"),
+    MURDER_HOUSE("Murder House"),
+    BOOK_IN_A_BOOK("Book In A Book"),
+    HALF_EATEN_CAVE("Half-Eaten Cave"),
+    YOUR_ISLAND("'Your' Island"),
+    EMPTY_BANK("Empty Bank"),
+    BARRY_CENTER("Barry Center"),
+    BARRY_HQ("Barry HQ"),
+    DEJA_VU_ALLEY("Déjà Vu Alley"),
+    LIVING_CAVE("Living Cave"),
+    LIVING_STILLNESS("Living Stillness"),
+    BARRIER_STREET("Barrier Street"),
+    PHOTON_PATHWAY("Photon Pathway"),
+    STILLGORE_CHATEAU("Stillgore Château"),
+    OUBLIETTE("Oubliette"),
+    FAIRYLOSOPHER_TOWER("Fairylosopher Tower");
 
     /**
      * The name of this location as shown on the in-game scoreboard.
