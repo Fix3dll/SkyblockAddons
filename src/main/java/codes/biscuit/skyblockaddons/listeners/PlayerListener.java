@@ -620,7 +620,8 @@ public class PlayerListener {
                     setAttribute(Attribute.HEALTH, newHealth);
                 }
 
-                if (p != null && main.getConfigValues().isEnabled(Feature.HEALTH_BAR) && main.getUtils().isOnRift()) {
+                if (p != null && main.getUtils().isOnRift() && (main.getConfigValues().isEnabled(Feature.HEALTH_BAR)
+                        || main.getConfigValues().isEnabled(Feature.HEALTH_TEXT))) {
                     setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
                     setAttribute(Attribute.HEALTH, p.getHealth());
                 }

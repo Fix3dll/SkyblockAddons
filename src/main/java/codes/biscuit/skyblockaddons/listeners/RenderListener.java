@@ -708,7 +708,11 @@ public class RenderListener {
                 return;
             }
         } else if (feature == Feature.HEALTH_TEXT) {
-            text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
+            text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH)) + "/";
+            if (main.getUtils().isOnRift())
+                text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH));
+            else
+                text += TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
         } else if (feature == Feature.CRIMSON_ARMOR_ABILITY_STACKS) {
             text = getCrimsonArmorAbilityStacks();
             if (text == null) return;
