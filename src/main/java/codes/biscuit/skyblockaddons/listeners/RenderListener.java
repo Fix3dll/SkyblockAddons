@@ -104,6 +104,7 @@ public class RenderListener {
     private static final ItemStack ASTRAEA = ItemUtils.createItemStack(Items.iron_sword, "§6Astraea", "ASTRAEA", false);
     private static final ItemStack SCYLLA = ItemUtils.createItemStack(Items.iron_sword, "§6Scylla", "SCYLLA", false);
     private static final ItemStack SCPETRE = new ItemStack(Blocks.red_flower, 1, 2); //doesnt show sb texture pack cos blocks cant have and idk how
+    private static final ItemStack MIDAS_STAFF = ItemUtils.createItemStack(Items.golden_shovel, "§6Midas Staff", "MIDAS_STAFF", false);
 
     private static final ItemStack GREEN_CANDY = ItemUtils.createSkullItemStack("Green Candy", "GREEN_CANDY", "0961dbb3-2167-3f75-92e4-ec8eb4f57e55", "ce0622d01cfdae386cc7dd83427674b422f46d0a57e67a20607e6ca4b9af3b01");
     private static final ItemStack PURPLE_CANDY = ItemUtils.createSkullItemStack("Purple Candy", "PURPLE_CANDY", "5b0e6bf0-6312-3476-b5f8-dbc9a8849a1f", "95d7aee4e97ad84095f55405ee1305d1fc8554c309edb12a1db863cde9c1ec80");
@@ -997,7 +998,8 @@ public class RenderListener {
                 text = "Hyperion";
             } else if (holdingItem == null || skyblockItemID == null) {
                 return;
-            } else if (skyblockItemID.equals("HYPERION") || skyblockItemID.equals("VALKYRIE") || skyblockItemID.equals("ASTRAEA") || skyblockItemID.equals("SCYLLA") || skyblockItemID.equals("BAT_WAND")) {
+            } else if (skyblockItemID.equals("HYPERION") || skyblockItemID.equals("VALKYRIE") || skyblockItemID.equals("ASTRAEA")
+                    || skyblockItemID.equals("SCYLLA") || skyblockItemID.equals("BAT_WAND") || skyblockItemID.equals("MIDAS_STAFF")) {
                 text = holdingItem.getDisplayName().replaceAll("§[a-f0-9]?✪", "");
             } else {
                 return;
@@ -1327,6 +1329,8 @@ public class RenderListener {
                 renderItem(SCYLLA, x, y);
             } else if (skyblockItemID.equals("BAT_WAND")) {
                 renderItem(SCPETRE, x, y);
+            } else if (skyblockItemID.equals("MIDAS_STAFF")) {
+                renderItem(MIDAS_STAFF, x, y);
             }
 
         } else if (feature == Feature.CANDY_POINTS_COUNTER) {
