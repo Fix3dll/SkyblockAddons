@@ -8,6 +8,7 @@ public enum Attribute {
     DEFENCE(0),
     HEALTH(100),
     MAX_HEALTH(100),
+    MAX_RIFT_HEALTH(0),
     MANA(100),
     MAX_MANA(100),
     FUEL(3000),

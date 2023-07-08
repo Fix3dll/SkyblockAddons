@@ -242,7 +242,7 @@ public enum Location {
     MURDER_HOUSE("Murder House"),
     BOOK_IN_A_BOOK("Book In A Book"),
     HALF_EATEN_CAVE("Half-Eaten Cave"),
-    YOUR_ISLAND("'Your' Island"),
+    YOUR_ISLAND("\"Your\" Island"),
     EMPTY_BANK("Empty Bank"),
     BARRY_CENTER("Barry Center"),
     BARRY_HQ("Barry HQ"),

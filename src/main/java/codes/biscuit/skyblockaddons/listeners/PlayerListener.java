@@ -215,24 +215,6 @@ public class PlayerListener {
         String unformattedText = e.message.getUnformattedText();
         String strippedText = TextUtils.stripColor(formattedText);
 
-        // Skytils mayor detection from chat adaption for Java
-        // https://github.com/Skytils/SkytilsMod/blob/1.x/src/main/kotlin/gg/skytils/skytilsmod/features/impl/handlers/MayorInfo.kt#L96
-        if (unformattedText.equals("§eEverybody unlocks §6exclusive §eperks! §a§l[HOVER TO VIEW]")) {
-            if (!main.getUtils().isAlpha()) {
-                HoverEvent hoverEvent = e.message.getChatStyle().getChatHoverEvent();
-                if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
-                    return;
-
-                String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
-                String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
-
-                if (!mayorName.startsWith(main.getUtils().getMayor())) {
-                    main.getUtils().setMayor(mayorName);
-                    logger.info("Mayor changed to " + mayorName);
-                }
-            }
-        }
-
         if (formattedText.startsWith("§7Sending to server ")) {
             lastSkyblockServerJoinAttempt = Minecraft.getSystemTime();
             DragonTracker.getInstance().reset();
@@ -467,6 +449,24 @@ public class PlayerListener {
 
                 }
             }
+
+            // Skytils mayor detection from chat adaption for Java
+            // https://github.com/Skytils/SkytilsMod/blob/1.x/src/main/kotlin/gg/skytils/skytilsmod/features/impl/handlers/MayorInfo.kt#L96
+            if (unformattedText.equals("§eEverybody unlocks §6exclusive §eperks! §a§l[HOVER TO VIEW]")) {
+                if (!main.getUtils().isAlpha()) {
+                    HoverEvent hoverEvent = e.message.getChatStyle().getChatHoverEvent();
+                    if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
+                        return;
+
+                    String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
+                    String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
+
+                    if (!mayorName.startsWith(main.getUtils().getMayor())) {
+                        main.getUtils().setMayor(mayorName);
+                        logger.info("Mayor changed to " + mayorName);
+                    }
+                }
+            }
         }
     }
 
@@ -618,6 +618,11 @@ public class PlayerListener {
                     float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH) ?
                             getAttribute(Attribute.HEALTH) : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
                     setAttribute(Attribute.HEALTH, newHealth);
+                }
+
+                if (p != null && main.getConfigValues().isEnabled(Feature.HEALTH_BAR) && main.getUtils().isOnRift()) {
+                    setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
+                    setAttribute(Attribute.HEALTH, p.getHealth());
                 }
 
                 if (timerTick == 20) {

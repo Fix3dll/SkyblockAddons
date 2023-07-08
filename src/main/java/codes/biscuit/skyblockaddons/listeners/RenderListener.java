@@ -141,6 +141,8 @@ public class RenderListener {
     private EnumUtils.GuiTab guiTabToOpen = EnumUtils.GuiTab.MAIN;
     private Feature guiFeatureToOpen;
 
+    private float maxRiftHealth = 0.0F;
+
     /**
      * Render overlays and warnings for clients without labymod.
      */
@@ -383,6 +385,9 @@ public class RenderListener {
         float fill;
         // Whether the player has absorption hearts
         boolean hasAbsorption = false;
+        // Float value to scale width
+        float widthScale = 1.0F;
+
         if (feature == Feature.MANA_BAR) {
             fill = getAttribute(Attribute.MANA) / getAttribute(Attribute.MAX_MANA);
         } else if (feature == Feature.DRILL_FUEL_BAR) {
@@ -436,22 +441,37 @@ public class RenderListener {
             return;
         }
 
-        if (feature == Feature.HEALTH_BAR && main.getConfigValues().isEnabled(Feature.CHANGE_BAR_COLOR_FOR_POTIONS)) {
-            if (mc.thePlayer.isPotionActive(19/* Poison */)) {
-                color = ColorUtils.getDummySkyblockColor(ColorCode.DARK_GREEN.getColor(), main.getConfigValues().getChromaFeatures().contains(feature));
-            } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
-                color = ColorUtils.getDummySkyblockColor(ColorCode.DARK_GRAY.getColor(), main.getConfigValues().getChromaFeatures().contains(feature));
-            } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
-                if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
-                    fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
-                    hasAbsorption = true;
+        if (feature == Feature.HEALTH_BAR) {
+            if (main.getConfigValues().isEnabled(Feature.CHANGE_BAR_COLOR_FOR_POTIONS)) {
+                if (mc.thePlayer.isPotionActive(19/* Poison */)) {
+                    color = ColorUtils.getDummySkyblockColor(ColorCode.DARK_GREEN.getColor(), main.getConfigValues().getChromaFeatures().contains(feature));
+                } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
+                    color = ColorUtils.getDummySkyblockColor(ColorCode.DARK_GRAY.getColor(), main.getConfigValues().getChromaFeatures().contains(feature));
+                } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
+                    if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
+                        fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
+                        hasAbsorption = true;
+                    }
                 }
+            }
+
+            if (main.getUtils().isOnRift()) {
+                float maxCurrentHealth = getAttribute(Attribute.MAX_RIFT_HEALTH);
+                fill = getAttribute(Attribute.HEALTH) / maxCurrentHealth;
+
+                if (maxCurrentHealth > maxRiftHealth)
+                    maxRiftHealth = maxCurrentHealth;
+                else
+                    widthScale = maxCurrentHealth / maxRiftHealth;
+
+                if (Float.isNaN(widthScale))
+                    widthScale = 1.0F;
             }
         }
 
         main.getUtils().enableStandardGLOptions();
         // Draw the actual bar
-        drawMultiLayeredBar(mc, color, x, y, fill, hasAbsorption);
+        drawMultiLayeredBar(mc, color, x, y, fill, hasAbsorption, widthScale);
 
         main.getUtils().restoreGLOptions();
     }
@@ -470,8 +490,9 @@ public class RenderListener {
      * @param fill the fraction (from 0 to 1) of the bar that's full
      * @param hasAbsorption {@code true} if the player has absorption hearts
      */
-    private void drawMultiLayeredBar(Minecraft mc, SkyblockColor color, float x, float y, float fill, boolean hasAbsorption) {
-        int barHeight = 5, barWidth = 71;
+    private void drawMultiLayeredBar(Minecraft mc, SkyblockColor color, float x, float y, float fill, boolean hasAbsorption, float widthScale) {
+        int barHeight = 5;
+        float barWidth = 71 * widthScale;
         float barFill = barWidth * fill;
         mc.getTextureManager().bindTexture(BARS);
         if (color.getColor() == ColorCode.BLACK.getColor()) {
@@ -638,6 +659,10 @@ public class RenderListener {
      * This renders the defence icon.
      */
     public void drawIcon(float scale, Minecraft mc, ButtonLocation buttonLocation) {
+        // There is no defense stat on Rift Dimension
+        if (main.getUtils().isOnRift())
+            return;
+
         if (main.getConfigValues().isDisabled(Feature.USE_VANILLA_TEXTURE_DEFENCE)) {
             mc.getTextureManager().bindTexture(icons);
         } else {
@@ -671,6 +696,7 @@ public class RenderListener {
     public void drawText(Feature feature, float scale, Minecraft mc, ButtonLocation buttonLocation) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         String text;
+        boolean onRift = main.getUtils().isOnRift();
         int color = main.getConfigValues().getColor(feature);
         if (feature == Feature.MANA_TEXT) {
             text = TextUtils.formatNumber(getAttribute(Attribute.MANA)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_MANA));
@@ -687,7 +713,7 @@ public class RenderListener {
             text = getCrimsonArmorAbilityStacks();
             if (text == null) return;
 
-        } else if (feature == Feature.DEFENCE_TEXT) {
+        } else if (feature == Feature.DEFENCE_TEXT && !onRift) {
             text = TextUtils.formatNumber(getAttribute(Attribute.DEFENCE));
 
         } else if (feature == Feature.OTHER_DEFENCE_STATS) {
@@ -699,7 +725,7 @@ public class RenderListener {
                 return;
             }
 
-        } else if (feature == Feature.EFFECTIVE_HEALTH_TEXT) {
+        } else if (feature == Feature.EFFECTIVE_HEALTH_TEXT && !onRift) {
             text = TextUtils.formatNumber(Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F)));
 
         } else if (feature == Feature.DRILL_FUEL_TEXT) {
@@ -707,7 +733,7 @@ public class RenderListener {
                 return;
             }
             text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));//.replaceAll("000$", "k");
-        } else if (feature == Feature.DEFENCE_PERCENTAGE) {
+        } else if (feature == Feature.DEFENCE_PERCENTAGE && !onRift) {
             double doubleDefence = getAttribute(Attribute.DEFENCE);
             double percentage = ((doubleDefence / 100) / ((doubleDefence / 100) + 1)) * 100; //Taken from https://hypixel.net/threads/how-armor-works-and-the-diminishing-return-of-higher-defence.2178928/
             BigDecimal bigDecimal = new BigDecimal(percentage).setScale(1, RoundingMode.HALF_UP);
