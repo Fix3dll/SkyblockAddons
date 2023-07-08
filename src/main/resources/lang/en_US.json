@@ -250,6 +250,7 @@
       "joinDiscord": "Join our Discord server!",
       "watchShowcase": "Watch Video",
       "downloadButton": "Download",
+      "changelogButton": "Changelog",
       "openModFolderButton": "Open Mods Folder",
       "joinDiscordButton": "Join Discord",
       "newUpdateAvailable": "A new update (%version%) is available!",

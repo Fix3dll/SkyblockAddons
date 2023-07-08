@@ -219,11 +219,11 @@ public class Updater {
 
         ChatComponentText newUpdate = new ChatComponentText("§b" + Translations.getMessage(
                 "messages.updateChecker.newUpdateAvailable", targetVersion) + "\n");
-        ChatComponentText viewChangelog = new ChatComponentText("§b" + Translations.getMessage(
-                "messages.updateChecker.wantToViewPatchNotes") + "\n");
+        /*ChatComponentText viewChangelog = new ChatComponentText("§b" + Translations.getMessage(
+               "messages.updateChecker.wantToViewPatchNotes") + "\n");
         ChatComponentText joinDiscord = new ChatComponentText("§b" + Translations.getMessage(
                 "messages.updateChecker.joinDiscord") + "\n");
-        newUpdate.appendSibling(viewChangelog).appendSibling(joinDiscord);
+        newUpdate.appendSibling(viewChangelog).appendSibling(joinDiscord);*/
         main.getUtils().sendMessage(newUpdate, false);
 
         ChatComponentText showcaseButton = null;
@@ -270,9 +270,9 @@ public class Updater {
 
         if (changelogLink != null && !changelogLink.equals("")) {
             changelogButton = new ChatComponentText(" §9§l[" + Translations.getMessage(
-                    "messages.updateChecker.joinDiscordButton") + "]");
+                    "messages.updateChecker.changelogButton") + "]");
             changelogButton.setChatStyle(changelogButton.getChatStyle().setChatClickEvent
-                    (new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/zWyr3f5GXz")).setChatHoverEvent(
+                    (new ClickEvent(ClickEvent.Action.OPEN_URL, changelogLink)).setChatHoverEvent(
                             new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                     new ChatComponentText("§7" + Translations.getMessage("messages.clickToOpenLink")))));
             downloadButton.appendSibling(changelogButton);
