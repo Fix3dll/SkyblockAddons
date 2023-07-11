@@ -185,7 +185,7 @@ public class FeatureTrackerQuest {
                 if (main.getUtils().getMayor().startsWith("Finnegan") || main.getUtils().getJerryMayor().startsWith("Finnegan"))
                     CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 16000);
                 else
-                    CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 61000);
+                    CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 21000);
             }
             // Once the player has killed the animal, remove the hunt timer
             else if (ANIMAL_DIED_PATTERN.matcher(stripped).matches() || ANIMAL_KILLED_PATTERN.matcher(stripped).matches()) {
