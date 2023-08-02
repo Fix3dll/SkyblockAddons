@@ -516,8 +516,6 @@ public class PlayerListener {
                 if(main.getConfigValues().isEnabled(Feature.SHOW_NETHER_FACTION)){
                     Matcher m = NETHER_FACTION_SYMBOL.matcher(usernameWithSymbols);
                     if(m.find()) {
-                        if (!suffix.equals(" "))
-                            suffix += " ";
                         suffix += m.group(0);
                     }
                 }

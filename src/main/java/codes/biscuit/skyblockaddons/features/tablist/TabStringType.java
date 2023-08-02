@@ -12,7 +12,7 @@ public enum TabStringType {
     TEXT,
     PLAYER;
 
-    private static final Pattern USERNAME_TAB_PATTERN = Pattern.compile("^\\[(?<sblevel>\\d+)] (?:\\[\\w+] )?(?<username>\\w+)(?: (?<subfix>[♲Ⓑ⚒ቾ]|\\[✌]))?(?: (?<faction>[⚒ቾ]))?(?: \\((?<dungeonClass>\\w+) ?(?<classLvl>\\w+)?\\))?$");
+    private static final Pattern USERNAME_TAB_PATTERN = Pattern.compile("^\\[(?<sblevel>\\d+)] (?:\\[\\w+] )?(?<username>\\w+)");//(?: (?<subfix>[♲Ⓑ⚒ቾ]|\\[✌]))?(?: (?<faction>[⚒ቾ]))?(?: \\((?<dungeonClass>\\w+) ?(?<classLvl>\\w+)?\\))?$");
     public static TabStringType fromLine(String line) {
         String strippedLine = TextUtils.stripColor(line);
 
@@ -20,7 +20,7 @@ public enum TabStringType {
             return TEXT;
         }
 
-        if (!line.contains("§l") && USERNAME_TAB_PATTERN.matcher(TextUtils.stripColor(line)).matches()) {
+        if (USERNAME_TAB_PATTERN.matcher(strippedLine).find()) {
             return PLAYER;
         } else {
             return SUB_TITLE;
@@ -29,7 +29,7 @@ public enum TabStringType {
 
     public static String usernameFromLine(String input) {
         Matcher usernameMatcher = USERNAME_TAB_PATTERN.matcher(TextUtils.stripColor(input));
-        if (usernameMatcher.matches())
+        if (usernameMatcher.find())
             return usernameMatcher.group("username");
         else
             return input;
