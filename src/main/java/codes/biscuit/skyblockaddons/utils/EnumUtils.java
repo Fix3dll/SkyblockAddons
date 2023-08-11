@@ -219,6 +219,7 @@ public class EnumUtils {
         ZEALOT_SPAWN_AREAS_ONLY("settings.zealotSpawnAreasOnly", -1),
         EXPAND_DEPLOYABLE_STATUS("settings.expandDeployableStatus", -1),
         TREVOR_SHOW_LOCATION_ON_CHAT("settings.trevorTheTrapper.showLocationOnChat", 227),
+        HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 228),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),
@@ -410,7 +411,8 @@ public class EnumUtils {
         TARANTULA_BROODFATHER("Tarantula Broodfather"),
         SVEN_PACKMASTER("Sven Packmaster"),
         VOIDGLOOM_SERAPH("Voidgloom Seraph"),
-        INFERNO_DEMONLORD("Inferno Demonlord");
+        INFERNO_DEMONLORD("Inferno Demonlord"),
+        RIFTSTALKER_BLOODFIEND("Riftstalker Bloodfiend");
 
         private final String scoreboardName;
 

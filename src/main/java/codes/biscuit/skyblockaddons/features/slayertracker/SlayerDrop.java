@@ -90,7 +90,18 @@ public enum SlayerDrop {
     DUPLEX("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.COMMON, "ultimate_reiterate", 1),
     HIGH_CLASS_ARCHFIEND_DICE("High Class Archfiend Dice", "HIGH_CLASS_ARCHFIEND_DICE", ItemRarity.LEGENDARY, "9c3c19b2-84e6-3eb6-8aec-450e133a569a"/*change*/, "915f7c313bca9c2f958e68ab14ab393867d67503affff8f20cb13fbe917fd31"),
     WILSON_ENGINEERING_PLANS(Items.paper, "Wilson's Engineering Plans", "WILSON_ENGINEERING_PLANS", ItemRarity.LEGENDARY, true),
-    SUBZERO_INVERTER("Subzero Inverter", "SUBZERO_INVERTER", ItemRarity.LEGENDARY, "5ab20327-b51e-36b3-b65a-a772bc225067", "1cf677ca6209961e81beeb3aa274e0ec8d21d36778e5a94b80b1d8425b04ac6e");
+    SUBZERO_INVERTER("Subzero Inverter", "SUBZERO_INVERTER", ItemRarity.LEGENDARY, "5ab20327-b51e-36b3-b65a-a772bc225067", "1cf677ca6209961e81beeb3aa274e0ec8d21d36778e5a94b80b1d8425b04ac6e"),
+
+    //Vampire Slayer
+    COVEN_SEAL(Items.nether_wart, "Coven Seal", "COVEN_SEAL", ItemRarity.UNCOMMON),
+    QUANTUM_BOOK_BUNDLE("Quantum Bundle", "ENCHANTED_BOOK_BUNDLE_QUANTUM", ItemRarity.UNCOMMON, "ca704bba-9cb8-3220-bb45-0f0c3f8c93a0", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTViZTIyYjVkNGE4NzVkNzdkZjNmNzcxMGZmNDU3OGVmMjc5MzlhOTY4NGNiZGIzZDMxZDk3M2YxNjY4NDkifX19"),
+    SOULTWIST_RUNE("Soultwist Rune I", "RUNE", "SOULTWIST", ItemRarity.EPIC, "0618ee1f-2ca3-3caf-bf63-434febd16825", "ewogICJ0aW1lc3RhbXAiIDogMTY4MTUxOTM1Mjc5NCwKICAicHJvZmlsZUlkIiA6ICI4N2YzOGM1MWE4Yzc0MmNmYTY2YTgxNWExZTI2NzMzYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJCZWR3YXJzQ3V0aWUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjVmZmRmYmQ0OTBmYzczMTBkNjFhMWM0YzM1YTRlMGNkMmY5ZmNjYzEyMzljNmE0YmNkN2RlYzA1ZTI1ZWE2NyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"),
+    BUBBA_BLISTER("Bubba Blister", "BUBBA_BLISTER", ItemRarity.LEGENDARY, "44a0ab42-66df-3147-ba46-bcb92b3face9", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNiNTcyN2I5ODZjMzZlMDc1ODIxNDhiODg2MTAyY2Y4MDcwYjBlZTNhYTM3NzFiMjQ2NDM5M2Y1ODhhODMyZCJ9fX0="),
+    FANGTASTIC_CHOCOLATE_CHIP(Items.cookie, "Fang-tastic Chocolate Chip", "CHOCOLATE_CHIP", ItemRarity.LEGENDARY),
+    GUARDIAN_LUCKY_BLOCK("Guardian Lucky Block", "GUARDIAN_LUCKY_BLOCK", ItemRarity.LEGENDARY, "89f6b4f8-8067-32e6-b78b-a0c2458d78e3", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmZkY2ZiNDAwOTc2YmY3M2VjMzJjMWI5OTYyYzgzMGZjM2Q3MDA2ZDc0OWY4ZjNkYTNiNmUwZmI4MjkwOWIyOCJ9fX0="),
+    MCGRUBBER_BURGER("McGrubber's Burger", "MCGRUBBER_BURGER", ItemRarity.EPIC, "f5622ccb-aebc-36b7-9d39-7cbe0824cb6a", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDMzZGRiOTJjYjZiM2E3OTI4MGI4YmRjZWQ4OTc2YWVhYjEzYTRiZmZlYWVmMmQ0NmQ4MjhiZDkxZGVlMGYzZSJ9fX0="),
+    UNFANGED_VAMPIRE_PART("Unfanged Vampire Part", "UNFANGED_VAMPIRE_PART", ItemRarity.LEGENDARY, "59cc508f-f9f9-3c7b-893c-32096116901c", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTE4ODNlYjVlNDdjZWVlZDAyMDYzZmI4ZWMwZjc1ODQ3MTdhYzhjNzk1MjFhZTMyY2YwNjA2ZWJjZjc0MGU3MCJ9fX0="),
+    THE_ONE_BOOK_BUNDLE("The One Bundle", "ENCHANTED_BOOK_BUNDLE_THE_ONE", ItemRarity.LEGENDARY, "ca704bba-9cb8-3220-bb45-0f0c3f8c93a0", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTViZTIyYjVkNGE4NzVkNzdkZjNmNzcxMGZmNDU3OGVmMjc5MzlhOTY4NGNiZGIzZDMxZDk3M2YxNjY4NDkifX19");
 
     @Getter
     private final String skyblockID;
@@ -229,6 +240,15 @@ public enum SlayerDrop {
         internalItemTranslations.put("highClassArchfiendDice", "High Class Archfiend Dice");
         internalItemTranslations.put("wilsonEngineeringPlans", "Wilson's Engineering Plans");
         internalItemTranslations.put("subzeroInverter", "Subzero Inverter");
+        internalItemTranslations.put("covenSeal", "Coven Seal");
+        internalItemTranslations.put("quantumBookBundle", "Quantum (Book Bundle)");
+        internalItemTranslations.put("soultwistRune", "Soultwist Rune");
+        internalItemTranslations.put("bubbaBlister", "Bubba Blister");
+        internalItemTranslations.put("fangtasticChocolateChip", "Fang-Tastic Chocolate Chip");
+        internalItemTranslations.put("guardianLuckyBlock", "Guardian Lucky Block");
+        internalItemTranslations.put("mcGrubberBurger", "McGrubber's Burger");
+        internalItemTranslations.put("unfangedVampirePart", "Unfanged Vampire Part");
+        internalItemTranslations.put("theOneBookBundle", "The One (Book Bundle)");
     }
 
     public String getDisplayName() {
