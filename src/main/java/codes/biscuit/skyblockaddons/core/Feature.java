@@ -225,6 +225,10 @@ public enum Feature {
     EXPAND_DEPLOYABLE_STATUS(226, null, false),
     TREVOR_SHOW_LOCATION_ON_CHAT(227, "settings.trevorTheTrapper.showLocationOnChat", null, false),
     RIFTSTALKER_SLAYER_TRACKER(228, "settings.riftstalkerSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_RIFT),
+    //Skip 229
+    RIFTSTALKER_COLOR_BY_RARITY(230, null, false),
+    RIFTSTALKER_TEXT_MODE(231, null, true),
+
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
     WARP_ADVANCED_MODE(-1, "settings.advancedMode", null, true),
