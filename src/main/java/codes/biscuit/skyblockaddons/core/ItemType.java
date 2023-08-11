@@ -18,6 +18,7 @@ public enum ItemType {
     FISHING_WEAPON("FISHING WEAPON"),
     GAUNTLET("GAUNTLET"),
     HOE("HOE"),
+    LONGSWORD("LONGSWORD"),
     SHEARS("SHEARS"),
     SHOVEL("SHOVEL"),
     SWORD("SWORD"),
@@ -29,11 +30,19 @@ public enum ItemType {
     CHESTPLATE("CHESTPLATE"),
     LEGGINGS("LEGGINGS"),
     BOOTS("BOOTS"),
+    BRACELET("BRACELET"),
+    NECKLACE("NECKLACE"),
+    CLOAK("CLOAK"),
+    BELT("BELT"),
+    GLOVES("GLOVES"),
 
     // Other
     ACCESSORY("ACCESSORY"),
     COSMETIC("COSMETIC"),
+    DEPLOYABLE("DEPLOYABLE"),
     DUNGEON_ITEM("DUNGEON ITEM"),
+    HATCESSORY("HATCESSORY"),
+    POWER_STONE("POWER STONE"),
     /** Used when the item has only a rarity and no item type */
     OTHER("");
 

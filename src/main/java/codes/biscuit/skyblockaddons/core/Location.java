@@ -156,6 +156,8 @@ public enum Location {
     // Dungeons
     THE_CATACOMBS("The Catacombs"), // TODO RPC
     DUNGEON_HUB("Dungeon Hub"), // TODO RPC
+
+    // Kuudra Instances
     KUUDRAS_HOLLOW("Kuudra's Hollow"),
 
     // Crimson Isle

@@ -224,6 +224,8 @@ public enum Feature {
     INFERNO_TEXT_MODE(225, null, true),
     EXPAND_DEPLOYABLE_STATUS(226, null, false),
     TREVOR_SHOW_LOCATION_ON_CHAT(227, "settings.trevorTheTrapper.showLocationOnChat", null, false),
+    //228 is skipped bc it's in active PR
+    TURN_BOW_PURPLE_WHEN_USING_TWILIGHT_ARROW_POISON(229, "settings.turnBowPurpleWhenUsingTwilightArrowPoison", null, false),
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
     WARP_ADVANCED_MODE(-1, "settings.advancedMode", null, true),
@@ -273,7 +275,7 @@ public enum Feature {
             SHOW_FETCHUR_ONLY_IN_DWARVENS, SHOW_FETCHUR_ITEM_NAME, SHOW_FETCHUR_INVENTORY_OPEN_ONLY, WARN_WHEN_FETCHUR_CHANGES,
             STOP_ONLY_RAT_SQUEAK, SHOW_ENDER_CHEST_PREVIEW, HEALTH_PREDICTION, ABBREVIATE_SKILL_XP_DENOMINATOR, OTHER_DEFENCE_STATS,
             DISABLE_SPIRIT_SCEPTRE_MESSAGES, OUTBID_ALERT_SOUND_IN_OTHER_GAMES, DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME,
-            RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU);
+            RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, TURN_BOW_PURPLE_WHEN_USING_TWILIGHT_ARROW_POISON);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'

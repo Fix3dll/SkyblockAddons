@@ -42,4 +42,31 @@ public class RenderItemHook {
             textureManager.bindTexture(TextureMap.locationBlocksTexture);
         }
     }
+    public static void renderTwilightArrowPoisonEffect(IBakedModel model, ItemStack stack) {
+        SkyblockAddons main = SkyblockAddons.getInstance();
+
+        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.TURN_BOW_PURPLE_WHEN_USING_TWILIGHT_ARROW_POISON)
+                && main.getInventoryUtils().isUsingToxicArrowPoison() && Items.bow.equals(stack.getItem()) && main.getUtils().itemIsInHotbar(stack)) {
+            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+
+            GlStateManager.depthMask(false);
+            GlStateManager.depthFunc(514);
+            GlStateManager.disableLighting();
+            GlStateManager.blendFunc(768, 1);
+            textureManager.bindTexture(BLANK);
+            GlStateManager.matrixMode(5890);
+
+            GlStateManager.pushMatrix();
+
+            Minecraft.getMinecraft().getRenderItem().renderModel(model, 0x20674ea7);
+            GlStateManager.popMatrix();
+
+            GlStateManager.matrixMode(5888);
+            GlStateManager.blendFunc(770, 771);
+            GlStateManager.enableLighting();
+            GlStateManager.depthFunc(515);
+            GlStateManager.depthMask(true);
+            textureManager.bindTexture(TextureMap.locationBlocksTexture);
+        }
+    }
 }

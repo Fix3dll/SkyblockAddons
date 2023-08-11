@@ -14,7 +14,7 @@ public enum SkillType {
     FISHING("Fishing", Items.fishing_rod, false),
     ENCHANTING("Enchanting", Item.getItemFromBlock(Blocks.enchanting_table), false),
     ALCHEMY("Alchemy", Items.brewing_stand, false),
-    CARPENTRY("Carpentry", Item.getItemFromBlock(Blocks.crafting_table), true),
+    CARPENTRY("Carpentry", Item.getItemFromBlock(Blocks.crafting_table), false),
     RUNECRAFTING("Runecrafting", Items.magma_cream, true),
     TAMING("Taming", Items.spawn_egg, false),
     DUNGEONEERING("Dungeoneering", Item.getItemFromBlock(Blocks.deadbush), false),

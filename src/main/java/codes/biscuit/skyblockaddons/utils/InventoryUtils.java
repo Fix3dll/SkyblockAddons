@@ -44,6 +44,7 @@ public class InventoryUtils {
     /** Display name of the Skeleton Helmet. */
     private static final String SKELETON_HELMET_ID = "SKELETON_HELMET";
     private static final String TOXIC_ARROW_POISON_ID = "TOXIC_ARROW_POISON";
+    private static final String TWILIGHT_ARROW_POISON_ID = "TWILIGHT_ARROW_POISON";
 
     public static final String MADDOX_BATPHONE_ID = "AATROX_BATPHONE";
     public static final String JUNGLE_AXE_ID = "JUNGLE_AXE";
@@ -68,6 +69,9 @@ public class InventoryUtils {
 
     @Getter
     private boolean usingToxicArrowPoison;
+
+    @Getter
+    private boolean usingTwilightArrowPoison;
 
     @Getter
     private final SlayerArmorProgress[] slayerArmorProgresses = new SlayerArmorProgress[4];
@@ -324,6 +328,24 @@ public class InventoryUtils {
                 }
             }
             this.usingToxicArrowPoison = false;
+        }
+    }
+
+    /**
+     * Determines if the player is using Twilight Arrow Poison by detecting if it is present in their inventory.
+     *
+     * @param p the player to check
+     */
+
+    public void checkIfUsingTwilightArrowPoison(EntityPlayerSP p) {
+        if (main.getConfigValues().isEnabled(Feature.TURN_BOW_PURPLE_WHEN_USING_TWILIGHT_ARROW_POISON)) {
+            for (ItemStack item : p.inventory.mainInventory) {
+                if (item != null && TWILIGHT_ARROW_POISON_ID.equals(ItemUtils.getSkyblockItemID(item))) {
+                    this.usingTwilightArrowPoison = true;
+                    return;
+                }
+            }
+            this.usingTwilightArrowPoison = false;
         }
     }
 
