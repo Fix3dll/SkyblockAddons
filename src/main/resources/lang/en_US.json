@@ -228,6 +228,7 @@
     "showProfileTypeInChat": "Show Profile Type In Chat",
     "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas",
     "infernoSlayerTracker": "Slayer Tracker - Inferno/Blaze",
+    "riftstalkerSlayerTracker": "Slayer Tracker - Riftstalker/Vampire",
     "expandDeployableStatus": "Show stats in 2 columns on detailed status"
   },
   "messages": {
@@ -346,7 +347,9 @@
     "titleVoidgloom": "Voidgloom Quest",
     "descriptionVoidgloom": "Shows that you are doing a Voidgloom quest.",
     "titleInferno": "Inferno Quest",
-    "descriptionInferno": "Shows that you are doing an Inferno quest."
+    "descriptionInferno": "Shows that you are doing an Inferno quest.",
+    "titleRiftstalker": "Riftstalker Quest",
+    "descriptionRiftstalker": "Shows that you are doing a Riftstalker quest."
   },
   "enchantLayout": {
     "title": "Control how enchants are displayed on item tooltips",
@@ -679,6 +682,7 @@
     "sven": "Sven Packmaster:",
     "voidgloom": "Voidgloom Seraph:",
 	"inferno": "Inferno Demonlord:",
+    "riftstalker": "Riftstalker Bloodfiend:",
     "bossesKilled": "Bosses Killed"
   },
   "warpMenu": {

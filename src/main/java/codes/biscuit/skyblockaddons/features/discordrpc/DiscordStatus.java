@@ -127,6 +127,7 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                     if (slayerQuest == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER) return DiscordStatus.valueOf("TARANTULA").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH) return DiscordStatus.valueOf("VOIDGLOOM").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.INFERNO_DEMONLORD) return DiscordStatus.valueOf("INFERNO").displayMessageSupplier.get();
+                    if (slayerQuest == EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND) return DiscordStatus.valueOf("RIFTSTALKER").displayMessageSupplier.get();
                 }
                 if (main.getUtils().isOnRift()) {
                     return DiscordStatus.valueOf("MOTES").displayMessageSupplier.get();
@@ -168,7 +169,7 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 boolean bossAlive = main.getUtils().isSlayerBossAlive();
 
                 if (bossAlive) {
-                    return "Slaying a Tarantula Broodfather  "+main.getUtils().getSlayerQuestLevel()+" boss.";
+                    return "Slaying a Tarantula Broodfather "+main.getUtils().getSlayerQuestLevel()+" boss.";
                 } else {
                     return "Doing a Tarantula Broodfather "+main.getUtils().getSlayerQuestLevel()+" quest.";
                 }
@@ -180,7 +181,7 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 boolean bossAlive = main.getUtils().isSlayerBossAlive();
 
                 if (bossAlive) {
-                    return "Slaying a Voidgloom Seraph  "+main.getUtils().getSlayerQuestLevel()+" boss.";
+                    return "Slaying a Voidgloom Seraph "+main.getUtils().getSlayerQuestLevel()+" boss.";
                 } else {
                     return "Doing a Voidgloom Seraph "+main.getUtils().getSlayerQuestLevel()+" quest.";
                 }
@@ -192,11 +193,23 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 boolean bossAlive = main.getUtils().isSlayerBossAlive();
 
                 if (bossAlive) {
-                    return "Slaying a Inferno Demonlord  "+main.getUtils().getSlayerQuestLevel()+" boss.";
+                    return "Slaying a Inferno Demonlord "+main.getUtils().getSlayerQuestLevel()+" boss.";
                 } else {
                     return "Doing a Inferno Demonlord "+main.getUtils().getSlayerQuestLevel()+" quest.";
                 }
             }),
+
+    RIFTSTALKER("discordStatus.titleRiftstalker", "discordStatus.descriptionRiftstalker",
+                    () -> {
+        SkyblockAddons main = SkyblockAddons.getInstance();
+        boolean bossAlive = main.getUtils().isSlayerBossAlive();
+
+        if (bossAlive) {
+            return "Slaying a Riftstalker Bloodfiend "+main.getUtils().getSlayerQuestLevel()+" boss.";
+        } else {
+            return "Doing a Riftstalker Bloodfiend "+main.getUtils().getSlayerQuestLevel()+" quest.";
+        }
+    })
     ;
 
     private final String title;

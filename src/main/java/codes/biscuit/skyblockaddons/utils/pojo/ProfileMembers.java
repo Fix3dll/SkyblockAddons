@@ -23,6 +23,8 @@ public class ProfileMembers {
         private SlayerData spider;
         private SlayerData wolf;
         private SlayerData enderman;
+        private SlayerData blaze;
+        private SlayerData vampire;
     }
 
     @Getter

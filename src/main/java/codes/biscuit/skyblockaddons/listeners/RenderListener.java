@@ -28,12 +28,16 @@ import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
 import codes.biscuit.skyblockaddons.utils.*;
+import com.mojang.authlib.GameProfile;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -90,6 +94,7 @@ public class RenderListener {
     private static final ResourceLocation FARM_ICON = new ResourceLocation("skyblockaddons", "icons/farm.png");
 
     private static final ResourceLocation CRITICAL = new ResourceLocation("skyblockaddons", "critical.png");
+    private static final ResourceLocation RIFTSTALKER_BLOODFIEND = new ResourceLocation("skyblockaddons", "vampire.png");
 
     private static final ItemStack WATER_BUCKET = new ItemStack(Items.water_bucket);
     private static final ItemStack IRON_SWORD = new ItemStack(Items.iron_sword);
@@ -118,6 +123,7 @@ public class RenderListener {
     private static EntityWolf sven;
     private static EntityEnderman enderman;
     private static EntityBlaze inferno;
+    private static AbstractClientPlayer vampire;
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
 
@@ -1600,6 +1606,15 @@ public class RenderListener {
             colorByRarity = config.isEnabled(Feature.INFERNO_COLOR_BY_RARITY);
             textMode = config.isEnabled(Feature.INFERNO_TEXT_MODE);
             slayerBoss = SlayerBoss.INFERNO;
+        } else if (feature == Feature.RIFTSTALKER_SLAYER_TRACKER) {
+            if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_RIFT) &&
+                    (quest != EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND || (location != Location.OUBLIETTE && location != Location.STILLGORE_CHATEAU))) {
+                return;
+            }
+
+            colorByRarity = config.isEnabled(Feature.RIFTSTALKER_COLOR_BY_RARITY);
+            textMode = config.isEnabled(Feature.RIFTSTALKER_TEXT_MODE);
+            slayerBoss = SlayerBoss.RIFTSTALKER;
         } else {
             return;
         }
@@ -1687,6 +1702,9 @@ public class RenderListener {
                 entityRenderY = 25;
                 textCenterX = 20;
             } else if (feature == Feature.INFERNO_SLAYER_TRACKER) {
+                entityRenderY = 25;
+                textCenterX = 20;
+            } else if (feature == Feature.RIFTSTALKER_SLAYER_TRACKER) {
                 entityRenderY = 25;
                 textCenterX = 20;
             } else {
@@ -1779,6 +1797,20 @@ public class RenderListener {
                 GlStateManager.color(1, 1, 1, 1);
                 inferno.ticksExisted = (int) main.getNewScheduler().getTotalTicks();
                 drawEntity(inferno, x + 15, y + 53, -15);
+
+            }  else if (feature == Feature.RIFTSTALKER_SLAYER_TRACKER) {
+                if (vampire == null) {
+                    vampire = new EntityOtherPlayerMP(Utils.getDummyWorld(), new GameProfile(UUID.randomUUID(), "Vampire")) {
+                        @Override
+                        public ResourceLocation getLocationSkin() {
+                            return RIFTSTALKER_BLOODFIEND;
+                        }
+                    };
+
+                }
+                GlStateManager.color(1, 1, 1, 1);
+                vampire.ticksExisted = (int) main.getNewScheduler().getTotalTicks();
+                drawEntity(vampire, x + 15, y + 53, -15);
 
             } else {
                 if (sven == null) {
