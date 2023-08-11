@@ -372,11 +372,23 @@
       "maxLevel": 2,
       "nbtName": "punch"
     },
+    "quantum": {
+      "goodLevel": 4,
+      "loreName": "Quantum",
+      "maxLevel": 5,
+      "nbtName": "quantum"
+    },
     "rainbow": {
       "goodLevel": 1,
       "loreName": "Rainbow",
       "maxLevel": 2,
       "nbtName": "rainbow"
+    },
+    "reflection": {
+      "goodLevel": 0,
+      "loreName": "Reflection",
+      "maxLevel": 5,
+      "nbtName": "reflection"
     },
     "rejuvenate": {
       "goodLevel": 0,
@@ -799,6 +811,12 @@
       "loreName": "Swarm",
       "maxLevel": 5,
       "nbtName": "ultimate_swarm"
+    },
+    "the one": {
+      "goodLevel": 0,
+      "loreName": "The One",
+      "maxLevel": 5,
+      "nbtName": "ultimate_the_one"
     },
     "ultimate jerry": {
       "goodLevel": 0,
