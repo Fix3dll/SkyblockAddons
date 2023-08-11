@@ -64,6 +64,11 @@
     "rarity": "UNCOMMON",
     "spawnMessage": "The Grinch stole Jerry's Gifts...get them back!"
   },
+  "AGARIMOO":  {
+    "name": "Agarimoo",
+    "rarity": "RARE",
+    "spawnMessage": "Your Chumcap Bucket trembles, it's an Agarimoo."
+  },
   "CATFISH":  {
     "name": "Catfish",
     "rarity": "RARE",
@@ -108,6 +113,11 @@
     "name": "Moogma",
     "rarity": "RARE",
     "spawnMessage": "You hear a faint Moo from the lava... A Moogma appears."
+  },
+  "NUTCRACKER":  {
+    "name": "Nutcracker",
+    "rarity": "RARE",
+    "spawnMessage": "You found a forgotten Nutcracker laying beneath the ice."
   },
   "PYROCLASTIC_WORM":  {
     "name": "Pyroclastic Worm",
@@ -168,6 +178,11 @@
     "name": "Grim Reaper",
     "rarity": "LEGENDARY",
     "spawnMessage": "This can't be! The manifestation of death himself!"
+  },
+  "REINDRAKE":  {
+    "name": "Reindrake",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "A Reindrake forms from the depths."
   },
   "THUNDER":  {
     "name": "Thunder",
