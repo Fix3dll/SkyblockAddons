@@ -219,7 +219,7 @@ public class EnumUtils {
         ZEALOT_SPAWN_AREAS_ONLY("settings.zealotSpawnAreasOnly", -1),
         EXPAND_DEPLOYABLE_STATUS("settings.expandDeployableStatus", -1),
         TREVOR_SHOW_LOCATION_ON_CHAT("settings.trevorTheTrapper.showLocationOnChat", 227),
-        HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 228),
+        HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 232),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),
@@ -299,7 +299,8 @@ public class EnumUtils {
         NOPOTHEGAMER("NopoTheGamer", "twitch.tv/nopothegamer", Feature.BAL_BOSS_ALERT),
         CATFACE("CatFace","github.com/CattoFace",Feature.PLAYER_SYMBOLS_IN_CHAT),
         HANNIBAL2("Hannibal2", "github.com/hannibal00212", Feature.CRIMSON_ARMOR_ABILITY_STACKS, Feature.HIDE_TRUE_DEFENSE),
-        JASON54("jason54jg", "github.com/jason54jg", Feature.INFERNO_SLAYER_TRACKER, Feature.INFERNO_COLOR_BY_RARITY, Feature.INFERNO_TEXT_MODE);
+        JASON54("jason54jg", "github.com/jason54jg", Feature.INFERNO_SLAYER_TRACKER, Feature.INFERNO_COLOR_BY_RARITY, Feature.INFERNO_TEXT_MODE),
+        SOULTWISTRUNE("soultwistrune", "github.com/soultwistrune", Feature.RIFTSTALKER_SLAYER_TRACKER, Feature.RIFTSTALKER_COLOR_BY_RARITY, Feature.RIFTSTALKER_TEXT_MODE);
 
         private final Set<Feature> features;
         private final String author;

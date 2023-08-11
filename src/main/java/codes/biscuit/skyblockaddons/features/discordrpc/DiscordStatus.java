@@ -127,6 +127,7 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                     if (slayerQuest == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER) return DiscordStatus.valueOf("TARANTULA").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH) return DiscordStatus.valueOf("VOIDGLOOM").displayMessageSupplier.get();
                     if (slayerQuest == EnumUtils.SlayerQuest.INFERNO_DEMONLORD) return DiscordStatus.valueOf("INFERNO").displayMessageSupplier.get();
+                    if (slayerQuest == EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND) return DiscordStatus.valueOf("RIFTSTALKER").displayMessageSupplier.get();
                 }
                 if (main.getUtils().isOnRift()) {
                     return DiscordStatus.valueOf("MOTES").displayMessageSupplier.get();
