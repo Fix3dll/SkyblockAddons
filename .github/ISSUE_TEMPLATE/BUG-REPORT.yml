@@ -21,6 +21,8 @@ body:
       label: SBA Version
       multiple: false
       options:
+       - 1.8.1
+       - 1.8.0
        - 1.8.0-beta.1
        - 1.7.2
     validations:
