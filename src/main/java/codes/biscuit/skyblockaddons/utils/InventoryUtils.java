@@ -319,32 +319,23 @@ public class InventoryUtils {
      *
      * @param p the player to check
      */
-    public void checkIfUsingToxicArrowPoison(EntityPlayerSP p) {
-        if (main.getConfigValues().isEnabled(Feature.TURN_BOW_GREEN_WHEN_USING_TOXIC_ARROW_POISON)) {
+    public void checkIfUsingArrowPoison(EntityPlayerSP p) {
+        if (main.getConfigValues().isEnabled(Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON)) {
             for (ItemStack item : p.inventory.mainInventory) {
-                if (item != null && TOXIC_ARROW_POISON_ID.equals(ItemUtils.getSkyblockItemID(item))) {
-                    this.usingToxicArrowPoison = true;
-                    return;
+                if (item != null) {
+                    String itemID = ItemUtils.getSkyblockItemID(item);
+                    if (TOXIC_ARROW_POISON_ID.equals(itemID)) {
+                        this.usingToxicArrowPoison = true;
+                        this.usingTwilightArrowPoison = false;
+                        return;
+                    } else if (TWILIGHT_ARROW_POISON_ID.equals(itemID)) {
+                        this.usingToxicArrowPoison = false;
+                        this.usingTwilightArrowPoison = true;
+                        return;
+                    }
                 }
             }
             this.usingToxicArrowPoison = false;
-        }
-    }
-
-    /**
-     * Determines if the player is using Twilight Arrow Poison by detecting if it is present in their inventory.
-     *
-     * @param p the player to check
-     */
-
-    public void checkIfUsingTwilightArrowPoison(EntityPlayerSP p) {
-        if (main.getConfigValues().isEnabled(Feature.TURN_BOW_PURPLE_WHEN_USING_TWILIGHT_ARROW_POISON)) {
-            for (ItemStack item : p.inventory.mainInventory) {
-                if (item != null && TWILIGHT_ARROW_POISON_ID.equals(ItemUtils.getSkyblockItemID(item))) {
-                    this.usingTwilightArrowPoison = true;
-                    return;
-                }
-            }
             this.usingTwilightArrowPoison = false;
         }
     }

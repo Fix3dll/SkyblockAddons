@@ -29,7 +29,7 @@ public class RenderItemTransformer implements ITransformer {
             //   this.renderItem(stack, model);
             //
             // Add after:
-            //   RenderItemHook.renderToxicArrowPoisonEffect(model, stack);
+            //   RenderItemHook.renderArrowPoisonEffect(model, stack);
 
             if (TransformerMethod.renderItem.matches(methodNode)) {
                 Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -42,7 +42,7 @@ public class RenderItemTransformer implements ITransformer {
                         if (TransformerMethod.renderModel_IBakedModel_ItemStack.matches(methodInsnNode)) {
 
                             methodNode.instructions.insert(abstractNode, new MethodInsnNode(Opcodes.INVOKESTATIC, "codes/biscuit/skyblockaddons/asm/hooks/RenderItemHook",
-                                    "renderToxicArrowPoisonEffect", "("+TransformerClass.IBakedModel.getName()+TransformerClass.ItemStack.getName()+")V", false));
+                                    "renderArrowPoisonEffect", "("+TransformerClass.IBakedModel.getName()+TransformerClass.ItemStack.getName()+")V", false));
                             methodNode.instructions.insert(abstractNode, new VarInsnNode(Opcodes.ALOAD, 1));
                             methodNode.instructions.insert(abstractNode, new VarInsnNode(Opcodes.ALOAD, 2));
                             break;
