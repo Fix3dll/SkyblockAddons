@@ -1,197 +1,197 @@
 {
-  "SQUID": {
-    "name": "Squid",
-    "rarity": "COMMON",
-    "spawnMessage": "A Squid appeared."
+  "AGARIMOO":  {
+    "name": "Agarimoo",
+    "rarity": "RARE",
+    "spawnMessage": "Your Chumcap Bucket trembles, it's an Agarimoo."
   },
-  "SEA_WALKER": {
-    "name": "Sea Walker",
+  "BLUE_SHARK": {
+    "name": "Blue Shark",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "You spot a fin as blue as the water it came from, it's a Blue Shark."
+  },
+  "CARROT_KING": {
+    "name": "Carrot King",
+    "rarity": "RARE",
+    "spawnMessage": "Is this even a fish? It's the Carrot King!"
+  },
+  "CATFISH": {
+    "name": "Catfish",
+    "rarity": "RARE",
+    "spawnMessage": "Huh? A Catfish!"
+  },
+  "DEEP_SEA_PROTECTOR": {
+    "name": "Deep Sea Protector",
+    "rarity": "EPIC",
+    "spawnMessage": "You have awoken the Deep Sea Protector, prepare for a battle!"
+  },
+  "FIRE_EEL": {
+    "name": "Fire Eel",
+    "rarity": "RARE",
+    "spawnMessage": "A Fire Eel slithers out from the depths."
+  },
+  "FROSTY": {
+    "name": "Frosty",
     "rarity": "COMMON",
-    "spawnMessage": "You caught a Sea Walker."
+    "spawnMessage": "It's a snowman! He looks harmless"
+  },
+  "FROZEN_STEVE": {
+    "name": "Frozen Steve",
+    "rarity": "COMMON",
+    "spawnMessage": "Frozen Steve fell into the pond long ago, never to resurface...until now!"
+  },
+  "GREAT_WHITE_SHARK": {
+    "name": "Great White Shark",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!"
+  },
+  "GRIM_REAPER": {
+    "name": "Grim Reaper",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "This can't be! The manifestation of death himself!"
+  },
+  "GRINCH": {
+    "name": "Grinch",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "The Grinch stole Jerry's Gifts...get them back!"
+  },
+  "GUARDIAN_DEFENDER": {
+    "name": "Guardian Defender",
+    "rarity": "EPIC",
+    "spawnMessage": "You've discovered a Guardian Defender of the sea."
+  },
+  "LAVA_FLAME": {
+    "name": "Lava Flame",
+    "rarity": "RARE",
+    "spawnMessage": "A Lava Flame flies out from beneath the lava."
+  },
+  "LAVA_LEECH": {
+    "name": "Lava Leech",
+    "rarity": "RARE",
+    "spawnMessage": "A small but fearsome Lava Leech emerges."
+  },
+  "LORD_JAWBUS": {
+    "name": "Lord Jawbus",
+    "rarity": "MYTHIC",
+    "spawnMessage": "You have angered a legendary creature... Lord Jawbus has arrived"
+  },
+  "MAGMA_SLUG": {
+    "name": "Magma Slug",
+    "rarity": "RARE",
+    "spawnMessage": "From beneath the lava appears a Magma Slug."
+  },
+  "MONSTER_OF_THE_DEEP": {
+    "name": "Monster of The Deep",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "The Monster of the Deep has emerged."
+  },
+  "MOOGMA": {
+    "name": "Moogma",
+    "rarity": "RARE",
+    "spawnMessage": "You hear a faint Moo from the lava... A Moogma appears."
   },
   "NIGHT_SQUID": {
     "name": "Night Squid",
     "rarity": "COMMON",
     "spawnMessage": "Pitch Darkness reveals you've caught a Night Squid."
   },
-  "FROZEN_STEVE":  {
-    "name": "Frozen Steve",
-    "rarity": "COMMON",
-    "spawnMessage": "Frozen Steve fell into the pond long ago, never to resurface...until now!"
-  },
-  "NURSE_SHARK":  {
-    "name": "Nurse Shark",
-    "rarity": "COMMON",
-    "spawnMessage": "A tiny fin emerges from the water, you've caught a Nurse Shark."
-  },
-  "SEA_GUARDIAN":  {
-    "name": "Sea Guardian",
-    "rarity": "COMMON",
-    "spawnMessage": "You stumbled upon a Sea Guardian."
-  },
-  "FROSTY":  {
-    "name": "Frosty",
-    "rarity": "COMMON",
-    "spawnMessage": "It's a snowman! He looks harmless"
-  },
-  "SCARECROW":  {
-    "name": "Scarecrow",
-    "rarity": "COMMON",
-    "spawnMessage": "Phew! It's only a scarecrow."
-  },
-  "SEA_WITCH":  {
-    "name": "Sea Witch",
-    "rarity": "UNCOMMON",
-    "spawnMessage": "It looks like you've disrupted the Sea Witch's brewing session. Watch out, she's furious!"
-  },
-  "BLUE_SHARK":  {
-    "name": "Blue Shark",
-    "rarity": "UNCOMMON",
-    "spawnMessage": "You spot a fin as blue as the water it came from, it's a Blue Shark."
-  },
-  "SEA_ARCHER":  {
-    "name": "Sea Archer",
-    "rarity": "UNCOMMON",
-    "spawnMessage": "You reeled in a Sea Archer."
-  },
-  "MONSTER_OF_THE_DEEP":  {
-    "name": "Monster of The Deep",
-    "rarity": "UNCOMMON",
-    "spawnMessage": "The Monster of the Deep has emerged."
-  },
-  "GRINCH":  {
-    "name": "Grinch",
-    "rarity": "UNCOMMON",
-    "spawnMessage": "The Grinch stole Jerry's Gifts...get them back!"
-  },
-  "AGARIMOO":  {
-    "name": "Agarimoo",
-    "rarity": "RARE",
-    "spawnMessage": "Your Chumcap Bucket trembles, it's an Agarimoo."
-  },
-  "CATFISH":  {
-    "name": "Catfish",
-    "rarity": "RARE",
-    "spawnMessage": "Huh? A Catfish!"
-  },
-  "NIGHTMARE":  {
+  "NIGHTMARE": {
     "name": "Nightmare",
     "rarity": "RARE",
     "spawnMessage": "You hear trotting from beneath the waves, you caught a Nightmare"
   },
-  "CARROT_KING":  {
-    "name": "Carrot King",
-    "rarity": "RARE",
-    "spawnMessage": "Is this even a fish? It's the Carrot King!"
+  "NURSE_SHARK": {
+    "name": "Nurse Shark",
+    "rarity": "COMMON",
+    "spawnMessage": "A tiny fin emerges from the water, you've caught a Nurse Shark."
   },
-  "SEA_LEECH":  {
-    "name": "Sea Leech",
-    "rarity": "RARE",
-    "spawnMessage": "Gross! A Sea Leech!"
-  },
-  "MAGMA_SLUG":  {
-    "name": "Magma Slug",
-    "rarity": "RARE",
-    "spawnMessage": "From beneath the lava appears a Magma Slug."
-  },
-  "LAVA_FLAME":  {
-    "name": "Lava Flame",
-    "rarity": "RARE",
-    "spawnMessage": "A Lava Flame flies out from beneath the lava."
-  },
-  "LAVA_LEECH":  {
-    "name": "Lava Leech",
-    "rarity": "RARE",
-    "spawnMessage": "A small but fearsome Lava Leech emerges."
-  },
-  "FIRE_EEL":  {
-    "name": "Fire Eel",
-    "rarity": "RARE",
-    "spawnMessage": "A Fire Eel slithers out from the depths."
-  },
-  "MOOGMA":  {
-    "name": "Moogma",
-    "rarity": "RARE",
-    "spawnMessage": "You hear a faint Moo from the lava... A Moogma appears."
-  },
-  "NUTCRACKER":  {
+  "NUTCRACKER": {
     "name": "Nutcracker",
     "rarity": "RARE",
     "spawnMessage": "You found a forgotten Nutcracker laying beneath the ice."
   },
-  "PYROCLASTIC_WORM":  {
-    "name": "Pyroclastic Worm",
-    "rarity": "RARE",
-    "spawnMessage": "You feel the heat radiating as a Pyroclastic Worm surfaces."
-  },
-  "TARUS":  {
-    "name": "Tarus",
-    "rarity": "RARE",
-    "spawnMessage": "Taurus and his steed emerge."
-  },
-  "GUARDIAN_DEFENDER":  {
-    "name": "Guardian Defender",
-    "rarity": "EPIC",
-    "spawnMessage": "You've discovered a Guardian Defender of the sea."
-  },
-  "WEREWOLF":  {
-    "name": "Werewolf",
-    "rarity": "EPIC",
-    "spawnMessage":  "It must be a full moon, a Werewolf appears!"
-  },
-  "TIGER_SHARK":  {
-    "name": "Tiger Shark",
-    "rarity": "EPIC",
-    "spawnMessage": "A striped beast bounds from the depths, the wild Tiger Shark!"
-  },
-  "DEEP_SEA_PROTECTOR":  {
-    "name": "Deep Sea Protector",
-    "rarity": "EPIC",
-    "spawnMessage": "You have awoken the Deep Sea Protector, prepare for a battle!"
-  },
-  "WATER_HYDRA":  {
-    "name": "Water Hydra",
-    "rarity": "LEGENDARY",
-    "spawnMessage": "The Water Hydra has come to test your strength."
-  },
-  "SEA_EMPEROR":  {
-    "name": "Sea Emperor",
-    "rarity": "LEGENDARY",
-    "spawnMessage": "The Sea Emperor arises from the depths."
-  },
-  "PHANTOM_FISHER":  {
+  "PHANTOM_FISHER": {
     "name": "Phantom Fisher",
     "rarity": "LEGENDARY",
     "spawnMessage": "The spirit of a long lost Phantom Fisher has come to haunt you."
   },
-  "GREAT_WHITE_SHARK":  {
-    "name": "Great White Shark",
-    "rarity": "LEGENDARY",
-    "spawnMessage": "Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!"
+  "PYROCLASTIC_WORM": {
+    "name": "Pyroclastic Worm",
+    "rarity": "RARE",
+    "spawnMessage": "You feel the heat radiating as a Pyroclastic Worm surfaces."
   },
-  "YETI":  {
-    "name": "Yeti",
-    "rarity": "LEGENDARY",
-    "spawnMessage": "What is this creature!?"
-  },
-  "GRIM_REAPER":  {
-    "name": "Grim Reaper",
-    "rarity": "LEGENDARY",
-    "spawnMessage": "This can't be! The manifestation of death himself!"
-  },
-  "REINDRAKE":  {
+  "REINDRAKE": {
     "name": "Reindrake",
     "rarity": "LEGENDARY",
-    "spawnMessage": "A Reindrake forms from the depths."
+    "spawnMessage": "WOAH! A Reindrake was summoned from the depths!"
   },
-  "THUNDER":  {
+  "SCARECROW": {
+    "name": "Scarecrow",
+    "rarity": "COMMON",
+    "spawnMessage": "Phew! It's only a scarecrow."
+  },
+  "SEA_ARCHER": {
+    "name": "Sea Archer",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "You reeled in a Sea Archer."
+  },
+  "SEA_EMPEROR": {
+    "name": "Sea Emperor",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "The Sea Emperor arises from the depths."
+  },
+  "SEA_GUARDIAN": {
+    "name": "Sea Guardian",
+    "rarity": "COMMON",
+    "spawnMessage": "You stumbled upon a Sea Guardian."
+  },
+  "SEA_LEECH": {
+    "name": "Sea Leech",
+    "rarity": "RARE",
+    "spawnMessage": "Gross! A Sea Leech!"
+  },
+  "SEA_WALKER": {
+    "name": "Sea Walker",
+    "rarity": "COMMON",
+    "spawnMessage": "You caught a Sea Walker."
+  },
+  "SEA_WITCH": {
+    "name": "Sea Witch",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "It looks like you've disrupted the Sea Witch's brewing session. Watch out, she's furious!"
+  },
+  "SQUID": {
+    "name": "Squid",
+    "rarity": "COMMON",
+    "spawnMessage": "A Squid appeared."
+  },
+  "TARUS": {
+    "name": "Tarus",
+    "rarity": "RARE",
+    "spawnMessage": "Taurus and his steed emerge."
+  },
+  "THUNDER": {
     "name": "Thunder",
     "rarity": "MYTHIC",
     "spawnMessage": "You hear a massive rumble as Thunder emerges."
   },
-  "LORD_JAWBUS":  {
-    "name": "Lord Jawbus",
-    "rarity": "MYTHIC",
-    "spawnMessage": "You have angered a legendary creature... Lord Jawbus has arrived"
+  "TIGER_SHARK": {
+    "name": "Tiger Shark",
+    "rarity": "EPIC",
+    "spawnMessage": "A striped beast bounds from the depths, the wild Tiger Shark!"
+  },
+  "WATER_HYDRA": {
+    "name": "Water Hydra",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "The Water Hydra has come to test your strength."
+  },
+  "WEREWOLF": {
+    "name": "Werewolf",
+    "rarity": "EPIC",
+    "spawnMessage": "It must be a full moon, a Werewolf appears!"
+  },
+  "YETI": {
+    "name": "Yeti",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "What is this creature!?"
   }
 }

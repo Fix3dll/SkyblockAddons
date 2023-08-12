@@ -373,7 +373,7 @@
       "nbtName": "punch"
     },
     "quantum": {
-      "goodLevel": 4,
+      "goodLevel": 5,
       "loreName": "Quantum",
       "maxLevel": 5,
       "nbtName": "quantum"
@@ -385,7 +385,7 @@
       "nbtName": "rainbow"
     },
     "reflection": {
-      "goodLevel": 0,
+      "goodLevel": 5,
       "loreName": "Reflection",
       "maxLevel": 5,
       "nbtName": "reflection"
