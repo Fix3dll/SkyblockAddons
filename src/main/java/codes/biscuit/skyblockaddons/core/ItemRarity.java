@@ -18,7 +18,10 @@ public enum ItemRarity {
     DIVINE("DIVINE", ColorCode.AQUA),
 
     SPECIAL("SPECIAL", ColorCode.RED),
-    VERY_SPECIAL("VERY SPECIAL", ColorCode.RED);
+    VERY_SPECIAL("VERY SPECIAL", ColorCode.RED),
+
+    //Admin Rarity Exists on the Wiki (wiki.hypixel.net/Rarity)
+    ADMIN("ADMIN", ColorCode.DARK_RED);
 
     /** The name of the rarity as displayed in an item's lore */
     private final String loreName;

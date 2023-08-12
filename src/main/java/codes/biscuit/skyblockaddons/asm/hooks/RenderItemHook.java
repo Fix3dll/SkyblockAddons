@@ -15,11 +15,12 @@ public class RenderItemHook {
 
     private static final ResourceLocation BLANK = new ResourceLocation("skyblockaddons","blank.png");
 
-    public static void renderToxicArrowPoisonEffect(IBakedModel model, ItemStack stack) {
+    public static void renderArrowPoisonEffect(IBakedModel model, ItemStack stack) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.TURN_BOW_GREEN_WHEN_USING_TOXIC_ARROW_POISON)
-                && main.getInventoryUtils().isUsingToxicArrowPoison() && Items.bow.equals(stack.getItem()) && main.getUtils().itemIsInHotbar(stack)) {
+        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON)
+                && (main.getInventoryUtils().isUsingToxicArrowPoison() || main.getInventoryUtils().isUsingTwilightArrowPoison())
+                && Items.bow.equals(stack.getItem()) && main.getUtils().itemIsInHotbar(stack)) {
             TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
             GlStateManager.depthMask(false);
@@ -31,7 +32,10 @@ public class RenderItemHook {
 
             GlStateManager.pushMatrix();
 
-            Minecraft.getMinecraft().getRenderItem().renderModel(model, 0x201cba41);
+            if (main.getInventoryUtils().isUsingToxicArrowPoison())
+                Minecraft.getMinecraft().getRenderItem().renderModel(model, 0x201cba41);
+            else if (main.getInventoryUtils().isUsingTwilightArrowPoison())
+                Minecraft.getMinecraft().getRenderItem().renderModel(model, 0x20ff37ff);
             GlStateManager.popMatrix();
 
             GlStateManager.matrixMode(5888);

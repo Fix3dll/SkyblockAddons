@@ -44,6 +44,7 @@ public class InventoryUtils {
     /** Display name of the Skeleton Helmet. */
     private static final String SKELETON_HELMET_ID = "SKELETON_HELMET";
     private static final String TOXIC_ARROW_POISON_ID = "TOXIC_ARROW_POISON";
+    private static final String TWILIGHT_ARROW_POISON_ID = "TWILIGHT_ARROW_POISON";
 
     public static final String MADDOX_BATPHONE_ID = "AATROX_BATPHONE";
     public static final String JUNGLE_AXE_ID = "JUNGLE_AXE";
@@ -68,6 +69,9 @@ public class InventoryUtils {
 
     @Getter
     private boolean usingToxicArrowPoison;
+
+    @Getter
+    private boolean usingTwilightArrowPoison;
 
     @Getter
     private final SlayerArmorProgress[] slayerArmorProgresses = new SlayerArmorProgress[4];
@@ -315,15 +319,24 @@ public class InventoryUtils {
      *
      * @param p the player to check
      */
-    public void checkIfUsingToxicArrowPoison(EntityPlayerSP p) {
-        if (main.getConfigValues().isEnabled(Feature.TURN_BOW_GREEN_WHEN_USING_TOXIC_ARROW_POISON)) {
+    public void checkIfUsingArrowPoison(EntityPlayerSP p) {
+        if (main.getConfigValues().isEnabled(Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON)) {
             for (ItemStack item : p.inventory.mainInventory) {
-                if (item != null && TOXIC_ARROW_POISON_ID.equals(ItemUtils.getSkyblockItemID(item))) {
-                    this.usingToxicArrowPoison = true;
-                    return;
+                if (item != null) {
+                    String itemID = ItemUtils.getSkyblockItemID(item);
+                    if (TOXIC_ARROW_POISON_ID.equals(itemID)) {
+                        this.usingToxicArrowPoison = true;
+                        this.usingTwilightArrowPoison = false;
+                        return;
+                    } else if (TWILIGHT_ARROW_POISON_ID.equals(itemID)) {
+                        this.usingToxicArrowPoison = false;
+                        this.usingTwilightArrowPoison = true;
+                        return;
+                    }
                 }
             }
             this.usingToxicArrowPoison = false;
+            this.usingTwilightArrowPoison = false;
         }
     }
 

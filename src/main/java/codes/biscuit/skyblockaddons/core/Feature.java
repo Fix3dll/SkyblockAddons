@@ -78,7 +78,7 @@ public enum Feature {
     SHOW_TOTAL_ZEALOT_COUNT(77, "settings.showTotalZealotCount", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), true, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     SHOW_SUMMONING_EYE_COUNT(78, "settings.showSummoningEyeCount", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), true, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     SHOW_AVERAGE_ZEALOTS_PER_EYE(79, "settings.showZealotsPerEye", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), true, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
-    TURN_BOW_GREEN_WHEN_USING_TOXIC_ARROW_POISON(80, "settings.turnBowGreenWhenUsingToxicArrowPoison", null, false),
+    TURN_BOW_COLOR_WHEN_USING_ARROW_POISON(80, "settings.turnBowGreenWhenUsingToxicArrowPoison", null, false),
     BIRCH_PARK_RAINMAKER_TIMER(81, "settings.birchParkRainmakerTimer", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), false),
     DISCORD_RPC(83, "settings.discordRP", null, true, EnumUtils.FeatureSetting.DISCORD_RP_DETAILS, EnumUtils.FeatureSetting.DISCORD_RP_STATE),
     ENDSTONE_PROTECTOR_DISPLAY(84, "settings.endstoneProtectorDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.WHITE), false),
