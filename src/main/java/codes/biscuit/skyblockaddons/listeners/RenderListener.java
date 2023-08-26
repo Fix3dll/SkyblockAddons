@@ -2220,7 +2220,7 @@ public class RenderListener {
 
         if (deployable.getManaRegen() > 0.0) {
             float maxMana = main.getUtils().getAttributes().get(Attribute.MAX_MANA).getValue();
-            float manaRegen = (float) (maxMana * deployable.getManaRegen() * 2.0 / 100.0);
+            float manaRegen = (float) (maxMana * deployable.getManaRegen() / 50);
             display.add(String.format("§b+%s ✎/s", TextUtils.formatNumber(manaRegen)));
             passIndex++;
         }

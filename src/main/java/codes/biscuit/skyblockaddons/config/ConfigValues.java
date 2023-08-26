@@ -207,6 +207,7 @@ public class ConfigValues {
             } else {
                 deserializeNumber(chromaSpeed, "chromaSpeed", float.class);
             }
+            deserializeNumber(healingCircleOpacity, "healingCircleOpacity", float.class);
             deserializeNumber(chromaSize, "chromaSize", float.class);
             deserializeEnumValueFromOrdinal(chromaMode, "chromaMode");
             deserializeNumber(chromaFadeWidth, "chromaFadeWidth", float.class);
@@ -397,6 +398,7 @@ public class ConfigValues {
                     chromaFeaturesArray.add(new GsonBuilder().create().toJsonTree(feature.getId()));
                 }
                 saveConfig.add("chromaFeatures", chromaFeaturesArray);
+                saveConfig.addProperty("healingCircleOpacity", healingCircleOpacity.getValue());
                 saveConfig.addProperty("chromaSpeed", chromaSpeed);
                 saveConfig.addProperty("chromaMode", chromaMode.getValue().ordinal());
                 saveConfig.addProperty("chromaSize", chromaSize);
