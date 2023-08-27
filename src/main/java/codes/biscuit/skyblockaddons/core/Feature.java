@@ -155,7 +155,7 @@ public enum Feature {
     USE_NEW_CHROMA_EFFECT(157, "settings.useNewChromaEffect", null, false),
     SHOW_EXPERIMENTATION_TABLE_TOOLTIPS(158, "settings.showExperimentationTableTooltips", null, true),
     DRILL_FUEL_BAR(160, "settings.drillFuelBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.DARK_GREEN), false),
-    DRILL_FUEL_TEXT(161, "settings.drillFuelNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_GREEN), false),
+    DRILL_FUEL_TEXT(161, "settings.drillFuelNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_GREEN), false, EnumUtils.FeatureSetting.ABBREVIATE_DRILL_FUEL_DENOMINATOR),
     FISHING_PARTICLE_OVERLAY(162, "settings.fishingParticleOverlay", new GuiFeatureData(ColorCode.WHITE), false, EnumUtils.FeatureSetting.BIGGER_WAKE),
     COOLDOWN_PREDICTION(164, "settings.cooldownPrediction", null, false),
     ENCHANTMENT_PERFECT_COLOR(165, "enchants.superTier", new GuiFeatureData(ColorCode.CHROMA, true), false),
@@ -228,6 +228,7 @@ public enum Feature {
     RIFTSTALKER_COLOR_BY_RARITY(229, null, false),
     RIFTSTALKER_TEXT_MODE(230, null, true),
     HIDE_WHEN_NOT_IN_RIFT(231, null, false),
+    ABBREVIATE_DRILL_FUEL_DENOMINATOR(232, "settings.abbreviateDrillFuelDenominator", null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -275,7 +276,7 @@ public enum Feature {
             SHOW_FETCHUR_ONLY_IN_DWARVENS, SHOW_FETCHUR_ITEM_NAME, SHOW_FETCHUR_INVENTORY_OPEN_ONLY, WARN_WHEN_FETCHUR_CHANGES,
             STOP_ONLY_RAT_SQUEAK, SHOW_ENDER_CHEST_PREVIEW, HEALTH_PREDICTION, ABBREVIATE_SKILL_XP_DENOMINATOR, OTHER_DEFENCE_STATS,
             DISABLE_SPIRIT_SCEPTRE_MESSAGES, OUTBID_ALERT_SOUND_IN_OTHER_GAMES, DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME,
-            RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU);
+            RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'

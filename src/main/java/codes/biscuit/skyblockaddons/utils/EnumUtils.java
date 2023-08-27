@@ -220,6 +220,7 @@ public class EnumUtils {
         EXPAND_DEPLOYABLE_STATUS("settings.expandDeployableStatus", -1),
         TREVOR_SHOW_LOCATION_ON_CHAT("settings.trevorTheTrapper.showLocationOnChat", 227),
         HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 231),
+        ABBREVIATE_DRILL_FUEL_DENOMINATOR("settings.abbreviateDrillFuelDenominator", 232),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

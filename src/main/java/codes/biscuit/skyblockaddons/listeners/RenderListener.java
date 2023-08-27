@@ -718,6 +718,7 @@ public class RenderListener {
                 text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH));
             else
                 text += TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
+
         } else if (feature == Feature.CRIMSON_ARMOR_ABILITY_STACKS) {
             text = getCrimsonArmorAbilityStacks();
             if (text == null) return;
@@ -727,10 +728,10 @@ public class RenderListener {
 
         } else if (feature == Feature.OTHER_DEFENCE_STATS) {
             text = main.getPlayerListener().getActionBarParser().getOtherDefense();
-            if (buttonLocation != null && (text == null || text.length() == 0)) {
+            if (buttonLocation != null && (text == null || text.isEmpty())) {
                 text = "|||  T3!";
             }
-            if (text == null || text.length() == 0) {
+            if (text == null || text.isEmpty()) {
                 return;
             }
 
@@ -741,10 +742,15 @@ public class RenderListener {
             if (!ItemUtils.isDrill(mc.thePlayer.getHeldItem())) {
                 return;
             }
-            text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));//.replaceAll("000$", "k");
+            text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/";
+            if (main.getConfigValues().isEnabled(Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR))
+                text += TextUtils.abbreviate((int) getAttribute(Attribute.MAX_FUEL));
+            else
+                text += TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));
+
         } else if (feature == Feature.DEFENCE_PERCENTAGE && !onRift) {
             double doubleDefence = getAttribute(Attribute.DEFENCE);
-            double percentage = ((doubleDefence / 100) / ((doubleDefence / 100) + 1)) * 100; //Taken from https://hypixel.net/threads/how-armor-works-and-the-diminishing-return-of-higher-defence.2178928/
+            double percentage = doubleDefence / (doubleDefence + 100) * 100; //Taken from https://wiki.hypixel.net/Defense
             BigDecimal bigDecimal = new BigDecimal(percentage).setScale(1, RoundingMode.HALF_UP);
             text = bigDecimal + "%";
 
