@@ -146,25 +146,21 @@ public class PlayerListener {
     private long lastMaddoxLevelTime;
     private String lastMaddoxSlayerType;
 
-    @Getter
-    private long rainmakerTimeEnd = -1;
+    @Getter private long rainmakerTimeEnd = -1;
 
     private boolean oldBobberIsInWater;
     private double oldBobberPosY = 0;
 
-    @Getter
-    private final Set<UUID> countedEndermen = new HashSet<>();
-    @Getter
-    private final TreeMap<Long, Set<Vec3>> recentlyKilledZealots = new TreeMap<>();
+    @Getter private final Set<UUID> countedEndermen = new HashSet<>();
+    @Getter private final TreeMap<Long, Set<Vec3>> recentlyKilledZealots = new TreeMap<>();
 
     @Getter private int spiritSceptreHitEnemies = 0;
     @Getter private float spiritSceptreDealtDamage = 0;
 
-    @Getter
-    private final TreeMap<Long, Vec3> explosiveBowExplosions = new TreeMap<>();
+    @Getter private final TreeMap<Long, Vec3> explosiveBowExplosions = new TreeMap<>();
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
-    private final ActionBarParser actionBarParser = new ActionBarParser();
+    @Getter private final ActionBarParser actionBarParser = new ActionBarParser();
 
     // For caching for the PROFILE_TYPE_IN_CHAT feature, saves the last MAX_SIZE names.
     private final LinkedHashMap<String, String> namesWithSymbols = new LinkedHashMap<String, String>(){
@@ -236,7 +232,7 @@ public class PlayerListener {
 
                 // Parse using ActionBarParser and display the rest message instead
                 String restMessage = actionBarParser.parseActionBar(unformattedText);
-                if (main.isUsingOofModv1() && restMessage.trim().length() == 0) {
+                if (main.isUsingOofModv1() && restMessage.trim().isEmpty()) {
                     e.setCanceled(true);
                     return;
                 }
@@ -615,16 +611,22 @@ public class PlayerListener {
                     actionBarParser.setHealthUpdate(null);
                 }
                 EntityPlayerSP p = mc.thePlayer;
-                if (p != null && main.getConfigValues().isEnabled(Feature.HEALTH_PREDICTION)) { //Reverse calculate the player's health by using the player's vanilla hearts. Also calculate the health change for the gui item.
-                    float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH) ?
-                            getAttribute(Attribute.HEALTH) : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
-                    setAttribute(Attribute.HEALTH, newHealth);
-                }
-
-                if (p != null && main.getUtils().isOnRift() && (main.getConfigValues().isEnabled(Feature.HEALTH_BAR)
-                        || main.getConfigValues().isEnabled(Feature.HEALTH_TEXT))) {
-                    setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
-                    setAttribute(Attribute.HEALTH, p.getHealth());
+                if (p != null) {
+                    if (main.getUtils().isOnRift()) {
+                        if (main.getConfigValues().isEnabled(Feature.HEALTH_BAR) || main.getConfigValues().isEnabled(Feature.HEALTH_TEXT)) {
+                            setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
+                            setAttribute(Attribute.HEALTH, p.getHealth());
+                        }
+                    } else {
+                        // Reverse calculate the player's health by using the player's vanilla hearts.
+                        // Also calculate the health change for the gui item.
+                        if (main.getConfigValues().isEnabled(Feature.HEALTH_PREDICTION)) {
+                            float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)
+                                    ? getAttribute(Attribute.HEALTH)
+                                    : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
+                            setAttribute(Attribute.HEALTH, newHealth);
+                        }
+                    }
                 }
 
                 if (timerTick == 20) {
@@ -632,7 +634,13 @@ public class PlayerListener {
                     if (main.getRenderListener().isPredictMana()) {
                         // If regen-ing, cap at the max mana
                         if (getAttribute(Attribute.MANA) < getAttribute(Attribute.MAX_MANA)) {
-                            setAttribute(Attribute.MANA, Math.min(getAttribute(Attribute.MANA) + getAttribute(Attribute.MAX_MANA) / 50, getAttribute(Attribute.MAX_MANA)));
+                            setAttribute(
+                                    Attribute.MANA
+                                    , Math.min(
+                                            getAttribute(Attribute.MANA) + getAttribute(Attribute.MAX_MANA) / 50
+                                            , getAttribute(Attribute.MAX_MANA)
+                                    )
+                            );
                         }
                         // If above mana cap, do nothing
                     }
@@ -862,20 +870,20 @@ public class PlayerListener {
         Entity entity = e.entity;
 
         // Detect Brood Mother spawn
-        if(main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
-            if(entity.hasCustomName() && entity.posY > 165) {
-                if(entity.getName().contains("Brood Mother") && (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000)) { //Brood Mother
-                    lastBroodmother = System.currentTimeMillis();
-                    main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                    main.getUtils().playLoudSound("random.orb", 0.5);
+        if (main.getUtils().isOnSkyblock()) {
+            if (main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
+                if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Brood Mother")) {
+                    if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
+                        lastBroodmother = System.currentTimeMillis();
+                        main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
+                        main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+                        main.getUtils().playLoudSound("random.orb", 0.5);
+                    }
                 }
             }
-        }
-        if (main.getUtils().isOnSkyblock()) {
-            Minecraft mc = Minecraft.getMinecraft();
-            for (Entity cubes : mc.theWorld.loadedEntityList) {
-                if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && main.getUtils().isOnSkyblock() && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
+
+            for (Entity cubes : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+                if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
                     if (cubes instanceof EntityMagmaCube) {
                         EntitySlime magma = (EntitySlime) cubes;
                         if (magma.getSlimeSize() > 10) { // Find a big bal boss
@@ -885,63 +893,65 @@ public class PlayerListener {
                                 balTick = 16; // so the sound plays instantly
                                 main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                             }
-                            if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && balTick % 4 == 0) { // Play sound every 4 ticks or 1/5 second.
+                            // Play sound every 4 ticks or 1/5 second.
+                            if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && balTick % 4 == 0) {
                                 main.getUtils().playLoudSound("random.orb", 0.5);
                             }
                         }
                     }
                 }
             }
-        }
 
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT) && entity instanceof EntityArrow) {
-            EntityArrow arrow = (EntityArrow) entity;
+            if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT) && entity instanceof EntityArrow) {
+                EntityArrow arrow = (EntityArrow) entity;
 
-            EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
-            ItemStack heldItem = p.getHeldItem();
-            if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
+                EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
+                ItemStack heldItem = p.getHeldItem();
+                if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
 
-                AxisAlignedBB playerRadius = new AxisAlignedBB(p.posX - 3, p.posY - 3, p.posZ - 3, p.posX + 3, p.posY + 3, p.posZ + 3);
-                if (playerRadius.isVecInside(arrow.getPositionVector())) {
-
+                    AxisAlignedBB playerRadius = new AxisAlignedBB(p.posX - 3, p.posY - 3, p.posZ - 3, p.posX + 3, p.posY + 3, p.posZ + 3);
+                    if (playerRadius.isVecInside(arrow.getPositionVector())) {
 //                    System.out.println("Spawned explosive arrow!");
-                    main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
-                        @Override
-                        public void run() {
-                            if (arrow.isDead || arrow.isCollided || arrow.inGround) {
-                                cancel();
+                        main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
+                            @Override
+                            public void run() {
+                                if (arrow.isDead || arrow.isCollided || arrow.inGround) {
+                                    cancel();
 
 //                                System.out.println("Arrow is done, added an explosion!");
-                                Vec3 explosionLocation = new Vec3(arrow.posX, arrow.posY, arrow.posZ);
-                                explosiveBowExplosions.put(System.currentTimeMillis(), explosionLocation);
+                                    Vec3 explosionLocation = new Vec3(arrow.posX, arrow.posY, arrow.posZ);
+                                    explosiveBowExplosions.put(System.currentTimeMillis(), explosionLocation);
 
-                                recentlyKilledZealots.keySet().removeIf((killedTime) -> System.currentTimeMillis() - killedTime > 150);
-                                Set<Vec3> filteredRecentlyKilledZealots = new HashSet<>();
-                                for (Map.Entry<Long, Set<Vec3>> recentlyKilledZealotEntry : recentlyKilledZealots.entrySet()) {
-                                    filteredRecentlyKilledZealots.addAll(recentlyKilledZealotEntry.getValue());
-                                }
-                                if (filteredRecentlyKilledZealots.isEmpty()) return;
+                                    recentlyKilledZealots.keySet().removeIf((killedTime) -> System.currentTimeMillis() - killedTime > 150);
+                                    Set<Vec3> filteredRecentlyKilledZealots = new HashSet<>();
+                                    for (Map.Entry<Long, Set<Vec3>> recentlyKilledZealotEntry : recentlyKilledZealots.entrySet()) {
+                                        filteredRecentlyKilledZealots.addAll(recentlyKilledZealotEntry.getValue());
+                                    }
+                                    if (filteredRecentlyKilledZealots.isEmpty()) return;
 
 //                                int possibleZealotsKilled = filteredRecentlyKilledZealots.size();
 //                                System.out.println("This means "+possibleZealotsKilled+" may have been killed...");
 //                                int originalPossibleZealotsKilled = possibleZealotsKilled;
 
-                                for (Vec3 zealotDeathLocation : filteredRecentlyKilledZealots) {
-                                    double distance = explosionLocation.distanceTo(zealotDeathLocation);
+                                    for (Vec3 zealotDeathLocation : filteredRecentlyKilledZealots) {
+                                        double distance = explosionLocation.distanceTo(zealotDeathLocation);
 //                                    System.out.println("Distance was "+distance+"!");
-                                    if (distance < 4.6) {
+                                        if (distance < 4.6) {
 //                                        possibleZealotsKilled--;
 
-                                        main.getPersistentValuesManager().getPersistentValues().setKills(main.getPersistentValuesManager().getPersistentValues().getKills() + 1);
-                                        main.getPersistentValuesManager().saveValues();
-                                        EndstoneProtectorManager.onKill();
+                                            main.getPersistentValuesManager().getPersistentValues().setKills(
+                                                    main.getPersistentValuesManager().getPersistentValues().getKills() + 1
+                                            );
+                                            main.getPersistentValuesManager().saveValues();
+                                            EndstoneProtectorManager.onKill();
+                                        }
                                     }
-                                }
 
 //                                System.out.println((originalPossibleZealotsKilled-possibleZealotsKilled)+" zealots were actually killed...");
+                                }
                             }
-                        }
-                    }, 0, 1);
+                        }, 0, 1);
+                    }
                 }
             }
         }
@@ -1344,7 +1354,4 @@ public class PlayerListener {
         return false;
     }
 
-    public ActionBarParser getActionBarParser() {
-        return actionBarParser;
-    }
 }

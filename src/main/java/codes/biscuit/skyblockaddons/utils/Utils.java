@@ -411,8 +411,7 @@ public class Utils {
                                     }
                                 }
                             }
-                            // strippedScoreboardLine.contains("\u0444") || strippedScoreboardLine.contains("\u0424")
-                        } else if (ScoreboardManager.getStrippedScoreboardLines().get(lineNumber - 1).contains("Rift Dimension")) {
+                        } else if (strippedScoreboardLine.contains("\u0444")) {
                             onRift = true;
                             for (Location loopLocation : LocationUtils.getRiftLocations()) {
                                 if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
