@@ -203,16 +203,6 @@ public enum Location {
     SMOLDERING_TOMB("Smoldering Tomb"),
     THE_DUKEDOM("The Dukedom"),
 
-    /*
-    Out of Bounds
-    This is a valid location in Skyblock, it isn't a placeholder or a made up location.
-    It actually displays when the player is out of bounds.
-    */
-    NONE("None"),
-
-    // This is used when the mod is unable to retrieve the player's location from the sidebar.
-    UNKNOWN("Unknown"),
-
     // RIFT DIMENSION
     /* existing ones
     WIZARD_TOWER("Wizard Tower"),
@@ -255,7 +245,18 @@ public enum Location {
     PHOTON_PATHWAY("Photon Pathway"),
     STILLGORE_CHATEAU("Stillgore Château"),
     OUBLIETTE("Oubliette"),
-    FAIRYLOSOPHER_TOWER("Fairylosopher Tower");
+    FAIRYLOSOPHER_TOWER("Fairylosopher Tower"),
+
+    /*
+    Out of Bounds
+    This is a valid location in Skyblock, it isn't a placeholder or a made up location.
+    It actually displays when the player is out of bounds.
+    */
+    NONE("None"),
+
+    // This is used when the mod is unable to retrieve the player's location from the sidebar.
+    UNKNOWN("Unknown"),
+    ;
 
     /**
      * The name of this location as shown on the in-game scoreboard.

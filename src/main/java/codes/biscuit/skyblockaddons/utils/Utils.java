@@ -322,7 +322,7 @@ public class Utils {
                         continue;
 
                     // No need to try to find serverID after line 0
-                    if (!foundServerID && lineNumber < 1) {
+                    if (!foundServerID && lineNumber == 0) {
                         Matcher matcher = SERVER_REGEX.matcher(strippedScoreboardLine);
 
                         if (matcher.find()) {
@@ -333,6 +333,7 @@ public class Utils {
                                 serverID = "mega" + matcher.group("serverCode");
                             }
                             foundServerID = true;
+                            continue;
                         }
                     }
 
@@ -342,6 +343,7 @@ public class Utils {
                         if (dateM.find()) {
                             dateMatcher = dateM;
                             foundDate = true;
+                            continue;
                         }
                     }
 
@@ -351,6 +353,7 @@ public class Utils {
                         if (timeM.find()) {
                             currentDate = SkyblockDate.parse(dateMatcher, timeM);
                             foundTime = true;
+                            continue;
                         } else {
                             currentDate = SkyblockDate.parse(dateMatcher);
                         }
@@ -386,10 +389,6 @@ public class Utils {
 
                             } else {
                                 for (Location loopLocation : Location.values()) {
-                                    // Continuation of enum was reserved for Rift Dimension
-                                    if (loopLocation.equals(Location.UNKNOWN))
-                                        break;
-
                                     if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
                                         // Special case causes Dwarven Village to map to Village
                                         if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
@@ -412,7 +411,8 @@ public class Utils {
                                     }
                                 }
                             }
-                        } else if (strippedScoreboardLine.contains("\u0444")) {
+                            // strippedScoreboardLine.contains("\u0444") || strippedScoreboardLine.contains("\u0424")
+                        } else if (ScoreboardManager.getStrippedScoreboardLines().get(lineNumber - 1).contains("Rift Dimension")) {
                             onRift = true;
                             for (Location loopLocation : LocationUtils.getRiftLocations()) {
                                 if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
@@ -422,6 +422,7 @@ public class Utils {
                                 }
                             }
                         }
+                        if (foundLocation) continue;
                     }
 
                     // No need to try to find purse after line 8
@@ -435,6 +436,7 @@ public class Utils {
                                 purse = 0.0;
                             }
                             foundCoins = true;
+                            continue;
                         } else if (onRift && strippedScoreboardLine.startsWith("Motes:")) {
                             String motesStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
                             try {
@@ -444,6 +446,7 @@ public class Utils {
                                 motes = 0.0;
                             }
                             foundCoins = true;
+                            continue;
                         }
                     }
 
@@ -458,6 +461,7 @@ public class Utils {
                                 bits = 0.0;
                             }
                             foundBits = true;
+                            continue;
                         }
                     }
 
@@ -466,12 +470,14 @@ public class Utils {
                         if (strippedScoreboardLine.equals("Tracker Mob Location:")) {
                             isTrackingAnimal = true;
                             foundTrackingAnimal = true;
+                            continue;
                         }
                     }
 
                     // Lines after old switch-case
                     if (strippedScoreboardLine.endsWith("Combat XP") || strippedScoreboardLine.endsWith("Kills")) {
                         parseSlayerProgress(strippedScoreboardLine);
+                        continue;
                     }
 
                     if (!onRift && !foundJerryWave && LocationUtils.isInWinterIsland(location)) {
@@ -487,6 +493,8 @@ public class Utils {
                             if (jerryWave != newJerryWave) {
                                 jerryWave = newJerryWave;
                             }
+
+                            continue;
                         }
                     }
 
@@ -499,23 +507,27 @@ public class Utils {
                             main.getDungeonManager().reset();
                         }
                         main.getDungeonManager().setLastServerId(serverID);
+                        continue;
                     }
 
-                    Matcher slayerMatcher = SLAYER_TYPE_REGEX.matcher(strippedScoreboardLine);
-                    if (slayerMatcher.matches()) {
-                        String type = slayerMatcher.group("type");
-                        String levelRomanNumeral = slayerMatcher.group("level");
+                    if (!foundSlayerQuest) {
+                        Matcher slayerMatcher = SLAYER_TYPE_REGEX.matcher(strippedScoreboardLine);
+                        if (slayerMatcher.matches()) {
+                            String type = slayerMatcher.group("type");
+                            String levelRomanNumeral = slayerMatcher.group("level");
 
-                        EnumUtils.SlayerQuest detectedSlayerQuest = EnumUtils.SlayerQuest.fromName(type);
-                        if (detectedSlayerQuest != null) {
-                            try {
-                                int level = RomanNumeralParser.parseNumeral(levelRomanNumeral);
-                                slayerQuest = detectedSlayerQuest;
-                                slayerQuestLevel = level;
-                                foundSlayerQuest = true;
+                            EnumUtils.SlayerQuest detectedSlayerQuest = EnumUtils.SlayerQuest.fromName(type);
+                            if (detectedSlayerQuest != null) {
+                                try {
+                                    int level = RomanNumeralParser.parseNumeral(levelRomanNumeral);
+                                    slayerQuest = detectedSlayerQuest;
+                                    slayerQuestLevel = level;
+                                    foundSlayerQuest = true;
+                                    continue;
 
-                            } catch (IllegalArgumentException ex) {
-                                logger.error("Failed to parse slayer level (" + ex.getMessage() + ")", ex);
+                                } catch (IllegalArgumentException ex) {
+                                    logger.error("Failed to parse slayer level (" + ex.getMessage() + ")", ex);
+                                }
                             }
                         }
                     }
@@ -523,6 +535,7 @@ public class Utils {
                     if (strippedScoreboardLine.equals("Slay the boss!")) {
                         foundBossAlive = true;
                         slayerBossAlive = true;
+                        continue;
                     }
 
                     if (inDungeon) {
