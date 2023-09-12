@@ -872,7 +872,7 @@ public class PlayerListener {
         // Detect Brood Mother spawn
         if (main.getUtils().isOnSkyblock()) {
             if (main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
-                if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Brood Mother")) {
+                if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Broodmother")) {
                     if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
                         lastBroodmother = System.currentTimeMillis();
                         main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
