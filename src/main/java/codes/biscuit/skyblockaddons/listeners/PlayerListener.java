@@ -629,18 +629,21 @@ public class PlayerListener {
                     }
                 }
 
-                if (timerTick == 20) {
+                if (timerTick == 21) {
                     // Add natural mana every second (increase is based on your max mana).
                     if (main.getRenderListener().isPredictMana()) {
+                        float mana = getAttribute(Attribute.MANA);
+                        float maxMana = getAttribute(Attribute.MAX_MANA);
+
                         // If regen-ing, cap at the max mana
-                        if (getAttribute(Attribute.MANA) < getAttribute(Attribute.MAX_MANA)) {
-                            setAttribute(
-                                    Attribute.MANA
-                                    , Math.min(
-                                            getAttribute(Attribute.MANA) + getAttribute(Attribute.MAX_MANA) / 50
-                                            , getAttribute(Attribute.MAX_MANA)
-                                    )
-                            );
+                        if (mana < maxMana) {
+                            DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
+                            float predictedRegenMana = maxMana / 50;
+
+                            if (activeDeployable != null)
+                                predictedRegenMana += (float) (maxMana * activeDeployable.getDeployable().getManaRegen() / 50);
+
+                            setAttribute(Attribute.MANA, Math.min(mana + predictedRegenMana, maxMana));
                         }
                         // If above mana cap, do nothing
                     }
@@ -1009,11 +1012,6 @@ public class PlayerListener {
                     }
                 }
 
-                if (main.getConfigValues().isEnabled(Feature.SHOW_BROKEN_FRAGMENTS) && hoveredItem.getDisplayName().contains("Dragon Fragment") &&
-                        extraAttributes.hasKey("bossId") && extraAttributes.hasKey("spawnedFor")) {
-                    e.toolTip.add(insertAt++, "§c§lBROKEN FRAGMENT");
-                }
-
                 if (main.getConfigValues().isEnabled(Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE) && extraAttributes.hasKey("baseStatBoostPercentage", ItemUtils.NBT_INTEGER)) {
                     int baseStatBoost = extraAttributes.getInteger("baseStatBoostPercentage");
 
@@ -1040,11 +1038,7 @@ public class PlayerListener {
                 if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_DUNGEON_FLOOR) && extraAttributes.hasKey("item_tier", ItemUtils.NBT_INTEGER)) {
                     int floor = extraAttributes.getInteger("item_tier");
                     ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_ITEM_DUNGEON_FLOOR);
-                    e.toolTip.add(insertAt++, "§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor));
-                }
-
-                if (main.getConfigValues().isEnabled(Feature.SHOW_RARITY_UPGRADED) && extraAttributes.hasKey("rarity_upgrades", ItemUtils.NBT_INTEGER)) {
-                    e.toolTip.add(insertAt, main.getConfigValues().getRestrictedColor(Feature.SHOW_RARITY_UPGRADED) + "§lRARITY UPGRADED");
+                    e.toolTip.add(insertAt, "§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor));
                 }
             }
         }
