@@ -45,6 +45,7 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMagmaCube;
@@ -63,6 +64,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -868,23 +870,31 @@ public class PlayerListener {
         return armorStand.hasCustomName() && armorStand.getCustomNameTag().contains("Zealot");
     }
 
-    @SubscribeEvent()
-    public void onEntitySpawn(EntityEvent.EnteringChunk e) {
+    @SubscribeEvent
+    public void onRenderLivingPre(RenderLivingEvent.Pre<EntityLivingBase> e) {
         Entity entity = e.entity;
 
-        // Detect Brood Mother spawn
         if (main.getUtils().isOnSkyblock()) {
+            // Detect Brood Mother spawn
             if (main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
                 if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Broodmother")) {
                     if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
                         lastBroodmother = System.currentTimeMillis();
                         main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
                         main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                        main.getUtils().playLoudSound("random.orb", 0.5);
                     }
+                    if (entity.ticksExisted < 13 && entity.ticksExisted % 3 == 0)
+                        main.getUtils().playLoudSound("random.orb", 0.5);
                 }
             }
+        }
+    }
 
+    @SubscribeEvent()
+    public void onEntitySpawn(EntityEvent.EnteringChunk e) {
+        Entity entity = e.entity;
+
+        if (main.getUtils().isOnSkyblock()) {
             for (Entity cubes : Minecraft.getMinecraft().theWorld.loadedEntityList) {
                 if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
                     if (cubes instanceof EntityMagmaCube) {
