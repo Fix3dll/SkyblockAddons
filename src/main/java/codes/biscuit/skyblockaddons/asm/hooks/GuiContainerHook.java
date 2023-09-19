@@ -26,29 +26,34 @@ public class GuiContainerHook {
         ContainerPreviewManager.onContainerKeyTyped(keyCode);
     }
 
+    @SuppressWarnings("unused")
     public static void drawBackpacks(GuiContainer guiContainer, int mouseX, int mouseY, FontRenderer fontRendererObj) {
         ContainerPreviewManager.drawContainerPreviews(guiContainer, mouseX, mouseY);
     }
 
+    @SuppressWarnings("unused")
     public static void setLastSlot() {
         SkyblockAddons.getInstance().getUtils().setLastHoveredSlot(-1);
     }
 
+    @SuppressWarnings("unused")
     public static void drawGradientRect(GuiContainer guiContainer, int left, int top, int right, int bottom, int startColor, int endColor, Slot theSlot) {
         if (ContainerPreviewManager.isFrozen()) {
             return;
         }
 
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        if (theSlot != null && theSlot.getHasStack() && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(theSlot.getStack())) {
-            return;
-        }
-        Container container = Minecraft.getMinecraft().thePlayer.openContainer;
         if (theSlot != null) {
+            SkyblockAddons main = SkyblockAddons.getInstance();
+            if (theSlot.getHasStack() && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES)
+                    && main.getUtils().isEmptyGlassPane(theSlot.getStack())) {
+                return;
+            }
+
+            Container container = Minecraft.getMinecraft().thePlayer.openContainer;
             int slotNum = theSlot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
             main.getUtils().setLastHoveredSlot(slotNum);
-            if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) &&
-                    main.getUtils().isOnSkyblock() && main.getConfigValues().getLockedSlots().contains(slotNum)
+            if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.LOCK_SLOTS)
+                    && main.getConfigValues().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
                 guiContainer.drawGradientRect(left, top, right, bottom, OVERLAY_RED, OVERLAY_RED);
                 return;
@@ -57,6 +62,7 @@ public class GuiContainerHook {
         guiContainer.drawGradientRect(left, top, right, bottom, startColor, endColor);
     }
 
+    @SuppressWarnings("unused")
     public static void drawSlot(GuiContainer guiContainer, Slot slot) {
         SkyblockAddons main = SkyblockAddons.getInstance();
         Minecraft mc = Minecraft.getMinecraft();
@@ -126,6 +132,7 @@ public class GuiContainerHook {
     /**
      * This method returns true to CANCEL the click in a GUI (lol I get confused)
      */
+    @SuppressWarnings("unused")
     public static boolean onHandleMouseClick(Slot slot, int slotId, int clickedButton, int clickType) {
         SkyblockAddons main = SkyblockAddons.getInstance();
         return slot != null && slot.getHasStack() && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) &&

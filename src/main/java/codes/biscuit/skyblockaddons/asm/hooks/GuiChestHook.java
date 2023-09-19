@@ -306,7 +306,7 @@ public class GuiChestHook {
                     }
                 }
                 String text = reforgeBuilder.toString();
-                if (text.length() > 0) {
+                if (!text.isEmpty()) {
                     textFieldMatches.setText(text);
                 }
 
@@ -324,7 +324,7 @@ public class GuiChestHook {
                     }
                 }
                 text = reforgeBuilder.toString();
-                if (text.length() > 0) {
+                if (!text.isEmpty()) {
                     textFieldExclusions.setText(text);
                 }
 
@@ -377,8 +377,12 @@ public class GuiChestHook {
                     Slot itemSlot = null;
                     if (slotIn.getSlotIndex() == 22 && inventoryType == InventoryType.BASIC_REFORGING) {
                         itemSlot = slots.getSlot(13);
-                    } else if (slotIn.getSlotIndex() == 48 && inventoryType == InventoryType.HEX_REFORGING) {
-                        itemSlot = slots.getSlot(19);
+                    } else if (inventoryType == InventoryType.HEX_REFORGING) {
+                        ItemStack slotInStack = slotIn.getStack();
+                        boolean reforgeStone = slotInStack.getItem().equals(Items.skull) && !slotInStack.getDisplayName().contains("Page");
+
+                        if (slotIn.getSlotIndex() == 48 || reforgeStone)
+                            itemSlot = slots.getSlot(19);
                     }
 
                     if (itemSlot != null && itemSlot.getHasStack()) {
@@ -412,6 +416,7 @@ public class GuiChestHook {
      * @param mouseY y coordinate of the mouse pointer
      * @param mouseButton mouse button that was clicked
      */
+    @SuppressWarnings("unused")
     public static void mouseClicked(int mouseX, int mouseY, int mouseButton, ReturnValue<?> returnValue) throws IOException {
         if (islandWarpGui != null) {
             islandWarpGui.mouseClicked(mouseX, mouseY, mouseButton);
