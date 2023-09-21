@@ -42,7 +42,6 @@ public enum Feature {
     DARK_AUCTION_TIMER(28, "settings.darkAuctionTimer", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.ENABLED_IN_OTHER_GAMES),
     ITEM_PICKUP_LOG(29, "settings.itemPickupLog", new GuiFeatureData(EnumUtils.DrawType.PICKUP_LOG), false),
     SHOW_DARK_AUCTION_TIMER_IN_OTHER_GAMES(33, null, false),
-    SHOW_ITEM_ANVIL_USES(34, "settings.showItemAnvilUses", new GuiFeatureData(ColorCode.RED, true), false),
     DONT_RESET_CURSOR_INVENTORY(37, "settings.dontResetCursorInventory", null, false),
     LOCK_SLOTS(38, "settings.lockSlots", null, false),
     SUMMONING_EYE_ALERT(39, "settings.summoningEyeAlert", new GuiFeatureData(ColorCode.RED), false),

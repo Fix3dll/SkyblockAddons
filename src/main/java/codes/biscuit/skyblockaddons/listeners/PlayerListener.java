@@ -45,7 +45,6 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMagmaCube;
@@ -64,7 +63,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -224,248 +222,248 @@ public class PlayerListener {
             main.getUtils().playLoudSound("random.orb", 0.5);
         }
 
-        if (main.getUtils().isOnSkyblock()) {
-            // Type 2 means it's an action bar message.
-            if (e.type == 2) {
-                // Log the message to the game log if action bar message logging is enabled.
-                if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE) && DevUtils.isLoggingActionBarMessages()) {
-                    logger.info("[ACTION BAR] " + unformattedText);
+        if (!main.getUtils().isOnSkyblock()) return;
+
+        // Type 2 means it's an action bar message.
+        if (e.type == 2) {
+            // Log the message to the game log if action bar message logging is enabled.
+            if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE) && DevUtils.isLoggingActionBarMessages()) {
+                logger.info("[ACTION BAR] " + unformattedText);
+            }
+
+            // Parse using ActionBarParser and display the rest message instead
+            String restMessage = actionBarParser.parseActionBar(unformattedText);
+            if (main.isUsingOofModv1() && restMessage.trim().isEmpty()) {
+                e.setCanceled(true);
+                return;
+            }
+
+            if (main.getUtils().isInDungeon()) {
+                if (main.getConfigValues().isEnabled(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY)) {
+                    main.getDungeonManager().addEssence(restMessage);
                 }
 
-                // Parse using ActionBarParser and display the rest message instead
-                String restMessage = actionBarParser.parseActionBar(unformattedText);
-                if (main.isUsingOofModv1() && restMessage.trim().isEmpty()) {
-                    e.setCanceled(true);
-                    return;
+                if (main.getConfigValues().isEnabled(Feature.DUNGEONS_SECRETS_DISPLAY)) {
+                    main.getDungeonManager().addSecrets(restMessage);
                 }
+            }
+            // Mark the message for change
+        } else {
+            Matcher matcher;
 
-                if (main.getUtils().isInDungeon()) {
-                    if (main.getConfigValues().isEnabled(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY)) {
-                        main.getDungeonManager().addEssence(restMessage);
-                    }
+            if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
+                int manaLost = Integer.parseInt(unformattedText.split(Pattern.quote("! ("))[1].split(Pattern.quote(" Mana)"))[0]);
+                changeMana(-manaLost);
+            } else if ((matcher = DEATH_MESSAGE_PATTERN.matcher(unformattedText)).matches()) {
+                // Hypixel's dungeon reconnect messages look exactly like death messages.
+                String causeOfDeath = matcher.group("causeOfDeath");
+                if (!causeOfDeath.equals("reconnected")) {
+                    String username = matcher.group("username");
 
-                    if (main.getConfigValues().isEnabled(Feature.DUNGEONS_SECRETS_DISPLAY)) {
-                        main.getDungeonManager().addSecrets(restMessage);
-                    }
-                }
-                // Mark the message for change
-            } else {
-                Matcher matcher;
-
-                if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
-                    int manaLost = Integer.parseInt(unformattedText.split(Pattern.quote("! ("))[1].split(Pattern.quote(" Mana)"))[0]);
-                    changeMana(-manaLost);
-                } else if ((matcher = DEATH_MESSAGE_PATTERN.matcher(unformattedText)).matches()) {
-                    // Hypixel's dungeon reconnect messages look exactly like death messages.
-                    String causeOfDeath = matcher.group("causeOfDeath");
-                    if (!causeOfDeath.equals("reconnected")) {
-                        String username = matcher.group("username");
-
-                        EntityPlayer deadPlayer;
-                        if (username.equals("You")) {
-                            deadPlayer = Minecraft.getMinecraft().thePlayer;
-                        } else {
-                            deadPlayer = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(username);
-                        }
-
-                        MinecraftForge.EVENT_BUS.post(new SkyblockPlayerDeathEvent(deadPlayer, username, causeOfDeath));
-                    }
-
-                } else if (main.getConfigValues().isEnabled(Feature.SUMMONING_EYE_ALERT) && formattedText.equals("§r§6§lRARE DROP! §r§5Summoning Eye§r")) {
-                    main.getUtils().playLoudSound("random.orb", 0.5); // credits to tomotomo, thanks lol
-                    main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-
-                } else if (formattedText.equals("§r§aA special §r§5Zealot §r§ahas spawned nearby!§r")) {
-                    if (main.getConfigValues().isEnabled(Feature.SPECIAL_ZEALOT_ALERT)) {
-                        main.getUtils().playLoudSound("random.orb", 0.5);
-                        main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
-                        main.getRenderListener().setTitleFeature(Feature.SPECIAL_ZEALOT_ALERT);
-                        main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                    }
-                    if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER)) {
-                        // Edit the message to include counter.
-                        e.message = new ChatComponentText(formattedText + ColorCode.GRAY + " (" + main.getPersistentValuesManager().getPersistentValues().getKills() + ")");
-                    }
-                    main.getPersistentValuesManager().addEyeResetKills();
-                    // TODO: Seems like leg warning and num sc killed should be separate features
-                } else if (main.getConfigValues().isEnabled(Feature.LEGENDARY_SEA_CREATURE_WARNING) && SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
-                    main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled() + 1);
-                    if (SeaCreatureManager.getInstance().getLegendarySeaCreatureSpawnMessages().contains(unformattedText)) {
-                        main.getUtils().playLoudSound("random.orb", 0.5);
-                        main.getRenderListener().setTitleFeature(Feature.LEGENDARY_SEA_CREATURE_WARNING);
-                        main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                    }
-
-                } else if (main.getConfigValues().isEnabled(Feature.DISABLE_MAGICAL_SOUP_MESSAGES) && SOUP_RANDOM_MESSAGES.contains(unformattedText)) {
-                    e.setCanceled(true);
-
-                } else if (main.getConfigValues().isEnabled(Feature.DISABLE_TELEPORT_PAD_MESSAGES) && (formattedText.startsWith("§r§aWarped from ") || formattedText.equals("§r§cThis Teleport Pad does not have a destination set!§r"))) {
-                    e.setCanceled(true);
-
-                } else if (main.getConfigValues().isEnabled(Feature.DISABLE_MORT_MESSAGES) && strippedText.startsWith("[NPC] Mort:")) {
-                    e.setCanceled(true);
-
-                } else if (main.getConfigValues().isEnabled(Feature.DISABLE_BOSS_MESSAGES) && strippedText.startsWith("[BOSS] ")) {
-                    e.setCanceled(true);
-
-                } else if (main.getConfigValues().isEnabled(Feature.SPIRIT_SCEPTRE_DISPLAY)
-                        && strippedText.startsWith("Your Implosion hit")
-                        || strippedText.startsWith("Your Spirit Sceptre hit")
-                        || strippedText.startsWith("Your Molten Wave hit")) {
-                    matcher = SPIRIT_SCEPTRE_MESSAGE_PATTERN.matcher(unformattedText);
-                    // Ensure matcher.group gets what it wants, we don't need the whole result
-                    if (matcher.find()) {
-                        this.spiritSceptreHitEnemies = Integer.parseInt(matcher.group("hitEnemies"));
-                        this.spiritSceptreDealtDamage = Float.parseFloat(matcher.group("dealtDamage").replace(",", ""));
-
-                        if (main.getConfigValues().isEnabled(Feature.DISABLE_SPIRIT_SCEPTRE_MESSAGES)) {
-                            e.setCanceled(true);
-                        }
-                    }
-                } else if (SlayerTracker.getInstance().isTrackerEnabled() &&
-                        (matcher = SLAYER_COMPLETED_PATTERN.matcher(strippedText)).matches()) { // §r   §r§5§l» §r§7Talk to Maddox to claim your Wolf Slayer XP!§r
-                    SlayerTracker.getInstance().completedSlayer(matcher.group("slayerType"));
-
-                } else if (SlayerTracker.getInstance().isTrackerEnabled() &&
-                        (matcher = SLAYER_COMPLETED_PATTERN_AUTO1.matcher(strippedText)).matches()) { // Spider Slayer LVL 7 - Next LVL in 181,000 XP!
-                    lastMaddoxLevelTime = System.currentTimeMillis();
-                    lastMaddoxSlayerType = matcher.group("slayerType");
-                } else if (SLAYER_COMPLETED_PATTERN_AUTO2.matcher(strippedText).matches() && System.currentTimeMillis() - lastMaddoxLevelTime < 100) {
-                    SlayerTracker.getInstance().completedSlayer(lastMaddoxSlayerType);
-
-                } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
-                        strippedText.startsWith("☬ You placed a Summoning Eye!")) { // §r§5☬ §r§dYou placed a Summoning Eye! §r§7(§r§e5§r§7/§r§a8§r§7)§r
-                    DragonTracker.getInstance().addEye();
-
-                } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
-                        strippedText.equals("You recovered a Summoning Eye!")) {
-                    DragonTracker.getInstance().removeEye();
-
-                } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
-                        (matcher = DRAGON_SPAWNED_PATTERN.matcher(strippedText)).matches()) {
-                    DragonTracker.getInstance().dragonSpawned(matcher.group("dragonType"));
-
-                } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
-                        DRAGON_KILLED_PATTERN.matcher(strippedText).matches()) {
-                    DragonTracker.getInstance().dragonKilled();
-
-                } else if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS) &&
-                        unformattedText.equals("You laid an egg!")) { // Put the Chicken Head on cooldown for 20 seconds when the player lays an egg.
-                    CooldownManager.put(InventoryUtils.CHICKEN_HEAD_ID);
-
-                } else if (main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) &&
-                        formattedText.startsWith("§r§eYou added a minute of rain!")) {
-                    if (this.rainmakerTimeEnd == -1 || this.rainmakerTimeEnd < System.currentTimeMillis()) {
-                        this.rainmakerTimeEnd = System.currentTimeMillis() + (1000 * 60); // Set the timer to a minute from now.
+                    EntityPlayer deadPlayer;
+                    if (username.equals("You")) {
+                        deadPlayer = Minecraft.getMinecraft().thePlayer;
                     } else {
-                        this.rainmakerTimeEnd += (1000 * 60); // Extend the timer one minute.
+                        deadPlayer = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(username);
                     }
-                } else if (main.getConfigValues().isEnabled(Feature.FETCHUR_TODAY) &&
-                        formattedText.startsWith("§e[NPC] Fetchur§f:")) {
-                    FetchurManager fetchur = FetchurManager.getInstance();
-                    // Triggered if player has just given the correct item to Fetchur, or if sba isn't in sync (already handed in quest)
-                    if (unformattedText.contains(fetchur.getFetchurTaskCompletedPhrase()) ||
-                            !fetchur.hasFetchedToday() && unformattedText.contains(fetchur.getFetchurAlreadyDidTaskPhrase())) {
-                        FetchurManager.getInstance().saveLastTimeFetched();
-                    }
-                    // Tries to check if a message is from a player to add the player profile icon
-                } else if (main.getConfigValues().isEnabled(Feature.PLAYER_SYMBOLS_IN_CHAT) &&
-                        unformattedText.contains(":")) {
-                    playerSymbolsDisplay(e, unformattedText);
+
+                    MinecraftForge.EVENT_BUS.post(new SkyblockPlayerDeathEvent(deadPlayer, username, causeOfDeath));
                 }
 
-                if (main.getConfigValues().isEnabled(Feature.NO_ARROWS_LEFT_ALERT)) {
-                    if (NO_ARROWS_LEFT_PATTERN.matcher(formattedText).matches()) {
-                        main.getUtils().playLoudSound("random.orb", 0.5);
-                        main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
-                        main.getRenderListener().setArrowsLeft(-1);
-                        main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+            } else if (main.getConfigValues().isEnabled(Feature.SUMMONING_EYE_ALERT) && formattedText.equals("§r§6§lRARE DROP! §r§5Summoning Eye§r")) {
+                main.getUtils().playLoudSound("random.orb", 0.5); // credits to tomotomo, thanks lol
+                main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
+                main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
 
-                    } else if ((matcher = ONLY_HAVE_ARROWS_LEFT_PATTERN.matcher(formattedText)).matches()) {
-                        int arrowsLeft = Integer.parseInt(matcher.group("arrows"));
-                        main.getUtils().playLoudSound("random.orb", 0.5);
-                        main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
-                        main.getRenderListener().setArrowsLeft(arrowsLeft);
-                        main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                    }
+            } else if (formattedText.equals("§r§aA special §r§5Zealot §r§ahas spawned nearby!§r")) {
+                if (main.getConfigValues().isEnabled(Feature.SPECIAL_ZEALOT_ALERT)) {
+                    main.getUtils().playLoudSound("random.orb", 0.5);
+                    main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
+                    main.getRenderListener().setTitleFeature(Feature.SPECIAL_ZEALOT_ALERT);
+                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+                }
+                if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER)) {
+                    // Edit the message to include counter.
+                    e.message = new ChatComponentText(formattedText + ColorCode.GRAY + " (" + main.getPersistentValuesManager().getPersistentValues().getKills() + ")");
+                }
+                main.getPersistentValuesManager().addEyeResetKills();
+                // TODO: Seems like leg warning and num sc killed should be separate features
+            } else if (main.getConfigValues().isEnabled(Feature.LEGENDARY_SEA_CREATURE_WARNING) && SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
+                main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled() + 1);
+                if (SeaCreatureManager.getInstance().getLegendarySeaCreatureSpawnMessages().contains(unformattedText)) {
+                    main.getUtils().playLoudSound("random.orb", 0.5);
+                    main.getRenderListener().setTitleFeature(Feature.LEGENDARY_SEA_CREATURE_WARNING);
+                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
 
-                if (main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)) {
-                    main.getDungeonManager().addSalvagedEssences(unformattedText);
-                }
+            } else if (main.getConfigValues().isEnabled(Feature.DISABLE_MAGICAL_SOUP_MESSAGES) && SOUP_RANDOM_MESSAGES.contains(unformattedText)) {
+                e.setCanceled(true);
 
-                if (main.getUtils().isInDungeon()) {
-                    Matcher reviveMessageMatcher = REVIVE_MESSAGE_PATTERN.matcher(unformattedText);
+            } else if (main.getConfigValues().isEnabled(Feature.DISABLE_TELEPORT_PAD_MESSAGES) && (formattedText.startsWith("§r§aWarped from ") || formattedText.equals("§r§cThis Teleport Pad does not have a destination set!§r"))) {
+                e.setCanceled(true);
 
-                    if (reviveMessageMatcher.matches()) {
-                        List<EntityPlayer> players = Minecraft.getMinecraft().theWorld.playerEntities;
+            } else if (main.getConfigValues().isEnabled(Feature.DISABLE_MORT_MESSAGES) && strippedText.startsWith("[NPC] Mort:")) {
+                e.setCanceled(true);
 
-                        String revivedPlayerName = reviveMessageMatcher.group("revivedPlayer");
-                        String reviverName = reviveMessageMatcher.group("reviver");
-                        EntityPlayer revivedPlayer = null;
-                        EntityPlayer revivingPlayer = null;
+            } else if (main.getConfigValues().isEnabled(Feature.DISABLE_BOSS_MESSAGES) && strippedText.startsWith("[BOSS] ")) {
+                e.setCanceled(true);
 
-                        for (EntityPlayer player : players) {
-                            if (revivedPlayer != null && revivingPlayer != null) {
-                                break;
-                            }
+            } else if (main.getConfigValues().isEnabled(Feature.SPIRIT_SCEPTRE_DISPLAY)
+                    && strippedText.startsWith("Your Implosion hit")
+                    || strippedText.startsWith("Your Spirit Sceptre hit")
+                    || strippedText.startsWith("Your Molten Wave hit")) {
+                matcher = SPIRIT_SCEPTRE_MESSAGE_PATTERN.matcher(unformattedText);
+                // Ensure matcher.group gets what it wants, we don't need the whole result
+                if (matcher.find()) {
+                    this.spiritSceptreHitEnemies = Integer.parseInt(matcher.group("hitEnemies"));
+                    this.spiritSceptreDealtDamage = Float.parseFloat(matcher.group("dealtDamage").replace(",", ""));
 
-                            if (player.getName().equals(revivedPlayerName)) {
-                                revivedPlayer = player;
-                                lastRevive = Minecraft.getSystemTime();
-                            }
-
-                            if (reviverName != null && player.getName().equals(reviverName)) {
-                                revivingPlayer = player;
-                            }
-                        }
-
-                        MinecraftForge.EVENT_BUS.post(new DungeonPlayerReviveEvent(revivedPlayer, revivingPlayer));
-                    }
-
-                    if (main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_MILESTONE)) {
-                        DungeonMilestone dungeonMilestone = main.getDungeonManager().parseMilestone(formattedText);
-                        if (dungeonMilestone != null) {
-                            main.getDungeonManager().setDungeonMilestone(dungeonMilestone);
-                        }
-                    }
-
-                    if (main.getConfigValues().isEnabled(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY)) {
-                        main.getDungeonManager().addBonusEssence(formattedText);
+                    if (main.getConfigValues().isEnabled(Feature.DISABLE_SPIRIT_SCEPTRE_MESSAGES)) {
+                        e.setCanceled(true);
                     }
                 }
+            } else if (SlayerTracker.getInstance().isTrackerEnabled() &&
+                    (matcher = SLAYER_COMPLETED_PATTERN.matcher(strippedText)).matches()) { // §r   §r§5§l» §r§7Talk to Maddox to claim your Wolf Slayer XP!§r
+                SlayerTracker.getInstance().completedSlayer(matcher.group("slayerType"));
 
+            } else if (SlayerTracker.getInstance().isTrackerEnabled() &&
+                    (matcher = SLAYER_COMPLETED_PATTERN_AUTO1.matcher(strippedText)).matches()) { // Spider Slayer LVL 7 - Next LVL in 181,000 XP!
+                lastMaddoxLevelTime = System.currentTimeMillis();
+                lastMaddoxSlayerType = matcher.group("slayerType");
+            } else if (SLAYER_COMPLETED_PATTERN_AUTO2.matcher(strippedText).matches() && System.currentTimeMillis() - lastMaddoxLevelTime < 100) {
+                SlayerTracker.getInstance().completedSlayer(lastMaddoxSlayerType);
 
-                if (ABILITY_CHAT_PATTERN.matcher(formattedText).matches()) {
-                    CooldownManager.put(Minecraft.getMinecraft().thePlayer.getHeldItem());
+            } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
+                    strippedText.startsWith("☬ You placed a Summoning Eye!")) { // §r§5☬ §r§dYou placed a Summoning Eye! §r§7(§r§e5§r§7/§r§a8§r§7)§r
+                DragonTracker.getInstance().addEye();
 
-                } else if ((matcher = PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
-                    String profile = matcher.group(1);
-                    main.getUtils().setProfileName(profile);
+            } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
+                    strippedText.equals("You recovered a Summoning Eye!")) {
+                DragonTracker.getInstance().removeEye();
 
-                } else if ((matcher = SWITCH_PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
-                    String profile = matcher.group(1);
-                    main.getUtils().setProfileName(profile);
+            } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
+                    (matcher = DRAGON_SPAWNED_PATTERN.matcher(strippedText)).matches()) {
+                DragonTracker.getInstance().dragonSpawned(matcher.group("dragonType"));
 
+            } else if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER) &&
+                    DRAGON_KILLED_PATTERN.matcher(strippedText).matches()) {
+                DragonTracker.getInstance().dragonKilled();
+
+            } else if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS) &&
+                    unformattedText.equals("You laid an egg!")) { // Put the Chicken Head on cooldown for 20 seconds when the player lays an egg.
+                CooldownManager.put(InventoryUtils.CHICKEN_HEAD_ID);
+
+            } else if (main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) &&
+                    formattedText.startsWith("§r§eYou added a minute of rain!")) {
+                if (this.rainmakerTimeEnd == -1 || this.rainmakerTimeEnd < System.currentTimeMillis()) {
+                    this.rainmakerTimeEnd = System.currentTimeMillis() + (1000 * 60); // Set the timer to a minute from now.
+                } else {
+                    this.rainmakerTimeEnd += (1000 * 60); // Extend the timer one minute.
+                }
+            } else if (main.getConfigValues().isEnabled(Feature.FETCHUR_TODAY) &&
+                    formattedText.startsWith("§e[NPC] Fetchur§f:")) {
+                FetchurManager fetchur = FetchurManager.getInstance();
+                // Triggered if player has just given the correct item to Fetchur, or if sba isn't in sync (already handed in quest)
+                if (unformattedText.contains(fetchur.getFetchurTaskCompletedPhrase()) ||
+                        !fetchur.hasFetchedToday() && unformattedText.contains(fetchur.getFetchurAlreadyDidTaskPhrase())) {
+                    FetchurManager.getInstance().saveLastTimeFetched();
+                }
+                // Tries to check if a message is from a player to add the player profile icon
+            } else if (main.getConfigValues().isEnabled(Feature.PLAYER_SYMBOLS_IN_CHAT) &&
+                    unformattedText.contains(":")) {
+                playerSymbolsDisplay(e, unformattedText);
+            }
+
+            if (main.getConfigValues().isEnabled(Feature.NO_ARROWS_LEFT_ALERT)) {
+                if (NO_ARROWS_LEFT_PATTERN.matcher(formattedText).matches()) {
+                    main.getUtils().playLoudSound("random.orb", 0.5);
+                    main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
+                    main.getRenderListener().setArrowsLeft(-1);
+                    main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+
+                } else if ((matcher = ONLY_HAVE_ARROWS_LEFT_PATTERN.matcher(formattedText)).matches()) {
+                    int arrowsLeft = Integer.parseInt(matcher.group("arrows"));
+                    main.getUtils().playLoudSound("random.orb", 0.5);
+                    main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
+                    main.getRenderListener().setArrowsLeft(arrowsLeft);
+                    main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
             }
 
-            // Skytils mayor detection from chat adaption for Java
-            // https://github.com/Skytils/SkytilsMod/blob/1.x/src/main/kotlin/gg/skytils/skytilsmod/features/impl/handlers/MayorInfo.kt#L96
-            if (unformattedText.equals("§eEverybody unlocks §6exclusive §eperks! §a§l[HOVER TO VIEW]")) {
-                if (!main.getUtils().isAlpha()) {
-                    HoverEvent hoverEvent = e.message.getChatStyle().getChatHoverEvent();
-                    if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
-                        return;
+            if (main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)) {
+                main.getDungeonManager().addSalvagedEssences(unformattedText);
+            }
 
-                    String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
-                    String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
+            if (main.getUtils().isInDungeon()) {
+                Matcher reviveMessageMatcher = REVIVE_MESSAGE_PATTERN.matcher(unformattedText);
 
-                    if (!mayorName.startsWith(main.getUtils().getMayor())) {
-                        main.getUtils().setMayor(mayorName);
-                        logger.info("Mayor changed to " + mayorName);
+                if (reviveMessageMatcher.matches()) {
+                    List<EntityPlayer> players = Minecraft.getMinecraft().theWorld.playerEntities;
+
+                    String revivedPlayerName = reviveMessageMatcher.group("revivedPlayer");
+                    String reviverName = reviveMessageMatcher.group("reviver");
+                    EntityPlayer revivedPlayer = null;
+                    EntityPlayer revivingPlayer = null;
+
+                    for (EntityPlayer player : players) {
+                        if (revivedPlayer != null && revivingPlayer != null) {
+                            break;
+                        }
+
+                        if (player.getName().equals(revivedPlayerName)) {
+                            revivedPlayer = player;
+                            lastRevive = Minecraft.getSystemTime();
+                        }
+
+                        if (reviverName != null && player.getName().equals(reviverName)) {
+                            revivingPlayer = player;
+                        }
                     }
+
+                    MinecraftForge.EVENT_BUS.post(new DungeonPlayerReviveEvent(revivedPlayer, revivingPlayer));
+                }
+
+                if (main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_MILESTONE)) {
+                    DungeonMilestone dungeonMilestone = main.getDungeonManager().parseMilestone(formattedText);
+                    if (dungeonMilestone != null) {
+                        main.getDungeonManager().setDungeonMilestone(dungeonMilestone);
+                    }
+                }
+
+                if (main.getConfigValues().isEnabled(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY)) {
+                    main.getDungeonManager().addBonusEssence(formattedText);
+                }
+            }
+
+
+            if (ABILITY_CHAT_PATTERN.matcher(formattedText).matches()) {
+                CooldownManager.put(Minecraft.getMinecraft().thePlayer.getHeldItem());
+
+            } else if ((matcher = PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
+                String profile = matcher.group(1);
+                main.getUtils().setProfileName(profile);
+
+            } else if ((matcher = SWITCH_PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
+                String profile = matcher.group(1);
+                main.getUtils().setProfileName(profile);
+
+            }
+        }
+
+        // Skytils mayor detection from chat adaption for Java
+        // https://github.com/Skytils/SkytilsMod/blob/1.x/src/main/kotlin/gg/skytils/skytilsmod/features/impl/handlers/MayorInfo.kt#L96
+        if (unformattedText.equals("§eEverybody unlocks §6exclusive §eperks! §a§l[HOVER TO VIEW]")) {
+            if (!main.getUtils().isAlpha()) {
+                HoverEvent hoverEvent = e.message.getChatStyle().getChatHoverEvent();
+                if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
+                    return;
+
+                String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
+                String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
+
+                if (!mayorName.startsWith(main.getUtils().getMayor())) {
+                    main.getUtils().setMayor(mayorName);
+                    logger.info("Mayor changed to " + mayorName);
                 }
             }
         }
@@ -731,11 +729,21 @@ public class PlayerListener {
 
     @SubscribeEvent
     public void onEntityEvent(LivingEvent.LivingUpdateEvent e) {
-        if (!main.getUtils().isOnSkyblock()) {
-            return;
-        }
-
+        if (!main.getUtils().isOnSkyblock()) return;
         Entity entity = e.entity;
+
+        // Detect Brood Mother spawn
+        if (main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
+            if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Broodmother")) {
+                if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
+                    lastBroodmother = System.currentTimeMillis();
+                    main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
+                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+                }
+                if (entity.ticksExisted < 13 && entity.ticksExisted % 3 == 0)
+                    main.getUtils().playLoudSound("random.orb", 0.5);
+            }
+        }
 
         if (entity.ticksExisted < 5) {
             if (main.getConfigValues().isEnabled(Feature.HIDE_OTHER_PLAYERS_PRESENTS)) {
@@ -870,101 +878,80 @@ public class PlayerListener {
         return armorStand.hasCustomName() && armorStand.getCustomNameTag().contains("Zealot");
     }
 
-    @SubscribeEvent
-    public void onRenderLivingPre(RenderLivingEvent.Pre<EntityLivingBase> e) {
-        Entity entity = e.entity;
-
-        if (main.getUtils().isOnSkyblock()) {
-            // Detect Brood Mother spawn
-            if (main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
-                if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Broodmother")) {
-                    if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
-                        lastBroodmother = System.currentTimeMillis();
-                        main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
-                        main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                    }
-                    if (entity.ticksExisted < 13 && entity.ticksExisted % 3 == 0)
-                        main.getUtils().playLoudSound("random.orb", 0.5);
-                }
-            }
-        }
-    }
-
     @SubscribeEvent()
     public void onEntitySpawn(EntityEvent.EnteringChunk e) {
+        if (!main.getUtils().isOnSkyblock()) return;
         Entity entity = e.entity;
 
-        if (main.getUtils().isOnSkyblock()) {
-            for (Entity cubes : Minecraft.getMinecraft().theWorld.loadedEntityList) {
-                if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
-                    if (cubes instanceof EntityMagmaCube) {
-                        EntitySlime magma = (EntitySlime) cubes;
-                        if (magma.getSlimeSize() > 10) { // Find a big bal boss
-                            if ((lastBal == -1 || System.currentTimeMillis() - lastBal > 240000)) {
-                                lastBal = System.currentTimeMillis();
-                                main.getRenderListener().setTitleFeature(Feature.BAL_BOSS_ALERT); // Enable warning and disable again in four seconds.
-                                balTick = 16; // so the sound plays instantly
-                                main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
-                            }
-                            // Play sound every 4 ticks or 1/5 second.
-                            if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && balTick % 4 == 0) {
-                                main.getUtils().playLoudSound("random.orb", 0.5);
-                            }
+        for (Entity cubes : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+            if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
+                if (cubes instanceof EntityMagmaCube) {
+                    EntitySlime magma = (EntitySlime) cubes;
+                    if (magma.getSlimeSize() > 10) { // Find a big bal boss
+                        if ((lastBal == -1 || System.currentTimeMillis() - lastBal > 240000)) {
+                            lastBal = System.currentTimeMillis();
+                            main.getRenderListener().setTitleFeature(Feature.BAL_BOSS_ALERT); // Enable warning and disable again in four seconds.
+                            balTick = 16; // so the sound plays instantly
+                            main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+                        }
+                        // Play sound every 4 ticks or 1/5 second.
+                        if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && balTick % 4 == 0) {
+                            main.getUtils().playLoudSound("random.orb", 0.5);
                         }
                     }
                 }
             }
+        }
 
-            if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT) && entity instanceof EntityArrow) {
-                EntityArrow arrow = (EntityArrow) entity;
+        if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT) && entity instanceof EntityArrow) {
+            EntityArrow arrow = (EntityArrow) entity;
 
-                EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
-                ItemStack heldItem = p.getHeldItem();
-                if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
+            EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
+            ItemStack heldItem = p.getHeldItem();
+            if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
 
-                    AxisAlignedBB playerRadius = new AxisAlignedBB(p.posX - 3, p.posY - 3, p.posZ - 3, p.posX + 3, p.posY + 3, p.posZ + 3);
-                    if (playerRadius.isVecInside(arrow.getPositionVector())) {
+                AxisAlignedBB playerRadius = new AxisAlignedBB(p.posX - 3, p.posY - 3, p.posZ - 3, p.posX + 3, p.posY + 3, p.posZ + 3);
+                if (playerRadius.isVecInside(arrow.getPositionVector())) {
 //                    System.out.println("Spawned explosive arrow!");
-                        main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
-                            @Override
-                            public void run() {
-                                if (arrow.isDead || arrow.isCollided || arrow.inGround) {
-                                    cancel();
+                    main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
+                        @Override
+                        public void run() {
+                            if (arrow.isDead || arrow.isCollided || arrow.inGround) {
+                                cancel();
 
 //                                System.out.println("Arrow is done, added an explosion!");
-                                    Vec3 explosionLocation = new Vec3(arrow.posX, arrow.posY, arrow.posZ);
-                                    explosiveBowExplosions.put(System.currentTimeMillis(), explosionLocation);
+                                Vec3 explosionLocation = new Vec3(arrow.posX, arrow.posY, arrow.posZ);
+                                explosiveBowExplosions.put(System.currentTimeMillis(), explosionLocation);
 
-                                    recentlyKilledZealots.keySet().removeIf((killedTime) -> System.currentTimeMillis() - killedTime > 150);
-                                    Set<Vec3> filteredRecentlyKilledZealots = new HashSet<>();
-                                    for (Map.Entry<Long, Set<Vec3>> recentlyKilledZealotEntry : recentlyKilledZealots.entrySet()) {
-                                        filteredRecentlyKilledZealots.addAll(recentlyKilledZealotEntry.getValue());
-                                    }
-                                    if (filteredRecentlyKilledZealots.isEmpty()) return;
+                                recentlyKilledZealots.keySet().removeIf((killedTime) -> System.currentTimeMillis() - killedTime > 150);
+                                Set<Vec3> filteredRecentlyKilledZealots = new HashSet<>();
+                                for (Map.Entry<Long, Set<Vec3>> recentlyKilledZealotEntry : recentlyKilledZealots.entrySet()) {
+                                    filteredRecentlyKilledZealots.addAll(recentlyKilledZealotEntry.getValue());
+                                }
+                                if (filteredRecentlyKilledZealots.isEmpty()) return;
 
 //                                int possibleZealotsKilled = filteredRecentlyKilledZealots.size();
 //                                System.out.println("This means "+possibleZealotsKilled+" may have been killed...");
 //                                int originalPossibleZealotsKilled = possibleZealotsKilled;
 
-                                    for (Vec3 zealotDeathLocation : filteredRecentlyKilledZealots) {
-                                        double distance = explosionLocation.distanceTo(zealotDeathLocation);
+                                for (Vec3 zealotDeathLocation : filteredRecentlyKilledZealots) {
+                                    double distance = explosionLocation.distanceTo(zealotDeathLocation);
 //                                    System.out.println("Distance was "+distance+"!");
-                                        if (distance < 4.6) {
+                                    if (distance < 4.6) {
 //                                        possibleZealotsKilled--;
 
-                                            main.getPersistentValuesManager().getPersistentValues().setKills(
-                                                    main.getPersistentValuesManager().getPersistentValues().getKills() + 1
-                                            );
-                                            main.getPersistentValuesManager().saveValues();
-                                            EndstoneProtectorManager.onKill();
-                                        }
+                                        main.getPersistentValuesManager().getPersistentValues().setKills(
+                                                main.getPersistentValuesManager().getPersistentValues().getKills() + 1
+                                        );
+                                        main.getPersistentValuesManager().saveValues();
+                                        EndstoneProtectorManager.onKill();
                                     }
+                                }
 
 //                                System.out.println((originalPossibleZealotsKilled-possibleZealotsKilled)+" zealots were actually killed...");
-                                }
                             }
-                        }, 0, 1);
-                    }
+                        }
+                    }, 0, 1);
                 }
             }
         }
@@ -982,74 +969,63 @@ public class PlayerListener {
      */
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onItemTooltipFirst(ItemTooltipEvent e) {
+        if (e.toolTip == null || !main.getUtils().isOnSkyblock()) return;
         ItemStack hoveredItem = e.itemStack;
 
-        if (e.toolTip != null && main.getUtils().isOnSkyblock()) {
-            int insertAt = e.toolTip.size();
-            insertAt--; // 1 line for the rarity
-            if (e.showAdvancedItemTooltips) {
-                insertAt -= 2; // 1 line for the item name, and 1 line for the nbt
-                if (e.itemStack.isItemDamaged()) {
-                    insertAt--; // 1 line for damage
-                }
+        int insertAt = e.toolTip.size();
+        insertAt--; // 1 line for the rarity
+        if (e.showAdvancedItemTooltips) {
+            insertAt -= 2; // 1 line for the item name, and 1 line for the nbt
+            if (e.itemStack.isItemDamaged()) {
+                insertAt--; // 1 line for damage
             }
-            insertAt = Math.max(0, insertAt);
+        }
+        insertAt = Math.max(0, insertAt);
 
-            InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
-            if (inventoryType != null && inventoryType.equals(InventoryType.CALENDAR)
-                    && hoveredItem.getItem().equals(Items.skull) && hoveredItem.getDisplayName().contains("Mayor ")) {
+        if (inventoryType != null && inventoryType.equals(InventoryType.CALENDAR)
+                && hoveredItem.getItem().equals(Items.skull) && hoveredItem.getDisplayName().contains("Mayor ")) {
 
-                String mayorName = hoveredItem.getDisplayName();
-                mayorName = mayorName.substring(mayorName.indexOf(' ') + 1);
+            String mayorName = hoveredItem.getDisplayName();
+            mayorName = mayorName.substring(mayorName.indexOf(' ') + 1);
 
-                if (!mayorName.startsWith(main.getUtils().getMayor())) {
-                    main.getUtils().setMayor(mayorName);
-                    logger.info("Mayor changed to " + mayorName);
+            if (!mayorName.startsWith(main.getUtils().getMayor())) {
+                main.getUtils().setMayor(mayorName);
+                logger.info("Mayor changed to " + mayorName);
+            }
+        }
+
+        NBTTagCompound extraAttributes = ItemUtils.getExtraAttributes(hoveredItem);
+        if (extraAttributes != null) {
+            if (main.getConfigValues().isEnabled(Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE)
+                    && extraAttributes.hasKey("baseStatBoostPercentage", ItemUtils.NBT_INTEGER)) {
+                int baseStatBoost = extraAttributes.getInteger("baseStatBoostPercentage");
+
+                ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE);
+                if (main.getConfigValues().isEnabled(Feature.BASE_STAT_BOOST_COLOR_BY_RARITY)) {
+                    int rarityIndex = baseStatBoost / 10;
+                    if (rarityIndex < 0) rarityIndex = 0;
+                    if (rarityIndex >= ItemRarity.values().length) rarityIndex = ItemRarity.values().length - 1;
+
+                    colorCode = ItemRarity.values()[rarityIndex].getColorCode();
                 }
+                e.toolTip.add(insertAt++, "§7Base Stat Boost: " + colorCode + "+" + baseStatBoost + "%");
             }
 
-            NBTTagCompound extraAttributes = ItemUtils.getExtraAttributes(hoveredItem);
-            if (extraAttributes != null) {
-                if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_ANVIL_USES) && extraAttributes.hasKey("anvil_uses", ItemUtils.NBT_INTEGER)) {
-                    // Anvil Uses ~ original done by Dahn#6036
-                    int anvilUses = extraAttributes.getInteger("anvil_uses");
-                    if (extraAttributes.hasKey("hot_potato_count", ItemUtils.NBT_INTEGER)) {
-                        anvilUses -= extraAttributes.getInteger("hot_potato_count");
-                    }
-                    if (anvilUses > 0) {
-                        e.toolTip.add(insertAt++, Translations.getMessage(String.valueOf(anvilUses)));
-                    }
-                }
+            if (main.getConfigValues().isEnabled(Feature.SHOW_STACKING_ENCHANT_PROGRESS)) {
+                insertAt = EnchantManager.insertStackingEnchantProgress(e.toolTip, extraAttributes, insertAt);
+            }
 
-                if (main.getConfigValues().isEnabled(Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE) && extraAttributes.hasKey("baseStatBoostPercentage", ItemUtils.NBT_INTEGER)) {
-                    int baseStatBoost = extraAttributes.getInteger("baseStatBoostPercentage");
+            if (main.getConfigValues().isEnabled(Feature.SHOW_SWORD_KILLS) && extraAttributes.hasKey("sword_kills", ItemUtils.NBT_INTEGER)) {
+                ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_SWORD_KILLS);
+                e.toolTip.add(insertAt++, "§7Sword Kills: " + colorCode + extraAttributes.getInteger("sword_kills"));
+            }
 
-                    ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE);
-                    if (main.getConfigValues().isEnabled(Feature.BASE_STAT_BOOST_COLOR_BY_RARITY)) {
-                        int rarityIndex = baseStatBoost / 10;
-                        if (rarityIndex < 0) rarityIndex = 0;
-                        if (rarityIndex >= ItemRarity.values().length) rarityIndex = ItemRarity.values().length - 1;
-
-                        colorCode = ItemRarity.values()[rarityIndex].getColorCode();
-                    }
-                    e.toolTip.add(insertAt++, "§7Base Stat Boost: " + colorCode + "+" + baseStatBoost + "%");
-                }
-
-                if (main.getConfigValues().isEnabled(Feature.SHOW_STACKING_ENCHANT_PROGRESS)) {
-                    insertAt = EnchantManager.insertStackingEnchantProgress(e.toolTip, extraAttributes, insertAt);
-                }
-
-                if (main.getConfigValues().isEnabled(Feature.SHOW_SWORD_KILLS) && extraAttributes.hasKey("sword_kills", ItemUtils.NBT_INTEGER)) {
-                    ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_SWORD_KILLS);
-                    e.toolTip.add(insertAt++, "§7Sword Kills: " + colorCode + extraAttributes.getInteger("sword_kills"));
-                }
-
-                if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_DUNGEON_FLOOR) && extraAttributes.hasKey("item_tier", ItemUtils.NBT_INTEGER)) {
-                    int floor = extraAttributes.getInteger("item_tier");
-                    ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_ITEM_DUNGEON_FLOOR);
-                    e.toolTip.add(insertAt, "§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor));
-                }
+            if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_DUNGEON_FLOOR) && extraAttributes.hasKey("item_tier", ItemUtils.NBT_INTEGER)) {
+                int floor = extraAttributes.getInteger("item_tier");
+                ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_ITEM_DUNGEON_FLOOR);
+                e.toolTip.add(insertAt, "§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor));
             }
         }
     }
@@ -1059,39 +1035,37 @@ public class PlayerListener {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onItemTooltipLast(ItemTooltipEvent e) {
+        if (e.toolTip == null || !main.getUtils().isOnSkyblock()) return;
         ItemStack hoveredItem = e.itemStack;
 
-        if (e.toolTip != null && main.getUtils().isOnSkyblock()) {
+        if (main.getConfigValues().isEnabled(Feature.ENCHANTMENT_LORE_PARSING)) {
+            EnchantManager.parseEnchants(e.toolTip, hoveredItem);
+        }
 
-            if (main.getConfigValues().isEnabled(Feature.ENCHANTMENT_LORE_PARSING)) {
-                EnchantManager.parseEnchants(e.toolTip, hoveredItem);
+        if (main.getConfigValues().isEnabled(Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS)) {
+            int startIndex = main.getConfigValues().isEnabled(Feature.DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME) ? 1 : 0;
+
+            for (int i = startIndex; i < e.toolTip.size(); i++) {
+                e.toolTip.set(i, RomanNumeralParser.replaceNumeralsWithIntegers(e.toolTip.get(i)));
             }
+        }
 
-            if (main.getConfigValues().isEnabled(Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS)) {
-                int startIndex = main.getConfigValues().isEnabled(Feature.DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME) ? 1 : 0;
+        if (main.getConfigValues().isEnabled(Feature.SHOW_SKYBLOCK_ITEM_ID) ||
+                main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+            String itemId = ItemUtils.getSkyblockItemID(e.itemStack);
+            String tooltipLine = EnumChatFormatting.DARK_GRAY + "skyblock:" + itemId;
 
-                for (int i = startIndex; i < e.toolTip.size(); i++) {
-                    e.toolTip.set(i, RomanNumeralParser.replaceNumeralsWithIntegers(e.toolTip.get(i)));
-                }
-            }
-
-            if (main.getConfigValues().isEnabled(Feature.SHOW_SKYBLOCK_ITEM_ID) ||
-                    main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
-                String itemId = ItemUtils.getSkyblockItemID(e.itemStack);
-                String tooltipLine = EnumChatFormatting.DARK_GRAY + "skyblock:" + itemId;
-
-                if (itemId != null) {
-                    if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
-                        for (int i = e.toolTip.size(); i-- > 0; ) {
-                            if (e.toolTip.get(i).startsWith(EnumChatFormatting.DARK_GRAY + "minecraft:")) {
-                                e.toolTip.add(i + 1, tooltipLine);
-                                break;
-                            }
+            if (itemId != null) {
+                if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
+                    for (int i = e.toolTip.size(); i-- > 0; ) {
+                        if (e.toolTip.get(i).startsWith(EnumChatFormatting.DARK_GRAY + "minecraft:")) {
+                            e.toolTip.add(i + 1, tooltipLine);
+                            break;
                         }
-
-                    } else {
-                        e.toolTip.add(tooltipLine);
                     }
+
+                } else {
+                    e.toolTip.add(tooltipLine);
                 }
             }
         }
@@ -1136,9 +1110,7 @@ public class PlayerListener {
      */
     @SubscribeEvent
     public void onPlaySound(PlaySoundEvent event) {
-        if (!main.getUtils().isOnSkyblock()) {
-            return;
-        }
+        if (!main.getUtils().isOnSkyblock()) return;
 
         // Ignore sounds that don't have a specific location like GUIs
         if (event.sound instanceof PositionedSoundRecord) {
