@@ -61,7 +61,7 @@
       "nbtName": "chance"
     },
     "charm": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Charm",
       "maxLevel": 5,
       "nbtName": "charm"
@@ -73,7 +73,7 @@
       "nbtName": "cleave"
     },
     "corruption": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Corruption",
       "maxLevel": 5,
       "nbtName": "corruption"
@@ -163,7 +163,7 @@
       "nbtName": "feather_falling"
     },
     "ferocious mana": {
-      "goodLevel": 9,
+      "goodLevel": 10,
       "loreName": "Ferocious Mana",
       "maxLevel": 10,
       "nbtName": "ferocious_mana"
@@ -229,7 +229,7 @@
       "nbtName": "growth"
     },
     "hardened mana": {
-      "goodLevel": 9,
+      "goodLevel": 10,
       "loreName": "Hardened Mana",
       "maxLevel": 10,
       "nbtName": "hardened_mana"
@@ -307,7 +307,7 @@
       "nbtName": "mana_steal"
     },
     "mana vampire": {
-      "goodLevel": 9,
+      "goodLevel": 10,
       "loreName": "Mana Vampire",
       "maxLevel": 10,
       "nbtName": "mana_vampire"
@@ -373,7 +373,7 @@
       "nbtName": "punch"
     },
     "quantum": {
-      "goodLevel": 5,
+      "goodLevel": 3,
       "loreName": "Quantum",
       "maxLevel": 5,
       "nbtName": "quantum"
@@ -381,11 +381,11 @@
     "rainbow": {
       "goodLevel": 1,
       "loreName": "Rainbow",
-      "maxLevel": 2,
+      "maxLevel": 3,
       "nbtName": "rainbow"
     },
     "reflection": {
-      "goodLevel": 5,
+      "goodLevel": 0,
       "loreName": "Reflection",
       "maxLevel": 5,
       "nbtName": "reflection"
@@ -451,7 +451,7 @@
       "nbtName": "smite"
     },
     "smoldering": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Smoldering",
       "maxLevel": 5,
       "nbtName": "smoldering"
@@ -469,7 +469,7 @@
       "nbtName": "spiked_hook"
     },
     "strong mana": {
-      "goodLevel": 9,
+      "goodLevel": 10,
       "loreName": "Strong Mana",
       "maxLevel": 10,
       "nbtName": "strong_mana"
@@ -493,7 +493,7 @@
       "nbtName": "syphon"
     },
     "tabasco": {
-      "goodLevel": 2,
+      "goodLevel": 0,
       "loreName": "Tabasco",
       "maxLevel": 3,
       "nbtName": "tabasco"
@@ -521,6 +521,12 @@
       "loreName": "Titan Killer",
       "maxLevel": 7,
       "nbtName": "titan_killer"
+    },
+    "transylvanian": {
+      "goodLevel": 4,
+      "loreName": "Transylvanian",
+      "maxLevel": 5,
+      "nbtName": "transylvanian"
     },
     "triple-strike": {
       "goodLevel": 4,
