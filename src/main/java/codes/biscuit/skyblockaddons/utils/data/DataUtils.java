@@ -375,14 +375,14 @@ public class DataUtils {
                     Translations.getMessage("messages.fileFetchFailed", EnumChatFormatting.AQUA
                                     + SkyblockAddons.MOD_NAME + EnumChatFormatting.RED,
                             failedRequests.size()));
-            IChatComponent buttonRowComponent = new ChatComponentText("[" +
-                    Translations.getMessage("messages.copy") + "]").setChatStyle(
-                            new ChatStyle().setColor(EnumChatFormatting.WHITE).setBold(true).setChatClickEvent(
-                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sba internal copy %s",
-                                            errorMessageBuilder))));
-            buttonRowComponent.appendText("  ");
-            buttonRowComponent.appendSibling(new ChatComponentText("[Discord]").setChatStyle(new ChatStyle()
-                    .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/PqTAEek"))));
+            IChatComponent buttonRowComponent = new ChatComponentText("[" + Translations.getMessage("messages.copy") + "]")
+                    .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE).setChatClickEvent(
+                            new ClickEvent(
+                                    ClickEvent.Action.RUN_COMMAND,
+                                    String.format("/sba internal copy %s", errorMessageBuilder)
+                            )
+                    )
+            );
             failureMessageComponent.appendText("\n").appendSibling(buttonRowComponent);
 
             main.getUtils().sendMessage(failureMessageComponent, false);
