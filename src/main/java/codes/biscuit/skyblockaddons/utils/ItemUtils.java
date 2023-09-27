@@ -170,6 +170,7 @@ public class ItemUtils {
 
                     reforge = reforge.replace("_sword", ""); //fixes reforges like "Odd_sword"
                     reforge = reforge.replace("_bow", "");
+                    reforge = reforge.replace("Warped", "Hyper"); // exception
 
                     return reforge;
                 }
@@ -241,7 +242,7 @@ public class ItemUtils {
         }
 
         String itemId = extraAttributes.getString("id");
-        if (itemId.equals("")) {
+        if (itemId.isEmpty()) {
             return null;
         }
 
