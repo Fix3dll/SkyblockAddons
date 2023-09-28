@@ -17,12 +17,12 @@ public class RomanNumeralParser {
     /**
      * Pattern that finds words that begin with a Roman numeral
      */
-    private static final Pattern NUMERAL_FINDING_PATTERN = Pattern.compile(" (?=[MDCLXVI])(M*(?:C[MD]|D?C{0,3})(?:X[CL]|L?X{0,3})(?:I[XV]|V?I{0,3}))(.?)");
+    private static final Pattern NUMERAL_FINDING_PATTERN = Pattern.compile(" (?=[MDCLXVI])(?<roman>M*(?:C[MD]|D?C{0,3})(?:X[CL]|L?X{0,3})(?:I[XV]|V?I{0,3}))(?<after>(?: ✖|.)?)");
 
     /**
      * Map that contains mappings for decimal-to-roman conversion
      */
-    private static final TreeMap<Integer, String> INT_ROMAN_MAP = new TreeMap<Integer, String>();
+    private static final TreeMap<Integer, String> INT_ROMAN_MAP = new TreeMap<>();
     static {
         INT_ROMAN_MAP.put(1000, "M");
         INT_ROMAN_MAP.put(900, "CM");
@@ -88,17 +88,19 @@ public class RomanNumeralParser {
         // The matcher finds all words after a space that begin with a Roman numeral.
         while (matcher.find()) {
             int parsedInteger;
-            Matcher wordPartMatcher = Pattern.compile("^[\\w-']").matcher(matcher.group(2));
+            String roman = matcher.group("roman");
+            String after = matcher.group("after");
+            Matcher wordPartMatcher = Pattern.compile("^[\\w-']").matcher(after);
 
             // Ignore this match if it is a capital letter that is part of a word or if the first capture group matches an empty String.
-            if (wordPartMatcher.matches() || matcher.group(1).equals("")) {
+            if (wordPartMatcher.matches() || roman.isEmpty()) {
                 continue;
             }
 
-            parsedInteger = parseNumeral(matcher.group(1));
+            parsedInteger = parseNumeral(roman);
 
-            // Don't replace the word "I".
-            if (parsedInteger != 1 || matcher.group(2).equals("§") ||matcher.group(2).equals("")) {
+            // Don't replace the word "I" and don't miss attributes
+            if (parsedInteger != 1 || after.equals("§") || after.isEmpty() || after.equals(" ✖")) {
                 matcher.appendReplacement(result, " " + parsedInteger + "$2");
             }
         }

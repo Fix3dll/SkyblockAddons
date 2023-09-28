@@ -91,12 +91,12 @@ public class EnchantManager {
             String u = loreList.get(i);
             String s = TextUtils.stripColor(u);
             if (startEnchant == -1) {
-                if (containsEnchantment(enchantNBT, s)) {
+                if (containsEnchantment(extraAttributes, s)) {
                     startEnchant = i;
                 }
             }
             // Assume enchants end with an empty line "break"
-            else if (s.trim().length() == 0 && endEnchant == -1) {
+            else if (s.trim().isEmpty() && endEnchant == -1) {
                 endEnchant = i - 1;
             }
             // Get max tooltip size, disregarding the enchants section
@@ -159,7 +159,7 @@ public class EnchantManager {
         }
 
 
-        if (orderedEnchants.size() == 0) {
+        if (orderedEnchants.isEmpty()) {
             loreCache.updateAfter(loreList);
             return;
         }
@@ -319,16 +319,19 @@ public class EnchantManager {
      * Helper method to determine whether we should skip this line in parsing the lore.
      * E.g. we want to skip "Breaking Power X" seen on pickaxes.
      *
-     * @param enchantNBT the enchantments extraAttributes NBT of the item
+     * @param eaNBT the extraAttributes NBT of the item
      * @param s          the line of lore we are parsing
      * @return {@code true} if no enchants on the line are in the enchants table, {@code false} otherwise.
      */
-    public static boolean containsEnchantment(NBTTagCompound enchantNBT, String s) {
+    public static boolean containsEnchantment(NBTTagCompound eaNBT, String s) {
+        NBTTagCompound enchantNBT = eaNBT == null ? null : eaNBT.getCompoundTag("enchantments");
         Matcher m = ENCHANTMENT_PATTERN.matcher(s);
         while (m.find()) {
             Enchant enchant = enchants.getFromLore(m.group("enchant"));
             if (enchantNBT == null || enchantNBT.hasKey(enchant.nbtName)) {
-                return true;
+                NBTTagCompound attributesNBT = eaNBT == null ? null : eaNBT.getCompoundTag("attributes");
+                if (attributesNBT == null || !attributesNBT.hasKey(enchant.nbtName))
+                    return true;
             }
         }
         return false;
@@ -344,7 +347,7 @@ public class EnchantManager {
      * @return {@code null} if {@param unformattedEnchant} is not found in {@param formattedEnchants}, or the colored/styled enchant substring.
      */
     private static String getInputEnchantFormat(String formattedEnchants, String unformattedEnchant) {
-        if (unformattedEnchant.length() == 0) {
+        if (unformattedEnchant.isEmpty()) {
             return "";
         }
         String styles = "kKlLmMnNoO";
@@ -431,7 +434,7 @@ public class EnchantManager {
      * @return the relevant formatting codes in effect after {@param secondFormat}
      */
     private static String mergeFormats(String firstFormat, String secondFormat) {
-        if (secondFormat == null || secondFormat.length() == 0) {
+        if (secondFormat == null || secondFormat.isEmpty()) {
             return firstFormat;
         }
         String styles = "kKlLmMnNoO";
