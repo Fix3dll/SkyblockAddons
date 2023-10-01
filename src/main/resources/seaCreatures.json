@@ -79,10 +79,10 @@
     "rarity": "RARE",
     "spawnMessage": "From beneath the lava appears a Magma Slug."
   },
-  "MONSTER_OF_THE_DEEP": {
-    "name": "Monster of The Deep",
+  "RIDER_OF_THE_DEEP": {
+    "name": "Rider of the Deep",
     "rarity": "UNCOMMON",
-    "spawnMessage": "The Monster of the Deep has emerged."
+    "spawnMessage": "The Rider of the Deep has emerged."
   },
   "MOOGMA": {
     "name": "Moogma",
