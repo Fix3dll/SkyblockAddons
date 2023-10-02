@@ -288,9 +288,10 @@ public class PlayerListener {
                 }
                 main.getPersistentValuesManager().addEyeResetKills();
                 // TODO: Seems like leg warning and num sc killed should be separate features
-            } else if (main.getConfigValues().isEnabled(Feature.LEGENDARY_SEA_CREATURE_WARNING) && SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
+            } else if (SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
                 main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled() + 1);
-                if (SeaCreatureManager.getInstance().getLegendarySeaCreatureSpawnMessages().contains(unformattedText)) {
+                if (main.getConfigValues().isEnabled(Feature.LEGENDARY_SEA_CREATURE_WARNING)
+                        && SeaCreatureManager.getInstance().getLegendarySeaCreatureSpawnMessages().contains(unformattedText)) {
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setTitleFeature(Feature.LEGENDARY_SEA_CREATURE_WARNING);
                     main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
@@ -577,7 +578,7 @@ public class PlayerListener {
             } else if (heldItem.getItem() == Items.fishing_rod
                     && (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
                 // Update fishing status if the player is fishing and reels in their rod.
-                if (main.getConfigValues().isEnabled(Feature.FISHING_SOUND_INDICATOR) && BaitManager.getInstance().isHoldingRod()) {
+                if (main.getConfigValues().isEnabled(Feature.FISHING_SOUND_INDICATOR) && isHoldingRod()) {
                     oldBobberIsInWater = false;
                     lastBobberEnteredWater = Long.MAX_VALUE;
                     oldBobberPosY = 0;
@@ -714,7 +715,7 @@ public class PlayerListener {
                             main.getInventoryUtils().getInventoryDifference(player.inventory.mainInventory);
                         }
 
-                        if (main.getConfigValues().isEnabled(Feature.BAIT_LIST) && BaitManager.getInstance().isHoldingRod()) {
+                        if (main.getConfigValues().isEnabled(Feature.BAIT_LIST) && isHoldingRod()) {
                             BaitManager.getInstance().refreshBaits();
                         }
                     }
@@ -1309,8 +1310,7 @@ public class PlayerListener {
     private boolean shouldTriggerFishingIndicator() {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (main.getConfigValues().isEnabled(Feature.FISHING_SOUND_INDICATOR) && mc.thePlayer.fishEntity != null
-                && BaitManager.getInstance().isHoldingRod()) {
+        if (main.getConfigValues().isEnabled(Feature.FISHING_SOUND_INDICATOR) && mc.thePlayer.fishEntity != null && isHoldingRod()) {
             // Highly consistent detection by checking when the hook has been in the water for a while and
             // suddenly moves downward. The client may rarely bug out with the idle bobbing and trigger a false positive.
             EntityFishHook bobber = mc.thePlayer.fishEntity;
@@ -1326,6 +1326,25 @@ public class PlayerListener {
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    /**
+     * Check if our Player is holding a Fishing Rod, and filters out the Grapple Hook and Soul Whip and other items
+     * that are {@code Items.fishing_rod}s but aren't used for fishing. This is done by checking for the item type of
+     * "FISHING ROD" which is displayed beside the item rarity.
+     *
+     * @return {@code true} if the player is holding a fishing rod that can be used for fishing, {@code false} otherwise
+     */
+    public boolean isHoldingRod() {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+
+        if (player != null) {
+            ItemStack item = player.getHeldItem();
+            if (item == null || item.getItem() != Items.fishing_rod) return false;
+
+            return ItemUtils.getItemType(item) == ItemType.FISHING_ROD;
         }
         return false;
     }

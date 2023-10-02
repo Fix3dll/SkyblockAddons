@@ -1,11 +1,9 @@
 package codes.biscuit.skyblockaddons.features;
 
-import codes.biscuit.skyblockaddons.core.ItemType;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;
@@ -35,25 +33,6 @@ public class BaitManager {
      * A map of all baits in the inventory and their count
      */
     @Getter private final Map<BaitType, Integer> baitsInInventory = new HashMap<>();
-
-    /**
-     * Check if our Player is holding a Fishing Rod, and filters out the Grapple Hook and Soul Whip and other items
-     * that are {@code Items.fishing_rod}s but aren't used for fishing. This is done by checking for the item type of
-     * "FISHING ROD" which is displayed beside the item rarity.
-     *
-     * @return {@code true} if the player is holding a fishing rod that can be used for fishing, {@code false} otherwise
-     */
-    public boolean isHoldingRod() {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-
-        if (player != null) {
-            ItemStack item = player.getHeldItem();
-            if (item == null || item.getItem() != Items.fishing_rod) return false;
-
-            return ItemUtils.getItemType(item) == ItemType.FISHING_ROD;
-        }
-        return false;
-    }
 
     /**
      * Re-count all baits in the inventory

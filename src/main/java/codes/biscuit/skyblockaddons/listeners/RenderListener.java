@@ -981,6 +981,9 @@ public class RenderListener {
             text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getOresMined());
 
         } else if (feature == Feature.DOLPHIN_PET_TRACKER) {
+            if (main.getConfigValues().isEnabled(Feature.SHOW_ONLY_HOLDING_FISHING_ROD) && !main.getPlayerListener().isHoldingRod())
+                return;
+
             text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled());
 
         } else if (feature == Feature.DUNGEONS_SECRETS_DISPLAY) {
@@ -1500,7 +1503,7 @@ public class RenderListener {
      * Displays the bait list. Only shows bait with count > 0.
      */
     public void drawBaitList(Minecraft mc, float scale, ButtonLocation buttonLocation) {
-        if (!BaitManager.getInstance().isHoldingRod() && buttonLocation == null) return;
+        if (!main.getPlayerListener().isHoldingRod() && buttonLocation == null) return;
 
         Map<BaitManager.BaitType, Integer> baits = BaitManager.getInstance().getBaitsInInventory();
         if (buttonLocation != null) {

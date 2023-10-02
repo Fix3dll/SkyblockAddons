@@ -230,7 +230,8 @@
     "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas",
     "infernoSlayerTracker": "Slayer Tracker - Inferno/Blaze",
     "riftstalkerSlayerTracker": "Slayer Tracker - Riftstalker/Vampire",
-    "expandDeployableStatus": "Show stats in 2 columns on detailed status"
+    "expandDeployableStatus": "Show stats in 2 columns on detailed status",
+    "showOnlyHoldingFishingRod": "Show only when holding a fishing rod"
   },
   "messages": {
     "enchants": "Enchants",

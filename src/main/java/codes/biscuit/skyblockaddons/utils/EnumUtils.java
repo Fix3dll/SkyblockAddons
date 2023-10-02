@@ -221,6 +221,7 @@ public class EnumUtils {
         TREVOR_SHOW_LOCATION_ON_CHAT("settings.trevorTheTrapper.showLocationOnChat", 227),
         HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 231),
         ABBREVIATE_DRILL_FUEL_DENOMINATOR("settings.abbreviateDrillFuelDenominator", 232),
+        SHOW_ONLY_HOLDING_FISHING_ROD("settings.showOnlyHoldingFishingRod", 233),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

@@ -132,7 +132,7 @@ public enum Feature {
     DUNGEON_DEATH_COUNTER(136, "settings.dungeonDeathCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), true),
     SHOW_PERSONAL_COMPACTOR_PREVIEW(137, null, false),
     ROCK_PET_TRACKER(138, "settings.rockPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GRAY), true),
-    DOLPHIN_PET_TRACKER(139, "settings.dolphinPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.AQUA), true),
+    DOLPHIN_PET_TRACKER(139, "settings.dolphinPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.AQUA), true, EnumUtils.FeatureSetting.SHOW_ONLY_HOLDING_FISHING_ROD),
     SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY(140, "settings.dungeonsTeammateNameOverlay", null, false),
     SHOW_STACKING_ENCHANT_PROGRESS(141, "settings.stackingEnchantProgress", new GuiFeatureData(ColorCode.RED, true), false),
     DUNGEONS_SECRETS_DISPLAY(142, "settings.dungeonsSecretsDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GRAY), false),
@@ -225,6 +225,7 @@ public enum Feature {
     RIFTSTALKER_TEXT_MODE(230, null, true),
     HIDE_WHEN_NOT_IN_RIFT(231, null, false),
     ABBREVIATE_DRILL_FUEL_DENOMINATOR(232, "settings.abbreviateDrillFuelDenominator", null, true),
+    SHOW_ONLY_HOLDING_FISHING_ROD(233, "settings.showOnlyHoldingFishingRod", null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -272,7 +273,8 @@ public enum Feature {
             SHOW_FETCHUR_ONLY_IN_DWARVENS, SHOW_FETCHUR_ITEM_NAME, SHOW_FETCHUR_INVENTORY_OPEN_ONLY, WARN_WHEN_FETCHUR_CHANGES,
             STOP_ONLY_RAT_SQUEAK, SHOW_ENDER_CHEST_PREVIEW, HEALTH_PREDICTION, ABBREVIATE_SKILL_XP_DENOMINATOR, OTHER_DEFENCE_STATS,
             DISABLE_SPIRIT_SCEPTRE_MESSAGES, OUTBID_ALERT_SOUND_IN_OTHER_GAMES, DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME,
-            RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR, TREVOR_SHOW_LOCATION_ON_CHAT);
+            RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR, TREVOR_SHOW_LOCATION_ON_CHAT,
+            SHOW_ONLY_HOLDING_FISHING_ROD);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'

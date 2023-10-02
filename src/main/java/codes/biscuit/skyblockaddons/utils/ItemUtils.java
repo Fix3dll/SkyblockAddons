@@ -40,8 +40,9 @@ public class ItemUtils {
     public static final int NBT_LIST = 9;
     /**
      * This expression matches the line with a Skyblock item's rarity and item type that's at the end of its lore.
+     * <p><i>Recombobulated Special items have exception for rarity pattern.<i/></p>
      */
-    private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("§l(?<rarity>[A-Z]+) ?(?<type>[A-Z ]+)?(?:§[0-9a-f]§l§ka)?$");
+    private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("§l(?<rarity>[A-Z]+(?: SPECIAL)?) ?(?<type>[A-Z ]+)?(?:§[0-9a-f]§l§ka)?$");
     @Setter private static Map<String, CompactorItem> compactorItems;
     @Setter private static Map<String, ContainerData> containers;
 
@@ -628,7 +629,7 @@ public class ItemUtils {
 
                 if (type != null) {
                     for (ItemType itemType : ItemType.values()) {
-                        if (itemType.getLoreName().startsWith(type)) {
+                        if (itemType.getLoreName().startsWith(type.trim())) {
                             return itemType;
                         }
                     }
