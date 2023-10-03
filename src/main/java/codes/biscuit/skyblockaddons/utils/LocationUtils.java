@@ -108,4 +108,31 @@ public class LocationUtils {
     public static boolean isZealotSpawnLocation(Location location) {
         return zealotSpawnLocations.contains(location);
     }
+
+    /**
+     * @param slayerQuest slayer type
+     * @param location current location
+     * @return true if it is the location where the given slayer type is counted
+     */
+    public static boolean isSlayerLocation(EnumUtils.SlayerQuest slayerQuest, Location location) {
+        switch (slayerQuest) {
+            case REVENANT_HORROR:
+                return location == Location.GRAVEYARD || location == Location.COAL_MINE;
+            case TARANTULA_BROODFATHER:
+                return location == Location.SPIDER_MOUND
+                        || location == Location.ARACHNES_BURROW
+                        || location == Location.ARACHNES_SANCTUARY;
+            case SVEN_PACKMASTER:
+                return location == Location.RUINS || location == Location.HOWLING_CAVE;
+            case VOIDGLOOM_SERAPH:
+                return location != Location.VOID_SLATE && isInTheEnd(location);
+            case INFERNO_DEMONLORD:
+                return location == Location.CRIMSON_ISLE || location == Location.STRONGHOLD
+                        || location == Location.SMOLDERING_TOMB || location == Location.THE_WASTELAND;
+            case RIFTSTALKER_BLOODFIEND:
+                return location == Location.OUBLIETTE || location == Location.STILLGORE_CHATEAU;
+            default:
+                return false;
+        }
+    }
 }
