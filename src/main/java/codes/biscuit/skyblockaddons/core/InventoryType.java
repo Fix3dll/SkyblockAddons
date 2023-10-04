@@ -7,10 +7,11 @@ import java.util.regex.Pattern;
 /**
  * This is an enum containing different menus in Skyblock. It's used in logic where the menu the player is in matters.
  */
+@Getter
 public enum InventoryType {
     BASIC_REFORGING("Reforge Item", "Reforge Item"),
     HEX_REFORGING("Hex Reforge", "The Hex ➜ Reforges"),
-    SALVAGING("Salvage Item", "Salvage Item"),
+    SALVAGING("Salvage Items", "Salvage Items"),
     ULTRASEQUENCER("Ultrasequencer", "Ultrasequencer \\((?<type>[a-zA-Z]+)\\)"),
     CHRONOMATRON("Chronomatron", "Chronomatron \\((?<type>[a-zA-Z]+)\\)"),
     SUPERPAIRS("Superpairs", "Superpairs \\((?<type>[a-zA-Z]+)\\)"),
@@ -21,9 +22,7 @@ public enum InventoryType {
     MAYOR("Mayor", "Mayor (?<mayor>.*)"),
     CALENDAR("Calendar", "Calendar and Events");
 
-    @Getter
     private final String inventoryName;
-    @Getter
     private final Pattern inventoryPattern;
 
     InventoryType(String inventoryName, String regex) {
