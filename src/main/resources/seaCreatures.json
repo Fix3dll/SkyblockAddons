@@ -1,5 +1,5 @@
 {
-  "AGARIMOO":  {
+  "AGARIMOO": {
     "name": "Agarimoo",
     "rarity": "RARE",
     "spawnMessage": "Your Chumcap Bucket trembles, it's an Agarimoo."
@@ -29,10 +29,15 @@
     "rarity": "RARE",
     "spawnMessage": "A Fire Eel slithers out from the depths."
   },
+  "FLAMING_WORM": {
+    "name": "Flaming Worm",
+    "rarity": "RARE",
+    "spawnMessage": "A Flaming Worm surfaces from the depths!"
+  },
   "FROSTY": {
     "name": "Frosty",
     "rarity": "COMMON",
-    "spawnMessage": "It's a snowman! He looks harmless"
+    "spawnMessage": "It's a snowman! He looks harmless."
   },
   "FROZEN_STEVE": {
     "name": "Frozen Steve",
@@ -59,6 +64,11 @@
     "rarity": "EPIC",
     "spawnMessage": "You've discovered a Guardian Defender of the sea."
   },
+  "LAVA_BLAZE": {
+    "name": "Lava Blaze",
+    "rarity": "EPIC",
+    "spawnMessage": "A Lava Blaze has surfaced from the depths!"
+  },
   "LAVA_FLAME": {
     "name": "Lava Flame",
     "rarity": "RARE",
@@ -69,6 +79,11 @@
     "rarity": "RARE",
     "spawnMessage": "A small but fearsome Lava Leech emerges."
   },
+  "LAVA_PIGMAN": {
+    "name": "Lava Pigman",
+    "rarity": "EPIC",
+    "spawnMessage": "A Lava Pigman arose from the depths!"
+  },
   "LORD_JAWBUS": {
     "name": "Lord Jawbus",
     "rarity": "MYTHIC",
@@ -78,11 +93,6 @@
     "name": "Magma Slug",
     "rarity": "RARE",
     "spawnMessage": "From beneath the lava appears a Magma Slug."
-  },
-  "RIDER_OF_THE_DEEP": {
-    "name": "Rider of the Deep",
-    "rarity": "UNCOMMON",
-    "spawnMessage": "The Rider of the Deep has emerged."
   },
   "MOOGMA": {
     "name": "Moogma",
@@ -97,7 +107,7 @@
   "NIGHTMARE": {
     "name": "Nightmare",
     "rarity": "RARE",
-    "spawnMessage": "You hear trotting from beneath the waves, you caught a Nightmare"
+    "spawnMessage": "You hear trotting from beneath the waves, you caught a Nightmare."
   },
   "NURSE_SHARK": {
     "name": "Nurse Shark",
@@ -114,6 +124,11 @@
     "rarity": "LEGENDARY",
     "spawnMessage": "The spirit of a long lost Phantom Fisher has come to haunt you."
   },
+  "POISONED_WATER_WORM": {
+    "name": "Poisoned Water Worm",
+    "rarity": "RARE",
+    "spawnMessage": "A Poisoned Water Worm surfaces!"
+  },
   "PYROCLASTIC_WORM": {
     "name": "Pyroclastic Worm",
     "rarity": "RARE",
@@ -123,6 +138,11 @@
     "name": "Reindrake",
     "rarity": "LEGENDARY",
     "spawnMessage": "WOAH! A Reindrake was summoned from the depths!"
+  },
+  "RIDER_OF_THE_DEEP": {
+    "name": "Rider of the Deep",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "The Rider of the Deep has emerged."
   },
   "SCARECROW": {
     "name": "Scarecrow",
@@ -184,6 +204,11 @@
     "rarity": "LEGENDARY",
     "spawnMessage": "The Water Hydra has come to test your strength."
   },
+  "WATER_WORM": {
+    "name": "Water Worm",
+    "rarity": "RARE",
+    "spawnMessage": "A Water Worm surfaces!"
+  },
   "WEREWOLF": {
     "name": "Werewolf",
     "rarity": "EPIC",
@@ -193,5 +218,10 @@
     "name": "Yeti",
     "rarity": "LEGENDARY",
     "spawnMessage": "What is this creature!?"
+  },
+  "ZOMBIE_MINER": {
+    "name": "Zombie Miner",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "A Zombie Miner surfaces!"
   }
 }
