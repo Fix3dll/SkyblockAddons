@@ -10,7 +10,8 @@ public class ContainerData {
         BACKPACK,
         NEW_YEARS_CAKE,
         PERSONAL_COMPACTOR,
-        BUILDERS_WAND;
+        BUILDERS_WAND,
+        BUILDERS_RULER
     }
 
     /**
@@ -26,12 +27,12 @@ public class ContainerData {
     /**
      * The data tag where a compressed array of item stacks are stored.
      */
-    private String compressedItemStacksTag;
+    @Getter private String compressedItemStacksTag;
 
     /**
      * Data tags where individual item stacks are stored.
      */
-    private List<String> itemStackDataTags;
+    @Getter private List<String> itemStackDataTags;
 
     /**
      * The ExtraAttributes NBT tag for retrieving backpack color
@@ -62,6 +63,10 @@ public class ContainerData {
         return type == ContainerType.BUILDERS_WAND;
     }
 
+    public boolean isBuildersRuler() {
+        return type == ContainerType.BUILDERS_RULER;
+    }
+
     /* Functions that check the size of the container */
 
     /**
@@ -84,16 +89,5 @@ public class ContainerData {
     public int getNumCols() {
         return dimensions.length == 2 ? Math.min(dimensions[1], 9) : 9;
     }
-
-    public String getCompressedDataTag() {
-        return compressedItemStacksTag;
-    }
-
-    public List<String> getItemStackDataTags() {
-        return itemStackDataTags;
-    }
-
-
-
 
 }

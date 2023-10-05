@@ -98,19 +98,19 @@ public class ContainerPreviewManager {
 
             // Parse out a list of items in the container
             List<ItemStack> items = null;
-            String compressedDataTag = containerData.getCompressedDataTag();
-            List<String> itemStackDataTags = containerData.getItemStackDataTags();
+            String compressedDataTag = containerData.getCompressedItemStacksTag();
+            List<String> dataTags = containerData.getItemStackDataTags();
 
             if (compressedDataTag != null) {
                 if (extraAttributes.hasKey(compressedDataTag, Constants.NBT.TAG_BYTE_ARRAY)) {
                     byte[] bytes = extraAttributes.getByteArray(compressedDataTag);
                     items = decompressItems(bytes);
                 }
-            } else if (itemStackDataTags != null) {
+            } else if (dataTags != null) {
                 items = new ArrayList<>(containerSize);
-                Iterator<String> itemStackDataTagsIterator = itemStackDataTags.iterator();
-                for (int itemNumber = 0; itemNumber < containerSize && itemStackDataTagsIterator.hasNext(); itemNumber++) {
-                    String key = itemStackDataTagsIterator.next();
+                Iterator<String> dataTagsIterator = dataTags.iterator();
+                for (int itemNumber = 0; itemNumber < containerSize && dataTagsIterator.hasNext(); itemNumber++) {
+                    String key = dataTagsIterator.next();
                     if (!extraAttributes.hasKey(key)) {
                         continue;
                     }

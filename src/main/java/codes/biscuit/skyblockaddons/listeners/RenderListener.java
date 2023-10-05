@@ -109,7 +109,7 @@ public class RenderListener {
             , "SKYBLOCK_MENU"
             , false
     );
-    private static final ItemStack PET_ROCK = ItemUtils.createSkullItemStack(
+    private static final ItemStack ROCK_PET = ItemUtils.createSkullItemStack(
             "§f§f§7[Lvl 100] §6Rock"
             , null
             , "1ed7c993-8190-3055-a48c-f70f71b17284"
@@ -1348,7 +1348,7 @@ public class RenderListener {
                 break;
 
             case ROCK_PET_TRACKER:
-                renderItem(PET_ROCK, x, y);
+                renderItem(ROCK_PET, x, y);
                 FontRendererHook.setupFeatureFont(feature);
                 DrawUtils.drawText(text, x + 18, y + 4, color);
                 FontRendererHook.endFeatureFont();
