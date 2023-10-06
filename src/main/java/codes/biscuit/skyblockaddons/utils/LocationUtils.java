@@ -119,9 +119,8 @@ public class LocationUtils {
             case REVENANT_HORROR:
                 return location == Location.GRAVEYARD || location == Location.COAL_MINE;
             case TARANTULA_BROODFATHER:
-                return location == Location.SPIDER_MOUND
-                        || location == Location.ARACHNES_BURROW
-                        || location == Location.ARACHNES_SANCTUARY;
+                return location == Location.SPIDER_MOUND || location == Location.ARACHNES_BURROW
+                        || location == Location.ARACHNES_SANCTUARY || location == Location.BURNING_DESERT;
             case SVEN_PACKMASTER:
                 return location == Location.RUINS || location == Location.HOWLING_CAVE;
             case VOIDGLOOM_SERAPH:
