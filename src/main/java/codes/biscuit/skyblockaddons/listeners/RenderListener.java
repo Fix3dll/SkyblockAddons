@@ -1816,8 +1816,7 @@ public class RenderListener {
             for (SlayerDrop drop : slayerBoss.getDrops()) {
                 longestSlayerDropLineWidth = Math.max(
                         longestSlayerDropLineWidth
-                        , mc.fontRendererObj.getStringWidth(drop.getDisplayName()
-                        )
+                        , mc.fontRendererObj.getStringWidth(drop.getDisplayName())
                 );
                 longestCount = Math.max(
                         longestCount

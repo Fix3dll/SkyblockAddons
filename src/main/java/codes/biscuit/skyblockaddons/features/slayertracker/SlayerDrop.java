@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;
 
+@Getter
 public enum SlayerDrop {
 
     // Revenant Drops
@@ -24,6 +25,7 @@ public enum SlayerDrop {
     SNAKE_RUNE("Snake Rune", "RUNE", "SNAKE", ItemRarity.LEGENDARY, "b8480d6d-7769-33ea-8dba-3cb5a01a69c0", "2c4a65c689b2d36409100a60c2ab8d3d0a67ce94eea3c1f7ac974fd893568b5d"),
     SCYTHE_BLADE(Items.diamond, "Scythe Blade", "SCYTHE_BLADE", ItemRarity.LEGENDARY, true),
     SMITE_SEVEN("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.EPIC, "smite", 7),
+    REVENANT_VISCERA(Items.cooked_porkchop, "Revenant Viscera", "REVENANT_VISCERA", ItemRarity.RARE, true),
     SHARD_OF_SHREDDED("Shard of the Shredded", "SHARD_OF_THE_SHREDDED", ItemRarity.LEGENDARY, "9ddf6967-40de-3534-903f-4d5d9c933d55", "70c5cc728c869ecf3c6e0979e8aa09c10147ed770417e4ba541aac382f0"),
     WARDEN_HEART("Warden Heart", "WARDEN_HEART", ItemRarity.LEGENDARY, "7adc7613-256a-3593-899b-d4d9bbf50387", "d45f4d139c9e89262ec06b27aaad73fa488ab49290d2ccd685a2554725373c9b"),
 
@@ -72,8 +74,8 @@ public enum SlayerDrop {
     // Blaze Drops
     DERELICT_ASHE(Items.gunpowder, "Derelict Ashe", "DERELICT_ASHE", ItemRarity.UNCOMMON, true),
     LAVATEARS_RUNE("Lavatears Rune I", "RUNE", "LAVATEARS", ItemRarity.LEGENDARY, "9a960dcb-e362-3642-bf8e-510574a20cd7", "4f01ec6331a3bc30a8204ec56398d08ca38788556bca9b81d776f6238d567367"),
-    WISP_ICE_FLAVORED_WATER(Items.potionitem, "Wisp's Ice-Flavored Water I Splash Potion", "POTION", ItemRarity.COMMON),
-    BUNDLE_OF_MAGMA("Bundle of Magma Arrows", "ARROW_BUNDLE_MAGMA", ItemRarity.EPIC, "17c69624-a342-3d09-a976-d0c155aaafec", "68392651a1a4cbb5982b13ace0829a75b98c11e13b68868fe349aea24014ffbd"),
+    WISPS_ICE_FLAVORED_WATER(Items.potionitem, "Wisp's Ice-Flavored Water I Splash Potion", "POTION", ItemRarity.COMMON),
+    BUNDLE_OF_MAGMA_ARROWS("Bundle of Magma Arrows", "ARROW_BUNDLE_MAGMA", ItemRarity.EPIC, "17c69624-a342-3d09-a976-d0c155aaafec", "68392651a1a4cbb5982b13ace0829a75b98c11e13b68868fe349aea24014ffbd"),
     MANA_DISINTEGRATOR("Mana Disintegrator", "MANA_DISINTEGRATOR", ItemRarity.RARE, "b9d84e23-a8e5-3992-bace-b6f3b32e34d8", "818f83eb64f438e3f6ae3a5c2dea8ed10303bad85ac34a798659a275aa096506"),
     SCORCHED_BOOKS("Scorched Books", "SCORCHED_BOOKS", ItemRarity.MYTHIC, "d15a5bd9-33f1-3336-9679-9d4887b84e9c", "46ee7e906686abd5ec192b079314c45f1fb8171d9e13caa4cf9f63afc2263fd5"),
     KELVIN_INVERTER("Kelvin Inverter", "KELVIN_INVERTER", ItemRarity.RARE, "be00aa7f-9080-3862-8d7d-2c6e4cbfd7c8", "b247f2658aebbb2766046624da85ee04cd2b18a8252045d4260bd81d62c7b6d8"),
@@ -84,7 +86,7 @@ public enum SlayerDrop {
     GABAGOOL_DISTILLATE("Gabagool Distillate", "CRUDE_GABAGOOL_DISTILLATE", ItemRarity.RARE, "e33f8341-3ece-364c-a26b-a1d3b460645f", "595231147189ac4b9f53487ce35ba0205bf377f3986c0e5ceb942e77f1c39cc"),
     SCORCHED_POWER_CRYSTAL("Scorched Power Crystal", "SCORCHED_POWER_CRYSTAL", ItemRarity.LEGENDARY, "3c4d9142-a59b-4e72-8f48-5e48b1650163", "2cf0ccf5a5f97097262e773bbf65c4d7d9a39938015bf00de4918620f034f9b0"),
     ARCHFIEND_DICE("Archfiend Dice", "ARCHFIEND_DICE", ItemRarity.EPIC, "9c3c19b2-84e6-3eb6-8aec-450e133a569a", "6e22c298e7c6336af17909ac1f1ee6834b58b1a3cc99aba255ca7eaeb476173"),
-    FIRE_ASPECT("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.COMMON, "fire_aspect", 3),
+    FIRE_ASPECT_THREE("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.COMMON, "fire_aspect", 3),
     FIERY_BURST_RUNE("Fiery Burst Rune I", "RUNE", "FIERY_BURST", ItemRarity.LEGENDARY, "983fd05e-d9e2-3dbc-9185-28e3138ccb34", "8d620e4e3d3abfed6ad81a58a56bcd085d9e9efc803cabb21fa6c9e3969e2d2e"),
     FLAWED_OPAL_GEMSTONE("❂ Flawed Opal Gemstone", "FLAWED_OPAL_GEM", ItemRarity.UNCOMMON, "f1fa016a-e25d-3e5b-90c5-b9928ecf14c4", "eadc3bcdd7c701b63f8b8b4a96e429316a08388669d9a98c1a98791729b961df"),
     DUPLEX("Enchanted Book", "ENCHANTED_BOOK", ItemRarity.COMMON, "ultimate_reiterate", 1),
@@ -99,17 +101,13 @@ public enum SlayerDrop {
     BUBBA_BLISTER("Bubba Blister", "BUBBA_BLISTER", ItemRarity.LEGENDARY, "44a0ab42-66df-3147-ba46-bcb92b3face9", "6cb5727b986c36e07582148b886102cf8070b0ee3aa3771b2464393f588a832d"),
     FANGTASTIC_CHOCOLATE_CHIP(Items.cookie, "Fang-tastic Chocolate Chip", "CHOCOLATE_CHIP", ItemRarity.LEGENDARY),
     GUARDIAN_LUCKY_BLOCK("Guardian Lucky Block", "GUARDIAN_LUCKY_BLOCK", ItemRarity.LEGENDARY, "89f6b4f8-8067-32e6-b78b-a0c2458d78e3", "6fdcfb400976bf73ec32c1b9962c830fc3d7006d749f8f3da3b6e0fb82909b28"),
-    MCGRUBBER_BURGER("McGrubber's Burger", "MCGRUBBER_BURGER", ItemRarity.EPIC, "f5622ccb-aebc-36b7-9d39-7cbe0824cb6a", "d33ddb92cb6b3a79280b8bdced8976aeab13a4bffeaef2d46d828bd91dee0f3e"),
+    MCGRUBBERS_BURGER("McGrubber's Burger", "MCGRUBBER_BURGER", ItemRarity.EPIC, "f5622ccb-aebc-36b7-9d39-7cbe0824cb6a", "d33ddb92cb6b3a79280b8bdced8976aeab13a4bffeaef2d46d828bd91dee0f3e"),
     UNFANGED_VAMPIRE_PART("Unfanged Vampire Part", "UNFANGED_VAMPIRE_PART", ItemRarity.LEGENDARY, "59cc508f-f9f9-3c7b-893c-32096116901c", "e1883eb5e47ceeed02063fb8ec0f7584717ac8c79521ae32cf0606ebcf740e70"),
     THE_ONE_BOOK_BUNDLE("The One Bundle", "ENCHANTED_BOOK_BUNDLE_THE_ONE", ItemRarity.LEGENDARY, "ca704bba-9cb8-3220-bb45-0f0c3f8c93a0", "e5be22b5d4a875d77df3f7710ff4578ef27939a9684cbdb3d31d973f166849");
 
-    @Getter
     private final String skyblockID;
-    @Getter
     private final ItemRarity rarity;
-    @Getter
     private final ItemStack itemStack;
-    @Getter
     private String runeID;
 
     /**
@@ -173,6 +171,9 @@ public enum SlayerDrop {
     private static final HashMap<String, String> internalItemTranslations = new HashMap<>();
 
     static {
+        internalItemTranslations.put("bossesKilled", "Bosses Killed");
+
+        // revenant
         internalItemTranslations.put("revenantFlesh", "Revenant Flesh");
         internalItemTranslations.put("foulFlesh", "Foul Flesh");
         internalItemTranslations.put("pestilenceRune", "Pestilence Rune");
@@ -182,6 +183,12 @@ public enum SlayerDrop {
         internalItemTranslations.put("revenantCatalyst", "Revenant Catalyst");
         internalItemTranslations.put("snakeRune", "Snake Rune");
         internalItemTranslations.put("scytheBlade", "Scythe Blade");
+        internalItemTranslations.put("revenantViscera", "Revenant Viscera");
+        internalItemTranslations.put("smiteSeven", "Smite 7");
+        internalItemTranslations.put("shardOfShredded", "Shard of Shredded");
+        internalItemTranslations.put("wardenHeart", "Warden Heart");
+
+        // tarantula
         internalItemTranslations.put("tarantulaWeb", "Tarantula Web");
         internalItemTranslations.put("toxicArrowPoison", "Toxic Arrow Poison");
         internalItemTranslations.put("spiderCatalyst", "Spider Catalyst");
@@ -190,16 +197,19 @@ public enum SlayerDrop {
         internalItemTranslations.put("flySwatter", "Fly Swatter");
         internalItemTranslations.put("tarantulaTalisman", "Tarantula Talisman");
         internalItemTranslations.put("digestedMosquito", "Digested Mosquito");
+
+        // wolf
         internalItemTranslations.put("wolfTooth", "Wolf Tooth");
         internalItemTranslations.put("hamsterWheel", "Hamster Wheel");
         internalItemTranslations.put("spiritRune", "Spirit Rune");
         internalItemTranslations.put("criticalSix", "Critical 6");
         internalItemTranslations.put("furball", "Furball");
-        internalItemTranslations.put("grizzlyBait", "Grizzly Bait");
         internalItemTranslations.put("redClawEgg", "Red Claw Egg");
-        internalItemTranslations.put("overfluxCapacitor", "Overflux Capacitor");
         internalItemTranslations.put("coutureRune", "Couture Rune");
-        internalItemTranslations.put("bossesKilled", "Bosses Killed");
+        internalItemTranslations.put("grizzlyBait", "Grizzly Bait");
+        internalItemTranslations.put("overfluxCapacitor", "Overflux Capacitor");
+
+        // voidgloom
         internalItemTranslations.put("nullSphere", "Null Sphere");
         internalItemTranslations.put("twilightArrowPoison", "Twilight Arrow Poison");
         internalItemTranslations.put("endersnakeRune", "Endersnake Rune");
@@ -207,7 +217,7 @@ public enum SlayerDrop {
         internalItemTranslations.put("manaStealOne", "Mana Steal 1");
         internalItemTranslations.put("transmissionTuner", "Transmission Tuner");
         internalItemTranslations.put("nullAtom", "Null Atom");
-        internalItemTranslations.put("hazmatenderman", "Hazmat Enderman");
+        internalItemTranslations.put("hazmatEnderman", "Hazmat Enderman");
         internalItemTranslations.put("pocketEspressoMachine", "Pocket Espresso Machine");
         internalItemTranslations.put("smartyPantsOne", "Smarty Pants 1");
         internalItemTranslations.put("endRune", "End Rune");
@@ -219,34 +229,38 @@ public enum SlayerDrop {
         internalItemTranslations.put("judgementCore", "Judgement Core");
         internalItemTranslations.put("enchantRune", "Enchant Rune");
         internalItemTranslations.put("enderSlayerSeven", "Ender Slayer 7");
+
+        // inferno
         internalItemTranslations.put("derelictAshe", "Derelict Ashe");
         internalItemTranslations.put("lavatearsRune", "Lavatears Rune");
-        internalItemTranslations.put("wispIceFlavored", "Wisp's Ice-Flavored Water");
+        internalItemTranslations.put("wispsIceFlavoredWater", "Wisp's Ice-Flavored Water");
         internalItemTranslations.put("bundleOfMagmaArrows", "Bundle of Magma Arrows");
         internalItemTranslations.put("manaDisintegrator", "Mana Disintegrator");
         internalItemTranslations.put("scorchedBooks", "Scorched Books");
         internalItemTranslations.put("kelvinInverter", "Kelvin Inverter");
-        internalItemTranslations.put("blazeRodDisillate", "Blaze Rod Distillate");
+        internalItemTranslations.put("blazeRodDistillate", "Blaze Rod Distillate");
         internalItemTranslations.put("glowstoneDistillate", "Glowstone Distillate");
         internalItemTranslations.put("magmaCreamDistillate", "Magma Cream Distillate");
         internalItemTranslations.put("netherWartDistillate", "Nether Wart Distillate");
         internalItemTranslations.put("gabagoolDistillate", "Gabagool Distillate");
         internalItemTranslations.put("scorchedPowerCrystal", "Scorched Power Crystal");
         internalItemTranslations.put("archfiendDice", "Archfiend Dice");
-        internalItemTranslations.put("fireAspect", "Fire Aspect 3");
+        internalItemTranslations.put("fireAspectThree", "Fire Aspect 3");
         internalItemTranslations.put("fieryBurstRune", "Fiery Burst Rune");
         internalItemTranslations.put("flawedOpalGemstone", "Flawed Opal Gemstone");
         internalItemTranslations.put("duplex", "Duplex 1");
         internalItemTranslations.put("highClassArchfiendDice", "High Class Archfiend Dice");
         internalItemTranslations.put("wilsonEngineeringPlans", "Wilson's Engineering Plans");
         internalItemTranslations.put("subzeroInverter", "Subzero Inverter");
+
+        // rift
         internalItemTranslations.put("covenSeal", "Coven Seal");
         internalItemTranslations.put("quantumBookBundle", "Quantum (Book Bundle)");
         internalItemTranslations.put("soultwistRune", "Soultwist Rune");
         internalItemTranslations.put("bubbaBlister", "Bubba Blister");
         internalItemTranslations.put("fangtasticChocolateChip", "Fang-Tastic Chocolate Chip");
         internalItemTranslations.put("guardianLuckyBlock", "Guardian Lucky Block");
-        internalItemTranslations.put("mcGrubberBurger", "McGrubber's Burger");
+        internalItemTranslations.put("mcgrubbersBurger", "McGrubber's Burger");
         internalItemTranslations.put("unfangedVampirePart", "Unfanged Vampire Part");
         internalItemTranslations.put("theOneBookBundle", "The One (Book Bundle)");
     }
