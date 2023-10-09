@@ -501,7 +501,8 @@
           "killsSet": "Kills for slayer %boss% was set to %number%.",
           "statSet": "Statistic %stat% for slayer %boss% was set to %number%.",
           "invalidBoss": "\"%input%\" is not a valid statistic!",
-          "invalidStat": "\"%input%\" is not a valid boss!"
+          "invalidStat": "\"%input%\" is not a valid boss!",
+          "resetBossStats": "All stats of %boss% slayer have been reset"
         },
         "toggleActionBarLogging": {
           "disabled": "Action bar messages will no longer be logged.",

@@ -2,6 +2,8 @@ package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.core.Location;
 import lombok.Getter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 
 import java.util.EnumSet;
 
@@ -119,15 +121,22 @@ public class LocationUtils {
             case REVENANT_HORROR:
                 return location == Location.GRAVEYARD || location == Location.COAL_MINE;
             case TARANTULA_BROODFATHER:
-                return location == Location.SPIDER_MOUND || location == Location.ARACHNES_BURROW
-                        || location == Location.ARACHNES_SANCTUARY || location == Location.BURNING_DESERT;
+                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+                if (player == null) return false;
+                double x = player.prevPosX;
+                double y = player.prevPosY;
+                double z = player.prevPosZ;
+                return location == Location.SPIDER_MOUND || location == Location.ARACHNES_BURROW ||
+                        location == Location.ARACHNES_SANCTUARY ||
+                        ((location == Location.BURNING_DESERT || location == Location.CRIMSON_ISLE || location == Location.DRAGONTAIL)
+                        && (-550 < x && x <-450 && 80 < y && y < 130 && -900 < z && z < -625));
             case SVEN_PACKMASTER:
                 return location == Location.RUINS || location == Location.HOWLING_CAVE;
             case VOIDGLOOM_SERAPH:
                 return location != Location.VOID_SLATE && isInTheEnd(location);
             case INFERNO_DEMONLORD:
-                return location == Location.CRIMSON_ISLE || location == Location.STRONGHOLD
-                        || location == Location.SMOLDERING_TOMB || location == Location.THE_WASTELAND;
+                return location == Location.CRIMSON_ISLE || location == Location.STRONGHOLD ||
+                        location == Location.SMOLDERING_TOMB || location == Location.THE_WASTELAND;
             case RIFTSTALKER_BLOODFIEND:
                 return location == Location.OUBLIETTE || location == Location.STILLGORE_CHATEAU;
             default:

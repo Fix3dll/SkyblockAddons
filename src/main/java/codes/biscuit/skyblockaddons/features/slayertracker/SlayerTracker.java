@@ -2,7 +2,6 @@ package codes.biscuit.skyblockaddons.features.slayertracker;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.Rune;
@@ -14,6 +13,8 @@ import net.minecraftforge.common.util.Constants;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static codes.biscuit.skyblockaddons.core.Translations.getMessage;
 
 public class SlayerTracker {
 
@@ -63,6 +64,7 @@ public class SlayerTracker {
         }
     }
 
+    @Deprecated
     public void checkInventoryDifferenceForDrops(List<ItemDiff> newInventoryDifference) {
         recentInventoryDifferences.entrySet().removeIf(entry -> System.currentTimeMillis() - entry.getKey() > 1000);
         recentInventoryDifferences.put(System.currentTimeMillis(), newInventoryDifference);
@@ -73,47 +75,34 @@ public class SlayerTracker {
             return;
         }
 
-
         for (List<ItemDiff> inventoryDifference : recentInventoryDifferences.values()) {
             for (ItemDiff itemDifference : inventoryDifference) {
                 if (itemDifference.getAmount() < 1) {
                     continue;
                 }
-
-                for (SlayerDrop drop : slayerTrackerData.getLastKilledBoss().getDrops()) {
-                    if (drop.getSkyblockID().equals(ItemUtils.getSkyblockItemID(itemDifference.getExtraAttributes()))) {
-
-                        // If this is a rune and it doesn't match, continue
-                        Rune rune = ItemUtils.getRuneData(itemDifference.getExtraAttributes());
-                        if (drop.getRuneID() != null && (rune == null || rune.getType() == null || !rune.getType().equals(drop.getRuneID()))) {
-                            continue;
-                        }
-                        // If this is a book and it doesn't match, continue
-                        if (drop.getSkyblockID().equals("ENCHANTED_BOOK")) {
-                            boolean match = true;
-                            NBTTagCompound diffTag = itemDifference.getExtraAttributes().getCompoundTag("enchantments");
-                            NBTTagCompound dropTag = ItemUtils.getEnchantments(drop.getItemStack());
-                            if (diffTag != null && dropTag != null && diffTag.getKeySet().size() == dropTag.getKeySet().size()) {
-                                for (String key : diffTag.getKeySet()) {
-                                    if (!dropTag.hasKey(key, Constants.NBT.TAG_INT) || dropTag.getInteger(key) != diffTag.getInteger(key)) {
-                                        match = false;
-                                        break;
-                                    }
-                                }
-                            } else {
-                                match = false;
-                            }
-                            if (!match) {
-                                continue;
-                            }
-                        }
-                        slayerTrackerData.getSlayerDropCounts().put(drop, slayerTrackerData.getSlayerDropCounts().getOrDefault(drop, 0) + itemDifference.getAmount());
-                    }
-                }
+                addToTrackerData(itemDifference.getExtraAttributes(), itemDifference.getAmount());
             }
         }
-
         recentInventoryDifferences.clear();
+    }
+
+    public void resetAllStats(String boss) {
+        SlayerBoss slayerBoss = SlayerBoss.getFromMobType(boss);
+
+        if (slayerBoss == null) {
+            throw new IllegalArgumentException(getMessage("commandUsage.sba.slayer.invalidBoss", boss));
+        }
+
+        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
+
+        slayerTrackerData.getSlayerKills().put(slayerBoss, 0);
+
+        for (SlayerDrop slayerDrop : slayerBoss.getDrops()) {
+            slayerTrackerData.getSlayerDropCounts().put(slayerDrop, 0);
+        }
+        main.getPersistentValuesManager().saveValues();
+        main.getUtils().sendMessage(getMessage("commands.responses.sba.slayer.resetBossStats", boss));
+
     }
 
     /**
@@ -128,14 +117,14 @@ public class SlayerTracker {
         SlayerBoss slayerBoss = SlayerBoss.getFromMobType(args[1]);
 
         if (slayerBoss == null) {
-            throw new IllegalArgumentException(Translations.getMessage("commandUsage.sba.slayer.invalidBoss", args[1]));
+            throw new IllegalArgumentException(getMessage("commandUsage.sba.slayer.invalidBoss", args[1]));
         }
 
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
         if (args[2].equalsIgnoreCase("kills")) {
             int count = Integer.parseInt(args[3]);
             slayerTrackerData.getSlayerKills().put(slayerBoss, count);
-            main.getUtils().sendMessage(Translations.getMessage(
+            main.getUtils().sendMessage(getMessage(
                     "commandUsage.sba.slayer.killsSet", args[1], args[3]));
             main.getPersistentValuesManager().saveValues();
             return;
@@ -151,17 +140,52 @@ public class SlayerTracker {
         if (slayerDrop != null) {
             int count = Integer.parseInt(args[3]);
             slayerTrackerData.getSlayerDropCounts().put(slayerDrop, count);
-            main.getUtils().sendMessage(Translations.getMessage(
+            main.getUtils().sendMessage(getMessage(
                     "commandUsage.sba.slayer.statSet", args[2], args[1], args[3]));
             main.getPersistentValuesManager().saveValues();
             return;
         }
 
-        throw new IllegalArgumentException(Translations.getMessage("commandUsage.sba.slayer.invalidStat", args[1]));
+        throw new IllegalArgumentException(getMessage("commandUsage.sba.slayer.invalidStat", args[1]));
     }
 
     public void setKillCount(SlayerBoss slayerBoss, int kills) {
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
         slayerTrackerData.getSlayerKills().put(slayerBoss, kills);
+    }
+
+    // TODO dont count dropped items by player again
+    public void addToTrackerData(NBTTagCompound ea, int amount) {
+        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
+
+        for (SlayerDrop drop : slayerTrackerData.getLastKilledBoss().getDrops()) {
+            if (!drop.getSkyblockID().equals(ItemUtils.getSkyblockItemID(ea))) continue;
+
+            // If this is a rune and it doesn't match, continue
+            Rune rune = ItemUtils.getRuneData(ea);
+            if (drop.getRuneID() != null && (rune == null || rune.getType() == null || !rune.getType().equals(drop.getRuneID()))) {
+                continue;
+            }
+            // If this is a book and it doesn't match, continue
+            if (drop.getSkyblockID().equals("ENCHANTED_BOOK")) {
+                boolean match = true;
+                NBTTagCompound diffTag = ea.getCompoundTag("enchantments");
+                NBTTagCompound dropTag = ItemUtils.getEnchantments(drop.getItemStack());
+                if (diffTag != null && dropTag != null && diffTag.getKeySet().size() == dropTag.getKeySet().size()) {
+                    for (String key : diffTag.getKeySet()) {
+                        if (!dropTag.hasKey(key, Constants.NBT.TAG_INT) || dropTag.getInteger(key) != diffTag.getInteger(key)) {
+                            match = false;
+                            break;
+                        }
+                    }
+                } else {
+                    match = false;
+                }
+                if (!match) {
+                    continue;
+                }
+            }
+            slayerTrackerData.getSlayerDropCounts().put(drop, slayerTrackerData.getSlayerDropCounts().getOrDefault(drop, 0) + amount);
+        }
     }
 }

@@ -6,7 +6,6 @@ import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.features.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
-import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -204,9 +203,10 @@ public class InventoryUtils {
                 DragonTracker.getInstance().checkInventoryDifferenceForDrops(inventoryDifference);
             }
 
-            if (SlayerTracker.getInstance().isTrackerEnabled()) {
+            // TODO could be used for rift slayer
+            /*if (SlayerTracker.getInstance().isTrackerEnabled()) {
                 SlayerTracker.getInstance().checkInventoryDifferenceForDrops(inventoryDifference);
-            }
+            }*/
 
             // Add changes to already logged changes of the same item, so it will increase/decrease the amount
             // instead of displaying the same item twice

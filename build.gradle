@@ -110,7 +110,8 @@ dependencies {
         exclude module: 'gson'
         because 'Different version conflicts with Minecraft\'s GSON'
     }
-    testImplementation('org.junit.jupiter:junit-jupiter:5.9.3')
+    implementation('com.google.guava:guava:32.1.2-jre')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.10.0')
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -128,6 +129,7 @@ tasks.register('copyLicenses', Copy) {
 }
 
 jar {
+    destinationDirectory.set(layout.buildDirectory.dir("badjars"))
     manifest.attributes(
             'Manifest-Version': '2.0',
             'Main-Class': 'SkyblockAddonsInstallerFrame',
@@ -147,7 +149,7 @@ jar {
 
 remapJar {
     from(tasks.shadowJar)
-    input.set(tasks.shadowJar.archiveFile.get())
+    input.set(tasks.shadowJar.getArchiveFile())
 
     archiveFileName = "${project.name}-${project.version}-for-MC-${project.minecraftVersion}.jar"
 }
@@ -165,6 +167,7 @@ processResources {
 }
 
 shadowJar {
+    destinationDirectory.set(layout.buildDirectory.dir("badjars"))
     configurations = [project.configurations.bundle]
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 

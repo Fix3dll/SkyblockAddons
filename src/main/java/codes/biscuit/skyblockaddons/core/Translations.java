@@ -27,7 +27,7 @@ public class Translations {
             String[] pathSplit = path.split(Pattern.quote("."));
             JsonObject jsonObject = main.getConfigValues().getLanguageConfig();
             for (String pathPart : pathSplit) {
-                if (!pathPart.equals("")) {
+                if (!pathPart.isEmpty()) {
                     JsonElement jsonElement = jsonObject.get(pathPart);
 
                     if (jsonElement.isJsonObject()) {

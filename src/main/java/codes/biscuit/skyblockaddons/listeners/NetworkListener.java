@@ -2,14 +2,30 @@ package codes.biscuit.skyblockaddons.listeners;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.events.PacketEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
+import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
+import codes.biscuit.skyblockaddons.handlers.PacketHandler;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.TimeUnit;
 
 import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
 
@@ -23,6 +39,8 @@ public class NetworkListener {
     public NetworkListener() {
         main = SkyblockAddons.getInstance();
     }
+
+    private final Cache<Integer, Integer> collectedCache = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.SECONDS).build();
 
     @SubscribeEvent
     public void onDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
@@ -58,6 +76,40 @@ public class NetworkListener {
         if (updateHealth != null) {
             main.getNewScheduler().cancel(updateHealth);
             updateHealth = null;
+        }
+    }
+
+    @SubscribeEvent
+    public void onServerConnect(FMLNetworkEvent.ClientConnectedToServerEvent e) {
+        e.manager.channel().pipeline().addBefore("packet_handler", "sba_packet_handler", new PacketHandler());
+        logger.info("Added SBA's packet handler to channel pipeline.");
+    }
+
+    @SubscribeEvent
+    public void onPacketRecieved(PacketEvent.ReceiveEvent e) {
+        if (!main.getUtils().isOnSkyblock()) return;
+        Packet<?> packet = e.getPacket();
+
+        // Java adoption of SkyHanni profit tracker
+        if (packet instanceof S0DPacketCollectItem) {
+            if (!SlayerTracker.getInstance().isTrackerEnabled()) return;
+            EnumUtils.SlayerQuest slayerQuest = main.getUtils().getSlayerQuest();
+            if (slayerQuest == null || slayerQuest == EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND) return;
+            if (!LocationUtils.isSlayerLocation(main.getUtils().getSlayerQuest(), main.getUtils().getLocation())) return;
+
+            int entityID = ((S0DPacketCollectItem) packet).getCollectedItemEntityID();
+            Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
+
+            if (!(entity instanceof EntityItem)) return;
+            EntityItem entityItem = (EntityItem) entity;
+
+            if (collectedCache.getIfPresent(entityID) != null) return;
+            collectedCache.put(entityID, 0);
+
+            ItemStack itemStack = entityItem.getEntityItem();
+            SlayerTracker.getInstance().addToTrackerData(ItemUtils.getExtraAttributes(itemStack), itemStack.stackSize);
+
+            // main.getUtils().sendMessage(itemStack.getDisplayName() + ":" + itemStack.stackSize, true); // DEBUG
         }
     }
 }
