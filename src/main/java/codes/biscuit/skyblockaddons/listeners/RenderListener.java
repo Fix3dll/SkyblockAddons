@@ -434,24 +434,34 @@ public class RenderListener {
         // Float value to scale width
         float widthScale = 1.0F;
 
-        if (feature == Feature.MANA_BAR) {
-            fill = getAttribute(Attribute.MANA) / getAttribute(Attribute.MAX_MANA);
-        } else if (feature == Feature.DRILL_FUEL_BAR) {
-            fill = getAttribute(Attribute.FUEL) / getAttribute(Attribute.MAX_FUEL);
-        } else if (feature == Feature.SKILL_PROGRESS_BAR) {
-            ActionBarParser parser = main.getPlayerListener().getActionBarParser();
-            if (buttonLocation == null) {
-                if (parser.getPercent() == 0 || parser.getPercent() == 100) {
-                    return;
+        switch (feature) {
+            case MANA_BAR:
+                fill = getAttribute(Attribute.MANA) / getAttribute(Attribute.MAX_MANA);
+                break;
+            case DRILL_FUEL_BAR:
+                fill = getAttribute(Attribute.FUEL) / getAttribute(Attribute.MAX_FUEL);
+                break;
+            case SKILL_PROGRESS_BAR:
+                ActionBarParser parser = main.getPlayerListener().getActionBarParser();
+                if (buttonLocation == null) {
+                    if (parser.getPercent() == 0 || parser.getPercent() == 100) {
+                        return;
+                    } else {
+                        fill = parser.getPercent() / 100;
+                    }
                 } else {
-                    fill = parser.getPercent() / 100;
+                    fill = 0.40F;
                 }
-            } else {
-                fill = 0.40F;
-            }
-        } else {
-            fill = getAttribute(Attribute.HEALTH) / getAttribute(Attribute.MAX_HEALTH);
+                break;
+            case HEALTH_BAR:
+                if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_BAR_ON_RIFT) && main.getUtils().isOnRift())
+                    return;
+                fill = getAttribute(Attribute.HEALTH) / getAttribute(Attribute.MAX_HEALTH);
+                break;
+            default:
+                return;
         }
+
         if (fill > 1) fill = 1;
 
         float x = main.getConfigValues().getActualX(feature);
@@ -473,58 +483,60 @@ public class RenderListener {
                 , main.getConfigValues().getChromaFeatures().contains(feature)
         );
 
-        if (feature == Feature.SKILL_PROGRESS_BAR && buttonLocation == null) {
-            int remainingTime = (int) (skillFadeOutTime - System.currentTimeMillis());
+        switch (feature) {
+            case SKILL_PROGRESS_BAR:
+                if (buttonLocation == null) return;
 
-            if (remainingTime < 0) {
-                if (remainingTime < -2000) {
-                    return; // Will be invisible, no need to render.
+                int remainingTime = (int) (skillFadeOutTime - System.currentTimeMillis());
+
+                if (remainingTime < 0) {
+                    if (remainingTime < -2000) {
+                        return; // Will be invisible, no need to render.
+                    }
+
+                    int textAlpha = Math.round(255 - (-remainingTime / 2000F * 255F));
+                    color = ColorUtils.getDummySkyblockColor(
+                            main.getConfigValues().getColor(feature, textAlpha)
+                            , main.getConfigValues().getChromaFeatures().contains(feature)
+                    ); // so it fades out, 0.016 is the minimum alpha
                 }
-
-                int textAlpha = Math.round(255 - (-remainingTime / 2000F * 255F));
-                color = ColorUtils.getDummySkyblockColor(
-                        main.getConfigValues().getColor(feature, textAlpha)
-                        , main.getConfigValues().getChromaFeatures().contains(feature)
-                ); // so it fades out, 0.016 is the minimum alpha
-            }
-        }
-
-        if (feature == Feature.DRILL_FUEL_BAR && buttonLocation == null && !ItemUtils.isDrill(mc.thePlayer.getHeldItem())) {
-            return;
-        }
-
-        if (feature == Feature.HEALTH_BAR) {
-            if (main.getConfigValues().isEnabled(Feature.CHANGE_BAR_COLOR_FOR_POTIONS)) {
-                if (mc.thePlayer.isPotionActive(19/* Poison */)) {
-                    color = ColorUtils.getDummySkyblockColor(
-                            ColorCode.DARK_GREEN.getColor()
-                            , main.getConfigValues().getChromaFeatures().contains(feature)
-                    );
-                } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
-                    color = ColorUtils.getDummySkyblockColor(
-                            ColorCode.DARK_GRAY.getColor()
-                            , main.getConfigValues().getChromaFeatures().contains(feature)
-                    );
-                } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
-                    if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
-                        fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
-                        hasAbsorption = true;
+                break;
+            case DRILL_FUEL_BAR:
+                if (buttonLocation == null && !ItemUtils.isDrill(mc.thePlayer.getHeldItem())) return;
+                break;
+            case HEALTH_BAR:
+                if (main.getConfigValues().isEnabled(Feature.CHANGE_BAR_COLOR_FOR_POTIONS)) {
+                    if (mc.thePlayer.isPotionActive(19/* Poison */)) {
+                        color = ColorUtils.getDummySkyblockColor(
+                                ColorCode.DARK_GREEN.getColor()
+                                , main.getConfigValues().getChromaFeatures().contains(feature)
+                        );
+                    } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
+                        color = ColorUtils.getDummySkyblockColor(
+                                ColorCode.DARK_GRAY.getColor()
+                                , main.getConfigValues().getChromaFeatures().contains(feature)
+                        );
+                    } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
+                        if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
+                            fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
+                            hasAbsorption = true;
+                        }
                     }
                 }
-            }
 
-            if (main.getUtils().isOnRift()) {
-                float maxCurrentHealth = getAttribute(Attribute.MAX_RIFT_HEALTH);
-                fill = getAttribute(Attribute.HEALTH) / maxCurrentHealth;
+                if (main.getUtils().isOnRift()) {
+                    float maxCurrentHealth = getAttribute(Attribute.MAX_RIFT_HEALTH);
+                    fill = getAttribute(Attribute.HEALTH) / maxCurrentHealth;
 
-                if (maxCurrentHealth > maxRiftHealth)
-                    maxRiftHealth = maxCurrentHealth;
-                else
-                    widthScale = maxCurrentHealth / maxRiftHealth;
+                    if (maxCurrentHealth > maxRiftHealth)
+                        maxRiftHealth = maxCurrentHealth;
+                    else
+                        widthScale = maxCurrentHealth / maxRiftHealth;
 
-                if (Float.isNaN(widthScale))
-                    widthScale = 1.0F;
-            }
+                    if (Float.isNaN(widthScale))
+                        widthScale = 1.0F;
+                }
+                break;
         }
 
         main.getUtils().enableStandardGLOptions();
@@ -776,6 +788,8 @@ public class RenderListener {
                 break;
 
             case HEALTH_TEXT:
+                if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_TEXT_ON_RIFT) && main.getUtils().isOnRift())
+                    return;
                 text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH)) + "/";
                 if (main.getUtils().isOnRift())
                     text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH));
@@ -832,6 +846,8 @@ public class RenderListener {
                 break;
 
             case HEALTH_UPDATES:
+                if(main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_UPDATES_ON_RIFT) && main.getUtils().isOnRift())
+                    return;
                 Float healthUpdate = main.getPlayerListener().getHealthUpdate();
                 if (buttonLocation == null) {
                     if (healthUpdate != null) {

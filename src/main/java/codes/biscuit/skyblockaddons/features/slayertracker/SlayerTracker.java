@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.features.slayertracker;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.features.ItemDiff;
+import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.Rune;
 import lombok.Getter;
@@ -64,7 +65,7 @@ public class SlayerTracker {
         }
     }
 
-    @Deprecated
+    // Still suitable for Rift slayer
     public void checkInventoryDifferenceForDrops(List<ItemDiff> newInventoryDifference) {
         recentInventoryDifferences.entrySet().removeIf(entry -> System.currentTimeMillis() - entry.getKey() > 1000);
         recentInventoryDifferences.put(System.currentTimeMillis(), newInventoryDifference);
@@ -81,16 +82,26 @@ public class SlayerTracker {
                     continue;
                 }
                 addToTrackerData(itemDifference.getExtraAttributes(), itemDifference.getAmount());
+
+                if (DevUtils.isLoggingSlayerTrackerMessages()) // DEBUG
+                    main.getUtils().sendMessage(
+                            String.format("InvDiff: §fx%d %s", itemDifference.getAmount(), itemDifference.getDisplayName())
+                            , true
+                    );
             }
         }
         recentInventoryDifferences.clear();
     }
 
-    public void resetAllStats(String boss) {
-        SlayerBoss slayerBoss = SlayerBoss.getFromMobType(boss);
+    /**
+     * Resets all stat of the given slayer type
+     * @param slayerType slayerType
+     */
+    public void resetAllStats(String slayerType) {
+        SlayerBoss slayerBoss = SlayerBoss.getFromMobType(slayerType);
 
         if (slayerBoss == null) {
-            throw new IllegalArgumentException(getMessage("commandUsage.sba.slayer.invalidBoss", boss));
+            throw new IllegalArgumentException(getMessage("commandUsage.sba.slayer.invalidBoss", slayerType));
         }
 
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
@@ -101,7 +112,7 @@ public class SlayerTracker {
             slayerTrackerData.getSlayerDropCounts().put(slayerDrop, 0);
         }
         main.getPersistentValuesManager().saveValues();
-        main.getUtils().sendMessage(getMessage("commands.responses.sba.slayer.resetBossStats", boss));
+        main.getUtils().sendMessage(getMessage("commands.responses.sba.slayer.resetBossStats", slayerType));
 
     }
 

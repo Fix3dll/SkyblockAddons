@@ -9,6 +9,7 @@ import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.handlers.PacketHandler;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
+import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
@@ -109,7 +110,11 @@ public class NetworkListener {
             ItemStack itemStack = entityItem.getEntityItem();
             SlayerTracker.getInstance().addToTrackerData(ItemUtils.getExtraAttributes(itemStack), itemStack.stackSize);
 
-            // main.getUtils().sendMessage(itemStack.getDisplayName() + ":" + itemStack.stackSize, true); // DEBUG
+            if (DevUtils.isLoggingSlayerTrackerMessages()) // DEBUG
+                main.getUtils().sendMessage(
+                        String.format("Packet: §fx%d %s", itemStack.stackSize, itemStack.getDisplayName())
+                        , true
+                );
         }
     }
 }

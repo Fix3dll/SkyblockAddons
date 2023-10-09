@@ -32,12 +32,12 @@ public enum Feature {
     SHOW_BACKPACK_HOLDING_SHIFT(18, "settings.showOnlyWhenHoldingShift", null, true),
     MANA_BAR(19, "settings.manaBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.BLUE), false),
     MANA_TEXT(20, "settings.manaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.BLUE), false),
-    HEALTH_BAR(21, "settings.healthBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.RED), true, EnumUtils.FeatureSetting.CHANGE_BAR_COLOR_WITH_POTIONS, EnumUtils.FeatureSetting.HEALTH_PREDICTION),
-    HEALTH_TEXT(22, "settings.healthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false),
+    HEALTH_BAR(21, "settings.healthBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.RED), true, EnumUtils.FeatureSetting.CHANGE_BAR_COLOR_WITH_POTIONS, EnumUtils.FeatureSetting.HEALTH_PREDICTION, EnumUtils.FeatureSetting.HIDE_HEALTH_BAR_ON_RIFT),
+    HEALTH_TEXT(22, "settings.healthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false, EnumUtils.FeatureSetting.HIDE_HEALTH_TEXT_ON_RIFT),
     DEFENCE_ICON(23, "settings.defenseIcon", new GuiFeatureData(EnumUtils.DrawType.DEFENCE_ICON), false, EnumUtils.FeatureSetting.USE_VANILLA_TEXTURE),
     DEFENCE_TEXT(24, "settings.defenseNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), false, EnumUtils.FeatureSetting.OTHER_DEFENCE_STATS),
     DEFENCE_PERCENTAGE(25, "settings.defensePercentage", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), true),
-    HEALTH_UPDATES(26, "settings.healthUpdates", new GuiFeatureData(EnumUtils.DrawType.TEXT), false), // Health updates all credit to DidiSkywalker#9975
+    HEALTH_UPDATES(26, "settings.healthUpdates", new GuiFeatureData(EnumUtils.DrawType.TEXT), false, EnumUtils.FeatureSetting.HIDE_HEALTH_UPDATES_ON_RIFT), // Health updates all credit to DidiSkywalker#9975
     HIDE_PLAYERS_IN_LOBBY(27, "settings.hidePlayersInLobby", null, true),
     DARK_AUCTION_TIMER(28, "settings.darkAuctionTimer", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.ENABLED_IN_OTHER_GAMES),
     ITEM_PICKUP_LOG(29, "settings.itemPickupLog", new GuiFeatureData(EnumUtils.DrawType.PICKUP_LOG), false),
@@ -224,8 +224,11 @@ public enum Feature {
     RIFTSTALKER_COLOR_BY_RARITY(229, null, false),
     RIFTSTALKER_TEXT_MODE(230, null, true),
     HIDE_WHEN_NOT_IN_RIFT(231, null, false),
-    ABBREVIATE_DRILL_FUEL_DENOMINATOR(232, "settings.abbreviateDrillFuelDenominator", null, true),
-    SHOW_ONLY_HOLDING_FISHING_ROD(233, "settings.showOnlyHoldingFishingRod", null, true),
+    ABBREVIATE_DRILL_FUEL_DENOMINATOR(232, null, null, true),
+    SHOW_ONLY_HOLDING_FISHING_ROD(233, null, null, true),
+    HIDE_HEALTH_BAR_ON_RIFT(234, "", null, true),
+    HIDE_HEALTH_TEXT_ON_RIFT(235, "", null, true),
+    HIDE_HEALTH_UPDATES_ON_RIFT(236, "", null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -274,7 +277,7 @@ public enum Feature {
             STOP_ONLY_RAT_SQUEAK, SHOW_ENDER_CHEST_PREVIEW, HEALTH_PREDICTION, ABBREVIATE_SKILL_XP_DENOMINATOR, OTHER_DEFENCE_STATS,
             DISABLE_SPIRIT_SCEPTRE_MESSAGES, OUTBID_ALERT_SOUND_IN_OTHER_GAMES, DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME,
             RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR, TREVOR_SHOW_LOCATION_ON_CHAT,
-            SHOW_ONLY_HOLDING_FISHING_ROD);
+            SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'

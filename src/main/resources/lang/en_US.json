@@ -231,7 +231,8 @@
     "infernoSlayerTracker": "Slayer Tracker - Inferno/Blaze",
     "riftstalkerSlayerTracker": "Slayer Tracker - Riftstalker/Vampire",
     "expandDeployableStatus": "Show stats in 2 columns on detailed status",
-    "showOnlyHoldingFishingRod": "Show only when holding a fishing rod"
+    "showOnlyHoldingFishingRod": "Show only when holding a fishing rod",
+    "hideHealthThingsOnRift": "Don't show while in Rift dimension"
   },
   "messages": {
     "enchants": "Enchants",
@@ -462,6 +463,9 @@
         "toggleActionBarLogging": {
           "help": "Toggles logging action bar messages"
         },
+        "toggleSlayerTrackerLogging": {
+          "help": "Toggles showing counted slayer tracker drops"
+        },
         "toggleMagmaTimerLogging": {
           "help": "Toggles logging magma boss timer debug messages"
         },
@@ -507,6 +511,10 @@
         "toggleActionBarLogging": {
           "disabled": "Action bar messages will no longer be logged.",
           "enabled": "Action bar messages will now be logged."
+        },
+        "toggleSlayerTrackerLogging": {
+          "disabled": "Slayer tracker drops will no longer be shown.",
+          "enabled": "Slayer tracker drops will now be shown."
         },
         "toggleMagmaTimerLogging": {
           "disabled": "Magma boss timer messages will no longer be logged.",

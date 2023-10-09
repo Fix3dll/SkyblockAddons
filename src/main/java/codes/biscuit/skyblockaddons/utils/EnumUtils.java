@@ -222,6 +222,9 @@ public class EnumUtils {
         HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 231),
         ABBREVIATE_DRILL_FUEL_DENOMINATOR("settings.abbreviateDrillFuelDenominator", 232),
         SHOW_ONLY_HOLDING_FISHING_ROD("settings.showOnlyHoldingFishingRod", 233),
+        HIDE_HEALTH_BAR_ON_RIFT("settings.hideHealthThingsOnRift", 234),
+        HIDE_HEALTH_TEXT_ON_RIFT("settings.hideHealthThingsOnRift", 235),
+        HIDE_HEALTH_UPDATES_ON_RIFT("settings.hideHealthThingsOnRift", 236),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

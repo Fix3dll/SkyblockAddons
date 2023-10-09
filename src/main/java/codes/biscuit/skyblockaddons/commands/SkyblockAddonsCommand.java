@@ -35,8 +35,9 @@ public class SkyblockAddonsCommand extends CommandBase {
 
     private static final String HEADER = "§7§m----------------§7[ §b§lSkyblockAddons §7]§7§m----------------";
     private static final String FOOTER = "§7§m-----------------------------------------------------";
-    private static final String[] SUBCOMMANDS = {"help", "edit", "folder", "resetZealotCounter", "set", "slayer", "version", "dev", "brand", "copyBlock",
-            "copyEntity", "copySidebar", "copyTabList", "pd", "reload", "reloadConfig", "reloadRes", "toggleActionBarLogging"};
+    private static final String[] SUBCOMMANDS = {"help", "edit", "folder", "resetZealotCounter", "set", "slayer",
+            "version", "dev", "brand", "copyBlock", "copyEntity", "copySidebar", "copyTabList", "pd", "reload",
+            "reloadConfig", "reloadRes", "toggleActionBarLogging", "toggleSlayerTrackerLogging"};
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
 
@@ -89,7 +90,8 @@ public class SkyblockAddonsCommand extends CommandBase {
                     "§b● " + CommandSyntax.RELOAD + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.reload.help") + "\n" +
                     "§b● " + CommandSyntax.RELOAD_CONFIG + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.reloadConfig.help") + "\n" +
                     "§b● " + CommandSyntax.RELOAD_RES + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.reloadRes.help") + "\n" +
-                    "§b● " + CommandSyntax.TOGGLE_ACTION_BAR_LOGGING + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.toggleActionBarLogging.help")
+                    "§b● " + CommandSyntax.TOGGLE_ACTION_BAR_LOGGING + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.toggleActionBarLogging.help") + "\n" +
+                    "§b● " + CommandSyntax.TOGGLE_SLAYER_TRACKER_LOGGING + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.toggleSlayerTrackerLogging.help")
             ;
         }
 
@@ -353,6 +355,16 @@ public class SkyblockAddonsCommand extends CommandBase {
                             main.getUtils().sendMessage(ColorCode.RED + getMessage(
                                     "commands.responses.sba.toggleActionBarLogging.disabled"));
                         }
+                    } else if (args[0].equalsIgnoreCase("toggleSlayerTrackerLogging")) {
+                        DevUtils.setLoggingSlayerTrackerMessages(!DevUtils.isLoggingSlayerTrackerMessages());
+
+                        if (DevUtils.isLoggingSlayerTrackerMessages()) {
+                            main.getUtils().sendMessage(ColorCode.GREEN + getMessage(
+                                    "commands.responses.sba.toggleSlayerTrackerLogging.enabled"));
+                        } else {
+                            main.getUtils().sendMessage(ColorCode.RED + getMessage(
+                                    "commands.responses.sba.toggleSlayerTrackerLogging.disabled"));
+                        }
                     } else {
                         throw new WrongUsageException(getMessage(
                                 "commandUsage.sba.errors.wrongUsage.subCommandNotFound", args[0]));
@@ -452,7 +464,8 @@ public class SkyblockAddonsCommand extends CommandBase {
         RELOAD_RES("/sba reloadRes"),
         RESET_ZEALOT_COUNTER("/sba resetZealotCounter"),
         PD("/sba pd"),
-        VERSION("/sba version")
+        VERSION("/sba version"),
+        TOGGLE_SLAYER_TRACKER_LOGGING("/sba toggleSlayerTrackerLogging")
         ;
 
         private final String syntax;
@@ -486,7 +499,8 @@ public class SkyblockAddonsCommand extends CommandBase {
         RELOAD_CONFIG(CommandSyntax.RELOAD_CONFIG, "commands.usage.sba.reloadConfig.help", null),
         RELOAD_RES(CommandSyntax.RELOAD_RES, "commands.usage.sba.reloadRes.help", null),
         PD(CommandSyntax.PD, "commands.usage.sba.printDeaths.help", null),
-        VERSION(CommandSyntax.VERSION, "commands.usage.sba.version.help", null)
+        VERSION(CommandSyntax.VERSION, "commands.usage.sba.version.help", null),
+        TOGGLE_SLAYER_TRACKER_LOGGING(CommandSyntax.TOGGLE_SLAYER_TRACKER_LOGGING, "commands.usage.sba.toggleSlayerTrackerLogging.help", null),
         ;
 
         private final CommandSyntax syntax;
