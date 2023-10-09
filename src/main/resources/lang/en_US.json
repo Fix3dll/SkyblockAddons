@@ -232,7 +232,7 @@
     "riftstalkerSlayerTracker": "Slayer Tracker - Riftstalker/Vampire",
     "expandDeployableStatus": "Show stats in 2 columns on detailed status",
     "showOnlyHoldingFishingRod": "Show only when holding a fishing rod",
-    "hideHealthThingsOnRift": "Don't show while in Rift dimension"
+    "hideHealthThingsOnRift": "Don't show while in Rift Dimension"
   },
   "messages": {
     "enchants": "Enchants",

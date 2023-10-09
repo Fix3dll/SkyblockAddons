@@ -2,7 +2,6 @@ package codes.biscuit.skyblockaddons.features.slayertracker;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.Rune;
@@ -11,10 +10,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static codes.biscuit.skyblockaddons.core.Translations.getMessage;
 
 public class SlayerTracker {
@@ -22,9 +17,7 @@ public class SlayerTracker {
     @Getter private static final SlayerTracker instance = new SlayerTracker();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    // Saves the last second of inventory differences
-    private final transient Map<Long, List<ItemDiff>> recentInventoryDifferences = new HashMap<>();
-    private transient long lastSlayerCompleted = -1;
+    @Deprecated private transient long lastSlayerCompleted = -1;
 
     public int getSlayerKills(SlayerBoss slayerBoss) {
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
@@ -65,34 +58,6 @@ public class SlayerTracker {
         }
     }
 
-    // Still suitable for Rift slayer
-    public void checkInventoryDifferenceForDrops(List<ItemDiff> newInventoryDifference) {
-        recentInventoryDifferences.entrySet().removeIf(entry -> System.currentTimeMillis() - entry.getKey() > 1000);
-        recentInventoryDifferences.put(System.currentTimeMillis(), newInventoryDifference);
-
-        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
-        // They haven't killed a dragon recently OR the last killed dragon was over 30 seconds ago...
-        if (slayerTrackerData.getLastKilledBoss() == null || lastSlayerCompleted == -1 || System.currentTimeMillis() - lastSlayerCompleted > 30 * 1000) {
-            return;
-        }
-
-        for (List<ItemDiff> inventoryDifference : recentInventoryDifferences.values()) {
-            for (ItemDiff itemDifference : inventoryDifference) {
-                if (itemDifference.getAmount() < 1) {
-                    continue;
-                }
-                addToTrackerData(itemDifference.getExtraAttributes(), itemDifference.getAmount());
-
-                if (DevUtils.isLoggingSlayerTrackerMessages()) // DEBUG
-                    main.getUtils().sendMessage(
-                            String.format("InvDiff: §fx%d %s", itemDifference.getAmount(), itemDifference.getDisplayName())
-                            , true
-                    );
-            }
-        }
-        recentInventoryDifferences.clear();
-    }
-
     /**
      * Resets all stat of the given slayer type
      * @param slayerType slayerType
@@ -113,7 +78,6 @@ public class SlayerTracker {
         }
         main.getPersistentValuesManager().saveValues();
         main.getUtils().sendMessage(getMessage("commands.responses.sba.slayer.resetBossStats", slayerType));
-
     }
 
     /**
@@ -135,8 +99,7 @@ public class SlayerTracker {
         if (args[2].equalsIgnoreCase("kills")) {
             int count = Integer.parseInt(args[3]);
             slayerTrackerData.getSlayerKills().put(slayerBoss, count);
-            main.getUtils().sendMessage(getMessage(
-                    "commandUsage.sba.slayer.killsSet", args[1], args[3]));
+            main.getUtils().sendMessage(getMessage("commandUsage.sba.slayer.killsSet", args[1], args[3]));
             main.getPersistentValuesManager().saveValues();
             return;
         }
@@ -197,6 +160,15 @@ public class SlayerTracker {
                 }
             }
             slayerTrackerData.getSlayerDropCounts().put(drop, slayerTrackerData.getSlayerDropCounts().getOrDefault(drop, 0) + amount);
+
+            if (DevUtils.isLoggingSlayerTrackerMessages()) {
+                main.getUtils().sendMessage(String.format("§fx%d §%s%s"
+                        , amount
+                        , drop.getRarity().getColorCode().getCode()
+                        , drop.getDisplayName()
+                        ), true
+                );
+            }
         }
     }
 }
