@@ -5,6 +5,7 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -48,16 +49,16 @@ public class FetchurManager {
             new FetchurItem(new ItemStack(Blocks.tnt, 1), "Superboom TNT"),
             new FetchurItem(new ItemStack(Blocks.pumpkin, 1), "Pumpkin"),
             new FetchurItem(new ItemStack(Items.flint_and_steel, 1), "Flint and Steel"),
-            new FetchurItem(new ItemStack(Blocks.quartz_ore, 50), "Nether Quartz Ore"),
+            new FetchurItem(new ItemStack(Items.emerald, 50), "Emerald"),
             //new FetchurItem(new ItemStack(Items.ender_pearl, 16), "Ender Pearl"),
-            new FetchurItem(new ItemStack(Blocks.wool, 50, 14), "Red Wool")};
+            new FetchurItem(new ItemStack(Blocks.wool, 50, 14), "Red Wool")
+    };
 
     @Getter
     private static final FetchurManager instance = new FetchurManager();
 
     // Used for storage, essential for Fetchur Warner
-    @Getter
-    @Setter
+    @Getter @Setter
     private FetchurItem currentItemSaved = null;
 
     /**
@@ -136,16 +137,11 @@ public class FetchurManager {
      * A class representing the item fetchur wants
      * containing the item instance and the text format of the item
      */
+    @Getter @RequiredArgsConstructor
     public static class FetchurItem {
-        @Getter
         private final ItemStack itemStack;
-        @Getter
         private final String itemText;
 
-        public FetchurItem(ItemStack itemStack, String itemText) {
-            this.itemStack = itemStack;
-            this.itemText = itemText;
-        }
         @Override
         public boolean equals(Object anotherObject) {
             if (!(anotherObject instanceof FetchurItem))
