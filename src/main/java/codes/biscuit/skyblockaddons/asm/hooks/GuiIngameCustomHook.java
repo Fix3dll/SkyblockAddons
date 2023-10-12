@@ -6,14 +6,17 @@ import codes.biscuit.skyblockaddons.core.Feature;
 /**
  * Alternative hooks for the labymod custom gui, to disable specific bars.
  */
+@SuppressWarnings("unused")
 public class GuiIngameCustomHook {
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     public static boolean shouldRenderArmor() {
         return shouldRender(Feature.HIDE_FOOD_ARMOR_BAR);
     }
 
     public static boolean shouldRenderHealth() {
-        return shouldRender(Feature.HIDE_HEALTH_BAR);
+        return shouldRender(Feature.HIDE_HEALTH_BAR)
+                || (main.getConfigValues().isEnabled(Feature.HIDE_ONLY_OUTSIDE_RIFT) && main.getUtils().isOnRift());
     }
 
     public static boolean shouldRenderFood() {
@@ -25,7 +28,6 @@ public class GuiIngameCustomHook {
     }
 
     public static boolean shouldRender(Feature feature) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
         if (!main.getUtils().isOnSkyblock()) {
             return true;
         }

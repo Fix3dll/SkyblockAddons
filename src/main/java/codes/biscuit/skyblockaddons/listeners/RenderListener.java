@@ -2619,7 +2619,8 @@ public class RenderListener {
                     GuiIngameForge.renderArmor = false;
                 }
                 if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_BAR)) {
-                    GuiIngameForge.renderHealth = false;
+                    GuiIngameForge.renderHealth = main.getConfigValues().isEnabled(Feature.HIDE_ONLY_OUTSIDE_RIFT)
+                            && main.getUtils().isOnRift();
                 }
                 if (main.getConfigValues().isEnabled(Feature.HIDE_PET_HEALTH_BAR)) {
                     GuiIngameForge.renderHealthMount = false;

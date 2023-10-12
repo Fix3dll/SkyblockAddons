@@ -225,6 +225,7 @@ public class EnumUtils {
         HIDE_HEALTH_BAR_ON_RIFT("settings.hideHealthThingsOnRift", 234),
         HIDE_HEALTH_TEXT_ON_RIFT("settings.hideHealthThingsOnRift", 235),
         HIDE_HEALTH_UPDATES_ON_RIFT("settings.hideHealthThingsOnRift", 236),
+        HIDE_ONLY_OUTSIDE_RIFT("settings.hideOnlyOutsideRift", 237),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

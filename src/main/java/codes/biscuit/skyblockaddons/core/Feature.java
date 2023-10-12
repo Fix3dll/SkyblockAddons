@@ -25,7 +25,7 @@ public enum Feature {
     FULL_INVENTORY_WARNING(7, "settings.fullInventoryWarning", new GuiFeatureData(ColorCode.RED), false, EnumUtils.FeatureSetting.REPEATING),
     SHOW_REFORGE_OVERLAY(10, "settings.showReforgeOverlay", null, false),
     MINION_STOP_WARNING(11, "settings.minionStopWarning", new GuiFeatureData(ColorCode.RED), true),
-    HIDE_HEALTH_BAR(13, "settings.hideHealthBar", null, true),
+    HIDE_HEALTH_BAR(13, "settings.hideHealthBar", null, true, EnumUtils.FeatureSetting.HIDE_ONLY_OUTSIDE_RIFT),
     DOUBLE_DROP_IN_OTHER_GAMES(14, null, false),
     MINION_FULL_WARNING(15, "settings.fullMinionWarning", new GuiFeatureData(ColorCode.RED), false),
     USE_VANILLA_TEXTURE_DEFENCE(17, "settings.useVanillaTexture", null, true),
@@ -229,6 +229,7 @@ public enum Feature {
     HIDE_HEALTH_BAR_ON_RIFT(234, "", null, true),
     HIDE_HEALTH_TEXT_ON_RIFT(235, "", null, true),
     HIDE_HEALTH_UPDATES_ON_RIFT(236, "", null, true),
+    HIDE_ONLY_OUTSIDE_RIFT(237, "", null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -277,7 +278,8 @@ public enum Feature {
             STOP_ONLY_RAT_SQUEAK, SHOW_ENDER_CHEST_PREVIEW, HEALTH_PREDICTION, ABBREVIATE_SKILL_XP_DENOMINATOR, OTHER_DEFENCE_STATS,
             DISABLE_SPIRIT_SCEPTRE_MESSAGES, OUTBID_ALERT_SOUND_IN_OTHER_GAMES, DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME,
             RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR, TREVOR_SHOW_LOCATION_ON_CHAT,
-            SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT);
+            SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT,
+            HIDE_ONLY_OUTSIDE_RIFT);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'
