@@ -1005,14 +1005,17 @@ public class RenderListener {
             case BIRCH_PARK_RAINMAKER_TIMER:
                 long rainmakerTime = main.getPlayerListener().getRainmakerTimeEnd();
 
-                if ((main.getUtils().getLocation() != Location.BIRCH_PARK || rainmakerTime == -1) && buttonLocation == null)
+                if (main.getUtils().getLocation() != Location.BIRCH_PARK && buttonLocation == null)
                     return;
 
-                int totalSeconds = (int) (rainmakerTime - System.currentTimeMillis()) / 1000;
+                String parsedRainTime = main.getPlayerListener().getParsedRainTime();
 
-                if (TabListParser.getParsedRainTime() != null) {
-                    text = TabListParser.getParsedRainTime();
-                } else if (rainmakerTime != -1 && totalSeconds > 0) {
+                if (parsedRainTime != null) {
+                    text = parsedRainTime;
+                } else if (rainmakerTime != -1) {
+                    int totalSeconds = (int) (rainmakerTime - System.currentTimeMillis()) / 1000;
+                    if (totalSeconds <= 0) return;
+
                     StringBuilder timerBuilder = new StringBuilder();
 
                     int hours = totalSeconds / 3600;

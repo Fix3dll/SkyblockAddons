@@ -42,6 +42,7 @@ import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -108,6 +109,8 @@ public class PlayerListener {
     private static final Pattern SPIRIT_SCEPTRE_MESSAGE_PATTERN = Pattern.compile("Your (?:Implosion|Spirit Sceptre|Molten Wave) hit (?<hitEnemies>[0-9]+) enem(?:y|ies) for (?<dealtDamage>[0-9]{1,3}(?:,[0-9]{3})*(?:\\.[0-9]+)*) damage\\.");
     private static final Pattern PROFILE_TYPE_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][♲Ⓑ]");
     private static final Pattern NETHER_FACTION_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][⚒ቾ]");
+    private static final Pattern RAIN_TIME_PATTERN_S = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
+    private static final Pattern SKILL_LEVEL_S = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
 
     private static final Set<String> SOUP_RANDOM_MESSAGES = new HashSet<>(Arrays.asList("I feel like I can fly!", "What was in that soup?",
             "Hmm… tasty!", "Hmm... tasty!", "You can now fly for 2 minutes.", "Your flight has been extended for 2 extra minutes.",
@@ -147,6 +150,7 @@ public class PlayerListener {
     private String lastMaddoxSlayerType;
 
     @Getter private long rainmakerTimeEnd = -1;
+    @Getter private String parsedRainTime = null;
 
     private boolean oldBobberIsInWater;
     private double oldBobberPosY = 0;
@@ -603,127 +607,158 @@ public class PlayerListener {
     public void onTick(TickEvent.ClientTickEvent e) {
         if (e.phase == TickEvent.Phase.START) {
             Minecraft mc = Minecraft.getMinecraft();
+            if (mc == null) return;
             timerTick++;
 
-            if (mc != null) { // Predict health every tick if needed.
-                ScoreboardManager.tick();
+            // Predict health every tick if needed.
+            ScoreboardManager.tick();
 
-                if (actionBarParser.getHealthUpdate() != null && System.currentTimeMillis() - actionBarParser.getLastHealthUpdate() > 3000) {
-                    actionBarParser.setHealthUpdate(null);
-                }
-                EntityPlayerSP p = mc.thePlayer;
-                if (p != null) {
-                    if (main.getUtils().isOnRift()) {
-                        if (main.getConfigValues().isEnabled(Feature.HEALTH_BAR) || main.getConfigValues().isEnabled(Feature.HEALTH_TEXT)) {
-                            setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
-                            setAttribute(Attribute.HEALTH, p.getHealth());
-                        }
-                    } else {
-                        // Reverse calculate the player's health by using the player's vanilla hearts.
-                        // Also calculate the health change for the gui item.
-                        if (main.getConfigValues().isEnabled(Feature.HEALTH_PREDICTION)) {
-                            float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)
-                                    ? getAttribute(Attribute.HEALTH)
-                                    : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
-                            setAttribute(Attribute.HEALTH, newHealth);
-                        }
+            if (actionBarParser.getHealthUpdate() != null && System.currentTimeMillis() - actionBarParser.getLastHealthUpdate() > 3000) {
+                actionBarParser.setHealthUpdate(null);
+            }
+
+            EntityPlayerSP p = mc.thePlayer;
+            if (p != null) {
+                if (main.getUtils().isOnRift()) {
+                    if (main.getConfigValues().isEnabled(Feature.HEALTH_BAR) || main.getConfigValues().isEnabled(Feature.HEALTH_TEXT)) {
+                        setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
+                        setAttribute(Attribute.HEALTH, p.getHealth());
+                    }
+                } else {
+                    // Reverse calculate the player's health by using the player's vanilla hearts.
+                    // Also calculate the health change for the gui item.
+                    if (main.getConfigValues().isEnabled(Feature.HEALTH_PREDICTION)) {
+                        float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)
+                                ? getAttribute(Attribute.HEALTH)
+                                : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
+                        setAttribute(Attribute.HEALTH, newHealth);
                     }
                 }
+            }
 
-                if (timerTick == 21) {
-                    // Add natural mana every second (increase is based on your max mana).
-                    if (main.getRenderListener().isPredictMana()) {
-                        float mana = getAttribute(Attribute.MANA);
-                        float maxMana = getAttribute(Attribute.MAX_MANA);
+            if (timerTick == 20) {
+                // Add natural mana every second (increase is based on your max mana).
+                if (main.getRenderListener().isPredictMana()) {
+                    float mana = getAttribute(Attribute.MANA);
+                    float maxMana = getAttribute(Attribute.MAX_MANA);
 
-                        // If regen-ing, cap at the max mana
-                        if (mana < maxMana) {
-                            DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
-                            float predictedRegenMana = maxMana / 50;
+                    // If regen-ing, cap at the max mana
+                    if (mana < maxMana) {
+                        DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
+                        float predictedRegenMana = maxMana / 50;
 
-                            if (activeDeployable != null)
-                                predictedRegenMana += (float) (maxMana * activeDeployable.getDeployable().getManaRegen() / 50);
+                        if (activeDeployable != null)
+                            predictedRegenMana += (float) (maxMana * activeDeployable.getDeployable().getManaRegen() / 50);
 
-                            setAttribute(Attribute.MANA, Math.min(mana + predictedRegenMana, maxMana));
+                        setAttribute(Attribute.MANA, Math.min(mana + predictedRegenMana, maxMana));
+                    }
+                    // If above mana cap, do nothing
+                }
+
+                if (main.getConfigValues().isEnabled(Feature.DUNGEON_DEATH_COUNTER) && main.getUtils().isInDungeon()
+                        && main.getDungeonManager().isPlayerListInfoEnabled()) {
+                    main.getDungeonManager().updateDeathsFromPlayerListInfo();
+                }
+            } else if (timerTick % 5 == 0) { // Check inventory, location, updates, and skeleton helmet every 1/4 second.
+                EntityPlayerSP player = mc.thePlayer;
+
+                if (player != null) {
+                    EndstoneProtectorManager.checkGolemStatus();
+                    TabListParser.parse();
+                    main.getUtils().parseSidebar();
+                    main.getInventoryUtils().checkIfInventoryIsFull(mc, player);
+
+                    if (main.getUtils().isOnSkyblock()) {
+                        main.getInventoryUtils().checkIfWearingSkeletonHelmet(player);
+                        main.getInventoryUtils().checkIfUsingArrowPoison(player);
+                        main.getInventoryUtils().checkIfWearingSlayerArmor(player);
+                        if (shouldTriggerFishingIndicator()) { // The logic fits better in its own function
+                            main.getUtils().playLoudSound("random.successful_hit", 0.8);
                         }
-                        // If above mana cap, do nothing
-                    }
+                        if (main.getConfigValues().isEnabled(Feature.FETCHUR_TODAY)) {
+                            FetchurManager.getInstance().recalculateFetchurItem();
+                        }
 
-                    if (main.getConfigValues().isEnabled(Feature.DUNGEON_DEATH_COUNTER) && main.getUtils().isInDungeon()
-                            && main.getDungeonManager().isPlayerListInfoEnabled()) {
-                        main.getDungeonManager().updateDeathsFromPlayerListInfo();
-                    }
-                } else if (timerTick % 5 == 0) { // Check inventory, location, updates, and skeleton helmet every 1/4 second.
-                    EntityPlayerSP player = mc.thePlayer;
-
-                    if (player != null) {
-                        EndstoneProtectorManager.checkGolemStatus();
-                        TabListParser.parse();
-                        main.getUtils().parseSidebar();
-                        main.getInventoryUtils().checkIfInventoryIsFull(mc, player);
-
-                        if (main.getUtils().isOnSkyblock()) {
-                            main.getInventoryUtils().checkIfWearingSkeletonHelmet(player);
-                            main.getInventoryUtils().checkIfUsingArrowPoison(player);
-                            main.getInventoryUtils().checkIfWearingSlayerArmor(player);
-                            if (shouldTriggerFishingIndicator()) { // The logic fits better in its own function
-                                main.getUtils().playLoudSound("random.successful_hit", 0.8);
-                            }
-                            if (main.getConfigValues().isEnabled(Feature.FETCHUR_TODAY)) {
-                                FetchurManager.getInstance().recalculateFetchurItem();
-                            }
-
-                            // Update mining/fishing pet tracker numbers when the player opens the skill menu
-                            if (main.getInventoryUtils().getInventoryType() == InventoryType.SKILL_TYPE_MENU) {
-                                SkillType skill = SkillType.getFromString(main.getInventoryUtils().getInventorySubtype());
-                                if (skill == SkillType.MINING || skill == SkillType.FISHING) {
-                                    try {
-                                        IInventory cc = ((ContainerChest) ((GuiChest) Minecraft.getMinecraft().currentScreen).inventorySlots).getLowerChestInventory();
-                                        List<String> lore = ItemUtils.getItemLore(cc.getStackInSlot(51));
-                                        String milestoneProgress = TextUtils.stripColor(lore.get(lore.size() - 1));
-                                        Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
-                                        int total = -1;
-                                        if (m.matches()) {
-                                            total = Integer.parseInt(m.group("total").replaceAll(",", ""));
-                                        } else if ((m = MAXED_TIER_PET_PROGRESS.matcher(milestoneProgress)).matches()) {
-                                            total = Integer.parseInt(m.group("total").replaceAll(",", ""));
-                                        }
-                                        if (total > 0) {
-                                            PersistentValuesManager.PersistentValues persistentValues =
-                                                    main.getPersistentValuesManager().getPersistentValues();
-                                            int original;
-                                            if (skill == SkillType.FISHING) {
-                                                original = persistentValues.getSeaCreaturesKilled();
-                                                main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(total);
-                                            } else {
-                                                original = persistentValues.getOresMined();
-                                                main.getPersistentValuesManager().getPersistentValues().setOresMined(total);
-                                            }
-                                            if (original != total) {
-                                                main.getPersistentValuesManager().saveValues();
-                                            }
-                                        }
-                                    } catch (Exception ignored) {
+                        // Update mining/fishing pet tracker numbers when the player opens the skill menu
+                        if (main.getInventoryUtils().getInventoryType() == InventoryType.SKILL_TYPE_MENU) {
+                            SkillType skill = SkillType.getFromString(main.getInventoryUtils().getInventorySubtype());
+                            if (skill == SkillType.MINING || skill == SkillType.FISHING) {
+                                try {
+                                    IInventory cc = ((ContainerChest) ((GuiChest) mc.currentScreen).inventorySlots).getLowerChestInventory();
+                                    List<String> lore = ItemUtils.getItemLore(cc.getStackInSlot(51));
+                                    String milestoneProgress = TextUtils.stripColor(lore.get(lore.size() - 1));
+                                    Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
+                                    int total = -1;
+                                    if (m.matches()) {
+                                        total = Integer.parseInt(m.group("total").replaceAll(",", ""));
+                                    } else if ((m = MAXED_TIER_PET_PROGRESS.matcher(milestoneProgress)).matches()) {
+                                        total = Integer.parseInt(m.group("total").replaceAll(",", ""));
                                     }
+                                    if (total > 0) {
+                                        PersistentValuesManager.PersistentValues persistentValues =
+                                                main.getPersistentValuesManager().getPersistentValues();
+                                        int original;
+                                        if (skill == SkillType.FISHING) {
+                                            original = persistentValues.getSeaCreaturesKilled();
+                                            main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(total);
+                                        } else {
+                                            original = persistentValues.getOresMined();
+                                            main.getPersistentValuesManager().getPersistentValues().setOresMined(total);
+                                        }
+                                        if (original != total) {
+                                            main.getPersistentValuesManager().saveValues();
+                                        }
+                                    }
+                                } catch (Exception ignored) {
                                 }
                             }
                         }
 
-                        if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld() &&
-                                (!main.getUtils().isInDungeon() || Minecraft.getSystemTime() - lastDeath > 1000 &&
-                                        Minecraft.getSystemTime() - lastRevive > 1000)) {
-                            main.getInventoryUtils().getInventoryDifference(player.inventory.mainInventory);
-                        }
+                        NetHandlerPlayClient netHandlerPlayClient = mc.getNetHandler();
+                        if (netHandlerPlayClient != null) {
+                            if (main.getConfigValues().isDisabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
+                                NetworkPlayerInfo skillsPlayerInfo = netHandlerPlayClient.getPlayerInfo("!D-g");
+                                if (skillsPlayerInfo == null) return;
 
-                        if (main.getConfigValues().isEnabled(Feature.BAIT_LIST) && isHoldingRod()) {
-                            BaitManager.getInstance().refreshBaits();
+                                String skillsPlayerInfoString = skillsPlayerInfo.getDisplayName().getUnformattedText().trim();
+                                Matcher skillsTextMatcher = SKILL_LEVEL_S.matcher(skillsPlayerInfoString);
+
+                                if (skillsTextMatcher.matches()) {
+                                    SkillType skillType = SkillType.getFromString(skillsTextMatcher.group("skill"));
+                                    int level = Integer.parseInt(skillsTextMatcher.group("level"));
+                                    main.getSkillXpManager().setSkillLevel(skillType, level);
+                                }
+                            }
+
+                            if (main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER)
+                                    && main.getUtils().getLocation() == Location.BIRCH_PARK) {
+                                NetworkPlayerInfo rainPlayerInfo = netHandlerPlayClient.getPlayerInfo("!C-e");
+                                if (rainPlayerInfo == null) return;
+
+                                String rainPlayerInfoString = rainPlayerInfo.getDisplayName().getUnformattedText().trim();
+                                Matcher rainTextMatcher = RAIN_TIME_PATTERN_S.matcher(rainPlayerInfoString);
+
+                                if (rainTextMatcher.matches()) {
+                                    parsedRainTime = rainTextMatcher.group("time");
+                                }
+                            }
                         }
                     }
-                    main.getInventoryUtils().cleanUpPickupLog();
 
-                } else if (timerTick > 20) { // To keep the timer going from 1 to 21 only.
-                    timerTick = 1;
+                    if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld() &&
+                            (!main.getUtils().isInDungeon() || Minecraft.getSystemTime() - lastDeath > 1000 &&
+                                    Minecraft.getSystemTime() - lastRevive > 1000)) {
+                        main.getInventoryUtils().getInventoryDifference(player.inventory.mainInventory);
+                    }
+
+                    if (main.getConfigValues().isEnabled(Feature.BAIT_LIST) && isHoldingRod()) {
+                        BaitManager.getInstance().refreshBaits();
+                    }
                 }
+                main.getInventoryUtils().cleanUpPickupLog();
+
+            } else if (timerTick > 20) { // To keep the timer going from 1 to 21 only.
+                timerTick = 1;
             }
         }
     }
@@ -883,8 +918,9 @@ public class PlayerListener {
     public void onEntitySpawn(EntityEvent.EnteringChunk e) {
         if (!main.getUtils().isOnSkyblock()) return;
         Entity entity = e.entity;
+        Minecraft mc = Minecraft.getMinecraft();
 
-        for (Entity cubes : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+        for (Entity cubes : mc.theWorld.loadedEntityList) {
             if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
                 if (cubes instanceof EntityMagmaCube) {
                     EntitySlime magma = (EntitySlime) cubes;
@@ -907,7 +943,7 @@ public class PlayerListener {
         if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT) && entity instanceof EntityArrow) {
             EntityArrow arrow = (EntityArrow) entity;
 
-            EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
+            EntityPlayerSP p = mc.thePlayer;
             ItemStack heldItem = p.getHeldItem();
             if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
 
@@ -1219,7 +1255,8 @@ public class PlayerListener {
 
     @SubscribeEvent
     public void onBlockBreak(SkyblockBlockBreakEvent e) {
-        IBlockState blockState = Minecraft.getMinecraft().theWorld.getBlockState(e.blockPos);
+        Minecraft mc = Minecraft.getMinecraft();
+        IBlockState blockState = mc.theWorld.getBlockState(e.blockPos);
         if (ORES.contains(Block.getStateId(blockState))) {
             boolean shouldIncrement = true;
             if (main.getUtils().getLocation() == Location.ISLAND) {
@@ -1233,19 +1270,19 @@ public class PlayerListener {
             }
         }
         if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
-            String itemId = ItemUtils.getSkyblockItemID(Minecraft.getMinecraft().thePlayer.getHeldItem());
-            if (itemId != null) {
-                Block block = blockState.getBlock();
-                if ((itemId.equals(InventoryUtils.JUNGLE_AXE_ID) || itemId.equals(InventoryUtils.TREECAPITATOR_ID)) &&
-                        (block.equals(Blocks.log) || block.equals(Blocks.log2))) {
-                    // Weirdly, the level 100 leg monkey doesn't seem to be a full 50% reduction when accounting for break time
-                    float multiplier = main.getConfigValues().isEnabled(Feature.LEG_MONKEY_LEVEL_100) ? .6F : 1;
-                    long cooldownTime = (long) (CooldownManager.getItemCooldown(itemId) * multiplier);
-                    cooldownTime -= (main.getConfigValues().isEnabled(Feature.COOLDOWN_PREDICTION) ? e.timeToBreak - 50 : 0);
-                    // TODO: Pet detection
-                    // Min cooldown time is 400 because anything lower than that can allow the player to hit a block already marked for block removal by treecap/jungle axe ability
-                    CooldownManager.put(itemId, Math.max(cooldownTime, 400));
-                }
+            String itemId = ItemUtils.getSkyblockItemID(mc.thePlayer.getHeldItem());
+            if (itemId == null) return;
+
+            Block block = blockState.getBlock();
+            if ((itemId.equals(InventoryUtils.JUNGLE_AXE_ID) || itemId.equals(InventoryUtils.TREECAPITATOR_ID))
+                    && (block.equals(Blocks.log) || block.equals(Blocks.log2))) {
+                // Weirdly, the level 100 leg monkey doesn't seem to be a full 50% reduction when accounting for break time
+                float multiplier = main.getConfigValues().isEnabled(Feature.LEG_MONKEY_LEVEL_100) ? .6F : 1;
+                long cooldownTime = (long) (CooldownManager.getItemCooldown(itemId) * multiplier);
+                cooldownTime -= (main.getConfigValues().isEnabled(Feature.COOLDOWN_PREDICTION) ? e.timeToBreak - 50 : 0);
+                // TODO: Pet detection
+                // Min cooldown time is 400 because anything lower than that can allow the player to hit a block already marked for block removal by treecap/jungle axe ability
+                CooldownManager.put(itemId, Math.max(cooldownTime, 400));
             }
         }
     }

@@ -3,8 +3,6 @@ package codes.biscuit.skyblockaddons.features.tablist;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Location;
-import codes.biscuit.skyblockaddons.core.SkillType;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
@@ -31,22 +29,16 @@ public class TabListParser {
     private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effect");
     private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
     private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[\\w ]+)");
-    private static final Pattern RAIN_TIME_PATTERN_S = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
     private static final Pattern CANDY_PATTERN_S = Pattern.compile("Your Candy: (?<green>[0-9,]+) Green, (?<purple>[0-9,]+) Purple \\((?<points>[0-9,]+) pts\\.\\)");
-    private static final Pattern SKILL_LEVEL_S = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
 
     @Getter
     private static List<RenderColumn> renderColumns;
-    @Getter
-    private static String parsedRainTime = null;
 
     public static void parse() {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (!main.getUtils().isOnSkyblock() || (!main.getConfigValues().isEnabled(Feature.COMPACT_TAB_LIST)
-                && (!main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) || main.getUtils().getLocation() != Location.BIRCH_PARK)
-                && main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER)
-                && main.getConfigValues().isEnabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP))) {
+        if (!main.getUtils().isOnSkyblock() || (main.getConfigValues().isDisabled(Feature.COMPACT_TAB_LIST)
+                && main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER))) {
             renderColumns = null;
             return;
         }
@@ -173,9 +165,7 @@ public class TabListParser {
     }
 
     public static void parseSections(List<ParsedTabColumn> columns) {
-        parsedRainTime = null;
         boolean foundSpooky = false;
-        boolean parsedSkill = false;
         boolean foundEssenceSection = false;
         Matcher m;
         for (ParsedTabColumn column : columns) {
@@ -189,24 +179,16 @@ public class TabListParser {
                 }
 
                 String stripped = TextUtils.stripColor(line).trim();
-                if (parsedRainTime == null && (m = RAIN_TIME_PATTERN_S.matcher(stripped)).matches()) {
-                    parsedRainTime = m.group("time");
-                }
                 if (!foundSpooky && (m = CANDY_PATTERN_S.matcher(stripped)).matches()) {
                     SpookyEventManager.update(Integer.parseInt(m.group("green").replaceAll(",", "")),
                             Integer.parseInt(m.group("purple").replaceAll(",", "")),
                             Integer.parseInt(m.group("points").replaceAll(",", "")));
                     foundSpooky = true;
                 }
-                if (!parsedSkill && (m = SKILL_LEVEL_S.matcher(stripped)).matches()) {
-                    SkillType skillType = SkillType.getFromString(m.group("skill"));
-                    int level = Integer.parseInt(m.group("level"));
-                    main.getSkillXpManager().setSkillLevel(skillType, level);
-                    parsedSkill = true;
-                }
-
-                if (!foundEssenceSection && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER) && stripped.contains("Essence: ("))
+                else if (!foundEssenceSection && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)
+                        && stripped.contains("Essence: (")) {
                     foundEssenceSection = true;
+                }
 
                 if (foundEssenceSection) {
                     stripped = stripped.trim();
