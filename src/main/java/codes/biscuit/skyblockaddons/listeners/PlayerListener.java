@@ -109,8 +109,8 @@ public class PlayerListener {
     private static final Pattern SPIRIT_SCEPTRE_MESSAGE_PATTERN = Pattern.compile("Your (?:Implosion|Spirit Sceptre|Molten Wave) hit (?<hitEnemies>[0-9]+) enem(?:y|ies) for (?<dealtDamage>[0-9]{1,3}(?:,[0-9]{3})*(?:\\.[0-9]+)*) damage\\.");
     private static final Pattern PROFILE_TYPE_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][♲Ⓑ]");
     private static final Pattern NETHER_FACTION_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][⚒ቾ]");
-    private static final Pattern RAIN_TIME_PATTERN_S = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
-    private static final Pattern SKILL_LEVEL_S = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
+    private static final Pattern RAIN_TIME_PATTERN = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
+    private static final Pattern SKILL_LEVEL_PATTERN = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
 
     private static final Set<String> SOUP_RANDOM_MESSAGES = new HashSet<>(Arrays.asList("I feel like I can fly!", "What was in that soup?",
             "Hmm… tasty!", "Hmm... tasty!", "You can now fly for 2 minutes.", "Your flight has been extended for 2 extra minutes.",
@@ -721,7 +721,7 @@ public class PlayerListener {
                                 if (skillsPlayerInfo == null) return;
 
                                 String skillsPlayerInfoString = skillsPlayerInfo.getDisplayName().getUnformattedText().trim();
-                                Matcher skillsTextMatcher = SKILL_LEVEL_S.matcher(skillsPlayerInfoString);
+                                Matcher skillsTextMatcher = SKILL_LEVEL_PATTERN.matcher(skillsPlayerInfoString);
 
                                 if (skillsTextMatcher.matches()) {
                                     SkillType skillType = SkillType.getFromString(skillsTextMatcher.group("skill"));
@@ -736,10 +736,12 @@ public class PlayerListener {
                                 if (rainPlayerInfo == null) return;
 
                                 String rainPlayerInfoString = rainPlayerInfo.getDisplayName().getUnformattedText().trim();
-                                Matcher rainTextMatcher = RAIN_TIME_PATTERN_S.matcher(rainPlayerInfoString);
+                                Matcher rainTextMatcher = RAIN_TIME_PATTERN.matcher(rainPlayerInfoString);
 
                                 if (rainTextMatcher.matches()) {
                                     parsedRainTime = rainTextMatcher.group("time");
+                                } else {
+                                    parsedRainTime = null;
                                 }
                             }
                         }
