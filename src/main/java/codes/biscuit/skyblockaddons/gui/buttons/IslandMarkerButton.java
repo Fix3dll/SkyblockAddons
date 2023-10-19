@@ -32,7 +32,6 @@ public class IslandMarkerButton extends GuiButton {
 
     public void drawButton(float islandX, float islandY, float expansion, boolean hovered, boolean islandUnlocked, IslandWarpGui.UnlockedStatus status) {
         Minecraft mc = Minecraft.getMinecraft();
-        status = IslandWarpGui.UnlockedStatus.UNLOCKED;
 
         float width = 50*expansion;
         float height = width*(100/81F); // Ratio is 81w : 100h
@@ -43,8 +42,7 @@ public class IslandMarkerButton extends GuiButton {
         this.centerX = centerX;
         this.centerY = centerY;
 
-        this.unlocked = status == IslandWarpGui.UnlockedStatus.UNLOCKED ||
-                status == IslandWarpGui.UnlockedStatus.IN_COMBAT;
+        this.unlocked = status == IslandWarpGui.UnlockedStatus.UNLOCKED;
 
         float x = centerX-(width/2);
         float y = centerY-(height/2);

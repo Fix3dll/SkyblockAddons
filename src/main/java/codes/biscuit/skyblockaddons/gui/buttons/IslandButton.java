@@ -103,7 +103,7 @@ public class IslandButton extends GuiButton {
             }
         }
 
-        boolean unlocked = unlockedStatus == IslandWarpGui.UnlockedStatus.UNLOCKED || unlockedStatus == IslandWarpGui.UnlockedStatus.IN_COMBAT;
+        boolean unlocked = unlockedStatus == IslandWarpGui.UnlockedStatus.UNLOCKED;
 
         if (!unlocked) {
             expansion = 1;
@@ -166,14 +166,10 @@ public class IslandButton extends GuiButton {
 
         if (actuallyDraw) {
             if (unlocked) {
-                if (unlockedStatus == IslandWarpGui.UnlockedStatus.IN_COMBAT) {
-                    GlStateManager.color(1F, 0.6F, 0.6F, 1F);
+                if (hovered) {
+                    GlStateManager.color(1F, 1F, 1F, 1F);
                 } else {
-                    if (hovered) {
-                        GlStateManager.color(1F, 1F, 1F, 1F);
-                    } else {
-                        GlStateManager.color(0.9F, 0.9F, 0.9F, 1F);
-                    }
+                    GlStateManager.color(0.9F, 0.9F, 0.9F, 1F);
                 }
             } else {
                 GlStateManager.color(0.3F, 0.3F, 0.3F, 1F);

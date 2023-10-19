@@ -212,7 +212,7 @@
   "WEREWOLF": {
     "name": "Werewolf",
     "rarity": "EPIC",
-    "spawnMessage": "It must be a full moon, a Werewolf appears!"
+    "spawnMessage": "It must be a full moon, a Werewolf appears."
   },
   "YETI": {
     "name": "Yeti",

@@ -33,8 +33,6 @@ import org.objectweb.asm.tree.ClassNode;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 //TODO Fix for Hypixel localization
 public class GuiChestHook {
@@ -60,12 +58,6 @@ public class GuiChestHook {
     private static GuiTextField textFieldMatches = null;
     /** Reforge filter text field for reforges to exclude */
     private static GuiTextField textFieldExclusions = null;
-
-    private static final Pattern warpPattern = Pattern.compile("(?:§5§o)?§8/warp ([a-z_]*)");
-    private static final Pattern unlockedPattern = Pattern.compile("(?:§5§o)?§eClick to warp!");
-    private static final Pattern notUnlockedPattern = Pattern.compile("(?:§5§o)?§cWarp not unlocked!");
-    private static final Pattern inCombatPattern = Pattern.compile("(?:§5§o)?§cYou're in combat!");
-    private static final Pattern youAreHerePattern = Pattern.compile("(?:§5§o)?§aYou are here!");
 
     private static int reforgeFilterHeight;
 
@@ -122,62 +114,8 @@ public class GuiChestHook {
             if (chestInventory.hasCustomName()) {
                 String chestName = chestInventory.getDisplayName().getUnformattedText();
                 if (chestName.equals("Fast Travel")) {
-                    Map<IslandWarpGui.Marker, IslandWarpGui.UnlockedStatus> markers = new EnumMap<>(IslandWarpGui.Marker.class);
-
-                    for (int slot = 0; slot < chestInventory.getSizeInventory(); slot++) {
-                        ItemStack itemStack = chestInventory.getStackInSlot(slot);
-
-                        if (itemStack != null && (Items.skull == itemStack.getItem() || Items.paper == itemStack.getItem())) {
-                            List<String> lore = ItemUtils.getItemLore(itemStack);
-                            IslandWarpGui.Marker marker = null;
-                            IslandWarpGui.UnlockedStatus status = IslandWarpGui.UnlockedStatus.UNKNOWN;
-
-                            for (String loreLine : lore) {
-                                Matcher matcher = warpPattern.matcher(loreLine);
-                                if (matcher.matches()) {
-                                    marker = IslandWarpGui.Marker.fromWarpName(matcher.group(1));
-                                }
-
-                                matcher = unlockedPattern.matcher(loreLine);
-                                if (matcher.matches() || youAreHerePattern.matcher(loreLine).matches()) {
-                                    status = IslandWarpGui.UnlockedStatus.UNLOCKED;
-                                    break;
-                                }
-
-                                matcher = notUnlockedPattern.matcher(loreLine);
-                                if (matcher.matches()) {
-                                    status = IslandWarpGui.UnlockedStatus.NOT_UNLOCKED;
-                                    break;
-                                }
-
-                                matcher = inCombatPattern.matcher(loreLine);
-                                if (matcher.matches()) {
-                                    status = IslandWarpGui.UnlockedStatus.IN_COMBAT;
-                                    break;
-                                }
-                            }
-
-                            if (marker != null) {
-                                markers.put(marker, status);
-                            }
-                        }
-                    }
-
-                    for (IslandWarpGui.Marker marker : IslandWarpGui.Marker.values()) {
-                        if (!markers.containsKey(marker)) {
-                            markers.put(marker, IslandWarpGui.UnlockedStatus.UNKNOWN);
-                        }
-                    }
-
-                    /*
-                    Special case: We have an extra dungeon hub warp as a separate island for convenience, so we have to
-                    add it manually.
-                     */
-                    markers.put(IslandWarpGui.Marker.DUNGEON_HUB_ISLAND,
-                            markers.getOrDefault(IslandWarpGui.Marker.DUNGEON_HUB, IslandWarpGui.UnlockedStatus.UNKNOWN));
-
-                    if (islandWarpGui == null || !islandWarpGui.getMarkers().equals(markers)) {
-                        islandWarpGui = new IslandWarpGui(markers);
+                    if (islandWarpGui == null) {
+                        islandWarpGui = new IslandWarpGui();
                         ScaledResolution scaledresolution = new ScaledResolution(mc);
                         int i = scaledresolution.getScaledWidth();
                         int j = scaledresolution.getScaledHeight();

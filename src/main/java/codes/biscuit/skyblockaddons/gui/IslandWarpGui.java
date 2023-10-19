@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.gui;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonToggleNew;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandButton;
@@ -13,12 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -27,6 +24,8 @@ import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static codes.biscuit.skyblockaddons.core.Translations.*;
 
 public class IslandWarpGui extends GuiScreen {
 
@@ -42,47 +41,29 @@ public class IslandWarpGui extends GuiScreen {
     private final Map<IslandWarpGui.Marker, IslandWarpGui.UnlockedStatus> markers;
 
     private Marker selectedMarker;
-    private boolean guiIsActualWarpMenu = false;
-    @Getter
-    private boolean foundAdvancedWarpToggle = false;
 
     public static float ISLAND_SCALE;
 
     public IslandWarpGui() {
         super();
 
-        Map<Marker, UnlockedStatus> markers = new EnumMap<>(Marker.class);
+        // TODO proper solution to UNLOCKED status (could be deprecated)
+        markers = new EnumMap<>(Marker.class);
         for (Marker marker : Marker.values()) {
             markers.put(marker, UnlockedStatus.UNLOCKED);
         }
-        this.markers = markers;
-    }
-
-    public IslandWarpGui(Map<Marker, UnlockedStatus> markers) {
-        super();
-
-        this.markers = markers;
-        this.guiIsActualWarpMenu = true;
     }
 
     @Override
     public void initGui() {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        Map<Island, UnlockedStatus> islands = new EnumMap<>(Island.class);
-
         for (Map.Entry<Marker, UnlockedStatus> marker : markers.entrySet()) {
-            Island island = marker.getKey().getIsland();
-            UnlockedStatus currentStatus = islands.get(island);
-            UnlockedStatus newStatus = marker.getValue();
-
-            if (currentStatus == null || newStatus.ordinal() > currentStatus.ordinal()) {
-                islands.put(island, newStatus);
+            if (marker.getKey() == Marker.JERRYS_WORKSHOP
+                    && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER) {
+                continue;
             }
-        }
-
-        for (Map.Entry<Island, UnlockedStatus> island : islands.entrySet()) {
-            this.buttonList.add(new IslandButton(island.getKey(), island.getValue(), markers));
+            this.buttonList.add(new IslandButton(marker.getKey().getIsland(), marker.getValue(), markers));
         }
 
         int screenWidth = mc.displayWidth;
@@ -99,48 +80,9 @@ public class IslandWarpGui extends GuiScreen {
         int x = Math.round(screenWidth/ISLAND_SCALE-SHIFT_LEFT-475);
         int y = Math.round(screenHeight/ISLAND_SCALE-SHIFT_TOP);
 
-        if (guiIsActualWarpMenu) {
-            this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60 * 3, 50,
-                    () -> {
-                        // Finds the advanced mode toggle button to see if it's enabled or not.
-                        GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
-                        if (guiScreen instanceof GuiChest) {
-                            GuiChest gui = (GuiChest)guiScreen;
-
-                            Slot toggleAdvancedModeSlot = gui.inventorySlots.getSlot(51);
-                            if (toggleAdvancedModeSlot != null && toggleAdvancedModeSlot.getHasStack()) {
-                                ItemStack toggleAdvancedModeItem = toggleAdvancedModeSlot.getStack();
-
-                                if (Items.dye == toggleAdvancedModeItem.getItem()) {
-                                    int damage = toggleAdvancedModeItem.getItemDamage();
-                                    if (damage == 10) { // Lime Dye
-                                        foundAdvancedWarpToggle = true;
-
-                                        return true;
-                                    } else if (damage == 8) { // Grey Dye
-                                        foundAdvancedWarpToggle = true;
-
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                        return false;
-                    },
-                    () -> {
-                        if (!foundAdvancedWarpToggle) return;
-
-                        // This will click the advanced mode button for you.
-                        GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
-                        if (guiScreen instanceof GuiChest) {
-                            GuiChest gui = (GuiChest) guiScreen;
-                            this.mc.playerController.windowClick(gui.inventorySlots.windowId, 51, 0, 0, this.mc.thePlayer);
-                        }
-                    }));
-            this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60 * 2, 50,
-                    () -> main.getConfigValues().isEnabled(Feature.FANCY_WARP_MENU),
-                    () -> Feature.FANCY_WARP_MENU.setEnabled(!main.getConfigValues().isEnabled(Feature.FANCY_WARP_MENU))));
-        }
+        this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60 * 2, 50,
+                () -> main.getConfigValues().isEnabled(Feature.FANCY_WARP_MENU),
+                () -> Feature.FANCY_WARP_MENU.setEnabled(!main.getConfigValues().isEnabled(Feature.FANCY_WARP_MENU))));
         this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60, 50,
                 () -> main.getConfigValues().isEnabled(Feature.DOUBLE_WARP),
                 () -> Feature.DOUBLE_WARP.setEnabled(!main.getConfigValues().isEnabled(Feature.DOUBLE_WARP))));
@@ -155,8 +97,8 @@ public class IslandWarpGui extends GuiScreen {
         int endColor = new Color(0,0, 0, Math.round(255/2F)).getRGB();
         drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), startColor, endColor);
 
-        drawCenteredString(mc.fontRendererObj, Translations.getMessage("warpMenu.click"), sr.getScaledWidth()/2, 10, 0xFFFFFFFF);
-        drawCenteredString(mc.fontRendererObj, Translations.getMessage("warpMenu.mustUnlock"), sr.getScaledWidth()/2, 20, 0xFFFFFFFF);
+        drawCenteredString(mc.fontRendererObj, getMessage("warpMenu.click"), sr.getScaledWidth()/2, 10, 0xFFFFFFFF);
+        drawCenteredString(mc.fontRendererObj, getMessage("warpMenu.mustUnlock"), sr.getScaledWidth()/2, 20, 0xFFFFFFFF);
 
         GlStateManager.pushMatrix();
         ISLAND_SCALE = 0.7F/1080*mc.displayHeight;
@@ -202,11 +144,14 @@ public class IslandWarpGui extends GuiScreen {
         GlStateManager.pushMatrix();
         float textScale = 3F;
         GlStateManager.scale(textScale, textScale, 1);
-        if (guiIsActualWarpMenu) {
-            mc.fontRendererObj.drawStringWithShadow(Feature.WARP_ADVANCED_MODE.getMessage(), x / textScale + 50, (y - 30 - 60 * 3) / textScale + 5, 0xFFFFFFFF);
-            mc.fontRendererObj.drawStringWithShadow(Feature.FANCY_WARP_MENU.getMessage(), x / textScale + 50, (y - 30 - 60 * 2) / textScale + 5, 0xFFFFFFFF);
-        }
-        mc.fontRendererObj.drawStringWithShadow(Feature.DOUBLE_WARP.getMessage(), x / textScale + 50, (y - 30 - 60) / textScale + 5, 0xFFFFFFFF);
+        mc.fontRendererObj.drawStringWithShadow(
+                Feature.FANCY_WARP_MENU.getMessage()
+                , x / textScale + 50, (y - 30 - 60 * 2) / textScale + 5, 0xFFFFFFFF
+        );
+        mc.fontRendererObj.drawStringWithShadow(
+                Feature.DOUBLE_WARP.getMessage()
+                , x / textScale + 50, (y - 30 - 60) / textScale + 5, 0xFFFFFFFF
+        );
         GlStateManager.popMatrix();
 
         GlStateManager.popMatrix();
@@ -219,13 +164,14 @@ public class IslandWarpGui extends GuiScreen {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (mouseButton == 0 && selectedMarker != null) {
-            Minecraft.getMinecraft().displayGuiScreen(null);
+            SkyblockAddons main = SkyblockAddons.getInstance();
+            mc.displayGuiScreen(null);
 
-            if (SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.DOUBLE_WARP)) {
+            if (main.getConfigValues().isEnabled(Feature.DOUBLE_WARP)) {
                 doubleWarpMarker = selectedMarker;
 
                 // Remove the marker if it didn't trigger for some reason...
-                SkyblockAddons.getInstance().getNewScheduler().scheduleDelayedTask(new SkyblockRunnable() {
+                main.getNewScheduler().scheduleDelayedTask(new SkyblockRunnable() {
                     @Override
                     public void run() {
                         if (doubleWarpMarker != null) {
@@ -235,11 +181,12 @@ public class IslandWarpGui extends GuiScreen {
                 }, 20);
             }
             if (selectedMarker != null) {
-                Minecraft.getMinecraft().thePlayer.sendChatMessage("/warp " + selectedMarker.getWarpName());
-            } /*else {
-                // Weirdly, this command is /warpforge instead of /warp forge
-                Minecraft.getMinecraft().thePlayer.sendChatMessage("/warp" + selectedMarker.getWarpName());
-            }*/
+                mc.thePlayer.sendChatMessage(
+                        selectedMarker == Marker.JERRYS_WORKSHOP
+                                ? "/savethejerrys"
+                                : "/warp " + selectedMarker.getWarpName()
+                );
+            }
 
         }
 
@@ -292,7 +239,7 @@ public class IslandWarpGui extends GuiScreen {
 
         selectedMarker = hoveredMarker;
 
-//        if (hoveredMarker != null) System.out.println(hoveredMarker.getLabel()+" "+markerDistance);
+        //if (hoveredMarker != null) System.out.println(hoveredMarker.getLabel()+" "+markerDistance);
     }
 
     @Getter
@@ -308,7 +255,9 @@ public class IslandWarpGui extends GuiScreen {
         HUB("Hub", 300, 724),
         PRIVATE_ISLAND("Private Island", 275, 1122),
 		GARDEN("Garden", 50, 1000),
-        DUNGEON_HUB("Dungeon Hub", 1500, 1050);
+        DUNGEON_HUB("Dungeon Hub", 1500, 1050),
+        JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1100)
+        ;
 
         private final String label;
         private final int x;
@@ -324,9 +273,14 @@ public class IslandWarpGui extends GuiScreen {
             this.x = x;
             this.y = y;
 
-            this.resourceLocation = new ResourceLocation("skyblockaddons", "islands/" + this.name().toLowerCase(Locale.US).replace("_", "") + ".png");
+            this.resourceLocation = new ResourceLocation(
+                    "skyblockaddons"
+                    , "islands/" + this.name().toLowerCase(Locale.US).replace("_", "") + ".png"
+            );
             try {
-                bufferedImage = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(this.resourceLocation).getInputStream());
+                bufferedImage = TextureUtil.readBufferedImage(
+                        Minecraft.getMinecraft().getResourceManager().getResource(this.resourceLocation).getInputStream()
+                );
                 this.w = bufferedImage.getWidth();
                 this.h = bufferedImage.getHeight();
 
@@ -353,11 +307,13 @@ public class IslandWarpGui extends GuiScreen {
     //TODO: Maybe change these to load from a file at some point
     @Getter
     public enum Marker {
-        PRIVATE_ISLAND("home", Translations.getMessage("warpMenu.home"), Island.PRIVATE_ISLAND, true, 72, 90),
+        PRIVATE_ISLAND("home", getMessage("warpMenu.home"), Island.PRIVATE_ISLAND, true, 72, 90),
 		
-		GARDEN("garden", Translations.getMessage("warpMenu.spawn"), Island.GARDEN, true, 160, 70),
+		GARDEN("garden", getMessage("warpMenu.spawn"), Island.GARDEN, true, 160, 70),
 
-        HUB("hub", Translations.getMessage("warpMenu.spawn"), Island.HUB, true, 600, 200),
+        JERRYS_WORKSHOP("savethejerrys", getMessage("warpMenu.spawn"), Island.JERRYS_WORKSHOP, 35, 90),
+
+        HUB("hub", getMessage("warpMenu.spawn"), Island.HUB, true, 600, 200),
         CASTLE("castle", "Castle", Island.HUB, 130, 80),
         DARK_AUCTION("da", "Sirius Shack", Island.HUB, 385, 415),
         CRYPT("crypt", "Crypts", Island.HUB, 550, 100),
@@ -365,38 +321,38 @@ public class IslandWarpGui extends GuiScreen {
         DUNGEON_HUB("dungeon_hub", "Dungeon Hub", Island.HUB, false, 400, 175),
         MUSEUM("museum", "Museum", Island.HUB, true, 310, 200),
 
-        SPIDERS_DEN("spider", Translations.getMessage("warpMenu.spawn"), Island.SPIDERS_DEN, true, 345, 240),
+        SPIDERS_DEN("spider", getMessage("warpMenu.spawn"), Island.SPIDERS_DEN, true, 345, 240),
         SPIDERS_DEN_NEST("nest", "Top of Nest", Island.SPIDERS_DEN, 450, 30),
         ARACHNES_SANCTUARY("arachne", "Arachne's Sanctuary", Island.SPIDERS_DEN, 240,135),
 
-        THE_PARK("park", Translations.getMessage("warpMenu.spawn"), Island.THE_PARK, true, 263, 308),
+        THE_PARK("park", getMessage("warpMenu.spawn"), Island.THE_PARK, true, 263, 308),
         HOWLING_CAVE("howl", "Howling Cave", Island.THE_PARK, 254, 202),
         THE_PARK_JUNGLE("jungle", "Jungle", Island.THE_PARK, 194, 82),
 
-        THE_END("end", Translations.getMessage("warpMenu.spawn"), Island.THE_END, true, 440, 291),
+        THE_END("end", getMessage("warpMenu.spawn"), Island.THE_END, true, 440, 291),
         DRAGONS_NEST("drag", "Dragon's Nest", Island.THE_END, 260, 248),
         VOID_SEPULTURE("void", "Void Sepulture", Island.THE_END, true, 370, 227),
 
-        CRIMSON_ISLE("nether", Translations.getMessage("warpMenu.spawn"), Island.CRIMSON_ISLE, true, 70, 280),
+        CRIMSON_ISLE("nether", getMessage("warpMenu.spawn"), Island.CRIMSON_ISLE, true, 70, 280),
         FORGOTTEN_SKULL("kuudra", "Forgotten Skull", Island.CRIMSON_ISLE, true, 460, 90),
         THE_WASTELAND("wasteland", "The Wasteland", Island.CRIMSON_ISLE, true, 330, 160),
         DRAGONTAIL("dragontail", "Dragontail", Island.CRIMSON_ISLE, true, 140, 150),
         SCARLETON("scarleton", "Scarleton", Island.CRIMSON_ISLE, true, 400, 220),
         SMOLDERING_TOMB("smold", "Smoldering Tomb", Island.CRIMSON_ISLE, true, 350, 70),
 
-        THE_BARN("barn", Translations.getMessage("warpMenu.spawn"), Island.THE_BARN, true, 140, 150),
-        MUSHROOM_DESERT("desert", Translations.getMessage("warpMenu.spawn"), Island.MUSHROOM_DESERT, true, 210, 295),
+        THE_BARN("barn", getMessage("warpMenu.spawn"), Island.THE_BARN, true, 140, 150),
+        MUSHROOM_DESERT("desert", getMessage("warpMenu.spawn"), Island.MUSHROOM_DESERT, true, 210, 295),
 		TRAPPER("trapper", "Trapper's Hut", Island.MUSHROOM_DESERT, true, 300, 200),
 
-        GOLD_MINE("gold", Translations.getMessage("warpMenu.spawn"), Island.GOLD_MINE, true, 86, 259),
+        GOLD_MINE("gold", getMessage("warpMenu.spawn"), Island.GOLD_MINE, true, 86, 259),
 
-        DEEP_CAVERNS("deep", Translations.getMessage("warpMenu.spawn"), Island.DEEP_CAVERNS, true, 97, 213),
+        DEEP_CAVERNS("deep", getMessage("warpMenu.spawn"), Island.DEEP_CAVERNS, true, 97, 213),
         DWARVEN_MINES("mines", "Dwarven Mines", Island.DEEP_CAVERNS, false, 280, 205),
         DWARVEN_FORGE("forge", "Forge", Island.DEEP_CAVERNS, true, 260, 280),
         CRYSTAL_HOLLOWS("crystals", "Crystal Hollows", Island.DEEP_CAVERNS, true, 220, 350),
         CRYSTAL_NUCLEUS("nucleus", "Crystal Nucleus", Island.DEEP_CAVERNS, true, 170, 380),
 
-        DUNGEON_HUB_ISLAND("dungeon_hub", Translations.getMessage("warpMenu.spawn"), Island.DUNGEON_HUB, false, 35, 80),
+        DUNGEON_HUB_ISLAND("dungeon_hub", getMessage("warpMenu.spawn"), Island.DUNGEON_HUB, false, 35, 80),
         ;
 
         private final String warpName;
@@ -418,23 +374,12 @@ public class IslandWarpGui extends GuiScreen {
             this.y = y;
             this.advanced = advanced;
         }
-
-        public static Marker fromWarpName(String warpName) {
-            for (Marker marker : values()) {
-                if (marker.warpName.equals(warpName)) {
-                    return marker;
-                }
-            }
-
-            return null;
-        }
     }
 
     @Getter
     public enum UnlockedStatus {
         UNKNOWN(Translations.getMessage("warpMenu.unknown")),
         NOT_UNLOCKED(Translations.getMessage("warpMenu.notUnlocked")),
-        IN_COMBAT(Translations.getMessage("warpMenu.inCombat")),
         UNLOCKED(null),
         ;
 

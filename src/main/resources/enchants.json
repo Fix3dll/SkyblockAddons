@@ -373,7 +373,7 @@
       "nbtName": "punch"
     },
     "quantum": {
-      "goodLevel": 3,
+      "goodLevel": 4,
       "loreName": "Quantum",
       "maxLevel": 5,
       "nbtName": "quantum"

@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.features.tablist;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
@@ -38,7 +39,7 @@ public class TabListParser {
         Minecraft mc = Minecraft.getMinecraft();
 
         if (!main.getUtils().isOnSkyblock() || (main.getConfigValues().isDisabled(Feature.COMPACT_TAB_LIST)
-                && main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER))) {
+                && !candyCounterEnabled())) {
             renderColumns = null;
             return;
         }
@@ -312,5 +313,11 @@ public class TabListParser {
                 }
             }
         }
+    }
+
+    private static boolean candyCounterEnabled() {
+        SkyblockDate currentDate = main.getUtils().getCurrentDate();
+        return currentDate.getMonth() == SkyblockDate.SkyblockMonth.AUTUMN && currentDate.getDay() >  28
+                && main.getConfigValues().isEnabled(Feature.CANDY_POINTS_COUNTER);
     }
 }

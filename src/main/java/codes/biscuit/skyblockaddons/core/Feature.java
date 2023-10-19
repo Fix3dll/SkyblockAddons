@@ -352,12 +352,14 @@ public enum Feature {
      * @param enabled {@code true} to enable the feature, {@code false} to disable it
      */
     public void setEnabled(boolean enabled) {
+        SkyblockAddons main = SkyblockAddons.getInstance();
         if (enabled) {
-            SkyblockAddons.getInstance().getConfigValues().getDisabledFeatures().remove(this);
+            main.getConfigValues().getDisabledFeatures().remove(this);
         } else {
-            SkyblockAddons.getInstance().getConfigValues().getDisabledFeatures().add(this);
+            main.getConfigValues().getDisabledFeatures().add(this);
         }
         onToggle();
+        main.getConfigValues().saveConfig();
     }
 
     public boolean isActualFeature() {
