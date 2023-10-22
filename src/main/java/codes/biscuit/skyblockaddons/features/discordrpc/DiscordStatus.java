@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.*;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonSelect;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -123,21 +124,13 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 if (location == Location.THE_END || location == Location.DRAGONS_NEST) {
                     return DiscordStatus.ZEALOTS.displayMessageSupplier.get();
                 }
+
                 EnumUtils.SlayerQuest slayerQuest = main.getUtils().getSlayerQuest();
-                if (slayerQuest != null) {
-                    if (slayerQuest == EnumUtils.SlayerQuest.REVENANT_HORROR)
-                        return DiscordStatus.valueOf("REVENANT").displayMessageSupplier.get();
-                    if (slayerQuest == EnumUtils.SlayerQuest.SVEN_PACKMASTER)
-                        return DiscordStatus.valueOf("SVEN").displayMessageSupplier.get();
-                    if (slayerQuest == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER)
-                        return DiscordStatus.valueOf("TARANTULA").displayMessageSupplier.get();
-                    if (slayerQuest == EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH)
-                        return DiscordStatus.valueOf("VOIDGLOOM").displayMessageSupplier.get();
-                    if (slayerQuest == EnumUtils.SlayerQuest.INFERNO_DEMONLORD)
-                        return DiscordStatus.valueOf("INFERNO").displayMessageSupplier.get();
-                    if (slayerQuest == EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND)
-                        return DiscordStatus.valueOf("RIFTSTALKER").displayMessageSupplier.get();
+                if (slayerQuest != null && LocationUtils.isSlayerLocation(slayerQuest, location)) {
+                    return (main.getUtils().isSlayerBossAlive() ? "Slaying a " : "Doing a ")
+                            + slayerQuest.getScoreboardName() + " " + main.getUtils().getSlayerQuestLevel() + " boss.";
                 }
+
                 if (main.getUtils().isOnRift()) {
                     return DiscordStatus.valueOf("MOTES").displayMessageSupplier.get();
                 }
@@ -145,80 +138,9 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
                 if ("AUTO_STATUS".equals(main.getConfigValues().getDiscordAutoDefault().name())) { // Avoid self reference.
                     main.getConfigValues().setDiscordAutoDefault(DiscordStatus.NONE);
                 }
+
                 return main.getConfigValues().getDiscordAutoDefault().displayMessageSupplier.get();
-            }),
-
-    REVENANT("discordStatus.titleRevenants", "discordStatus.descriptionRevenants",
-            () -> {
-                SkyblockAddons main = SkyblockAddons.getInstance();
-                boolean bossAlive = main.getUtils().isSlayerBossAlive();
-
-                if (bossAlive) {
-                    return "Slaying a Revenant Horror "+main.getUtils().getSlayerQuestLevel()+" boss.";
-                } else {
-                    return "Doing a Revenant Horror "+main.getUtils().getSlayerQuestLevel()+" quest.";
-                }
-            }),
-
-    SVEN("discordStatus.titleSvens", "discordStatus.descriptionSvens",
-            () -> {
-                SkyblockAddons main = SkyblockAddons.getInstance();
-                boolean bossAlive = main.getUtils().isSlayerBossAlive();
-
-                if (bossAlive) {
-                    return "Slaying a Sven Packmaster "+main.getUtils().getSlayerQuestLevel()+" boss.";
-                } else {
-                    return "Doing a Sven Packmaster "+main.getUtils().getSlayerQuestLevel()+" quest.";
-                }
-            }),
-
-    TARANTULA("discordStatus.titleTarantula", "discordStatus.descriptionTarantula",
-            () -> {
-                SkyblockAddons main = SkyblockAddons.getInstance();
-                boolean bossAlive = main.getUtils().isSlayerBossAlive();
-
-                if (bossAlive) {
-                    return "Slaying a Tarantula Broodfather "+main.getUtils().getSlayerQuestLevel()+" boss.";
-                } else {
-                    return "Doing a Tarantula Broodfather "+main.getUtils().getSlayerQuestLevel()+" quest.";
-                }
-            }),
-
-    VOIDGLOOM("discordStatus.titleVoidgloom", "discordStatus.descriptionVoidgloom",
-            () -> {
-                SkyblockAddons main = SkyblockAddons.getInstance();
-                boolean bossAlive = main.getUtils().isSlayerBossAlive();
-
-                if (bossAlive) {
-                    return "Slaying a Voidgloom Seraph "+main.getUtils().getSlayerQuestLevel()+" boss.";
-                } else {
-                    return "Doing a Voidgloom Seraph "+main.getUtils().getSlayerQuestLevel()+" quest.";
-                }
-            }),
-
-    INFERNO("discordStatus.titleInferno", "discordStatus.descriptionInferno",
-            () -> {
-                SkyblockAddons main = SkyblockAddons.getInstance();
-                boolean bossAlive = main.getUtils().isSlayerBossAlive();
-
-                if (bossAlive) {
-                    return "Slaying a Inferno Demonlord "+main.getUtils().getSlayerQuestLevel()+" boss.";
-                } else {
-                    return "Doing a Inferno Demonlord "+main.getUtils().getSlayerQuestLevel()+" quest.";
-                }
-            }),
-
-    RIFTSTALKER("discordStatus.titleRiftstalker", "discordStatus.descriptionRiftstalker",
-                    () -> {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        boolean bossAlive = main.getUtils().isSlayerBossAlive();
-
-        if (bossAlive) {
-            return "Slaying a Riftstalker Bloodfiend "+main.getUtils().getSlayerQuestLevel()+" boss.";
-        } else {
-            return "Doing a Riftstalker Bloodfiend "+main.getUtils().getSlayerQuestLevel()+" quest.";
-        }
-    })
+            })
     ;
 
     private final String title;

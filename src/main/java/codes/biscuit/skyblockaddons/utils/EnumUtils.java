@@ -413,6 +413,7 @@ public class EnumUtils {
     }
 
     //TODO Fix for Hypixel localization
+    @Getter
     public enum SlayerQuest {
         REVENANT_HORROR("Revenant Horror"),
         TARANTULA_BROODFATHER("Tarantula Broodfather"),
