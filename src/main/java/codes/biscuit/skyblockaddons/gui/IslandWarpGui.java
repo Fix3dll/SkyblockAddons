@@ -181,11 +181,7 @@ public class IslandWarpGui extends GuiScreen {
                 }, 20);
             }
             if (selectedMarker != null) {
-                mc.thePlayer.sendChatMessage(
-                        selectedMarker == Marker.JERRYS_WORKSHOP
-                                ? "/savethejerrys"
-                                : "/warp " + selectedMarker.getWarpName()
-                );
+                mc.thePlayer.sendChatMessage("/warp " + selectedMarker.getWarpName());
             }
 
         }
@@ -311,7 +307,7 @@ public class IslandWarpGui extends GuiScreen {
 		
 		GARDEN("garden", getMessage("warpMenu.spawn"), Island.GARDEN, true, 160, 70),
 
-        JERRYS_WORKSHOP("savethejerrys", getMessage("warpMenu.spawn"), Island.JERRYS_WORKSHOP, 35, 90),
+        JERRYS_WORKSHOP("workshop", getMessage("warpMenu.spawn"), Island.JERRYS_WORKSHOP, 35, 90),
 
         HUB("hub", getMessage("warpMenu.spawn"), Island.HUB, true, 600, 200),
         CASTLE("castle", "Castle", Island.HUB, 130, 80),

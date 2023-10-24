@@ -192,11 +192,7 @@ public class PlayerListener {
             IslandWarpGui.Marker doubleWarpMarker = IslandWarpGui.getDoubleWarpMarker();
             if (doubleWarpMarker != null) {
                 IslandWarpGui.setDoubleWarpMarker(null);
-                Minecraft.getMinecraft().thePlayer.sendChatMessage(
-                        doubleWarpMarker == IslandWarpGui.Marker.JERRYS_WORKSHOP
-                                ? "/savethejerrys"
-                                : "/warp " + doubleWarpMarker.getWarpName()
-                );
+                Minecraft.getMinecraft().thePlayer.sendChatMessage("/warp " + doubleWarpMarker.getWarpName());
             }
 
             NPCUtils.getNpcLocations().clear();
