@@ -29,7 +29,7 @@ public class TabListParser {
     private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effect");
     private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
     private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[\\w ]+)");
-    private static final Pattern CANDY_PATTERN_S = Pattern.compile("Your Candy: (?<green>[0-9,]+) Green, (?<purple>[0-9,]+) Purple \\((?<points>[0-9,]+) pts\\.\\)");
+    private static final Pattern CANDY_PATTERN = Pattern.compile("Your Candy: §r§a(?<green>[0-9,]+) Green§r§7, §r§5(?<purple>[0-9,]+) Purple §r§7\\(§r§6(?<points>[0-9,]+) §r§7pts\\.\\)");
 
     @Getter
     private static List<RenderColumn> renderColumns;
@@ -129,6 +129,19 @@ public class TabListParser {
                 footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e0");
         }
 
+         if ((m = CANDY_PATTERN.matcher(footer)).find()) {
+            SpookyEventManager.update(
+                    Integer.parseInt(m.group("green").replaceAll(",", "")),
+                    Integer.parseInt(m.group("purple").replaceAll(",", "")),
+                    Integer.parseInt(m.group("points").replaceAll(",", ""))
+            );
+            footer = m.replaceAll("§7Your Candy: (§6" + m.group("points") + " §7pts.)"
+                    + "\n §a" + m.group("green") + " Green"
+                    + "\n §5" + m.group("purple") + " Purple");
+        } else {
+             SpookyEventManager.reset();
+        }
+
         Matcher matcher = COOKIE_BUFF_PATTERN.matcher(footer);
         if (matcher.find() && matcher.group().contains("Not active!")) {
             footer = matcher.replaceAll("Cookie Buff \n§r§7Not Active");
@@ -165,9 +178,7 @@ public class TabListParser {
     }
 
     public static void parseSections(List<ParsedTabColumn> columns) {
-        boolean foundSpooky = false;
         boolean foundEssenceSection = false;
-        Matcher m;
         for (ParsedTabColumn column : columns) {
             ParsedTabSection currentSection = null;
             int foundEssences = 0;
@@ -179,13 +190,7 @@ public class TabListParser {
                 }
 
                 String stripped = TextUtils.stripColor(line).trim();
-                if (!foundSpooky && (m = CANDY_PATTERN_S.matcher(stripped)).matches()) {
-                    SpookyEventManager.update(Integer.parseInt(m.group("green").replaceAll(",", "")),
-                            Integer.parseInt(m.group("purple").replaceAll(",", "")),
-                            Integer.parseInt(m.group("points").replaceAll(",", "")));
-                    foundSpooky = true;
-                }
-                else if (!foundEssenceSection && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)
+                if (!foundEssenceSection && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)
                         && stripped.contains("Essence: (")) {
                     foundEssenceSection = true;
                 }
@@ -232,9 +237,6 @@ public class TabListParser {
 
                 currentSection.addLine(line);
             }
-        }
-        if (!foundSpooky) {
-            SpookyEventManager.reset();
         }
     }
 

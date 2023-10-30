@@ -216,6 +216,12 @@
       "maxLevel": 7,
       "nbtName": "giant_killer"
     },
+    "great spook": {
+      "goodLevel": 1,
+      "loreName": "Great Spook",
+      "maxLevel": 1,
+      "nbtName": "great_spook"
+    },
     "green thumb": {
       "goodLevel": 0,
       "loreName": "Green Thumb",
