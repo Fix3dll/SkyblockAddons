@@ -100,7 +100,7 @@ dependencies {
     runtimeOnly('me.djtheredstoner:DevAuth-forge-legacy:1.1.2')
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
-    bundle('com.github.ILikePlayingGames:DiscordIPC:f91ed4b') {
+    bundle('com.github.NetheriteMiner:DiscordIPC:3106be5') {
         exclude module: 'log4j'
         because 'Different version conflicts with Minecraft\'s Log4J'
         exclude module: 'gson'

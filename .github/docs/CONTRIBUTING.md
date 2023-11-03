@@ -73,6 +73,3 @@ git checkout -b development --track origin/development
     ```shell script
     ./gradlew runClient --args="--username <username> --password <password>"
     ```
-
-### Questions?
-Visit our [Discord Server](https://discord.gg/zWyr3f5GXz) for support.
