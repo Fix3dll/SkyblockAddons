@@ -155,7 +155,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 versionInfo.setFont(new Font(Font.DIALOG, Font.BOLD, 14));
                 versionInfo.setHorizontalAlignment(SwingConstants.CENTER);
                 versionInfo.setPreferredSize(new Dimension(w, h));
-                versionInfo.setText("v"+getVersionFromMcmodInfo()+" by Biscuit - for Minecraft 1.8.9");
+                versionInfo.setText("v"+getVersionFromMcmodInfo()+" unofficial by Fix3dll - for Minecraft 1.8.9");
 
                 y += h;
             } catch (Throwable ivjExc) {
@@ -383,7 +383,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == getForgeTextArea()) {
             try {
-                Desktop.getDesktop().browse(new URI("http://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.8.9.html"));
+                Desktop.getDesktop().browse(new URI("https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.8.9.html"));
             } catch (IOException | URISyntaxException ex) {
                 showErrorPopup(ex);
             }
@@ -411,10 +411,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
         File thisFile = getThisFile();
 
         if (thisFile != null) {
-            boolean inSubFolder = false;
-            if (IN_MODS_SUBFOLDER.matcher(modsFolder.getPath()).find()) {
-                inSubFolder = true;
-            }
+            boolean inSubFolder = IN_MODS_SUBFOLDER.matcher(modsFolder.getPath()).find();
 
             File newFile = new File(modsFolder, "SkyblockAddons-1.8.9-"+getVersionFromMcmodInfo()+".jar");
             if (thisFile.equals(newFile)) {

@@ -77,8 +77,8 @@ public class Updater {
         ComparableVersion latestBeta = null;
         ComparableVersion current = new ComparableVersion(SkyblockAddons.VERSION);
         boolean isCurrentBeta = isBetaVersion(current);
-        boolean latestReleaseExists = updateInfo.getLatestRelease() != null && !updateInfo.getLatestRelease().equals("");
-        boolean latestBetaExists = updateInfo.getLatestBeta() != null && !updateInfo.getLatestBeta().equals("");
+        boolean latestReleaseExists = updateInfo.getLatestRelease() != null && !updateInfo.getLatestRelease().isEmpty();
+        boolean latestBetaExists = updateInfo.getLatestBeta() != null && !updateInfo.getLatestBeta().isEmpty();
         int releaseDiff = 0;
         int betaDiff = 0;
 
@@ -231,7 +231,7 @@ public class Updater {
         ChatComponentText openModsFolderButton;
         ChatComponentText changelogButton;
 
-        if (showcaseLink != null && !showcaseLink.equals("")) {
+        if (showcaseLink != null && !showcaseLink.isEmpty()) {
             showcaseButton = new ChatComponentText("§b§l[" + Translations.getMessage("messages.updateChecker.watchShowcase", targetVersion) + "]");
             showcaseButton.setChatStyle(showcaseButton.getChatStyle().setChatClickEvent(
                     new ClickEvent(ClickEvent.Action.OPEN_URL, showcaseLink)).setChatHoverEvent(
@@ -243,7 +243,7 @@ public class Updater {
         downloadButton = new ChatComponentText("§b§l[" + Translations.getMessage(
                 "messages.updateChecker.downloadButton", targetVersion) + "]");
 
-        if (downloadLink != null && !downloadLink.equals("")) {
+        if (downloadLink != null && !downloadLink.isEmpty()) {
             downloadButton.setChatStyle(downloadButton.getChatStyle().setChatClickEvent(
                     new ClickEvent(ClickEvent.Action.OPEN_URL, downloadLink)).setChatHoverEvent(
                             new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText("§7" +
@@ -268,7 +268,7 @@ public class Updater {
                                 new ChatComponentText("§7" + Translations.getMessage("messages.clickToOpenFolder")))));
         downloadButton.appendSibling(openModsFolderButton);
 
-        if (changelogLink != null && !changelogLink.equals("")) {
+        if (changelogLink != null && !changelogLink.isEmpty()) {
             changelogButton = new ChatComponentText(" §9§l[" + Translations.getMessage(
                     "messages.updateChecker.changelogButton") + "]");
             changelogButton.setChatStyle(changelogButton.getChatStyle().setChatClickEvent

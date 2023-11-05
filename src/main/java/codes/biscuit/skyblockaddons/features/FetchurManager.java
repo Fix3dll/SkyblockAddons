@@ -4,8 +4,8 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -137,7 +137,7 @@ public class FetchurManager {
      * A class representing the item fetchur wants
      * containing the item instance and the text format of the item
      */
-    @Getter @RequiredArgsConstructor
+    @Getter @AllArgsConstructor
     public static class FetchurItem {
         private final ItemStack itemStack;
         private final String itemText;

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static codes.biscuit.skyblockaddons.features.slayertracker.SlayerDrop.*;
-import static codes.biscuit.skyblockaddons.features.slayertracker.SlayerDrop.SUBZERO_INVERTER;
 
 @Getter
 public enum SlayerBoss {

@@ -29,8 +29,8 @@ import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
 import codes.biscuit.skyblockaddons.utils.*;
 import com.mojang.authlib.GameProfile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -44,7 +44,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.*;
+import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntitySpider;
@@ -2920,7 +2920,7 @@ public class RenderListener {
         return radiantDummyArmorStand;
     }
 
-    @RequiredArgsConstructor
+    @AllArgsConstructor
     private enum DamageDisplayItem {
         HYPERION(ItemUtils.createItemStack(Items.iron_sword, "§6Hyperion", "HYPERION", false)),
         VALKYRIE(ItemUtils.createItemStack(Items.iron_sword, "§6Valkyrie", "VALKYRIE", false)),

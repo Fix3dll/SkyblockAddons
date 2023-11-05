@@ -121,7 +121,7 @@ public class TextUtils {
      * @return {@code true} if the input string is length 0 or only contains repeated formatting codes
      */
     public static boolean isZeroLength(String input) {
-        return input.length() == 0 || REPEATED_COLOR_PATTERN.matcher(input).matches();
+        return input.isEmpty() || REPEATED_COLOR_PATTERN.matcher(input).matches();
     }
 
 
@@ -274,12 +274,12 @@ public class TextUtils {
     }
 
     /**
-     * @param textureURL texture ID/hash that is in the texture URL (not including http://textures.minecraft.net/texture/)
+     * @param textureURL texture ID/hash that is in the texture URL (not including https://textures.minecraft.net/texture/)
      * @return A json string including the texture URL as a skin texture (used in NBT)
      */
     public static String encodeSkinTextureURL(String textureURL) {
         JsonObject skin = new JsonObject();
-        skin.addProperty("url", "http://textures.minecraft.net/texture/" + textureURL);
+        skin.addProperty("url", "https://textures.minecraft.net/texture/" + textureURL);
 
         JsonObject textures = new JsonObject();
         textures.add("SKIN", skin);
@@ -382,7 +382,7 @@ public class TextUtils {
      * @return {@code null} if {@param unformattedSubstring} is not found in {@param formatted}, or the colored/styled substring.
      */
     public static String getFormattedString(String formatted, String unformattedSubstring) {
-        if (unformattedSubstring.length() == 0) {
+        if (unformattedSubstring.isEmpty()) {
             return "";
         }
         String styles = "kKlLmMnNoO";
@@ -469,7 +469,7 @@ public class TextUtils {
      * @return the relevant formatting codes in effect after {@param secondFormat}
      */
     private static String mergeFormats(String firstFormat, String secondFormat) {
-        if (secondFormat == null || secondFormat.length() == 0) {
+        if (secondFormat == null || secondFormat.isEmpty()) {
             return firstFormat;
         }
         String styles = "kKlLmMnNoO";

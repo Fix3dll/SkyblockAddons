@@ -1,9 +1,8 @@
 package codes.biscuit.skyblockaddons.features.deployables;
 
 import codes.biscuit.skyblockaddons.utils.TextUtils;
-import codes.biscuit.skyblockaddons.utils.Utils;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,7 @@ public class DeployableManager {
      */
     public static final DeployableEntry DUMMY_POWER_ORB_ENTRY = new DeployableEntry(Deployable.SOS_FLARE, 90, null);
 
-    private Map<Deployable, DeployableEntry> deployableEntryMap = new HashMap<>();
+    private final Map<Deployable, DeployableEntry> deployableEntryMap = new HashMap<>();
 
     /**
      * Put any detected deployable into the list of active deployables.
@@ -140,15 +139,7 @@ public class DeployableManager {
         }
     }
 
-    public EntityArmorStand createVirtualArmorStand(EntityArmorStand armorStandToClone) {
-        EntityArmorStand virtualArmorStand = new EntityArmorStand(Utils.getDummyWorld());
-
-        virtualArmorStand.setCurrentItemOrArmor(4, armorStandToClone.getEquipmentInSlot(4));
-
-        return virtualArmorStand;
-    }
-
-    @Getter @RequiredArgsConstructor
+    @Getter @AllArgsConstructor
     public static class DeployableEntry {
         /** The Deployable type. */
         private final Deployable deployable;
