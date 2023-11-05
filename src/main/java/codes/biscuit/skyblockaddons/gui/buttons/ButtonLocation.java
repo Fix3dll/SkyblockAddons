@@ -35,6 +35,10 @@ public class ButtonLocation extends ButtonFeature {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        // If the feature is disabled, don't draw in the "Edit GUI Location" section
+        if (main.getConfigValues().isDisabled(feature))
+            return;
+
         float scale = main.getConfigValues().getGuiScale(feature);
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 1);
