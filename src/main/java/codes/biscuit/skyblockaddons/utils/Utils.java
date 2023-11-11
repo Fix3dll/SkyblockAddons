@@ -397,6 +397,8 @@ public class Utils {
                                             continue;
                                         } else if (loopLocation == Location.MOUNTAIN && strippedScoreboardLine.contains("Desert")) {
                                             continue;
+                                        } else if (loopLocation == Location.TAVERN && strippedScoreboardLine.contains("Dwarven")) {
+                                            continue;
                                         }
                                         location = loopLocation;
                                         foundLocation = true;

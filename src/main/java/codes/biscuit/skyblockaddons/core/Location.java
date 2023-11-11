@@ -16,50 +16,57 @@ public enum Location {
     GARDEN("The Garden"),
     GARDEN_PLOT("Plot"), //TODO RPC
 
-    // Hub
+    // https://wiki.hypixel.net/Hub#Zones
+    ARCHERY_RANGE("Archery Range"),
     AUCTION_HOUSE("Auction House"),
-    SHENS_AUCTION("Shen's Auction"),
-    REGALIA_ROOM("Regalia Room"),
     BANK("Bank"),
     BAZAAR("Bazaar Alley"), // TODO RPC
+    BLACKSMITH("Blacksmith"),
+    BULDERS_HOUSE("Builder's House"),
     CANVAS_ROOM("Canvas Room"),
     COAL_MINE("Coal Mine"),
     COLOSSEUM("Colosseum"),
+    COMMUNITY_CENTER("Community Center"),
     ELECTION_ROOM("Election Room"),
     FARM("Farm"),
+    FARMHOUSE("Farmhouse"),
     FASHION_SHOP("Fashion Shop"),
     FISHERMANS_HUT("Fisherman's Hut"),
     FLOWER_HOUSE("Flower House"),
     FOREST("Forest"),
     GRAVEYARD("Graveyard"),
+    CATACOMBS_ENTRANCE("Catacombs Entrance"),
+    HEXATORUM("Hexatorum"),
     UNINCORPORATED("Unincorporated"),
     LIBRARY("Library"),
     MOUNTAIN("Mountain"),
+    MUSEUM("Museum"),
     RUINS("Ruins"),
     TAVERN("Tavern"),
+    THAUMATURGIST("Thaumaturgist"),
     VILLAGE("Village"),
+    WEAPONSMITH("Weaponsmith"),
     WILDERNESS("Wilderness"),
     WIZARD_TOWER("Wizard Tower"),
-    CATACOMBS_ENTRANCE("Catacombs Entrance"),
-    MUSEUM("Museum"),
-    THAUMATURGIST("Thaumaturgist"),
-    HEXATORUM("Hexatorum"),
 
+    SHENS_AUCTION("Shen's Auction"),
+    REGALIA_ROOM("Regalia Room"),
     DARK_AUCTION("Dark Auction"),
 
-    // The Park
+    // https://wiki.hypixel.net/The_Park#Zones
     BIRCH_PARK("Birch Park"),
+    HOWLING_CAVE("Howling Cave"),
     SPRUCE_WOODS("Spruce Woods"),
+    LONELY_ISLAND("Lonely Island"),
+    VIKING_LONGHOUSE("Viking Longhouse"),
+    DARK_THICKET("Dark Thicket"),
     SAVANNA_WOODLAND("Savanna Woodland"),
     MELODYS_PLATEAU("Melody's Plateau"),
-    DARK_THICKET("Dark Thicket"),
     JUNGLE_ISLAND("Jungle Island"),
-    HOWLING_CAVE("Howling Cave"),
-    LONELY_ISLAND("Lonely Island"),
 
     GOLD_MINE("Gold Mine"),
 
-    // Deep Caverns
+    // https://wiki.hypixel.net/Deep_Caverns#Zones
     DEEP_CAVERNS("Deep Caverns"), // TODO RPC
     GUNPOWDER_MINES("Gunpowder Mines", "deep-caverns"), // TODO RPC
     LAPIS_QUARRY("Lapis Quarry", "deep-caverns"), // TODO RPC
@@ -68,61 +75,68 @@ public enum Location {
     DIAMOND_RESERVE("Diamond Reserve", "deep-caverns"),
     OBSIDIAN_SANCTUARY("Obsidian Sanctuary", "deep-caverns"),
 
-    // Dwarven mines
+    // https://wiki.hypixel.net/Dwarven_Mines#Zones
     DWARVEN_MINES("Dwarven Mines"),
-    DWARVEN_VILLAGE("Dwarven Village"),
-    GATES_TO_THE_MINES("Gates to the Mines"),
-    THE_LIFT("The Lift"),
-    THE_FORGE("The Forge"),
-    FORGE_BASIN("Forge Basin"),
-    LAVA_SPRINGS("Lava Springs"),
-    PALACE_BRIDGE("Palace Bridge"),
-    ROYAL_PALACE("Royal Palace"),
     ARISTOCRAT_PASSAGE("Aristocrat Passage"),
-    HANGING_TERRACE("Hanging Terrace"),
-    CLIFFSIDE_VEINS("Cliffside Veins"),
-    RAMPARTS_QUARRY("Rampart's Quarry"),
-    DIVANS_GATEWAY("Divan's Gateway"),
-    FAR_RESERVE("Far Reserve"),
-    GOBLIN_BURROWS("Goblin Burrows"),
-    UPPER_MINES("Upper Mines"),
-    ROYAL_MINES("Royal Mines"),
-    MINERS_GUILD("Miner's Guild"),
-    GREAT_ICE_WALL("Great Ice Wall"),
-    THE_MIST("The Mist"),
+    BARRACKS_OF_HEROES("Barracks Of Heroes"),
     CC_MINECARTS_CO("C&C Minecarts Co."),
+    CLIFFSIDE_VEINS("Cliffside Veins"),
+    DIVANS_GATEWAY("Divan's Gateway"),
+    DWARVEN_TAVERN("Dwarven Tavern", "tavern"),
+    DWARVEN_VILLAGE("Dwarven Village"),
+    FAR_RESERVE("Far Reserve"),
+    FORGE_BASIN("Forge Basin"),
+    GATES_TO_THE_MINES("Gates to the Mines"),
+    GOBLIN_BURROWS("Goblin Burrows"),
     GRAND_LIBRARY("Grand Library"),
+    GREAT_ICE_WALL("Great Ice Wall"),
     HANGING_COURT("Hanging Court"),
+    LAVA_SPRINGS("Lava Springs"),
+    MINERS_GUILD("Miner's Guild"),
+    PALACE_BRIDGE("Palace Bridge"),
+    RAMPARTS_QUARRY("Rampart's Quarry"),
+    ROYAL_MINES("Royal Mines"),
+    ROYAL_PALACE("Royal Palace"),
+    ROYAL_QUARTERS("Royal Quarters"),
+    THE_FORGE("The Forge"),
+    THE_LIFT("The Lift"),
+    THE_MIST("The Mist"),
+    UPPER_MINES("Upper Mines"),
+    HANGING_TERRACE("Hanging Terrace"), // TODO ?
 
-    // Crystal Hollows
+
+
+
+    // https://wiki.hypixel.net/Crystal_Hollows#Zones
     CRYSTAL_HOLLOWS("Crystal Hollows"),
     CRYSTAL_NUCLEUS("Crystal Nucleus"),
-    MAGMA_FIELDS("Magma Fields"),
-    JUNGLE("Jungle"),
-    MITHRIL_DEPOSITS("Mithril Deposits"),
-    GOBLIN_HOLDOUT("Goblin Holdout"),
-    PRECURSOR_REMNANT("Precursor Remnants"),
+    DRAGONS_LAIR("Dragon's Lair"),
     FAIRY_GROTTO("Fairy Grotto"),
-    KHAZAD_DUM("Khazad-dûm"), //These are the random gen places in each biome
-    JUNGLE_TEMPLE("Jungle Temple"),
-    MINES_OF_DIVAN("Mines of Divan"),
+    GOBLIN_HOLDOUT("Goblin Holdout"),
     GOBLIN_QUEEN_DEN("Goblin Queens Den"),
+    JUNGLE_TEMPLE("Jungle Temple"),
+    JUNGLE("Jungle"),
+    KHAZAD_DUM("Khazad-dûm"), //These are the random gen places in each biome
     LOST_PRECURSOR_CITY("Lost Precursor City"),
+    MAGMA_FIELDS("Magma Fields"),
+    MINES_OF_DIVAN("Mines of Divan"),
+    MITHRIL_DEPOSITS("Mithril Deposits"),
+    PRECURSOR_REMNANT("Precursor Remnants"),
 
     THE_BARN("The Barn"),
 
-    // Mushroom Island
+    // https://wiki.hypixel.net/Mushroom_Desert#Zones
     MUSHROOM_DESERT("Mushroom Desert", "mushroom-desert"),
-    DESERT_SETTLEMENT("Desert Settlement", "mushroom-desert"),
-    TREASURE_HUNTER_CAMP("Treasure Hunter Camp", "mushroom-desert"),
-    OASIS("Oasis", "mushroom-desert"),
-    MUSHROOM_GORGE("Mushroom Gorge", "mushroom-desert"),
-    GLOWING_MUSHROOM_CAVE("Glowing Mushroom Cave", "mushroom-desert"),
-    OVERGROWN_MUSHROOM_CAVE("Overgrown Mushroom Cave", "mushroom-desert"),
-    JAKES_HOUSE("Jake's House", "mushroom-desert"),
     DESERT_MOUNTAIN("Desert Mountain", "mushroom-desert"),
+    DESERT_SETTLEMENT("Desert Settlement", "mushroom-desert"),
+    GLOWING_MUSHROOM_CAVE("Glowing Mushroom Cave", "mushroom-desert"),
+    JAKES_HOUSE("Jake's House", "mushroom-desert"),
+    MUSHROOM_GORGE("Mushroom Gorge", "mushroom-desert"),
+    OASIS("Oasis", "mushroom-desert"),
+    OVERGROWN_MUSHROOM_CAVE("Overgrown Mushroom Cave", "mushroom-desert"),
     SHEPHERDS_KEEP("Shepherds Keep", "mushroom-desert"),
     TRAPPERS_DEN("Trapper's Den", "mushroom-desert"),
+    TREASURE_HUNTER_CAMP("Treasure Hunter Camp", "mushroom-desert"),
 
     // Spider's Den
     SPIDERS_DEN("Spider's Den"),
@@ -133,12 +147,12 @@ public enum Location {
     ARCHAEOLOGISTS_CAMP("Archaeologist's Camp", "spiders-den"),
     GRAVEL_MINES("Gravel Mines", "spiders-den"),
 
-    // The End
+    // https://wiki.hypixel.net/The_End#Zones
     THE_END("The End"),
     DRAGONS_NEST("Dragon's Nest"),
     VOID_SEPULTURE("Void Sepulture", "the-end"),
-    ZEALOT_BRUISER_HIDEOUT("Zealot Bruiser Hideout", "the-end"),
     VOID_SLATE("Void Slate", "the-end"),
+    ZEALOT_BRUISER_HIDEOUT("Zealot Bruiser Hideout", "the-end"),
 
     // Jerry's workshop
     JERRY_POND("Jerry Pond"), // TODO RPC
@@ -203,7 +217,7 @@ public enum Location {
     SMOLDERING_TOMB("Smoldering Tomb"),
     THE_DUKEDOM("The Dukedom"),
 
-    // RIFT DIMENSION
+    // https://wiki.hypixel.net/Rift_Dimension#Zones
     /* existing ones
     WIZARD_TOWER("Wizard Tower"),
     THE_BASTION("The Bastion"),
