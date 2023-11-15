@@ -14,7 +14,7 @@ public enum Location {
     ISLAND("Your Island"), // TODO RPC
     GUEST_ISLAND("'s Island", "island"), // TODO RPC
     GARDEN("The Garden"),
-    GARDEN_PLOT("Plot"), //TODO RPC
+    GARDEN_PLOT("Plot -"), //TODO RPC
 
     // https://wiki.hypixel.net/Hub#Zones
     ARCHERY_RANGE("Archery Range"),
@@ -103,9 +103,6 @@ public enum Location {
     THE_MIST("The Mist"),
     UPPER_MINES("Upper Mines"),
     HANGING_TERRACE("Hanging Terrace"), // TODO ?
-
-
-
 
     // https://wiki.hypixel.net/Crystal_Hollows#Zones
     CRYSTAL_HOLLOWS("Crystal Hollows"),

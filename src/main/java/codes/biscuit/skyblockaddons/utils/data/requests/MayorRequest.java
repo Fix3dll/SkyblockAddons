@@ -16,7 +16,7 @@ public class MayorRequest extends RemoteFileRequest<JsonObject> {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     public MayorRequest() {
-            super("https://api.hypixel.net/resources/skyblock/election"
+            super("https://api.hypixel.net/v2/resources/skyblock/election"
                     , new JSONResponseHandler<>(JsonObject.class)
                     , false
                     , true);

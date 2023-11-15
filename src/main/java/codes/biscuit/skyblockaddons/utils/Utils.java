@@ -172,6 +172,11 @@ public class Utils {
     private String dungeonFloor = "";
 
     /**
+     * Plot name from the scoreboard
+     */
+    private String plotName = "";
+
+    /**
      * The skyblock profile that the player is currently on. Ex. "Grapefruit"
      */
     private String profileName = "Unknown";
@@ -363,60 +368,47 @@ public class Utils {
                     if (!foundLocation && lineNumber < 5) {
                         if (strippedScoreboardLine.contains("\u23E3")) {
                             onRift = false;
-                            String fullLocStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
 
                             // If the title line ends with "GUEST", then the player is visiting someone else's island.
                             if (strippedScoreboardTitle.endsWith("GUEST")) {
                                 location = Location.GUEST_ISLAND;
-                                location.setScoreboardName(fullLocStr);
-                                foundLocation = true;
-
-                            // Catacombs contains the floor number, so it's a special case...
-                            } else if (strippedScoreboardLine.contains(Location.THE_CATACOMBS.getScoreboardName())) {
-                                location = Location.THE_CATACOMBS;
-
-                                // Ex. The Catacombs (F1), The Catacombs (F5) => " (F1)", " (F5)"
-                                dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
-                                foundLocation = true;
-
-                            // Kuudra's Hollow contains the tier number, so it's a special too
-                            } else if (strippedScoreboardLine.contains(Location.KUUDRAS_HOLLOW.getScoreboardName())) {
-                                location = Location.KUUDRAS_HOLLOW;
-
-                                // Ex. Kuudra's Hollow (T1), The Kuudra's Hollow (T2) => " (T1)", " (T2)"
-                                dungeonFloor = fullLocStr.substring(fullLocStr.lastIndexOf(" "));
+                                if (!strippedScoreboardLine.contains("Plot"))
+                                    location.setScoreboardName(
+                                            strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
+                                    );
                                 foundLocation = true;
 
                             } else {
                                 for (Location loopLocation : Location.values()) {
-                                    if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
-                                        // Special case causes Dwarven Village to map to Village
-                                        if (loopLocation == Location.VILLAGE && strippedScoreboardLine.contains("Dwarven")) {
-                                            continue;
-                                        } else if (loopLocation == Location.JERRY_POND && strippedScoreboardLine.contains("Sunken")) {
-                                            continue;
-                                        } else if (loopLocation == Location.MOUNTAIN && strippedScoreboardLine.contains("Desert")) {
-                                            continue;
-                                        } else if (loopLocation == Location.TAVERN && strippedScoreboardLine.contains("Dwarven")) {
-                                            continue;
-                                        }
-                                        location = loopLocation;
-                                        foundLocation = true;
-                                        break;
-                                    } else if (loopLocation == Location.GARDEN_PLOT && strippedScoreboardLine.contains("Plot:")) {
-                                        location = Location.GARDEN_PLOT;
-                                        location.setScoreboardName(
-                                                strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
-                                        );
-                                        foundLocation = true;
-                                        break;
+                                    String scoreboardName = loopLocation.getScoreboardName();
+                                    if (!strippedScoreboardLine.contains(scoreboardName))
+                                        continue;
+
+                                    // Special case causes Dwarven Village to map to Village
+                                    if ((loopLocation == Location.VILLAGE || loopLocation == Location.TAVERN)
+                                            && strippedScoreboardLine.contains("Dwarven")) {
+                                        continue;
+                                    } else if (loopLocation == Location.JERRY_POND
+                                            && strippedScoreboardLine.contains("Sunken")) {
+                                        continue;
+                                    } else if (loopLocation == Location.MOUNTAIN
+                                            && strippedScoreboardLine.contains("Desert")) {
+                                        continue;
+                                    } else if (loopLocation == Location.KUUDRAS_HOLLOW || loopLocation == Location.THE_CATACOMBS) {
+                                        // Catacombs and Kuudra contains the floor number, so it's a special case...
+                                        dungeonFloor = strippedScoreboardLine.substring(strippedScoreboardLine.lastIndexOf(" "));
+                                    } else if (loopLocation == Location.GARDEN_PLOT) {
+                                        plotName = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf("-") + 1);
                                     }
+                                    location = loopLocation;
+                                    foundLocation = true;
+                                    break;
                                 }
                             }
                         } else if (strippedScoreboardLine.contains("\u0444")) {
                             onRift = true;
                             for (Location loopLocation : LocationUtils.getRiftLocations()) {
-                                if (strippedScoreboardLine.endsWith(loopLocation.getScoreboardName())) {
+                                if (strippedScoreboardLine.contains(loopLocation.getScoreboardName())) {
                                     location = loopLocation;
                                     foundLocation = true;
                                     break;
