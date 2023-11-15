@@ -23,21 +23,23 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
     LOCATION("discordStatus.titleLocation", "discordStatus.descriptionLocation",
             () -> {
                 SkyblockAddons main = SkyblockAddons.getInstance();
-                Location location = main.getUtils().getLocation();
 
-                // Don't display "Your Island."
-                if (location.equals(Location.ISLAND)) {
-                    return "\u23E3 ".concat("Private Island");
-                } else if (location.equals(Location.THE_CATACOMBS)) {
-                    return "\u23E3 ".concat(Location.THE_CATACOMBS.getScoreboardName())
-                            .concat(main.getUtils().getDungeonFloor());
-                } else if (location.equals(Location.KUUDRAS_HOLLOW)) {
-                    return "\u23E3 ".concat(Location.KUUDRAS_HOLLOW.getScoreboardName())
-                            .concat(main.getUtils().getDungeonFloor());
-                } else {
-                    return SkyblockAddons.getInstance().getUtils().isOnRift()
-                            ? "\u0444 ".concat(location.getScoreboardName())
-                            : "\u23E3 ".concat(location.getScoreboardName());
+                Location location = main.getUtils().getLocation();
+                String prefix = main.getUtils().isOnRift() ? "\u0444 " : "\u23E3 ";
+
+                switch (location) {
+                    // Don't display "Your Island."
+                    case ISLAND:
+                        return "\u23E3 Private Island";
+                    case THE_CATACOMBS:
+                    case KUUDRAS_HOLLOW:
+                        return prefix.concat(location.getScoreboardName())
+                                .concat(main.getUtils().getDungeonFloor());
+                    case GARDEN_PLOT:
+                        return prefix.concat(location.getScoreboardName())
+                                .concat(main.getUtils().getPlotName());
+                    default:
+                        return prefix.concat(location.getScoreboardName());
                 }
             }),
 
