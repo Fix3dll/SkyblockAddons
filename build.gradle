@@ -111,7 +111,6 @@ dependencies {
         exclude module: 'gson'
         because 'Different version conflicts with Minecraft\'s GSON'
     }
-    implementation('com.google.guava:guava:32.1.2-jre')
     testImplementation('org.junit.jupiter:junit-jupiter:5.10.0')
 }
 
