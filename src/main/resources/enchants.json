@@ -324,6 +324,12 @@
       "maxLevel": 5,
       "nbtName": "overload"
     },
+    "pesterminator": {
+      "goodLevel": 0,
+      "loreName": "Pesterminator",
+      "maxLevel": 5,
+      "nbtName": "pesterminator"
+    },
     "piercing": {
       "goodLevel": 1,
       "loreName": "Piercing",
@@ -487,9 +493,9 @@
       "nbtName": "sugar_rush"
     },
     "sunder": {
-      "goodLevel": 5,
+      "goodLevel": 0,
       "loreName": "Sunder",
-      "maxLevel": 5,
+      "maxLevel": 6,
       "nbtName": "sunder"
     },
     "syphon": {
