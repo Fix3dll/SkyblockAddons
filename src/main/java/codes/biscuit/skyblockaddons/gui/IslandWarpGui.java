@@ -60,7 +60,9 @@ public class IslandWarpGui extends GuiScreen {
 
         for (Map.Entry<Marker, UnlockedStatus> marker : markers.entrySet()) {
             if (marker.getKey() == Marker.JERRYS_WORKSHOP
-                    && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER) {
+                    && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER
+                    // TEMP new year event until 2024-01-02 00:00:00
+                    && System.currentTimeMillis() / 1000 > 1704142800) {
                 continue;
             }
             this.buttonList.add(new IslandButton(marker.getKey().getIsland(), marker.getValue(), markers));
