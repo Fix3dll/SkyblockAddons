@@ -312,6 +312,7 @@ public class IslandWarpGui extends GuiScreen {
         JERRYS_WORKSHOP("workshop", getMessage("warpMenu.spawn"), Island.JERRYS_WORKSHOP, 35, 90),
 
         HUB("hub", getMessage("warpMenu.spawn"), Island.HUB, true, 600, 200),
+        ELIZABETH("elizabeth", "Elizabeth", Island.HUB, 660, 150),
         CASTLE("castle", "Castle", Island.HUB, 130, 80),
         DARK_AUCTION("da", "Sirius Shack", Island.HUB, 385, 415),
         CRYPT("crypt", "Crypts", Island.HUB, 550, 100),
