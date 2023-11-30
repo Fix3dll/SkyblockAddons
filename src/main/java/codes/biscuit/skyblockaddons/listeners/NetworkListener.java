@@ -9,6 +9,7 @@ import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.handlers.PacketHandler;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
@@ -92,8 +93,9 @@ public class NetworkListener {
         // Java adoption of SkyHanni profit tracker
         if (packet instanceof S0DPacketCollectItem) {
             if (!SlayerTracker.getInstance().isTrackerEnabled()) return;
-            if (main.getUtils().getSlayerQuest() == null) return;
-            if (!LocationUtils.isSlayerLocation(main.getUtils().getSlayerQuest(), main.getUtils().getLocation())) return;
+
+            EnumUtils.SlayerQuest activeQuest = main.getUtils().getSlayerQuest();
+            if (activeQuest == null || !LocationUtils.isSlayerLocation(activeQuest, main.getUtils().getLocation())) return;
 
             int entityID = ((S0DPacketCollectItem) packet).getCollectedItemEntityID();
             Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
@@ -105,7 +107,11 @@ public class NetworkListener {
             collectedCache.put(entityID, 0);
 
             ItemStack itemStack = entityItem.getEntityItem();
-            SlayerTracker.getInstance().addToTrackerData(ItemUtils.getExtraAttributes(itemStack), itemStack.stackSize);
+            SlayerTracker.getInstance().addToTrackerData(
+                    ItemUtils.getExtraAttributes(itemStack)
+                    , itemStack.stackSize
+                    , activeQuest
+            );
         }
     }
 }

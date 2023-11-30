@@ -2,6 +2,8 @@ package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.features.slayertracker.SlayerBoss;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.util.ResourceLocation;
 
@@ -413,20 +415,17 @@ public class EnumUtils {
     }
 
     //TODO Fix for Hypixel localization
-    @Getter
+    @Getter @AllArgsConstructor
     public enum SlayerQuest {
-        REVENANT_HORROR("Revenant Horror"),
-        TARANTULA_BROODFATHER("Tarantula Broodfather"),
-        SVEN_PACKMASTER("Sven Packmaster"),
-        VOIDGLOOM_SERAPH("Voidgloom Seraph"),
-        INFERNO_DEMONLORD("Inferno Demonlord"),
-        RIFTSTALKER_BLOODFIEND("Riftstalker Bloodfiend");
+        REVENANT_HORROR("Revenant Horror", SlayerBoss.REVENANT),
+        TARANTULA_BROODFATHER("Tarantula Broodfather", SlayerBoss.TARANTULA),
+        SVEN_PACKMASTER("Sven Packmaster", SlayerBoss.SVEN),
+        VOIDGLOOM_SERAPH("Voidgloom Seraph", SlayerBoss.VOIDGLOOM),
+        INFERNO_DEMONLORD("Inferno Demonlord", SlayerBoss.INFERNO),
+        RIFTSTALKER_BLOODFIEND("Riftstalker Bloodfiend", SlayerBoss.RIFTSTALKER);
 
         private final String scoreboardName;
-
-        SlayerQuest(String scoreboardName) {
-            this.scoreboardName = scoreboardName;
-        }
+        private final SlayerBoss boss;
 
         public static SlayerQuest fromName(String scoreboardName) {
             for (SlayerQuest slayerQuest : SlayerQuest.values()) {

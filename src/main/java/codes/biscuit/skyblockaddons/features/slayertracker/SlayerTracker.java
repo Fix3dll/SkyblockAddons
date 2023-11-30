@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.features.slayertracker;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.Rune;
 import lombok.Getter;
@@ -129,10 +130,10 @@ public class SlayerTracker {
     }
 
     // TODO dont count dropped items by player again
-    public void addToTrackerData(NBTTagCompound ea, int amount) {
+    public void addToTrackerData(NBTTagCompound ea, int amount, EnumUtils.SlayerQuest activeQuest) {
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
 
-        for (SlayerDrop drop : slayerTrackerData.getLastKilledBoss().getDrops()) {
+        for (SlayerDrop drop : activeQuest.getBoss().getDrops()) {
             if (!drop.getSkyblockID().equals(ItemUtils.getSkyblockItemID(ea))) continue;
 
             // If this is a rune and it doesn't match, continue
