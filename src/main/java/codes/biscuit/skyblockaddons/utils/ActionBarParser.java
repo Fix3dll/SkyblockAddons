@@ -519,7 +519,7 @@ public class ActionBarParser {
      */
     private float parseFloat(String string) {
         try {
-            return TextUtils.NUMBER_FORMAT.parse(string).floatValue();
+            return TextUtils.NUMBER_FORMAT.parse(string.replaceAll(",", "")).floatValue();
         } catch (ParseException e) {
             return -1;
         }
