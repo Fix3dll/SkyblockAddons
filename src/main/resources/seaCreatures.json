@@ -219,9 +219,9 @@
     "rarity": "LEGENDARY",
     "spawnMessage": "What is this creature!?"
   },
-  "ZOMBIE_MINER": {
-    "name": "Zombie Miner",
+  "ABYSSAL_MINER": {
+    "name": "Abyssal Miner",
     "rarity": "LEGENDARY",
-    "spawnMessage": "A Zombie Miner surfaces!"
+    "spawnMessage": "An Abyssal Miner breaks out of the water!"
   }
 }

@@ -57,15 +57,27 @@ public class IslandWarpGui extends GuiScreen {
     @Override
     public void initGui() {
         SkyblockAddons main = SkyblockAddons.getInstance();
+        Map<Island, UnlockedStatus> islands = new EnumMap<>(Island.class);
 
         for (Map.Entry<Marker, UnlockedStatus> marker : markers.entrySet()) {
-            if (marker.getKey() == Marker.JERRYS_WORKSHOP
+            Island island = marker.getKey().getIsland();
+            UnlockedStatus currentStatus = islands.get(island);
+            UnlockedStatus newStatus = marker.getValue();
+
+            if (island == Island.JERRYS_WORKSHOP
                     && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER
                     // TEMP new year event until 2024-01-02 00:00:00
                     && System.currentTimeMillis() / 1000 > 1704142800) {
                 continue;
             }
-            this.buttonList.add(new IslandButton(marker.getKey().getIsland(), marker.getValue(), markers));
+
+            if (currentStatus == null || newStatus.ordinal() > currentStatus.ordinal()) {
+                islands.put(island, newStatus);
+            }
+        }
+
+        for (Map.Entry<Island, UnlockedStatus> island : islands.entrySet()) {
+            this.buttonList.add(new IslandButton(island.getKey(), island.getValue(), markers));
         }
 
         int screenWidth = mc.displayWidth;
@@ -250,7 +262,7 @@ public class IslandWarpGui extends GuiScreen {
         GOLD_MINE("Gold Mine", 1130, 475),
         MUSHROOM_DESERT("Mushroom Desert", 1470, 475),
         THE_BARN("The Barn", 1125, 800),
-        HUB("Hub", 300, 724),
+        HUB("Hub", 300, 770),
         PRIVATE_ISLAND("Private Island", 275, 1122),
 		GARDEN("Garden", 50, 1000),
         DUNGEON_HUB("Dungeon Hub", 1500, 1050),

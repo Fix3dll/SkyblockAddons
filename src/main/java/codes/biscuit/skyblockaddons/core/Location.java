@@ -41,6 +41,7 @@ public enum Location {
     LIBRARY("Library"),
     MOUNTAIN("Mountain"),
     MUSEUM("Museum"),
+    PET_CARE("Pet Care"),
     RUINS("Ruins"),
     TAVERN("Tavern"),
     THAUMATURGIST("Thaumaturgist"),
