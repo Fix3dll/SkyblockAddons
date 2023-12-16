@@ -442,8 +442,8 @@ public class RenderListener {
                 fill = getAttribute(Attribute.FUEL) / getAttribute(Attribute.MAX_FUEL);
                 break;
             case SKILL_PROGRESS_BAR:
-                ActionBarParser parser = main.getPlayerListener().getActionBarParser();
                 if (buttonLocation == null) {
+                    ActionBarParser parser = main.getPlayerListener().getActionBarParser();
                     if (parser.getPercent() == 0 || parser.getPercent() == 100) {
                         return;
                     } else {
@@ -485,7 +485,7 @@ public class RenderListener {
 
         switch (feature) {
             case SKILL_PROGRESS_BAR:
-                if (buttonLocation == null) return;
+                if (buttonLocation != null) break;
 
                 int remainingTime = (int) (skillFadeOutTime - System.currentTimeMillis());
 
