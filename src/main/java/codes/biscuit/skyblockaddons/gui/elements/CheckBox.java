@@ -4,8 +4,11 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * CheckBox GUI element to use in other GUI elements.
@@ -13,6 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
  * @author DidiSkywalker
  */
 public class CheckBox {
+    private static final ResourceLocation ICONS = new ResourceLocation("skyblockaddons", "gui/checkbox.png");
 
     @FunctionalInterface
     public interface OnToggleListener {
@@ -32,8 +36,7 @@ public class CheckBox {
     private final String text;
     private final int textWidth;
     private final int size;
-
-    private boolean value;
+    @Setter @Getter private boolean value;
     private OnToggleListener onToggleListener;
 
     /**
@@ -74,16 +77,17 @@ public class CheckBox {
         GlStateManager.scale(scale, scale, 1);
 
         int color = value ? ColorCode.WHITE.getColor() : ColorCode.GRAY.getColor();
-        DrawUtils.drawText(text, scaledX + Math.round(size * 1.5f / scale), scaledY + (size / 2), color);
+        DrawUtils.drawText(text, scaledX + Math.round(size * 1.5f / scale), scaledY + (size / 2f), color);
 
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
+        mc.getTextureManager().bindTexture(ICONS);
         GlStateManager.color(1, 1, 1, 1F);
 
         if (value) {
-            mc.ingameGUI.drawTexturedModalRect(scaledX, scaledY, 49, 34, 16, 16);
+            DrawUtils.drawModalRectWithCustomSizedTexture(scaledX, scaledY, 16, 0, 16, 16, 32, 16, false);
         } else {
-            mc.ingameGUI.drawTexturedModalRect(scaledX, scaledY, 33, 34, 16, 16);
+            DrawUtils.drawModalRectWithCustomSizedTexture(scaledX, scaledY, 0, 0, 16, 16, 32, 16, false);
         }
 
         GlStateManager.enableDepth();
@@ -102,14 +106,6 @@ public class CheckBox {
 
             Utils.blockNextClick = true;
         }
-    }
-
-    public void setValue(boolean value) {
-        this.value = value;
-    }
-
-    boolean getValue() {
-        return value;
     }
 
     /**
