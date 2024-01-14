@@ -812,6 +812,12 @@
       "maxLevel": 5,
       "nbtName": "ultimate_one_for_all"
     },
+    "refrigerate": {
+      "goodLevel": 0,
+      "loreName": "Refrigerate",
+      "maxLevel": 5,
+      "nbtName": "ultimate_refrigerate"
+    },
     "rend": {
       "goodLevel": 0,
       "loreName": "Rend",
