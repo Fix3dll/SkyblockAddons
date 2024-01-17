@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.listeners;
 
-import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import lombok.NonNull;
 import net.minecraft.inventory.IInvBasic;
 import net.minecraft.inventory.InventoryBasic;

@@ -364,6 +364,11 @@
     "enchanted": true,
     "itemId": "nether_wart"
   },
+  "ENCHANTED_NETHERRACK": {
+    "displayName": "§aEnchanted Netherrack",
+    "enchanted": true,
+    "itemId": "netherrack"
+  },
   "ENCHANTED_OAK_LOG": {
     "displayName": "§aEnchanted Oak Wood",
     "enchanted": true,
