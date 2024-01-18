@@ -150,8 +150,10 @@ public class GuiScreenListener {
 
     @SubscribeEvent
     public void onInventoryLoadingDone(InventoryLoadingDoneEvent e) {
-        removeInventoryChangeListener(listenedInventory);
-        lastInventoryChangeMs = -1;
+        if (listenedInventory != null) {
+            removeInventoryChangeListener(listenedInventory);
+            lastInventoryChangeMs = -1;
+        }
     }
 
     @SubscribeEvent
@@ -226,8 +228,8 @@ public class GuiScreenListener {
 
         lastInventoryChangeMs = System.currentTimeMillis();
         inventoryChangeListener = new InventoryChangeListener(this);
-        listenedInventory = inventory;
         inventory.addInventoryChangeListener(inventoryChangeListener);
+        listenedInventory = inventory;
         inventoryChangeTimeCheckTask = main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
             @Override
             public void run() {
