@@ -2,7 +2,7 @@
 <h1 align="center">SkyblockAddons</h1>
 
 <p align="center">
-  <a href="https://github.com/Fix3dll/SkyblockAddons/blob/unofficial-update/LICENSE" target="_blank">
+  <a href="https://github.com/Fix3dll/SkyblockAddons/blob/main/LICENSE" target="_blank">
     <img alt="license" src="https://img.shields.io/badge/License-MIT-56bcd3" />
   </a>
 </p>
