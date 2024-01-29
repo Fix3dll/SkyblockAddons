@@ -252,19 +252,19 @@ public class IslandWarpGui extends GuiScreen {
 
     @Getter
     public enum Island {
-        THE_END("The End", 290, -10),
-        CRIMSON_ISLE("Crimson Isle", 850, -25),
-        THE_PARK("The Park", 103, 370),
-        SPIDERS_DEN("Spider's Den", 500, 420),
-        DEEP_CAVERNS("Deep Caverns", 1400, 200),
-        GOLD_MINE("Gold Mine", 1130, 475),
-        MUSHROOM_DESERT("Mushroom Desert", 1470, 475),
-        THE_BARN("The Barn", 1125, 800),
-        HUB("Hub", 300, 770),
-        PRIVATE_ISLAND("Private Island", 275, 1122),
-		GARDEN("Garden", 50, 1000),
-        DUNGEON_HUB("Dungeon Hub", 1500, 1050),
-        JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1100)
+        THE_END("The End", 240, 30),
+        CRIMSON_ISLE("Crimson Isle", 835, 25),
+        THE_PARK("The Park", 80, 440),
+        SPIDERS_DEN("Spider's Den", 500, 470),
+        DEEP_CAVERNS("Deep Caverns", 1400, 250),
+        GOLD_MINE("Gold Mine", 1130, 525),
+        MUSHROOM_DESERT("Mushroom Desert", 1470, 525),
+        THE_BARN("The Barn", 1125, 850),
+        HUB("Hub", 300, 820),
+        PRIVATE_ISLAND("Private Island", 275, 1172),
+		GARDEN("Garden", 50, 1050),
+        DUNGEON_HUB("Dungeon Hub", 1500, 1100),
+        JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150)
         ;
 
         private final String label;
