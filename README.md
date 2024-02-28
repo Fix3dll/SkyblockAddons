@@ -5,6 +5,9 @@
   <a href="https://github.com/Fix3dll/SkyblockAddons/blob/main/LICENSE" target="_blank">
     <img alt="license" src="https://img.shields.io/badge/License-MIT-56bcd3" />
   </a>
+  <a href="https://modrinth.com/mod/skyblockaddons-unofficial" target="_blank">
+    <img alt="modrinth" src="https://img.shields.io/modrinth/dt/skyblockaddons-unofficial?color=00AF5C&label=Download&labelColor=cecece00AF5C&logo=modrinth" />
+  </a>
 </p>
 
 Skyblock Addons has reached end of life. This fork contains unofficial updates from me. You can reach latest unofficial builds from GitHub Actions. If you don't know how to download latest build artifacts from GitHub Actions you can use this link: https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip
