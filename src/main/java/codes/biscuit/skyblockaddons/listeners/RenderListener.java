@@ -1101,12 +1101,11 @@ public class RenderListener {
                 } else if (holdingItem == null || skyblockItemID == null) {
                     return;
                 } else if (DamageDisplayItem.getByID(skyblockItemID) != null) {
-                    text = holdingItem.getDisplayName().replaceAll("§[a-f0-9]?✪", "");
+                    text = holdingItem.getDisplayName().replaceAll("§[a-f0-9]?✪|➊|➋|➌|➍|➎|➏|➐|➑|➒", "");
                 } else {
                     return;
                 }
                 break;
-
             case CANDY_POINTS_COUNTER:
                 if (buttonLocation == null && !SpookyEventManager.isActive()) return;
                 text = "Test";
