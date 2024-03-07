@@ -98,10 +98,10 @@ dependencies {
     minecraft("com.mojang:minecraft:${project.minecraftVersion}")
     mappings("de.oceanlabs.mcp:mcp_stable:${project.mappings}")
     forge("net.minecraftforge:forge:${project.forgeVersion}")
-    runtimeOnly('me.djtheredstoner:DevAuth-forge-legacy:1.1.2')
+    runtimeOnly('me.djtheredstoner:DevAuth-forge-legacy:1.2.0')
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
-    bundle('com.github.NetheriteMiner:DiscordIPC:3106be5') {
+    bundle('com.github.NetheriteMiner:DiscordIPC:c75dbc9') {
         exclude module: 'log4j'
         because 'Different version conflicts with Minecraft\'s Log4J'
         exclude module: 'gson'
