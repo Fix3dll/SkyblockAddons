@@ -72,6 +72,7 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.List;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static codes.biscuit.skyblockaddons.utils.TextUtils.NUMBER_FORMAT;
 import static net.minecraft.client.gui.Gui.icons;
@@ -147,6 +148,8 @@ public class RenderListener {
             , new SlayerArmorProgress(new ItemStack(Items.diamond_chestplate))
             , new SlayerArmorProgress(new ItemStack(Items.leather_helmet))
     };
+
+    private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?:§[a-f0-9]?(?:✪|[➊-➒]))+");
 
     private static EntityArmorStand radiantDummyArmorStand;
     private static EntityZombie revenant;
@@ -1101,7 +1104,7 @@ public class RenderListener {
                 } else if (holdingItem == null || skyblockItemID == null) {
                     return;
                 } else if (DamageDisplayItem.getByID(skyblockItemID) != null) {
-                    text = holdingItem.getDisplayName().replaceAll("§[a-f0-9]?✪|➊|➋|➌|➍|➎|➏|➐|➑|➒", "");
+                    text = DUNGEON_STAR_PATTERN.matcher(holdingItem.getDisplayName()).replaceAll("");
                 } else {
                     return;
                 }
