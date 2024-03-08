@@ -30,6 +30,7 @@ public class TabListParser {
     private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
     private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[\\w ]+)");
     private static final Pattern CANDY_PATTERN = Pattern.compile("Your Candy: §r§a(?<green>[0-9,]+) Green§r§7, §r§5(?<purple>[0-9,]+) Purple §r§7\\(§r§6(?<points>[0-9,]+) §r§7pts\\.\\)");
+    private static final Pattern DUNGEON_BUFF_PATTERN = Pattern.compile("No Buffs active. Find them by exploring the Dungeon!");
 
     @Getter
     private static List<RenderColumn> renderColumns;
@@ -122,9 +123,8 @@ public class TabListParser {
         if (m.find()) {
             footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: \n§cGod Potion§r: " + m.group("timer"));
         } else {
-            Matcher countm = EFFECT_COUNT_PATTERN.matcher(tabList.footer.getUnformattedText());
-            if (countm.find())
-                footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + countm.group("effectCount"));
+            if ((m = EFFECT_COUNT_PATTERN.matcher(tabList.footer.getUnformattedText())).find())
+                footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + m.group("effectCount"));
             else
                 footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e0");
         }
@@ -142,10 +142,12 @@ public class TabListParser {
              SpookyEventManager.reset();
         }
 
-        Matcher matcher = COOKIE_BUFF_PATTERN.matcher(footer);
-        if (matcher.find() && matcher.group().contains("Not active!")) {
-            footer = matcher.replaceAll("Cookie Buff \n§r§7Not Active");
+        if ((m = COOKIE_BUFF_PATTERN.matcher(footer)).find() && m.group().contains("Not active!")) {
+            footer = m.replaceAll("Cookie Buff \n§r§7Not Active");
         }
+
+        if ((m = DUNGEON_BUFF_PATTERN.matcher(footer)).find())
+            footer = m.replaceAll("No Buffs");
 
         for (String line : new ArrayList<>(Arrays.asList(footer.split("\n")))) {
             // Lets not add the advertisements to the columns
@@ -154,16 +156,15 @@ public class TabListParser {
             }
 
             // Split every upgrade into 2 lines so it's not too long...
-            matcher = UPGRADES_PATTERN.matcher(TextUtils.stripResets(line));
-            if (matcher.matches()) {
+            if ((m = UPGRADES_PATTERN.matcher(TextUtils.stripResets(line))).matches()) {
                 // Adds a space in front of any text that is not a sub-title
-                String firstPart = TextUtils.trimWhitespaceAndResets(matcher.group("firstPart"));
+                String firstPart = TextUtils.trimWhitespaceAndResets(m.group("firstPart"));
                 if (!firstPart.contains("§l")) {
                     firstPart = " " + firstPart;
                 }
                 column.addLine(firstPart);
 
-                line = matcher.group("secondPart");
+                line = m.group("secondPart");
             }
             // Adds a space in front of any text that is not a sub-title
             line = TextUtils.trimWhitespaceAndResets(line);

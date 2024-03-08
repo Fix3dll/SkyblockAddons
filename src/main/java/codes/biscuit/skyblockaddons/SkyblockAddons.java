@@ -163,11 +163,12 @@ public class SkyblockAddons {
         // Macs do not have a right control key.
         int developerModeKey = Minecraft.isRunningOnMac ? Keyboard.KEY_LMENU : Keyboard.KEY_RCONTROL;
 
-        Collections.addAll(keyBindings, new SkyblockKeyBinding("open_settings", Keyboard.KEY_NONE, "settings.settings"),
+        Collections.addAll(keyBindings,
+                new SkyblockKeyBinding("open_settings", Keyboard.KEY_NONE, "settings.settings"),
                 new SkyblockKeyBinding("edit_gui", Keyboard.KEY_NONE, "settings.editLocations"),
                 new SkyblockKeyBinding("lock_slot", Keyboard.KEY_L, "settings.lockSlot"),
                 new SkyblockKeyBinding("freeze_backpack", Keyboard.KEY_F, "settings.freezeBackpackPreview"),
-                new SkyblockKeyBinding("increase_dungeon_map_zoom", Keyboard.KEY_EQUALS, "keyBindings.increaseDungeonMapZoom"),
+                new SkyblockKeyBinding("increase_dungeon_map_zoom", Keyboard.KEY_ADD, "keyBindings.increaseDungeonMapZoom"),
                 new SkyblockKeyBinding("decrease_dungeon_map_zoom", Keyboard.KEY_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
                 new SkyblockKeyBinding("copy_NBT", developerModeKey, "keyBindings.developerCopyNBT"));
         registerKeyBindings(keyBindings);
