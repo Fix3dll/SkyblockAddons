@@ -140,7 +140,7 @@ public enum Location {
     SPIDERS_DEN("Spider's Den"),
     SPIDER_MOUND("Spider Mound", "spiders-den"),
     ARACHNES_BURROW("Arachne's Burrow", "spiders-den"),
-    ARACHNES_SANCTUARY("Arachnes's Sanctuary", "spiders-den"),
+    ARACHNES_SANCTUARY("Arachne's Sanctuary", "spiders-den"),
     GRANDMAS_HOUSE("Grandma's House", "spiders-den"),
     ARCHAEOLOGISTS_CAMP("Archaeologist's Camp", "spiders-den"),
     GRAVEL_MINES("Gravel Mines", "spiders-den"),
