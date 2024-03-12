@@ -2,15 +2,15 @@
   "bannerImageURL": null,
   "bannerLink": null,
 
-  "latestVersion": "1.8.5",
+  "latestVersion": "1.8.6",
   "latestBeta": "1.8.0-beta.1",
   "videoLink": "https://github.com/Fix3dll/SkyblockAddons/commits/main",
-  "directDownload": "https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip",
+  "directDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
 
   "updateInfo": {
-    "latestRelease": "1.8.5",
-    "releaseDownload": "https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip",
-    "releaseChangelog": "https://github.com/Fix3dll/SkyblockAddons/compare/7871d36...002f7ec",
+    "latestRelease": "1.8.6",
+    "releaseDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
+    "releaseChangelog": "https://github.com/Fix3dll/SkyblockAddons/compare/002f7ec...912fcbd",
     "releaseShowcase": "",
     "latestBeta": "1.8.0-beta.1",
     "betaDownload": "https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip",
