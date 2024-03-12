@@ -6,19 +6,19 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Locale;
 
+@Getter
 public enum EssenceType {
-
-    WITHER,
-    SPIDER,
-    UNDEAD,
+    CRIMSON,
+    DIAMOND,
     DRAGON,
     GOLD,
-    DIAMOND,
     ICE,
-    CRIMSON;
+    SPIDER,
+    UNDEAD,
+    WITHER;
 
     private String niceName;
-    @Getter private ResourceLocation resourceLocation;
+    private ResourceLocation resourceLocation;
 
     EssenceType() {
         niceName = WordUtils.capitalizeFully(this.name());

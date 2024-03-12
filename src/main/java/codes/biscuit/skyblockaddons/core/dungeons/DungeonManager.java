@@ -203,7 +203,12 @@ public class DungeonManager {
      * @param number Total number of essences
      */
     public void setSalvagedEssences(EssenceType type, String number) {
-        int amount = Integer.parseInt(number);
+        int amount = 0;
+        try {
+            amount = TextUtils.NUMBER_FORMAT.parse(number).intValue();
+        } catch (ParseException ex) {
+            logger.error("Failed to parse " + type.getNiceName() + " essence amount: ", ex);
+        }
         salvagedEssences.put(type, amount);
     }
 

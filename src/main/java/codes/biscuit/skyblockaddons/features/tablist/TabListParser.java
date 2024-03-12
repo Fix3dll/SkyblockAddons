@@ -3,6 +3,8 @@ package codes.biscuit.skyblockaddons.features.tablist;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.Location;
+import codes.biscuit.skyblockaddons.core.SkillType;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
@@ -31,9 +33,13 @@ public class TabListParser {
     private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[\\w ]+)");
     private static final Pattern CANDY_PATTERN = Pattern.compile("Your Candy: §r§a(?<green>[0-9,]+) Green§r§7, §r§5(?<purple>[0-9,]+) Purple §r§7\\(§r§6(?<points>[0-9,]+) §r§7pts\\.\\)");
     private static final Pattern DUNGEON_BUFF_PATTERN = Pattern.compile("No Buffs active. Find them by exploring the Dungeon!");
+    private static final Pattern RAIN_TIME_PATTERN = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
+    private static final Pattern SKILL_LEVEL_PATTERN = Pattern.compile("(?<skill>[A-Za-z]+) (?<level>[0-9]+): (?<percent>[0-9.,]+%|MAX)");
 
     @Getter
     private static List<RenderColumn> renderColumns;
+    @Getter
+    private static String parsedRainTime;
 
     public static void parse() {
         Minecraft mc = Minecraft.getMinecraft();
@@ -179,56 +185,55 @@ public class TabListParser {
     }
 
     public static void parseSections(List<ParsedTabColumn> columns) {
+        parsedRainTime = null;
         boolean foundEssenceSection = false;
+        boolean foundSkillSection = false;
         for (ParsedTabColumn column : columns) {
             ParsedTabSection currentSection = null;
-            int foundEssences = 0;
             for (String line : column.getLines()) {
                 // Empty lines reset the current section
                 if (TextUtils.trimWhitespaceAndResets(line).isEmpty()) {
+                    foundSkillSection = false;
+                    foundEssenceSection = false;
                     currentSection = null;
                     continue;
                 }
 
                 String stripped = TextUtils.stripColor(line).trim();
+                Matcher m;
+
                 if (!foundEssenceSection && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)
-                        && stripped.contains("Essence: (")) {
+                        && stripped.contains("Essence:")) {
                     foundEssenceSection = true;
                 }
 
                 if (foundEssenceSection) {
-                    stripped = stripped.trim();
                     String num = stripped.substring(stripped.indexOf(" ") + 1);
-
-                    // End of essence detection as all essences are found
-                    if (foundEssences == EssenceType.values().length)
-                        foundEssenceSection = false;
-                    else {
-                        if (stripped.contains("Wither:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.WITHER, num);
-                            foundEssences++;
-                        } else if (stripped.contains("Spider:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.SPIDER, num);
-                            foundEssences++;
-                        } else if (stripped.contains("Undead:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.UNDEAD, num);
-                            foundEssences++;
-                        } else if (stripped.contains("Dragon:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.DRAGON, num);
-                            foundEssences++;
-                        } else if (stripped.contains("Gold:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.GOLD, num);
-                            foundEssences++;
-                        } else if (stripped.contains("Diamond:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.DIAMOND, num);
-                            foundEssences++;
-                        } else if (stripped.contains("Ice:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.ICE, num);
-                            foundEssences++;
-                        } else if (stripped.contains("Crimson:")) {
-                            main.getDungeonManager().setSalvagedEssences(EssenceType.CRIMSON, num);
-                            foundEssences++;
+                    for (EssenceType type : EssenceType.values()) {
+                        if (stripped.contains(type.getNiceName())) {
+                            main.getDungeonManager().setSalvagedEssences(type, num);
+                            break;
                         }
+                    }
+                }
+
+                if (parsedRainTime == null && main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER)
+                        && main.getUtils().getLocation() == Location.BIRCH_PARK
+                        && (m = RAIN_TIME_PATTERN.matcher(stripped)).matches()) {
+                    parsedRainTime = m.group("time");
+                }
+
+                if (!foundSkillSection && main.getConfigValues().isDisabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)
+                        && stripped.startsWith("Skills:")) {
+                    foundSkillSection = true;
+                } else if (foundSkillSection) {
+                    System.out.println(stripped);
+                    if ((m =  SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
+                        SkillType skillType = SkillType.getFromString(m.group("skill"));
+                        int level = Integer.parseInt(m.group("level"));
+                        main.getSkillXpManager().setSkillLevel(skillType, level);
+                    } else {
+                        foundSkillSection = false;
                     }
                 }
 

@@ -1011,7 +1011,7 @@ public class RenderListener {
                 if (main.getUtils().getLocation() != Location.BIRCH_PARK && buttonLocation == null)
                     return;
 
-                String parsedRainTime = main.getPlayerListener().getParsedRainTime();
+                String parsedRainTime = TabListParser.getParsedRainTime();
 
                 if (parsedRainTime != null) {
                     text = parsedRainTime;

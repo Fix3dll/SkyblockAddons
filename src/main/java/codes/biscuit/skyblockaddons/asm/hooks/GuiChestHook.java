@@ -154,7 +154,7 @@ public class GuiChestHook {
             float x = guiLeft - 117 - 5;
             float y = guiTop + ySize / 2F - 72 / 2F;
 
-            SkyblockAddons.getInstance().getRenderListener().drawCollectedEssences(x, y, false, false);
+            SkyblockAddons.getInstance().getRenderListener().drawCollectedEssences(x, y, false, true);
         }
 
         if (SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.REFORGE_FILTER)) {
