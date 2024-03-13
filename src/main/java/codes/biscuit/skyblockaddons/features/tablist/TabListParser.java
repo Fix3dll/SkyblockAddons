@@ -35,6 +35,7 @@ public class TabListParser {
     private static final Pattern DUNGEON_BUFF_PATTERN = Pattern.compile("No Buffs active. Find them by exploring the Dungeon!");
     private static final Pattern RAIN_TIME_PATTERN = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
     private static final Pattern SKILL_LEVEL_PATTERN = Pattern.compile("(?<skill>[A-Za-z]+) (?<level>[0-9]+): (?<percent>[0-9.,]+%|MAX)");
+    private static final Pattern OLD_SKILL_LEVEL_PATTERN = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
 
     @Getter
     private static List<RenderColumn> renderColumns;
@@ -188,6 +189,7 @@ public class TabListParser {
         parsedRainTime = null;
         boolean foundEssenceSection = false;
         boolean foundSkillSection = false;
+        boolean foundSkill = false;
         for (ParsedTabColumn column : columns) {
             ParsedTabSection currentSection = null;
             for (String line : column.getLines()) {
@@ -223,18 +225,21 @@ public class TabListParser {
                     parsedRainTime = m.group("time");
                 }
 
-                if (!foundSkillSection && main.getConfigValues().isDisabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)
-                        && stripped.startsWith("Skills:")) {
-                    foundSkillSection = true;
-                } else if (foundSkillSection) {
-                    System.out.println(stripped);
-                    if ((m =  SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
+                if (!foundSkillSection && !foundSkill && main.getConfigValues().isDisabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
+                    // The Catacombs still have old tab list instead of new Widgets
+                    if (main.getUtils().getLocation() == Location.THE_CATACOMBS
+                            && (m = OLD_SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
                         SkillType skillType = SkillType.getFromString(m.group("skill"));
                         int level = Integer.parseInt(m.group("level"));
                         main.getSkillXpManager().setSkillLevel(skillType, level);
-                    } else {
-                        foundSkillSection = false;
+                        foundSkill = true;
+                    } else if (stripped.startsWith("Skills:")){
+                        foundSkillSection = true;
                     }
+                } else if (foundSkillSection && (m = SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
+                    SkillType skillType = SkillType.getFromString(m.group("skill"));
+                    int level = Integer.parseInt(m.group("level"));
+                    main.getSkillXpManager().setSkillLevel(skillType, level);
                 }
 
                 if (currentSection == null) {
