@@ -32,6 +32,7 @@ import codes.biscuit.skyblockaddons.utils.*;
 import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPrismarine;
 import net.minecraft.block.BlockStone;
@@ -170,6 +171,7 @@ public class PlayerListener {
             return size() > 80;
         }
     };
+    @Getter @Setter private long fireFreezeTimer = 0L;
 
     /**
      * Reset all the timers and stuff when joining a new world.
@@ -201,7 +203,7 @@ public class PlayerListener {
      * Interprets the action bar to extract mana, health, and defence. Enables/disables mana/health prediction,
      * and looks for mana usage messages in chat while predicting.
      */
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
     public void onChatReceive(ClientChatReceivedEvent e) {
         if (!main.getUtils().isOnHypixel()) {
             return;
@@ -306,8 +308,14 @@ public class PlayerListener {
             } else if (main.getConfigValues().isEnabled(Feature.DISABLE_MORT_MESSAGES) && strippedText.startsWith("[NPC] Mort:")) {
                 e.setCanceled(true);
 
-            } else if (main.getConfigValues().isEnabled(Feature.DISABLE_BOSS_MESSAGES) && strippedText.startsWith("[BOSS] ")) {
-                e.setCanceled(true);
+            } else if (strippedText.startsWith("[BOSS] ")) {
+                if (main.getConfigValues().isEnabled(Feature.FIRE_FREEZE_TIMER)
+                        && strippedText.equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
+                    fireFreezeTimer = System.currentTimeMillis() + 5000;
+                }
+
+                if (main.getConfigValues().isEnabled(Feature.DISABLE_BOSS_MESSAGES))
+                    e.setCanceled(true);
 
             } else if (main.getConfigValues().isEnabled(Feature.SPIRIT_SCEPTRE_DISPLAY)
                     && strippedText.startsWith("Your Implosion hit")
@@ -1348,6 +1356,16 @@ public class PlayerListener {
             if (item == null || item.getItem() != Items.fishing_rod) return false;
 
             return ItemUtils.getItemType(item) == ItemType.FISHING_ROD;
+        }
+        return false;
+    }
+
+    public boolean isHoldingFireFreeze() {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+
+        if (player != null) {
+            ItemStack item = player.getHeldItem();
+            return item != null && item.hasDisplayName() && item.getDisplayName().contains("Fire Freeze Staff");
         }
         return false;
     }

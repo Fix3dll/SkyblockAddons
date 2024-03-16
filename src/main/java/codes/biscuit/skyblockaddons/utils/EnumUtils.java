@@ -228,6 +228,8 @@ public class EnumUtils {
         HIDE_HEALTH_TEXT_ON_RIFT("settings.hideHealthThingsOnRift", 235),
         HIDE_HEALTH_UPDATES_ON_RIFT("settings.hideHealthThingsOnRift", 236),
         HIDE_ONLY_OUTSIDE_RIFT("settings.hideOnlyOutsideRift", 237),
+        FIRE_FREEZE_SOUND("settings.fireFreezeSound", 239),
+        FIRE_FREEZE_WHEN_HOLDING("settings.fireFreezeWhenHolding", 240),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),
@@ -308,7 +310,8 @@ public class EnumUtils {
         CATFACE("CatFace","github.com/CattoFace",Feature.PLAYER_SYMBOLS_IN_CHAT),
         HANNIBAL2("Hannibal2", "github.com/hannibal00212", Feature.CRIMSON_ARMOR_ABILITY_STACKS, Feature.HIDE_TRUE_DEFENSE),
         JASON54("jason54jg", "github.com/jason54jg", Feature.INFERNO_SLAYER_TRACKER, Feature.INFERNO_COLOR_BY_RARITY, Feature.INFERNO_TEXT_MODE),
-        SOULTWISTRUNE("soultwistrune", "github.com/soultwistrune", Feature.RIFTSTALKER_SLAYER_TRACKER, Feature.RIFTSTALKER_COLOR_BY_RARITY, Feature.RIFTSTALKER_TEXT_MODE);
+        SOULTWISTRUNE("soultwistrune", "github.com/soultwistrune", Feature.RIFTSTALKER_SLAYER_TRACKER, Feature.RIFTSTALKER_COLOR_BY_RARITY, Feature.RIFTSTALKER_TEXT_MODE),
+        FIX3DLL("Fix3dll", "github.com/Fix3dll", Feature.FIRE_FREEZE_TIMER);
 
         private final Set<Feature> features;
         private final String author;

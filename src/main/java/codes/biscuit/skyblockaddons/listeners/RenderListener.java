@@ -1130,6 +1130,32 @@ public class RenderListener {
                 }
                 break;
 
+            case FIRE_FREEZE_TIMER:
+                if (buttonLocation == null && !main.getUtils().isInDungeon()) return;
+
+                if (buttonLocation != null) {
+                    text = "Fire Freeze in 5,00";
+                } else {
+                    if (main.getConfigValues().isEnabled(Feature.FIRE_FREEZE_WHEN_HOLDING) && !main.getPlayerListener().isHoldingFireFreeze())
+                        return;
+
+                    long fireFreezeTimer = main.getPlayerListener().getFireFreezeTimer();
+                    if (fireFreezeTimer == 0) return;
+
+                    double countdown = (fireFreezeTimer - System.currentTimeMillis()) / 1000D;
+
+                    if (countdown > 0) {
+                        text = String.format("Fire Freeze in %.2f", countdown);
+                    } else {
+                        if (main.getConfigValues().isEnabled(Feature.FIRE_FREEZE_SOUND)) {
+                            main.getUtils().playLoudSound("mob.wither.spawn", 1);
+                        }
+                        main.getPlayerListener().setFireFreezeTimer(0);
+                        return;
+                    }
+                }
+                break;
+
             default:
                 return;
         }
@@ -1219,6 +1245,7 @@ public class RenderListener {
             case BIRCH_PARK_RAINMAKER_TIMER:
             case DUNGEON_DEATH_COUNTER:
             case DOLPHIN_PET_TRACKER:
+            case FIRE_FREEZE_TIMER:
             case ROCK_PET_TRACKER:
                 width += 18;
                 height += 9;
@@ -1585,6 +1612,13 @@ public class RenderListener {
                     DrawUtils.drawText(text, x, y, color);
                     FontRendererHook.endFeatureFont();
                 }
+                break;
+
+            case FIRE_FREEZE_TIMER:
+                renderItem(new ItemStack(Blocks.yellow_flower, 1), x, y - 3);
+                FontRendererHook.setupFeatureFont(feature);
+                DrawUtils.drawText(text, x + 18, y + 4, color);
+                FontRendererHook.endFeatureFont();
                 break;
 
             default:

@@ -233,7 +233,10 @@
     "expandDeployableStatus": "Show stats in 2 columns on detailed status",
     "showOnlyHoldingFishingRod": "Show only when holding a fishing rod",
     "hideHealthThingsOnRift": "Don't show while in Rift Dimension",
-    "hideOnlyOutsideRift": "Hide only outside Rift Dimension"
+    "hideOnlyOutsideRift": "Hide only outside Rift Dimension",
+    "fireFreezeTimer": "Fire Freeze Timer F3/M3",
+    "fireFreezeSound": "When countdown hit 0 play sound",
+    "fireFreezeWhenHolding": "Only show while holding Fire Freeze"
   },
   "messages": {
     "enchants": "Enchants",
