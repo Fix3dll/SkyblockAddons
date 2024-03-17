@@ -24,7 +24,7 @@ public class TabListParser {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    public static String HYPIXEL_ADVERTISEMENT_CONTAINS = "HYPIXEL.NET";
+    public static final String HYPIXEL_ADVERTISEMENT_CONTAINS = "HYPIXEL.NET";
 
     private static final Pattern GOD_POTION_PATTERN = Pattern.compile("You have a God Potion active! (?<timer>[\\w ]+)");
     private static final Pattern ACTIVE_EFFECTS_PATTERN = Pattern.compile("Active Effects(?:§.)*(?:\\n(?:§.)*§7.+)*");
@@ -36,6 +36,7 @@ public class TabListParser {
     private static final Pattern RAIN_TIME_PATTERN = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
     private static final Pattern SKILL_LEVEL_PATTERN = Pattern.compile("(?<skill>[A-Za-z]+) (?<level>[0-9]+): (?<percent>[0-9.,]+%|MAX)");
     private static final Pattern OLD_SKILL_LEVEL_PATTERN = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
+    private static final Pattern JERRY_POWER_UPS_PATTERN = Pattern.compile("Active Power Ups(?:§.)*(?:\\n(§.)*§7.+)*");
 
     @Getter
     private static List<RenderColumn> renderColumns;
@@ -149,18 +150,19 @@ public class TabListParser {
              SpookyEventManager.reset();
         }
 
-        if ((m = COOKIE_BUFF_PATTERN.matcher(footer)).find() && m.group().contains("Not active!")) {
+        if ((m = COOKIE_BUFF_PATTERN.matcher(footer)).find() && m.group().contains("Not active!"))
             footer = m.replaceAll("Cookie Buff \n§r§7Not Active");
-        }
+
+        if (main.getUtils().getJerryWave() != -1 && (m = JERRY_POWER_UPS_PATTERN.matcher(footer)).find()
+                && m.group().contains("No Power Ups"))
+            footer = m.replaceAll("Active Power Ups \n§r§7No Power Ups");
 
         if ((m = DUNGEON_BUFF_PATTERN.matcher(footer)).find())
             footer = m.replaceAll("No Buffs");
 
         for (String line : new ArrayList<>(Arrays.asList(footer.split("\n")))) {
             // Lets not add the advertisements to the columns
-            if (line.contains(HYPIXEL_ADVERTISEMENT_CONTAINS)) {
-                continue;
-            }
+            if (line.contains(HYPIXEL_ADVERTISEMENT_CONTAINS)) continue;
 
             // Split every upgrade into 2 lines so it's not too long...
             if ((m = UPGRADES_PATTERN.matcher(TextUtils.stripResets(line))).matches()) {
