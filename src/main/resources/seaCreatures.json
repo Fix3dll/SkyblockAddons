@@ -139,6 +139,11 @@
     "rarity": "LEGENDARY",
     "spawnMessage": "The spirit of a long lost Phantom Fisher has come to haunt you."
   },
+  "PLHLEGBLAST": {
+    "name": "Plhlegblast",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "WOAH! A Plhlegblast appeared."
+  },
   "POISONED_WATER_WORM": {
     "name": "Poisoned Water Worm",
     "rarity": "RARE",

@@ -172,6 +172,7 @@ public class PlayerListener {
         }
     };
     @Getter @Setter private long fireFreezeTimer = 0L;
+    private boolean doubleHook = false;
 
     /**
      * Reset all the timers and stuff when joining a new world.
@@ -291,13 +292,23 @@ public class PlayerListener {
                 main.getPersistentValuesManager().addEyeResetKills();
                 // TODO: Seems like leg warning and num sc killed should be separate features
             } else if (SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
-                main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled() + 1);
+                int spawned = unformattedText.contains("Magma Slug") ? 4 : 1;
+                if (doubleHook) {
+                    spawned *= 2;
+                    doubleHook = false;
+                }
+                main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(
+                        main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled() + spawned
+                );
                 if (main.getConfigValues().isEnabled(Feature.LEGENDARY_SEA_CREATURE_WARNING)
                         && SeaCreatureManager.getInstance().getLegendarySeaCreatureSpawnMessages().contains(unformattedText)) {
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setTitleFeature(Feature.LEGENDARY_SEA_CREATURE_WARNING);
                     main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
+
+            } else if (formattedText.startsWith("§r§eIt's a §r§aDouble Hook§r§e!")) {
+                doubleHook = true;
 
             } else if (main.getConfigValues().isEnabled(Feature.DISABLE_MAGICAL_SOUP_MESSAGES) && SOUP_RANDOM_MESSAGES.contains(unformattedText)) {
                 e.setCanceled(true);
