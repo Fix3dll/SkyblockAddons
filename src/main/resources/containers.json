@@ -41,11 +41,11 @@
   },
   "JUMBO_BACKPACK": {
     "type": "BACKPACK",
-    "size": 54,
+    "size": 45,
     "compressedItemStacksTag": "jumbo_backpack_data",
     "colorTag": "backpack_color",
     "dimensions": [
-      6,
+      5,
       9
     ]
   },

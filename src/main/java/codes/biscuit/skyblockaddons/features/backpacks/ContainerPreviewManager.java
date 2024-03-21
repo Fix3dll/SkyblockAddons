@@ -357,7 +357,7 @@ public class ContainerPreviewManager {
         // Get the container color
         BackpackColor color = ItemUtils.getBackpackColor(stack);
         // Relying on item lore here. Once hypixel settles on a standard for backpacks, we should figure out a better way
-        String skyblockID = TextUtils.stripColor(ItemUtils.getItemLore(stack).get(0)).toUpperCase().replaceAll(" ", "_").trim();
+        String skyblockID = TextUtils.getBackpackIDFromLore(ItemUtils.getItemLore(stack).get(0));
         ContainerData containerData = ItemUtils.getContainerData(skyblockID);
         int rows = 6, cols = 9;
         if (containerData != null) {

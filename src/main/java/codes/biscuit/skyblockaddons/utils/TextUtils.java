@@ -522,4 +522,8 @@ public class TextUtils {
         }
         return false;
     }
+
+    public static String getBackpackIDFromLore(String lore) {
+        return stripColor(lore).replace("✦", "").trim().toUpperCase().replaceAll(" ", "_");
+    }
 }
