@@ -84,6 +84,11 @@ configurations.implementation.extendsFrom(configurations.named('bundle').get())
 
 repositories {
     mavenCentral()
+    gradlePluginPortal {
+        content {
+            includeGroup 'org.projectlombok'
+        }
+    }
     maven {
         name 'JitPack'
         url 'https://jitpack.io'
