@@ -311,7 +311,7 @@ public class EnumUtils {
         HANNIBAL2("Hannibal2", "github.com/hannibal00212", Feature.CRIMSON_ARMOR_ABILITY_STACKS, Feature.HIDE_TRUE_DEFENSE),
         JASON54("jason54jg", "github.com/jason54jg", Feature.INFERNO_SLAYER_TRACKER, Feature.INFERNO_COLOR_BY_RARITY, Feature.INFERNO_TEXT_MODE),
         SOULTWISTRUNE("soultwistrune", "github.com/soultwistrune", Feature.RIFTSTALKER_SLAYER_TRACKER, Feature.RIFTSTALKER_COLOR_BY_RARITY, Feature.RIFTSTALKER_TEXT_MODE),
-        FIX3DLL("Fix3dll", "github.com/Fix3dll", Feature.FIRE_FREEZE_TIMER);
+        FIX3DLL("Fix3dll", "github.com/Fix3dll", Feature.FIRE_FREEZE_TIMER, Feature.HIDE_HAUNTED_SKULLS);
 
         private final Set<Feature> features;
         private final String author;

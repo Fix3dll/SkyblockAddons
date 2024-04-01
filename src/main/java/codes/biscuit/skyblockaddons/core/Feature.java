@@ -233,6 +233,7 @@ public enum Feature {
     FIRE_FREEZE_TIMER(238, "settings.fireFreezeTimer", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.YELLOW), false, EnumUtils.FeatureSetting.FIRE_FREEZE_SOUND, EnumUtils.FeatureSetting.FIRE_FREEZE_WHEN_HOLDING),
     FIRE_FREEZE_SOUND(239, "", null, false),
     FIRE_FREEZE_WHEN_HOLDING(240, "", null, false),
+    HIDE_HAUNTED_SKULLS(241, "settings.hideHauntedSkulls", null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),

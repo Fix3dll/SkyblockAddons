@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
 import codes.biscuit.skyblockaddons.features.JerryPresent;
+import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.particle.EntityFX;
@@ -20,6 +21,7 @@ import net.minecraft.util.BlockPos;
 public class RenderManagerHook {
 
     private static final int HIDE_RADIUS_SQUARED = 7 * 7;
+    private static final String HAUNTED_SKULL_TEXTURE = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYyNGVkNjg3NTMwNGZhNGExZjBjNzg1YjJjYjZhNmE3MjU2M2U5ZjNlMjRlYTU1ZTE4MTc4NDUyMTE5YWE2NiJ9fX0=";
 
     public static void shouldRender(Entity entityIn, ReturnValue<Boolean> returnValue) {
         Minecraft mc = Minecraft.getMinecraft();
@@ -32,6 +34,15 @@ public class RenderManagerHook {
                 if (entityIn instanceof EntityItem && entityIn.ridingEntity instanceof EntityArmorStand && entityIn.ridingEntity.isInvisible()) {
                     EntityItem entityItem = (EntityItem) entityIn;
                     if (entityItem.getEntityItem().getItem().equals(Items.bone)) {
+                        returnValue.cancel();
+                    }
+                }
+            }
+            if (main.getConfigValues().isEnabled(Feature.HIDE_HAUNTED_SKULLS) && currentLocation == Location.THE_CATACOMBS) {
+                if (entityIn instanceof EntityArmorStand && entityIn.isInvisible()) {
+                    EntityArmorStand armorStand = (EntityArmorStand) entityIn;
+                    String skullID = ItemUtils.getSkullTexture(armorStand.getEquipmentInSlot(4));
+                    if (HAUNTED_SKULL_TEXTURE.equals(skullID)) {
                         returnValue.cancel();
                     }
                 }

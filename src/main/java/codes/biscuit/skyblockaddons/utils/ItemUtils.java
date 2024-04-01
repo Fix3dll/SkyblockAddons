@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -554,6 +555,22 @@ public class ItemUtils {
             if (nbt.hasKey("Id", 8)) {
                 return nbt.getString("Id");
             }
+        }
+        return null;
+    }
+
+    /**
+     * Given a skull ItemStack, returns the texture, or null if it doesn't exist.
+     */
+    public static String getSkullTexture(ItemStack skull) {
+        if (skull == null || !skull.hasTagCompound()) {
+            return null;
+        }
+
+        NBTTagCompound nbt = skull.getTagCompound();
+        if (nbt.hasKey("SkullOwner", 10)) {
+            return nbt.getCompoundTag("SkullOwner").getCompoundTag("Properties")
+                    .getTagList("textures", Constants.NBT.TAG_COMPOUND).getCompoundTagAt(0).getString("Value");
         }
         return null;
     }

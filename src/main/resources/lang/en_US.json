@@ -236,7 +236,8 @@
     "hideOnlyOutsideRift": "Hide only outside Rift Dimension",
     "fireFreezeTimer": "Fire Freeze Timer F3/M3",
     "fireFreezeSound": "When countdown hit 0 play sound",
-    "fireFreezeWhenHolding": "Only show while holding Fire Freeze"
+    "fireFreezeWhenHolding": "Only show while holding Fire Freeze",
+    "hideHauntedSkulls": "Hide Haunted Skulls from Soulweaver Gloves"
   },
   "messages": {
     "enchants": "Enchants",
