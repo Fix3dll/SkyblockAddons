@@ -20,6 +20,12 @@ pluginManagement {
         maven {
             url 'https://repo.essential.gg/repository/maven-public'
         }
+        exclusiveContent {
+            forRepository { maven { url 'https://oss.sonatype.org/content/repositories/snapshots' } }
+            filter {
+                includeGroup 'org.projectlombok'
+            }
+        }
     }
     resolutionStrategy {
         eachPlugin {
