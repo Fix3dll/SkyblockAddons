@@ -55,11 +55,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 @Getter
-@Mod(modid = "skyblockaddons", name = "SkyblockAddons", version = "@VERSION@", clientSideOnly = true, acceptedMinecraftVersions = "@MOD_ACCEPTED@")
+@Mod(modid = "sbaunofficial", name = "SkyblockAddons Unofficial", version = "@VERSION@", clientSideOnly = true, acceptedMinecraftVersions = "@MOD_ACCEPTED@")
 public class SkyblockAddons {
 
-    public static final String MOD_ID = "skyblockaddons";
-    public static final String MOD_NAME = "SkyblockAddons";
+    public static final String MOD_ID = "sbaunofficial";
+    public static final String MOD_NAME = "SkyblockAddons  Unofficial";
     public static String VERSION = "@VERSION@";
     /**
      * This is set by the CI. If the build isn't done on CI, this will be an empty string.

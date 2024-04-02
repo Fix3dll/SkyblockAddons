@@ -22,7 +22,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build --no-daemon
+      run: ./gradlew build --stacktrace
     - name: Read Project Version
       id: read_properties
       uses: christian-draeger/read-properties@1.1.1
