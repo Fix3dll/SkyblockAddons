@@ -38,7 +38,7 @@ public class RenderManagerHook {
                     }
                 }
             }
-            if (main.getConfigValues().isEnabled(Feature.HIDE_HAUNTED_SKULLS) && currentLocation == Location.THE_CATACOMBS) {
+            if (main.getConfigValues().isEnabled(Feature.HIDE_HAUNTED_SKULLS) && main.getUtils().isInDungeon()) {
                 if (entityIn instanceof EntityArmorStand && entityIn.isInvisible()) {
                     EntityArmorStand armorStand = (EntityArmorStand) entityIn;
                     String skullID = ItemUtils.getSkullTexture(armorStand.getEquipmentInSlot(4));
