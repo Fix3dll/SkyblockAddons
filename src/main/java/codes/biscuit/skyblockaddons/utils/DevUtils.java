@@ -592,7 +592,7 @@ public class DevUtils {
         main.getPersistentValuesManager().loadValues();
         ((SimpleReloadableResourceManager) mc.getResourceManager()).reloadResourcePack(FMLClientHandler.instance().getResourcePackFor(SkyblockAddons.MOD_ID));
         try {
-            Method notifyReloadListenersMethod = SimpleReloadableResourceManager.class.getDeclaredMethod("notifyReloadListeners");
+            Method notifyReloadListenersMethod = SimpleReloadableResourceManager.class.getDeclaredMethod("func_110544_b"); // notifyReloadListeners
             notifyReloadListenersMethod.setAccessible(true);
             notifyReloadListenersMethod.invoke(mc.getResourceManager());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {

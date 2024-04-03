@@ -95,14 +95,13 @@ public class ConfigValues {
     private final MutableFloat chromaBrightness = new MutableFloat(0.9F);
     private final MutableObject<EnchantListLayout> enchantLayout = new MutableObject<>(EnchantListLayout.NORMAL);
 
-    public ConfigValues(File settingsConfigFile) {
-        this.settingsConfigFile = settingsConfigFile;
+    public ConfigValues(File configDir) {
+        this.settingsConfigFile = new File(configDir.getAbsolutePath() + "/skyblockaddons.cfg");
     }
 
     public void loadValues() {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("default.json");
-             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
-                     StandardCharsets.UTF_8)) {
+             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
             JsonObject defaultValues = SkyblockAddons.getGson().fromJson(inputStreamReader, JsonObject.class);
 
             deserializeFeatureFloatCoordsMapFromID(defaultValues, defaultCoordinates, "coordinates");
