@@ -107,7 +107,7 @@ dependencies {
         exclude(module = "gson")
         because("Different version conflicts with Minecraft's GSON")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 }
 
 tasks.withType(JavaCompile::class).configureEach {
