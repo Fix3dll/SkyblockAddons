@@ -3,7 +3,7 @@
   "refmap": "mixins.skyblockaddons.refmap.json",
   "plugin": "codes.biscuit.skyblockaddons.mixins.SkyblockAddonsMixinPlugin",
   "compatibilityLevel": "JAVA_8",
-  "minVersion": "0.8",
+  "minVersion": "0.7",
   "injectors": {
     "maxShiftBy": 2
   }

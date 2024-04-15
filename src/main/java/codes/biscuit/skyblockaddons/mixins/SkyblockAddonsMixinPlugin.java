@@ -1,8 +1,8 @@
 package codes.biscuit.skyblockaddons.mixins;
 
-import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import lombok.Getter;
 import net.minecraft.launchwrapper.Launch;
+import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -38,7 +38,6 @@ public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         deobfuscated = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        MixinExtrasBootstrap.init();
     }
 
     /**
@@ -150,13 +149,11 @@ public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public void preApply(String targetClassName, org.objectweb.asm.tree.ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-
+    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
     }
 
     @Override
-    public void postApply(String targetClassName, org.objectweb.asm.tree.ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-
+    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
     }
 
     @Override
@@ -171,6 +168,5 @@ public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
-
     }
 }

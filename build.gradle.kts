@@ -103,11 +103,10 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.0")
 
-    bundle("com.github.SpongePowered:Mixin:a60200d") {
+    bundle("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false
     }
     annotationProcessor("com.github.SpongePowered:Mixin:a60200d:processor")
-    bundle(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")!!)
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
@@ -145,9 +144,9 @@ tasks.withType(Jar::class) {
         this["Main-Class"] = "SkyblockAddonsInstallerFrame"
         this["Implementation-Title"] = project.name
         this["Implementation-Version"] = project.version
-        this["Implementation-Vendor"] = "BiscuitDevelopment"
+        this["Implementation-Vendor"] = "Fix3dll"
         this["Specification-Title"] = project.name
-        this["Specification-Vendor"] = "BiscuitDevelopment"
+        this["Specification-Vendor"] = "Fix3dll"
         this["Specification-Version"] = project.version
         this["ForceLoadAsMod"] = "true"
         this["FMLCorePluginContainsFMLMod"] = "true"
@@ -186,8 +185,6 @@ tasks.shadowJar {
 
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "shadow.discordipc")
-    relocate("com.llamalad7.mixinextras", "shadow.mixinextras")
-    mergeServiceFiles()
 }
 
 tasks.withType(Test::class) {
