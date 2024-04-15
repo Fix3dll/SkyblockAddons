@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.core;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.asm.hooks.EffectRendererHook;
+import codes.biscuit.skyblockaddons.mixins.hooks.EffectRendererHook;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import codes.biscuit.skyblockaddons.utils.draw.DrawState3D;
 import net.minecraft.client.particle.EffectRenderer;

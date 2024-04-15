@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.asm.utils.ReturnValue;
 import codes.biscuit.skyblockaddons.core.ItemRarity;
 import codes.biscuit.skyblockaddons.core.ItemType;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
@@ -265,7 +264,8 @@ public class ItemUtils {
 
     /**
      * Checks if the given {@code ItemStack} is a builders wand
-     * See {@link codes.biscuit.skyblockaddons.asm.hooks.PlayerControllerMPHook#onWindowClick(int, int, int, EntityPlayer, ReturnValue)} for a commented-out implementation (may come back in the future).
+     * See {@link codes.biscuit.skyblockaddons.mixins.hooks.PlayerControllerMPHook#onWindowClick(int, int, int, EntityPlayer, ReturnValue)}
+     * for a commented-out implementation (may come back in the future).
      *
      * @param stack the {@code ItemStack} to check
      * @return {@code true} if {@code stack} is a backpack, {@code false} otherwise

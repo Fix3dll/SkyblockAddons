@@ -1,0 +1,10 @@
+{
+  "package": "codes.biscuit.skyblockaddons.mixins.transformers",
+  "refmap": "mixins.skyblockaddons.refmap.json",
+  "plugin": "codes.biscuit.skyblockaddons.mixins.SkyblockAddonsMixinPlugin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "injectors": {
+    "maxShiftBy": 2
+  }
+}

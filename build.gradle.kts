@@ -6,7 +6,7 @@ import org.apache.commons.lang3.SystemUtils
 plugins {
     idea
     java
-    id("gg.essential.loom") version ("1.3.12")
+    id("gg.essential.loom") version ("1.4.13")
     id("dev.architectury.architectury-pack200") version ("0.1.3")
     id("io.freefair.lombok") version ("8.3")
     id("com.github.johnrengelman.shadow") version ("8.1.1")
@@ -52,11 +52,11 @@ blossom {
 }
 
 loom {
-    //noinspection GroovyAssignabilityCheck
     runConfigs {
-        named("client") {
-            property("fml.coreMods.load", "codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin")
+        getByName("client") {
+            property("mixin.debug", "true")
             property("devauth.enabled", "true")
+            programArgs("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
             if (SystemUtils.IS_OS_MAC_OSX) {
                 // This argument causes a crash on macOS
                 vmArgs.remove("-XstartOnFirstThread")
@@ -69,7 +69,9 @@ loom {
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
         accessTransformer("src/main/resources/META-INF/skyblockaddons_at.cfg")
+        mixinConfig("mixins.${modId}.json")
     }
+    mixin.defaultRefmapName = "mixins.${modId}.refmap.json"
 }
 
 sourceSets {
@@ -86,8 +88,13 @@ val bundle: Configuration by configurations.creating {
 repositories {
     mavenCentral()
     gradlePluginPortal()
-    maven("https://jitpack.io")
+    maven("https://repo.spongepowered.org/maven/")
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    maven("https://jitpack.io") {
+        content {
+            includeGroupByRegex("com\\.github\\..*")
+        }
+    }
 }
 
 dependencies {
@@ -95,6 +102,12 @@ dependencies {
     mappings("de.oceanlabs.mcp:mcp_stable:22-1.8.9")
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.0")
+
+    bundle("com.github.SpongePowered:Mixin:a60200d") {
+        isTransitive = false
+    }
+    annotationProcessor("com.github.SpongePowered:Mixin:a60200d:processor")
+    bundle(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")!!)
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
@@ -136,16 +149,17 @@ tasks.withType(Jar::class) {
         this["Specification-Title"] = project.name
         this["Specification-Vendor"] = "BiscuitDevelopment"
         this["Specification-Version"] = project.version
-        this["FMLCorePlugin"] = "${project.group}.${modId}.tweaker.${project.name}LoadingPlugin"
         this["ForceLoadAsMod"] = "true"
         this["FMLCorePluginContainsFMLMod"] = "true"
         this["ModSide"] = "CLIENT"
         this["FMLAT"] = "${modId}_at.cfg"
+        this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
+        this["MixinConfigs"] = "mixins.${modId}.json"
     }
 }
 
 val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
-    input.set(tasks.shadowJar.get().archiveFile)
+    input = tasks.shadowJar.get().archiveFile
     archiveFileName = "${project.name}-${version}-for-MC-${minecraftVersion}.jar"
 }
 
@@ -162,7 +176,7 @@ tasks.processResources {
 }
 
 tasks.shadowJar {
-    destinationDirectory.set(layout.buildDirectory.dir("badjars"))
+    destinationDirectory = layout.buildDirectory.dir("badjars")
     configurations = listOf(bundle)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
@@ -172,6 +186,8 @@ tasks.shadowJar {
 
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "shadow.discordipc")
+    relocate("com.llamalad7.mixinextras", "shadow.mixinextras")
+    mergeServiceFiles()
 }
 
 tasks.withType(Test::class) {

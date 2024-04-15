@@ -383,15 +383,10 @@ public class EntityOutlineRenderer {
         }
     }
 
+    @Getter @Setter
     private static class CachedInfo {
-        @Getter
-        @Setter
         private HashMap<Entity, Integer> xrayCache = null;
-        @Getter
-        @Setter
         private HashMap<Entity, Integer> noXrayCache = null;
-        @Getter
-        @Setter
         private HashSet<Entity> noOutlineCache = null;
     }
 }
