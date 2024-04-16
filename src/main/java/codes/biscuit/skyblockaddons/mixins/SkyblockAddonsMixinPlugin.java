@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.mixins;
 
+import codes.biscuit.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
 import net.minecraft.launchwrapper.Launch;
 import org.spongepowered.asm.lib.tree.ClassNode;
@@ -20,6 +21,9 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static codes.biscuit.skyblockaddons.utils.TweakerUtils.exit;
+import static codes.biscuit.skyblockaddons.utils.TweakerUtils.showMessage;
+
 /**
  * A mixin plugin to automatically discover all mixins in the current JAR.
  * <p>
@@ -34,6 +38,17 @@ public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
 
     @Getter
     private static boolean deobfuscated;
+
+    public SkyblockAddonsMixinPlugin() {
+        // Reference class for check for old installation of SkyblockAddons
+        if (checkForClass("codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsTransformer")) {
+            SkyblockAddons.getLogger().error("Launch failed because old installation of SkyblockAddons was found."
+                    + " Please remove it and restart Minecraft!");
+            showMessage("Launch failed because old version of SkyblockAddons was found."
+                    + "\nPlease remove it and restart Minecraft!");
+            exit();
+        }
+    }
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -168,5 +183,14 @@ public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
+    }
+
+    private boolean checkForClass(String className) {
+        try {
+            Class.forName(className, false, getClass().getClassLoader());
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 }
