@@ -237,7 +237,8 @@
     "fireFreezeTimer": "Fire Freeze Timer F3/M3",
     "fireFreezeSound": "When countdown hit 0 play sound",
     "fireFreezeWhenHolding": "Only show while holding Fire Freeze",
-    "hideHauntedSkulls": "Hide Haunted Skulls from Soulweaver Gloves"
+    "hideHauntedSkulls": "Hide Haunted Skulls from Soulweaver Gloves",
+    "thunderBottleDisplay": "Thunder Bottle Display"
   },
   "messages": {
     "enchants": "Enchants",

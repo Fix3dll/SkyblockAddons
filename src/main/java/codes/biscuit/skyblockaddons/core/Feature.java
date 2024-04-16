@@ -213,7 +213,6 @@ public enum Feature {
     SHOW_PROFILE_TYPE(219, "settings.showProfileType", false),
     SHOW_NETHER_FACTION(220,"settings.showNetherFaction", false),
     // Release Fix3dll
-    NUMBER_SEPARATORS(221, "settings.numberSeparators", null, false),
 	HIDE_WHEN_NOT_IN_CRIMSON(222, null, false),
     INFERNO_SLAYER_TRACKER(223, "settings.infernoSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_CRIMSON),
     INFERNO_COLOR_BY_RARITY(224, null, false),
@@ -234,6 +233,7 @@ public enum Feature {
     FIRE_FREEZE_SOUND(239, "", null, false),
     FIRE_FREEZE_WHEN_HOLDING(240, "", null, false),
     HIDE_HAUNTED_SKULLS(241, "settings.hideHauntedSkulls", null, true),
+    THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_PURPLE), false),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -256,7 +256,8 @@ public enum Feature {
     CHROMA_SIZE(-1, "settings.chromaSize", null, false),
     CHROMA_SATURATION(-1, "settings.chromaSaturation", null, false),
     CHROMA_BRIGHTNESS(-1, "settings.chromaBrightness", null, false),
-    TURN_ALL_FEATURES_CHROMA(-1, "settings.turnAllFeaturesChroma", null, false);
+    TURN_ALL_FEATURES_CHROMA(-1, "settings.turnAllFeaturesChroma", null, false),
+    NUMBER_SEPARATORS(-1, "settings.numberSeparators", null, false);
 
 
     /**
@@ -298,7 +299,7 @@ public enum Feature {
             DUNGEONS_COLLECTED_ESSENCES_DISPLAY, REVENANT_SLAYER_TRACKER, TARANTULA_SLAYER_TRACKER, SVEN_SLAYER_TRACKER, DRAGON_STATS_TRACKER, DUNGEON_DEATH_COUNTER,
             ROCK_PET_TRACKER, DOLPHIN_PET_TRACKER, DUNGEONS_SECRETS_DISPLAY, CANDY_POINTS_COUNTER, DRILL_FUEL_TEXT, INFERNO_SLAYER_TRACKER,
             TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR, FETCHUR_TODAY, VOIDGLOOM_SLAYER_TRACKER, OTHER_DEFENCE_STATS, SPIRIT_SCEPTRE_DISPLAY, FARM_EVENT_TIMER,
-            CRIMSON_ARMOR_ABILITY_STACKS, HIDE_TRUE_DEFENSE, RIFTSTALKER_SLAYER_TRACKER, FIRE_FREEZE_TIMER));
+            CRIMSON_ARMOR_ABILITY_STACKS, HIDE_TRUE_DEFENSE, RIFTSTALKER_SLAYER_TRACKER, FIRE_FREEZE_TIMER, THUNDER_BOTTLE_DISPLAY));
 
     /**
      * These are features that are displayed separate, on the general tab.

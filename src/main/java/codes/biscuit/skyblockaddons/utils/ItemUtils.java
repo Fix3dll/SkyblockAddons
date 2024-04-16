@@ -602,6 +602,19 @@ public class ItemUtils {
     }
 
     /**
+     * Returns the integer thunder charge amount of Thunder Bottle
+     * @param bottle Empty Thunder Bottle ItemStack
+     * @return thunder charge amount
+     */
+    public static int getThunderCharge(ItemStack bottle) {
+        NBTTagCompound ea = getExtraAttributes(bottle);
+        if (ea != null && ea.hasKey("thunder_charge")) {
+            return ea.getInteger("thunder_charge");
+        }
+        return 0;
+    }
+
+    /**
      * Returns the rarity of a Skyblock item given its lore. This method takes the item's lore as a string list as input.
      * This method is split up from the method that takes the {@code ItemStack} instance for easier unit testing.
      *

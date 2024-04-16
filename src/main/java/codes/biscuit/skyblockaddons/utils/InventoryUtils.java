@@ -22,6 +22,7 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ReportedException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
@@ -75,6 +76,12 @@ public class InventoryUtils {
 
     @Getter
     private final SlayerArmorProgress[] slayerArmorProgresses = new SlayerArmorProgress[4];
+
+    @Getter
+    private ItemStack emptyThunderBottle = null;
+
+    @Getter
+    private boolean haveFullThunderBottle;
 
     @Getter
     private InventoryType inventoryType;
@@ -345,6 +352,35 @@ public class InventoryUtils {
         else if (container instanceof ContainerFurnace) return 6;
         else if (container instanceof ContainerBeacon) return 8;
         else return 0;
+    }
+
+    /**
+     * Checks if the player has the Thunder Bottle and updates {@link #emptyThunderBottle} and {@link #haveFullThunderBottle} accordingly
+     * @param p EntityPlayerSP
+     */
+    public void checkIfThunderBottle(EntityPlayerSP p) {
+        if (main.getConfigValues().isEnabled(Feature.THUNDER_BOTTLE_DISPLAY)) {
+            if (emptyThunderBottle != null && !ArrayUtils.contains(p.inventory.mainInventory, emptyThunderBottle))
+                emptyThunderBottle = null;
+
+            // If there is multiple empty bottle, Hypixel applies "first-come, first-served" according to inv index
+            boolean foundFullThunderBottle = false;
+            for (ItemStack item : p.inventory.mainInventory) {
+                if (item != null) {
+                    String itemID = ItemUtils.getSkyblockItemID(item);
+                    if ("THUNDER_IN_A_BOTTLE_EMPTY".equals(itemID)) {
+                        emptyThunderBottle = item;
+                        return;
+                    } else if (emptyThunderBottle == null && "THUNDER_IN_A_BOTTLE".equals(itemID)) {
+                        haveFullThunderBottle = true;
+                        foundFullThunderBottle = true;
+                    }
+                }
+            }
+            emptyThunderBottle = null;
+            if (!foundFullThunderBottle)
+                haveFullThunderBottle = false;
+        }
     }
 
     /**

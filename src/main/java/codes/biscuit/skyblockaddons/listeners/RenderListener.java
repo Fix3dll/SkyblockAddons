@@ -141,6 +141,13 @@ public class RenderListener {
             , "5b0e6bf0-6312-3476-b5f8-dbc9a8849a1f"
             , "95d7aee4e97ad84095f55405ee1305d1fc8554c309edb12a1db863cde9c1ec80"
     );
+    private static final ItemStack THUNDER_IN_A_BOTTLE = ItemUtils.createSkullItemStack(
+            "§5Thunder in a Bottle",
+            Collections.emptyList(),
+            "THUNDER_IN_A_BOTTLE",
+            "5f67bc23-bb55-35e6-8f01-b5534e4ecfca"
+            , "24378b986e358555ee73f09b210d49ec13719de5ea88d75523770d31163f3aef"
+    );
 
     private static final SlayerArmorProgress[] DUMMY_PROGRESSES = new SlayerArmorProgress[] {
             new SlayerArmorProgress(new ItemStack(Items.diamond_boots))
@@ -755,8 +762,8 @@ public class RenderListener {
         int width = 9;
         float x = main.getConfigValues().getActualX(Feature.DEFENCE_ICON);
         float y = main.getConfigValues().getActualY(Feature.DEFENCE_ICON);
-        x = main.getRenderListener().transformXY(x, width, scale);
-        y = main.getRenderListener().transformXY(y, height, scale);
+        x = transformXY(x, width, scale);
+        y = transformXY(y, height, scale);
 
         main.getUtils().enableStandardGLOptions();
 
@@ -1156,6 +1163,21 @@ public class RenderListener {
                 }
                 break;
 
+            case THUNDER_BOTTLE_DISPLAY:
+                ItemStack emptyBottle = main.getInventoryUtils().getEmptyThunderBottle();
+                boolean haveFullThunderBottle = main.getInventoryUtils().isHaveFullThunderBottle();
+                if (buttonLocation == null && emptyBottle == null && !haveFullThunderBottle)
+                    return;
+
+                if (emptyBottle != null) {
+                    text = TextUtils.formatNumber(ItemUtils.getThunderCharge(emptyBottle)) + "/50.000";
+                } else if (haveFullThunderBottle) {
+                    text = "§aFull!";
+                } else /*buttonLocation != null*/ {
+                    text = "49.999/50.000";
+                }
+                break;
+
             default:
                 return;
         }
@@ -1246,6 +1268,7 @@ public class RenderListener {
             case DUNGEON_DEATH_COUNTER:
             case DOLPHIN_PET_TRACKER:
             case FIRE_FREEZE_TIMER:
+            case THUNDER_BOTTLE_DISPLAY:
             case ROCK_PET_TRACKER:
                 width += 18;
                 height += 9;
@@ -1590,7 +1613,7 @@ public class RenderListener {
             case HEALTH_TEXT:
                 // 22 -> Absorption
                 if (mc.thePlayer.isPotionActive(22) && getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
-                    String formattedHealth = NUMBER_FORMAT.format(getAttribute(Attribute.HEALTH));
+                    String formattedHealth = TextUtils.formatNumber(getAttribute(Attribute.HEALTH));
                     int formattedHealthWidth = mc.fontRendererObj.getStringWidth(formattedHealth);
 
                     color = ColorUtils.getDummySkyblockColor(
@@ -1602,7 +1625,7 @@ public class RenderListener {
 
                     color = main.getConfigValues().getColor(feature);
                     DrawUtils.drawText(
-                            "/" + NUMBER_FORMAT.format(getAttribute(Attribute.MAX_HEALTH))
+                            "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH))
                             , x + formattedHealthWidth
                             , y
                             , color
@@ -1616,6 +1639,21 @@ public class RenderListener {
 
             case FIRE_FREEZE_TIMER:
                 renderItem(new ItemStack(Blocks.yellow_flower, 1), x, y - 3);
+                FontRendererHook.setupFeatureFont(feature);
+                DrawUtils.drawText(text, x + 18, y + 4, color);
+                FontRendererHook.endFeatureFont();
+                break;
+
+            case THUNDER_BOTTLE_DISPLAY:
+                ItemStack thunderBottle = main.getInventoryUtils().getEmptyThunderBottle();
+
+                if (buttonLocation != null) {
+                    renderItem(thunderBottle == null ? THUNDER_IN_A_BOTTLE : thunderBottle, x, y);
+                } else if (thunderBottle != null) {
+                    renderItem(thunderBottle, x, y);
+                } else if (main.getInventoryUtils().isHaveFullThunderBottle()) {
+                    renderItem(THUNDER_IN_A_BOTTLE, x, y);
+                }
                 FontRendererHook.setupFeatureFont(feature);
                 DrawUtils.drawText(text, x + 18, y + 4, color);
                 FontRendererHook.endFeatureFont();
