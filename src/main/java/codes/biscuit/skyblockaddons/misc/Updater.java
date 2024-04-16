@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.misc;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.UpdateInfo;
-import codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsTransformer;
+import codes.biscuit.skyblockaddons.mixins.SkyblockAddonsMixinPlugin;
 import lombok.Getter;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -192,7 +192,7 @@ public class Updater {
                 messageToRender = Translations.getMessage("messages.updateChecker.notificationBox.majorAvailable", targetVersion);
             }
         } else if (status == AHEAD) {
-            if (!SkyblockAddonsTransformer.isDeobfuscated()) {
+            if (!SkyblockAddonsMixinPlugin.isDeobfuscated()) {
                 logger.warn("The current version is newer than the latest version. Please tell an SBA developer to update" +
                         " the online data.");
             } else {

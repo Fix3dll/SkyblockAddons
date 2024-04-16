@@ -60,7 +60,7 @@ public class LoadingException extends CustomModLoadingErrorDisplayException {
         errorScreen.drawCenteredString(fontRenderer, "Please restart your game.", xCenter, yPos, 0xFFFFFF);
         yPos += 10;
         List<String> errorPersistString = fontRenderer.listFormattedStringToWidth(String.format("If error persists after restarting, please report it at " +
-                "%shttps://discord.gg/zWyr3f5GXz.%s", BOLD, RESET), maxWidth);
+                "%shttps://github.com/Fix3dll/SkyblockAddons/issues.%s", BOLD, RESET), maxWidth);
         for (String line : errorPersistString) {
             errorScreen.drawCenteredString(fontRenderer, line, xCenter, yPos, 0xFFFFFF);
             yPos += 10;

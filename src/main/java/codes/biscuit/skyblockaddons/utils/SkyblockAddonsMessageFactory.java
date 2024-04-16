@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsTransformer;
 import org.apache.logging.log4j.message.*;
 
 /**

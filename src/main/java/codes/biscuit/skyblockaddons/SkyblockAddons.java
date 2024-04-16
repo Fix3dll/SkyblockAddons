@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons;
 
-import codes.biscuit.skyblockaddons.asm.hooks.FontRendererHook;
+import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
