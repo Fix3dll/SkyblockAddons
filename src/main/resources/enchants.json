@@ -246,6 +246,12 @@
       "maxLevel": 6,
       "nbtName": "harvesting"
     },
+    "ice cold": {
+      "goodLevel": 0,
+      "loreName": "Ice Cold",
+      "maxLevel": 5,
+      "nbtName": "ice_cold"
+    },
     "impaling": {
       "goodLevel": 3,
       "loreName": "Impaling",
@@ -323,6 +329,12 @@
       "loreName": "Overload",
       "maxLevel": 5,
       "nbtName": "overload"
+    },
+    "paleontologist": {
+      "goodLevel": 0,
+      "loreName": "Paleontologist",
+      "maxLevel": 5,
+      "nbtName": "paleontologist"
     },
     "pesterminator": {
       "goodLevel": 0,

@@ -2,15 +2,15 @@
   "bannerImageURL": null,
   "bannerLink": null,
 
-  "latestVersion": "1.8.7",
+  "latestVersion": "1.8.8",
   "latestBeta": "1.8.0-beta.1",
   "videoLink": "https://github.com/Fix3dll/SkyblockAddons/commits/main",
   "directDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
 
   "updateInfo": {
-    "latestRelease": "1.8.7",
+    "latestRelease": "1.8.8",
     "releaseDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
-    "releaseChangelog": "https://github.com/Fix3dll/SkyblockAddons/compare/912fcbd...77cae24",
+    "releaseChangelog": "https://github.com/Fix3dll/SkyblockAddons/compare/77cae24...8ea29eb",
     "releaseShowcase": "",
     "latestBeta": "1.8.0-beta.1",
     "betaDownload": "https://nightly.link/Fix3dll/SkyblockAddons/workflows/build/main/build_artifacts.zip",
@@ -95,7 +95,27 @@
       "FLAWED_OPAL_GEM",
       "FINE_OPAL_GEM",
       "FLAWLESS_OPAL_GEM",
-      "PERFECT_OPAL_GEM"
+      "PERFECT_OPAL_GEM",
+      "ROUGH_AQUAMARINE_GEM",
+      "FLAWED_AQUAMARINE_GEM",
+      "FINE_AQUAMARINE_GEM",
+      "FLAWLESS_AQUAMARINE_GEM",
+      "PERFECT_AQUAMARINE_GEM",
+      "ROUGH_CITRINE_GEM",
+      "FLAWED_CITRINE_GEM",
+      "FINE_CITRINE_GEM",
+      "FLAWLESS_CITRINE_GEM",
+      "PERFECT_CITRINE_GEM",
+      "ROUGH_ONYX_GEM",
+      "FLAWED_ONYX_GEM",
+      "FINE_ONYX_GEM",
+      "FLAWLESS_ONYX_GEM",
+      "PERFECT_ONYX_GEM",
+      "ROUGH_PERIDOT_GEM",
+      "FLAWED_PERIDOT_GEM",
+      "FINE_PERIDOT_GEM",
+      "FLAWLESS_PERIDOT_GEM",
+      "PERFECT_PERIDOT_GEM"
     ]
   },
 
