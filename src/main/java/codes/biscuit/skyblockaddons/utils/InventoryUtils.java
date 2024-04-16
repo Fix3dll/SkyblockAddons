@@ -39,23 +39,10 @@ import java.util.regex.Pattern;
 public class InventoryUtils {
     private static final Logger logger = SkyblockAddons.getLogger();
 
-    /** Slot index the SkyBlock menu is at. */
-    private static final int SKYBLOCK_MENU_SLOT = 8;
-
-    /** Display name of the Skeleton Helmet. */
-    private static final String SKELETON_HELMET_ID = "SKELETON_HELMET";
-    private static final String TOXIC_ARROW_POISON_ID = "TOXIC_ARROW_POISON";
-    private static final String TWILIGHT_ARROW_POISON_ID = "TWILIGHT_ARROW_POISON";
-
-    public static final String MADDOX_BATPHONE_ID = "AATROX_BATPHONE";
-    public static final String JUNGLE_AXE_ID = "JUNGLE_AXE";
-    public static final String TREECAPITATOR_ID = "TREECAPITATOR_AXE";
-    public static final String CHICKEN_HEAD_ID = "CHICKEN_HEAD";
-    public static final HashSet<String> BAT_PERSON_SET_IDS = new HashSet<>(Arrays.asList("BAT_PERSON_BOOTS", "BAT_PERSON_LEGGINGS", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_HELMET"));
-    public static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
-
+    public static final HashSet<String> BAT_PERSON_SET_IDS = new HashSet<>(
+            Arrays.asList("BAT_PERSON_BOOTS", "BAT_PERSON_LEGGINGS", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_HELMET")
+    );
     private static final Pattern REVENANT_UPGRADE_PATTERN = Pattern.compile("Next Upgrade: \\+([0-9]+❈) \\(([0-9,]+)/([0-9,]+)\\)");
-
     private List<ItemStack> previousInventory;
     private final Multimap<String, ItemDiff> itemPickupLog = ArrayListMultimap.create();
 
@@ -126,7 +113,7 @@ public class InventoryUtils {
         if (previousInventory != null) {
 
             for(int i = 0; i < newInventory.size(); i++) {
-                if (i == SKYBLOCK_MENU_SLOT) { // Skip the SkyBlock Menu slot altogether (which includes the Quiver Arrow now)
+                if (i == 8) { // Skip the SkyBlock Menu slot altogether (which includes the Quiver Arrow now)
                     continue;
                 }
 
@@ -309,7 +296,7 @@ public class InventoryUtils {
     public void checkIfWearingSkeletonHelmet(EntityPlayerSP p) {
         if (main.getConfigValues().isEnabled(Feature.SKELETON_BAR)) {
             ItemStack item = p.getEquipmentInSlot(4);
-            if (item != null && SKELETON_HELMET_ID.equals(ItemUtils.getSkyblockItemID(item))) {
+            if (item != null && "SKELETON_HELMET".equals(ItemUtils.getSkyblockItemID(item))) {
                 wearingSkeletonHelmet = true;
                 return;
             }
@@ -327,11 +314,11 @@ public class InventoryUtils {
             for (ItemStack item : p.inventory.mainInventory) {
                 if (item != null) {
                     String itemID = ItemUtils.getSkyblockItemID(item);
-                    if (TOXIC_ARROW_POISON_ID.equals(itemID)) {
+                    if ("TOXIC_ARROW_POISON".equals(itemID)) {
                         this.usingToxicArrowPoison = true;
                         this.usingTwilightArrowPoison = false;
                         return;
-                    } else if (TWILIGHT_ARROW_POISON_ID.equals(itemID)) {
+                    } else if ("TWILIGHT_ARROW_POISON".equals(itemID)) {
                         this.usingToxicArrowPoison = false;
                         this.usingTwilightArrowPoison = true;
                         return;

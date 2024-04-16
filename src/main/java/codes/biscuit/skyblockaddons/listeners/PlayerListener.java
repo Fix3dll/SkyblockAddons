@@ -372,7 +372,7 @@ public class PlayerListener {
 
             } else if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS) &&
                     unformattedText.equals("You laid an egg!")) { // Put the Chicken Head on cooldown for 20 seconds when the player lays an egg.
-                CooldownManager.put(InventoryUtils.CHICKEN_HEAD_ID);
+                CooldownManager.put("CHICKEN_HEAD");
 
             } else if (main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) &&
                     formattedText.startsWith("§r§eYou added a minute of rain!")) {
@@ -606,7 +606,7 @@ public class PlayerListener {
                 if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
                     String itemId = ItemUtils.getSkyblockItemID(heldItem);
                     // Grappling hook cool-down
-                    if (itemId != null && itemId.equals(InventoryUtils.GRAPPLING_HOOK_ID) && mc.thePlayer.fishEntity != null) {
+                    if (itemId != null && itemId.equals("GRAPPLING_HOOK") && mc.thePlayer.fishEntity != null) {
                         boolean wearingFullBatPerson = InventoryUtils.isWearingFullSet(mc.thePlayer, InventoryUtils.BAT_PERSON_SET_IDS);
                         int cooldownTime = wearingFullBatPerson ? 0 : CooldownManager.getItemCooldown(itemId);
                         CooldownManager.put(itemId, cooldownTime);
@@ -1261,8 +1261,7 @@ public class PlayerListener {
             if (itemId == null) return;
 
             Block block = blockState.getBlock();
-            if ((itemId.equals(InventoryUtils.JUNGLE_AXE_ID) || itemId.equals(InventoryUtils.TREECAPITATOR_ID))
-                    && (block.equals(Blocks.log) || block.equals(Blocks.log2))) {
+            if ((itemId.equals("JUNGLE_AXE") || itemId.equals("TREECAPITATOR_AXE")) && (block.equals(Blocks.log) || block.equals(Blocks.log2))) {
                 // Weirdly, the level 100 leg monkey doesn't seem to be a full 50% reduction when accounting for break time
                 float multiplier = main.getConfigValues().isEnabled(Feature.LEG_MONKEY_LEVEL_100) ? .6F : 1;
                 long cooldownTime = (long) (CooldownManager.getItemCooldown(itemId) * multiplier);

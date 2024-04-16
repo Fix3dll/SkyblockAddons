@@ -83,7 +83,6 @@ public class RenderListener {
     private static final ResourceLocation BARS = new ResourceLocation("skyblockaddons", "barsV2.png");
     private static final ResourceLocation DEFENCE_VANILLA = new ResourceLocation("skyblockaddons", "defence.png");
     private static final ResourceLocation TICKER_SYMBOL = new ResourceLocation("skyblockaddons", "ticker.png");
-
     private static final ResourceLocation ENDERMAN_ICON = new ResourceLocation("skyblockaddons", "icons/enderman.png");
     private static final ResourceLocation ENDERMAN_GROUP_ICON = new ResourceLocation("skyblockaddons", "icons/endermangroup.png");
     private static final ResourceLocation SIRIUS_ICON = new ResourceLocation("skyblockaddons", "icons/sirius.png");
@@ -97,19 +96,6 @@ public class RenderListener {
     private static final ResourceLocation RIFTSTALKER_BLOODFIEND = new ResourceLocation("skyblockaddons", "vampire.png");
 
     private static final ItemStack WATER_BUCKET = new ItemStack(Items.water_bucket);
-    private static final ItemStack IRON_SWORD = new ItemStack(Items.iron_sword);
-    private static final ItemStack WARP_SKULL = ItemUtils.createSkullItemStack(
-            "§bFast Travel"
-            , null
-            , "9ae837fc-19da-3841-af06-7db55d51c815"
-            , "c9c8881e42915a9d29bb61a16fb26d059913204d265df5b439b3d792acd56"
-    );
-    private static final ItemStack SKYBLOCK_MENU = ItemUtils.createItemStack(
-            Items.nether_star
-            , "§aSkyBlock Menu §7(Click)"
-            , "SKYBLOCK_MENU"
-            , false
-    );
     private static final ItemStack ROCK_PET = ItemUtils.createSkullItemStack(
             "§f§f§7[Lvl 100] §6Rock"
             , null
@@ -174,6 +160,7 @@ public class RenderListener {
 
     @Setter private boolean updateMessageDisplayed;
 
+    @Setter
     private Feature subtitleFeature;
     @Getter @Setter private Feature titleFeature;
 
@@ -185,6 +172,7 @@ public class RenderListener {
     @Setter private SkillType skill;
     @Setter private String skillText;
 
+    @Setter
     private EnumUtils.GUIType guiToOpen;
     private int guiPageToOpen = 1;
     private EnumUtils.GuiTab guiTabToOpen = EnumUtils.GuiTab.MAIN;
@@ -1646,12 +1634,9 @@ public class RenderListener {
 
             case THUNDER_BOTTLE_DISPLAY:
                 ItemStack thunderBottle = main.getInventoryUtils().getEmptyThunderBottle();
-
-                if (buttonLocation != null) {
-                    renderItem(thunderBottle == null ? THUNDER_IN_A_BOTTLE : thunderBottle, x, y);
-                } else if (thunderBottle != null) {
+                if (thunderBottle != null) {
                     renderItem(thunderBottle, x, y);
-                } else if (main.getInventoryUtils().isHaveFullThunderBottle()) {
+                } else /*buttonLocation != null || haveFullThunderBottle*/ {
                     renderItem(THUNDER_IN_A_BOTTLE, x, y);
                 }
                 FontRendererHook.setupFeatureFont(feature);
@@ -2748,10 +2733,6 @@ public class RenderListener {
     }
 
 
-    public void setGuiToOpen(EnumUtils.GUIType guiToOpen) {
-        this.guiToOpen = guiToOpen;
-    }
-
     public void setGuiToOpen(EnumUtils.GUIType guiToOpen, int page, EnumUtils.GuiTab tab) {
         this.guiToOpen = guiToOpen;
         guiPageToOpen = page;
@@ -2761,10 +2742,6 @@ public class RenderListener {
     public void setGuiToOpen(EnumUtils.GUIType guiToOpen, int page, EnumUtils.GuiTab tab, Feature feature) {
         setGuiToOpen(guiToOpen, page, tab);
         guiFeatureToOpen = feature;
-    }
-
-    public void setSubtitleFeature(Feature subtitleFeature) {
-        this.subtitleFeature = subtitleFeature;
     }
 
     public float transformXY(float xy, int widthHeight, float scale) {
