@@ -60,6 +60,10 @@ public class SkyblockAddons {
 
     public static final String MOD_ID = "sbaunofficial";
     public static final String MOD_NAME = "SkyblockAddons";
+    /**
+     * If workingOnCi x.x.x.+x else x.x.x
+     * @see "Gradle Build Script"
+     */
     public static String VERSION = "@VERSION@";
     /**
      * This is set by the CI. If the build isn't done on CI, this will be an empty string.
@@ -282,21 +286,6 @@ public class SkyblockAddons {
         String simpleClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
 
         return LogManager.getLogger(fullClassName, new SkyblockAddonsMessageFactory(simpleClassName));
-    }
-
-    /**
-     * Returns the complete SemVer version with pre-release and build number if it is defined.
-     *
-     * @return the complete SemVer version string
-     */
-    public static String getVersionFull() {
-        // Set by CI, is not actually constant
-        //noinspection ConstantConditions
-        if (!SkyblockAddons.BUILD_NUMBER.isEmpty() && !SkyblockAddons.BUILD_NUMBER.equals(String.valueOf(0))) {
-            return SkyblockAddons.VERSION + '+' + SkyblockAddons.BUILD_NUMBER;
-        } else {
-            return SkyblockAddons.VERSION;
-        }
     }
 
     public static void runAsync(Runnable runnable) {

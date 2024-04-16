@@ -271,7 +271,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                     }
                 }
             } else if (args[0].equalsIgnoreCase("version")) {
-                String versionString = getMessage("messages.version") + " v" + SkyblockAddons.getVersionFull();
+                String versionString = getMessage("messages.version") + " v" + SkyblockAddons.VERSION;
                 ChatComponentText versionChatComponent = new ChatComponentText(versionString);
                 ChatStyle versionChatStyle = new ChatStyle().setColor(EnumChatFormatting.AQUA)
                         .setChatHoverEvent(
@@ -282,7 +282,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                                         ).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE))
                                 )
                         ).setChatClickEvent(
-                                new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, SkyblockAddons.getVersionFull())
+                                new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, SkyblockAddons.VERSION)
                         );
                 versionChatComponent.setChatStyle(versionChatStyle);
 
