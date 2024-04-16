@@ -76,6 +76,13 @@ public enum Location {
     DIAMOND_RESERVE("Diamond Reserve", "deep-caverns"),
     OBSIDIAN_SANCTUARY("Obsidian Sanctuary", "deep-caverns"),
 
+    // Mineshaft
+    DWARVEN_BASE_CAMP("Dwarven Base Camp"),
+    FOSSIL_RESEARCH_CENTER("Fossil Research Center"),
+    GLACITE_TUNNELS("Glacite Tunnels"),
+    GLACITE_LAKE("Glacite Lake"),
+    GLACITE_MINESHAFTS("Glacite Mineshafts"),
+
     // https://wiki.hypixel.net/Dwarven_Mines#Zones
     DWARVEN_MINES("Dwarven Mines"),
     ARISTOCRAT_PASSAGE("Aristocrat Passage"),
