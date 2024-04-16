@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.utils.ReturnValue;
+import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.EntityRendererHook;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.EntityLivingBase;

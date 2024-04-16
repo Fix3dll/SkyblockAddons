@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.utils;
+package codes.biscuit.skyblockaddons.utils.objects;
 
 public class Pair<K, V> {
     private K key;

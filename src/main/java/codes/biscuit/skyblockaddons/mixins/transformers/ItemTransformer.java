@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.utils.ReturnValue;
+import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.ItemHook;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

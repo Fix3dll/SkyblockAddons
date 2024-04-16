@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
-import codes.biscuit.skyblockaddons.utils.ReturnValue;
+import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import org.spongepowered.asm.mixin.Mixin;

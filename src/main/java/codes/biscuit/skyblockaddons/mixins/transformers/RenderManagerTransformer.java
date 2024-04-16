@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.utils.ReturnValue;
+import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.RenderManagerHook;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.RenderManager;

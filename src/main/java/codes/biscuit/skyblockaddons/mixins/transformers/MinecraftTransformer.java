@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.utils.ReturnValue;
+import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.MinecraftHook;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
