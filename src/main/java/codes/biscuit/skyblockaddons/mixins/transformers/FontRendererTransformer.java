@@ -54,7 +54,7 @@ public abstract class FontRendererTransformer {
     public void toggleChromaCondition(String text, boolean shadow, CallbackInfo ci, int i, char c0, int i1) {
         SkyblockAddons main = SkyblockAddons.getInstance();
         if (!main.getUtils().isOnSkyblock()) return;
-        if (main.getConfigValues().isDisabled(Feature.TURN_ALL_FEATURES_CHROMA) || !FontRendererHook.shouldManuallyRecolorFont())
+        if (main.getConfigValues().isDisabled(Feature.TURN_ALL_FEATURES_CHROMA) && !FontRendererHook.shouldManuallyRecolorFont())
             return;
 
         if (i1 == 22) {
