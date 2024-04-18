@@ -54,9 +54,10 @@ blossom {
 loom {
     runConfigs {
         getByName("client") {
+            vmArg("-Xmx3G")
             property("mixin.debug", "true")
             property("devauth.enabled", "true")
-            programArgs("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
+            programArg("--tweakClass org.spongepowered.asm.launch.MixinTweaker")
             if (SystemUtils.IS_OS_MAC_OSX) {
                 // This argument causes a crash on macOS
                 vmArgs.remove("-XstartOnFirstThread")

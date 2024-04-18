@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.utils.data.requests;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.OnlineData;
+import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
 
@@ -10,7 +10,12 @@ import java.util.concurrent.ExecutionException;
 
 public class OnlineDataRequest extends RemoteFileRequest<OnlineData> {
     public OnlineDataRequest() {
-        super("skyblockaddons/data.json", new JSONResponseHandler<>(OnlineData.class));
+        super(
+                "skyblockaddons/data.json"
+                , new JSONResponseHandler<>(OnlineData.class)
+//                , false
+//                , true
+        );
     }
 
     @Override

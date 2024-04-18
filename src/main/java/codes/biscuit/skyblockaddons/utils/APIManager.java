@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class APIManager {
 
     private static final APIManager INSTANCE = new APIManager();
@@ -45,14 +46,14 @@ public class APIManager {
     }
 
     public void pullPlayer(String uuid) {
-        logger.info("Grabbing player API data for UUID " + uuid + "...");
+        logger.info("Grabbing player API data for UUID {}...", uuid);
         try {
             URL url = new URL(String.format(PLAYER, uuid));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", Utils.USER_AGENT);
 
-            logger.info("Got response code " + connection.getResponseCode());
+            logger.info("Got response code {}", connection.getResponseCode());
 
             PlayerData playerData = SkyblockAddons.getGson().fromJson(new InputStreamReader(connection.getInputStream()), PlayerData.class);
             connection.disconnect();
@@ -68,14 +69,14 @@ public class APIManager {
     }
 
     public void pullProfiles(String uuid, String profileName) {
-        logger.info("Grabbing player's profiles API data for UUID " + uuid + " & profile name " + profileName + "...");
+        logger.info("Grabbing player's profiles API data for UUID {} & profile name {}...", uuid, profileName);
         try {
             URL url = new URL(String.format(SKYBLOCK_PROFILES, uuid));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", Utils.USER_AGENT);
 
-            logger.info("Got response code " + connection.getResponseCode());
+            logger.info("Got response code {}", connection.getResponseCode());
 
             Map<String, Profile> profiles = SkyblockAddons.getGson().fromJson(new InputStreamReader(connection.getInputStream()), new TypeToken<HashMap<String, Profile>>(){}.getType());
             connection.disconnect();
@@ -85,13 +86,13 @@ public class APIManager {
                 Profile profile = entry.getValue();
 
                 if (profileName.equals(profile.getCute_name())) {
-                    logger.info("Found profile matching " + profileName + " with ID " + profileID + "! Pulling profile data...");
+                    logger.info("Found profile matching {} with ID {}! Pulling profile data...", profileName, profileID);
                     pullProfileData(uuid, profileID);
                     return;
                 }
             }
 
-            logger.info("Did not find profile matching " + profileName + "!");
+            logger.info("Did not find profile matching {}!",profileName);
 
         } catch (Exception ex) {
             logger.warn("Failed to grab player's profiles API data!");
