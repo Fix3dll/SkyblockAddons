@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.transformers;
 
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -19,7 +20,6 @@ import java.io.IOException;
 @Mixin(GuiChest.class)
 public abstract class GuiChestTransformer extends GuiContainer {
     @Shadow public IInventory lowerChestInventory;
-    @Shadow private IInventory upperChestInventory;
 
     public GuiChestTransformer(Container inventorySlotsIn) {
         super(inventorySlotsIn);
@@ -30,13 +30,14 @@ public abstract class GuiChestTransformer extends GuiContainer {
         GuiChestHook.color(1.0F, 1.0F, 1.0F, 1.0F, this.lowerChestInventory);
     }
 
-    @SuppressWarnings("UnreachableCode")
-    @Inject(method = "drawGuiContainerForegroundLayer", at = @At("HEAD"), cancellable = true)
-    private void drawGuiContainerForegroundLayer(int mouseX, int mouseY, CallbackInfo ci) {
+    @Inject(method = "drawGuiContainerForegroundLayer", at = @At("HEAD"))
+    private void renderChestForegroundLayer(int mouseX, int mouseY, CallbackInfo ci) {
         GuiChestHook.onRenderChestForegroundLayer((GuiChest) (Object) this);
-        GuiChestHook.drawString(this.fontRendererObj, this.lowerChestInventory.getDisplayName().getUnformattedText(), 8, 6, 4210752);
-        GuiChestHook.drawString(this.fontRendererObj, this.upperChestInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
-        ci.cancel();
+    }
+
+    @Redirect(method = "drawGuiContainerForegroundLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
+    private int GuiChestHook_drawString(FontRenderer instance, String text, int x, int y, int color) {
+        return GuiChestHook.drawString(instance, text, x, y, color);
     }
 
     @Override
