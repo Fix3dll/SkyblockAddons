@@ -31,6 +31,9 @@ public class SkyblockAddonsGui extends GuiScreen {
 
     public static final ResourceLocation LOGO = new ResourceLocation("skyblockaddons", "logo.png");
     public static final ResourceLocation LOGO_GLOW = new ResourceLocation("skyblockaddons", "logoglow.png");
+    private static final String FORMATTED_VERSION = "v" + SkyblockAddons.VERSION
+            .replace("+" + SkyblockAddons.BUILD_NUMBER, "")
+            .replace("beta", "b") + " unofficial";
 
     public static final int BUTTON_MAX_WIDTH = 140;
 
@@ -110,10 +113,10 @@ public class SkyblockAddonsGui extends GuiScreen {
         max = features.size() - skip - displayCount <= 0;
         buttonList.add(new ButtonArrow(width / 2 - 15 + 50, height - 70, main, ButtonArrow.ArrowType.RIGHT, max));
 
-        //buttonList.add(new ButtonSocial(width / 2 + 200, 30, main, EnumUtils.Social.YOUTUBE));
         //buttonList.add(new ButtonSocial(width / 2 + 175, 30, main, EnumUtils.Social.DISCORD));
+        buttonList.add(new ButtonSocial(width / 2 + 125, 30, main, EnumUtils.Social.MODRINTH));
         buttonList.add(new ButtonSocial(width / 2 + 150, 30, main, EnumUtils.Social.GITHUB));
-        // buttonList.add(new ButtonSocial(width / 2 + 125, 30, main, EnumUtils.Social.PATREON));
+        buttonList.add(new ButtonSocial(width / 2 + 175, 30, main, EnumUtils.Social.BUYMEACOFFEE));
 
         for (Feature feature : features) {
             if (skip == 0) {
@@ -355,8 +358,7 @@ public class SkyblockAddonsGui extends GuiScreen {
         DrawUtils.drawModalRectWithCustomSizedTexture(scaledResolution.getScaledWidth()/2F-width/2F, 5, 0, 0, width, height, width, height, true);
 
         GlStateManager.color(1,1,1, 1);
-        String version = "v" + SkyblockAddons.VERSION.replace("beta", "b") + " unofficial";
-        drawScaledString(gui, version, 55, defaultBlue, 1.3, 170 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(version), false);
+        drawScaledString(gui, FORMATTED_VERSION, 55, defaultBlue, 1.3, 170 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(FORMATTED_VERSION), false);
 
         SkyblockAddons.getInstance().getUtils().restoreGLOptions();
     }
@@ -415,7 +417,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                 buttonList.add(new ButtonCredit(coords.getX(), coords.getY(), text, credit, feature, button.isMultilineButton()));
             }
 
-            if (feature.getSettings().size() > 0) {
+            if (!feature.getSettings().isEmpty()) {
                 buttonList.add(new ButtonSettings(x + boxWidth - 33, y + boxHeight - 20, text, main, feature));
             }
             buttonList.add(new ButtonToggle(x+40, y+boxHeight-18, main, feature));

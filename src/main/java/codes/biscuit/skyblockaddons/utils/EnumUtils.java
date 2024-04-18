@@ -14,6 +14,7 @@ import java.util.Set;
 
 public class EnumUtils {
 
+    @Getter
     public enum AnchorPoint {
 
         TOP_LEFT(0),
@@ -22,7 +23,6 @@ public class EnumUtils {
         BOTTOM_RIGHT(3),
         BOTTOM_MIDDLE(4);
 
-        @Getter
         private final int id;
 
         AnchorPoint(int id) {
@@ -358,9 +358,9 @@ public class EnumUtils {
 
     @Getter
     public enum Social {
-        GITHUB("github", "https://github.com/Fix3dll/SkyblockAddons");
-        // Patreon removed due to ending of private betas
-        // PATREON("patreon", "https://www.patreon.com/biscuitdev");
+        GITHUB("github", "https://github.com/Fix3dll/SkyblockAddons"),
+        MODRINTH("modrinth", "https://modrinth.com/mod/skyblockaddons-unofficial"),
+        BUYMEACOFFEE("buymeacoffee", "https://www.buymeacoffee.com/fix3dll");
 
         private final ResourceLocation resourceLocation;
         private URI url;
