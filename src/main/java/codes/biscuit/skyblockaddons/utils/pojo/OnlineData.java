@@ -1,5 +1,6 @@
-package codes.biscuit.skyblockaddons.core;
+package codes.biscuit.skyblockaddons.utils.pojo;
 
+import codes.biscuit.skyblockaddons.core.ItemRarity;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -12,9 +13,7 @@ public class OnlineData {
 
     private String bannerImageURL;
     private String bannerLink;
-
     private UpdateInfo updateInfo;
-
     private String languageJSONFormat;
 
     /**
@@ -31,19 +30,26 @@ public class OnlineData {
      * versions is not supported.
      */
     private HashMap<String, List<Integer>> disabledFeatures;
-
     private DropSettings dropSettings;
-
     private HashSet<Pattern> hypixelBrands;
 
     @Getter
-    public static class DropSettings {
+    public static class UpdateInfo {
+        private String latestRelease;
+        private String releaseDownload;
+        private String releaseChangelog;
+        private String releaseShowcase;
+        private String latestBeta;
+        private String betaDownload;
+        private String betaChangelog;
+        private String betaShowcase;
+    }
 
+    @Getter
+    public static class DropSettings {
         private ItemRarity minimumInventoryRarity;
         private ItemRarity minimumHotbarRarity;
-
         private List<String> dontDropTheseItems;
-
         private List<String> allowDroppingTheseItems;
     }
 }

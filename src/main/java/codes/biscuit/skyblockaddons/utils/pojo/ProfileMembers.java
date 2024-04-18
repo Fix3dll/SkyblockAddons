@@ -5,6 +5,7 @@ import lombok.Getter;
 import java.util.HashMap;
 
 @Getter
+@Deprecated
 public class ProfileMembers {
 
     private HashMap<String, MemberData> members;
