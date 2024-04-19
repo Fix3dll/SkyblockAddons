@@ -5,6 +5,7 @@ import lombok.Getter;
 
 /**
  * Skyblock item rarity definitions
+ * @see <a href="https://wiki.hypixel.net/Rarity">https://wiki.hypixel.net/Rarity</a>
  */
 @Getter
 public enum ItemRarity {
@@ -16,11 +17,9 @@ public enum ItemRarity {
     LEGENDARY("LEGENDARY", ColorCode.GOLD),
     MYTHIC("MYTHIC", ColorCode.LIGHT_PURPLE),
     DIVINE("DIVINE", ColorCode.AQUA),
-
     SPECIAL("SPECIAL", ColorCode.RED),
     VERY_SPECIAL("VERY SPECIAL", ColorCode.RED),
-
-    //Admin Rarity Exists on the Wiki (wiki.hypixel.net/Rarity)
+    ULTIMATE("ULTIMATE", ColorCode.DARK_RED),
     ADMIN("ADMIN", ColorCode.DARK_RED);
 
     /** The name of the rarity as displayed in an item's lore */

@@ -20,7 +20,7 @@ public class ManualChromaManager {
     @Getter @Setter private static boolean coloringTextChroma;
     @Getter private static float featureScale;
 
-    private static float[] defaultColorHSB = {0, 0.75F, 0.9F};
+    private static final float[] defaultColorHSB = {0, 0.75F, 0.9F};
 
     /**
      * Before rending a string that supports chroma, call this method so it marks the text

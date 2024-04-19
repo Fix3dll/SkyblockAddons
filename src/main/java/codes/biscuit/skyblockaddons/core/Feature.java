@@ -308,7 +308,7 @@ public enum Feature {
     private static final Set<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE, WARNING_TIME, CHROMA_SPEED, CHROMA_MODE,
             CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION, CHROMA_BRIGHTNESS, USE_NEW_CHROMA_EFFECT, NUMBER_SEPARATORS, DEVELOPER_MODE));
 
-    private static final int ID_AT_PREVIOUS_UPDATE = 199;
+    private static final int ID_AT_PREVIOUS_UPDATE = 222;
 
     private final int id;
     private final List<EnumUtils.FeatureSetting> settings;
