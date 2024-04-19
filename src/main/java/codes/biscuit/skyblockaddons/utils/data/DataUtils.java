@@ -156,6 +156,15 @@ public class DataUtils {
         // Localized Strings
         loadLocalizedStrings(false);
 
+        // Default language en_US
+        try (   InputStream inputStream = DataUtils.class.getClassLoader().getResourceAsStream("lang/en_US.json");
+                InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
+                        StandardCharsets.UTF_8)){
+            Translations.setDefaultLangJson(gson.fromJson(inputStreamReader, JsonObject.class));
+        } catch (Exception ex) {
+           handleLocalFileReadException(path,ex);
+        }
+
         // Containers
         path = "/containers.json";
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
@@ -372,9 +381,11 @@ public class DataUtils {
             }
 
             ChatComponentText failureMessageComponent = new ChatComponentText(
-                    Translations.getMessage("messages.fileFetchFailed", EnumChatFormatting.AQUA
-                                    + SkyblockAddons.MOD_NAME + EnumChatFormatting.RED,
-                            failedRequests.size()));
+                    Translations.getMessage(
+                            "messages.fileFetchFailed",
+                            EnumChatFormatting.AQUA + SkyblockAddons.MOD_NAME + EnumChatFormatting.RED, failedRequests.size()
+                    )
+            );
             IChatComponent buttonRowComponent = new ChatComponentText("[" + Translations.getMessage("messages.copy") + "]")
                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE).setChatClickEvent(
                             new ClickEvent(
