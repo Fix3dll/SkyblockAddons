@@ -16,7 +16,7 @@ public class GuiFeatureData {
      *
      * Colors that cannot be used include other hex colors such as #FF00FF.
      */
-    private boolean colorsRestricted;
+    private final boolean colorsRestricted;
 
     public GuiFeatureData(ColorCode defaultColor) {
         this(defaultColor, false);

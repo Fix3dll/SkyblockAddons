@@ -28,7 +28,7 @@ public class NPCUtils {
 
     private static final int HIDE_RADIUS_SQUARED = (int) Math.round(2.5 * 2.5);
 
-    @Getter private static Map<UUID, Vec3> npcLocations = new HashMap<>();
+    @Getter private static final Map<UUID, Vec3> npcLocations = new HashMap<>();
 
     /**
      * Checks if the NPC is a merchant with both buying and selling capabilities

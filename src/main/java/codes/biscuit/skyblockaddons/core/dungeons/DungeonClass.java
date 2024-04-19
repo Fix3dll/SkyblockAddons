@@ -5,17 +5,18 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+@Getter
 public enum DungeonClass {
 
     HEALER(Items.potionitem, "Healer"),
     ARCHER(Items.bow, "Archer"),
     TANK(Items.leather_chestplate, "Tank"),
     MAGE(Items.blaze_rod, "Mage"),
-    BERSERKER(Items.iron_sword, "Berserk");
+    BERSERK(Items.iron_sword, "Berserk");
 
-    @Getter private char firstLetter;
-    @Getter private ItemStack item;
-    @Getter private String chatDisplayName; // The way Hypixel writes it out in chat
+    private final char firstLetter;
+    private final ItemStack item;
+    private final String chatDisplayName; // The way Hypixel writes it out in chat
 
     DungeonClass(Item item, String chatDisplayName) {
         this.firstLetter = this.name().charAt(0);

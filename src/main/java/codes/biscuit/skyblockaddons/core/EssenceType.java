@@ -2,7 +2,6 @@ package codes.biscuit.skyblockaddons.core;
 
 import lombok.Getter;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Locale;
 
@@ -17,11 +16,11 @@ public enum EssenceType {
     UNDEAD,
     WITHER;
 
-    private String niceName;
-    private ResourceLocation resourceLocation;
+    private final String niceName;
+    private final ResourceLocation resourceLocation;
 
     EssenceType() {
-        niceName = WordUtils.capitalizeFully(this.name());
+        niceName = this.name().charAt(0) + this.name().substring(1).toLowerCase(Locale.ENGLISH);
         resourceLocation = new ResourceLocation("skyblockaddons", "essences/" + this.name().toLowerCase(Locale.US) + ".png");
     }
 
