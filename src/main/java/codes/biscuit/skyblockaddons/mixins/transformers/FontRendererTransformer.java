@@ -1,7 +1,5 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import net.minecraft.client.gui.FontRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -47,19 +45,13 @@ public abstract class FontRendererTransformer {
     }
 
     /**
-     * Inject call to {@link FontRendererHook#toggleChromaOn()} to check for Z color code index and if so,
+     * Inject call to {@link FontRendererHook#toggleChromaOn(int i1)} to check for Z color code index and if so,
      * reset styles and toggle chroma on
      */
     @Inject(method = "renderStringAtPos", at = @At(value = "INVOKE", target = "Ljava/lang/String;indexOf(I)I", ordinal = 0, shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD)
     public void toggleChromaCondition(String text, boolean shadow, CallbackInfo ci, int i, char c0, int i1) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        if (!main.getUtils().isOnSkyblock()) return;
-        if (main.getConfigValues().isDisabled(Feature.TURN_ALL_FEATURES_CHROMA) && !FontRendererHook.shouldManuallyRecolorFont())
-            return;
-
-        if (i1 == 22) {
+        if (FontRendererHook.toggleChromaOn(i1)) {
             this.resetStyles();
-            FontRendererHook.toggleChromaOn();
         }
     }
 

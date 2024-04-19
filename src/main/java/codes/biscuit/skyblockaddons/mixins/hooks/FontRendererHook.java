@@ -24,7 +24,7 @@ public class FontRendererHook {
     private static boolean modInitialized = false;
 
     public static void changeTextColor() {
-        if (shouldRenderChroma() && currentDrawState != null && currentDrawState.shouldManuallyRecolorFont()) {
+        if (shouldRenderChroma()) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
@@ -103,10 +103,12 @@ public class FontRendererHook {
     /**
      * Called to turn chroma on
      */
-    public static void toggleChromaOn() {
-        if (shouldRenderChroma()) {
+    public static boolean toggleChromaOn(int i1) {
+        if (shouldRenderChroma() && i1 == 22) {
             currentDrawState.newColorEnv().bindActualColor();
+            return true;
         }
+        return false;
     }
 
     /**
@@ -142,17 +144,15 @@ public class FontRendererHook {
         modInitialized = true;
     }
 
-    public static boolean shouldManuallyRecolorFont() {
-        return currentDrawState.shouldManuallyRecolorFont();
-    }
-
     /**
      * Returns whether the methods for rendering chroma text should be run. They should be run only while the mod is
      * fully initialized and the player is playing Skyblock.
      *
      * @return {@code true} when the mod is fully initialized and the player is in Skyblock, {@code false} otherwise
      */
-    private static boolean shouldRenderChroma() {
-        return modInitialized && SkyblockAddons.getInstance().getUtils().isOnSkyblock();
+    public static boolean shouldRenderChroma() {
+        SkyblockAddons main = SkyblockAddons.getInstance();
+        return modInitialized && main.getUtils().isOnSkyblock() && currentDrawState != null
+                && (currentDrawState.shouldManuallyRecolorFont() || main.getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA));
     }
 }

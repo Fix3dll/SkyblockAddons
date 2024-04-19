@@ -1,7 +1,5 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -15,8 +13,7 @@ public class PatcherFontRendererTransformer {
 
     @Inject(method = "renderStringAtPos(Ljava/lang/String;Z)Z", at = @At("HEAD"), cancellable = true)
     public void overridePatcherFontRenderer(String string, boolean shadow, CallbackInfoReturnable<Boolean> cir) {
-        if (SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA)
-                || FontRendererHook.shouldManuallyRecolorFont()) {
+        if (FontRendererHook.shouldRenderChroma()) {
             cir.cancel();
             cir.setReturnValue(false);
         }
