@@ -12,9 +12,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiContainer.class)
-public class GuiContainerTransformer {
+public abstract class GuiContainerTransformer {
 
     @Shadow private Slot theSlot;
+
+    @Shadow protected abstract void drawSlot(Slot slotIn);
 
     @Inject(method = "drawScreen", at = @At(value = "CONSTANT", args = "intValue=240", ordinal = 1, shift = At.Shift.AFTER))
     private void setLastSlot(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
@@ -26,9 +28,10 @@ public class GuiContainerTransformer {
         GuiContainerHook.drawGradientRect(instance, left, top, right, bottom, startColor, endColor, this.theSlot);
     }
 
-    @Inject(method = "drawScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/inventory/GuiContainer;drawSlot(Lnet/minecraft/inventory/Slot;)V", shift = At.Shift.AFTER))
-    private void drawSlot(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
-        GuiContainerHook.drawSlot((GuiContainer) (Object) this, this.theSlot);
+    @Redirect(method = "drawScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/inventory/GuiContainer;drawSlot(Lnet/minecraft/inventory/Slot;)V"))
+    private void GuiContainerHook_drawSlot(GuiContainer instance, Slot slot) {
+        this.drawSlot(slot);
+        GuiContainerHook.drawSlot((GuiContainer) (Object) this, slot);
     }
 
     @Inject(method = "drawScreen", at = @At("RETURN"))

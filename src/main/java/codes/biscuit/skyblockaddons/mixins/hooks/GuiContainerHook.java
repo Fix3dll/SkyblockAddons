@@ -19,7 +19,6 @@ public class GuiContainerHook {
 
     private static final ResourceLocation LOCK = new ResourceLocation("skyblockaddons", "lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
-    private static final int OVERLAY_GREEN = ColorCode.GREEN.getColor(127);
 
     public static void keyTyped(int keyCode) {
         ContainerPreviewManager.onContainerKeyTyped(keyCode);
@@ -64,8 +63,7 @@ public class GuiContainerHook {
         Container container = mc.thePlayer.openContainer;
 
         if (slot != null) {
-            if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) &&
-                    main.getUtils().isOnSkyblock()) {
+            if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && main.getUtils().isOnSkyblock()) {
                 int slotNum = slot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
                 if (main.getConfigValues().getLockedSlots().contains(slotNum)
                         && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
@@ -129,8 +127,8 @@ public class GuiContainerHook {
      */
     public static boolean onHandleMouseClick(Slot slot, int slotId, int clickedButton, int clickType) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        return slot != null && slot.getHasStack() && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) &&
-                main.getUtils().isEmptyGlassPane(slot.getStack()) && main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() &&
-                (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getStack(), EnumDyeColor.BLACK));
+        return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.getHasStack()
+                && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(slot.getStack())
+                && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getStack(), EnumDyeColor.BLACK));
     }
 }
