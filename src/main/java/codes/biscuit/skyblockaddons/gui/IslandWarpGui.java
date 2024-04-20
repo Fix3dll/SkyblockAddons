@@ -357,9 +357,10 @@ public class IslandWarpGui extends GuiScreen {
 
         DEEP_CAVERNS("deep", getMessage("warpMenu.spawn"), Island.DEEP_CAVERNS, true, 97, 213),
         DWARVEN_MINES("mines", "Dwarven Mines", Island.DEEP_CAVERNS, false, 280, 205),
-        DWARVEN_FORGE("forge", "Forge", Island.DEEP_CAVERNS, true, 260, 280),
-        CRYSTAL_HOLLOWS("crystals", "Crystal Hollows", Island.DEEP_CAVERNS, true, 220, 350),
-        CRYSTAL_NUCLEUS("nucleus", "Crystal Nucleus", Island.DEEP_CAVERNS, true, 170, 380),
+        DWARVEN_FORGE("forge", "Forge", Island.DEEP_CAVERNS, true, 280, 280),
+        DWARVEN_BASE_CAMP("base", "Dwarven Base Camp", Island.DEEP_CAVERNS, true, 240, 330),
+        CRYSTAL_HOLLOWS("crystals", "Crystal Hollows", Island.DEEP_CAVERNS, true, 190, 360),
+        CRYSTAL_NUCLEUS("nucleus", "Crystal Nucleus", Island.DEEP_CAVERNS, true, 140, 390),
 
         DUNGEON_HUB_ISLAND("dungeon_hub", getMessage("warpMenu.spawn"), Island.DUNGEON_HUB, false, 35, 80),
         ;
