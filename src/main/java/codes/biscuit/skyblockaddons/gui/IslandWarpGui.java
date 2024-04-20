@@ -3,11 +3,11 @@ package codes.biscuit.skyblockaddons.gui;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
-import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonToggleNew;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandButton;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandMarkerButton;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -21,9 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.EnumMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static codes.biscuit.skyblockaddons.core.Translations.*;
 
@@ -37,45 +35,24 @@ public class IslandWarpGui extends GuiScreen {
     public static float SHIFT_LEFT;
     public static float SHIFT_TOP;
 
-    @Getter
-    private final Map<IslandWarpGui.Marker, IslandWarpGui.UnlockedStatus> markers;
-
     private Marker selectedMarker;
 
     public static float ISLAND_SCALE;
 
     public IslandWarpGui() {
         super();
-
-        // TODO proper solution to UNLOCKED status (could be deprecated)
-        markers = new EnumMap<>(Marker.class);
-        for (Marker marker : Marker.values()) {
-            markers.put(marker, UnlockedStatus.UNLOCKED);
-        }
     }
 
     @Override
     public void initGui() {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        Map<Island, UnlockedStatus> islands = new EnumMap<>(Island.class);
 
-        for (Map.Entry<Marker, UnlockedStatus> marker : markers.entrySet()) {
-            Island island = marker.getKey().getIsland();
-            UnlockedStatus currentStatus = islands.get(island);
-            UnlockedStatus newStatus = marker.getValue();
-
+        for (Island island : Island.values()) {
             if (island == Island.JERRYS_WORKSHOP
                     && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER) {
                 continue;
             }
-
-            if (currentStatus == null || newStatus.ordinal() > currentStatus.ordinal()) {
-                islands.put(island, newStatus);
-            }
-        }
-
-        for (Map.Entry<Island, UnlockedStatus> island : islands.entrySet()) {
-            this.buttonList.add(new IslandButton(island.getKey(), island.getValue(), markers));
+            this.buttonList.add(new IslandButton(island));
         }
 
         int screenWidth = mc.displayWidth;
@@ -198,34 +175,13 @@ public class IslandWarpGui extends GuiScreen {
 
         }
 
-        int minecraftScale = new ScaledResolution(mc).getScaleFactor();
-        float islandGuiScale = ISLAND_SCALE;
-
-        mouseX *= minecraftScale;
-        mouseY *= minecraftScale;
-
-        mouseX /= islandGuiScale;
-        mouseY /= islandGuiScale;
-
-        mouseX -= IslandWarpGui.SHIFT_LEFT;
-        mouseY -= IslandWarpGui.SHIFT_TOP;
-
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation(mouseX, mouseY);
+        super.mouseClicked(scaledMouseLocations.getKey(), scaledMouseLocations.getValue(), mouseButton);
     }
 
 
     public void detectClosestMarker(int mouseX, int mouseY) {
-        int minecraftScale = new ScaledResolution(mc).getScaleFactor();
-        float islandGuiScale = ISLAND_SCALE;
-
-        mouseX *= minecraftScale;
-        mouseY *= minecraftScale;
-
-        mouseX /= islandGuiScale;
-        mouseY /= islandGuiScale;
-
-        mouseX -= IslandWarpGui.SHIFT_LEFT;
-        mouseY -= IslandWarpGui.SHIFT_TOP;
+        Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation(mouseX, mouseY);
 
         IslandWarpGui.Marker hoveredMarker = null;
         double markerDistance = IslandMarkerButton.MAX_SELECT_RADIUS + 1;
@@ -235,7 +191,10 @@ public class IslandWarpGui extends GuiScreen {
                 IslandButton islandButton = (IslandButton) button;
 
                 for (IslandMarkerButton marker : islandButton.getMarkerButtons()) {
-                    double distance = marker.getDistance(mouseX, mouseY);
+                    double distance = marker.getDistance(
+                            scaledMouseLocations.getKey(), // x
+                            scaledMouseLocations.getValue() // y
+                    );
 
                     if (distance != -1 && distance < markerDistance) {
                         hoveredMarker = marker.getMarker();
@@ -248,6 +207,30 @@ public class IslandWarpGui extends GuiScreen {
         selectedMarker = hoveredMarker;
 
         //if (hoveredMarker != null) System.out.println(hoveredMarker.getLabel()+" "+markerDistance);
+    }
+
+    /**
+     * Returns a scaled X,Y pair after using {@link IslandWarpGui#ISLAND_SCALE} for scaling
+     * <br> See Also: {@link IslandWarpGui#SHIFT_LEFT} {@link IslandWarpGui#SHIFT_TOP}
+     * @param mouseX current mouseX
+     * @param mouseY current mouseY
+     * @return scaled X, Y {@link codes.biscuit.skyblockaddons.utils.objects.Pair}
+     */
+    @SuppressWarnings("lossy-conversions")
+    public static Pair<Integer, Integer> getScaledMouseLocation(int mouseX, int mouseY) {
+        int minecraftScale = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();
+        float islandGuiScale = IslandWarpGui.ISLAND_SCALE;
+
+        mouseX *= minecraftScale;
+        mouseY *= minecraftScale;
+
+        mouseX /= islandGuiScale;
+        mouseY /= islandGuiScale;
+
+        mouseX -= IslandWarpGui.SHIFT_LEFT;
+        mouseY -= IslandWarpGui.SHIFT_TOP;
+
+        return new Pair<>(mouseX, mouseY);
     }
 
     @Getter
@@ -276,6 +259,7 @@ public class IslandWarpGui extends GuiScreen {
         private final ResourceLocation resourceLocation;
         private BufferedImage bufferedImage;
 
+        @SuppressWarnings("lossy-conversions")
         Island(String label, int x, int y) {
             this.label = label;
             this.x = x;
@@ -383,20 +367,6 @@ public class IslandWarpGui extends GuiScreen {
             this.x = x;
             this.y = y;
             this.advanced = advanced;
-        }
-    }
-
-    @Getter
-    public enum UnlockedStatus {
-        UNKNOWN(Translations.getMessage("warpMenu.unknown")),
-        NOT_UNLOCKED(Translations.getMessage("warpMenu.notUnlocked")),
-        UNLOCKED(null),
-        ;
-
-        private final String message;
-
-        UnlockedStatus(String message) {
-            this.message = message;
         }
     }
 }

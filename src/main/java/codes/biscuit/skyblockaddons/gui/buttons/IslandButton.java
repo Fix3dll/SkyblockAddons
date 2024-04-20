@@ -2,40 +2,35 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
-import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class IslandButton extends GuiButton {
 
     @Getter private List<IslandMarkerButton> markerButtons = new ArrayList<>();
 
+    @Setter
     private boolean disableHover = false;
 
     private long startedHover = -1;
     private long stoppedHover = -1;
 
-    private IslandWarpGui.Island island;
+    private final IslandWarpGui.Island island;
 
-    private static int ANIMATION_TIME = 200;
+    private static final int ANIMATION_TIME = 200;
 
-    private IslandWarpGui.UnlockedStatus unlockedStatus;
-    private Map<IslandWarpGui.Marker, IslandWarpGui.UnlockedStatus> markers;
-
-    public IslandButton(IslandWarpGui.Island island, IslandWarpGui.UnlockedStatus unlockedStatus, Map<IslandWarpGui.Marker, IslandWarpGui.UnlockedStatus> markers) {
+    public IslandButton(IslandWarpGui.Island island) {
         super(0, island.getX(), island.getY(), island.getLabel());
 
         this.island = island;
-        this.unlockedStatus = IslandWarpGui.UnlockedStatus.UNLOCKED;
-        this.markers = markers;
 
         for (IslandWarpGui.Marker marker : IslandWarpGui.Marker.values()) {
             if (marker.getIsland() == island) {
@@ -50,17 +45,9 @@ public class IslandButton extends GuiButton {
     }
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY, boolean actuallyDraw) {
-        int minecraftScale = new ScaledResolution(mc).getScaleFactor();
-        float islandGuiScale = IslandWarpGui.ISLAND_SCALE;
-
-        mouseX *= minecraftScale;
-        mouseY *= minecraftScale;
-
-        mouseX /= islandGuiScale;
-        mouseY /= islandGuiScale;
-
-        mouseX -= IslandWarpGui.SHIFT_LEFT;
-        mouseY -= IslandWarpGui.SHIFT_TOP;
+        Pair<Integer, Integer> scaledMouseLocations = IslandWarpGui.getScaledMouseLocation(mouseX, mouseY);
+        mouseX = scaledMouseLocations.getKey();
+        mouseY = scaledMouseLocations.getValue();
 
         float x = island.getX();
         float y = island.getY();
@@ -72,45 +59,28 @@ public class IslandButton extends GuiButton {
         float expansion = 1;
         boolean hovered = false;
 
+        int hoverTime = -1;
         if (isHovering()) {
-            int hoverTime = (int)(System.currentTimeMillis() - startedHover);
+            hoverTime = (int) (System.currentTimeMillis() - startedHover);
             if (hoverTime > ANIMATION_TIME) {
                 hoverTime = ANIMATION_TIME;
             }
-            expansion = hoverTime/(float)ANIMATION_TIME;
-            expansion *= 0.10;
-            expansion += 1;
-
-            h = h*expansion;
-            w = w*expansion;
-            x = centerX-(w/2F);
-            y = centerY-(h/2F);
         } else if (isStoppingHovering()) {
-            int hoverTime = (int)(System.currentTimeMillis() - stoppedHover);
+            hoverTime = (int) (System.currentTimeMillis() - stoppedHover);
 
             if (hoverTime < ANIMATION_TIME) {
                 hoverTime = ANIMATION_TIME - hoverTime;
-                expansion = hoverTime/(float)ANIMATION_TIME;
-                expansion *= 0.10;
-                expansion += 1;
-
-                h = h*expansion;
-                w = w*expansion;
-                x = centerX-(w/2F);
-                y = centerY-(h/2F);
             } else {
                 stoppedHover = -1;
             }
         }
 
-        boolean unlocked = unlockedStatus == IslandWarpGui.UnlockedStatus.UNLOCKED;
-
-        if (!unlocked) {
-            expansion = 1;
-            x = island.getX();
-            y = island.getY();
-            h = island.getH();
-            w = island.getW();
+        if (hoverTime != -1) {
+            expansion = hoverTime / (float) ANIMATION_TIME * 0.10F + 1;
+            h *= expansion;
+            w *= expansion;
+            x = centerX - (w / 2F);
+            y = centerY - (h / 2F);
         }
 
         if (mouseX > x && mouseY > y && mouseX < x+w && mouseY < y+h) {
@@ -165,21 +135,17 @@ public class IslandButton extends GuiButton {
         }
 
         if (actuallyDraw) {
-            if (unlocked) {
-                if (hovered) {
-                    GlStateManager.color(1F, 1F, 1F, 1F);
-                } else {
-                    GlStateManager.color(0.9F, 0.9F, 0.9F, 1F);
-                }
+            if (hovered) {
+                GlStateManager.color(1F, 1F, 1F, 1F);
             } else {
-                GlStateManager.color(0.3F, 0.3F, 0.3F, 1F);
+                GlStateManager.color(0.9F, 0.9F, 0.9F, 1F);
             }
 
             mc.getTextureManager().bindTexture(island.getResourceLocation());
             DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, w, h, w, h);
 
             for (IslandMarkerButton marker : markerButtons) {
-                marker.drawButton(x, y, expansion, hovered, unlocked, this.markers.get(marker.getMarker()));
+                marker.drawButton(x, y, expansion, hovered);
             }
 
             GlStateManager.pushMatrix();
@@ -187,22 +153,14 @@ public class IslandButton extends GuiButton {
             textScale *= expansion;
             GlStateManager.scale(textScale, textScale, 1);
 
-            int alpha = Math.max(255 - (int) (((expansion - 1) / 0.1) * 255), 4);
-            int color;
-            if (unlocked) {
-                color = ColorCode.WHITE.getColor();
-            } else {
-                color = ColorUtils.setColorAlpha(0x999999, alpha);
-            }
-
-            mc.fontRendererObj.drawStringWithShadow(displayString, centerX / textScale - mc.fontRendererObj.getStringWidth(displayString) / 2F, centerY / textScale, color);
-
-            if (unlockedStatus != IslandWarpGui.UnlockedStatus.UNLOCKED) {
-                mc.fontRendererObj.drawStringWithShadow(unlockedStatus.getMessage(), centerX / textScale - mc.fontRendererObj.getStringWidth(unlockedStatus.getMessage()) / 2F, (centerY + 30) / textScale, color);
-            }
+            mc.fontRendererObj.drawStringWithShadow(
+                    displayString,
+                    centerX / textScale - mc.fontRendererObj.getStringWidth(displayString) / 2F,
+                    centerY / textScale,
+                    ColorCode.WHITE.getColor()
+            );
 
             GlStateManager.color(1, 1, 1, 1);
-
             GlStateManager.popMatrix();
         }
     }
@@ -234,9 +192,5 @@ public class IslandButton extends GuiButton {
 
     private boolean isStoppingHovering() {
         return stoppedHover != -1;
-    }
-
-    public void setDisableHover(boolean disableHover) {
-        this.disableHover = disableHover;
     }
 }
