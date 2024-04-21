@@ -132,9 +132,11 @@ tasks.withType(JavaCompile::class).configureEach {
 
 tasks.register("copyLicenses", Copy::class) {
     from(project.projectDir) {
-        include("LICENSE")
-        include("NOTICE")
-        include("dependencyLicenses/**")
+        include(
+            "LICENSE",
+            "NOTICE",
+            "dependencyLicenses/**"
+        )
     }
     sourceSets.main.get().output.resourcesDir?.let { into(it) }
 }
@@ -181,9 +183,12 @@ tasks.shadowJar {
     configurations = listOf(bundle)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-    exclude("dummyThing")
-    exclude("module-info.class")
-    exclude("META-INF/versions/")
+    exclude(
+        "dummyThing",
+        "module-info.class",
+        "META-INF/versions/",
+        "LICENSE.txt"
+    )
 
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "shadow.discordipc")
