@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.function.Function;
 
 /**
- * Controls the behavior of {@link codes.biscuit.skyblockaddons.core.Feature#MAKE_DUNGEON_TEAMMATES_GLOW}
+ * Controls the behavior of {@link codes.biscuit.skyblockaddons.core.Feature#OUTLINE_DUNGEON_TEAMMATES}
  */
 public class FeatureDungeonTeammateOutlines {
 
@@ -53,7 +53,7 @@ public class FeatureDungeonTeammateOutlines {
      * @return {@code false} iff no entities should be outlined (i.e., accept if the player is in a dungeon)
      */
     private static boolean GLOBAL_TEST() {
-        return SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.MAKE_DUNGEON_TEAMMATES_GLOW) &&
+        return SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.OUTLINE_DUNGEON_TEAMMATES) &&
                 SkyblockAddons.getInstance().getUtils().isInDungeon();
     }
 

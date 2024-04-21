@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
 import codes.biscuit.skyblockaddons.mixins.hooks.RenderGlobalHook;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.entity.Entity;
@@ -9,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -23,10 +23,10 @@ public abstract class RenderGlobalTransformer {
 
     @Shadow protected abstract boolean isRenderEntityOutlines();
 
-    @Redirect(method = "renderEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderGlobal;isRenderEntityOutlines()Z"))
-    private boolean renderEntities(RenderGlobal instance, Entity renderViewEntity, ICamera camera, float partialTicks) {
+    @ModifyExpressionValue(method = "renderEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderGlobal;isRenderEntityOutlines()Z"))
+    private boolean renderEntities(boolean original, Entity renderViewEntity, ICamera camera, float partialTicks) {
         return RenderGlobalHook.blockRenderingSkyblockItemOutlines(camera, partialTicks, renderViewEntity.posX, renderViewEntity.posY, renderViewEntity.posZ)
-                && isRenderEntityOutlines();
+                && isRenderEntityOutlines() && original;
     }
 
     @Inject(method = "isRenderEntityOutlines", at = @At("HEAD"), cancellable = true)

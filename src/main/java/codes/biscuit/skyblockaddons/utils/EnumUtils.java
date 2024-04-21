@@ -206,7 +206,7 @@ public class EnumUtils {
         SHOW_ENDER_CHEST_PREVIEW("settings.showEnderChestPreview", 185),
         HIDE_WHEN_NOT_IN_END("settings.hideWhenNotDoingQuest", 187),
         HEALTH_PREDICTION("settings.vanillaHealthPrediction", 194),
-        DUNGEON_PLAYER_GLOW("settings.outlineDungeonTeammates", 103),
+        OUTLINE_DUNGEON_TEAMMATES("settings.outlineDungeonTeammates", 103),
         ITEM_GLOW("settings.glowingDroppedItems", 109),
         ABBREVIATE_SKILL_XP_DENOMINATOR("settings.abbreviateSkillXpDenominator", 198),
         OTHER_DEFENCE_STATS("settings.otherDefenseStats", 199),

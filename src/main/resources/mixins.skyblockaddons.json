@@ -3,8 +3,39 @@
   "refmap": "mixins.skyblockaddons.refmap.json",
   "plugin": "codes.biscuit.skyblockaddons.mixins.SkyblockAddonsMixinPlugin",
   "compatibilityLevel": "JAVA_8",
-  "minVersion": "0.7",
+  "minVersion": "0.8",
   "injectors": {
     "maxShiftBy": 2
-  }
+  },
+  "client": [
+    "EffectRendererTransformer",
+    "EntityPlayerSPTransformer",
+    "EntityRendererTransformer",
+    "FontRendererTransformer",
+    "GuiChestTransformer",
+    "GuiContainerTransformer",
+    "GuiDisconnectedTransformer",
+    "GuiIngameMenuTransformer",
+    "GuiNewChatTransformer",
+    "GuiScreenTransformer",
+    "MinecraftTransformer",
+    "ModelEndermanTransformer",
+    "MouseHelperTransformer",
+    "PlayerControllerMPTransformer",
+    "RenderEndermanTransformer",
+    "RendererLivingEntityTransformer",
+    "RenderGlobalTransformer",
+    "RenderItemTransformer",
+    "RenderManagerTransformer",
+    "SoundManagerTransformer",
+    "TileEntityEnderChestRendererTransformer",
+    "WorldClientTransformer",
+    "WorldVertexBufferUploaderTransformer"
+  ],
+  "mixins": [
+    "EntityLivingBaseTransformer",
+    "InventoryPlayerTransformer",
+    "ItemTransformer",
+    "PatcherFontRendererTransformer"
+  ]
 }

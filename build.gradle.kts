@@ -104,10 +104,11 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.0")
 
-    bundle("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
+    bundle("com.github.SpongePowered:Mixin:a60200d") {
         isTransitive = false
     }
     annotationProcessor("com.github.SpongePowered:Mixin:a60200d:processor")
+    bundle(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")!!)
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
@@ -186,6 +187,9 @@ tasks.shadowJar {
 
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "shadow.discordipc")
+    relocate("com.llamalad7.mixinextras", "shadow.mixinextras")
+    relocate("gg.essential.universal", "shadow.universal")
+    mergeServiceFiles() // Very important!
 }
 
 tasks.withType(Test::class) {

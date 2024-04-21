@@ -97,7 +97,7 @@ public enum Feature {
     CENTER_ROTATION_ON_PLAYER(101, "settings.centerRotationOnYourPlayer", null, false),
     MAP_ZOOM(-1, "settings.mapZoom", null, false),
     MAKE_DROPPED_ITEMS_GLOW(102, "settings.glowingDroppedItems", null, false, EnumUtils.FeatureSetting.SHOW_GLOWING_ITEMS_ON_ISLAND),
-    MAKE_DUNGEON_TEAMMATES_GLOW(103, "settings.outlineDungeonTeammates", null, false),
+    OUTLINE_DUNGEON_TEAMMATES(103, null, null, false),
     SHOW_BASE_STAT_BOOST_PERCENTAGE(104, "settings.baseStatBoostPercentage", new GuiFeatureData(ColorCode.RED, true), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY),
     BASE_STAT_BOOST_COLOR_BY_RARITY(105, "settings.colorByRarity", null, true),
     SHOW_PLAYER_HEADS_ON_MAP(106, "settings.showPlayerHeadsOnMap", null, true),
@@ -185,7 +185,7 @@ public enum Feature {
     JUNGLE_AXE_COOLDOWN(193, "settings.axeCooldownIndicator", null, true, EnumUtils.FeatureSetting.COOLDOWN_PREDICTION, EnumUtils.FeatureSetting.LEVEL_100_LEG_MONKEY),
     HEALTH_PREDICTION(194, "settings.vanillaHealthPrediction", null, true),
     DISABLE_EMPTY_GLASS_PANES(195, "settings.hideMenuGlassPanes", null, false),
-    ENTITY_OUTLINES(196, "settings.entityOutlines", null, false, EnumUtils.FeatureSetting.DUNGEON_PLAYER_GLOW, EnumUtils.FeatureSetting.ITEM_GLOW, EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY),
+    ENTITY_OUTLINES(196, "settings.entityOutlines", null, false, EnumUtils.FeatureSetting.OUTLINE_DUNGEON_TEAMMATES, EnumUtils.FeatureSetting.ITEM_GLOW, EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY),
     EFFECTIVE_HEALTH_TEXT(197, "settings.effectiveHealthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_GREEN), false),
     ABBREVIATE_SKILL_XP_DENOMINATOR(198, "settings.abbreviateSkillXpDenominator", null, true),
     OTHER_DEFENCE_STATS(199, "settings.otherDefenseStats", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), false),
@@ -265,7 +265,7 @@ public enum Feature {
      * a feature here, make sure to add it!
      */
     private static final Set<Feature> SETTINGS = Sets.newHashSet(DOUBLE_DROP_IN_OTHER_GAMES,
-            USE_VANILLA_TEXTURE_DEFENCE, SHOW_BACKPACK_HOLDING_SHIFT,
+            USE_VANILLA_TEXTURE_DEFENCE, SHOW_BACKPACK_HOLDING_SHIFT, OUTLINE_DUNGEON_TEAMMATES,
             MAKE_BACKPACK_INVENTORIES_COLORED, CHANGE_BAR_COLOR_FOR_POTIONS, ENABLE_MESSAGE_WHEN_BREAKING_STEMS,
             ENABLE_MESSAGE_WHEN_MINING_DEEP_CAVERNS, ENABLE_MESSAGE_WHEN_MINING_NETHER, CAKE_BAG_PREVIEW,
             REPEAT_FULL_INVENTORY_WARNING, DOUBLE_WARP, RIFTSTALKER_COLOR_BY_RARITY, RIFTSTALKER_TEXT_MODE,

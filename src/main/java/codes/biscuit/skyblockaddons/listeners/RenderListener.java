@@ -2798,7 +2798,7 @@ public class RenderListener {
 
                 double distanceScale = Math.max(1, renderViewEntity.getPositionVector().distanceTo(entity.getPositionVector()) / 10F);
 
-                if (main.getConfigValues().isEnabled(Feature.MAKE_DUNGEON_TEAMMATES_GLOW)) {
+                if (main.getConfigValues().isEnabled(Feature.OUTLINE_DUNGEON_TEAMMATES)) {
                     y += entity.height + 0.75F + (iconSize * distanceScale) / 40F;
                 } else {
                     y += entity.height / 2F + 0.25F;
