@@ -193,7 +193,6 @@ tasks.shadowJar {
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "shadow.discordipc")
     relocate("com.llamalad7.mixinextras", "shadow.mixinextras")
-    relocate("gg.essential.universal", "shadow.universal")
     mergeServiceFiles() // Very important!
 }
 
