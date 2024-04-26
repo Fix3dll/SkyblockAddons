@@ -92,7 +92,7 @@ public class DungeonMapManager {
             mapData = null;
         }
 
-        ItemStack possibleMapItemStack = mc.thePlayer.inventory.getStackInSlot(8);
+        ItemStack possibleMapItemStack = mc.thePlayer == null ? null : mc.thePlayer.inventory.getStackInSlot(8);
         if (buttonLocation == null && (possibleMapItemStack == null || possibleMapItemStack.getItem() != Items.filled_map ||
                 !possibleMapItemStack.hasDisplayName()) && mapData == null) {
             return;
@@ -141,8 +141,6 @@ public class DungeonMapManager {
         main.getUtils().enableStandardGLOptions();
 
         GlStateManager.color(1, 1, 1, 1);
-
-        float rotation = 180 - MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
 
         float zoomScaleFactor = MathUtils.denormalizeSliderValue(main.getConfigValues().getMapZoom().getValue(), 0.5F, 5, 0.1F);
         if (isScoreSummary) {
@@ -214,15 +212,20 @@ public class DungeonMapManager {
                     }
 
                     if (rotate && rotateOnPlayer) {
-                        rotationCenterX = toRenderCoordinate(toMapCoordinate(mc.thePlayer.posX,
-                                markerOffsetX));
-                        rotationCenterY = toRenderCoordinate(toMapCoordinate(mc.thePlayer.posZ,
-                                markerOffsetZ));
+                        rotationCenterX = toRenderCoordinate(toMapCoordinate(mc.thePlayer.posX, markerOffsetX));
+                        rotationCenterY = toRenderCoordinate(toMapCoordinate(mc.thePlayer.posZ, markerOffsetZ));
                     }
 
                     if (rotate) {
                         if (rotateOnPlayer) {
                             GlStateManager.translate(size - rotationCenterX, size - rotationCenterY, 0);
+                        }
+
+                        float rotation;
+                        if (mc.thePlayer != null) {
+                            rotation = 180 - MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
+                        } else {
+                            rotation = 0; // Dummy
                         }
 
                         GlStateManager.translate(rotationCenterX, rotationCenterY, 0);

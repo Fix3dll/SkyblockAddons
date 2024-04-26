@@ -96,8 +96,13 @@ public class Utils {
     /**
      * A dummy world object used for spawning fake entities for GUI features without affecting the actual world
      */
-    private static final WorldClient DUMMY_WORLD = new WorldClient(null, new WorldSettings(0L, WorldSettings.GameType.SURVIVAL,
-            false, false, WorldType.DEFAULT), 0, null, null);
+    private static final WorldClient DUMMY_WORLD = new WorldClient(
+            null,
+            new WorldSettings(0L, WorldSettings.GameType.SURVIVAL, false, false, WorldType.DEFAULT),
+            0,
+            null,
+            null
+    );
 
     /**
      * Used for web requests.

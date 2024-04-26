@@ -144,7 +144,7 @@ public class RenderListener {
 
     private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?:§[a-f0-9]?(?:✪|[➊-➒]))+");
 
-    private static EntityArmorStand radiantDummyArmorStand;
+    private static EntityArmorStand deployableDummyArmorStand;
     private static EntityZombie revenant;
     private static EntitySpider tarantula;
     private static EntityCaveSpider caveSpider;
@@ -504,7 +504,9 @@ public class RenderListener {
                 break;
             case HEALTH_BAR:
                 if (main.getConfigValues().isEnabled(Feature.CHANGE_BAR_COLOR_FOR_POTIONS)) {
-                    if (mc.thePlayer.isPotionActive(19/* Poison */)) {
+                    if (mc.thePlayer == null) {
+                        // Dummy
+                    } else if (mc.thePlayer.isPotionActive(19/* Poison */)) {
                         color = ColorUtils.getDummySkyblockColor(
                                 ColorCode.DARK_GREEN.getColor()
                                 , main.getConfigValues().getChromaFeatures().contains(feature)
@@ -796,7 +798,11 @@ public class RenderListener {
                 break;
 
             case CRIMSON_ARMOR_ABILITY_STACKS:
-                text = getCrimsonArmorAbilityStacks();
+                if (buttonLocation != null) {
+                    text = "Hydra Strike ⁑ 1";
+                } else {
+                    text = getCrimsonArmorAbilityStacks();
+                }
                 if (text == null) return;
                 break;
 
@@ -818,12 +824,17 @@ public class RenderListener {
                 break;
 
             case DRILL_FUEL_TEXT:
-                if (!ItemUtils.isDrill(mc.thePlayer.getHeldItem())) return;
-                text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/";
-                if (main.getConfigValues().isEnabled(Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR))
-                    text += TextUtils.abbreviate((int) getAttribute(Attribute.MAX_FUEL));
-                else
-                    text += TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));
+                boolean heldDrill = mc.thePlayer != null && !ItemUtils.isDrill(mc.thePlayer.getHeldItem());
+
+                if (heldDrill) {
+                    text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/";
+                    if (main.getConfigValues().isEnabled(Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR))
+                        text += TextUtils.abbreviate((int) getAttribute(Attribute.MAX_FUEL));
+                    else
+                        text += TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));
+                } else /* buttonLocation != null */{
+                    text = "3,000/3,000";
+                }
                 break;
 
             case DEFENCE_PERCENTAGE:
@@ -835,8 +846,14 @@ public class RenderListener {
                 break;
 
             case SPEED_PERCENTAGE:
-                String walkSpeed = TextUtils.formatNumber(Minecraft.getMinecraft().thePlayer.capabilities.getWalkSpeed() * 1000);
-                text = walkSpeed.substring(0, Math.min(walkSpeed.length(), 3));
+                float walkSpeed;
+                if (mc.thePlayer == null) {
+                    walkSpeed = 123; // Dummy
+                } else {
+                    walkSpeed = mc.thePlayer.capabilities.getWalkSpeed();
+                }
+                String walkSpeedStr = TextUtils.formatNumber(walkSpeed * 1000);
+                text = walkSpeedStr.substring(0, Math.min(walkSpeedStr.length(), 3));
 
                 if (text.endsWith(".")) text = text.substring(0, text.indexOf('.')); //remove trailing periods
 
@@ -1091,12 +1108,15 @@ public class RenderListener {
                 break;
 
             case SPIRIT_SCEPTRE_DISPLAY:
-                ItemStack holdingItem = mc.thePlayer.getCurrentEquippedItem();
-                ItemStack held = Minecraft.getMinecraft().thePlayer.getHeldItem();
-                String skyblockItemID = ItemUtils.getSkyblockItemID(held);
                 if (buttonLocation != null) {
                     text = "§6Hyperion";
-                } else if (holdingItem == null || skyblockItemID == null) {
+                    break;
+                }
+
+                ItemStack holdingItem = mc.thePlayer.getCurrentEquippedItem();
+                String skyblockItemID = ItemUtils.getSkyblockItemID(mc.thePlayer.getHeldItem());
+
+                if (holdingItem == null || skyblockItemID == null) {
                     return;
                 } else if (DamageDisplayItem.getByID(skyblockItemID) != null) {
                     text = DUNGEON_STAR_PATTERN.matcher(holdingItem.getDisplayName()).replaceAll("");
@@ -1158,11 +1178,11 @@ public class RenderListener {
                     return;
 
                 if (emptyBottle != null) {
-                    text = TextUtils.formatNumber(ItemUtils.getThunderCharge(emptyBottle)) + "/50.000";
+                    text = TextUtils.formatNumber(ItemUtils.getThunderCharge(emptyBottle)) + "/50,000";
                 } else if (haveFullThunderBottle) {
                     text = "§aFull!";
                 } else /*buttonLocation != null*/ {
-                    text = "49.999/50.000";
+                    text = "49,999/50,000";
                 }
                 break;
 
@@ -1518,11 +1538,13 @@ public class RenderListener {
                 DrawUtils.drawText(String.format("%,d damage dealt", Math.round(dealtDamage)), x + 16 + 2, y + 18, color);
                 FontRendererHook.endFeatureFont();
 
-                ItemStack held = Minecraft.getMinecraft().thePlayer.getHeldItem();
-                ItemStack displayItem = DamageDisplayItem.getByID(ItemUtils.getSkyblockItemID(held));
                 if (buttonLocation != null) {
                     renderItem(DamageDisplayItem.HYPERION.itemStack, x, y);
-                } else if (displayItem != null) {
+                    break;
+                }
+
+                ItemStack displayItem = DamageDisplayItem.getByID(ItemUtils.getSkyblockItemID(mc.thePlayer.getHeldItem()));
+                if (displayItem != null) {
                     renderItem(displayItem, x, y);
                 }
                 break;
@@ -1600,7 +1622,7 @@ public class RenderListener {
 
             case HEALTH_TEXT:
                 // 22 -> Absorption
-                if (mc.thePlayer.isPotionActive(22) && getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
+                if (mc.thePlayer != null && mc.thePlayer.isPotionActive(22) && getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
                     String formattedHealth = TextUtils.formatNumber(getAttribute(Attribute.HEALTH));
                     int formattedHealthWidth = mc.fontRendererObj.getStringWidth(formattedHealth);
 
@@ -2030,7 +2052,7 @@ public class RenderListener {
 
                         revenant.getInventory()[0] = ItemUtils.createItemStack(Items.diamond_hoe, true);
                         revenant.getInventory()[1] = ItemUtils.createItemStack(Items.diamond_boots, false);
-                        revenant.getInventory()[2] = ItemUtils.createItemStack(Items.diamond_leggings, true);
+                        revenant.getInventory()[2] = ItemUtils.createItemStack(Items.chainmail_leggings, true);
                         revenant.getInventory()[3] = ItemUtils.createItemStack(Items.diamond_chestplate, true);
                         revenant.getInventory()[4] = ItemUtils.createSkullItemStack(
                                 null
@@ -2362,7 +2384,7 @@ public class RenderListener {
     }
 
     private void renderItem(ItemStack item, float x, float y) {
-        GlStateManager.enableRescaleNormal();
+        //GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
 
@@ -2492,7 +2514,7 @@ public class RenderListener {
         }
 
         if (entity == null && buttonLocation != null) {
-            entity = getRadiantDummyArmorStand();
+            entity = getDeployableDummyArmorStand();
         }
 
         main.getUtils().enableStandardGLOptions();
@@ -2626,7 +2648,7 @@ public class RenderListener {
         }
 
         if (entity == null && buttonLocation != null) {
-            entity = getRadiantDummyArmorStand();
+            entity = getDeployableDummyArmorStand();
         }
 
         main.getUtils().enableStandardGLOptions();
@@ -2907,7 +2929,10 @@ public class RenderListener {
         deployableArmorStand.renderYawOffset = yaw;
         deployableArmorStand.prevRenderYawOffset = yaw;
 
-        rendermanager.renderEntityWithPosYaw(deployableArmorStand, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        try { // FIXME load skull textures when config opened
+            rendermanager.renderEntityWithPosYaw(deployableArmorStand, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        } catch (Throwable ignored) {}
+        rendermanager.setRenderShadow(shadowsEnabled);
         rendermanager.setRenderShadow(shadowsEnabled);
 
         RenderHelper.disableStandardItemLighting();
@@ -2941,7 +2966,9 @@ public class RenderListener {
         rendermanager.setPlayerViewY(180.0f);
         boolean shadowsEnabled = rendermanager.isRenderShadow();
         rendermanager.setRenderShadow(false);
-        rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        try { // FIXME load skull textures when config opened
+            rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        } catch (Throwable ignored) {}
         rendermanager.setRenderShadow(shadowsEnabled);
 
         RenderHelper.disableStandardItemLighting();
@@ -2952,12 +2979,12 @@ public class RenderListener {
         GlStateManager.popMatrix();
     }
 
-    public EntityArmorStand getRadiantDummyArmorStand() {
-        if (radiantDummyArmorStand != null) {
-            return radiantDummyArmorStand;
+    public EntityArmorStand getDeployableDummyArmorStand() {
+        if (deployableDummyArmorStand != null) {
+            return deployableDummyArmorStand;
         }
 
-        radiantDummyArmorStand = new EntityArmorStand(Utils.getDummyWorld());
+        deployableDummyArmorStand = new EntityArmorStand(Utils.getDummyWorld());
 
         ItemStack deployableItemStack = ItemUtils.createSkullItemStack(
                 null
@@ -2966,9 +2993,9 @@ public class RenderListener {
                 , "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b"
         );
 
-        radiantDummyArmorStand.setCurrentItemOrArmor(4, deployableItemStack);
+        deployableDummyArmorStand.setCurrentItemOrArmor(4, deployableItemStack);
 
-        return radiantDummyArmorStand;
+        return deployableDummyArmorStand;
     }
 
     @AllArgsConstructor
