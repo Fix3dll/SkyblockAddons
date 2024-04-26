@@ -55,7 +55,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 @Getter
-@Mod(modid = "sbaunofficial", name = "SkyblockAddons Unofficial", version = "@VERSION@", clientSideOnly = true, acceptedMinecraftVersions = "@MOD_ACCEPTED@")
+@Mod(modid = "sbaunofficial",
+        name = "SkyblockAddons Unofficial",
+        version = "@VERSION@",
+        clientSideOnly = true,
+        acceptedMinecraftVersions = "@MOD_ACCEPTED@",
+        guiFactory = "codes.biscuit.skyblockaddons.gui.SBAModGuiFactory")
 public class SkyblockAddons {
 
     public static final String MOD_ID = "sbaunofficial";

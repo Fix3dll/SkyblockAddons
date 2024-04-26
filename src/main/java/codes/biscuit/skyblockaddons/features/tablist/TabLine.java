@@ -3,10 +3,11 @@ package codes.biscuit.skyblockaddons.features.tablist;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 
+@Getter
 public class TabLine {
 
-    @Getter private TabStringType type;
-    @Getter private String text;
+    private final TabStringType type;
+    private final String text;
 
     public TabLine(String text, TabStringType type) {
         this.type = type;

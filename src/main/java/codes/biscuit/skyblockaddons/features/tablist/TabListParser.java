@@ -46,8 +46,7 @@ public class TabListParser {
     public static void parse() {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (!main.getUtils().isOnSkyblock() || (main.getConfigValues().isDisabled(Feature.COMPACT_TAB_LIST)
-                && main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER))) {
+        if (!main.getUtils().isOnSkyblock() || isRelatedFeaturesDisabled()) {
             renderColumns = null;
             return;
         }
@@ -327,5 +326,17 @@ public class TabListParser {
                 }
             }
         }
+    }
+
+    /**
+     * @return true If related features disabled
+     */
+    private static boolean isRelatedFeaturesDisabled() {
+        return main.getConfigValues().isDisabled(Feature.COMPACT_TAB_LIST)
+                && main.getConfigValues().isDisabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)
+                && main.getConfigValues().isDisabled(Feature.BIRCH_PARK_RAINMAKER_TIMER)
+                && main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER)
+                && (main.getConfigValues().isDisabled(Feature.SKILL_DISPLAY)
+                || main.getConfigValues().isEnabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP));
     }
 }

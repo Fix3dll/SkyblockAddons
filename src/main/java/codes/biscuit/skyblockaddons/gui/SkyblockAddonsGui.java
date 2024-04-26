@@ -50,6 +50,16 @@ public class SkyblockAddonsGui extends GuiScreen {
     private final long timeOpened = System.currentTimeMillis();
 
     private boolean cancelClose;
+    private GuiScreen parent = null;
+
+    /**
+     * For {@link SBAModGuiFactory}
+     */
+    public SkyblockAddonsGui(GuiScreen parent) {
+        this.parent = parent;
+        this.tab = EnumUtils.GuiTab.MAIN;
+        this.page = 1;
+    }
 
     /**
      * The main gui, opened with /sba.
@@ -57,6 +67,15 @@ public class SkyblockAddonsGui extends GuiScreen {
     public SkyblockAddonsGui(int page, EnumUtils.GuiTab tab) {
         this.tab = tab;
         this.page = page;
+    }
+
+    @Override
+    public void handleKeyboardInput() throws IOException {
+        if (parent != null && Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+            Minecraft.getMinecraft().displayGuiScreen(parent);
+            return;
+        }
+        super.handleKeyboardInput();
     }
 
     @SuppressWarnings({"IntegerDivisionInFloatingPointContext"})
