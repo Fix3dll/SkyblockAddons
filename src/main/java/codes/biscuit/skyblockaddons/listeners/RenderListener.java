@@ -850,7 +850,6 @@ public class RenderListener {
             case SPEED_PERCENTAGE:
                 if (mc.thePlayer != null) {
                     // 0.3xyz -> 3xy.z -> 3xy
-                    System.out.println(mc.thePlayer.capabilities.getWalkSpeed());
                     int walkSpeed = (int) (mc.thePlayer.capabilities.getWalkSpeed() * 1000);
                     text = walkSpeed + "%";
                 } else /* Dummy */ {

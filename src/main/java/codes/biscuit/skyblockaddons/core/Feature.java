@@ -213,6 +213,7 @@ public enum Feature {
     SHOW_PROFILE_TYPE(219, "settings.showProfileType", false),
     SHOW_NETHER_FACTION(220,"settings.showNetherFaction", false),
     // Release Fix3dll
+    NUMBER_SEPARATORS(221, "settings.numberSeparators", null, false),
 	HIDE_WHEN_NOT_IN_CRIMSON(222, null, false),
     INFERNO_SLAYER_TRACKER(223, "settings.infernoSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_CRIMSON),
     INFERNO_COLOR_BY_RARITY(224, null, false),
@@ -234,6 +235,7 @@ public enum Feature {
     FIRE_FREEZE_WHEN_HOLDING(240, "", null, false),
     HIDE_HAUNTED_SKULLS(241, "settings.hideHauntedSkulls", null, true),
     THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_PURPLE), false),
+    TURN_ALL_TEXTS_CHROMA(243, "settings.turnAllTextsChroma", null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -256,8 +258,7 @@ public enum Feature {
     CHROMA_SIZE(-1, "settings.chromaSize", null, false),
     CHROMA_SATURATION(-1, "settings.chromaSaturation", null, false),
     CHROMA_BRIGHTNESS(-1, "settings.chromaBrightness", null, false),
-    TURN_ALL_FEATURES_CHROMA(-1, "settings.turnAllFeaturesChroma", null, false),
-    NUMBER_SEPARATORS(-1, "settings.numberSeparators", null, false);
+    TURN_ALL_FEATURES_CHROMA(-1, "settings.turnAllFeaturesChroma", null, false);
 
 
     /**
@@ -305,8 +306,9 @@ public enum Feature {
      * These are features that are displayed separate, on the general tab.
      */
     @Getter
-    private static final Set<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE, WARNING_TIME, CHROMA_SPEED, CHROMA_MODE,
-            CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION, CHROMA_BRIGHTNESS, USE_NEW_CHROMA_EFFECT, NUMBER_SEPARATORS, DEVELOPER_MODE));
+    private static final Set<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE, WARNING_TIME,
+            CHROMA_SPEED, CHROMA_MODE, CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION, CHROMA_BRIGHTNESS,
+            USE_NEW_CHROMA_EFFECT, NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA));
 
     private static final int ID_AT_PREVIOUS_UPDATE = 222;
 

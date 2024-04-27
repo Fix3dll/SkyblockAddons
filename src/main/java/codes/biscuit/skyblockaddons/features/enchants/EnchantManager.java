@@ -200,58 +200,34 @@ public class EnchantManager {
         // Print 2 enchants per line, separated by a comma, with no enchant lore (typical hypixel behavior)
         else if (layout == EnchantListLayout.NORMAL && !hasLore) {
             insertEnchants = new ArrayList<>();
+
+            String comma;
             if (config.isEnabled(Feature.ENCHANTMENTS_HIGHLIGHT)) {
-                // Get format for comma
-                String comma = SkyblockAddons.getInstance().getConfigValues().getRestrictedColor(Feature.ENCHANTMENT_COMMA_COLOR) + COMMA;
-
-                // Process each line of enchants
-                int i = 0;
-                StringBuilder builder = new StringBuilder(maxTooltipWidth);
-                for (FormattedEnchant enchant : orderedEnchants) {
-                    // Add the enchant
-                    builder.append(enchant.getFormattedString());
-                    // Add a comma for the first on the row, followed by a comma
-                    if (i % 2 == 0) {
-                        builder.append(comma);
-                    }
-                    // Create a new line
-                    else {
-                        insertEnchants.add(builder.toString());
-                        builder = new StringBuilder(maxTooltipWidth);
-                    }
-                    i++;
+                comma = SkyblockAddons.getInstance().getConfigValues().getRestrictedColor(Feature.ENCHANTMENT_COMMA_COLOR) + COMMA;
+            } else {
+                comma = COMMA;
+            }
+            // Process each line of enchants
+            int i = 0;
+            StringBuilder builder = new StringBuilder(maxTooltipWidth);
+            for (FormattedEnchant enchant : orderedEnchants) {
+                // Add the enchant
+                builder.append(enchant.getFormattedString());
+                // Add a comma for the first on the row, followed by a comma
+                if (i % 2 == 0) {
+                    builder.append(comma);
                 }
-                // Flush any remaining enchants
-                if (builder.length() >= comma.length()) {
-                    builder.delete(builder.length() - comma.length(), builder.length());
+                // Create a new line
+                else {
                     insertEnchants.add(builder.toString());
+                    builder = new StringBuilder(maxTooltipWidth);
                 }
-            } else if (config.isDisabled(Feature.ENCHANTMENTS_HIGHLIGHT)) {
-                // Get format for comma
-                String comma = COMMA;
-
-                // Process each line of enchants
-                int i = 0;
-                StringBuilder builder = new StringBuilder(maxTooltipWidth);
-                for (FormattedEnchant enchant : orderedEnchants) {
-                    // Add the enchant
-                    builder.append(enchant.getFormattedString());
-                    // Add a comma for the first on the row, followed by a comma
-                    if (i % 2 == 0) {
-                        builder.append(comma);
-                    }
-                    // Create a new line
-                    else {
-                        insertEnchants.add(builder.toString());
-                        builder = new StringBuilder(maxTooltipWidth);
-                    }
-                    i++;
-                }
-                // Flush any remaining enchants
-                if (builder.length() >= comma.length()) {
-                    builder.delete(builder.length() - comma.length(), builder.length());
-                    insertEnchants.add(builder.toString());
-                }
+                i++;
+            }
+            // Flush any remaining enchants
+            if (builder.length() >= comma.length()) {
+                builder.delete(builder.length() - comma.length(), builder.length());
+                insertEnchants.add(builder.toString());
             }
         }
         // Prints each enchantment out on a separate line. Also adds the lore if need be

@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class FontRendererHook {
 
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final SkyblockColor CHROMA_COLOR = new SkyblockColor(0xFFFFFFFF).setColorAnimation(SkyblockColor.ColorAnimation.CHROMA);
     private static final DrawStateFontRenderer DRAW_CHROMA = new DrawStateFontRenderer(CHROMA_COLOR);
     private static final SkyblockColor CHROMA_COLOR_SHADOW = new SkyblockColor(0xFF555555).setColorAnimation(SkyblockColor.ColorAnimation.CHROMA);
@@ -24,15 +25,15 @@ public class FontRendererHook {
     private static boolean modInitialized = false;
 
     public static void changeTextColor() {
-        if (shouldRenderChroma()) {
+        if (shouldRenderChroma() && (currentDrawState.shouldManuallyRecolorFont() || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA))) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
     }
 
     public static void setupFeatureFont(Feature feature) {
-        if (SkyblockAddons.getInstance().getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE &&
-                SkyblockAddons.getInstance().getConfigValues().getChromaFeatures().contains(feature)) {
+        if (main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE
+                && main.getConfigValues().getChromaFeatures().contains(feature)) {
             DRAW_CHROMA.setupMulticolorFeature(SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature));
             DRAW_CHROMA_SHADOW.setupMulticolorFeature(SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature));
         }
@@ -77,7 +78,7 @@ public class FontRendererHook {
      * Called to save the current shader state
      */
     public static void beginRenderString(boolean shadow) {
-        if (shouldRenderChroma()) {
+        if (modInitialized && main.getUtils().isOnSkyblock()) {
             float alpha = Minecraft.getMinecraft().fontRendererObj.alpha;
             if (shadow) {
                 currentDrawState = DRAW_CHROMA_SHADOW;
@@ -151,8 +152,9 @@ public class FontRendererHook {
      * @return {@code true} when the mod is fully initialized and the player is in Skyblock, {@code false} otherwise
      */
     public static boolean shouldRenderChroma() {
-        SkyblockAddons main = SkyblockAddons.getInstance();
         return modInitialized && main.getUtils().isOnSkyblock() && currentDrawState != null
-                && (currentDrawState.shouldManuallyRecolorFont() || main.getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA));
+                && (currentDrawState.shouldManuallyRecolorFont()
+                || main.getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA)
+                || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA));
     }
 }
