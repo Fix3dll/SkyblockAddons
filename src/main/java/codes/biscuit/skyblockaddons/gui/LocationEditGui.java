@@ -33,7 +33,7 @@ public class LocationEditGui extends GuiScreen {
     private EditMode editMode = EditMode.RESCALE;
     private boolean showColorIcons = true;
     private boolean enableSnapping = true;
-    private boolean showFeatureNameOnHover = false;
+    private boolean showFeatureNameOnHover = true;
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
     // The feature that is currently being dragged, or null for nothing.
@@ -69,9 +69,8 @@ public class LocationEditGui extends GuiScreen {
     public void initGui() {
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
-            if (feature.getGuiFeatureData() != null && feature.getGuiFeatureData().getDrawType() == EnumUtils.DrawType.TEXT ||
-                    (feature.getGuiFeatureData() == null || feature.getGuiFeatureData().getDrawType() != EnumUtils.DrawType.TEXT) &&
-                    !main.getConfigValues().isDisabled(feature)) { // Don't display features that have been disabled
+            // Don't display features that have been disabled
+            if (feature.getGuiFeatureData() != null && !main.getConfigValues().isDisabled(feature)) {
                 ButtonLocation buttonLocation = new ButtonLocation(feature);
                 buttonList.add(buttonLocation);
                 buttonLocations.put(feature, buttonLocation);
@@ -191,22 +190,13 @@ public class LocationEditGui extends GuiScreen {
     }
 
     /**
-     * Returns the {@code ButtonLocation} the mouse is currently hovering over. Returns {@code null} if the mouse is not
-     * hovering over a {@code ButtonLocation}.
-     *
-     * @param mouseX the x-coordinate of the mouse
-     * @param mouseY the y-coordinate of the mouse
-     * @return the {@code ButtonLocation} the mouse is currently hovering over or {@code null} if the mouse is not hovering
+     * @return {@code ButtonLocation} the mouse is currently hovering over or {@code null} if the mouse is not hovering
      * over any
      */
-    private ButtonLocation getHoveredFeatureButton(int mouseX, int mouseY) {
-        for (GuiButton button : buttonList) {
-            if (button instanceof ButtonLocation) {
-                ButtonLocation buttonLocation = (ButtonLocation) button;
-                if (mouseX >= buttonLocation.getBoxXOne() && mouseX <= buttonLocation.getBoxXTwo() &&
-                        mouseY >= buttonLocation.getBoxYOne() && mouseY <= buttonLocation.getBoxYTwo()) {
-                    return buttonLocation;
-                }
+    private ButtonLocation getHoveredFeatureButton() {
+        for (ButtonLocation buttonLocation : buttonLocations.values()) {
+            if (buttonLocation.isMouseOver()) {
+                return buttonLocation;
             }
         }
 
@@ -336,7 +326,7 @@ public class LocationEditGui extends GuiScreen {
         }
 
         if (showFeatureNameOnHover) {
-            ButtonLocation hoveredButton = getHoveredFeatureButton(mouseX, mouseY);
+            ButtonLocation hoveredButton = getHoveredFeatureButton();
 
             if (hoveredButton != null) {
                 drawHoveringText(Collections.singletonList(hoveredButton.getFeature().getMessage()), mouseX, mouseY);

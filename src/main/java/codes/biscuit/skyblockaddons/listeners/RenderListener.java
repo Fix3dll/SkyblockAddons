@@ -504,22 +504,22 @@ public class RenderListener {
                 break;
             case HEALTH_BAR:
                 if (main.getConfigValues().isEnabled(Feature.CHANGE_BAR_COLOR_FOR_POTIONS)) {
-                    if (mc.thePlayer == null) {
-                        // Dummy
-                    } else if (mc.thePlayer.isPotionActive(19/* Poison */)) {
-                        color = ColorUtils.getDummySkyblockColor(
-                                ColorCode.DARK_GREEN.getColor()
-                                , main.getConfigValues().getChromaFeatures().contains(feature)
-                        );
-                    } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
-                        color = ColorUtils.getDummySkyblockColor(
-                                ColorCode.DARK_GRAY.getColor()
-                                , main.getConfigValues().getChromaFeatures().contains(feature)
-                        );
-                    } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
-                        if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
-                            fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
-                            hasAbsorption = true;
+                    if (mc.thePlayer != null) {
+                        if (mc.thePlayer.isPotionActive(19/* Poison */)) {
+                            color = ColorUtils.getDummySkyblockColor(
+                                    ColorCode.DARK_GREEN.getColor()
+                                    , main.getConfigValues().getChromaFeatures().contains(feature)
+                            );
+                        } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
+                            color = ColorUtils.getDummySkyblockColor(
+                                    ColorCode.DARK_GRAY.getColor()
+                                    , main.getConfigValues().getChromaFeatures().contains(feature)
+                            );
+                        } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
+                            if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
+                                fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
+                                hasAbsorption = true;
+                            }
                         }
                     }
                 }
@@ -824,7 +824,7 @@ public class RenderListener {
                 break;
 
             case DRILL_FUEL_TEXT:
-                boolean heldDrill = mc.thePlayer != null && !ItemUtils.isDrill(mc.thePlayer.getHeldItem());
+                boolean heldDrill = mc.thePlayer != null && ItemUtils.isDrill(mc.thePlayer.getHeldItem());
 
                 if (heldDrill) {
                     text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/";
@@ -832,8 +832,10 @@ public class RenderListener {
                         text += TextUtils.abbreviate((int) getAttribute(Attribute.MAX_FUEL));
                     else
                         text += TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));
-                } else /* buttonLocation != null */{
+                } else if (buttonLocation != null){
                     text = "3,000/3,000";
+                } else {
+                    return;
                 }
                 break;
 
@@ -846,18 +848,14 @@ public class RenderListener {
                 break;
 
             case SPEED_PERCENTAGE:
-                float walkSpeed;
-                if (mc.thePlayer == null) {
-                    walkSpeed = 123; // Dummy
-                } else {
-                    walkSpeed = mc.thePlayer.capabilities.getWalkSpeed();
+                if (mc.thePlayer != null) {
+                    // 0.3xyz -> 3xy.z -> 3xy
+                    System.out.println(mc.thePlayer.capabilities.getWalkSpeed());
+                    int walkSpeed = (int) (mc.thePlayer.capabilities.getWalkSpeed() * 1000);
+                    text = walkSpeed + "%";
+                } else /* Dummy */ {
+                    text = "123%";
                 }
-                String walkSpeedStr = TextUtils.formatNumber(walkSpeed * 1000);
-                text = walkSpeedStr.substring(0, Math.min(walkSpeedStr.length(), 3));
-
-                if (text.endsWith(".")) text = text.substring(0, text.indexOf('.')); //remove trailing periods
-
-                text += "%";
                 break;
 
             case HEALTH_UPDATES:
