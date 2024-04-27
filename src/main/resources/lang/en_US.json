@@ -240,7 +240,8 @@
     "fireFreezeWhenHolding": "Only show while holding Fire Freeze",
     "hideHauntedSkulls": "Hide Haunted Skulls from Soulweaver Gloves",
     "thunderBottleDisplay": "Thunder Bottle Display",
-    "heartInsteadHealthOnRift": "Heart value instead of health value on Rift Dimension"
+    "heartInsteadHealthOnRift": "Heart value instead of health value on Rift Dimension",
+    "editLocationFromOutsideWarning": "\"Edit GUI Locations\" not supported from outside! Please open this menu in-game!"
   },
   "messages": {
     "enchants": "Enchants",

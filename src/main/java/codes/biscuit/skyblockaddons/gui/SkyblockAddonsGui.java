@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
+import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -24,6 +25,7 @@ import org.lwjgl.input.Keyboard;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.TreeSet;
 
@@ -53,6 +55,11 @@ public class SkyblockAddonsGui extends GuiScreen {
     private GuiScreen parent = null;
 
     /**
+     * Boolean to draw the warning
+     */
+    private boolean showWarning = false;
+
+    /**
      * For {@link SBAModGuiFactory}
      */
     public SkyblockAddonsGui(GuiScreen parent) {
@@ -72,7 +79,7 @@ public class SkyblockAddonsGui extends GuiScreen {
     @Override
     public void handleKeyboardInput() throws IOException {
         if (parent != null && Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-            Minecraft.getMinecraft().displayGuiScreen(parent);
+            mc.displayGuiScreen(parent);
             return;
         }
         super.handleKeyboardInput();
@@ -139,12 +146,21 @@ public class SkyblockAddonsGui extends GuiScreen {
 
         for (Feature feature : features) {
             if (skip == 0) {
-                if (feature == Feature.TEXT_STYLE || feature == Feature.WARNING_TIME || feature == Feature.CHROMA_MODE || feature == Feature.TURN_ALL_FEATURES_CHROMA) {
-                    addButton(feature, EnumUtils.ButtonType.SOLID);
-                } else if (feature == Feature.CHROMA_SPEED || feature == Feature.CHROMA_SIZE || feature == Feature.CHROMA_SATURATION || feature == Feature.CHROMA_BRIGHTNESS) {
-                    addButton(feature, EnumUtils.ButtonType.CHROMA_SLIDER);
-                } else {
-                    addButton(feature, EnumUtils.ButtonType.TOGGLE);
+                switch (feature) {
+                    case TEXT_STYLE:
+                    case WARNING_TIME:
+                    case CHROMA_MODE:
+                    case TURN_ALL_FEATURES_CHROMA:
+                        addButton(feature, EnumUtils.ButtonType.SOLID);
+                        break;
+                    case CHROMA_SPEED:
+                    case CHROMA_SIZE:
+                    case CHROMA_SATURATION:
+                    case CHROMA_BRIGHTNESS:
+                        addButton(feature, EnumUtils.ButtonType.CHROMA_SLIDER);
+                        break;
+                    default:
+                        addButton(feature, EnumUtils.ButtonType.TOGGLE);
                 }
             } else {
                 skip--;
@@ -184,10 +200,8 @@ public class SkyblockAddonsGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-//        tooltipFeature = null;
         long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-        float alphaMultiplier; // This all calculates the alpha for the fade-in effect.
-        alphaMultiplier = 0.5F;
+        float alphaMultiplier = 0.5F; // This all calculates the alpha for the fade-in effect.
         if (main.getUtils().isFadingIn()) {
             int fadeMilis = 500;
             if (timeSinceOpen <= fadeMilis) {
@@ -207,10 +221,25 @@ public class SkyblockAddonsGui extends GuiScreen {
 
         featureSearchBar.drawTextBox();
         if (StringUtils.isEmpty(featureSearchBar.getText())) {
-            Minecraft.getMinecraft().fontRendererObj.drawString(Translations.getMessage("messages.searchFeatures"), featureSearchBar.xPosition+4, featureSearchBar.yPosition+3, ColorCode.DARK_GRAY.getColor());
+            mc.fontRendererObj.drawString(
+                    Translations.getMessage("messages.searchFeatures"), 
+                    featureSearchBar.xPosition+4, 
+                    featureSearchBar.yPosition+3,
+                    ColorCode.DARK_GRAY.getColor()
+            );
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
+
+        // Warning for trying to open "Edit GUI Locations" menu from outside
+        if (showWarning) {
+            String warning = Translations.getMessage("settings.editLocationFromOutsideWarning");
+            drawHoveringText(
+                    Collections.singletonList(warning),
+                    width / 2 - mc.fontRendererObj.getStringWidth(warning) / 2,
+                    height / 2
+            );
+        }
     }
 
     /**
@@ -223,25 +252,36 @@ public class SkyblockAddonsGui extends GuiScreen {
             if (abstractButton instanceof ButtonSettings) {
                 main.getUtils().setFadingIn(false);
                 if (((ButtonSettings) abstractButton).feature == Feature.ENCHANTMENT_LORE_PARSING) {
-                    Minecraft.getMinecraft().displayGuiScreen(new EnchantmentSettingsGui(feature, 0, page, tab, feature.getSettings()));
+                    mc.displayGuiScreen(new EnchantmentSettingsGui(feature, 0, page, tab, feature.getSettings()));
                 } else {
-                    Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(feature, 1, page, tab, feature.getSettings()));
+                    mc.displayGuiScreen(new SettingsGui(feature, 1, page, tab, feature.getSettings()));
                 }
                 return;
             }
             if (feature == Feature.LANGUAGE) {
                 main.getUtils().setFadingIn(false);
-                Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(Feature.LANGUAGE,1, page,tab, null));
+                mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE,1, page,tab, null));
             }  else if (feature == Feature.EDIT_LOCATIONS) {
-                main.getUtils().setFadingIn(false);
-                Minecraft.getMinecraft().displayGuiScreen(new LocationEditGui(page, tab));
+                // If player tries to open "Edit GUI Locations" from outside
+                if (mc.thePlayer == null) {
+                    showWarning = true;
+                    main.getNewScheduler().scheduleDelayedTask(new SkyblockRunnable() {
+                        @Override
+                        public void run() {
+                            showWarning = false;
+                        }
+                    }, 60);
+                } else {
+                    main.getUtils().setFadingIn(false);
+                    mc.displayGuiScreen(new LocationEditGui(page, tab));
+                }
             }  else if (feature == Feature.GENERAL_SETTINGS) {
                 if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) {
                     main.getUtils().setFadingIn(false);
-                    Minecraft.getMinecraft().displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.MAIN));
+                    mc.displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.MAIN));
                 } else {
                     main.getUtils().setFadingIn(false);
-                    Minecraft.getMinecraft().displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.GENERAL_SETTINGS));
+                    mc.displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.GENERAL_SETTINGS));
                 }
             } else if (abstractButton instanceof ButtonToggle) {
                 if (main.getConfigValues().isRemoteDisabled(feature)) return;
@@ -272,12 +312,12 @@ public class SkyblockAddonsGui extends GuiScreen {
                 if (feature == Feature.TEXT_STYLE) {
                     main.getConfigValues().setTextStyle(main.getConfigValues().getTextStyle().getNextType());
                     cancelClose = true;
-                    Minecraft.getMinecraft().displayGuiScreen(new SkyblockAddonsGui(page, tab));
+                    mc.displayGuiScreen(new SkyblockAddonsGui(page, tab));
                     cancelClose = false;
                 } else if (feature == Feature.CHROMA_MODE) {
                     main.getConfigValues().setChromaMode(main.getConfigValues().getChromaMode().getNextType());
                     cancelClose = true;
-                    Minecraft.getMinecraft().displayGuiScreen(new SkyblockAddonsGui(page, tab));
+                    mc.displayGuiScreen(new SkyblockAddonsGui(page, tab));
                     cancelClose = false;
                 } else if (feature == Feature.TURN_ALL_FEATURES_CHROMA) {
                     boolean enable = false;

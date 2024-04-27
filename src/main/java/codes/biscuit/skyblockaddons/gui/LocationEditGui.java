@@ -12,7 +12,6 @@ import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import com.google.common.collect.Sets;
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -60,6 +59,10 @@ public class LocationEditGui extends GuiScreen {
     private static final int SNAPPING_RADIUS = 120;
     private static final int SNAP_PULL = 1;
 
+    private final static Feature[] locationEditGuiFeatures = {Feature.RESET_LOCATION, Feature.SHOW_FEATURE_NAMES_ON_HOVER,
+            Feature.RESIZE_BARS, Feature.SHOW_COLOR_ICONS, Feature.ENABLE_FEATURE_SNAPPING, Feature.RESCALE_FEATURES};
+    private static final int BOX_HEIGHT = 20;
+
     public LocationEditGui(int lastPage, EnumUtils.GuiTab lastTab) {
         this.lastPage = lastPage;
         this.lastTab = lastTab;
@@ -85,29 +88,25 @@ public class LocationEditGui extends GuiScreen {
 
         addColorWheelsToAllFeatures();
 
-        Feature[] features = {Feature.RESET_LOCATION, Feature.RESCALE_FEATURES, Feature.RESIZE_BARS, Feature.SHOW_COLOR_ICONS,
-                Feature.ENABLE_FEATURE_SNAPPING, Feature.SHOW_FEATURE_NAMES_ON_HOVER};
-
-        ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
-        int boxHeight = 20;
-        int numButtons = features.length;
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        int numButtons = locationEditGuiFeatures.length;
         int x;
         int y = scaledResolution.getScaledHeight()/2;
         // List may change later
         //noinspection ConstantConditions
         if (numButtons % 2 == 0) {
-            y -= Math.round((numButtons/2F) * (boxHeight+5)) - 2.5;
+            y -= Math.round((numButtons/2F) * (BOX_HEIGHT+5)) - 2.5;
         } else {
-            y -= Math.round(((numButtons-1)/2F) * (boxHeight+5)) + 10;
+            y -= Math.round(((numButtons-1)/2F) * (BOX_HEIGHT+5)) + 10;
         }
 
-        for (Feature feature : features) {
+        for (Feature feature : locationEditGuiFeatures) {
             String featureName = feature.getMessage();
             int boxWidth = mc.fontRendererObj.getStringWidth(featureName) + 10;
             if (boxWidth > BUTTON_MAX_WIDTH) boxWidth = BUTTON_MAX_WIDTH;
             x = scaledResolution.getScaledWidth() / 2 - boxWidth / 2;
-            y += boxHeight + 5;
-            buttonList.add(new ButtonSolid(x, y, boxWidth, boxHeight, featureName, main, feature));
+            y += BOX_HEIGHT + 5;
+            buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, main, feature));
         }
     }
 
@@ -285,7 +284,7 @@ public class LocationEditGui extends GuiScreen {
         int endColor = new Color(0,0, 0, 128).getRGB();
         drawGradientRect(0, 0, width, height, startColor, endColor);
         for (EnumUtils.AnchorPoint anchorPoint : EnumUtils.AnchorPoint.values()) {
-            ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+            ScaledResolution sr = new ScaledResolution(mc);
             int x = anchorPoint.getX(sr.getScaledWidth());
             int y = anchorPoint.getY(sr.getScaledHeight());
             int color = ColorCode.RED.getColor(127);

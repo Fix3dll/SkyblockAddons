@@ -2930,9 +2930,7 @@ public class RenderListener {
         deployableArmorStand.renderYawOffset = yaw;
         deployableArmorStand.prevRenderYawOffset = yaw;
 
-        try { // FIXME load skull textures when config opened
-            rendermanager.renderEntityWithPosYaw(deployableArmorStand, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
-        } catch (Throwable ignored) {}
+        rendermanager.renderEntityWithPosYaw(deployableArmorStand, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
         rendermanager.setRenderShadow(shadowsEnabled);
         rendermanager.setRenderShadow(shadowsEnabled);
 
@@ -2967,9 +2965,7 @@ public class RenderListener {
         rendermanager.setPlayerViewY(180.0f);
         boolean shadowsEnabled = rendermanager.isRenderShadow();
         rendermanager.setRenderShadow(false);
-        try { // FIXME load skull textures when config opened
-            rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
-        } catch (Throwable ignored) {}
+        rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
         rendermanager.setRenderShadow(shadowsEnabled);
 
         RenderHelper.disableStandardItemLighting();
