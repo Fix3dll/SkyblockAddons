@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -94,12 +93,12 @@ public class ButtonSelect extends GuiButton {
         int leftColor = SkyblockAddons.getInstance().getUtils().getDefaultColor(isOverLeftButton(mouseX, mouseY) ? 200 : 90);
         int rightColor = SkyblockAddons.getInstance().getUtils().getDefaultColor(isOverRightButton(mouseX, mouseY) ? 200 : 90);
 
-        String name = Translations.getMessage(itemList.get(index).getName());
+        String name = itemList.get(index).getName();
         String trimmedName = minecraft.fontRendererObj.trimStringToWidth(name, textWidth);
         if (!name.equals(trimmedName)) {
             trimmedName = ellipsize(trimmedName);
         }
-        String description = Translations.getMessage(itemList.get(index).getDescription());
+        String description = itemList.get(index).getDescription();
         // background / text area
         drawRect(xPosition, yPosition, endX, yPosition + height, color);
         // left button

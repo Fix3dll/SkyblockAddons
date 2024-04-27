@@ -15,8 +15,8 @@ import java.util.function.Supplier;
 
 /**
  * Statuses that are shown on the Discord RPC feature
- * This file has LF line endings because ForgeGradle is weird and will throw a NullPointerException if it's CRLF.
  */
+@SuppressWarnings("UnnecessaryUnicodeEscape")
 public enum DiscordStatus implements ButtonSelect.SelectItem {
 
     NONE("discordStatus.titleNone", "discordStatus.descriptionNone", () -> null),
@@ -150,8 +150,8 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
     private final Supplier<String> displayMessageSupplier;
 
     DiscordStatus(String titleTranslationKey, String descriptionTranslationKey, Supplier<String> displayMessageSupplier) {
-        this.title = Translations.getMessage(titleTranslationKey);
-        this.description = Translations.getMessage(descriptionTranslationKey);
+        this.title = titleTranslationKey;
+        this.description = descriptionTranslationKey;
         this.displayMessageSupplier = displayMessageSupplier;
     }
 
@@ -162,11 +162,11 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
 
     @Override
     public String getName() {
-        return title;
+        return Translations.getMessage(title);
     }
 
     @Override
     public String getDescription() {
-        return description;
+        return Translations.getMessage(description);
     }
 }

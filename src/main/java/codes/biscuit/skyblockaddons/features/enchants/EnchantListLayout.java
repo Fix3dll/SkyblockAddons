@@ -5,8 +5,6 @@ import codes.biscuit.skyblockaddons.gui.buttons.ButtonSelect;
 
 /**
  * Statuses that are shown on the Discord RPC feature
- * <p>
- * This file has LF line endings because ForgeGradle is weird and will throw a NullPointerException if it's CRLF.
  */
 public enum EnchantListLayout implements ButtonSelect.SelectItem {
 
