@@ -790,11 +790,15 @@ public class RenderListener {
             case HEALTH_TEXT:
                 if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_TEXT_ON_RIFT) && main.getUtils().isOnRift())
                     return;
-                text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH)) + "/";
-                if (main.getUtils().isOnRift())
-                    text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH));
-                else
+                // Dividing with 2 for show heart value instead of health value. 1 heart == 2 health
+                boolean shouldHeart = main.getConfigValues().isEnabled(Feature.HEART_INSTEAD_HEALTH_ON_RIFT);
+
+                text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH) / (shouldHeart ? 2 : 1)) + "/";
+                if (main.getUtils().isOnRift()) {
+                    text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH) / (shouldHeart ? 2 : 1));
+                } else {
                     text += TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
+                }
                 break;
 
             case CRIMSON_ARMOR_ABILITY_STACKS:

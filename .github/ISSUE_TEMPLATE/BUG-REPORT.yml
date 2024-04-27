@@ -28,7 +28,7 @@ body:
       label: Other Installed Mods
       description: |
         Please list the names and versions of the other mods you have installed.
-        Tip: If you have NEU, you can run `/neustats` to list your installed mods.
+        Tip: If you have NEU, you can run `/neustats full` to list your installed mods.
       placeholder: |
         Optifine M5
         NEU 2.1.1

@@ -239,7 +239,8 @@
     "fireFreezeSound": "When countdown hit 0 play sound",
     "fireFreezeWhenHolding": "Only show while holding Fire Freeze",
     "hideHauntedSkulls": "Hide Haunted Skulls from Soulweaver Gloves",
-    "thunderBottleDisplay": "Thunder Bottle Display"
+    "thunderBottleDisplay": "Thunder Bottle Display",
+    "heartInsteadHealthOnRift": "Heart value instead of health value on Rift Dimension"
   },
   "messages": {
     "enchants": "Enchants",

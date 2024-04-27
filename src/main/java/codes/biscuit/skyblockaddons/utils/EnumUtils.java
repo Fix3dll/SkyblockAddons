@@ -230,6 +230,7 @@ public class EnumUtils {
         HIDE_ONLY_OUTSIDE_RIFT("settings.hideOnlyOutsideRift", 237),
         FIRE_FREEZE_SOUND("settings.fireFreezeSound", 239),
         FIRE_FREEZE_WHEN_HOLDING("settings.fireFreezeWhenHolding", 240),
+        HEART_INSTEAD_HEALTH_ON_RIFT("settings.heartInsteadHealthOnRift", 244),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

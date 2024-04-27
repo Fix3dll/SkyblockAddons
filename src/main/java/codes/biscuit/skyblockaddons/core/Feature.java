@@ -33,7 +33,7 @@ public enum Feature {
     MANA_BAR(19, "settings.manaBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.BLUE), false),
     MANA_TEXT(20, "settings.manaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.BLUE), false),
     HEALTH_BAR(21, "settings.healthBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.RED), true, EnumUtils.FeatureSetting.CHANGE_BAR_COLOR_WITH_POTIONS, EnumUtils.FeatureSetting.HEALTH_PREDICTION, EnumUtils.FeatureSetting.HIDE_HEALTH_BAR_ON_RIFT),
-    HEALTH_TEXT(22, "settings.healthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false, EnumUtils.FeatureSetting.HIDE_HEALTH_TEXT_ON_RIFT),
+    HEALTH_TEXT(22, "settings.healthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false, EnumUtils.FeatureSetting.HIDE_HEALTH_TEXT_ON_RIFT, EnumUtils.FeatureSetting.HEART_INSTEAD_HEALTH_ON_RIFT),
     DEFENCE_ICON(23, "settings.defenseIcon", new GuiFeatureData(EnumUtils.DrawType.DEFENCE_ICON), false, EnumUtils.FeatureSetting.USE_VANILLA_TEXTURE),
     DEFENCE_TEXT(24, "settings.defenseNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), false, EnumUtils.FeatureSetting.OTHER_DEFENCE_STATS),
     DEFENCE_PERCENTAGE(25, "settings.defensePercentage", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), true),
@@ -224,18 +224,19 @@ public enum Feature {
     RIFTSTALKER_COLOR_BY_RARITY(229, null, false),
     RIFTSTALKER_TEXT_MODE(230, null, true),
     HIDE_WHEN_NOT_IN_RIFT(231, null, false),
-    ABBREVIATE_DRILL_FUEL_DENOMINATOR(232, null, null, true),
+    ABBREVIATE_DRILL_FUEL_DENOMINATOR(232, null, true),
     SHOW_ONLY_HOLDING_FISHING_ROD(233, null, null, true),
-    HIDE_HEALTH_BAR_ON_RIFT(234, "", null, true),
-    HIDE_HEALTH_TEXT_ON_RIFT(235, "", null, true),
-    HIDE_HEALTH_UPDATES_ON_RIFT(236, "", null, true),
-    HIDE_ONLY_OUTSIDE_RIFT(237, "", null, true),
+    HIDE_HEALTH_BAR_ON_RIFT(234, null, true),
+    HIDE_HEALTH_TEXT_ON_RIFT(235, null, true),
+    HIDE_HEALTH_UPDATES_ON_RIFT(236, null, true),
+    HIDE_ONLY_OUTSIDE_RIFT(237, null, true),
     FIRE_FREEZE_TIMER(238, "settings.fireFreezeTimer", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.YELLOW), false, EnumUtils.FeatureSetting.FIRE_FREEZE_SOUND, EnumUtils.FeatureSetting.FIRE_FREEZE_WHEN_HOLDING),
-    FIRE_FREEZE_SOUND(239, "", null, false),
-    FIRE_FREEZE_WHEN_HOLDING(240, "", null, false),
+    FIRE_FREEZE_SOUND(239, null, false),
+    FIRE_FREEZE_WHEN_HOLDING(240, null, false),
     HIDE_HAUNTED_SKULLS(241, "settings.hideHauntedSkulls", null, true),
     THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_PURPLE), false),
     TURN_ALL_TEXTS_CHROMA(243, "settings.turnAllTextsChroma", null, true),
+    HEART_INSTEAD_HEALTH_ON_RIFT(244, null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -285,7 +286,7 @@ public enum Feature {
             DISABLE_SPIRIT_SCEPTRE_MESSAGES, OUTBID_ALERT_SOUND_IN_OTHER_GAMES, DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME,
             RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR, TREVOR_SHOW_LOCATION_ON_CHAT,
             SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT,
-            HIDE_ONLY_OUTSIDE_RIFT, FIRE_FREEZE_SOUND, FIRE_FREEZE_WHEN_HOLDING);
+            HIDE_ONLY_OUTSIDE_RIFT, FIRE_FREEZE_SOUND, FIRE_FREEZE_WHEN_HOLDING, HEART_INSTEAD_HEALTH_ON_RIFT);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'
