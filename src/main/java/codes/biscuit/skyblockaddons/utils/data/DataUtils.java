@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.utils.data;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import codes.biscuit.skyblockaddons.core.Translations;
@@ -12,7 +13,6 @@ import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
-import codes.biscuit.skyblockaddons.mixins.SkyblockAddonsMixinPlugin;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.requests.*;
@@ -103,7 +103,7 @@ public class DataUtils {
      * This is set to {@code true} if the mod is running in production or if it's running in a dev environment that has
      * the environment variable {@code FETCH_DATA_ONLINE}.
      */
-    public static final boolean USE_ONLINE_DATA = !SkyblockAddonsMixinPlugin.isDeobfuscated() ||
+    public static final boolean USE_ONLINE_DATA = !SkyblockAddonsASMTransformer.isDeobfuscated() ||
             System.getenv().containsKey("FETCH_DATA_ONLINE");
 
     private static String path;

@@ -6,9 +6,6 @@ import codes.biscuit.skyblockaddons.features.EntityOutlines.EntityOutlineRendere
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.util.BlockPos;
-import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.Method;
 
 public class RenderGlobalHook {
 
@@ -20,6 +17,10 @@ public class RenderGlobalHook {
         GlStateManager.enableDepth();
     }
 
+    /**
+     * @see codes.biscuit.skyblockaddons.asm.transformer.RenderGlobalTransformer
+     */
+    @SuppressWarnings("unused")
     public static boolean blockRenderingSkyblockItemOutlines(ICamera camera, float partialTicks, double x, double y, double z) {
         return EntityOutlineRenderer.renderEntityOutlines(camera, partialTicks, x, y, z);
     }

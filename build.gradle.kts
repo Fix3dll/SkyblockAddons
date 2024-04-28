@@ -57,6 +57,7 @@ loom {
             vmArg("-Xmx3G")
             property("mixin.debug", "true")
             property("devauth.enabled", "true")
+            property("fml.coreMods.load", "codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin")
             programArgs("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
             if (SystemUtils.IS_OS_MAC_OSX) {
                 // This argument causes a crash on macOS
@@ -104,11 +105,10 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.0")
 
-    bundle("com.github.SpongePowered:Mixin:a60200d") {
+    bundle("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false
     }
     annotationProcessor("com.github.SpongePowered:Mixin:a60200d:processor")
-    bundle(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")!!)
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
@@ -152,6 +152,7 @@ tasks.withType(Jar::class) {
         this["Specification-Title"] = project.name
         this["Specification-Vendor"] = "Fix3dll"
         this["Specification-Version"] = project.version
+        this["FMLCorePlugin"] = "${project.group}.${modId}.tweaker.${project.name}LoadingPlugin"
         this["ForceLoadAsMod"] = "true"
         this["FMLCorePluginContainsFMLMod"] = "true"
         this["ModSide"] = "CLIENT"
@@ -192,8 +193,6 @@ tasks.shadowJar {
 
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "shadow.discordipc")
-    relocate("com.llamalad7.mixinextras", "shadow.mixinextras")
-    mergeServiceFiles() // Very important!
 }
 
 tasks.withType(Test::class) {
