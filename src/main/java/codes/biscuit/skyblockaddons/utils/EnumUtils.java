@@ -219,7 +219,7 @@ public class EnumUtils {
         SHOW_NETHER_FACTION("settings.showNetherFaction", 220),
 		HIDE_WHEN_NOT_IN_CRIMSON("settings.hideWhenNotDoingQuest", 222),
         ZEALOT_SPAWN_AREAS_ONLY("settings.zealotSpawnAreasOnly", -1),
-        EXPAND_DEPLOYABLE_STATUS("settings.expandDeployableStatus", -1),
+        EXPAND_DEPLOYABLE_STATUS("settings.expandDeployableStatus", 226),
         TREVOR_SHOW_LOCATION_ON_CHAT("settings.trevorTheTrapper.showLocationOnChat", 227),
         HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 231),
         ABBREVIATE_DRILL_FUEL_DENOMINATOR("settings.abbreviateDrillFuelDenominator", 232),
@@ -231,6 +231,7 @@ public class EnumUtils {
         FIRE_FREEZE_SOUND("settings.fireFreezeSound", 239),
         FIRE_FREEZE_WHEN_HOLDING("settings.fireFreezeWhenHolding", 240),
         HEART_INSTEAD_HEALTH_ON_RIFT("settings.heartInsteadHealthOnRift", 244),
+        OUTLINE_SHOWCASE_ITEMS("settings.outlineShowcaseItems", 245),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),
