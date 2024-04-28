@@ -2,9 +2,10 @@ package codes.biscuit.skyblockaddons.asm;
 
 import codes.biscuit.skyblockaddons.asm.transformer.RenderGlobalTransformer;
 import codes.biscuit.skyblockaddons.asm.utils.ITransformer;
-import codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin;
 import com.google.common.collect.ArrayListMultimap;
+import lombok.Getter;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.lib.ClassWriter;
@@ -16,6 +17,8 @@ import java.util.Collection;
 
 public class SkyblockAddonsASMTransformer implements IClassTransformer {
 
+    @Getter
+    private static final boolean deobfuscated = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
     private final ArrayListMultimap<String, ITransformer> transformerMap = ArrayListMultimap.create();
 
     public SkyblockAddonsASMTransformer() {
@@ -70,6 +73,6 @@ public class SkyblockAddonsASMTransformer implements IClassTransformer {
      */
     public void log(Level level, String message) {
         String name = "SkyblockAddons/" + this.getClass().getSimpleName();
-        FMLRelaunchLog.log(name, level, (SkyblockAddonsLoadingPlugin.isDeobfuscated() ? "" : "[" + name + "] ") + message);
+        FMLRelaunchLog.log(name, level, (deobfuscated ? "" : "[" + name + "] ") + message);
     }
 }

@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.asm.transformer;
 
+import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.asm.utils.ITransformer;
-import codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.lib.tree.AbstractInsnNode;
 import org.spongepowered.asm.lib.tree.ClassNode;
@@ -24,7 +24,7 @@ public class RenderGlobalTransformer implements ITransformer {
 
     public RenderGlobalTransformer() {
         String entity;
-        if (SkyblockAddonsLoadingPlugin.isDeobfuscated()) {
+        if (SkyblockAddonsASMTransformer.isDeobfuscated()) {
             renderEntities = "renderEntities";
             isRenderEntityOutlines = "isRenderEntityOutlines";
             iCamera = "net/minecraft/client/renderer/culling/ICamera";

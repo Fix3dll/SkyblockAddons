@@ -392,7 +392,7 @@ public class ContainerPreviewManager {
      * Called when a key is typed in a {@link GuiContainer}. Used to control backpack preview freezing.
      *
      * @param keyCode the key code of the key that was typed
-     * @see codes.biscuit.skyblockaddons.asm.hooks.GuiContainerHook#keyTyped(int) ;
+     * @see codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook#keyTyped(int) ;
      */
     public static void onContainerKeyTyped(int keyCode) {
         SkyblockAddons main = SkyblockAddons.getInstance();

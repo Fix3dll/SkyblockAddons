@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.misc;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin;
+import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import lombok.Getter;
 import net.minecraft.event.ClickEvent;
@@ -192,7 +192,7 @@ public class Updater {
                 messageToRender = getMessage("messages.updateChecker.notificationBox.majorAvailable", targetVersion);
             }
         } else if (status == AHEAD) {
-            if (!SkyblockAddonsLoadingPlugin.isDeobfuscated()) {
+            if (!SkyblockAddonsASMTransformer.isDeobfuscated()) {
                 logger.warn("The current version is newer than the latest version. Please tell an SBA developer to update" +
                         " the online data.");
             } else {

@@ -1,8 +1,8 @@
 package codes.biscuit.skyblockaddons.utils.data;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Language;
-import codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.seacreatures.SeaCreature;
@@ -103,7 +103,7 @@ public class DataUtils {
      * This is set to {@code true} if the mod is running in production or if it's running in a dev environment that has
      * the environment variable {@code FETCH_DATA_ONLINE}.
      */
-    public static final boolean USE_ONLINE_DATA = !SkyblockAddonsLoadingPlugin.isDeobfuscated() ||
+    public static final boolean USE_ONLINE_DATA = !SkyblockAddonsASMTransformer.isDeobfuscated() ||
             System.getenv().containsKey("FETCH_DATA_ONLINE");
 
     private static String path;

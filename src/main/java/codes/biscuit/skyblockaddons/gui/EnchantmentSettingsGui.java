@@ -18,15 +18,19 @@ import org.lwjgl.input.Keyboard;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 public class EnchantmentSettingsGui extends SettingsGui {
 
-    private final List<FeatureSetting> ENCHANT_COLORING = Arrays.asList(FeatureSetting.HIGHLIGHT_ENCHANTMENTS,
+    private final EnumSet<FeatureSetting> ENCHANT_COLORING = EnumSet.of(FeatureSetting.HIGHLIGHT_ENCHANTMENTS,
             FeatureSetting.PERFECT_ENCHANT_COLOR, FeatureSetting.GREAT_ENCHANT_COLOR, FeatureSetting.GOOD_ENCHANT_COLOR,
             FeatureSetting.POOR_ENCHANT_COLOR, FeatureSetting.COMMA_ENCHANT_COLOR);
-    private final List<FeatureSetting> ORGANIZATION = Arrays.asList(FeatureSetting.ENCHANT_LAYOUT,
+    private final EnumSet<FeatureSetting> ORGANIZATION = EnumSet.of(FeatureSetting.ENCHANT_LAYOUT,
             FeatureSetting.HIDE_ENCHANTMENT_LORE, FeatureSetting.HIDE_GREY_ENCHANTS);
+    private final EnumSet<Feature> ENCHANT_COLOR_FEATURES = EnumSet.of(Feature.ENCHANTMENT_PERFECT_COLOR,
+            Feature.ENCHANTMENT_GREAT_COLOR,Feature.ENCHANTMENT_GOOD_COLOR, Feature.ENCHANTMENT_POOR_COLOR,
+            Feature.ENCHANTMENT_COMMA_COLOR);
 
 
     private int maxPage;
@@ -89,8 +93,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
             this.initGui();
         }
         long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-        float alphaMultiplier; // This all calculates the alpha for the fade-in effect.
-        alphaMultiplier = 0.5F;
+        float alphaMultiplier = 0.5F; // This all calculates the alpha for the fade-in effect.
         if (main.getUtils().isFadingIn()) {
             int fadeMilis = 500;
             if (timeSinceOpen <= fadeMilis) {
@@ -151,9 +154,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
             closingGui = true;
             // Temp fix until feature re-write. Open a color selection panel specific to the color setting
             Feature f = ((ButtonOpenColorMenu) abstractButton).feature;
-            if (f == Feature.ENCHANTMENT_PERFECT_COLOR || f == Feature.ENCHANTMENT_GREAT_COLOR ||
-                    f == Feature.ENCHANTMENT_GOOD_COLOR || f == Feature.ENCHANTMENT_POOR_COLOR ||
-                    f == Feature.ENCHANTMENT_COMMA_COLOR) {
+            if (ENCHANT_COLOR_FEATURES.contains(f)) {
                 mc.displayGuiScreen(new ColorSelectionGui(f, EnumUtils.GUIType.SETTINGS, lastTab, page));
             } else {
                 mc.displayGuiScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, lastTab, lastPage));

@@ -1,8 +1,6 @@
 package codes.biscuit.skyblockaddons.tweaker;
 
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
-import lombok.Getter;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
@@ -10,9 +8,6 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class SkyblockAddonsLoadingPlugin implements IFMLLoadingPlugin {
-
-    @Getter
-    private static final boolean deobfuscated = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
     @Override
     public String[] getASMTransformerClass() {
