@@ -1,13 +1,12 @@
 package codes.biscuit.skyblockaddons.asm;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.transformer.RenderGlobalTransformer;
 import codes.biscuit.skyblockaddons.asm.utils.ITransformer;
+import codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin;
 import com.google.common.collect.ArrayListMultimap;
-import lombok.Getter;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
-import org.apache.logging.log4j.Logger;
+import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
+import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.lib.ClassWriter;
 import org.spongepowered.asm.lib.ClassReader;
 import org.spongepowered.asm.lib.tree.ClassNode;
@@ -17,9 +16,6 @@ import java.util.Collection;
 
 public class SkyblockAddonsASMTransformer implements IClassTransformer {
 
-    private static final Logger logger = SkyblockAddons.getLogger();
-    @Getter
-    private static final boolean deobfuscated = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
     private final ArrayListMultimap<String, ITransformer> transformerMap = ArrayListMultimap.create();
 
     public SkyblockAddonsASMTransformer() {
@@ -48,7 +44,7 @@ public class SkyblockAddonsASMTransformer implements IClassTransformer {
         reader.accept(node, ClassReader.EXPAND_FRAMES);
 
         transformers.forEach(transformer -> {
-            logger.info("Applying transformer {} on {}", transformer.getClass().getName(), transformedName);
+            log(Level.INFO, "Applying transformer " + transformer.getClass().getName() + " on " + transformedName);
             transformer.transform(node, transformedName);
         });
 
@@ -57,11 +53,23 @@ public class SkyblockAddonsASMTransformer implements IClassTransformer {
         try {
             node.accept(writer);
         } catch (Throwable ex) {
-            logger.error("An exception occurred while transforming {}", transformedName);
+            log(Level.ERROR, "An exception occurred while transforming {}" + transformedName);
             ex.printStackTrace();
             return bytes;
         }
 
         return writer.toByteArray();
+    }
+
+    /**
+     * Logs a message ot the console at the specified level. This does not use the standard logger implementation because
+     * this class is loaded before Minecraft has started.
+     *
+     * @param level the level to log the message to
+     * @param message the message to log
+     */
+    public void log(Level level, String message) {
+        String name = "SkyblockAddons/" + this.getClass().getSimpleName();
+        FMLRelaunchLog.log(name, level, (SkyblockAddonsLoadingPlugin.isDeobfuscated() ? "" : "[" + name + "] ") + message);
     }
 }
