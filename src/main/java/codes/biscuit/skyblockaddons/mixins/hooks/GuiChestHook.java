@@ -364,14 +364,6 @@ public class GuiChestHook {
         GlStateManager.color(colorRed, colorGreen, colorBlue, colorAlpha);
     }
 
-    public static int drawString(FontRenderer fontRenderer, String text, int x, int y, int color) {
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.SHOW_BACKPACK_PREVIEW) &&
-                main.getConfigValues().isEnabled(Feature.MAKE_BACKPACK_INVENTORIES_COLORED) && BackpackInventoryManager.getBackpackColor() != null) {
-            return fontRenderer.drawString(text, x,y, BackpackInventoryManager.getBackpackColor().getInventoryTextColor());
-        }
-        return fontRenderer.drawString(text,x,y,color);
-    }
-
     public static void mouseReleased(ReturnValue<?> returnValue) {
         if (islandWarpGui != null) {
             returnValue.cancel();

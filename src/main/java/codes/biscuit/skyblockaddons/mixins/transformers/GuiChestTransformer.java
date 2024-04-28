@@ -1,5 +1,8 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
+import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
 import net.minecraft.client.gui.FontRenderer;
@@ -10,16 +13,17 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
 
 @Mixin(GuiChest.class)
 public abstract class GuiChestTransformer extends GuiContainer {
+    @Unique private static final SkyblockAddons sba$main = SkyblockAddons.getInstance();
     @Shadow public IInventory lowerChestInventory;
+    @Shadow private IInventory upperChestInventory;
 
     public GuiChestTransformer(Container inventorySlotsIn) {
         super(inventorySlotsIn);
@@ -30,14 +34,18 @@ public abstract class GuiChestTransformer extends GuiContainer {
         GuiChestHook.color(1.0F, 1.0F, 1.0F, 1.0F, this.lowerChestInventory);
     }
 
-    @Inject(method = "drawGuiContainerForegroundLayer", at = @At("HEAD"))
-    private void renderChestForegroundLayer(int mouseX, int mouseY, CallbackInfo ci) {
+    @SuppressWarnings("UnreachableCode")
+    @Override
+    public void drawString(FontRenderer instance, String text, int x, int y, int color) {
         GuiChestHook.onRenderChestForegroundLayer((GuiChest) (Object) this);
-    }
-
-    @Redirect(method = "drawGuiContainerForegroundLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
-    private int GuiChestHook_drawString(FontRenderer instance, String text, int x, int y, int color) {
-        return GuiChestHook.drawString(instance, text, x, y, color);
+        int backpackColor = 4210752; // vanilla color
+        if (sba$main.getUtils().isOnSkyblock() && sba$main.getConfigValues().isEnabled(Feature.SHOW_BACKPACK_PREVIEW)
+                && sba$main.getConfigValues().isEnabled(Feature.MAKE_BACKPACK_INVENTORIES_COLORED)
+                && BackpackInventoryManager.getBackpackColor() != null) {
+            backpackColor = BackpackInventoryManager.getBackpackColor().getInventoryTextColor();
+        }
+        this.fontRendererObj.drawString(this.lowerChestInventory.getDisplayName().getUnformattedText(), 8, 6, backpackColor);
+        this.fontRendererObj.drawString(this.upperChestInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, backpackColor);
     }
 
     @Override
