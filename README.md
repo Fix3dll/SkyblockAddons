@@ -15,8 +15,6 @@ If you are looking for a stable version, you can check the [Modrinth](https://mo
 
 Special Credits
 -----
-InventiveTalent for allowing us to use her magma boss API in our project, please check out her magma boss timer website at https://hypixel.inventivetalent.org/skyblock-magma-timer/ .
-
 TirelessTraveler (aka ILikePlayingGames) for helping maintain the project.
 
 DidiSkywalker & CraftedFury (Nahydrin) for adding/PRing many incredible features!

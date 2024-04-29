@@ -92,7 +92,7 @@ public enum Feature {
     HIDE_SVEN_PUP_NAMETAGS(97, "settings.hideSvenPupNametags", null, true),
     REPEAT_SLAYER_BOSS_WARNING(98, null, true),
     // Release v1.5
-    DUNGEONS_MAP_DISPLAY(99, "settings.dungeonMapDisplay", new GuiFeatureData(EnumUtils.DrawType.DUNGEONS_MAP, ColorCode.BLACK), false, EnumUtils.FeatureSetting.ROTATE_MAP, EnumUtils.FeatureSetting.CENTER_ROTATION_ON_PLAYER, EnumUtils.FeatureSetting.SHOW_PLAYER_HEADS_ON_MAP, EnumUtils.FeatureSetting.MAP_ZOOM),
+    DUNGEONS_MAP_DISPLAY(99, "settings.dungeonMapDisplay", new GuiFeatureData(EnumUtils.DrawType.DUNGEONS_MAP, ColorCode.BLACK), false, EnumUtils.FeatureSetting.ROTATE_MAP, EnumUtils.FeatureSetting.CENTER_ROTATION_ON_PLAYER, EnumUtils.FeatureSetting.SHOW_PLAYER_HEADS_ON_MAP, EnumUtils.FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD,EnumUtils.FeatureSetting.MAP_ZOOM),
     ROTATE_MAP(100, "settings.rotateMap", null, false),
     CENTER_ROTATION_ON_PLAYER(101, "settings.centerRotationOnYourPlayer", null, false),
     MAP_ZOOM(-1, "settings.mapZoom", null, false),
@@ -153,12 +153,10 @@ public enum Feature {
     DRILL_FUEL_BAR(160, "settings.drillFuelBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.DARK_GREEN), false),
     DRILL_FUEL_TEXT(161, "settings.drillFuelNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_GREEN), false, EnumUtils.FeatureSetting.ABBREVIATE_DRILL_FUEL_DENOMINATOR),
     FISHING_PARTICLE_OVERLAY(162, "settings.fishingParticleOverlay", new GuiFeatureData(ColorCode.WHITE), false, EnumUtils.FeatureSetting.BIGGER_WAKE),
-    COOLDOWN_PREDICTION(164, "settings.cooldownPrediction", null, false),
     ENCHANTMENT_PERFECT_COLOR(165, "enchants.superTier", new GuiFeatureData(ColorCode.CHROMA, true), false),
     ENCHANTMENT_GREAT_COLOR(166, "enchants.highTier", new GuiFeatureData(ColorCode.GOLD, true), false),
     ENCHANTMENT_GOOD_COLOR(167, "enchants.midTier", new GuiFeatureData(ColorCode.BLUE, true), false),
     ENCHANTMENT_POOR_COLOR(168, "enchants.lowTier", new GuiFeatureData(ColorCode.GRAY, true), false),
-    LEG_MONKEY_LEVEL_100(169, "settings.legendaryMonkeyLevel100", null, true),
     BIGGER_WAKE(170, "settings.biggerWake", null, false),
     ENCHANTMENT_COMMA_COLOR(171, "enchants.commas", new GuiFeatureData(ColorCode.BLUE, true), false),
     REFORGE_FILTER(172, "settings.reforgeFilter", null, false),
@@ -182,7 +180,7 @@ public enum Feature {
     HIDE_PLAYERS_NEAR_NPCS(190, "settings.hidePlayersNearNPCs", null, false),
     OVERFLOW_MANA(191, "settings.showOverflowManaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), false),
     DOUBLE_WARP(192, "settings.doubleWarp", null, true),
-    JUNGLE_AXE_COOLDOWN(193, "settings.axeCooldownIndicator", null, true, EnumUtils.FeatureSetting.COOLDOWN_PREDICTION, EnumUtils.FeatureSetting.LEVEL_100_LEG_MONKEY),
+    //JUNGLE_AXE_COOLDOWN(193, "settings.axeCooldownIndicator", null, true, EnumUtils.FeatureSetting.COOLDOWN_PREDICTION, EnumUtils.FeatureSetting.LEVEL_100_LEG_MONKEY),
     HEALTH_PREDICTION(194, "settings.vanillaHealthPrediction", null, true),
     DISABLE_EMPTY_GLASS_PANES(195, "settings.hideMenuGlassPanes", null, false),
     ENTITY_OUTLINES(196, "settings.entityOutlines", null, false, EnumUtils.FeatureSetting.OUTLINE_DUNGEON_TEAMMATES, EnumUtils.FeatureSetting.ITEM_GLOW, EnumUtils.FeatureSetting.OUTLINE_SHOWCASE_ITEMS, EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY),
@@ -205,13 +203,13 @@ public enum Feature {
     DEVELOPER_MODE(212, "settings.devMode", null, true),
     SHOW_SKYBLOCK_ITEM_ID(213, "settings.showSkyblockItemId", null, true),
     RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU(214, "settings.resetSalvagedEssencesAfterLeavingMenu", null, false),
-    CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD(215, "settings.changeDungeonMapZoomWithKeyboard", null, false),
+    CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD(215, null, false),
     // Release 1.7
     PLAYER_SYMBOLS_IN_CHAT(216, "settings.showPlayerSymbolsInChat", null, false, EnumUtils.FeatureSetting.SHOW_PROFILE_TYPE, EnumUtils.FeatureSetting.SHOW_NETHER_FACTION),
     CRIMSON_ARMOR_ABILITY_STACKS(217, "settings.crimsonArmorAbilityStacks", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false),
     HIDE_TRUE_DEFENSE(218, "settings.hideTrueDefense", new GuiFeatureData(ColorCode.RED), false),
-    SHOW_PROFILE_TYPE(219, "settings.showProfileType", false),
-    SHOW_NETHER_FACTION(220,"settings.showNetherFaction", false),
+    SHOW_PROFILE_TYPE(219, null, false),
+    SHOW_NETHER_FACTION(220,null, false),
     // Release Fix3dll
 	HIDE_WHEN_NOT_IN_CRIMSON(222, null, false),
     INFERNO_SLAYER_TRACKER(223, "settings.infernoSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_CRIMSON),
@@ -267,8 +265,8 @@ public enum Feature {
      * These are "features" that are not actually features, but just hold the place of a setting. If you are adding any new settings and create
      * a feature here, make sure to add it!
      */
-    private static final Set<Feature> SETTINGS = Sets.newHashSet(DOUBLE_DROP_IN_OTHER_GAMES,
-            USE_VANILLA_TEXTURE_DEFENCE, SHOW_BACKPACK_HOLDING_SHIFT, OUTLINE_DUNGEON_TEAMMATES,
+    private static final Set<Feature> SETTINGS = Sets.newHashSet(DOUBLE_DROP_IN_OTHER_GAMES, SHOW_PROFILE_TYPE,
+            USE_VANILLA_TEXTURE_DEFENCE, SHOW_BACKPACK_HOLDING_SHIFT, OUTLINE_DUNGEON_TEAMMATES, SHOW_NETHER_FACTION,
             MAKE_BACKPACK_INVENTORIES_COLORED, CHANGE_BAR_COLOR_FOR_POTIONS, ENABLE_MESSAGE_WHEN_BREAKING_STEMS,
             ENABLE_MESSAGE_WHEN_MINING_DEEP_CAVERNS, ENABLE_MESSAGE_WHEN_MINING_NETHER, CAKE_BAG_PREVIEW,
             REPEAT_FULL_INVENTORY_WARNING, DOUBLE_WARP, RIFTSTALKER_COLOR_BY_RARITY, RIFTSTALKER_TEXT_MODE,
@@ -278,9 +276,9 @@ public enum Feature {
             DRAGON_STATS_TRACKER_COLOR_BY_RARITY, HIDE_WHEN_NOT_IN_CASTLE, HIDE_WHEN_NOT_IN_SPIDERS_DEN, HIDE_WHEN_NOT_IN_END,
             ENDERMAN_COLOR_BY_RARITY, ENDERMAN_TEXT_MODE, HIDE_WHEN_NOT_IN_CRIMSON, INFERNO_COLOR_BY_RARITY, INFERNO_TEXT_MODE,
             HIDE_WHEN_NOT_IN_CRYPTS, HIDE_WHEN_NOT_IN_RIFT, SHOW_PERSONAL_COMPACTOR_PREVIEW, SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP,
-            SHOW_SKILL_XP_GAINED, SHOW_SALVAGE_ESSENCES_COUNTER, HEALING_CIRCLE_OPACITY, COOLDOWN_PREDICTION, ENCHANTMENTS_HIGHLIGHT,
+            SHOW_SKILL_XP_GAINED, SHOW_SALVAGE_ESSENCES_COUNTER, HEALING_CIRCLE_OPACITY, ENCHANTMENTS_HIGHLIGHT,
             ENCHANTMENT_COMMA_COLOR, ENCHANTMENT_PERFECT_COLOR, ENCHANTMENT_GREAT_COLOR, ENCHANTMENT_GOOD_COLOR,
-            ENCHANTMENT_POOR_COLOR, BIGGER_WAKE, LEG_MONKEY_LEVEL_100, HIDE_ENCHANT_DESCRIPTION, HIDE_GREY_ENCHANTS,
+            ENCHANTMENT_POOR_COLOR, BIGGER_WAKE, HIDE_ENCHANT_DESCRIPTION, HIDE_GREY_ENCHANTS,
             TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR, TREVOR_HIGHLIGHT_TRACKED_ENTITY, TREVOR_SHOW_QUEST_COOLDOWN,
             SHOW_FETCHUR_ONLY_IN_DWARVENS, SHOW_FETCHUR_ITEM_NAME, SHOW_FETCHUR_INVENTORY_OPEN_ONLY, WARN_WHEN_FETCHUR_CHANGES,
             STOP_ONLY_RAT_SQUEAK, SHOW_ENDER_CHEST_PREVIEW, HEALTH_PREDICTION, ABBREVIATE_SKILL_XP_DENOMINATOR, OTHER_DEFENCE_STATS,
@@ -288,7 +286,7 @@ public enum Feature {
             RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR, TREVOR_SHOW_LOCATION_ON_CHAT,
             SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT,
             HIDE_ONLY_OUTSIDE_RIFT, FIRE_FREEZE_SOUND, FIRE_FREEZE_WHEN_HOLDING, HEART_INSTEAD_HEALTH_ON_RIFT,
-            OUTLINE_SHOWCASE_ITEMS);
+            OUTLINE_SHOWCASE_ITEMS, CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD, DRAGON_STATS_TRACKER_NEST_ONLY);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'

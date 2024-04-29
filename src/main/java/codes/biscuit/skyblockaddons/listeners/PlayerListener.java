@@ -370,9 +370,11 @@ public class PlayerListener {
                     DRAGON_KILLED_PATTERN.matcher(strippedText).matches()) {
                 DragonTracker.getInstance().dragonKilled();
 
-            } else if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS) &&
-                    unformattedText.equals("You laid an egg!")) { // Put the Chicken Head on cooldown for 20 seconds when the player lays an egg.
-                CooldownManager.put("CHICKEN_HEAD");
+            } else if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
+                if (unformattedText.equals("You laid an egg!")) {
+                    // Put the Chicken Head on cooldown for 5 seconds when the player lays an egg.
+                    CooldownManager.put("CHICKEN_HEAD");
+                }
 
             } else if (main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) &&
                     formattedText.startsWith("§r§eYou added a minute of rain!")) {
@@ -1262,12 +1264,10 @@ public class PlayerListener {
 
             Block block = blockState.getBlock();
             if ((itemId.equals("JUNGLE_AXE") || itemId.equals("TREECAPITATOR_AXE")) && (block.equals(Blocks.log) || block.equals(Blocks.log2))) {
-                // Weirdly, the level 100 leg monkey doesn't seem to be a full 50% reduction when accounting for break time
-                float multiplier = main.getConfigValues().isEnabled(Feature.LEG_MONKEY_LEVEL_100) ? .6F : 1;
-                long cooldownTime = (long) (CooldownManager.getItemCooldown(itemId) * multiplier);
-                cooldownTime -= (main.getConfigValues().isEnabled(Feature.COOLDOWN_PREDICTION) ? e.timeToBreak - 50 : 0);
+                long cooldownTime = CooldownManager.getItemCooldown(itemId);
                 // TODO: Pet detection
-                // Min cooldown time is 400 because anything lower than that can allow the player to hit a block already marked for block removal by treecap/jungle axe ability
+                // Min cooldown time is 400 because anything lower than that can allow the player to hit a block
+                // already marked for block removal by treecap/jungle axe ability
                 CooldownManager.put(itemId, Math.max(cooldownTime, 400));
             }
         }
