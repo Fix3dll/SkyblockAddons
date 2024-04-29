@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.core.Feature;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -13,11 +14,11 @@ public class ButtonCredit extends ButtonFeature {
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    private EnumUtils.FeatureCredit credit;
-    private boolean smaller;
+    @Getter private final EnumUtils.FeatureCredit credit;
+    private final boolean smaller;
 
     // Used to calculate the transparency when fading in.
-    private long timeOpened = System.currentTimeMillis();
+    private final long timeOpened;
 
     public ButtonCredit(double x, double y, String buttonText, EnumUtils.FeatureCredit credit, Feature feature, boolean smaller) {
         super(0, (int)x, (int)y, buttonText, feature);
@@ -26,6 +27,7 @@ public class ButtonCredit extends ButtonFeature {
         this.height = 12;
         this.credit = credit;
         this.smaller = smaller;
+        timeOpened = System.currentTimeMillis();
     }
 
     @Override
@@ -39,11 +41,8 @@ public class ButtonCredit extends ButtonFeature {
                     alphaMultiplier = (float) timeSinceOpen / fadeMilis;
                 }
             }
-            float scale = 0.8F;
-            if (smaller) {
-                scale = 0.6F;
-            }
 
+            float scale = smaller ? 0.6F : 0.8F;
             hovered = mouseX >= this.xPosition*scale && mouseY >= this.yPosition*scale && mouseX < this.xPosition*scale +
                     this.width*scale && mouseY < this.yPosition*scale + this.height*scale;
             GlStateManager.enableBlend();
@@ -59,19 +58,14 @@ public class ButtonCredit extends ButtonFeature {
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale,scale,1);
             mc.getTextureManager().bindTexture(WEB);
-            drawModalRectWithCustomSizedTexture(xPosition,
-                    yPosition, 0, 0, 12, 12, 12, 12);
+            drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, 12, 12, 12, 12);
             GlStateManager.popMatrix();
         }
     }
 
-    public EnumUtils.FeatureCredit getCredit() {
-        return credit;
-    }
-
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        float scale = 0.8F;
+        float scale = smaller ? 0.6F : 0.8F;
         return mouseX >= this.xPosition*scale && mouseY >= this.yPosition*scale && mouseX < this.xPosition*scale +
                 this.width*scale && mouseY < this.yPosition*scale + this.height*scale;
     }
