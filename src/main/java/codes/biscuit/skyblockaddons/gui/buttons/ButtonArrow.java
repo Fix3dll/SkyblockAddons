@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
@@ -10,15 +11,15 @@ import net.minecraft.util.ResourceLocation;
 
 public class ButtonArrow extends GuiButton {
 
-    private static ResourceLocation ARROW_RIGHT = new ResourceLocation("skyblockaddons", "gui/arrowright.png");
-    private static ResourceLocation ARROW_LEFT = new ResourceLocation("skyblockaddons", "gui/arrowleft.png");
+    private static final ResourceLocation ARROW_RIGHT = new ResourceLocation("skyblockaddons", "gui/arrowright.png");
+    private static final ResourceLocation ARROW_LEFT = new ResourceLocation("skyblockaddons", "gui/arrowleft.png");
 
-    private SkyblockAddons main;
+    private final SkyblockAddons main;
 
     // Used to calculate the transparency when fading in.
-    private long timeOpened = System.currentTimeMillis();
-    private ArrowType arrowType;
-    private boolean max;
+    private final long timeOpened;
+    @Getter private final ArrowType arrowType;
+    private final boolean max;
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
@@ -30,6 +31,7 @@ public class ButtonArrow extends GuiButton {
         this.height = 30;
         this.arrowType = arrowType;
         this.max = max;
+        this.timeOpened = System.currentTimeMillis();
     }
 
     @Override
@@ -73,10 +75,6 @@ public class ButtonArrow extends GuiButton {
 
     public boolean isNotMax() {
         return !max;
-    }
-
-    public ArrowType getArrowType() {
-        return arrowType;
     }
 
     public enum ArrowType {

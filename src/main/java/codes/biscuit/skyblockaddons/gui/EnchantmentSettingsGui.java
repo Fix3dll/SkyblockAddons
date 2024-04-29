@@ -1,17 +1,13 @@
 package codes.biscuit.skyblockaddons.gui;
 
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Language;
-import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantListLayout;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
-import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.FeatureSetting;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
 
@@ -20,6 +16,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+
+import static codes.biscuit.skyblockaddons.core.Translations.getMessage;
 
 public class EnchantmentSettingsGui extends SettingsGui {
 
@@ -46,7 +44,6 @@ public class EnchantmentSettingsGui extends SettingsGui {
         }
     }
 
-    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     @Override
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
@@ -54,36 +51,28 @@ public class EnchantmentSettingsGui extends SettingsGui {
         column = 1;
         buttonList.clear();
         for (FeatureSetting setting : settings) {
-            if (page == 0) {
-                if (ORGANIZATION.contains(setting)) {
-                    addButton(setting);
-                }
-            }
-            if (page == 1) {
-                if (ENCHANT_COLORING.contains(setting)) {
-                    addButton(setting);
-                }
-            } else if (page == 2 &&
-                    !(ENCHANT_COLORING.contains(setting) || ORGANIZATION.contains(setting))) {
-                addButton(setting);
+            switch (page) {
+                case 0:
+                    if (ORGANIZATION.contains(setting)) {
+                        addButton(setting);
+                    }
+                    break;
+
+                case 1:
+                    if (ENCHANT_COLORING.contains(setting)) {
+                        addButton(setting);
+                    }
+                    break;
+
+                case 2:
+                    if (!(ENCHANT_COLORING.contains(setting) || ORGANIZATION.contains(setting))) {
+                        addButton(setting);
+                    }
+                    break;
             }
         }
-        buttonList.add(new ButtonArrow(width / 2 - 15 - 150, height - 70, main, ButtonArrow.ArrowType.LEFT, page == 0));
-        buttonList.add(new ButtonArrow(width / 2 - 15 + 150, height - 70, main, ButtonArrow.ArrowType.RIGHT, page == maxPage));
-    }
-
-
-    private int findDisplayCount() {
-        int maxX = new ScaledResolution(mc).getScaledHeight() - 70 - 25;
-        int displayCount = 0;
-        for (int row = 1; row < 99; row++) {
-            if (getRowHeight(row) < maxX) {
-                displayCount += 3;
-            } else {
-                return displayCount;
-            }
-        }
-        return displayCount;
+        buttonList.add(new ButtonArrow(width / 2D - 15 - 150, height - 70, main, ButtonArrow.ArrowType.LEFT, page == 0));
+        buttonList.add(new ButtonArrow(width / 2D - 15 + 150, height - 70, main, ButtonArrow.ArrowType.RIGHT, page == maxPage));
     }
 
     @Override
@@ -131,7 +120,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
             GlStateManager.enableBlend();
             DrawUtils.drawRect(x, y, width, height, ColorUtils.getDummySkyblockColor(28, 29, 41, 230), 4);
 
-            SkyblockAddonsGui.drawScaledString(this, Translations.getMessage("settings.settings"), 110, defaultBlue, 1.5, 0);
+            SkyblockAddonsGui.drawScaledString(this, getMessage("settings.settings"), 110, defaultBlue, 1.5, 0);
         }
         super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
     }
@@ -141,15 +130,10 @@ public class EnchantmentSettingsGui extends SettingsGui {
      */
     @Override
     protected void actionPerformed(GuiButton abstractButton) {
-        if (abstractButton instanceof ButtonLanguage) {
-            Language language = ((ButtonLanguage) abstractButton).getLanguage();
-            main.getConfigValues().setLanguage(language);
-            DataUtils.loadLocalizedStrings(true);
-            main.setKeyBindingDescriptions();
-            returnToGui();
-        } else if (abstractButton instanceof ButtonSwitchTab) {
+        if (abstractButton instanceof ButtonSwitchTab) {
             ButtonSwitchTab tab = (ButtonSwitchTab) abstractButton;
             mc.displayGuiScreen(new SkyblockAddonsGui(1, tab.getTab()));
+
         } else if (abstractButton instanceof ButtonOpenColorMenu) {
             closingGui = true;
             // Temp fix until feature re-write. Open a color selection panel specific to the color setting
@@ -159,11 +143,13 @@ public class EnchantmentSettingsGui extends SettingsGui {
             } else {
                 mc.displayGuiScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, lastTab, lastPage));
             }
+
         } else if (abstractButton instanceof ButtonToggleTitle) {
             ButtonFeature button = (ButtonFeature) abstractButton;
             Feature feature = button.getFeature();
             if (feature == null) return;
             feature.setEnabled(!main.getConfigValues().isEnabled(feature));
+
         } else if (abstractButton instanceof ButtonArrow) {
             ButtonArrow arrow = (ButtonArrow) abstractButton;
             if (arrow.isNotMax()) {
@@ -179,60 +165,46 @@ public class EnchantmentSettingsGui extends SettingsGui {
         }
     }
 
-    private void addLanguageButton(Language language) {
-        if (displayCount == 0) return;
-        String text = feature.getMessage();
-        int halfWidth = width / 2;
-        int boxWidth = 140;
-        int x = 0;
-        if (column == 1) {
-            x = halfWidth - 90 - boxWidth;
-        } else if (column == 2) {
-            x = halfWidth - (boxWidth / 2);
-        } else if (column == 3) {
-            x = halfWidth + 90;
-        }
-        double y = getRowHeight(row);
-        buttonList.add(new ButtonLanguage(x, y, text, language));
-        column++;
-        if (column > 3) {
-            column = 1;
-            row++;
-        }
-        displayCount--;
-    }
-
     private void addButton(FeatureSetting setting) {
-
         int halfWidth = width / 2;
         int boxWidth = 100;
         int x = halfWidth - (boxWidth / 2);
         double y = getRowHeightSetting(row);
-        if (setting == FeatureSetting.COLOR) {
-            buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, Translations.getMessage("settings.changeColor"), main, feature));
-            // Temp hardcode until feature rewrite
-        } else if (setting == FeatureSetting.PERFECT_ENCHANT_COLOR || setting == FeatureSetting.GREAT_ENCHANT_COLOR ||
-                setting == FeatureSetting.GOOD_ENCHANT_COLOR || setting == FeatureSetting.POOR_ENCHANT_COLOR ||
-                setting == FeatureSetting.COMMA_ENCHANT_COLOR) {
-            buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), main, setting.getFeatureEquivalent()));
-        } else if (setting == FeatureSetting.ENCHANT_LAYOUT) {
-            boxWidth = 140;
-            x = halfWidth - (boxWidth / 2);
-            EnchantListLayout currentStatus = main.getConfigValues().getEnchantLayout();
 
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("enchantLayout.title"), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSelect(x, (int) y, boxWidth, 20, Arrays.asList(EnchantListLayout.values()), currentStatus.ordinal(), index -> {
-                final EnchantListLayout enchantLayout = EnchantListLayout.values()[index];
-                main.getConfigValues().setEnchantLayout(enchantLayout);
-                reInit = true;
-            }));
+        switch (setting) {
+            case COLOR:
+                buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, getMessage("settings.changeColor"), main, feature));
+                break;
 
-            row += 0.4;
-        } else {
-            boxWidth = 31; // Default size and stuff.
-            x = halfWidth - (boxWidth / 2);
-            y = getRowHeightSetting(row);
-            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
+            case PERFECT_ENCHANT_COLOR:
+            case GREAT_ENCHANT_COLOR:
+            case GOOD_ENCHANT_COLOR:
+            case POOR_ENCHANT_COLOR:
+            case COMMA_ENCHANT_COLOR:
+                // Temp hardcode until feature rewrite
+                buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), main, setting.getFeatureEquivalent()));
+                break;
+
+            case ENCHANT_LAYOUT:
+                boxWidth = 140;
+                x = halfWidth - (boxWidth / 2);
+                EnchantListLayout currentStatus = main.getConfigValues().getEnchantLayout();
+
+                buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, getMessage("enchantLayout.title"), true, 0xFFFFFFFF));
+                buttonList.add(new ButtonSelect(x, (int) y, boxWidth, 20, Arrays.asList(EnchantListLayout.values()), currentStatus.ordinal(), index -> {
+                    final EnchantListLayout enchantLayout = EnchantListLayout.values()[index];
+                    main.getConfigValues().setEnchantLayout(enchantLayout);
+                    reInit = true;
+                }));
+                row += 0.4F;
+                break;
+
+            default:
+                boxWidth = 31; // Default size and stuff.
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
+                break;
         }
         row++;
     }
