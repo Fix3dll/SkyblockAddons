@@ -340,7 +340,7 @@ public class DataUtils {
                             try {
                                 loadOnlineFile(localizedStringsRequest);
                             } catch (InterruptedException | ExecutionException | NullPointerException | IllegalArgumentException e) {
-                                handleOnlineFileLoadException(Objects.requireNonNull(localizedStringsRequest), e);
+//                                handleOnlineFileLoadException(Objects.requireNonNull(localizedStringsRequest), e);
                             }
                             cancel();
                         }
@@ -416,9 +416,9 @@ public class DataUtils {
 
     private static void registerRemoteRequests() {
         remoteRequests.add(new OnlineDataRequest());
-        if (SkyblockAddons.getInstance().getConfigValues().getLanguage() != Language.ENGLISH) {
-            remoteRequests.add(new LocalizedStringsRequest(SkyblockAddons.getInstance().getConfigValues().getLanguage()));
-        }
+//        if (SkyblockAddons.getInstance().getConfigValues().getLanguage() != Language.ENGLISH) {
+//            remoteRequests.add(new LocalizedStringsRequest(SkyblockAddons.getInstance().getConfigValues().getLanguage()));
+//        }
         remoteRequests.add(new ContainersRequest());
         remoteRequests.add(new CompactorItemsRequest());
         remoteRequests.add(new SeaCreaturesRequest());

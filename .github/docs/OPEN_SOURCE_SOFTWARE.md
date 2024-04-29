@@ -19,7 +19,6 @@ SkyblockAddons uses the following open source software:
 | [Danker's Skyblock Mod](https://github.com/bowser0000/SkyblockMod)             | [GPL-3.0](https://github.com/bowser0000/SkyblockMod/blob/master/COPYING), [LGPL-3.0](https://github.com/bowser0000/SkyblockMod/blob/master/COPYING.LESSER) |                                                                |
 | [SkyHanni](https://github.com/hannibal002/SkyHanni)                            | [LGPL-2.1](https://github.com/hannibal002/SkyHanni/blob/beta/LICENSE)                                                                                      |                                                                |
 | [Mixin](https://github.com/SpongePowered/Mixin)                                | [MIT License](https://github.com/SpongePowered/Mixin/blob/master/LICENSE.txt)                                                                              | :white_check_mark:                                             |
-| [MixinExtras](https://github.com/LlamaLad7/MixinExtras)                        | [MIT License](https://github.com/LlamaLad7/MixinExtras/blob/master/LICENSE)                                                                                | :white_check_mark:                                             |
 
 [Attribution Notices](NOTICES.md)
 
