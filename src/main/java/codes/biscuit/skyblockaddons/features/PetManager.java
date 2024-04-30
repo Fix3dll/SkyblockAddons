@@ -9,7 +9,6 @@ import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.pojo.PetInfo;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -83,7 +82,7 @@ public class PetManager {
     }
 
     /**
-     * When levelled up messages came to chat it will trigger {@link codes.biscuit.skyblockaddons.listeners.PlayerListener#AUTOPET_PATTERN}
+     * When Autopet messages came to chat it will trigger {@link codes.biscuit.skyblockaddons.listeners.PlayerListener#AUTOPET_PATTERN}
      * We will get groups from that Pattern, and we will set current pet from these groups values.
      * @param levelString level string
      * @param rarityColor rarity color string
@@ -121,6 +120,7 @@ public class PetManager {
 
             if (pet.displayName.contains(petName) && pet.petLevel == newLevel - 1 && pet.petInfo.getPetRarity() == rarity) {
                 pet.petLevel = newLevel;
+                pet.displayName = pet.displayName.replaceFirst(String.valueOf(newLevel - 1), newLevelString);
                 main.getPetCacheManager().putPet(index, pet);
                 main.getPetCacheManager().setCurrentPet(pet);
             }
@@ -147,7 +147,7 @@ public class PetManager {
             PetInfo petInfo = SkyblockAddons.getGson().fromJson(petInfoJson, PetInfo.class);
 
             Pet oldPet = main.getPetCacheManager().getCurrentPet();
-            Pet newPet = new Pet(displayName, petLevel, petInfo);
+            Pet newPet = new Pet(stack, displayName, petLevel, petInfo);
 
             if (petInfo.isActive()) {
                 if (oldPet == null || !oldPet.displayName.equals(displayName) && !oldPet.petInfo.equals(petInfo)) {
@@ -160,10 +160,22 @@ public class PetManager {
         return null;
     }
 
-    @AllArgsConstructor @Getter
+    @SuppressWarnings("FieldMayBeFinal")
+    @Getter
     public static class Pet {
         private String displayName;
         private int petLevel;
         private PetInfo petInfo;
+        // for create skull
+        private String skullId;
+        private String textureURL;
+
+        public Pet(ItemStack stack, String displayName, int petLevel, PetInfo petInfo) {
+            this.displayName = displayName;
+            this.petLevel = petLevel;
+            this.petInfo = petInfo;
+            this.skullId = ItemUtils.getSkullOwnerID(stack);
+            this.textureURL = TextUtils.decodeSkinTexture(ItemUtils.getSkullTexture(stack), true);
+        }
     }
 }

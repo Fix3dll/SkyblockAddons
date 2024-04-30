@@ -112,7 +112,7 @@ public class GuiScreenListener {
 
             ContainerPreviewManager.onContainerClose();
             GuiChestHook.onGuiClosed();
-            setCurrentPet();
+            setCurrentPet((GuiChest) oldGuiScreen);
         }
     }
 
@@ -286,7 +286,9 @@ public class GuiScreenListener {
      * Set current pet to last clicked pet while pets menu closing
      * @author Fix3dll
      */
-    private void setCurrentPet() {
+    private void setCurrentPet(GuiChest guiChest) {
+        if (!guiChest.lowerChestInventory.getDisplayName().getUnformattedText().startsWith("Pets")) return;
+
         HashMap<Integer, PetManager.Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
         int latestClickedSlot = GuiContainerHook.getLatestClickedSlot();
 

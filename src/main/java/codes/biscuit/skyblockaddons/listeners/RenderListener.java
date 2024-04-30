@@ -180,6 +180,10 @@ public class RenderListener {
 
     private float maxRiftHealth = 0.0F;
 
+    // caching
+    private PetManager.Pet pet = null;
+    private ItemStack petSkull = null;
+
     /**
      * Render overlays and warnings for clients without labymod.
      */
@@ -1187,6 +1191,18 @@ public class RenderListener {
                 }
                 break;
 
+            case PET_DISPLAY:
+                PetManager.Pet newPet = main.getPetCacheManager().getCurrentPet();
+                if (newPet == null) {
+                    return;
+                } else if (pet != newPet) {
+                    pet = newPet;
+                    petSkull = ItemUtils.createSkullItemStack(null, null, newPet.getSkullId(), newPet.getTextureURL());
+                }
+
+                text = pet.getDisplayName();
+                break;
+
             default:
                 return;
         }
@@ -1279,6 +1295,7 @@ public class RenderListener {
             case FIRE_FREEZE_TIMER:
             case THUNDER_BOTTLE_DISPLAY:
             case ROCK_PET_TRACKER:
+            case PET_DISPLAY:
                 width += 18;
                 height += 9;
                 break;
@@ -1662,6 +1679,14 @@ public class RenderListener {
                 } else /*buttonLocation != null || haveFullThunderBottle*/ {
                     renderItem(THUNDER_IN_A_BOTTLE, x, y);
                 }
+                FontRendererHook.setupFeatureFont(feature);
+                DrawUtils.drawText(text, x + 18, y + 4, color);
+                FontRendererHook.endFeatureFont();
+                break;
+
+            case PET_DISPLAY:
+                renderItem(petSkull, x, y);
+
                 FontRendererHook.setupFeatureFont(feature);
                 DrawUtils.drawText(text, x + 18, y + 4, color);
                 FontRendererHook.endFeatureFont();

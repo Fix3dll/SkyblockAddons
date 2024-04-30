@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import com.google.gson.JsonObject;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IChatComponent;
 
 import java.nio.charset.StandardCharsets;
@@ -40,6 +39,7 @@ public class TextUtils {
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^(?:\\[.+?] )?(?<username>\\w+)(?: \\[.+?])?$");
     private static final Pattern RESET_CODE_PATTERN = Pattern.compile("(?i)§R");
     private static final Pattern MAGNITUDE_PATTERN = Pattern.compile("(\\d[\\d,.]*\\d*)+([kKmMbBtT])");
+    private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s?:\\s?\".+/(?<textureId>\\w+)\"");
 
     private static final NavigableMap<Integer, String> suffixes = new TreeMap<>();
     static {
@@ -291,28 +291,32 @@ public class TextUtils {
     }
 
     /**
-     * @param nbtTag SkullOwner nbt that is contains texture in Base64 format
-     * @return if nbtTag not null decoded Json string else empty string
+     * Decodes texture property value to string
+     * @param base64 encoded string
+     * @param justTextureUrl boolean
+     * @return if justTextureUrl true texture part else all encoded text in string format
      */
-    public static String decodeSkinTexture(NBTTagCompound nbtTag) {
-        if (nbtTag == null)
-            return "";
+    public static String decodeSkinTexture(String base64, boolean justTextureUrl) {
+        if (base64 == null) return null;
 
-        String textureBase64 = nbtTag.getCompoundTag("Properties").getTagList("textures", 10).getCompoundTagAt(0)
-                .getString("Value");
-
-        if (textureBase64.isEmpty())
-            return "";
-
-        return new String(
+        String decodedString = new String(
                 Base64.getDecoder().decode(
                         // Getting before '=' to avoid IllegalArgumentException. No padding needed
-                        textureBase64.contains("=")
-                                ? textureBase64.substring(0, textureBase64.indexOf('='))
-                                : textureBase64
+                        base64.contains("=") ? base64.substring(0, base64.indexOf('=')) : base64
                 ),
                 StandardCharsets.UTF_8
         );
+
+        if (justTextureUrl) {
+            Matcher matcher = TEXTURE_URL_PATTERN.matcher(decodedString);
+            if (matcher.find()) {
+                return matcher.group("textureId");
+            } else {
+                return null;
+            }
+        } else {
+            return decodedString;
+        }
     }
 
     public static String abbreviate(int number) {

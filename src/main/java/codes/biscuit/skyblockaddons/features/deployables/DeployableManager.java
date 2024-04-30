@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.features.deployables;
 
+import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,6 @@ import java.util.regex.Pattern;
  * @author DidiSkywalker
  */
 public class DeployableManager {
-    private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s?:\\s?\".+/(?<textureId>\\w+)\"");
     private static final Pattern POWER_ORB_PATTERN = Pattern.compile("[A-Za-z ]* (?<seconds>[0-9]*)s");
 
     /** The DeployableManager instance. */
@@ -113,20 +113,11 @@ public class DeployableManager {
                 if (entityArmorStand.getCurrentArmor(3) == null)
                     return;
 
-                String decodedTextureUrl = TextUtils.decodeSkinTexture(
-                        entityArmorStand.getCurrentArmor(3).getSubCompound("SkullOwner", false)
-                );
+                String skullTexture = ItemUtils.getSkullTexture(entityArmorStand.getCurrentArmor(3));
+                String decodedTextureUrl = TextUtils.decodeSkinTexture(skullTexture, true);
+                if (decodedTextureUrl == null) return;
 
-                if (decodedTextureUrl.isEmpty())
-                    return;
-
-                Deployable flare;
-                Matcher matcher = TEXTURE_URL_PATTERN.matcher(decodedTextureUrl);
-                if (matcher.find())
-                    flare = Deployable.getByTextureId(matcher.group("textureId"));
-                else
-                    return;
-
+                Deployable flare = Deployable.getByTextureId(decodedTextureUrl);
                 if (flare != null && flare.isInRadius(entityArmorStand.getDistanceSqToEntity(Minecraft.getMinecraft().thePlayer))) {
                     // Default exist time of flares
                     int seconds = 180;

@@ -476,33 +476,7 @@ public class ItemUtils {
     }
 
     public static ItemStack createSkullItemStack(String name, String skyblockID, String skullID, String textureURL) {
-        ItemStack stack = new ItemStack(Items.skull, 1, 3);
-
-        NBTTagCompound texture = new NBTTagCompound();
-        texture.setString("Value", TextUtils.encodeSkinTextureURL(textureURL));
-
-        NBTTagList textures = new NBTTagList();
-        textures.appendTag(texture);
-
-        NBTTagCompound properties = new NBTTagCompound();
-        properties.setTag("textures", textures);
-
-        NBTTagCompound skullOwner = new NBTTagCompound();
-        skullOwner.setTag("Properties", properties);
-
-        skullOwner.setString("Id", skullID);
-
-        stack.setTagInfo("SkullOwner", skullOwner);
-
-        if (name != null) {
-            stack.setStackDisplayName(name);
-        }
-
-        if (skyblockID != null) {
-            setItemStackSkyblockID(stack, skyblockID);
-        }
-
-        return stack;
+        return createSkullItemStack(name, Collections.emptyList(), skyblockID, skullID, textureURL);
     }
 
     public static ItemStack createSkullItemStack(String name, List<String> lore, String skyblockID, String skullID, String textureURL) {
