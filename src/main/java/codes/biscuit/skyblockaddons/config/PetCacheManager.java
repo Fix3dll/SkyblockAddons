@@ -26,7 +26,7 @@ public class PetCacheManager {
         private PetManager.Pet currentPet = null;
 
         /**
-         * key = index + 36 * (pageNum - 1), value = {@link PetManager.Pet}
+         * key = index + 45 * (pageNum - 1), value = {@link PetManager.Pet}
          * @see codes.biscuit.skyblockaddons.utils.pojo.PetInfo
          */
         @Getter private final HashMap<Integer, PetManager.Pet> petMap = new HashMap<>();

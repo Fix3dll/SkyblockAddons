@@ -67,8 +67,8 @@ public class PetManager {
                     Pet pet = getPetFromItemStack(item);
                     if (pet == null) continue;
 
-                    // For unique index slot: add 36 slot = 4 row for each page except first page
-                    int sbaPetIndex = i + 36 * (pageNum - 1);
+                    // For unique index slot: add 45 slot = 5 row for each page except first page
+                    int sbaPetIndex = i + 45 * (pageNum - 1);
 
                     Pet oldPet = main.getPetCacheManager().getPet(sbaPetIndex);
 

@@ -293,8 +293,8 @@ public class GuiScreenListener {
         int latestClickedSlot = GuiContainerHook.getLatestClickedSlot();
 
         int pageNum = main.getInventoryUtils().getInventoryPageNum();
-        if (petMap.containsKey(latestClickedSlot + 36 * (pageNum - 1))) {
-            main.getPetCacheManager().setCurrentPet(petMap.get(latestClickedSlot + 36 * (pageNum - 1)));
+        if (petMap.containsKey(latestClickedSlot + 45 * (pageNum - 1))) {
+            main.getPetCacheManager().setCurrentPet(petMap.get(latestClickedSlot + 45 * (pageNum - 1)));
         }
     }
 }
