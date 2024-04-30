@@ -5,12 +5,14 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.events.InventoryLoadingDoneEvent;
+import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.LocationEditGui;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
+import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
 import lombok.Getter;
@@ -27,6 +29,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -44,12 +47,10 @@ public class GuiScreenListener {
     private ScheduledTask inventoryChangeTimeCheckTask;
 
     /** Time in milliseconds of the last time a {@code GuiContainer} was closed */
-    @Getter
-    private long lastContainerCloseMs = -1;
+    @Getter private long lastContainerCloseMs = -1;
 
     /** Time in milliseconds of the last time a backpack was opened, used by {@link Feature#BACKPACK_OPENING_SOUND}. */
-    @Getter
-    private long lastBackpackOpenMs = -1;
+    @Getter private long lastBackpackOpenMs = -1;
 
     /** Time in milliseconds of the last time an item in the currently open {@code GuiContainer} changed */
     private long lastInventoryChangeMs = -1;
@@ -111,6 +112,7 @@ public class GuiScreenListener {
 
             ContainerPreviewManager.onContainerClose();
             GuiChestHook.onGuiClosed();
+            setCurrentPet();
         }
     }
 
@@ -277,6 +279,20 @@ public class GuiScreenListener {
             inventoryChangeListener = null;
             listenedInventory = null;
             inventoryChangeTimeCheckTask = null;
+        }
+    }
+
+    /**
+     * Set current pet to last clicked pet while pets menu closing
+     * @author Fix3dll
+     */
+    private void setCurrentPet() {
+        HashMap<Integer, PetManager.Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
+        int latestClickedSlot = GuiContainerHook.getLatestClickedSlot();
+
+        int pageNum = main.getInventoryUtils().getInventoryPageNum();
+        if (petMap.containsKey(latestClickedSlot + 36 * (pageNum - 1))) {
+            main.getPetCacheManager().setCurrentPet(petMap.get(latestClickedSlot + 36 * (pageNum - 1)));
         }
     }
 }

@@ -460,7 +460,7 @@ public class InventoryUtils {
         if (inventory.getDisplayName() == null) {
             return inventoryType = null;
         }
-        String chestName = TextUtils.stripColor(inventory.getDisplayName().getUnformattedText());
+        String chestName = inventory.getDisplayName().getUnformattedText().trim();
 
         // Initialize inventory to null and get the open chest name
         inventoryType = null;
@@ -475,9 +475,9 @@ public class InventoryUtils {
                             String mayorName = m.group("mayor");
                             if (!mayorName.startsWith(main.getUtils().getMayor())) {
                                 main.getUtils().setMayor(mayorName);
-                                logger.info("Mayor changed to " + mayorName);
+                                logger.info("Mayor changed to {}", mayorName);
                             }
-                        } catch (IllegalStateException|IllegalArgumentException e) {
+                        } catch (IllegalStateException | IllegalArgumentException e) {
                             logger.warn("Could not detect mayor in Mayor Menu");
                         } break;
                     }

@@ -8,7 +8,7 @@ import lombok.Getter;
  * @see <a href="https://wiki.hypixel.net/Rarity">https://wiki.hypixel.net/Rarity</a>
  */
 @Getter
-public enum ItemRarity {
+public enum Rarity {
 
     COMMON("COMMON", ColorCode.WHITE),
     UNCOMMON("UNCOMMON", ColorCode.GREEN),
@@ -27,8 +27,27 @@ public enum ItemRarity {
     /** The color code for the color of the rarity as it's displayed in an item's lore */
     private final ColorCode colorCode;
 
-    ItemRarity(String loreName, ColorCode colorCode) {
+    Rarity(String loreName, ColorCode colorCode) {
         this.loreName = loreName;
         this.colorCode = colorCode;
+    }
+
+    public static Rarity getByLoreName(String loreName) {
+        for (Rarity rarity : Rarity.values()) {
+            if (rarity.getLoreName().equalsIgnoreCase(loreName)) {
+                return rarity;
+            }
+        }
+        return null;
+    }
+
+    // FIXME SPECIAL and VERY_SPECIAL same color
+    public static Rarity getByColorCode(ColorCode colorCode) {
+        for (Rarity rarity : Rarity.values()) {
+            if (rarity.getColorCode().equals(colorCode)) {
+                return rarity;
+            }
+        }
+        return null;
     }
 }

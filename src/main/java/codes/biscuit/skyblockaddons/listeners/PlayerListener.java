@@ -14,6 +14,7 @@ import codes.biscuit.skyblockaddons.features.BaitManager;
 import codes.biscuit.skyblockaddons.features.EndstoneProtectorManager;
 import codes.biscuit.skyblockaddons.features.FetchurManager;
 import codes.biscuit.skyblockaddons.features.JerryPresent;
+import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
@@ -109,6 +110,8 @@ public class PlayerListener {
     private static final Pattern SPIRIT_SCEPTRE_MESSAGE_PATTERN = Pattern.compile("Your (?:Implosion|Spirit Sceptre|Molten Wave) hit (?<hitEnemies>[0-9]+) enem(?:y|ies) for (?<dealtDamage>[0-9]{1,3}(?:,[0-9]{3})*(?:\\.[0-9]+)*) damage\\.");
     private static final Pattern PROFILE_TYPE_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][♲Ⓑ]");
     private static final Pattern NETHER_FACTION_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][⚒ቾ]");
+    private static final Pattern AUTOPET_PATTERN = Pattern.compile("§cAutopet §eequipped your §7\\[Lvl (?<level>\\d+)](?: §8\\[§6\\d+§8§.✦§8])? §(?<rarityColor>.)(?<name>.*)§e! §a§lVIEW RULE§r");
+    private static final Pattern PET_LEVELED_UP_PATTERN = Pattern.compile("§r§aYour §r§(?<rarityColor>.)(?<name>[\\w ]+)(?:§r§. ✦)? §r§aleveled up to level §r§9(?<newLevel>\\d+)§r§a!§r");
 
     private static final Set<String> SOUP_RANDOM_MESSAGES = new HashSet<>(Arrays.asList("I feel like I can fly!", "What was in that soup?",
             "Hmm… tasty!", "Hmm... tasty!", "You can now fly for 2 minutes.", "Your flight has been extended for 2 extra minutes.",
@@ -258,6 +261,16 @@ public class PlayerListener {
             if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
                 int manaLost = Integer.parseInt(unformattedText.split(Pattern.quote("! ("))[1].split(Pattern.quote(" Mana)"))[0]);
                 changeMana(-manaLost);
+            } else if ((matcher = AUTOPET_PATTERN.matcher(formattedText)).matches()) {
+                PetManager.getInstance().findCurrentPetFromAutopet(
+                        matcher.group("level"), matcher.group("rarityColor"), matcher.group("name")
+                );
+
+            } else if ((matcher = PET_LEVELED_UP_PATTERN.matcher(formattedText)).matches()) {
+                PetManager.getInstance().updateAndSetCurrentLevelledPet(
+                        matcher.group("newLevel"), matcher.group("rarityColor"), matcher.group("name")
+                );
+
             } else if ((matcher = DEATH_MESSAGE_PATTERN.matcher(unformattedText)).matches()) {
                 // Hypixel's dungeon reconnect messages look exactly like death messages.
                 String causeOfDeath = matcher.group("causeOfDeath");
@@ -298,9 +311,7 @@ public class PlayerListener {
                     spawned *= 2;
                     doubleHook = false;
                 }
-                main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(
-                        main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled() + spawned
-                );
+                main.getPersistentValuesManager().addSeaCreaturesKilled(spawned);
                 if (main.getConfigValues().isEnabled(Feature.LEGENDARY_SEA_CREATURE_WARNING)
                         && SeaCreatureManager.getInstance().getLegendarySeaCreatureSpawnMessages().contains(unformattedText)) {
                     main.getUtils().playLoudSound("random.orb", 0.5);
@@ -635,24 +646,8 @@ public class PlayerListener {
                 actionBarParser.setHealthUpdate(null);
             }
 
-            EntityPlayerSP p = mc.thePlayer;
-            if (p != null) {
-                if (main.getUtils().isOnRift()) {
-                    if (main.getConfigValues().isEnabled(Feature.HEALTH_BAR) || main.getConfigValues().isEnabled(Feature.HEALTH_TEXT)) {
-                        setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
-                        setAttribute(Attribute.HEALTH, p.getHealth());
-                    }
-                } else {
-                    // Reverse calculate the player's health by using the player's vanilla hearts.
-                    // Also calculate the health change for the gui item.
-                    if (main.getConfigValues().isEnabled(Feature.HEALTH_PREDICTION)) {
-                        float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)
-                                ? getAttribute(Attribute.HEALTH)
-                                : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
-                        setAttribute(Attribute.HEALTH, newHealth);
-                    }
-                }
-            }
+            updateHealthAttributes(mc);
+            PetManager.getInstance().checkCurrentPet(mc);
 
             if (timerTick == 20) {
                 // Add natural mana every second (increase is based on your max mana).
@@ -697,41 +692,7 @@ public class PlayerListener {
                         if (main.getConfigValues().isEnabled(Feature.FETCHUR_TODAY)) {
                             FetchurManager.getInstance().recalculateFetchurItem();
                         }
-
-                        // Update mining/fishing pet tracker numbers when the player opens the skill menu
-                        if (main.getInventoryUtils().getInventoryType() == InventoryType.SKILL_TYPE_MENU) {
-                            SkillType skill = SkillType.getFromString(main.getInventoryUtils().getInventorySubtype());
-                            if (skill == SkillType.MINING || skill == SkillType.FISHING) {
-                                try {
-                                    IInventory cc = ((ContainerChest) ((GuiChest) mc.currentScreen).inventorySlots).getLowerChestInventory();
-                                    List<String> lore = ItemUtils.getItemLore(cc.getStackInSlot(51));
-                                    String milestoneProgress = TextUtils.stripColor(lore.get(lore.size() - 1));
-                                    Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
-                                    int total = -1;
-                                    if (m.matches()) {
-                                        total = Integer.parseInt(m.group("total").replaceAll(",", ""));
-                                    } else if ((m = MAXED_TIER_PET_PROGRESS.matcher(milestoneProgress)).matches()) {
-                                        total = Integer.parseInt(m.group("total").replaceAll(",", ""));
-                                    }
-                                    if (total > 0) {
-                                        PersistentValuesManager.PersistentValues persistentValues =
-                                                main.getPersistentValuesManager().getPersistentValues();
-                                        int original;
-                                        if (skill == SkillType.FISHING) {
-                                            original = persistentValues.getSeaCreaturesKilled();
-                                            main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(total);
-                                        } else {
-                                            original = persistentValues.getOresMined();
-                                            main.getPersistentValuesManager().getPersistentValues().setOresMined(total);
-                                        }
-                                        if (original != total) {
-                                            main.getPersistentValuesManager().saveValues();
-                                        }
-                                    }
-                                } catch (Exception ignored) {
-                                }
-                            }
-                        }
+                        checkPetMilestones(mc);
                     }
 
                     if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld() &&
@@ -852,8 +813,7 @@ public class PlayerListener {
     public void onDeath(LivingDeathEvent e) {
         if (e.entity instanceof EntityEnderman) {
             if (countedEndermen.remove(e.entity.getUniqueID())) {
-                main.getPersistentValuesManager().getPersistentValues().setKills(main.getPersistentValuesManager().getPersistentValues().getKills() + 1);
-                main.getPersistentValuesManager().saveValues();
+                main.getPersistentValuesManager().addKills();
                 EndstoneProtectorManager.onKill();
             } else if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT)) {
                 if (isZealot(e.entity)) {
@@ -881,8 +841,7 @@ public class PlayerListener {
                     if (explosionLocation.distanceTo(deathLocation) < 4.6) {
 //                        possibleZealotsKilled--;
 
-                        main.getPersistentValuesManager().getPersistentValues().setKills(main.getPersistentValuesManager().getPersistentValues().getKills() + 1);
-                        main.getPersistentValuesManager().saveValues();
+                        main.getPersistentValuesManager().addKills();
                         EndstoneProtectorManager.onKill();
                     }
 
@@ -966,10 +925,7 @@ public class PlayerListener {
                                     if (distance < 4.6) {
 //                                        possibleZealotsKilled--;
 
-                                        main.getPersistentValuesManager().getPersistentValues().setKills(
-                                                main.getPersistentValuesManager().getPersistentValues().getKills() + 1
-                                        );
-                                        main.getPersistentValuesManager().saveValues();
+                                        main.getPersistentValuesManager().addKills();
                                         EndstoneProtectorManager.onKill();
                                     }
                                 }
@@ -1032,9 +988,9 @@ public class PlayerListener {
                 if (main.getConfigValues().isEnabled(Feature.BASE_STAT_BOOST_COLOR_BY_RARITY)) {
                     int rarityIndex = baseStatBoost / 10;
                     if (rarityIndex < 0) rarityIndex = 0;
-                    if (rarityIndex >= ItemRarity.values().length) rarityIndex = ItemRarity.values().length - 1;
+                    if (rarityIndex >= Rarity.values().length) rarityIndex = Rarity.values().length - 1;
 
-                    colorCode = ItemRarity.values()[rarityIndex].getColorCode();
+                    colorCode = Rarity.values()[rarityIndex].getColorCode();
                 }
                 e.toolTip.add(insertAt++, "§7Base Stat Boost: " + colorCode + "+" + baseStatBoost + "%");
             }
@@ -1255,7 +1211,7 @@ public class PlayerListener {
                 // TODO: Check if a minion is nearby to eliminate false positives
             }
             if (shouldIncrement) {
-                main.getPersistentValuesManager().getPersistentValues().setOresMined(main.getPersistentValuesManager().getPersistentValues().getOresMined() + 1);
+                main.getPersistentValuesManager().addOresMined();
             }
         }
         if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
@@ -1265,9 +1221,14 @@ public class PlayerListener {
             Block block = blockState.getBlock();
             if ((itemId.equals("JUNGLE_AXE") || itemId.equals("TREECAPITATOR_AXE")) && (block.equals(Blocks.log) || block.equals(Blocks.log2))) {
                 long cooldownTime = CooldownManager.getItemCooldown(itemId);
-                // TODO: Pet detection
                 // Min cooldown time is 400 because anything lower than that can allow the player to hit a block
                 // already marked for block removal by treecap/jungle axe ability
+                PetManager.Pet pet = main.getPetCacheManager().getCurrentPet();
+                if (pet != null
+                        && pet.getPetInfo().getPetRarity() == Rarity.LEGENDARY
+                        && pet.getPetInfo().getPetSkyblockId().equalsIgnoreCase("monkey")) {
+                    cooldownTime -=  (int) (2000 * (0.005 * pet.getPetLevel()));
+                }
                 CooldownManager.put(itemId, Math.max(cooldownTime, 400));
             }
         }
@@ -1380,6 +1341,70 @@ public class PlayerListener {
             return item != null && item.hasDisplayName() && item.getDisplayName().contains("Fire Freeze Staff");
         }
         return false;
+    }
+
+    /**
+     * Updates health/ max health attributes
+     */
+    private void updateHealthAttributes(Minecraft mc) {
+        EntityPlayerSP p = mc.thePlayer;
+        if (p != null) {
+            if (main.getUtils().isOnRift()) {
+                if (main.getConfigValues().isEnabled(Feature.HEALTH_BAR) || main.getConfigValues().isEnabled(Feature.HEALTH_TEXT)) {
+                    setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
+                    setAttribute(Attribute.HEALTH, p.getHealth());
+                }
+            } else {
+                // Reverse calculate the player's health by using the player's vanilla hearts.
+                // Also calculate the health change for the gui item.
+                if (main.getConfigValues().isEnabled(Feature.HEALTH_PREDICTION)) {
+                    float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)
+                            ? getAttribute(Attribute.HEALTH)
+                            : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
+                    setAttribute(Attribute.HEALTH, newHealth);
+                }
+            }
+        }
+    }
+
+    /**
+     * Update mining/fishing pet tracker numbers when the player opens the skill menu
+     */
+    private void checkPetMilestones(Minecraft mc) {
+        if (main.getInventoryUtils().getInventoryType() == InventoryType.SKILL_TYPE_MENU) {
+            SkillType skill = SkillType.getFromString(main.getInventoryUtils().getInventorySubtype());
+            if (mc.currentScreen instanceof GuiChest && (skill == SkillType.MINING || skill == SkillType.FISHING)) {
+                GuiChest chest = (GuiChest) mc.currentScreen;
+                ContainerChest container = (ContainerChest) chest.inventorySlots;
+                IInventory lower = container.getLowerChestInventory();
+
+                // get milestone slot last lore
+                List<String> lore = ItemUtils.getItemLore(lower.getStackInSlot(51));
+                String milestoneProgress = TextUtils.stripColor(lore.get(lore.size() - 1));
+
+                Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
+                int total = -1;
+                if (m.matches()) {
+                    total = Integer.parseInt(m.group("total").replaceAll(",", ""));
+                } else if ((m = MAXED_TIER_PET_PROGRESS.matcher(milestoneProgress)).matches()) {
+                    total = Integer.parseInt(m.group("total").replaceAll(",", ""));
+                }
+                if (total > 0) {
+                    PersistentValuesManager.PersistentValues persistentValues = main.getPersistentValuesManager().getPersistentValues();
+                    int original;
+                    if (skill == SkillType.FISHING) {
+                        original = persistentValues.getSeaCreaturesKilled();
+                        main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(total);
+                    } else {
+                        original = persistentValues.getOresMined();
+                        main.getPersistentValuesManager().getPersistentValues().setOresMined(total);
+                    }
+                    if (original != total) {
+                        main.getPersistentValuesManager().saveValues();
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.utils.pojo;
 
-import codes.biscuit.skyblockaddons.core.ItemRarity;
+import codes.biscuit.skyblockaddons.core.Rarity;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -47,8 +47,8 @@ public class OnlineData {
 
     @Getter
     public static class DropSettings {
-        private ItemRarity minimumInventoryRarity;
-        private ItemRarity minimumHotbarRarity;
+        private Rarity minimumInventoryRarity;
+        private Rarity minimumHotbarRarity;
         private List<String> dontDropTheseItems;
         private List<String> allowDroppingTheseItems;
     }

@@ -20,7 +20,8 @@ public enum InventoryType {
     SKILL_TYPE_MENU("Skill Type Menu", "(?<type>[a-zA-Z]+) Skill"),
     ENDER_CHEST("EnderChest", "Ender Chest \\((?<page>\\d+)/\\d+\\)"),
     MAYOR("Mayor", "Mayor (?<mayor>.*)"),
-    CALENDAR("Calendar", "Calendar and Events");
+    CALENDAR("Calendar", "Calendar and Events"),
+    PETS("Pets","Pets( \\((?<page>\\d+)/\\d+\\))?");
 
     private final String inventoryName;
     private final Pattern inventoryPattern;

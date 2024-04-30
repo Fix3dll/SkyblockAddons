@@ -526,4 +526,22 @@ public class TextUtils {
     public static String getBackpackIDFromLore(String lore) {
         return stripColor(lore).replace("✦", "").trim().toUpperCase().replaceAll(" ", "_");
     }
+
+    /**
+     * Returns pet level after string actions
+     * @param displayName Pet display name
+     * @return Integer pet level. If cannot find returns -1
+     */
+    public static int getPetLevelFromDisplayName(String displayName) {
+        int startIndex = displayName.indexOf("[Lvl ");
+        // 5 length of "[Lvl "
+        if (startIndex != -1) {
+            startIndex += 5;
+            int endIndex = displayName.indexOf("]", startIndex);
+            if (endIndex != -1) {
+                return Integer.parseInt(displayName.substring(startIndex, endIndex));
+            }
+        }
+        return -1;
+    }
 }

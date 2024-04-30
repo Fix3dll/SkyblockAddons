@@ -120,4 +120,20 @@ public class PersistentValuesManager {
         persistentValues.kills = 0;
         saveValues();
     }
+
+    public void addOresMined() {
+        persistentValues.oresMined++;
+        saveValues();
+    }
+
+    public void addKills() {
+        persistentValues.kills++;
+        saveValues();
+    }
+
+    public void addSeaCreaturesKilled(int spawned) {
+        persistentValues.seaCreaturesKilled += spawned;
+        saveValues();
+    }
+
 }

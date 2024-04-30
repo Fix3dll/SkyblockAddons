@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static codes.biscuit.skyblockaddons.core.ItemRarity.LEGENDARY;
+import static codes.biscuit.skyblockaddons.core.Rarity.LEGENDARY;
 
 
 public class SeaCreatureManager {

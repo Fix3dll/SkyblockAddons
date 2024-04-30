@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.ItemRarity;
+import codes.biscuit.skyblockaddons.core.Rarity;
 import codes.biscuit.skyblockaddons.core.ItemType;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
@@ -55,7 +55,7 @@ public class ItemUtils {
      * @param item the Skyblock item to check, can't be {@code null}
      * @return the rarity of the item if a valid rarity is found, or {@code null} if item is {@code null} or no valid rarity is found
      */
-    public static ItemRarity getRarity(ItemStack item) {
+    public static Rarity getRarity(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
         }
@@ -621,7 +621,7 @@ public class ItemUtils {
      * @param lore the {@code List<String>} containing the item's lore
      * @return the rarity of the item if a valid rarity is found, or {@code null} if item is {@code null} or no valid rarity is found
      */
-    private static ItemRarity getRarity(List<String> lore) {
+    private static Rarity getRarity(List<String> lore) {
         // Start from the end since the rarity is usually the last line or one of the last.
         for (int i = lore.size() - 1; i >= 0 ; i--) {
             String currentLine = lore.get(i);
@@ -630,7 +630,7 @@ public class ItemUtils {
             if (rarityMatcher.find()) {
                 String rarity = rarityMatcher.group("rarity");
 
-                for (ItemRarity itemRarity : ItemRarity.values()) {
+                for (Rarity itemRarity : Rarity.values()) {
                     // Use a "startsWith" check here because "VERY SPECIAL" has two words and only "VERY" is matched.
                     if (itemRarity.getLoreName().startsWith(rarity)) {
                         return itemRarity;

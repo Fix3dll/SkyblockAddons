@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,6 +20,7 @@ public class GuiContainerHook {
 
     private static final ResourceLocation LOCK = new ResourceLocation("skyblockaddons", "lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
+    @Getter private static int latestClickedSlot = -1;
 
     public static void keyTyped(int keyCode) {
         ContainerPreviewManager.onContainerKeyTyped(keyCode);
@@ -127,6 +129,7 @@ public class GuiContainerHook {
      */
     public static boolean onHandleMouseClick(Slot slot, int slotId, int clickedButton, int clickType) {
         SkyblockAddons main = SkyblockAddons.getInstance();
+        latestClickedSlot = slotId;
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.getHasStack()
                 && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(slot.getStack())
                 && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getStack(), EnumDyeColor.BLACK));

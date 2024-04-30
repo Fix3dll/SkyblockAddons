@@ -1,10 +1,14 @@
 package codes.biscuit.skyblockaddons;
 
+import codes.biscuit.skyblockaddons.config.PetCacheManager;
+import codes.biscuit.skyblockaddons.core.Rarity;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
+import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonManager;
@@ -87,6 +91,8 @@ public class SkyblockAddons {
             })
             .registerTypeAdapterFactory(new GsonInitializableTypeAdapter())
             .registerTypeAdapter(Pattern.class, new PatternAdapter())
+            .registerTypeAdapter(Rarity.class, new RarityAdapter())
+            .registerTypeAdapter(UUID.class, new UuidAdapter())
             .create();
 
     private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(MOD_NAME));
@@ -96,6 +102,7 @@ public class SkyblockAddons {
 
     private ConfigValues configValues;
     private PersistentValuesManager persistentValuesManager;
+    private PetCacheManager petCacheManager;
     private final PlayerListener playerListener;
     private final GuiScreenListener guiScreenListener;
     private final RenderListener renderListener;
@@ -144,9 +151,11 @@ public class SkyblockAddons {
     public void preInit(FMLPreInitializationEvent e) {
         configValues = new ConfigValues(e.getModConfigurationDirectory());
         persistentValuesManager = new PersistentValuesManager(e.getModConfigurationDirectory());
+        petCacheManager = new PetCacheManager(e.getModConfigurationDirectory());
         configValues.loadValues();
         DataUtils.readLocalAndFetchOnline();
         persistentValuesManager.loadValues();
+        petCacheManager.loadValues();
     }
 
     @Mod.EventHandler

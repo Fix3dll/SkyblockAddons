@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.features.EntityOutlines;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.ItemRarity;
+import codes.biscuit.skyblockaddons.core.Rarity;
 import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent.Type;
@@ -47,7 +47,7 @@ public class FeatureItemOutlines {
                     && isShopShowcaseItem(item)) {
                 return null;
             }
-            ItemRarity itemRarity = ItemUtils.getRarity(item.getEntityItem());
+            Rarity itemRarity = ItemUtils.getRarity(item.getEntityItem());
             if (itemRarity != null) {
                 // Return the rarity color of the item
                 return itemRarity.getColorCode().getColor();
