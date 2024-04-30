@@ -18,9 +18,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PetManager {
     //private static final Pattern SELECTED_PET_PATTERN = Pattern.compile("(?:§.)*Selected pet: §(?<rarity>\\w)(?<pet>[\\w ]+)");
+    private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(].*)");
 
     /** The PetManager instance.*/
     @Getter private static final PetManager instance = new PetManager();
@@ -120,7 +123,10 @@ public class PetManager {
 
             if (pet.displayName.contains(petName) && pet.petLevel == newLevel - 1 && pet.petInfo.getPetRarity() == rarity) {
                 pet.petLevel = newLevel;
-                pet.displayName = pet.displayName.replaceFirst(String.valueOf(newLevel - 1), newLevelString);
+                Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
+                if (m.matches()) {
+                    pet.displayName = m.group(1) + newLevelString + m.group(3);
+                }
                 main.getPetCacheManager().putPet(index, pet);
                 main.getPetCacheManager().setCurrentPet(pet);
             }
