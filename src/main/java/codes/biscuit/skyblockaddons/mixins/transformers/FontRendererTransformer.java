@@ -22,8 +22,8 @@ public abstract class FontRendererTransformer {
     protected abstract void resetStyles();
 
     @Inject(method = "renderChar", at = @At("HEAD"))
-    public void changeTextColor(char ch, boolean italic, CallbackInfoReturnable<Float> cir) {
-        FontRendererHook.changeTextColor();
+    public void turnAllTextsChroma(char ch, boolean italic, CallbackInfoReturnable<Float> cir) {
+        FontRendererHook.turnAllTextsChroma();
     }
 
     /**

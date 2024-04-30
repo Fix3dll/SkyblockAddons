@@ -24,8 +24,8 @@ public class FontRendererHook {
     private static DrawStateFontRenderer currentDrawState = null;
     private static boolean modInitialized = false;
 
-    public static void changeTextColor() {
-        if (shouldRenderChroma() && (currentDrawState.shouldManuallyRecolorFont() || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA))) {
+    public static void turnAllTextsChroma() {
+        if (shouldRenderChroma() && main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
