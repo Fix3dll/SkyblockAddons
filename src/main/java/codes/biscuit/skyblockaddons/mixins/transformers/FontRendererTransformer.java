@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import net.minecraft.client.gui.FontRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,8 +22,12 @@ public abstract class FontRendererTransformer {
     @Shadow
     protected abstract void resetStyles();
 
+    @Unique
+    private static boolean sba$initalized = false;
+
     @Inject(method = "renderChar", at = @At("HEAD"))
     public void turnAllTextsChroma(char ch, boolean italic, CallbackInfoReturnable<Float> cir) {
+        if (!sba$initalized) return;
         FontRendererHook.turnAllTextsChroma();
     }
 
@@ -31,6 +36,7 @@ public abstract class FontRendererTransformer {
      */
     @ModifyConstant(method = "renderStringAtPos", constant = @Constant(stringValue = "0123456789abcdefklmnor"))
     public String insertZColorCode(String constant) {
+        sba$initalized = true;
         return "0123456789abcdefklmnorz";
     }
 
@@ -41,6 +47,7 @@ public abstract class FontRendererTransformer {
             @At(value = "FIELD", opcode = 181, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 0, shift = At.Shift.AFTER),
             @At(value = "FIELD", opcode = 181, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 2, shift = At.Shift.AFTER)})
     public void insertRestoreChromaState(CallbackInfo ci) {
+        if (!sba$initalized) return;
         FontRendererHook.restoreChromaState();
     }
 
@@ -50,6 +57,7 @@ public abstract class FontRendererTransformer {
      */
     @Inject(method = "renderStringAtPos", at = @At(value = "INVOKE", target = "Ljava/lang/String;indexOf(I)I", ordinal = 0, shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD)
     public void toggleChromaCondition(String text, boolean shadow, CallbackInfo ci, int i, char c0, int i1) {
+        if (!sba$initalized) return;
         if (FontRendererHook.toggleChromaOn(i1)) {
             this.resetStyles();
         }
@@ -61,6 +69,7 @@ public abstract class FontRendererTransformer {
      */
     @Inject(method = "renderStringAtPos", at = @At("RETURN"))
     public void insertEndOfString(String text, boolean shadow, CallbackInfo ci) {
+        if (!sba$initalized) return;
         FontRendererHook.endRenderString();
     }
 
@@ -69,6 +78,7 @@ public abstract class FontRendererTransformer {
      */
     @Inject(method = "renderStringAtPos", at = @At("HEAD"))
     public void beginRenderString(String text, boolean shadow, CallbackInfo ci) {
+        if (!sba$initalized) return;
         FontRendererHook.beginRenderString(shadow);
     }
 

@@ -7,7 +7,6 @@ import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import codes.biscuit.skyblockaddons.utils.draw.DrawStateFontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,7 +21,6 @@ public class FontRendererHook {
     private static final MaxSizeHashMap<String, Boolean> stringsWithChroma = new MaxSizeHashMap<>(1000);
 
     private static DrawStateFontRenderer currentDrawState = null;
-    private static boolean modInitialized = false;
 
     public static void turnAllTextsChroma() {
         if (shouldRenderChroma() && main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)) {
@@ -78,7 +76,7 @@ public class FontRendererHook {
      * Called to save the current shader state
      */
     public static void beginRenderString(boolean shadow) {
-        if (modInitialized && main.getUtils().isOnSkyblock()) {
+        if (main.getUtils().isOnSkyblock()) {
             float alpha = Minecraft.getMinecraft().fontRendererObj.alpha;
             if (shadow) {
                 currentDrawState = DRAW_CHROMA_SHADOW;
@@ -139,21 +137,14 @@ public class FontRendererHook {
     }
 
     /**
-     * Called by {@link SkyblockAddons#postInit(FMLPostInitializationEvent)}
-     */
-    public static void onModInitialized() {
-        modInitialized = true;
-    }
-
-    /**
      * Returns whether the methods for rendering chroma text should be run. They should be run only while the mod is
      * fully initialized and the player is playing Skyblock.
      *
      * @return {@code true} when the mod is fully initialized and the player is in Skyblock, {@code false} otherwise
      */
     public static boolean shouldRenderChroma() {
-        return modInitialized && main.getUtils().isOnSkyblock() && currentDrawState != null
-                && (currentDrawState.shouldManuallyRecolorFont()
+        return  main.getUtils().isOnSkyblock() && currentDrawState != null &&
+                (currentDrawState.shouldManuallyRecolorFont()
                 || main.getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA)
                 || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA));
     }

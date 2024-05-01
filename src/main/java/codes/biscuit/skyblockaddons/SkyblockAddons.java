@@ -2,7 +2,6 @@ package codes.biscuit.skyblockaddons;
 
 import codes.biscuit.skyblockaddons.config.PetCacheManager;
 import codes.biscuit.skyblockaddons.core.Rarity;
-import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
@@ -80,7 +79,7 @@ public class SkyblockAddons {
     public static final String BUILD_NUMBER = "@BUILD_NUMBER@";
 
     @Getter private static SkyblockAddons instance;
-    @Getter private static boolean fullyInitialized;
+    @Getter private boolean fullyInitialized = false;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static final Gson GSON = new GsonBuilder()
@@ -233,7 +232,6 @@ public class SkyblockAddons {
         Minecraft.getMinecraft().getTextureManager().bindTexture(SkyblockAddonsGui.LOGO);
         Minecraft.getMinecraft().getTextureManager().bindTexture(SkyblockAddonsGui.LOGO_GLOW);
         fullyInitialized = true;
-        FontRendererHook.onModInitialized();
     }
 
     @Mod.EventHandler
