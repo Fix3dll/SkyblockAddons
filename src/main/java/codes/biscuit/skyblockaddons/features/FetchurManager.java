@@ -22,6 +22,8 @@ import java.util.TimeZone;
  */
 public class FetchurManager {
 
+    @Getter
+    private static final FetchurManager instance = new FetchurManager();
     private static final long MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
     // Hypixel timezone
     // Currently using new york timezone, gotta check november 7th to see if this still works
@@ -54,9 +56,6 @@ public class FetchurManager {
             new FetchurItem(new ItemStack(Blocks.wool, 50, 14), "Red Wool")
     };
 
-    @Getter
-    private static final FetchurManager instance = new FetchurManager();
-
     // Used for storage, essential for Fetchur Warner
     @Getter @Setter
     private FetchurItem currentItemSaved = null;
@@ -82,7 +81,7 @@ public class FetchurManager {
     public boolean hasFetchedToday() {
         long lastTimeFetched = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getLastTimeFetchur();
         long currTime = System.currentTimeMillis();
-        // Return true iff the days of the month from last submission and current time match
+        // Return true if the days of the month from last submission and current time match
         return currTime - lastTimeFetched < MILLISECONDS_IN_A_DAY && getFetchurDayOfMonth(lastTimeFetched) == getFetchurDayOfMonth(currTime);
     }
 
@@ -120,8 +119,7 @@ public class FetchurManager {
      */
     public void saveLastTimeFetched() {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        main.getPersistentValuesManager().getPersistentValues().setLastTimeFetchur(System.currentTimeMillis());
-        main.getPersistentValuesManager().saveValues();
+        main.getPersistentValuesManager().setLastTimeFetchur(System.currentTimeMillis());
     }
 
     /**

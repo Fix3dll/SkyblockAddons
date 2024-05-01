@@ -136,4 +136,9 @@ public class PersistentValuesManager {
         saveValues();
     }
 
+    public void setLastTimeFetchur(long lastTimeFetchur) {
+        persistentValues.lastTimeFetchur = lastTimeFetchur;
+        saveValues();
+    }
+
 }

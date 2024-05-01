@@ -31,12 +31,12 @@ public class FontRendererHook {
     }
 
     public static void setupFeatureFont(Feature feature) {
-        if (modInitialized) {
-            ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
-            if (config.getChromaMode() == EnumUtils.ChromaMode.FADE && config.getChromaFeatures().contains(feature)) {
-                DRAW_CHROMA.setupMulticolorFeature(config.getGuiScale(feature));
-                DRAW_CHROMA_SHADOW.setupMulticolorFeature(config.getGuiScale(feature));
-            }
+        if (!modInitialized) return;
+
+        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
+        if (config.getChromaMode() == EnumUtils.ChromaMode.FADE && config.getChromaFeatures().contains(feature)) {
+            DRAW_CHROMA.setupMulticolorFeature(config.getGuiScale(feature));
+            DRAW_CHROMA_SHADOW.setupMulticolorFeature(config.getGuiScale(feature));
         }
     }
 
@@ -141,7 +141,7 @@ public class FontRendererHook {
 
     /**
      * Called by {@link SkyblockAddons#postInit(FMLPostInitializationEvent)}
-     * Fixes NPE caused by Splash Screen, calling mods before they are loaded.
+     * Fixes NPE caused by Splash Screen, calling FontRendererHook before SBA is loaded.
      */
     public static void onModInitialized() {
         modInitialized = true;

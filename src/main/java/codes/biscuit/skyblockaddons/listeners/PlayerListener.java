@@ -381,31 +381,28 @@ public class PlayerListener {
                     DRAGON_KILLED_PATTERN.matcher(strippedText).matches()) {
                 DragonTracker.getInstance().dragonKilled();
 
-            } else if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
-                if (unformattedText.equals("You laid an egg!")) {
-                    // Put the Chicken Head on cooldown for 5 seconds when the player lays an egg.
-                    CooldownManager.put("CHICKEN_HEAD");
-                }
-
-            } else if (main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) &&
-                    formattedText.startsWith("§r§eYou added a minute of rain!")) {
+            } else if (main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER) && formattedText.startsWith("§r§eYou added a minute of rain!")) {
                 if (this.rainmakerTimeEnd == -1 || this.rainmakerTimeEnd < System.currentTimeMillis()) {
                     this.rainmakerTimeEnd = System.currentTimeMillis() + (1000 * 60); // Set the timer to a minute from now.
                 } else {
                     this.rainmakerTimeEnd += (1000 * 60); // Extend the timer one minute.
                 }
-            } else if (main.getConfigValues().isEnabled(Feature.FETCHUR_TODAY) &&
-                    formattedText.startsWith("§e[NPC] Fetchur§f:")) {
+            } else if (main.getConfigValues().isEnabled(Feature.FETCHUR_TODAY) && formattedText.startsWith("§e[NPC] Fetchur§f:")) {
                 FetchurManager fetchur = FetchurManager.getInstance();
                 // Triggered if player has just given the correct item to Fetchur, or if sba isn't in sync (already handed in quest)
-                if (unformattedText.contains(fetchur.getFetchurTaskCompletedPhrase()) ||
-                        !fetchur.hasFetchedToday() && unformattedText.contains(fetchur.getFetchurAlreadyDidTaskPhrase())) {
-                    FetchurManager.getInstance().saveLastTimeFetched();
+                if (unformattedText.contains(fetchur.getFetchurTaskCompletedPhrase())) {
+                    fetchur.saveLastTimeFetched();
+                } else if (!fetchur.hasFetchedToday() && unformattedText.contains(fetchur.getFetchurAlreadyDidTaskPhrase())) {
+                    fetchur.saveLastTimeFetched();
                 }
                 // Tries to check if a message is from a player to add the player profile icon
-            } else if (main.getConfigValues().isEnabled(Feature.PLAYER_SYMBOLS_IN_CHAT) &&
-                    unformattedText.contains(":")) {
+            } else if (main.getConfigValues().isEnabled(Feature.PLAYER_SYMBOLS_IN_CHAT) && unformattedText.contains(":")) {
                 playerSymbolsDisplay(e, unformattedText);
+            } else if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
+                if (unformattedText.equals("You laid an egg!")) {
+                    // Put the Chicken Head on cooldown for 5 seconds when the player lays an egg.
+                    CooldownManager.put("CHICKEN_HEAD");
+                }
             }
 
             if (main.getConfigValues().isEnabled(Feature.NO_ARROWS_LEFT_ALERT)) {
