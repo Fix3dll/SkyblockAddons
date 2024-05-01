@@ -1,40 +1,42 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import codes.biscuit.skyblockaddons.utils.draw.DrawStateFontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FontRendererHook {
 
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final SkyblockColor CHROMA_COLOR = new SkyblockColor(0xFFFFFFFF).setColorAnimation(SkyblockColor.ColorAnimation.CHROMA);
     private static final DrawStateFontRenderer DRAW_CHROMA = new DrawStateFontRenderer(CHROMA_COLOR);
     private static final SkyblockColor CHROMA_COLOR_SHADOW = new SkyblockColor(0xFF555555).setColorAnimation(SkyblockColor.ColorAnimation.CHROMA);
     private static final DrawStateFontRenderer DRAW_CHROMA_SHADOW = new DrawStateFontRenderer(CHROMA_COLOR_SHADOW);
     private static final MaxSizeHashMap<String, Boolean> stringsWithChroma = new MaxSizeHashMap<>(1000);
-    private static boolean fontRendererInitalized = false; // FIXME
-
     private static DrawStateFontRenderer currentDrawState = null;
+    private static boolean modInitialized = false;
 
     public static void turnAllTextsChroma() {
-        if (shouldRenderChroma() && main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)) {
+        if (shouldRenderChroma() && SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
     }
 
     public static void setupFeatureFont(Feature feature) {
-        if (fontRendererInitalized && main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE
-                && main.getConfigValues().getChromaFeatures().contains(feature)) {
-            DRAW_CHROMA.setupMulticolorFeature(SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature));
-            DRAW_CHROMA_SHADOW.setupMulticolorFeature(SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature));
+        if (modInitialized) {
+            ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
+            if (config.getChromaMode() == EnumUtils.ChromaMode.FADE && config.getChromaFeatures().contains(feature)) {
+                DRAW_CHROMA.setupMulticolorFeature(config.getGuiScale(feature));
+                DRAW_CHROMA_SHADOW.setupMulticolorFeature(config.getGuiScale(feature));
+            }
         }
     }
 
@@ -77,7 +79,7 @@ public class FontRendererHook {
      * Called to save the current shader state
      */
     public static void beginRenderString(boolean shadow) {
-        if (fontRendererInitalized && main.getUtils().isOnSkyblock()) {
+        if (modInitialized && SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
             float alpha = Minecraft.getMinecraft().fontRendererObj.alpha;
             if (shadow) {
                 currentDrawState = DRAW_CHROMA_SHADOW;
@@ -138,10 +140,11 @@ public class FontRendererHook {
     }
 
     /**
-     * Called by {@link codes.biscuit.skyblockaddons.mixins.transformers.FontRendererTransformer#insertZColorCode(String)}
+     * Called by {@link SkyblockAddons#postInit(FMLPostInitializationEvent)}
+     * Fixes NPE caused by Splash Screen, calling mods before they are loaded.
      */
-    public static void onFontRendererInitalized() {
-        fontRendererInitalized = true;
+    public static void onModInitialized() {
+        modInitialized = true;
     }
 
     /**
@@ -151,7 +154,10 @@ public class FontRendererHook {
      * @return {@code true} when the mod is fully initialized and the player is in Skyblock, {@code false} otherwise
      */
     public static boolean shouldRenderChroma() {
-        return fontRendererInitalized && main.getUtils().isOnSkyblock() && currentDrawState != null
+        if (!modInitialized) return false;
+
+        SkyblockAddons main = SkyblockAddons.getInstance();
+        return main.getUtils().isOnSkyblock() && currentDrawState != null
                 && (currentDrawState.shouldManuallyRecolorFont()
                 || main.getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA)
                 || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA));

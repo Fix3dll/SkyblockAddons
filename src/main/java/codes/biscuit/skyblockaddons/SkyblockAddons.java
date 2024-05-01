@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
 import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
@@ -232,6 +233,7 @@ public class SkyblockAddons {
         Minecraft.getMinecraft().getTextureManager().bindTexture(SkyblockAddonsGui.LOGO);
         Minecraft.getMinecraft().getTextureManager().bindTexture(SkyblockAddonsGui.LOGO_GLOW);
         fullyInitialized = true;
+        FontRendererHook.onModInitialized();
     }
 
     @Mod.EventHandler
