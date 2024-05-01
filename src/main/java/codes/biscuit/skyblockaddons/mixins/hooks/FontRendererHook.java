@@ -19,6 +19,7 @@ public class FontRendererHook {
     private static final SkyblockColor CHROMA_COLOR_SHADOW = new SkyblockColor(0xFF555555).setColorAnimation(SkyblockColor.ColorAnimation.CHROMA);
     private static final DrawStateFontRenderer DRAW_CHROMA_SHADOW = new DrawStateFontRenderer(CHROMA_COLOR_SHADOW);
     private static final MaxSizeHashMap<String, Boolean> stringsWithChroma = new MaxSizeHashMap<>(1000);
+    private static boolean fontRendererInitalized = false; // FIXME
 
     private static DrawStateFontRenderer currentDrawState = null;
 
@@ -30,7 +31,7 @@ public class FontRendererHook {
     }
 
     public static void setupFeatureFont(Feature feature) {
-        if (main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE
+        if (fontRendererInitalized && main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE
                 && main.getConfigValues().getChromaFeatures().contains(feature)) {
             DRAW_CHROMA.setupMulticolorFeature(SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature));
             DRAW_CHROMA_SHADOW.setupMulticolorFeature(SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature));
@@ -76,7 +77,7 @@ public class FontRendererHook {
      * Called to save the current shader state
      */
     public static void beginRenderString(boolean shadow) {
-        if (main.getUtils().isOnSkyblock()) {
+        if (fontRendererInitalized && main.getUtils().isOnSkyblock()) {
             float alpha = Minecraft.getMinecraft().fontRendererObj.alpha;
             if (shadow) {
                 currentDrawState = DRAW_CHROMA_SHADOW;
@@ -137,14 +138,21 @@ public class FontRendererHook {
     }
 
     /**
+     * Called by {@link codes.biscuit.skyblockaddons.mixins.transformers.FontRendererTransformer#insertZColorCode(String)}
+     */
+    public static void onFontRendererInitalized() {
+        fontRendererInitalized = true;
+    }
+
+    /**
      * Returns whether the methods for rendering chroma text should be run. They should be run only while the mod is
      * fully initialized and the player is playing Skyblock.
      *
      * @return {@code true} when the mod is fully initialized and the player is in Skyblock, {@code false} otherwise
      */
     public static boolean shouldRenderChroma() {
-        return  main.getUtils().isOnSkyblock() && currentDrawState != null &&
-                (currentDrawState.shouldManuallyRecolorFont()
+        return fontRendererInitalized && main.getUtils().isOnSkyblock() && currentDrawState != null
+                && (currentDrawState.shouldManuallyRecolorFont()
                 || main.getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA)
                 || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA));
     }
