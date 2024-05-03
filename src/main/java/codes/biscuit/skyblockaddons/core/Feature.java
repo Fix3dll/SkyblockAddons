@@ -234,7 +234,7 @@ public enum Feature {
     THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_PURPLE), false),
     HEART_INSTEAD_HEALTH_ON_RIFT(244, null, true),
     OUTLINE_SHOWCASE_ITEMS(245, null, false),
-    PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.WHITE), false),
+    PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -403,32 +403,46 @@ public enum Feature {
     public void draw(float scale, Minecraft mc, ButtonLocation buttonLocation) {
         if (guiFeatureData != null) {
             SkyblockAddons main = SkyblockAddons.getInstance();
-            if (guiFeatureData.getDrawType() == EnumUtils.DrawType.BAR) {
-                main.getRenderListener().drawBar(this, scale, mc, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.SKELETON_BAR) {
-                main.getRenderListener().drawSkeletonBar(mc, scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.TEXT) {
-                main.getRenderListener().drawText(this, scale, mc, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.PICKUP_LOG) {
-                main.getRenderListener().drawItemPickupLog(scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.DEFENCE_ICON) {
-                main.getRenderListener().drawIcon(scale, mc, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.REVENANT_PROGRESS) {
-                main.getRenderListener().drawRevenantIndicator(scale, mc, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.DEPLOYABLE_DISPLAY) {
-                main.getRenderListener().drawDeployableStatus(mc, scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.TICKER) {
-                main.getRenderListener().drawScorpionFoilTicker(mc, scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.PROXIMITY_INDICATOR) {
-                FeatureTrackerQuest.drawTrackerLocationIndicator(mc, scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.BAIT_LIST_DISPLAY) {
-                main.getRenderListener().drawBaitList(mc, scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.DUNGEONS_MAP) {
-                DungeonMapManager.drawDungeonsMap(mc, scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.SLAYER_TRACKERS) {
-                main.getRenderListener().drawSlayerTrackers(this, mc, scale, buttonLocation);
-            } else if (guiFeatureData.getDrawType() == EnumUtils.DrawType.DRAGON_STATS_TRACKER) {
-                main.getRenderListener().drawDragonTrackers(mc, scale, buttonLocation);
+            switch (guiFeatureData.getDrawType()) {
+                case SKELETON_BAR:
+                    main.getRenderListener().drawSkeletonBar(mc, scale, buttonLocation);
+                    break;
+                case BAR:
+                    main.getRenderListener().drawBar(this, scale, mc, buttonLocation);
+                    break;
+                case TEXT:
+                    main.getRenderListener().drawText(this, scale, mc, buttonLocation);
+                    break;
+                case PICKUP_LOG:
+                    main.getRenderListener().drawItemPickupLog(scale, buttonLocation);
+                    break;
+                case DEFENCE_ICON:
+                    main.getRenderListener().drawIcon(scale, mc, buttonLocation);
+                    break;
+                case REVENANT_PROGRESS:
+                    main.getRenderListener().drawRevenantIndicator(scale, mc, buttonLocation);
+                    break;
+                case DEPLOYABLE_DISPLAY:
+                    main.getRenderListener().drawDeployableStatus(mc, scale, buttonLocation);
+                    break;
+                case TICKER:
+                    main.getRenderListener().drawScorpionFoilTicker(mc, scale, buttonLocation);
+                    break;
+                case BAIT_LIST_DISPLAY:
+                    main.getRenderListener().drawBaitList(mc, scale, buttonLocation);
+                    break;
+                case DUNGEONS_MAP:
+                    DungeonMapManager.drawDungeonsMap(mc, scale, buttonLocation);
+                    break;
+                case SLAYER_TRACKERS:
+                    main.getRenderListener().drawSlayerTrackers(this, mc, scale, buttonLocation);
+                    break;
+                case DRAGON_STATS_TRACKER:
+                    main.getRenderListener().drawDragonTrackers(mc, scale, buttonLocation);
+                    break;
+                case PROXIMITY_INDICATOR:
+                    FeatureTrackerQuest.drawTrackerLocationIndicator(mc, scale, buttonLocation);
+                    break;
             }
         }
     }

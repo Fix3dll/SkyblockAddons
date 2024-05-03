@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.utils;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
@@ -33,12 +34,12 @@ public enum ColorCode {
 	RESET('r'),
 	CHROMA('z', 0xFFFFFE);
 
-	public static final char COLOR_CHAR = '\u00a7';
-	private char code;
-	private boolean isFormat;
-	private String jsonName;
-	private String toString;
-	private int color;
+	public static final char COLOR_CHAR = '§';
+	@Getter private final char code;
+	private final boolean isFormat;
+	private final String jsonName;
+	private final String toString;
+	@Getter private final int color;
 
 	ColorCode(char code) {
 		this(code, -1);
@@ -83,11 +84,7 @@ public enum ColorCode {
 		return null;
 	}
 
-	public char getCode() {
-		return this.code;
-	}
-
-	public Color getColorObject() {
+    public Color getColorObject() {
 		return new Color(color);
 	}
 
@@ -99,11 +96,7 @@ public enum ColorCode {
 		return StringUtils.isEmpty(this.jsonName) ? this.name().toLowerCase() : this.jsonName;
 	}
 
-	public int getColor() {
-		return color;
-	}
-
-	public boolean isColor() {
+    public boolean isColor() {
 		return !this.isFormat() && this != RESET;
 	}
 

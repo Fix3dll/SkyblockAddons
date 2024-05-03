@@ -20,7 +20,7 @@ public class PetInfo {
     @SerializedName("hideInfo")
     private boolean hideInfo;
     @SerializedName("heldItem")
-    private String petItem;
+    private String heldItemId;
     @SerializedName("candyUsed")
     private int candyUsed;
     @SerializedName("uuid")
@@ -37,7 +37,7 @@ public class PetInfo {
         if (!this.petSkyblockId.equals(other.petSkyblockId)) return false;
         if (this.petRarity != other.petRarity) return false;
         if (this.exp != other.exp) return false;
-        if (!Objects.equals(this.petItem, other.petItem)) return false;
+        if (!Objects.equals(this.heldItemId, other.heldItemId)) return false;
         if (this.candyUsed != other.candyUsed) return false;
 
         return this.uniqueId.equals(other.uniqueId); // the last castle

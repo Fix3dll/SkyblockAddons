@@ -148,7 +148,7 @@ public class SettingsGui extends GuiScreen {
                         numSettings++;
                     }
                 }
-                numSettings += 0.4;
+                numSettings += 0.4f;
             }
             if (settings.contains(EnumUtils.FeatureSetting.DISCORD_RP_DETAILS)) {
                 if (main.getConfigValues().getDiscordDetails() == DiscordStatus.CUSTOM) numSettings++;
@@ -158,7 +158,7 @@ public class SettingsGui extends GuiScreen {
                         numSettings++;
                     }
                 }
-                numSettings += 0.4;
+                numSettings += 0.4f;
             }
             int height = (int) (getRowHeightSetting(numSettings) - 50);
             int y = (int) getRowHeight(1);
@@ -234,6 +234,11 @@ public class SettingsGui extends GuiScreen {
                     mc.displayGuiScreen(new SettingsGui(feature, --page, lastPage, lastTab, settings));
                 }
             }
+        } else if (feature == Feature.PET_DISPLAY) {
+            main.getConfigValues().setPetItemStyle(main.getConfigValues().getPetItemStyle().getNextType());
+            closingGui = true;
+            Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(feature, page, lastPage, lastTab, settings));
+            closingGui = false;
         }
     }
 
@@ -321,11 +326,11 @@ public class SettingsGui extends GuiScreen {
 
             Feature settingFeature = null;
 
-            buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.enableMessageWhenActionPrevented"), main, settingFeature));
+            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, settingFeature));
         } else if (setting == EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("settings.deployableDisplayStyle"), true, 0xFFFFFFFF));
+            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
             buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
         } else if (setting == EnumUtils.FeatureSetting.EXPAND_DEPLOYABLE_STATUS) {
             boxWidth = 31;
@@ -363,7 +368,7 @@ public class SettingsGui extends GuiScreen {
 
             if (currentStatus == DiscordStatus.AUTO_STATUS) {
                 row++;
-                row += 0.4;
+                row += 0.4F;
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
 
@@ -393,7 +398,7 @@ public class SettingsGui extends GuiScreen {
                 buttonList.add(inputField);
             }
 
-            row += 0.4;
+            row += 0.4F;
         } else if (setting == EnumUtils.FeatureSetting.MAP_ZOOM) {
             // For clarity
             //noinspection ConstantConditions
@@ -505,19 +510,24 @@ public class SettingsGui extends GuiScreen {
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
             buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
-            row += .1;
+            row += .1F;
             y = getRowHeightSetting(row);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y + 15, Translations.getMessage("settings.trevorTheTrapper.showQuestCooldownDescription"), true, ColorCode.GRAY.getColor()));
-            row += 0.4;
+            row += .4F;
         } else if (setting == EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY && feature == Feature.ENTITY_OUTLINES) {
             boxWidth = 31; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
             buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
-            row += .4;
+            row += .4F;
             y = getRowHeightSetting(row);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y + 15, Translations.getMessage("messages.entityOutlinesRequirement"), true, ColorCode.GRAY.getColor()));
-            row += .4;
+            row += .4F;
+        } else if (setting == EnumUtils.FeatureSetting.PET_ITEM_STYLE) {
+            boxWidth = 140;
+            x = halfWidth - (boxWidth / 2);
+            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
+            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
         } else {
             boxWidth = 31; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);

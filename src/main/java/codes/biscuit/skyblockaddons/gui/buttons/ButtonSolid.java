@@ -14,11 +14,11 @@ import static codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui.BUTTON_MAX_WIDT
 
 public class ButtonSolid extends ButtonText {
 
-    private SkyblockAddons main;
+    private final SkyblockAddons main;
 
-    private Feature feature;
+    private final Feature feature;
     // Used to calculate the transparency when fading in.
-    private long timeOpened = System.currentTimeMillis();
+    private final long timeOpened;
 
     /**
      * Create a button that has a solid color and text.
@@ -29,31 +29,42 @@ public class ButtonSolid extends ButtonText {
         this.feature = feature;
         this.width = width;
         this.height = height;
+        timeOpened = System.currentTimeMillis();
     }
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if (feature == Feature.TEXT_STYLE) {
-            displayString = main.getConfigValues().getTextStyle().getMessage();
-        } else if (feature == Feature.CHROMA_MODE) {
-            displayString = main.getConfigValues().getChromaMode().getMessage();
-        } else if (feature == Feature.WARNING_TIME) {
-            displayString = main.getConfigValues().getWarningSeconds()+"s";
-        } else if (feature == Feature.SHOW_BACKPACK_PREVIEW) {
-            displayString = main.getConfigValues().getBackpackStyle().getMessage();
-        } else if (feature == Feature.DEPLOYABLE_STATUS_DISPLAY) {
-            displayString = main.getConfigValues().getDeployableDisplayStyle().getMessage();
-        } else if (feature == Feature.TURN_ALL_FEATURES_CHROMA) {
-            boolean enable = false;
-            for (Feature loopFeature : Feature.values()) {
-                if (loopFeature.getGuiFeatureData() != null && loopFeature.getGuiFeatureData().getDefaultColor() != null) {
-                    if (!main.getConfigValues().getChromaFeatures().contains(loopFeature)) {
-                        enable = true;
-                        break;
+        switch (feature) {
+            case TEXT_STYLE:
+                displayString = main.getConfigValues().getTextStyle().getMessage();
+                break;
+            case CHROMA_MODE:
+                displayString = main.getConfigValues().getChromaMode().getMessage();
+                break;
+            case WARNING_TIME:
+                displayString = main.getConfigValues().getWarningSeconds()+"s";
+                break;
+            case SHOW_BACKPACK_PREVIEW:
+                displayString = main.getConfigValues().getBackpackStyle().getMessage();
+                break;
+            case DEPLOYABLE_STATUS_DISPLAY:
+                displayString = main.getConfigValues().getDeployableDisplayStyle().getMessage();
+                break;
+            case TURN_ALL_FEATURES_CHROMA:
+                boolean enable = false;
+                for (Feature loopFeature : Feature.values()) {
+                    if (loopFeature.getGuiFeatureData() != null && loopFeature.getGuiFeatureData().getDefaultColor() != null) {
+                        if (!main.getConfigValues().getChromaFeatures().contains(loopFeature)) {
+                            enable = true;
+                            break;
+                        }
                     }
                 }
-            }
-            displayString = enable ? Translations.getMessage("messages.enableAll") : Translations.getMessage("messages.disableAll");
+                displayString = enable ? Translations.getMessage("messages.enableAll") : Translations.getMessage("messages.disableAll");
+                break;
+            case PET_DISPLAY:
+                displayString = main.getConfigValues().getPetItemStyle().getMessage();
+                break;
         }
         int alpha;
         float alphaMultiplier = 1F;

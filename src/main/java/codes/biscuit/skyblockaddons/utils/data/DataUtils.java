@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.utils.data;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Language;
+import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.seacreatures.SeaCreature;
@@ -18,6 +19,7 @@ import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.requests.*;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.CompactorItem;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.ContainerData;
+import codes.biscuit.skyblockaddons.utils.skyblockdata.PetItem;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -225,6 +227,15 @@ public class DataUtils {
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
+
+        // Pet Items Data
+        path = "/petItems.json";
+        try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
+             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
+            PetManager.setPetItems(gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, PetItem>>() {}.getType()));
+        } catch (Exception ex) {
+            handleLocalFileReadException(path,ex);
+        }
     }
 
     /*
@@ -426,6 +437,7 @@ public class DataUtils {
         remoteRequests.add(new CooldownsRequest());
         remoteRequests.add(new SkillXpRequest());
         remoteRequests.add(new MayorRequest());
+        remoteRequests.add(new PetItemsRequest());
     }
 
     /**

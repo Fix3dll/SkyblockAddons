@@ -66,6 +66,7 @@ public class ConfigValues {
     private Map<Feature, EnumUtils.AnchorPoint> anchorPoints = new EnumMap<>(Feature.class);
     private final MutableObject<Language> language = new MutableObject<>(Language.ENGLISH);
     private final MutableObject<EnumUtils.BackpackStyle> backpackStyle = new MutableObject<>(EnumUtils.BackpackStyle.GUI);
+    private final MutableObject<EnumUtils.PetItemStyle> petItemStyle = new MutableObject<>(EnumUtils.PetItemStyle.SHOW_ITEM);
     private final MutableObject<EnumUtils.DeployableDisplayStyle> deployableDisplayStyle = new MutableObject<>(EnumUtils.DeployableDisplayStyle.COMPACT);
     private final MutableObject<EnumUtils.TextStyle> textStyle = new MutableObject<>(EnumUtils.TextStyle.STYLE_ONE);
     private final Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
@@ -155,6 +156,7 @@ public class ConfigValues {
 
             deserializeEnumValueFromOrdinal(backpackStyle, "backpackStyle");
             deserializeEnumValueFromOrdinal(deployableDisplayStyle, "deployableStyle");
+            deserializeEnumValueFromOrdinal(petItemStyle, "petItemStyle");
             deserializeEnumEnumMapFromIDS(anchorPoints, "anchorPoints", Feature.class, EnumUtils.AnchorPoint.class);
             deserializeEnumNumberMapFromID(guiScales, "guiScales", Feature.class, float.class);
 
@@ -391,6 +393,7 @@ public class ConfigValues {
                 saveConfig.addProperty("language", language.getValue().getPath());
                 saveConfig.addProperty("backpackStyle", backpackStyle.getValue().ordinal());
                 saveConfig.addProperty("deployableStyle", deployableDisplayStyle.getValue().ordinal());
+                saveConfig.addProperty("petItemStyle", petItemStyle.getValue().ordinal());
 
                 JsonArray chromaFeaturesArray = new JsonArray();
                 for (Feature feature : chromaFeatures) {
@@ -1035,5 +1038,13 @@ public class ConfigValues {
 
     public void setEnchantLayout(EnchantListLayout enchantLayout) {
         this.enchantLayout.setValue(enchantLayout);
+    }
+
+    public EnumUtils.PetItemStyle getPetItemStyle() {
+        return petItemStyle.getValue();
+    }
+
+    public void setPetItemStyle(EnumUtils.PetItemStyle petItemStyle) {
+        this.petItemStyle.setValue(petItemStyle);
     }
 }

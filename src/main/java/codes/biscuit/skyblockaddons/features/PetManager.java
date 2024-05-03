@@ -7,13 +7,17 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.pojo.PetInfo;
+import codes.biscuit.skyblockaddons.utils.skyblockdata.PetItem;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -28,6 +32,9 @@ public class PetManager {
     /** The PetManager instance.*/
     @Getter private static final PetManager instance = new PetManager();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
+
+    @Setter
+    private static Map<String, PetItem> petItems;
 
     /**
      * Inspired by NEU
@@ -44,7 +51,6 @@ public class PetManager {
 
             // Pets menu size not lower than 54 slot
             if (lower.getSizeInventory() < 54) return;
-
 //            ItemStack petMenuBone = lower.getStackInSlot(4);
 //            List<String> lore = ItemUtils.getItemLore(petMenuBone);
 //
@@ -156,7 +162,7 @@ public class PetManager {
             Pet newPet = new Pet(stack, displayName, petLevel, petInfo);
 
             if (petInfo.isActive()) {
-                if (oldPet == null || !oldPet.displayName.equals(displayName) && !oldPet.petInfo.equals(petInfo)) {
+                if (oldPet == null || !oldPet.displayName.equals(displayName) || !oldPet.petInfo.equals(petInfo)) {
                     main.getPetCacheManager().setCurrentPet(newPet);
                 }
             }
@@ -164,6 +170,33 @@ public class PetManager {
             return newPet;
         }
         return null;
+    }
+
+    public ItemStack getPetItemFromId(String petItemId) {
+        PetItem petItem = petItems.get(petItemId);
+        if (petItem != null) {
+            return petItem.getItemStack();
+        } else {
+            return new ItemStack(Item.getItemFromBlock(Blocks.stone));
+        }
+    }
+
+    public String getPetItemDisplayNameFromId(String petItemId) {
+        PetItem petItem = petItems.get(petItemId);
+        if (petItem != null) {
+            return petItem.getDisplayName();
+        } else {
+            return "§cNot Found!";
+        }
+    }
+
+    public Rarity getPetItemRarityFromId(String petItemId) {
+        PetItem petItem = petItems.get(petItemId);
+        if (petItem != null) {
+            return petItem.getRarity();
+        } else {
+            return Rarity.ADMIN;
+        }
     }
 
     @SuppressWarnings("FieldMayBeFinal")

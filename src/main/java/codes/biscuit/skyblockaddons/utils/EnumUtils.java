@@ -144,6 +144,30 @@ public class EnumUtils {
         MAIN, GENERAL_SETTINGS
     }
 
+    public enum PetItemStyle {
+        NONE("settings.petItemStyles.none"),
+        DISPLAY_NAME("settings.petItemStyles.displayName"),
+        SHOW_ITEM("settings.petItemStyles.showItem");
+
+        private final String TRANSLATION_KEY;
+
+        PetItemStyle(String translationKey) {
+            this.TRANSLATION_KEY = translationKey;
+        }
+
+        public String getMessage() {
+            return Translations.getMessage(TRANSLATION_KEY);
+        }
+
+        public PetItemStyle getNextType() {
+            int nextType = ordinal() + 1;
+            if (nextType > values().length - 1) {
+                nextType = 0;
+            }
+            return values()[nextType];
+        }
+    }
+
     /**
      * Settings that modify the behavior of features- without technically being
      * a feature itself.
@@ -231,6 +255,7 @@ public class EnumUtils {
         FIRE_FREEZE_WHEN_HOLDING("settings.fireFreezeWhenHolding", 240),
         HEART_INSTEAD_HEALTH_ON_RIFT("settings.heartInsteadHealthOnRift", 244),
         OUTLINE_SHOWCASE_ITEMS("settings.outlineShowcaseItems", 245),
+        PET_ITEM_STYLE("settings.petItemStyle", -1),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),
@@ -358,7 +383,6 @@ public class EnumUtils {
         DEPLOYABLE_DISPLAY,
         TICKER,
         BAIT_LIST_DISPLAY,
-        TAB_EFFECT_TIMERS,
         DUNGEONS_MAP,
         SLAYER_TRACKERS,
         DRAGON_STATS_TRACKER,

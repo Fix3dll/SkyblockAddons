@@ -1286,6 +1286,14 @@ public class RenderListener {
                 height = 16 + 8;
                 break;
 
+            case PET_DISPLAY:
+                width += 18;
+                height += 9;
+                if (main.getConfigValues().getPetItemStyle() != EnumUtils.PetItemStyle.NONE) {
+                    height += 9;
+                }
+                break;
+
             case DARK_AUCTION_TIMER:
             case FARM_EVENT_TIMER:
             case SKILL_DISPLAY:
@@ -1295,7 +1303,6 @@ public class RenderListener {
             case FIRE_FREEZE_TIMER:
             case THUNDER_BOTTLE_DISPLAY:
             case ROCK_PET_TRACKER:
-            case PET_DISPLAY:
                 width += 18;
                 height += 9;
                 break;
@@ -1685,11 +1692,45 @@ public class RenderListener {
                 break;
 
             case PET_DISPLAY:
-                renderItem(petSkull, x, y);
-
                 FontRendererHook.setupFeatureFont(feature);
                 DrawUtils.drawText(text, x + 18, y + 4, color);
+
+                int line = 1; // maybe new lines can be added in the future?
+                switch (main.getConfigValues().getPetItemStyle()) {
+                    case DISPLAY_NAME:
+                        if (pet.getPetInfo().getHeldItemId() == null) break;
+
+                        String petDisplayName = PetManager.getInstance().getPetItemDisplayNameFromId(
+                                pet.getPetInfo().getHeldItemId()
+                        );
+                        DrawUtils.drawText("Held Item: " + petDisplayName, x + 18, y + 16, color);
+                        line++;
+                        break;
+
+                    case SHOW_ITEM:
+                        if (pet.getPetInfo().getHeldItemId() == null) break;
+
+                        PetManager petManager = PetManager.getInstance();
+                        String petHeldItemId = pet.getPetInfo().getHeldItemId();
+
+                        ItemStack petItemStack = petManager.getPetItemFromId(petHeldItemId);
+                        Rarity petItemRarity = petManager.getPetItemRarityFromId(petHeldItemId);
+
+                        String displayText = "Held Item:";
+                        if (petHeldItemId.endsWith(petItemRarity.getLoreName())) {
+                            // To recognize those with the same Item but different Rarity
+                            displayText += " " + petItemRarity.getColorCode().toString() + petItemRarity.getLoreName();
+                        }
+                        DrawUtils.drawText(displayText, x + 18, y + 16, color);
+
+                        renderItem(petItemStack, x + 18 + mc.fontRendererObj.getStringWidth(displayText), y + 10);
+                        line++;
+                        break;
+                }
                 FontRendererHook.endFeatureFont();
+
+                // render pet
+                renderItem(petSkull, x, y, line);
                 break;
 
             default:
@@ -2410,12 +2451,30 @@ public class RenderListener {
     }
 
     private void renderItem(ItemStack item, float x, float y) {
-        //GlStateManager.enableRescaleNormal();
+        renderItem(item, x, y, 1);
+    }
+
+    /**
+     * The main purpose is scale the item for make it compatible for add new lines e.g. scale with two for add 2nd line
+     * <br>FIXME may not be accurate, negative scales not tested, fix this mess
+     */
+    private void renderItem(ItemStack item, float x, float y, float scale) {
+        GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
+        if (scale > 1) {
+            GlStateManager.scale(scale, scale, 1f);
+            // For save space between rendered skull and text
+            // 16 = texture width, 10 = texture width without space (?)
+            GlStateManager.translate(
+                    -8 - Math.log(scale),// 16 / 2 = padding TODO add it as parameter
+                    0, // TODO add it as parameter
+                    0
+            );
+        }
+        GlStateManager.translate(x / scale, y / scale, 0);
         Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(item, 0, 0);
         GlStateManager.popMatrix();
 
@@ -2956,7 +3015,6 @@ public class RenderListener {
         deployableArmorStand.prevRenderYawOffset = yaw;
 
         rendermanager.renderEntityWithPosYaw(deployableArmorStand, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
-        rendermanager.setRenderShadow(shadowsEnabled);
         rendermanager.setRenderShadow(shadowsEnabled);
 
         RenderHelper.disableStandardItemLighting();

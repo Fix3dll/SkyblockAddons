@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.features.dragontracker;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
-import codes.biscuit.skyblockaddons.utils.skyblockdata.PetInfo;
+import codes.biscuit.skyblockaddons.utils.pojo.PetInfo;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 
@@ -92,7 +92,7 @@ public class DragonTracker {
                         break;
                     case "PET":
                         PetInfo petInfo = ItemUtils.getPetInfo(itemDifference.getExtraAttributes());
-                        if (petInfo != null && "ENDER_DRAGON".equals(petInfo.getType())) {
+                        if (petInfo != null && "ENDER_DRAGON".equals(petInfo.getPetSkyblockId())) {
                             dragonTrackerData.getDragonsSince().put(DragonsSince.ENDER_DRAGON_PET, 0);
                             SkyblockAddons.getInstance().getPersistentValuesManager().saveValues();
                         }

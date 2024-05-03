@@ -243,7 +243,13 @@
     "thunderBottleDisplay": "Thunder Bottle Display",
     "heartInsteadHealthOnRift": "Heart value instead of health value on Rift Dimension",
     "editLocationFromOutsideWarning": "\"Edit GUI Locations\" not supported from outside! Please open this menu in-game!",
-    "petDisplay": "Pet Display"
+    "petDisplay": "Pet Display",
+    "petItemStyle": "Pet Item Style",
+    "petItemStyles": {
+      "none": "None",
+      "displayName": "Display Name",
+      "showItem": "Show Item"
+    }
   },
   "messages": {
     "enchants": "Enchants",
