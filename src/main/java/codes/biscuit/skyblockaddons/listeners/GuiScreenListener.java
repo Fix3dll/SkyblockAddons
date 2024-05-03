@@ -288,13 +288,16 @@ public class GuiScreenListener {
      */
     private void setCurrentPet(GuiChest guiChest) {
         if (!guiChest.lowerChestInventory.getDisplayName().getUnformattedText().startsWith("Pets")) return;
-
         HashMap<Integer, PetManager.Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
-        int latestClickedSlot = GuiContainerHook.getLatestClickedSlot();
 
-        int pageNum = main.getInventoryUtils().getInventoryPageNum();
-        if (petMap.containsKey(latestClickedSlot + 45 * (pageNum - 1))) {
-            main.getPetCacheManager().setCurrentPet(petMap.get(latestClickedSlot + 45 * (pageNum - 1)));
+        int index = GuiContainerHook.getLastClickedButtonOnPetsMenu() + 45 * (main.getInventoryUtils().getInventoryPageNum() - 1);
+        if (petMap.containsKey(index)) {
+            PetManager.Pet pet = petMap.get(index);
+            if (pet.getPetInfo().isActive()) {
+                main.getPetCacheManager().setCurrentPet(null);
+            } else {
+                main.getPetCacheManager().setCurrentPet(pet);
+            }
         }
     }
 }

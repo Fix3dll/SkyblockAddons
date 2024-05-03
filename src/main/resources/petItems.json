@@ -11,6 +11,13 @@
     "material": "red_flower:3",
     "rarity": "EPIC"
   },
+  "BEJEWELED_COLLAR": {
+    "displayName": "§9Bejeweled Collar",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "skullId": "2edd67a6-471d-38c1-88b9-4148d3590368",
+    "texture": "9ca2fda0290626f337e96adbb570fc476d5403344fb39535aa7dacfe85d01640"
+  },
   "BIGGER_TEETH": {
     "displayName": "§aBigger Teeth",
     "enchanted": true,

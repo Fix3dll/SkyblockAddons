@@ -20,7 +20,7 @@ public class GuiContainerHook {
 
     private static final ResourceLocation LOCK = new ResourceLocation("skyblockaddons", "lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
-    @Getter private static int latestClickedSlot = -1;
+    @Getter private static int lastClickedButtonOnPetsMenu = -1;
 
     public static void keyTyped(int keyCode) {
         ContainerPreviewManager.onContainerKeyTyped(keyCode);
@@ -129,7 +129,9 @@ public class GuiContainerHook {
      */
     public static boolean onHandleMouseClick(Slot slot, int slotId, int clickedButton, int clickType) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        latestClickedSlot = slotId;
+        if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS) {
+            lastClickedButtonOnPetsMenu = slotId;
+        }
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.getHasStack()
                 && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(slot.getStack())
                 && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getStack(), EnumDyeColor.BLACK));

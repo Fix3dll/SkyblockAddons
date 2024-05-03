@@ -34,6 +34,7 @@ public class PetInfo {
 
     public boolean equals(PetInfo other) {
         if (other == null) return false;
+        if (this.active != other.active) return false;
         if (!this.petSkyblockId.equals(other.petSkyblockId)) return false;
         if (this.petRarity != other.petRarity) return false;
         if (this.exp != other.exp) return false;
