@@ -7,8 +7,10 @@ import lombok.Setter;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -42,7 +44,9 @@ public class PetCacheManager {
     public void loadValues() {
         if (petCacheFile.exists()) {
 
-            try (FileReader reader = new FileReader(petCacheFile)) {
+            try (InputStreamReader reader = new InputStreamReader(
+                    Files.newInputStream(petCacheFile.toPath()), StandardCharsets.UTF_8)
+            ) {
                 petCache = SkyblockAddons.getGson().fromJson(reader, PetCacheManager.PetCache.class);
 
             } catch (Exception ex) {
@@ -70,7 +74,9 @@ public class PetCacheManager {
                 //noinspection ResultOfMethodCallIgnored
                 petCacheFile.createNewFile();
 
-                try (FileWriter writer = new FileWriter(petCacheFile)) {
+                try (OutputStreamWriter writer = new OutputStreamWriter(
+                        Files.newOutputStream(petCacheFile.toPath()), StandardCharsets.UTF_8)
+                ) {
                     SkyblockAddons.getGson().toJson(petCache, writer);
                 }
             } catch (Exception ex) {
