@@ -401,49 +401,49 @@ public enum Feature {
     }
 
     public void draw(float scale, Minecraft mc, ButtonLocation buttonLocation) {
-        if (guiFeatureData != null) {
-            SkyblockAddons main = SkyblockAddons.getInstance();
-            switch (guiFeatureData.getDrawType()) {
-                case SKELETON_BAR:
-                    main.getRenderListener().drawSkeletonBar(mc, scale, buttonLocation);
-                    break;
-                case BAR:
-                    main.getRenderListener().drawBar(this, scale, mc, buttonLocation);
-                    break;
-                case TEXT:
-                    main.getRenderListener().drawText(this, scale, mc, buttonLocation);
-                    break;
-                case PICKUP_LOG:
-                    main.getRenderListener().drawItemPickupLog(scale, buttonLocation);
-                    break;
-                case DEFENCE_ICON:
-                    main.getRenderListener().drawIcon(scale, mc, buttonLocation);
-                    break;
-                case REVENANT_PROGRESS:
-                    main.getRenderListener().drawRevenantIndicator(scale, mc, buttonLocation);
-                    break;
-                case DEPLOYABLE_DISPLAY:
-                    main.getRenderListener().drawDeployableStatus(mc, scale, buttonLocation);
-                    break;
-                case TICKER:
-                    main.getRenderListener().drawScorpionFoilTicker(mc, scale, buttonLocation);
-                    break;
-                case BAIT_LIST_DISPLAY:
-                    main.getRenderListener().drawBaitList(mc, scale, buttonLocation);
-                    break;
-                case DUNGEONS_MAP:
-                    DungeonMapManager.drawDungeonsMap(mc, scale, buttonLocation);
-                    break;
-                case SLAYER_TRACKERS:
-                    main.getRenderListener().drawSlayerTrackers(this, mc, scale, buttonLocation);
-                    break;
-                case DRAGON_STATS_TRACKER:
-                    main.getRenderListener().drawDragonTrackers(mc, scale, buttonLocation);
-                    break;
-                case PROXIMITY_INDICATOR:
-                    FeatureTrackerQuest.drawTrackerLocationIndicator(mc, scale, buttonLocation);
-                    break;
-            }
+        if (guiFeatureData == null || guiFeatureData.getDrawType() == null) return;
+
+        SkyblockAddons main = SkyblockAddons.getInstance();
+        switch (guiFeatureData.getDrawType()) {
+            case SKELETON_BAR:
+                main.getRenderListener().drawSkeletonBar(mc, scale, buttonLocation);
+                break;
+            case BAR:
+                main.getRenderListener().drawBar(this, scale, mc, buttonLocation);
+                break;
+            case TEXT:
+                main.getRenderListener().drawText(this, scale, mc, buttonLocation);
+                break;
+            case PICKUP_LOG:
+                main.getRenderListener().drawItemPickupLog(scale, buttonLocation);
+                break;
+            case DEFENCE_ICON:
+                main.getRenderListener().drawIcon(scale, mc, buttonLocation);
+                break;
+            case REVENANT_PROGRESS:
+                main.getRenderListener().drawRevenantIndicator(scale, mc, buttonLocation);
+                break;
+            case DEPLOYABLE_DISPLAY:
+                main.getRenderListener().drawDeployableStatus(mc, scale, buttonLocation);
+                break;
+            case TICKER:
+                main.getRenderListener().drawScorpionFoilTicker(mc, scale, buttonLocation);
+                break;
+            case BAIT_LIST_DISPLAY:
+                main.getRenderListener().drawBaitList(mc, scale, buttonLocation);
+                break;
+            case DUNGEONS_MAP:
+                DungeonMapManager.drawDungeonsMap(mc, scale, buttonLocation);
+                break;
+            case SLAYER_TRACKERS:
+                main.getRenderListener().drawSlayerTrackers(this, mc, scale, buttonLocation);
+                break;
+            case DRAGON_STATS_TRACKER:
+                main.getRenderListener().drawDragonTrackers(mc, scale, buttonLocation);
+                break;
+            case PROXIMITY_INDICATOR:
+                FeatureTrackerQuest.drawTrackerLocationIndicator(mc, scale, buttonLocation);
+                break;
         }
     }
 
