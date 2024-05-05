@@ -15,6 +15,7 @@ import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -289,13 +290,14 @@ public class GuiScreenListener {
     private void setCurrentPet(GuiChest guiChest) {
         if (!guiChest.lowerChestInventory.getDisplayName().getUnformattedText().startsWith("Pets")) return;
         HashMap<Integer, PetManager.Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
+        Pair<Integer, Integer> clickedButton = GuiContainerHook.getLastClickedButtonOnPetsMenu();
 
-        int index = GuiContainerHook.getLastClickedButtonOnPetsMenu() + 45 * (main.getInventoryUtils().getInventoryPageNum() - 1);
+        int index = clickedButton.getKey()+ 45 * (main.getInventoryUtils().getInventoryPageNum() - 1);
         if (petMap.containsKey(index)) {
             PetManager.Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
                 main.getPetCacheManager().setCurrentPet(null);
-            } else {
+            } else if (clickedButton.getValue() != 1 /*right click*/) {
                 main.getPetCacheManager().setCurrentPet(pet);
             }
         }

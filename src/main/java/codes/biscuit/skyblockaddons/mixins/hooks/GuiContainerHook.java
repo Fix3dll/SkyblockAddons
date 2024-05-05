@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
@@ -20,7 +21,8 @@ public class GuiContainerHook {
 
     private static final ResourceLocation LOCK = new ResourceLocation("skyblockaddons", "lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
-    @Getter private static int lastClickedButtonOnPetsMenu = -1;
+    /** (slotId, clickedButton) */
+    @Getter private static Pair<Integer, Integer> lastClickedButtonOnPetsMenu = new Pair<>(-1, -1);
 
     public static void keyTyped(int keyCode) {
         ContainerPreviewManager.onContainerKeyTyped(keyCode);
@@ -130,7 +132,7 @@ public class GuiContainerHook {
     public static boolean onHandleMouseClick(Slot slot, int slotId, int clickedButton, int clickType) {
         SkyblockAddons main = SkyblockAddons.getInstance();
         if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS) {
-            lastClickedButtonOnPetsMenu = slotId;
+            lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
         }
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.getHasStack()
                 && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(slot.getStack())
