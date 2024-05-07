@@ -1375,8 +1375,10 @@ public class PlayerListener {
                 ContainerChest container = (ContainerChest) chest.inventorySlots;
                 IInventory lower = container.getLowerChestInventory();
 
-                // get milestone slot last lore
-                List<String> lore = ItemUtils.getItemLore(lower.getStackInSlot(51));
+                ItemStack milestoneItem = lower.getStackInSlot(51);
+                if (milestoneItem == null) return;
+
+                List<String> lore = ItemUtils.getItemLore(milestoneItem);
                 String milestoneProgress = TextUtils.stripColor(lore.get(lore.size() - 1));
 
                 Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
