@@ -1376,9 +1376,13 @@ public class PlayerListener {
                 IInventory lower = container.getLowerChestInventory();
 
                 ItemStack milestoneItem = lower.getStackInSlot(51);
+                // The player may persistently try to get the item :)
                 if (milestoneItem == null) return;
 
                 List<String> lore = ItemUtils.getItemLore(milestoneItem);
+                // No milestone items in new profiles
+                if (lore.isEmpty()) return;
+
                 String milestoneProgress = TextUtils.stripColor(lore.get(lore.size() - 1));
 
                 Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
