@@ -8,6 +8,7 @@ import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,7 +23,7 @@ public class GuiContainerHook {
     private static final ResourceLocation LOCK = new ResourceLocation("skyblockaddons", "lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
     /** (slotId, clickedButton) */
-    @Getter private static Pair<Integer, Integer> lastClickedButtonOnPetsMenu = new Pair<>(-1, -1);
+    @Getter @Setter private static Pair<Integer, Integer> lastClickedButtonOnPetsMenu = new Pair<>(-46, -1);
 
     public static void keyTyped(int keyCode) {
         ContainerPreviewManager.onContainerKeyTyped(keyCode);

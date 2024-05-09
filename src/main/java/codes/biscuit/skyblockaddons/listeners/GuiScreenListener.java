@@ -289,10 +289,12 @@ public class GuiScreenListener {
      */
     private void setCurrentPet(GuiChest guiChest) {
         if (!guiChest.lowerChestInventory.getDisplayName().getUnformattedText().startsWith("Pets")) return;
+
         HashMap<Integer, PetManager.Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
         Pair<Integer, Integer> clickedButton = GuiContainerHook.getLastClickedButtonOnPetsMenu();
+        if (clickedButton == null) return;
 
-        int index = clickedButton.getKey()+ 45 * (main.getInventoryUtils().getInventoryPageNum() - 1);
+        int index = clickedButton.getKey() + 45 * (main.getInventoryUtils().getInventoryPageNum() - 1);
         if (petMap.containsKey(index)) {
             PetManager.Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
@@ -300,6 +302,8 @@ public class GuiScreenListener {
             } else if (clickedButton.getValue() != 1 /*right click*/) {
                 main.getPetCacheManager().setCurrentPet(pet);
             }
+            // lastClickedButton has completed its task, time to clean up
+            GuiContainerHook.setLastClickedButtonOnPetsMenu(null);
         }
     }
 }
