@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class PetManager {
     //private static final Pattern SELECTED_PET_PATTERN = Pattern.compile("(?:§.)*Selected pet: §(?<rarity>\\w)(?<pet>[\\w ]+)");
-    private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(].*)");
+    private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(] )(§8\\[§.(?<cosmeticLevel>\\d+))?(.*)");
 
     /** The PetManager instance.*/
     @Getter private static final PetManager instance = new PetManager();
@@ -128,10 +128,16 @@ public class PetManager {
             Pet pet = petEntry.getValue();
 
             if (pet.displayName.contains(petName) && pet.petLevel == newLevel - 1 && pet.petInfo.getPetRarity() == rarity) {
-                pet.petLevel = newLevel;
                 Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
                 if (m.matches()) {
-                    pet.displayName = m.group(1) + newLevelString + m.group(3);
+                    String cosmeticLevelGroup = m.group("cosmeticLevel");
+                    if (cosmeticLevelGroup == null) {
+                        pet.petLevel = newLevel;
+                        pet.displayName = m.group(1) + newLevelString + m.group(3) + m.group(6);
+                    } else {
+                        int cosmeticLevel = newLevel - pet.petLevel;
+                        pet.displayName = m.group(1) + m.group(2) + m.group(3) + m.group(4) + cosmeticLevel + m.group(6);
+                    }
                 }
                 main.getPetCacheManager().putPet(index, pet);
                 main.getPetCacheManager().setCurrentPet(pet);
