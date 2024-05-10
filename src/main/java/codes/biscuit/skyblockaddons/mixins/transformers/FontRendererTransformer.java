@@ -22,8 +22,8 @@ public abstract class FontRendererTransformer {
     protected abstract void resetStyles();
 
     @Inject(method = "renderChar", at = @At("HEAD"))
-    public void turnAllTextsChroma(char ch, boolean italic, CallbackInfoReturnable<Float> cir) {
-        FontRendererHook.turnAllTextsChroma();
+    public void sba$renderChar(char ch, boolean italic, CallbackInfoReturnable<Float> cir) {
+        FontRendererHook.renderChar();
     }
 
     /**
@@ -31,7 +31,6 @@ public abstract class FontRendererTransformer {
      */
     @ModifyConstant(method = "renderStringAtPos", constant = @Constant(stringValue = "0123456789abcdefklmnor"))
     public String insertZColorCode(String constant) {
-//        FontRendererHook.onFontRendererInitialized();
         return "0123456789abcdefklmnorz";
     }
 

@@ -23,8 +23,13 @@ public class FontRendererHook {
     private static DrawStateFontRenderer currentDrawState = null;
     private static boolean modInitialized = false;
 
-    public static void turnAllTextsChroma() {
-        if (shouldRenderChroma() && SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)) {
+    public static void renderChar() {
+        if (!modInitialized) return;
+        SkyblockAddons main = SkyblockAddons.getInstance();
+        if (!main.getUtils().isOnSkyblock()) return;
+
+        if ((currentDrawState != null && currentDrawState.shouldManuallyRecolorFont())
+                || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
@@ -73,7 +78,6 @@ public class FontRendererHook {
             return false;
         }
     }
-
 
     /**
      * Called to save the current shader state
