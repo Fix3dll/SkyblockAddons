@@ -77,7 +77,12 @@ public abstract class DrawState {
                 DrawUtils.outlineColor(colorInt);
             }
         } else {
-            GlStateManager.color(ColorUtils.getRed(colorInt) / 255F, ColorUtils.getGreen(colorInt) / 255F, ColorUtils.getBlue(colorInt) / 255F, ColorUtils.getAlpha(colorInt) / 255F);
+            GlStateManager.color(
+                    ColorUtils.getRed(colorInt) / 255F,
+                    ColorUtils.getGreen(colorInt) / 255F,
+                    ColorUtils.getBlue(colorInt) / 255F,
+                    ColorUtils.getAlpha()
+            );
         }
     }
 

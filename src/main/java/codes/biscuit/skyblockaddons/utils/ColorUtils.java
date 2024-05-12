@@ -1,10 +1,15 @@
 package codes.biscuit.skyblockaddons.utils;
 
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
+
+import java.nio.FloatBuffer;
 
 public class ColorUtils {
 
     private static final SkyblockColor SKYBLOCK_COLOR = new SkyblockColor();
+    private static final FloatBuffer colourBuffer = GLAllocation.createDirectFloatBuffer(16);
 
     /**
      * Binds a color given its rgb integer representation.
@@ -80,6 +85,16 @@ public class ColorUtils {
 
     public static int getAlpha(int color) {
         return color >> 24 & 0xFF;
+    }
+
+    /**
+     * @see <a href="https://github.com/hannibal002/SkyHanni/pull/1660">ThatGravyBoat SkyHanni PR</a>
+     */
+    public static float getAlpha() {
+        colourBuffer.clear();
+        GlStateManager.getFloat(GL11.GL_CURRENT_COLOR, colourBuffer);
+        if (colourBuffer.limit() < 4) return 1f;
+        return colourBuffer.get(3);
     }
 
     public static float getAlphaFloat(int color) {

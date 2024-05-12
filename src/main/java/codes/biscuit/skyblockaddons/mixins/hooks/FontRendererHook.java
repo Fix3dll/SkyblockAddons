@@ -22,14 +22,14 @@ public class FontRendererHook {
     private static final MaxSizeHashMap<String, Boolean> stringsWithChroma = new MaxSizeHashMap<>(1000);
     private static DrawStateFontRenderer currentDrawState = null;
     private static boolean modInitialized = false;
+    private static final int CHROMA_FORMAT_INDEX = 22;
 
     public static void renderChar() {
         if (!modInitialized) return;
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (!main.getUtils().isOnSkyblock()) return;
+        if (!main.getUtils().isOnSkyblock() || currentDrawState == null) return;
 
-        if ((currentDrawState != null && currentDrawState.shouldManuallyRecolorFont())
-                || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)) {
+        if (main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA) || currentDrawState.shouldManuallyRecolorFont()) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
@@ -84,15 +84,7 @@ public class FontRendererHook {
      */
     public static void beginRenderString(boolean shadow) {
         if (modInitialized && SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
-            float alpha = Minecraft.getMinecraft().fontRendererObj.alpha;
-            if (shadow) {
-                currentDrawState = DRAW_CHROMA_SHADOW;
-                CHROMA_COLOR_SHADOW.setColor((int) (255 * alpha) << 24 | 0x555555);
-            } else {
-                currentDrawState = DRAW_CHROMA;
-                CHROMA_COLOR.setColor((int) (255 * alpha) << 24 | 0xFFFFFF);
-            }
-
+            currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
             currentDrawState.loadFeatureColorEnv();
         }
     }
@@ -109,8 +101,8 @@ public class FontRendererHook {
     /**
      * Called to turn chroma on
      */
-    public static boolean toggleChromaOn(int i1) {
-        if (shouldRenderChroma() && i1 == 22) {
+    public static boolean toggleChromaOn(int formatIndex) {
+        if (shouldRenderChroma() && formatIndex == CHROMA_FORMAT_INDEX) {
             currentDrawState.newColorEnv().bindActualColor();
             return true;
         }
@@ -160,10 +152,6 @@ public class FontRendererHook {
     public static boolean shouldRenderChroma() {
         if (!modInitialized) return false;
 
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        return main.getUtils().isOnSkyblock() && currentDrawState != null
-                && (currentDrawState.shouldManuallyRecolorFont()
-                || main.getConfigValues().isEnabled(Feature.TURN_ALL_FEATURES_CHROMA)
-                || main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA));
+        return SkyblockAddons.getInstance().getUtils().isOnSkyblock() && currentDrawState != null;
     }
 }

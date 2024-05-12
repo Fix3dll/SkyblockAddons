@@ -62,7 +62,12 @@ public class DrawStateFontRenderer extends DrawState2D {
     public DrawStateFontRenderer bindAnimatedColor(float x, float y) {
         // Handle feature scale here
         int colorInt = color.getTintAtPosition(x * featureScale, y * featureScale);
-        GlStateManager.color(ColorUtils.getRed(colorInt) / 255F, ColorUtils.getGreen(colorInt) / 255F, ColorUtils.getBlue(colorInt) / 255F, ColorUtils.getAlpha(colorInt) / 255F);
+        GlStateManager.color(
+                ColorUtils.getRed(colorInt) / 255F,
+                ColorUtils.getGreen(colorInt) / 255F,
+                ColorUtils.getBlue(colorInt) / 255F,
+                ColorUtils.getAlpha()
+        );
         return this;
     }
 
