@@ -138,7 +138,7 @@ public class PetManager {
                         int cosmeticLevel = newLevel - pet.petLevel;
                         pet.displayName = m.group(1) + m.group(2) + m.group(3) + m.group(4) + cosmeticLevel + m.group(6);
                     } else {
-                        return;
+                        continue;
                     }
                     main.getPetCacheManager().putPet(index, pet);
                     main.getPetCacheManager().setCurrentPet(pet);
