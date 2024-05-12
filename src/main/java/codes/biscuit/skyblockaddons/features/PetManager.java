@@ -127,20 +127,22 @@ public class PetManager {
             int index = petEntry.getKey();
             Pet pet = petEntry.getValue();
 
-            if (pet.displayName.contains(petName) && pet.petLevel == newLevel - 1 && pet.petInfo.getPetRarity() == rarity) {
+            if (pet.displayName.contains(petName) && pet.petInfo.getPetRarity() == rarity) {
                 Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
                 if (m.matches()) {
                     String cosmeticLevelGroup = m.group("cosmeticLevel");
-                    if (cosmeticLevelGroup == null) {
+                    if (cosmeticLevelGroup == null && pet.petLevel == newLevel - 1) {
                         pet.petLevel = newLevel;
                         pet.displayName = m.group(1) + newLevelString + m.group(3) + m.group(6);
-                    } else {
+                    } else if (cosmeticLevelGroup != null && newLevel > pet.petLevel) {
                         int cosmeticLevel = newLevel - pet.petLevel;
                         pet.displayName = m.group(1) + m.group(2) + m.group(3) + m.group(4) + cosmeticLevel + m.group(6);
+                    } else {
+                        return;
                     }
+                    main.getPetCacheManager().putPet(index, pet);
+                    main.getPetCacheManager().setCurrentPet(pet);
                 }
-                main.getPetCacheManager().putPet(index, pet);
-                main.getPetCacheManager().setCurrentPet(pet);
             }
         }
     }
