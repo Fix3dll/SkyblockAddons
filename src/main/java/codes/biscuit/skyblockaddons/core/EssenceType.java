@@ -14,7 +14,8 @@ public enum EssenceType {
     ICE,
     SPIDER,
     UNDEAD,
-    WITHER;
+    WITHER,
+    FOSSIL_DUST;
 
     private final String niceName;
     private final ResourceLocation resourceLocation;

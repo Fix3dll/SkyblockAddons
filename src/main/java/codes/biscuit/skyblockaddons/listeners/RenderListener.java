@@ -1770,22 +1770,29 @@ public class RenderListener {
 
     public void drawCollectedEssences(float x, float y, boolean usePlaceholders, boolean hideZeroes) {
         Minecraft mc = Minecraft.getMinecraft();
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         float currentX = x;
         float currentY;
 
-        int maxNumberWidth = main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING
-                ? mc.fontRendererObj.getStringWidth("999999")
-                : mc.fontRendererObj.getStringWidth("99");
+        int maxNumberWidth;
+        if (inventoryType == InventoryType.SALVAGING) {
+            String highestAmountStr = Collections.max(
+                    main.getDungeonManager().getSalvagedEssences().entrySet(),
+                    Map.Entry.comparingByValue()
+            ).getValue().toString();
+            maxNumberWidth = mc.fontRendererObj.getStringWidth(highestAmountStr);
+        } else {
+            maxNumberWidth = mc.fontRendererObj.getStringWidth("99");
+        }
 
         int color = main.getConfigValues().getColor(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
 
         int count = 0;
-
         for (EssenceType essenceType : EssenceType.values()) {
             int value;
 
-            if (main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING) {
+            if (inventoryType == InventoryType.SALVAGING) {
                 value = main.getDungeonManager().getSalvagedEssences().getOrDefault(essenceType, 0);
             } else {
                 value = main.getDungeonManager().getCollectedEssences().getOrDefault(essenceType, 0);
