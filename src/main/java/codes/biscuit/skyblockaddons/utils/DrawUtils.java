@@ -143,11 +143,6 @@ public class DrawUtils {
     }
 
     public static void drawScaledCustomSizeModalRect(float x, float y, float u, float v, float uWidth, float vHeight, float width, float height, float tileWidth, float tileHeight, boolean linearTexture) {
-        if (linearTexture) {
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        }
-
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(
                 GL11.GL_SRC_ALPHA,
@@ -155,6 +150,11 @@ public class DrawUtils {
                 GL11.GL_ONE,
                 GL11.GL_ONE_MINUS_SRC_ALPHA
         );
+
+        if (linearTexture) {
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        }
 
         float f = 1.0F / tileWidth;
         float f1 = 1.0F / tileHeight;
@@ -176,7 +176,6 @@ public class DrawUtils {
 
     /**
      * Draws a rectangle using absolute coordinates & a color.
-     *
      * See {@link DrawUtils#drawRect(double, double, double, double, int)} to use width/height instead.
      */
     public static void drawRectAbsolute(double left, double top, double right, double bottom, int color) {
@@ -185,7 +184,6 @@ public class DrawUtils {
 
     /**
      * Draws a rectangle using absolute coordinates & a color.
-     *
      * See {@link DrawUtils#drawRect(double, double, double, double, int, boolean)} to use width/height instead.
      */
     public static void drawRectAbsolute(double left, double top, double right, double bottom, int color, boolean chroma) {
@@ -204,7 +202,6 @@ public class DrawUtils {
 
     /**
      * Draws a rectangle using absolute a starting position and a width/height.
-     *
      * See {@link DrawUtils#drawRectAbsolute(double, double, double, double, int)} to use absolute coordinates instead.
      */
     public static void drawRect(double x, double y, double w, double h, SkyblockColor color, int rounding) {
@@ -213,7 +210,6 @@ public class DrawUtils {
 
     /**
      * Draws a rectangle using absolute a starting position and a width/height.
-     *
      * See {@link DrawUtils#drawRectAbsolute(double, double, double, double, int)} to use absolute coordinates instead.
      */
     public static void drawRect(double x, double y, double w, double h, int color) {
@@ -222,7 +218,6 @@ public class DrawUtils {
 
     /**
      * Draws a rectangle using absolute a starting position and a width/height.
-     *
      * See {@link DrawUtils#drawRectAbsolute(double, double, double, double, int, boolean)} to use absolute coordinates instead.
      */
     public static void drawRect(double x, double y, double w, double h, int color, boolean chroma) {
