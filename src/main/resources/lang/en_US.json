@@ -249,7 +249,8 @@
       "none": "None",
       "displayName": "Display Name",
       "showItem": "Show Item"
-    }
+    },
+    "stopNameOverlayWhenClose": "Stop rendering when vanilla name tag good enough to see"
   },
   "messages": {
     "enchants": "Enchants",

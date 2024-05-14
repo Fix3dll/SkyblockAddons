@@ -256,6 +256,7 @@ public class EnumUtils {
         HEART_INSTEAD_HEALTH_ON_RIFT("settings.heartInsteadHealthOnRift", 244),
         OUTLINE_SHOWCASE_ITEMS("settings.outlineShowcaseItems", 245),
         PET_ITEM_STYLE("settings.petItemStyle", -1),
+        STOP_NAME_OVERLAY_WHEN_CLOSE("settings.stopNameOverlayWhenClose", 247),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

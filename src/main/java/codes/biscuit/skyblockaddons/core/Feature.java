@@ -133,7 +133,7 @@ public enum Feature {
     SHOW_PERSONAL_COMPACTOR_PREVIEW(137, null, false),
     ROCK_PET_TRACKER(138, "settings.rockPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GRAY), true),
     DOLPHIN_PET_TRACKER(139, "settings.dolphinPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.AQUA), true, EnumUtils.FeatureSetting.SHOW_ONLY_HOLDING_FISHING_ROD),
-    SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY(140, "settings.dungeonsTeammateNameOverlay", null, false),
+    SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY(140, "settings.dungeonsTeammateNameOverlay", null, false, EnumUtils.FeatureSetting.STOP_NAME_OVERLAY_WHEN_CLOSE),
     SHOW_STACKING_ENCHANT_PROGRESS(141, "settings.stackingEnchantProgress", new GuiFeatureData(ColorCode.RED, true), false),
     DUNGEONS_SECRETS_DISPLAY(142, "settings.dungeonsSecretsDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GRAY), false),
     SKILL_PROGRESS_BAR(143, "settings.skillProgressBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.GREEN), true),
@@ -235,6 +235,7 @@ public enum Feature {
     HEART_INSTEAD_HEALTH_ON_RIFT(244, null, true),
     OUTLINE_SHOWCASE_ITEMS(245, null, false),
     PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
+    STOP_NAME_OVERLAY_WHEN_CLOSE(247, null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -287,7 +288,8 @@ public enum Feature {
             RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU, ABBREVIATE_DRILL_FUEL_DENOMINATOR, TREVOR_SHOW_LOCATION_ON_CHAT,
             SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT,
             HIDE_ONLY_OUTSIDE_RIFT, FIRE_FREEZE_SOUND, FIRE_FREEZE_WHEN_HOLDING, HEART_INSTEAD_HEALTH_ON_RIFT,
-            OUTLINE_SHOWCASE_ITEMS, CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD, DRAGON_STATS_TRACKER_NEST_ONLY);
+            OUTLINE_SHOWCASE_ITEMS, CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD, DRAGON_STATS_TRACKER_NEST_ONLY,
+            STOP_NAME_OVERLAY_WHEN_CLOSE);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'
