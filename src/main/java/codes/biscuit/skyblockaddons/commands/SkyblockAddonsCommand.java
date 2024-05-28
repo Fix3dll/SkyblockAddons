@@ -197,7 +197,7 @@ public class SkyblockAddonsCommand extends CommandBase {
 
             } else if (args[0].equalsIgnoreCase("dev") || args[0].equalsIgnoreCase("nbt")) {
                 SkyblockKeyBinding devModeKeyBinding = main.getDeveloperCopyNBTKey();
-                Feature.DEVELOPER_MODE.setEnabled(!main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE));
+                Feature.DEVELOPER_MODE.setEnabled(!Feature.DEVELOPER_MODE.isEnabled());
 
                 if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
                     main.getUtils().sendMessage(ColorCode.GREEN + getMessage("commands.responses.sba.dev.enabled",

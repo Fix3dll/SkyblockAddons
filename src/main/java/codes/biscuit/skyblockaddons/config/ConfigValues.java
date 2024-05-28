@@ -123,7 +123,7 @@ public class ConfigValues {
                 }
                 loadedConfig = fileElement.getAsJsonObject();
             } catch (JsonParseException | IllegalStateException | IOException ex) {
-                logger.error("There was an error loading the config. Resetting all settings to default.");
+                logger.error("There was an error loading the config! Resetting all settings to default.");
                 logger.catching(ex);
                 addDefaultsAndSave();
                 return;
@@ -315,7 +315,8 @@ public class ConfigValues {
                 return;
             }
 
-            logger.info("Saving config");
+            boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
+            if (isDevMode) logger.info("Saving config...");
 
             try {
                 settingsConfigFile.createNewFile();
@@ -433,11 +434,16 @@ public class ConfigValues {
             } catch (Exception ex) {
                 logger.error("An error occurred while attempting to save the config!");
                 logger.catching(ex);
+                if (Minecraft.getMinecraft().thePlayer != null) {
+                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                            "An error occurred while attempting to save the config! Check log for more detail."
+                    );
+                }
             }
 
             SAVE_LOCK.unlock();
 
-            logger.info("Config saved");
+            if (isDevMode) logger.info("Config saved!");
         });
     }
 

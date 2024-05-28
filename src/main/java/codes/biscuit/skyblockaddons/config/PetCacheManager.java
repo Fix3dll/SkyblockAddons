@@ -1,9 +1,11 @@
 package codes.biscuit.skyblockaddons.config;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.features.PetManager;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -68,7 +70,8 @@ public class PetCacheManager {
                 return;
             }
 
-            logger.info("Saving pet cache...");
+            boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
+            if (isDevMode) logger.info("Saving pet cache...");
 
             try {
                 //noinspection ResultOfMethodCallIgnored
@@ -81,9 +84,14 @@ public class PetCacheManager {
                 }
             } catch (Exception ex) {
                 logger.error("Error while saving pet cache!", ex);
+                if (Minecraft.getMinecraft().thePlayer != null) {
+                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                            "Error saving pet cache! Check log for more detail."
+                    );
+                }
             }
 
-            logger.info("Pet cache saved!");
+            if (isDevMode) logger.info("Pet cache saved!");
 
             SAVE_LOCK.unlock();
         });

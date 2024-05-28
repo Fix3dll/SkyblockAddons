@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
@@ -592,7 +593,9 @@ public class DevUtils {
         main.getPersistentValuesManager().loadValues();
         ((SimpleReloadableResourceManager) mc.getResourceManager()).reloadResourcePack(FMLClientHandler.instance().getResourcePackFor(SkyblockAddons.MOD_ID));
         try {
-            Method notifyReloadListenersMethod = SimpleReloadableResourceManager.class.getDeclaredMethod("func_110544_b"); // notifyReloadListeners
+            Method notifyReloadListenersMethod = SimpleReloadableResourceManager.class.getDeclaredMethod(
+                    SkyblockAddonsASMTransformer.isDeobfuscated() ? "notifyReloadListeners" : "func_110544_b"
+            );
             notifyReloadListenersMethod.setAccessible(true);
             notifyReloadListenersMethod.invoke(mc.getResourceManager());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
