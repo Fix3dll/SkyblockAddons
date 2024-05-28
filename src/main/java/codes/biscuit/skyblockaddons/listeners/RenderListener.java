@@ -1192,6 +1192,8 @@ public class RenderListener {
                 break;
 
             case PET_DISPLAY:
+                if (main.getUtils().isOnRift()) return;
+
                 PetManager.Pet newPet = main.getPetCacheManager().getCurrentPet();
                 if (newPet == null) {
                     return;
