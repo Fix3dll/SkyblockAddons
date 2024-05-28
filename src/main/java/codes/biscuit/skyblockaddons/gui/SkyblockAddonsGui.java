@@ -271,7 +271,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                 main.getUtils().setFadingIn(false);
                 mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE,1, page,tab, null));
 
-            }  else if (feature == Feature.EDIT_LOCATIONS) {
+            } else if (feature == Feature.EDIT_LOCATIONS) {
                 // If player tries to open "Edit GUI Locations" from outside
                 if (mc.thePlayer == null) {
                     showWarning = true;
@@ -286,7 +286,10 @@ public class SkyblockAddonsGui extends GuiScreen {
                     mc.displayGuiScreen(new LocationEditGui(page, tab));
                 }
 
-            }  else if (feature == Feature.GENERAL_SETTINGS) {
+            } else if (feature == Feature.GENERAL_SETTINGS) {
+                searchString = "";
+                featureSearchBar.setText(searchString);
+
                 if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) {
                     main.getUtils().setFadingIn(false);
                     mc.displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.MAIN));
@@ -534,9 +537,9 @@ public class SkyblockAddonsGui extends GuiScreen {
                     break;
                 case WARNING_TIME:
                     int solidButtonX = x+(boxWidth/2)-17;
-                    buttonList.add(new ButtonModify(solidButtonX-20, y + boxHeight - 23, 15, 15, "+", main, Feature.ADD));
+                    buttonList.add(new ButtonModify(solidButtonX-20, y + boxHeight - 23, 15, 15, "+",Feature.ADD));
                     buttonList.add(new ButtonSolid(solidButtonX, y + boxHeight - 23, 35, 15, "", main, feature));
-                    buttonList.add(new ButtonModify(solidButtonX+35+5, y + boxHeight - 23, 15, 15,"-", main, Feature.SUBTRACT));
+                    buttonList.add(new ButtonModify(solidButtonX+35+5, y + boxHeight - 23, 15, 15,"-", Feature.SUBTRACT));
                     break;
             }
 

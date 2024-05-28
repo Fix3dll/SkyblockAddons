@@ -173,7 +173,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
 
         switch (setting) {
             case COLOR:
-                buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, getMessage("settings.changeColor"), main, feature));
+                buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, getMessage("settings.changeColor"), feature));
                 break;
 
             case PERFECT_ENCHANT_COLOR:
@@ -182,7 +182,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
             case POOR_ENCHANT_COLOR:
             case COMMA_ENCHANT_COLOR:
                 // Temp hardcode until feature rewrite
-                buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), main, setting.getFeatureEquivalent()));
+                buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), setting.getFeatureEquivalent()));
                 break;
 
             case ENCHANT_LAYOUT:

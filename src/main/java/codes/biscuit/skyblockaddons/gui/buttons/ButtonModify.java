@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import net.minecraft.client.Minecraft;
@@ -11,16 +12,13 @@ import java.awt.Color;
 
 public class ButtonModify extends ButtonText {
 
-    private SkyblockAddons main;
-
-    private Feature feature;
+    private final Feature feature;
 
     /**
      * Create a button for adding or subtracting a number.
      */
-    public ButtonModify(double x, double y, int width, int height, String buttonText, SkyblockAddons main, Feature feature) {
+    public ButtonModify(double x, double y, int width, int height, String buttonText, Feature feature) {
         super(0, (int)x, (int)y, buttonText, feature);
-        this.main = main;
         this.feature = feature;
         this.width = width;
         this.height = height;
@@ -48,7 +46,7 @@ public class ButtonModify extends ButtonText {
         if (hovered && !hitMaximum()) {
             fontColor = new Color(255, 255, 160, 255).getRGB();
         }
-        drawButtonBoxAndText(boxColor, 1, fontColor);
+        drawButtonBoxAndText(boxColor, boxAlpha, 1, fontColor);
     }
 
     @Override
@@ -59,7 +57,8 @@ public class ButtonModify extends ButtonText {
     }
 
     private boolean hitMaximum() {
-        return (feature == Feature.SUBTRACT && main.getConfigValues().getWarningSeconds() == 1) ||
-                (feature == Feature.ADD && main.getConfigValues().getWarningSeconds() == 99);
+        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
+        return (feature == Feature.SUBTRACT && config.getWarningSeconds() == 1)
+                || (feature == Feature.ADD && config.getWarningSeconds() == 99);
     }
 }

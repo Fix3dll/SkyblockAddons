@@ -15,9 +15,8 @@ import static codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui.BUTTON_MAX_WIDT
 public class ButtonSolid extends ButtonText {
 
     private final SkyblockAddons main;
-
     private final Feature feature;
-    // Used to calculate the transparency when fading in.
+    /** Used to calculate the transparency when fading in. */
     private final long timeOpened;
 
     /**
@@ -82,6 +81,7 @@ public class ButtonSolid extends ButtonText {
         int boxAlpha = 100;
         if (hovered && feature != Feature.WARNING_TIME) boxAlpha = 170;
         // Alpha multiplier is from 0 to 1, multiplying it creates the fade effect.
+        //noinspection lossy-conversions
         boxAlpha *= alphaMultiplier;
         int boxColor = main.getUtils().getDefaultColor(boxAlpha);
         if (this.feature == Feature.RESET_LOCATION) {
@@ -102,7 +102,7 @@ public class ButtonSolid extends ButtonText {
         if (stringWidth > widthLimit) {
             scale = 1/(stringWidth/widthLimit);
         }
-        drawButtonBoxAndText(boxColor, scale, fontColor);
+        drawButtonBoxAndText(boxColor, boxAlpha, scale, fontColor);
     }
 
     @Override
