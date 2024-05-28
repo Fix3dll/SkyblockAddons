@@ -179,7 +179,6 @@
     "chromaSize": "Chroma Size",
     "chromaSaturation": "Chroma Saturation",
     "chromaBrightness": "Chroma Brightness",
-    "useNewChromaEffect": "Use New Chroma Effect",
     "showExperimentationTableTooltips": "Show Experimentation Table Tooltips",
     "drillFuelBar": "Drill Fuel Bar",
     "drillFuelNumber": "Drill Fuel Number",
@@ -735,6 +734,7 @@
     "cultivatedCrops": "Cultivated Crops",
     "hecatombsSRuns": "Hecatombs S Runs",
     "championCombatXp": "Champion Combat XP",
+    "toxophiliteCombatXp": "Toxophilite Combat XP",
     "maxed": "Maxed"
   }
 }

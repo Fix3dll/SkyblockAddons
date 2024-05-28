@@ -11,7 +11,7 @@ public enum ElementType {
     UNSIGNED_BYTE(1, GL11.GL_UNSIGNED_BYTE, true),
     ;
 
-    private int size;
-    private int glType;
-    private boolean normalize;
+    private final int size;
+    private final int glType;
+    private final boolean normalize;
 }

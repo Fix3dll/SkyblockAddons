@@ -11,8 +11,8 @@ public enum VertexFormatElement {
     COLOR(4, ElementType.UNSIGNED_BYTE)
     ;
 
-    private int count;
-    private ElementType elementType;
+    private final int count;
+    private final ElementType elementType;
 
     public int getTotalSize() {
         return count * elementType.getSize();

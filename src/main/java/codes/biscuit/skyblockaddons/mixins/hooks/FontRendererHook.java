@@ -3,11 +3,13 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import codes.biscuit.skyblockaddons.utils.draw.DrawStateFontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import java.util.LinkedHashMap;
@@ -23,13 +25,15 @@ public class FontRendererHook {
     private static DrawStateFontRenderer currentDrawState = null;
     private static boolean modInitialized = false;
     private static final int CHROMA_FORMAT_INDEX = 22;
+    private static final int WHITE_FORMAT_INDEX = 15;
+    private static boolean turnAllText = false;
 
-    public static void renderChar() {
-        if (!modInitialized) return;
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        if (!main.getUtils().isOnSkyblock() || currentDrawState == null) return;
+    public static void beforeRenderChar() {
+        if (!shouldRenderChroma()) return;
 
-        if (main.getConfigValues().isEnabled(Feature.TURN_ALL_TEXTS_CHROMA) || currentDrawState.shouldManuallyRecolorFont()) {
+        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
+        if (currentDrawState.shouldManuallyRecolorFont() || (config.isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)
+                && config.getChromaMode() == EnumUtils.ChromaMode.ALL_SAME_COLOR)) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
@@ -86,6 +90,16 @@ public class FontRendererHook {
         if (modInitialized && SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
             currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
             currentDrawState.loadFeatureColorEnv();
+
+            boolean allChroma = Feature.TURN_ALL_TEXTS_CHROMA.isEnabled();
+            if (allChroma || currentDrawState.isActive()) {
+                float rgb = shadow ? 0.2f : 1f;
+                GlStateManager.color(rgb, rgb, rgb, ColorUtils.getAlpha());
+                if (allChroma) {
+                    setupFeatureFont(Feature.TURN_ALL_TEXTS_CHROMA);
+                    turnAllText = true;
+                }
+            }
         }
     }
 
@@ -115,7 +129,22 @@ public class FontRendererHook {
     public static void endRenderString() {
         if (shouldRenderChroma()) {
             currentDrawState.endColorEnv();
+
+            if (turnAllText && !Feature.TURN_ALL_TEXTS_CHROMA.isEnabled()) {
+                endFeatureFont();
+                turnAllText = false;
+            }
         }
+    }
+
+    public static int forceWhiteColor(int formatIndex) {
+        if (!shouldRenderChroma()) return formatIndex;
+
+        if (formatIndex <= WHITE_FORMAT_INDEX && (currentDrawState.isActive() || Feature.TURN_ALL_TEXTS_CHROMA.isEnabled())) {
+            return WHITE_FORMAT_INDEX;
+        }
+
+        return formatIndex;
     }
 
     /**

@@ -299,10 +299,18 @@ public class SkyblockAddonsGui extends GuiScreen {
                 if (main.getConfigValues().isRemoteDisabled(feature)) return;
                 if (main.getConfigValues().isDisabled(feature)) {
                     feature.setEnabled(true);
-                    if(feature == Feature.DISCORD_RPC && main.getUtils().isOnSkyblock()) {
-                        main.getDiscordRPCManager().start();
-                    } else if (feature == Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT) {
-                        Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
+                    switch (feature) {
+                        case DISCORD_RPC:
+                            if (main.getUtils().isOnSkyblock()) {
+                                main.getDiscordRPCManager().start();
+                            }
+                            break;
+                        case ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT:
+                            Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
+                            break;
+                        case TURN_ALL_TEXTS_CHROMA:
+                            main.getConfigValues().getChromaFeatures().add(feature);
+                            break;
                     }
                 } else {
                     feature.setEnabled(false);
@@ -324,6 +332,9 @@ public class SkyblockAddonsGui extends GuiScreen {
                             break;
                         case DISABLE_ENDERMAN_TELEPORTATION_EFFECT:
                             Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.setEnabled(true);
+                            break;
+                        case TURN_ALL_TEXTS_CHROMA:
+                            main.getConfigValues().getChromaFeatures().remove(feature);
                             break;
                     }
                 }

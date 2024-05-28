@@ -13,7 +13,7 @@ public enum VertexFormat {
     POSITION_COLOR(VertexFormatElement.POSITION, VertexFormatElement.COLOR),
     ;
 
-    private List<VertexFormatElement> vertexFormatElements;
+    private final List<VertexFormatElement> vertexFormatElements;
 
     VertexFormat(VertexFormatElement... vertexFormatElements) {
         this.vertexFormatElements = Collections.unmodifiableList(Arrays.asList(vertexFormatElements));

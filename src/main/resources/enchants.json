@@ -743,6 +743,26 @@
         80
       ],
       "statLabel": "hecatombsSRuns"
+    },
+    "toxophilite": {
+      "goodLevel": 0,
+      "loreName": "Toxophilite",
+      "maxLevel": 10,
+      "nbtName": "toxophilite",
+      "nbtNum": "toxophilite_combat_xp",
+      "stackLevel": [
+        0,
+        100000,
+        1000000,
+        1500000,
+        2000000,
+        250000,
+        2500000,
+        3000000,
+        50000,
+        500000
+      ],
+      "statLabel": "toxophiliteCombatXp"
     }
   },
   "ULTIMATE": {

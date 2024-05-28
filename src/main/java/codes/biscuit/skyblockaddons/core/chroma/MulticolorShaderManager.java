@@ -1,7 +1,5 @@
 package codes.biscuit.skyblockaddons.core.chroma;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.Chroma3DShader;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenShader;
@@ -109,7 +107,7 @@ public enum MulticolorShaderManager {
     }
 
     public boolean shouldUseChromaShaders() {
-        return ShaderManager.getInstance().areShadersSupported() && SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.USE_NEW_CHROMA_EFFECT);
+        return ShaderManager.getInstance().areShadersSupported();
     }
 
 }

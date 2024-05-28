@@ -36,13 +36,8 @@ public class DrawStateFontRenderer extends DrawState2D {
     }
 
     public void restoreColorEnv() {
-        if (color.drawMulticolorUsingShader()) {
-            //noinspection StatementWithEmptyBody
-            if (multicolorFeatureOverride) {
-                // TODO: change order of restore to bind white here after font renderer binds the other color
-            } else {
-                MulticolorShaderManager.getInstance().end();
-            }
+        if (color.drawMulticolorUsingShader() && !multicolorFeatureOverride) {
+            MulticolorShaderManager.getInstance().end();
         }
         isActive = false;
     }
@@ -73,5 +68,9 @@ public class DrawStateFontRenderer extends DrawState2D {
 
     public boolean shouldManuallyRecolorFont() {
         return (multicolorFeatureOverride || isActive) && color.drawMulticolorManually();
+    }
+
+    public boolean isActive() {
+        return multicolorFeatureOverride || isActive;
     }
 }

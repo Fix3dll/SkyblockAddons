@@ -148,7 +148,6 @@ public enum Feature {
     ENCHANTMENTS_HIGHLIGHT(153, "settings.highlightSpecialEnchantments", null, false),
     CANDY_POINTS_COUNTER(155, "settings.candyPointsCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false),
     HEALING_CIRCLE_OPACITY(156, "settings.healingCircleOpacity", null, false),
-    USE_NEW_CHROMA_EFFECT(157, "settings.useNewChromaEffect", null, false),
     SHOW_EXPERIMENTATION_TABLE_TOOLTIPS(158, "settings.showExperimentationTableTooltips", null, true),
     DRILL_FUEL_BAR(160, "settings.drillFuelBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.DARK_GREEN), false),
     DRILL_FUEL_TEXT(161, "settings.drillFuelNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_GREEN), false, EnumUtils.FeatureSetting.ABBREVIATE_DRILL_FUEL_DENOMINATOR),
@@ -312,7 +311,7 @@ public enum Feature {
     @Getter
     private static final Set<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE, WARNING_TIME,
             CHROMA_SPEED, CHROMA_MODE, CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION, CHROMA_BRIGHTNESS,
-            USE_NEW_CHROMA_EFFECT, NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA));
+            NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA));
 
     private static final int ID_AT_PREVIOUS_UPDATE = 221;
 

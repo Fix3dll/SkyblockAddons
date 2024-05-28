@@ -223,6 +223,11 @@
     "enchanted": true,
     "itemId": "ghast_tear"
   },
+  "ENCHANTED_GLACITE": {
+    "displayName": "§9Enchanted Glacite",
+    "enchanted": true,
+    "itemId": "packed_ice"
+  },
   "ENCHANTED_GLISTERING_MELON": {
     "displayName": "§9Enchanted Glistering Melon",
     "enchanted": true,
@@ -582,6 +587,18 @@
     "skullId": "deb23698-94ea-3571-bb89-cd37ba5d15d8",
     "texture": "3dcc0ec9873f4f8d407ba0a0f983e257787772eaf8784e226a61c7f727ac9e26"
   },
+  "ENCHANTED_TUNGSTEN": {
+    "displayName": "§9Enchanted Tungsten",
+    "itemId": "skull",
+    "skullId": "473b5df4-ac11-3005-83aa-d2e998c32eb5",
+    "texture": "2a441cb1941d32ad7dd255e057f2dd35299046caaa544be968e0b74d69f7199d"
+  },
+  "ENCHANTED_UMBER": {
+    "displayName": "§9Enchanted Umber",
+    "itemId": "skull",
+    "skullId": "2c294bb4-db07-35f2-8a44-7ceeabef9cc0",
+    "texture": "2dfa531b18ae8227700dd2464987d72aaac160dd4a6c4f30067f2e5f1f2101e9"
+  },
   "ENCHANTED_WATER_LILY": {
     "displayName": "§aEnchanted Lily Pad",
     "enchanted": true,
@@ -598,43 +615,67 @@
     "itemId": "wool"
   },
   "FINE_AMBER_GEM": {
-    "displayName": "§9Fine Amber Gemstone",
+    "displayName": "§9⸕ Fine Amber Gemstone",
     "itemId": "skull",
     "skullId": "a1d42000-e7c0-3c3e-bc11-2c8de9d568e4",
     "texture": "4b1cce22de19ed6727abc5e6c2d57864c871a44c956bbe2eb3960269b686b8b3"
   },
   "FINE_AMETHYST_GEM": {
-    "displayName": "§9Fine Amethyst Gemstone",
+    "displayName": "§9❈ Fine Amethyst Gemstone",
     "itemId": "skull",
     "skullId": "f933e7f9-cc20-313a-a43f-5f11b3e8a441",
     "texture": "7a1ee5ffce04eb7da592d42414ff35e1bf38194d6b82e310dbc6261b47fb9c91"
   },
+  "FINE_AQUAMARINE_GEM": {
+    "displayName": "§9α Fine Aquamarine Gemstone",
+    "itemId": "skull",
+    "skullId": "c1927406-b16a-3288-88d5-156ee4ac2669",
+    "texture": "2b822b9dc70b9ca20008c332f481cbebb52bd50669ca98a89fd33d1345fa10f2"
+  },
+  "FINE_CITRINE_GEM": {
+    "displayName": "§9☘ Fine Citrine Gemstone",
+    "itemId": "skull",
+    "skullId": "fd33873e-aab8-3bcd-b087-c93e348824d7",
+    "texture": "ec0ab9c9f35a1bf44de18a0db2aa0ed2ebe8b9faa820307da3638f36a8306536"
+  },
   "FINE_JADE_GEM": {
-    "displayName": "§9Fine Jade Gemstone",
+    "displayName": "§9☘ Fine Jade Gemstone",
     "itemId": "skull",
     "skullId": "13e221e0-7f14-38d3-ac19-48ae55ee277f",
     "texture": "b28f1c0c5092e12d33770df45c5845a9610886039b34abe93a16c5e942dfc8e4"
   },
   "FINE_JASPER_GEM": {
-    "displayName": "§9Fine Jasper Gemstone",
+    "displayName": "§9❁ Fine Jasper Gemstone",
     "itemId": "skull",
     "skullId": "e942eb66-a350-38e5-aafa-0dfc3e17b4ac",
     "texture": "aac15f6fcf2ce963ef4ca71f1a8685adb97eb769e1d11194cbbd2e964a88978c"
   },
+  "FINE_ONYX_GEM": {
+    "displayName": "§9☠ Fine Onyx Gemstone",
+    "itemId": "skull",
+    "skullId": "ae2c8a65-3782-3b6c-b747-6f6fa7d989e6",
+    "texture": "787a326331fe27f7ee074f97727604c495f95c378121302e879e1f40ba4d20a8"
+  },
   "FINE_OPAL_GEM": {
-    "displayName": "§9Fine Opal Gemstone",
+    "displayName": "§9❂ Fine Opal Gemstone",
     "itemId": "skull",
     "skullId": "9a22d2d5-72b1-32eb-9966-6c7f64997888",
     "texture": "ad798e20a47d251a9e33d40332973c7189ac1550760ba25c4b956c9159364568"
   },
+  "FINE_PERIDOT_GEM": {
+    "displayName": "§9☘ Fine Peridot Gemstone",
+    "itemId": "skull",
+    "skullId": "37db3b40-bd55-3afa-94b1-a854249a9b89",
+    "texture": "fcba7aefc1c4f412868739e2f2c2e651edeb1be25d3c7175e68a05b67506a1ed"
+  },
   "FINE_RUBY_GEM": {
-    "displayName": "§9Fine Ruby Gemstone",
+    "displayName": "§9❤ Fine Ruby Gemstone",
     "itemId": "skull",
     "skullId": "ab2952c6-003c-38ea-bd83-9844698391a5",
     "texture": "e672959028f274b379d430f068f0f15a4f793eac12afb94ae0b4e50cf895df0f"
   },
   "FINE_SAPPHIRE_GEM": {
-    "displayName": "§9Fine Sapphire Gemstone",
+    "displayName": "§9✎ Fine Sapphire Gemstone",
     "itemId": "skull",
     "skullId": "40df80a0-70ad-3895-a4fa-a9eafb7d7469",
     "texture": "36161daa3589ec9c8187459ac36fd4dd2646c040678d3bfacb72a2210c6c801c"
@@ -646,43 +687,67 @@
     "texture": "92cb6e51c461e7359526bea5e06209cddde7c6469a819f3405cf0a038c159502"
   },
   "FLAWED_AMBER_GEM": {
-    "displayName": "§aFlawed Amber Gemstone",
+    "displayName": "§a⸕ Flawed Amber Gemstone",
     "itemId": "skull",
     "skullId": "60d70a39-9d29-3700-9df3-fc0330550817",
     "texture": "173bcfc39eb85df1848535985214060a1bd1b3bb47defe4201476edc31671744"
   },
   "FLAWED_AMETHYST_GEM": {
-    "displayName": "§aFlawed Amethyst Gemstone",
+    "displayName": "§a❈ Flawed Amethyst Gemstone",
     "itemId": "skull",
     "skullId": "be8cf0ae-a442-36c0-9f5a-5645c8117382",
     "texture": "71db59260895578d37e59505880602de940b088e5fff8da3e65201d739c86e84"
   },
+  "FLAWED_AQUAMARINE_GEM": {
+    "displayName": "§aα Flawed Aquamarine Gemstone",
+    "itemId": "skull",
+    "skullId": "0bd5930b-1606-3601-aacc-706483b53f18",
+    "texture": "e4166254ac8b324c1b78eadc7c249866c6742c17586a33aea6a89fe346b2acf0"
+  },
+  "FLAWED_CITRINE_GEM": {
+    "displayName": "§a☘ Flawed Citrine Gemstone",
+    "itemId": "skull",
+    "skullId": "18d9407b-f2f7-3445-aef2-bee71e79faf1",
+    "texture": "dc0b8433579f480adc685748b2bf2eccc69221137f704bbb922614191f801b26"
+  },
   "FLAWED_JADE_GEM": {
-    "displayName": "§aFlawed Jade Gemstone",
+    "displayName": "§a☘ Flawed Jade Gemstone",
     "itemId": "skull",
     "skullId": "041c5b55-875b-3f20-a97e-98610afc3ecb",
     "texture": "82282c6bb8343e0f0d61ee0747dada75344f332e9ff0acaa3adcdf09321d3dd"
   },
   "FLAWED_JASPER_GEM": {
-    "displayName": "§aFlawed Jasper Gemstone",
+    "displayName": "§a❁ Flawed Jasper Gemstone",
     "itemId": "skull",
     "skullId": "45454bb7-2efe-3f7f-95e4-a0389a069335",
     "texture": "a73511e504c316b139edb35febe73ef591c0f455e8caf9ee353bc12b6c14a922"
   },
+  "FLAWED_ONYX_GEM": {
+    "displayName": "§a☠ Flawed Onyx Gemstone",
+    "itemId": "skull",
+    "skullId": "4755eb6f-eaf0-38ce-a4d5-2268bc75c2c5",
+    "texture": "352a91f44bcbc78d4c9d045e941a23f7bdb4d99609e60bdcec842396feb315a7"
+  },
   "FLAWED_OPAL_GEM": {
-    "displayName": "§aFlawed Opal Gemstone",
+    "displayName": "§a❂ Flawed Opal Gemstone",
     "itemId": "skull",
     "skullId": "f1fa016a-e25d-3e5b-90c5-b9928ecf14c4",
     "texture": "eadc3bcdd7c701b63f8b8b4a96e429316a08388669d9a98c1a98791729b961df"
   },
+  "FLAWED_PERIDOT_GEM": {
+    "displayName": "§a☘ Flawed Peridot Gemstone",
+    "itemId": "skull",
+    "skullId": "71b29aee-ab0a-36d8-92ce-79b85ebafe4c",
+    "texture": "75da734e63aa22116e64703bb33271c4fbc3d1332a6a60c24af49b804193bf46"
+  },
   "FLAWED_RUBY_GEM": {
-    "displayName": "§aFlawed Ruby Gemstone",
+    "displayName": "§a❤ Flawed Ruby Gemstone",
     "itemId": "skull",
     "skullId": "b5c84278-118b-3634-89e0-547cb6166c0a",
     "texture": "46d81068cbdf4a364231a26453d6cd660a0095f9cd8795307c5be667427712e"
   },
   "FLAWED_SAPPHIRE_GEM": {
-    "displayName": "§aFlawed Sapphire Gemstone",
+    "displayName": "§a✎ Flawed Sapphire Gemstone",
     "itemId": "skull",
     "skullId": "b4ea250e-6e58-356f-9584-ba4012a2baa9",
     "texture": "8a0af99e8d8703194a847a55268cf5ef4ac4eb3b24c0ed86551339d10b646529"
@@ -694,43 +759,67 @@
     "texture": "b6392773d114be30aeb3c09c90cbe691ffeaceb399b530fe6fb53ddc0ced3714"
   },
   "FLAWLESS_AMBER_GEM": {
-    "displayName": "§5Flawless Amber Gemstone",
+    "displayName": "§5⸕ Flawless Amber Gemstone",
     "itemId": "skull",
     "skullId": "4ba0166e-5f5b-3d51-9d33-3b5cc86a2fe8",
     "texture": "9dce62f70ac046b881113c6cf862987727774e265885501c9a245b180db08c0d"
   },
   "FLAWLESS_AMETHYST_GEM": {
-    "displayName": "§5Flawless Amethyst Gemstone",
+    "displayName": "§5❈ Flawless Amethyst Gemstone",
     "itemId": "skull",
     "skullId": "b771bdf4-fe8a-3ca1-a0ce-8a07c1b0235f",
     "texture": "d3623521c8111ad29e9dcf7acc56085a9ab07da732d1518976aee61d0b3e3bd6"
   },
+  "FLAWLESS_AQUAMARINE_GEM": {
+    "displayName": "§5α Flawless Aquamarine Gemstone",
+    "itemId": "skull",
+    "skullId": "5fc0a30b-a9cf-3b6a-a6d5-1b08721a6a68",
+    "texture": "d37699bdf8cb43eff147d9ce19b14802f9bc88a21e63ad28b669530e8a3c0b57"
+  },
+  "FLAWLESS_CITRINE_GEM": {
+    "displayName": "§5☘ Flawless Citrine Gemstone",
+    "itemId": "skull",
+    "skullId": "d0c45c57-d904-382c-a78c-ac8d498a820c",
+    "texture": "f06b4f63d3d3a39c98565af4858a5135be774ad672eb236bb65adfc8cb3425e8"
+  },
   "FLAWLESS_JADE_GEM": {
-    "displayName": "§5Flawless Jade Gemstone",
+    "displayName": "§5☘ Flawless Jade Gemstone",
     "itemId": "skull",
     "skullId": "f8c140e4-0d47-31a9-b164-e698be919a1b",
     "texture": "f89f75e0b00378a583dbba728dcdc6e9346f31dd601d448f3d60615c7465cc3e"
   },
   "FLAWLESS_JASPER_GEM": {
-    "displayName": "§5Flawless Jasper Gemstone",
+    "displayName": "§5❁ Flawless Jasper Gemstone",
     "itemId": "skull",
     "skullId": "2e6c5c05-adb7-32ec-86bb-f12c5a986638",
     "texture": "ff993d3a43d40597b474485976160d0cf52ac64d157307d3b1c941db224d0ac6"
   },
+  "FLAWLESS_ONYX_GEM": {
+    "displayName": "§5☠ Flawless Onyx Gemstone",
+    "itemId": "skull",
+    "skullId": "94d99075-5ff2-3844-a4fa-c6e9d7ee2f68",
+    "texture": "1ca9b2841f71ba6fc4d6d2e97e80c1801f36ca3958e5a9a81a4f8785f6434367"
+  },
   "FLAWLESS_OPAL_GEM": {
-    "displayName": "§5Flawless Opal Gemstone",
+    "displayName": "§5❂ Flawless Opal Gemstone",
     "itemId": "skull",
     "skullId": "0fcd1dcf-b3e4-3a38-852e-1ca9108c1cfc",
     "texture": "5d15ed70e720040ad7311e69359dfdf5e114eadd2a4c1f971a9501341a45264b"
   },
+  "FLAWLESS_PERIDOT_GEM": {
+    "displayName": "§5☘ Flawless Peridot Gemstone",
+    "itemId": "skull",
+    "skullId": "34b8df8a-044f-3677-96e1-dd6584f45d61",
+    "texture": "1884a8dcb7128341ce09cb3616c11c3e46f80d083a6f2dbb4dbe0bb932318b09"
+  },
   "FLAWLESS_RUBY_GEM": {
-    "displayName": "§5Flawless Ruby Gemstone",
+    "displayName": "§5❤ Flawless Ruby Gemstone",
     "itemId": "skull",
     "skullId": "93d1453b-80c9-3a09-9d64-f4f08d149970",
     "texture": "926a248fbbc06cf06e2c920eca1cac8a2c96164d3260494bed142d553026cc6"
   },
   "FLAWLESS_SAPPHIRE_GEM": {
-    "displayName": "§5Flawless Sapphire Gemstone",
+    "displayName": "§5✎ Flawless Sapphire Gemstone",
     "itemId": "skull",
     "skullId": "117141f7-b729-3bf5-b38c-bfc89f50abde",
     "texture": "957cfa9c75ba584645ee2af6d9867d767ddea4667cdfc72dc1061dd1975ca7d0"

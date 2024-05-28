@@ -2,14 +2,15 @@ package codes.biscuit.skyblockaddons.mixins.transformers;
 
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import net.minecraft.client.gui.FontRenderer;
+import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 /**
@@ -21,9 +22,9 @@ public abstract class FontRendererTransformer {
     @Shadow
     protected abstract void resetStyles();
 
-    @Inject(method = "renderChar", at = @At("HEAD"))
-    public void sba$renderChar(char ch, boolean italic, CallbackInfoReturnable<Float> cir) {
-        FontRendererHook.renderChar();
+    @Inject(method = "renderStringAtPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;renderChar(CZ)F", ordinal = 0))
+    public void beforeRenderChar(String text, boolean shadow, CallbackInfo ci) {
+        FontRendererHook.beforeRenderChar();
     }
 
     /**
@@ -38,8 +39,8 @@ public abstract class FontRendererTransformer {
      * Inject call to {@link FontRendererHook#restoreChromaState()} after 1st and 3rd fontrenderer.italicStyle = ___ call
      */
     @Inject(method = "renderStringAtPos", at = {
-            @At(value = "FIELD", opcode = 181, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 0, shift = At.Shift.AFTER),
-            @At(value = "FIELD", opcode = 181, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 2, shift = At.Shift.AFTER)})
+            @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 0, shift = At.Shift.AFTER),
+            @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 2, shift = At.Shift.AFTER)})
     public void insertRestoreChromaState(CallbackInfo ci) {
         FontRendererHook.restoreChromaState();
     }
@@ -70,6 +71,14 @@ public abstract class FontRendererTransformer {
     @Inject(method = "renderStringAtPos", at = @At("HEAD"))
     public void beginRenderString(String text, boolean shadow, CallbackInfo ci) {
         FontRendererHook.beginRenderString(shadow);
+    }
+
+    /**
+     * Replace all color codes (when chroma is enabled) to white so chroma renders uniformly and at best brightness
+     */
+    @ModifyVariable(method = "renderStringAtPos", at = @At(value = "INVOKE", target = "Ljava/lang/String;indexOf(I)I", ordinal = 0, shift = At.Shift.BY, by = 2), ordinal = 1)
+    public int forceWhiteColorCode(int i1) {
+        return FontRendererHook.forceWhiteColor(i1);
     }
 
 }

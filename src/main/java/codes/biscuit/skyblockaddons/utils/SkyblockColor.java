@@ -2,15 +2,11 @@ package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
-import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
-import codes.biscuit.skyblockaddons.utils.draw.DrawState2D;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -18,17 +14,11 @@ import java.util.LinkedList;
 @Accessors(chain = true)
 public class SkyblockColor {
 
-
-    private static final Tessellator tessellator = Tessellator.getInstance();
-    private static final WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-
-
-
     private static final int DEFAULT_COLOR = 0xFFFFFFFF;
 
     @Getter @Setter private ColorAnimation colorAnimation = ColorAnimation.NONE;
 
-    private LinkedList<Integer> colors = new LinkedList<>();
+    private final LinkedList<Integer> colors = new LinkedList<>();
 
     public SkyblockColor() {
         this(DEFAULT_COLOR);
@@ -120,7 +110,7 @@ public class SkyblockColor {
 
     public static boolean shouldUseChromaShaders() {
         ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
-        return config.getChromaMode() != EnumUtils.ChromaMode.ALL_SAME_COLOR && ShaderManager.getInstance().areShadersSupported() && config.isEnabled(Feature.USE_NEW_CHROMA_EFFECT);
+        return config.getChromaMode() != EnumUtils.ChromaMode.ALL_SAME_COLOR && ShaderManager.getInstance().areShadersSupported();
     }
 
     public enum ColorAnimation {

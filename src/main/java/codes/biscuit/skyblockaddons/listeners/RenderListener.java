@@ -1665,6 +1665,7 @@ public class RenderListener {
                             , y
                             , color
                     );
+                    FontRendererHook.endFeatureFont();
                 } else {
                     FontRendererHook.setupFeatureFont(feature);
                     DrawUtils.drawText(text, x, y, color);
