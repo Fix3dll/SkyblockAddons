@@ -112,6 +112,7 @@ public class PlayerListener {
     private static final Pattern NETHER_FACTION_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][⚒ቾ]");
     private static final Pattern AUTOPET_PATTERN = Pattern.compile("§cAutopet §eequipped your §7\\[Lvl (?<level>\\d+)](?: §8\\[§6\\d+§8§.✦§8])? §(?<rarityColor>.)(?<name>.*)§e! §a§lVIEW RULE§r");
     private static final Pattern PET_LEVELED_UP_PATTERN = Pattern.compile("§r§aYour §r§(?<rarityColor>.)(?<name>[\\w ]+)(?:§r§. ✦)? §r§aleveled up to level §r(?:§.)*(?<newLevel>\\d+)§r§a!§r");
+    private static final Pattern PET_ITEM_PATTERN = Pattern.compile("§r§aYour pet is now holding §r§(?<rarityColor>.)(?<petItem>.*)§r§a.§r");
 
     private static final Set<String> SOUP_RANDOM_MESSAGES = new HashSet<>(Arrays.asList("I feel like I can fly!", "What was in that soup?",
             "Hmm… tasty!", "Hmm... tasty!", "You can now fly for 2 minutes.", "Your flight has been extended for 2 extra minutes.",
@@ -269,6 +270,11 @@ public class PlayerListener {
             } else if ((matcher = PET_LEVELED_UP_PATTERN.matcher(formattedText)).matches()) {
                 PetManager.getInstance().updateAndSetCurrentLevelledPet(
                         matcher.group("newLevel"), matcher.group("rarityColor"), matcher.group("name")
+                );
+
+            } else if ((matcher = PET_ITEM_PATTERN.matcher(formattedText)).matches()) {
+                PetManager.getInstance().updatePetItem(
+                        matcher.group("rarityColor"), matcher.group("petItem")
                 );
 
             } else if ((matcher = DEATH_MESSAGE_PATTERN.matcher(unformattedText)).matches()) {

@@ -33,8 +33,7 @@ public class PetManager {
     @Getter private static final PetManager instance = new PetManager();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    @Setter
-    private static Map<String, PetItem> petItems;
+    @Setter private static Map<String, PetItem> petItems;
 
     /**
      * Inspired by NEU
@@ -122,6 +121,7 @@ public class PetManager {
         int newLevel = Integer.parseInt(newLevelString);
         ColorCode color = ColorCode.getByChar(rarityColor.charAt(0));
         Rarity rarity = Rarity.getByColorCode(color);
+        Pet currentPet = main.getPetCacheManager().getCurrentPet();
 
         for (Map.Entry<Integer, Pet> petEntry : main.getPetCacheManager().getPetCache().getPetMap().entrySet()) {
             int index = petEntry.getKey();
@@ -130,7 +130,9 @@ public class PetManager {
             if (pet.displayName.contains(petName) && pet.petInfo.getPetRarity() == rarity) {
                 Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
                 if (m.matches()) {
+                    boolean isCurrentPet = currentPet.petInfo.getUniqueId() == pet.petInfo.getUniqueId();
                     String cosmeticLevelGroup = m.group("cosmeticLevel");
+
                     if (cosmeticLevelGroup == null && pet.petLevel == newLevel - 1) {
                         pet.petLevel = newLevel;
                         pet.displayName = m.group(1) + newLevelString + m.group(3) + m.group(6);
@@ -140,9 +142,30 @@ public class PetManager {
                     } else {
                         continue;
                     }
+
                     main.getPetCacheManager().putPet(index, pet);
-                    main.getPetCacheManager().setCurrentPet(pet);
+                    main.getPetCacheManager().saveValues();
+                    if (isCurrentPet) {
+                        main.getPetCacheManager().setCurrentPet(pet);
+                    }
                 }
+            }
+        }
+    }
+
+    public void updatePetItem(String rarityColor, String petItem) {
+        String petItemId = getPetIdFromDisplayName("§" + rarityColor + petItem);
+        if (petItemId == null) return;
+        Pet currentPet = main.getPetCacheManager().getCurrentPet();
+
+        for (Map.Entry<Integer, Pet> petEntry : main.getPetCacheManager().getPetCache().getPetMap().entrySet()) {
+            int index = petEntry.getKey();
+            Pet pet = petEntry.getValue();
+
+            if (pet.petInfo.getUniqueId() == currentPet.petInfo.getUniqueId()) {
+                pet.petInfo.setHeldItemId(petItemId);
+                main.getPetCacheManager().putPet(index, pet);
+                main.getPetCacheManager().setCurrentPet(pet);
             }
         }
     }
@@ -205,6 +228,15 @@ public class PetManager {
         } else {
             return Rarity.ADMIN;
         }
+    }
+
+    public String getPetIdFromDisplayName(String petItemDisplayName) {
+        for (Map.Entry<String, PetItem> petItem : petItems.entrySet()) {
+            if (petItem.getValue().getDisplayName().equals(petItemDisplayName)) {
+                return petItem.getKey();
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("FieldMayBeFinal")
