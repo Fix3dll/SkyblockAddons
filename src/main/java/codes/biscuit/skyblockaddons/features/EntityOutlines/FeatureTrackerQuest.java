@@ -10,6 +10,7 @@ import codes.biscuit.skyblockaddons.listeners.RenderListener;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
+import codes.biscuit.skyblockaddons.utils.MathUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
@@ -21,16 +22,18 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent.Specials.Pre;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import org.lwjgl.opengl.GL11;
 
+import javax.vecmath.Vector3d;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -38,6 +41,7 @@ import java.util.regex.Pattern;
 
 public class FeatureTrackerQuest {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Minecraft mc = Minecraft.getMinecraft();
     private static final Pattern TRACKED_ANIMAL_NAME_PATTERN = Pattern.compile("\\[Lv[0-9]+] (?<rarity>[a-zA-Z]+) (?<animal>[a-zA-Z]+) .*❤");
     private static final Pattern TREVOR_FIND_ANIMAL_PATTERN = Pattern.compile("\\[NPC] Trevor: You can find your (?<rarity>[A-Z]+) animal near the [a-zA-Z ]+\\.");
     private static final Pattern ANIMAL_DIED_PATTERN = Pattern.compile("Your mob died randomly, you are rewarded [0-9]+ pelts?\\.");
@@ -46,7 +50,7 @@ public class FeatureTrackerQuest {
     private static final ResourceLocation TICKER_SYMBOL = new ResourceLocation("skyblockaddons", "tracker.png");
     private static TrackerRarity trackingAnimalRarity = null;
     private static TrackedEntity entityToOutline = null;
-    private static boolean announcedOnChat = false;
+    private static int entityNametagId = -1;
 
     public FeatureTrackerQuest() {
 
@@ -128,7 +132,7 @@ public class FeatureTrackerQuest {
         if (e.getType() == RenderEntityOutlineEvent.Type.NO_XRAY) {
             if (isTrackerConditionsMet() && SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY)
                     && trackingAnimalRarity != null && entityToOutline != null && entityToOutline.getAnimal() != null
-                    && !Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.blindness)) {
+                    && !mc.thePlayer.isPotionActive(Potion.blindness)) {
                 e.queueEntityToOutline(entityToOutline.getAnimal(), entityToOutline.getRarity().getColorInt());
             }
         }
@@ -145,21 +149,27 @@ public class FeatureTrackerQuest {
                     if (rarity == null || !rarity.equals(trackingAnimalRarity))
                         return;
                     TrackerType animalType = TrackerType.getFromString(m.group("animal"));
-                    if (animalType != null) {
-                        if (main.getConfigValues().isEnabled(Feature.TREVOR_SHOW_LOCATION_ON_CHAT) && !announcedOnChat) {
-                            main.getUtils().sendMessage(EnumChatFormatting.GREEN + "Location of the hunt: ("
-                                            + (int) entity.posX + ", " + (int) entity.posY + ", " + (int) entity.posZ + ")"
-                                    , true);
-                            announcedOnChat = true;
-                        }
-                        if (main.getConfigValues().isEnabled(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
-                                || main.getConfigValues().isEnabled(Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY)) {
-                            TrackedEntity trackedEntity = new TrackedEntity((EntityArmorStand) entity, animalType, rarity);
-                            trackedEntity.attachAnimal(Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(EntityAnimal.class,
-                                    new AxisAlignedBB(entity.posX - 2, entity.posY - 2, entity.posZ - 2, entity.posX + 2, entity.posY + 2, entity.posZ + 2)));
-                            // TODO can be improved
-                            if (trackedEntity.getAnimal() != null)
-                                entityToOutline = trackedEntity;
+                        if (animalType != null && (Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR.isEnabled()
+                                || Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY.isEnabled()
+                                || Feature.TREVOR_BETTER_NAMETAG.isEnabled())) {
+                        TrackedEntity trackedEntity = new TrackedEntity((EntityArmorStand) entity, animalType, rarity);
+                        trackedEntity.attachAnimal(
+                                mc.theWorld.getEntitiesWithinAABB(
+                                        EntityAnimal.class,
+                                        new AxisAlignedBB(
+                                                entity.posX - 2, entity.posY - 2, entity.posZ - 2,
+                                                entity.posX + 2, entity.posY + 2, entity.posZ + 2
+                                        )
+                                )
+                        );
+                        // TODO can be improved
+                        if (trackedEntity.getAnimal() != null) {
+                            entityToOutline = trackedEntity;
+                            if (trackedEntity.getAnimal().isInvisible() || mc.thePlayer.isPotionActive(Potion.blindness)) {
+                                entityNametagId = -1;
+                            } else {
+                                entityNametagId = entity.getEntityId();
+                            }
                         }
                     }
                 }
@@ -198,7 +208,7 @@ public class FeatureTrackerQuest {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onNameTagRender(Pre<EntityLivingBase> e) {
         Entity entity = e.entity;
-        if (isTrackerConditionsMet() && !e.isCanceled() && SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.TREVOR_SHOW_QUEST_COOLDOWN)
+        if (isTrackerConditionsMet() && !e.isCanceled() && Feature.TREVOR_SHOW_QUEST_COOLDOWN.isEnabled()
                 && CooldownManager.isOnCooldown("TREVOR_THE_TRAPPER_RETURN"))
         {
             String strippedEntityTag = TextUtils.stripColor(entity.getCustomNameTag());
@@ -210,9 +220,72 @@ public class FeatureTrackerQuest {
         }
     }
 
+    @SubscribeEvent()
+    public void onRenderWorld(RenderWorldLastEvent e) {
+        if (!isTrackerConditionsMet() || !Feature.TREVOR_BETTER_NAMETAG.isEnabled()) return;
+
+        Entity entityNametag = mc.theWorld.getEntityByID(entityNametagId);
+
+        // see SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY
+        if (entityNametag != null) {
+            Entity renderViewEntity = mc.getRenderViewEntity();
+            Vector3d viewPosition = Utils.getPlayerViewPosition();
+
+            double distanceScale = Math.max(1, renderViewEntity.getPositionVector().distanceTo(entityNametag.getPositionVector()) / 10F);
+
+            float partialTicks = e.partialTicks;
+            double x = MathUtils.interpolateX(entityNametag, partialTicks);
+            double y = MathUtils.interpolateY(entityNametag, partialTicks);
+            double z = MathUtils.interpolateZ(entityNametag, partialTicks);
+
+            x -= viewPosition.x;
+            y -= viewPosition.y;
+            z -= viewPosition.z;
+
+            y += 0.35F + entityNametag.height + 0.75F + (25 * distanceScale) / 40F;
+
+            float f = 1.6F;
+            float f1 = 0.016666668F * f;
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x, y, z);
+            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(mc.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+            GlStateManager.scale(-f1, -f1, f1);
+
+            GlStateManager.scale(distanceScale, distanceScale, distanceScale);
+
+            GlStateManager.disableLighting();
+            GlStateManager.depthMask(false);
+            GlStateManager.disableDepth();
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+            GlStateManager.enableTexture2D();
+            GlStateManager.color(1, 1, 1, 1);
+            GlStateManager.enableAlpha();
+
+            if (entityNametag.hasCustomName()) {
+                mc.fontRendererObj.drawString(
+                        entityNametag.getCustomNameTag()
+                        , -mc.fontRendererObj.getStringWidth(entityNametag.getCustomNameTag()) / 2F
+                        , entityNametag.height + 11
+                        , -1
+                        , true
+                );
+            }
+
+            GlStateManager.enableDepth();
+            GlStateManager.depthMask(true);
+            GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.popMatrix();
+        }
+    }
+
     @SubscribeEvent
     public void onClientTick(ClientTickEvent e) {
-        if (isTrackerConditionsMet() && e.phase == Phase.START && Minecraft.getMinecraft().thePlayer != null) {
+        if (isTrackerConditionsMet() && e.phase == Phase.START && mc.thePlayer != null) {
             if (trackingAnimalRarity != null && CooldownManager.getRemainingCooldown("TREVOR_THE_TRAPPER_HUNT") == 0) {
                 onQuestEnded();
             } else if (entityToOutline != null) {
@@ -224,15 +297,16 @@ public class FeatureTrackerQuest {
     private void onQuestEnded() {
         entityToOutline = null;
         trackingAnimalRarity = null;
-        announcedOnChat = false;
+        entityNametagId = -1;
     }
 
     private boolean isTrackerConditionsMet() {
-        return main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES)
+        return main.getUtils().isOnSkyblock() && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled()
                 && LocationUtils.isInMushroomDesert(main.getUtils().getLocation());
     }
 
 
+    @Getter
     private enum TrackerType {
         COW("Cow", EntityCow.class),
         PIG("Pig", EntityPig.class),
@@ -241,9 +315,7 @@ public class FeatureTrackerQuest {
         CHICKEN("Chicken", EntityChicken.class),
         HORSE("Horse", EntityHorse.class);
 
-        @Getter
         private final String name;
-        @Getter
         private final Class<? extends Entity> clazz;
 
         TrackerType(String entityName, Class<? extends Entity> entityClass) {
@@ -261,6 +333,7 @@ public class FeatureTrackerQuest {
         }
     }
 
+    @Getter
     private enum TrackerRarity {
         TRACKABLE("Trackable", ColorCode.WHITE),
         UNTRACKABLE("Untrackable", ColorCode.DARK_GREEN),
@@ -268,11 +341,8 @@ public class FeatureTrackerQuest {
         ENDANGERED("Endangered", ColorCode.DARK_PURPLE),
         ELUSIVE("Elusive", ColorCode.GOLD);
 
-        @Getter
         private final String nameTagName;
-        @Getter
         private final ColorCode colorCode;
-        @Getter
         private final int colorInt;
 
         TrackerRarity(String nameTag, ColorCode color) {
@@ -291,16 +361,12 @@ public class FeatureTrackerQuest {
         }
     }
 
+    @Getter
     private static class TrackedEntity {
-        @Getter
         private final EntityArmorStand armorStand;
-        @Getter
         private final TrackerType type;
-        @Getter
         private final TrackerRarity rarity;
-        @Getter
         private Entity animal;
-        @Getter
         private double distanceToPlayer;
 
         public TrackedEntity(EntityArmorStand theArmorStand, TrackerType trackerType, TrackerRarity trackerRarity) {
@@ -311,7 +377,7 @@ public class FeatureTrackerQuest {
         }
 
         public void attachAnimal(List<Entity> animalList) {
-            if (animalList.size() == 0) {
+            if (animalList.isEmpty()) {
                 animal = null;
             }
 
@@ -329,9 +395,9 @@ public class FeatureTrackerQuest {
 
         public void cacheDistanceToPlayer() {
             if (animal != null) {
-                distanceToPlayer = Minecraft.getMinecraft().thePlayer.getDistanceToEntity(animal);
+                distanceToPlayer = mc.thePlayer.getDistanceToEntity(animal);
             } else {
-                distanceToPlayer = Minecraft.getMinecraft().thePlayer.getDistanceToEntity(armorStand);
+                distanceToPlayer = mc.thePlayer.getDistanceToEntity(armorStand);
             }
         }
     }

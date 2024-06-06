@@ -243,7 +243,7 @@ public class EnumUtils {
 		HIDE_WHEN_NOT_IN_CRIMSON("settings.hideWhenNotDoingQuest", 222),
         ZEALOT_SPAWN_AREAS_ONLY("settings.zealotSpawnAreasOnly", -1),
         EXPAND_DEPLOYABLE_STATUS("settings.expandDeployableStatus", 226),
-        TREVOR_SHOW_LOCATION_ON_CHAT("settings.trevorTheTrapper.showLocationOnChat", 227),
+        TREVOR_BETTER_NAMETAG("settings.trevorTheTrapper.betterNametag", 227),
         HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", 231),
         ABBREVIATE_DRILL_FUEL_DENOMINATOR("settings.abbreviateDrillFuelDenominator", 232),
         SHOW_ONLY_HOLDING_FISHING_ROD("settings.showOnlyHoldingFishingRod", 233),
