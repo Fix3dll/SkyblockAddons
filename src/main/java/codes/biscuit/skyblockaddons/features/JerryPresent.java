@@ -21,7 +21,7 @@ public class JerryPresent extends EntityAggregate {
     private static final Pattern FROM_TO_PATTERN = Pattern.compile("(?:From:|To:) (?:\\[.*?] )?(?<name>\\w{1,16})");
 
     @Getter
-    private static Map<UUID, JerryPresent> jerryPresents = new HashMap<>();
+    private static final Map<UUID, JerryPresent> jerryPresents = new HashMap<>();
 
     @Getter
     private final boolean isForPlayer;
@@ -139,9 +139,10 @@ public class JerryPresent extends EntityAggregate {
     private enum PresentColor {
         WHITE("7732c5e4-1800-3b90-a70f-727d2969254b"),
         GREEN("d5eb6a2a-3f10-3d6b-ba6a-4d46bb58a5cb"),
-        RED("bc74cb05-2758-3395-93ec-70452a983604");
+        RED("bc74cb05-2758-3395-93ec-70452a983604"),
+        PARTY("4091eae2-1088-380a-b548-33f5daeea601");
 
-        private String skullID;
+        private final String skullID;
 
         PresentColor(String skullID) {
             this.skullID = skullID;
