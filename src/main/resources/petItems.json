@@ -24,6 +24,14 @@
     "material": "ghast_tear",
     "rarity": "UNCOMMON"
   },
+  "BROWN_BANDANA": {
+    "displayName": "§9Brown Bandana",
+    "enchanted": false,
+    "material": "skull_item",
+    "rarity": "RARE",
+    "skullId": "25ef7610-1240-358a-82b1-270a7b463597",
+    "texture": "674e061e6d853822bbad56d079357c248c9a40de494f20eae0078a0a02ef0da7"
+  },
   "CROCHET_TIGER_PLUSHIE": {
     "displayName": "§5Crochet Tiger Plushie",
     "material": "skull_item",
