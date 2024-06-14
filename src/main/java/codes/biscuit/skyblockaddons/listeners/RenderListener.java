@@ -1780,10 +1780,10 @@ public class RenderListener {
 
         int maxNumberWidth;
         if (inventoryType == InventoryType.SALVAGING) {
-            String highestAmountStr = Collections.max(
-                    main.getDungeonManager().getSalvagedEssences().entrySet(),
-                    Map.Entry.comparingByValue()
-            ).getValue().toString();
+            Set<Map.Entry<EssenceType, Integer>> entrySet = main.getDungeonManager().getSalvagedEssences().entrySet();
+            if (entrySet.isEmpty()) return;
+
+            String highestAmountStr = Collections.max(entrySet, Map.Entry.comparingByValue()).getValue().toString();
             maxNumberWidth = mc.fontRendererObj.getStringWidth(highestAmountStr);
         } else {
             maxNumberWidth = mc.fontRendererObj.getStringWidth("99");
