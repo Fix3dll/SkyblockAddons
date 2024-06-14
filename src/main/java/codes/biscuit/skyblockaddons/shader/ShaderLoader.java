@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.shader;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.BufferUtils;
@@ -29,14 +30,14 @@ public class ShaderLoader {
 
     public void attachShader(Shader shader) {
         ++this.shaderAttachCount;
-        ShaderHelper.glAttachShader(shader.getProgram(), this.shader);
+        OpenGlHelper.glAttachShader(shader.getProgram(), this.shader);
     }
 
     public void deleteShader() {
         --this.shaderAttachCount;
 
         if (this.shaderAttachCount <= 0) {
-            ShaderHelper.glDeleteShader(this.shader);
+            OpenGlHelper.glDeleteShader(this.shader);
             this.shaderType.getSavedShaderLoaders().remove(this.fileName);
         }
     }
@@ -52,13 +53,13 @@ public class ShaderLoader {
             buffer.put(bytes);
             buffer.position(0);
 
-            int shaderID = ShaderHelper.glCreateShader(type.getGlShaderType());
-            ShaderHelper.glShaderSource(shaderID, buffer);
-            ShaderHelper.glCompileShader(shaderID);
+            int shaderID = OpenGlHelper.glCreateShader(type.getGlShaderType());
+            OpenGlHelper.glShaderSource(shaderID, buffer);
+            OpenGlHelper.glCompileShader(shaderID);
 
-            if (ShaderHelper.glGetShaderi(shaderID, ShaderHelper.GL_COMPILE_STATUS) == 0) {
+            if (OpenGlHelper.glGetShaderi(shaderID, OpenGlHelper.GL_COMPILE_STATUS) == 0) {
                 throw new OpenGLException("An error occurred while compiling shader " + fileName + ": " +
-                        StringUtils.trim(ShaderHelper.glGetShaderInfoLog(shaderID, 32768)));
+                        StringUtils.trim(OpenGlHelper.glGetShaderInfoLog(shaderID, 32768)));
             }
 
             shaderLoader = new ShaderLoader(type, shaderID, fileName);
@@ -71,8 +72,8 @@ public class ShaderLoader {
     @Getter
     public enum ShaderType {
 
-        VERTEX(".vsh", ShaderHelper.GL_VERTEX_SHADER),
-        FRAGMENT(".fsh", ShaderHelper.GL_FRAGMENT_SHADER);
+        VERTEX(".vsh", OpenGlHelper.GL_VERTEX_SHADER),
+        FRAGMENT(".fsh", OpenGlHelper.GL_FRAGMENT_SHADER);
 
         private final String shaderExtension;
         private final int glShaderType;

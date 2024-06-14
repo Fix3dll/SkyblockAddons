@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.shader;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.OpenGLException;
@@ -44,13 +45,13 @@ public abstract class Shader {
             ShaderLoader fragmentShaderLoader = ShaderLoader.load(ShaderLoader.ShaderType.FRAGMENT, FRAGMENT);
             fragmentShaderLoader.attachShader(this);
         }
-        ShaderHelper.glLinkProgram(program);
+        OpenGlHelper.glLinkProgram(program);
 
         // Check link status
-        int linkStatus = ShaderHelper.glGetProgrami(program, ShaderHelper.GL_LINK_STATUS);
+        int linkStatus = OpenGlHelper.glGetProgrami(program, OpenGlHelper.GL_LINK_STATUS);
         if (linkStatus == GL11.GL_FALSE) {
             throw new OpenGLException("Error encountered when linking program containing VS " + VERTEX + " and FS " + FRAGMENT + ": "
-                    + ShaderHelper.glGetProgramInfoLog(program, 32768));
+                    + OpenGlHelper.glGetProgramInfoLog(program, 32768));
         }
 
         // TODO Disable this code until there is a shader that actually uses a custom pipeline
@@ -95,11 +96,11 @@ public abstract class Shader {
     }
 
     public void enable() {
-        ShaderHelper.glUseProgram(program);
+        OpenGlHelper.glUseProgram(program);
     }
 
     public void disable() {
-        ShaderHelper.glUseProgram(0);
+        OpenGlHelper.glUseProgram(0);
     }
 
     public boolean isUsingFixedPipeline() {

@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.shader;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
+import net.minecraft.client.renderer.OpenGlHelper;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
@@ -112,6 +113,6 @@ public enum ShaderManager {
     }
 
     public boolean areShadersSupported() {
-        return ShaderHelper.isSHADERS_SUPPORTED();
+        return OpenGlHelper.areShadersSupported();
     }
 }

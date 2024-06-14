@@ -7,14 +7,14 @@ import lombok.Setter;
 import javax.vecmath.Vector3d;
 
 /**
- *  This shader shows a chroma color on a pixel depending on its position in the world
- *
- *  This shader does:
- *  - Take in account its position in 3-dimensional space
- *
- *  This shader does not:
- *  - Preserve the brightness and saturation of the original color
- *  - Work with textures
+ * This shader shows a chroma color on a pixel depending on its position in the world
+ * <br>
+ * This shader does:
+ * - Take in account its position in 3-dimensional space
+ * <br>
+ * This shader does not:
+ * - Preserve the brightness and saturation of the original color
+ * - Work with textures
  */
 public class Chroma3DShader extends ChromaShader {
 
@@ -30,7 +30,7 @@ public class Chroma3DShader extends ChromaShader {
 
         registerUniform(UniformType.VEC3, "playerWorldPosition", () -> {
             Vector3d viewPosition = Utils.getPlayerViewPosition();
-            return new Float[] {(float) viewPosition.x, (float) viewPosition.y, (float) viewPosition.z};
+            return new float[] {(float) viewPosition.x, (float) viewPosition.y, (float) viewPosition.z};
         });
         registerUniform(UniformType.FLOAT, "alpha", () -> alpha);
         registerUniform(UniformType.FLOAT, "brightness", () -> main.getConfigValues().getChromaBrightness().floatValue());
