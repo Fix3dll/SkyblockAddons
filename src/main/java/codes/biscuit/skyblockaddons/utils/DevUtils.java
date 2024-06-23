@@ -11,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -31,16 +32,15 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -76,20 +76,12 @@ public class DevUtils {
     private static CopyMode copyMode = CopyMode.ENTITY;
     private static List<Class<? extends Entity>> entityNames = DEFAULT_ENTITY_NAMES;
     private static int entityCopyRadius = DEFAULT_ENTITY_COPY_RADIUS;
-    private static boolean sidebarFormatted = DEFAULT_SIDEBAR_FORMATTED;
+    @Setter private static boolean sidebarFormatted = DEFAULT_SIDEBAR_FORMATTED;
 
     static {
         ALL_ENTITY_NAMES.add("PlayerSP");
         ALL_ENTITY_NAMES.add("PlayerMP");
         ALL_ENTITY_NAMES.add("OtherPlayerMP");
-    }
-
-    public static void setSidebarFormatted(boolean formatted) {
-        sidebarFormatted = formatted;
-    }
-
-    public static void resetSidebarFormattedToDefault() {
-        sidebarFormatted = DEFAULT_SIDEBAR_FORMATTED;
     }
 
     /**
@@ -306,39 +298,19 @@ public class DevUtils {
     }
 
     public static void copyData() {
-        if (copyMode == CopyMode.ENTITY) {
-            copyEntityData();
-
-        } else if (copyMode == CopyMode.BLOCK) {
-            copyBlockData();
-
-        } else if (copyMode == CopyMode.SIDEBAR) {
-            copyScoreboardSideBar();
-
-        } else if (copyMode == CopyMode.TAB_LIST) {
-            copyTabListHeaderAndFooter();
-        }
-    }
-
-    /**
-     * Compresses the provided {@code NBTTagCompound}, encodes it as Base64, converts it into a UTF-8 string,
-     * and copies it to the clipboard. The NBT tag cannot be {@code null}.
-     *
-     * @param nbtTag the NBT tag to copy
-     * @param message the message to show in chat when the NBT tag is copied successfully
-     */
-    public static void copyCompressedNBTTagToClipboard(NBTTagCompound nbtTag, String message) {
-        if (nbtTag == null) {
-            throw new NullPointerException("NBT tag cannot be null!");
-        }
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        try {
-            CompressedStreamTools.writeCompressed(nbtTag, outputStream);
-            writeToClipboard(new String(Base64.getEncoder().encode(outputStream.toByteArray()), StandardCharsets.UTF_8), message);
-        } catch (IOException e) {
-            logger.error("Failed to write NBT tag to clipboard!", e);
+        switch (copyMode) {
+            case BLOCK:
+                copyBlockData();
+                break;
+            case ENTITY:
+                copyEntityData();
+                break;
+            case SIDEBAR:
+                copyScoreboardSideBar();
+                break;
+            case TAB_LIST:
+                copyTabListHeaderAndFooter();
+                break;
         }
     }
 
@@ -383,7 +355,27 @@ public class DevUtils {
             output.append(tabFooter.getFormattedText());
         }
 
-        copyStringToClipboard(output.toString(),  ColorCode.GREEN + "Successfully copied the tab list header and footer!");
+        copyStringToClipboard(
+                output.toString(),
+                ColorCode.GREEN + "Successfully copied the tab list header and footer to clipboard!"
+        );
+    }
+
+    /**
+     * Copies OpenGL logs, CPU model and GPU model to clipboard.
+     *
+     * @see net.minecraft.client.renderer.OpenGlHelper
+     */
+    public static void copyOpenGLLogs() {
+        String output = "```\n" +
+                OpenGlHelper.getLogText() +
+                "CPU: " + OpenGlHelper.getCpu() +
+                "\nGPU: " + GL11.glGetString(GL11.GL_RENDERER) +
+                "\n```";
+        copyStringToClipboard(
+                output,
+                ColorCode.GREEN + "Successfully copied the OpenGL logs to clipboard!"
+        );
     }
 
     /**
@@ -534,6 +526,7 @@ public class DevUtils {
                     stringBuilder.append(key).append(": ").append(
                             prettyPrintNBT(currentCompoundTagElement));
 
+                    // backpack_data deprecated?
                     if (key.contains("backpack_data") && currentCompoundTagElement instanceof NBTTagByteArray) {
                         try {
                             NBTTagCompound backpackData = CompressedStreamTools.readCompressed(new ByteArrayInputStream(((NBTTagByteArray)currentCompoundTagElement).getByteArray()));
@@ -627,15 +620,22 @@ public class DevUtils {
      * @param copyMode the new copy mode
      */
     public static void setCopyMode(CopyMode copyMode) {
-        DevUtils.copyMode = copyMode;
-        main.getUtils().sendMessage(ColorCode.YELLOW + Translations.getMessage("messages.copyModeSet", copyMode, Keyboard.getKeyName(main.getDeveloperCopyNBTKey().getKeyCode())));
+        if (DevUtils.copyMode != copyMode) {
+            DevUtils.copyMode = copyMode;
+            main.getUtils().sendMessage(
+                    ColorCode.YELLOW + Translations.getMessage(
+                            "messages.copyModeSet",
+                            copyMode,
+                            Keyboard.getKeyName(main.getDeveloperCopyNBTKey().getKeyCode())
+                    )
+            );
+        }
     }
 
     public enum CopyMode {
         BLOCK,
         ENTITY,
         ITEM,
-        ITEM_COMPRESSED,
         SIDEBAR,
         TAB_LIST
     }

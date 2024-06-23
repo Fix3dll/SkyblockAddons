@@ -38,7 +38,7 @@ public class SkyblockAddonsCommand extends CommandBase {
     private static final String FOOTER = "§7§m-----------------------------------------------------";
     private static final String[] SUBCOMMANDS = {"help", "edit", "folder", "resetZealotCounter", "set", "slayer",
             "version", "dev", "brand", "copyBlock", "copyEntity", "copySidebar", "copyTabList", "pd", "reload",
-            "reloadConfig", "reloadRes", "toggleActionBarLogging", "toggleSlayerTrackerLogging"};
+            "reloadConfig", "reloadRes", "toggleActionBarLogging", "toggleSlayerTrackerLogging", "copyOpenGL"};
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
 
@@ -87,6 +87,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                     "§b● " + CommandSyntax.COPY_ENTITY + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.copyEntity.help") + "\n" +
                     "§b● " + CommandSyntax.COPY_SIDEBAR + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.copySidebar.help") + "\n" +
                     "§b● " + CommandSyntax.COPY_TAB_LIST + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.copyTabList.help") + "\n" +
+                    "§b● " + CommandSyntax.COPY_OPENGL + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.copyOpenGL.help") + "\n" +
                     "§b● " + CommandSyntax.PD + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.printDeaths.help") + "\n" +
                     "§b● " + CommandSyntax.RELOAD + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.reload.help") + "\n" +
                     "§b● " + CommandSyntax.RELOAD_CONFIG + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.reloadConfig.help") + "\n" +
@@ -346,6 +347,9 @@ public class SkyblockAddonsCommand extends CommandBase {
                     DevUtils.setCopyMode(DevUtils.CopyMode.TAB_LIST);
                     DevUtils.copyData();
 
+                } else if (args[0].equalsIgnoreCase("copyOpenGL")) {
+                    DevUtils.copyOpenGLLogs();
+
                 } else if (args[0].equalsIgnoreCase("pd")) {
                     main.getUtils().sendMessage(EnumChatFormatting.BOLD + "Death Counts: ");
                     main.getUtils().sendMessage(EnumChatFormatting.WHITE + "Deaths: " + EnumChatFormatting.GOLD +
@@ -462,6 +466,7 @@ public class SkyblockAddonsCommand extends CommandBase {
         COPY_ENTITY("/sba copyEntity [entityNames] [radius: integer]"),
         COPY_SIDEBAR("/sba copySidebar [formatted: boolean]"),
         COPY_TAB_LIST("/sba copyTabList"),
+        COPY_OPENGL("/sba copyOpenGL"),
         TOGGLE_ACTION_BAR_LOGGING("/sba toggleActionBarLogging"),
         SLAYER("/sba slayer <boss> <stat> <number>"),
         COPY_BLOCK("/sba copyBlock"),
@@ -495,6 +500,7 @@ public class SkyblockAddonsCommand extends CommandBase {
         COPY_ENTITY(CommandSyntax.COPY_ENTITY, "commands.usage.sba.copyEntity.detailedHelp.description", Arrays.asList(CommandOption.ENTITY_NAMES, CommandOption.RADIUS)),
         COPY_SIDEBAR(CommandSyntax.COPY_SIDEBAR, "commands.usage.sba.copySidebar.detailedHelp.description", Collections.singletonList(CommandOption.FORMATTED)),
         COPY_TAB_LIST(CommandSyntax.COPY_TAB_LIST, "commands.usage.sba.copyTabList.detailedHelp.description", null),
+        COPY_OPENGL(CommandSyntax.COPY_OPENGL, "commands.usage.sba.copyOpenGL.detailedHelp.description", null),
         TOGGLE_ACTION_BAR_LOGGING(CommandSyntax.TOGGLE_ACTION_BAR_LOGGING, "commands.usage.sba.toggleActionBarLogging.help", null),
         SLAYER(CommandSyntax.SLAYER, "commands.usage.sba.slayer.detailedHelp.description", Arrays.asList(CommandOption.SLAYER_BOSS, CommandOption.SLAYER_STAT, CommandOption.SLAYER_NUMBER)),
         COPY_BLOCK(CommandSyntax.COPY_BLOCK, "commands.usage.sba.copyBlock.help", null),
