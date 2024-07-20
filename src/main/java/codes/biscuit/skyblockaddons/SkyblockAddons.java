@@ -25,7 +25,6 @@ import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.misc.Updater;
 import codes.biscuit.skyblockaddons.misc.scheduler.NewScheduler;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
-import codes.biscuit.skyblockaddons.newgui.GuiManager;
 import codes.biscuit.skyblockaddons.utils.*;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.gson.GsonInitializableTypeAdapter;
@@ -116,7 +115,6 @@ public class SkyblockAddons {
     private final Scheduler scheduler;
     private final NewScheduler newScheduler;
     private final DungeonManager dungeonManager;
-    private final GuiManager guiManager;
     private final SkillXpManager skillXpManager;
 
     private boolean usingLabymod;
@@ -141,7 +139,6 @@ public class SkyblockAddons {
         newScheduler = new NewScheduler();
         dungeonManager = new DungeonManager();
         discordRPCManager = new DiscordRPCManager();
-        guiManager = new GuiManager();
         skillXpManager = new SkillXpManager();
     }
 

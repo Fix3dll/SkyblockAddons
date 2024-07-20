@@ -12,8 +12,4 @@ public class EntityRendererHook {
             returnValue.cancel(1.0F);
         }
     }
-
-    public static void onRenderScreenPre() {
-        SkyblockAddons.getInstance().getGuiManager().render();
-    }
 }

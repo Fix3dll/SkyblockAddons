@@ -7,7 +7,6 @@ import net.minecraft.entity.EntityLivingBase;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityRenderer.class)
@@ -21,10 +20,4 @@ public class EntityRendererTransformer {
             cir.setReturnValue(1.0F);
         }
     }
-
-    @Inject(method = "updateCameraAndRender", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;currentScreen:Lnet/minecraft/client/gui/GuiScreen;", ordinal = 1, shift = At.Shift.BEFORE, by = -2))
-    private void updateCameraAndRender(float partialTicks, long nanoTime, CallbackInfo ci) {
-        EntityRendererHook.onRenderScreenPre();
-    }
-
 }
