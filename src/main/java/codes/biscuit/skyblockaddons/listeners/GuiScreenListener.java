@@ -292,7 +292,10 @@ public class GuiScreenListener {
      * @author Fix3dll
      */
     private void setCurrentPet(GuiChest guiChest) {
-        if (!guiChest.lowerChestInventory.getDisplayName().getUnformattedText().startsWith("Pets")) return;
+        boolean isClosedGuiPets = InventoryType.PETS.getInventoryPattern().matcher(
+                guiChest.lowerChestInventory.getDisplayName().getUnformattedText()
+        ).matches();
+        if (!isClosedGuiPets) return;
 
         HashMap<Integer, PetManager.Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
         Pair<Integer, Integer> clickedButton = GuiContainerHook.getLastClickedButtonOnPetsMenu();

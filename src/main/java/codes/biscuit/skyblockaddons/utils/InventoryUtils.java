@@ -460,7 +460,7 @@ public class InventoryUtils {
         if (inventory.getDisplayName() == null) {
             return inventoryType = null;
         }
-        String chestName = TextUtils.stripColor(inventory.getDisplayName().getUnformattedText()).trim();
+        String chestName = TextUtils.stripColor(inventory.getDisplayName().getUnformattedText());
 
         // Initialize inventory to null and get the open chest name
         inventoryType = null;

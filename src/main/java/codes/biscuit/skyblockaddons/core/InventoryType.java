@@ -21,7 +21,7 @@ public enum InventoryType {
     ENDER_CHEST("EnderChest", "Ender Chest \\((?<page>\\d+)/\\d+\\)"),
     MAYOR("Mayor", "Mayor (?<mayor>.*)"),
     CALENDAR("Calendar", "Calendar and Events"),
-    PETS("Pets","Pets( \\((?<page>\\d+)/\\d+\\))?");
+    PETS("Pets","Pets( \\((?<page>\\d+)/\\d+\\) )?"); // "Pets (1/3) "
 
     private final String inventoryName;
     private final Pattern inventoryPattern;
