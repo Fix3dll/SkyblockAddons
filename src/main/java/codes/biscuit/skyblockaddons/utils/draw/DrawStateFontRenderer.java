@@ -71,6 +71,6 @@ public class DrawStateFontRenderer extends DrawState2D {
     }
 
     public boolean isActive() {
-        return multicolorFeatureOverride || isActive;
+        return multicolorFeatureOverride;
     }
 }
