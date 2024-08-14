@@ -92,7 +92,7 @@ public class FontRendererHook {
             currentDrawState.loadFeatureColorEnv();
 
             boolean allChroma = Feature.TURN_ALL_TEXTS_CHROMA.isEnabled();
-            if (allChroma || currentDrawState.isActive()) {
+            if (allChroma || currentDrawState.isUsingShader()) {
                 float rgb = shadow ? 0.2f : 1f;
                 GlStateManager.color(rgb, rgb, rgb, ColorUtils.getAlpha());
                 if (allChroma) {
@@ -138,9 +138,8 @@ public class FontRendererHook {
     }
 
     public static int forceWhiteColor(int formatIndex) {
-        if (!shouldRenderChroma()) return formatIndex;
-
-        if (formatIndex <= WHITE_FORMAT_INDEX && (currentDrawState.isActive() || Feature.TURN_ALL_TEXTS_CHROMA.isEnabled())) {
+        if (shouldRenderChroma() && formatIndex <= WHITE_FORMAT_INDEX
+                && (currentDrawState.isUsingShader() || Feature.TURN_ALL_TEXTS_CHROMA.isEnabled())) {
             return WHITE_FORMAT_INDEX;
         }
 
