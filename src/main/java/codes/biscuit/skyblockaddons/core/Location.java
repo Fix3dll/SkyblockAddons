@@ -237,7 +237,7 @@ public enum Location {
     LAGOON_CAVE("Lagoon Cave"),
     LAGOON_HUT("Lagoon Hut"),
     LEECHES_LAIR("Leeches Lair"),
-    AROUND_COLOSSEUM("Leeches Lair"),
+    AROUND_COLOSSEUM("Around Colosseum"),
     RIFT_GALLERY_ENTRANCE("Rift Gallery Entrance"),
     RIFT_GALLERY("Rift Gallery"),
     WEST_VILLAGE("West Village"),

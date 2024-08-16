@@ -35,6 +35,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 import lombok.Getter;
 import lombok.Setter;
+import net.hypixel.modapi.HypixelModAPI;
+import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -80,6 +82,8 @@ public class SkyblockAddons {
 
     @Getter private static SkyblockAddons instance;
     @Getter private boolean fullyInitialized = false;
+
+    private static final HypixelModAPI modApi = HypixelModAPI.getInstance();
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static final Gson GSON = new GsonBuilder()
@@ -206,6 +210,15 @@ public class SkyblockAddons {
         if (!this.configValues.isEnabled(Feature.NUMBER_SEPARATORS)) {
             TextUtils.NUMBER_FORMAT.setGroupingUsed(false);
         }
+
+        modApi.setPacketSender(NetworkListener::sendModAPIPacket);
+        modApi.createHandler(ClientboundLocationPacket.class, packet -> {
+            this.getUtils().sendMessage(packet.toString());
+            this.getUtils().setServerID(packet.getServerName());
+            this.getUtils().setMap(packet.getMap().orElse("null"));
+            this.getUtils().setMode(packet.getMode().orElse("null"));
+        });
+        modApi.subscribeToEventPacket(ClientboundLocationPacket.class);
     }
 
     @Mod.EventHandler

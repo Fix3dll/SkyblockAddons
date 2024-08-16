@@ -148,9 +148,19 @@ public class Utils {
     private boolean isTrackingAnimal = false;
 
     /**
-     * The player's current location in Skyblock
+     * The player's current location in SkyBlock
      */
     private Location location = Location.UNKNOWN;
+
+    /**
+     * The player's current map in SkyBlock
+     */
+    private String map = "null";
+
+    /**
+     * The player's current mode in SkyBlock
+     */
+    private String mode = "null";
 
     /**
      * The current mayor name

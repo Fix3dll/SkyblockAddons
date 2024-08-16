@@ -15,16 +15,27 @@ import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.netty.buffer.Unpooled;
+import net.hypixel.modapi.HypixelModAPI;
+import net.hypixel.modapi.packet.HypixelPacket;
+import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
+import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
+import net.hypixel.modapi.serializer.PacketSerializer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
@@ -36,17 +47,14 @@ public class NetworkListener {
     private final SkyblockAddons main;
     private ScheduledTask updateHealth;
 
+    // We store a local reference to the net handler, so it's instantly available from the moment we connect
+    private static NetHandlerPlayClient netHandler;
+
     public NetworkListener() {
         main = SkyblockAddons.getInstance();
     }
 
     private final Cache<Integer, Integer> collectedCache = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.SECONDS).build();
-
-    @SubscribeEvent
-    public void onDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        // Leave Skyblock when the player disconnects
-        EVENT_BUS.post(new SkyblockLeftEvent());
-    }
 
     @SubscribeEvent
     public void onSkyblockJoined(SkyblockJoinedEvent event) {
@@ -63,6 +71,12 @@ public class NetworkListener {
         }, 0, 20);
 
         DataUtils.onSkyblockJoined();
+        HypixelModAPI.getInstance().sendPacket(
+                new ServerboundRegisterPacket(
+                        HypixelModAPI.getInstance().getRegistry(),
+                        Collections.singleton("hyevent:location")
+                )
+        );
     }
 
     @SubscribeEvent
@@ -83,6 +97,14 @@ public class NetworkListener {
     public void onServerConnect(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         e.manager.channel().pipeline().addBefore("packet_handler", "sba_packet_handler", new PacketHandler());
         logger.info("Added SBA's packet handler to channel pipeline.");
+        netHandler = (NetHandlerPlayClient) e.handler;
+    }
+
+    @SubscribeEvent
+    public void onServerDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        // Leave Skyblock when the player disconnects
+        EVENT_BUS.post(new SkyblockLeftEvent());
+        netHandler = null;
     }
 
     @SubscribeEvent
@@ -112,6 +134,44 @@ public class NetworkListener {
                     , itemStack.stackSize
                     , activeQuest
             );
+
+        } else if (packet instanceof S3FPacketCustomPayload) {
+            S3FPacketCustomPayload payload = (S3FPacketCustomPayload) packet;
+            String identifier = payload.getChannelName();
+
+            if (!HypixelModAPI.getInstance().getRegistry().isRegistered(identifier)) {
+                return;
+            }
+
+            PacketBuffer buffer = payload.getBufferData();
+            buffer.retain();
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                try {
+                    HypixelModAPI.getInstance().handle(identifier, new PacketSerializer(buffer));
+                } catch (Exception ex) {
+                    logger.warn("Failed to handle ModAPI packet {}", identifier, ex);
+                } finally {
+                    buffer.release();
+                }
+            });
         }
+    }
+
+    public static boolean sendModAPIPacket(HypixelPacket packet) {
+        if (netHandler == null) {
+            return false;
+        }
+
+        if (!netHandler.getNetworkManager().isChannelOpen()) {
+            logger.warn("Attempted to send packet while channel is closed!");
+            netHandler = null;
+            return false;
+        }
+
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+        PacketSerializer serializer = new PacketSerializer(buf);
+        packet.write(serializer);
+        netHandler.addToSendQueue(new C17PacketCustomPayload(packet.getIdentifier(), buf));
+        return true;
     }
 }

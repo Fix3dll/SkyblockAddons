@@ -92,6 +92,7 @@ repositories {
     gradlePluginPortal()
     maven("https://repo.spongepowered.org/maven/")
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    maven("https://repo.hypixel.net/repository/Hypixel/")
     maven("https://jitpack.io") {
         content {
             includeGroupByRegex("com\\.github\\..*")
@@ -109,6 +110,8 @@ dependencies {
         isTransitive = false
     }
     annotationProcessor("com.github.SpongePowered:Mixin:a60200d:processor")
+
+    implementation("net.hypixel:mod-api:1.0.1")
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
