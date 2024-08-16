@@ -111,7 +111,7 @@ dependencies {
     }
     annotationProcessor("com.github.SpongePowered:Mixin:a60200d:processor")
 
-    implementation("net.hypixel:mod-api:1.0.1")
+    bundle("net.hypixel:mod-api:1.0.1")
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
@@ -196,6 +196,7 @@ tasks.shadowJar {
 
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "shadow.discordipc")
+    relocate("net.hypixel.modapi", "shadow.modapi")
 }
 
 tasks.withType(Test::class) {
