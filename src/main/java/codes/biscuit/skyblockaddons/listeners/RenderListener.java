@@ -1025,7 +1025,7 @@ public class RenderListener {
             case BIRCH_PARK_RAINMAKER_TIMER:
                 long rainmakerTime = main.getPlayerListener().getRainmakerTimeEnd();
 
-                if (main.getUtils().getLocation() != Location.BIRCH_PARK && buttonLocation == null)
+                if (!main.getUtils().getLocation().equals("Birch Park") && buttonLocation == null)
                     return;
 
                 String parsedRainTime = TabListParser.getParsedRainTime();
@@ -1062,7 +1062,7 @@ public class RenderListener {
                 break;
 
             case ENDSTONE_PROTECTOR_DISPLAY:
-                if ((!LocationUtils.isInTheEnd(main.getUtils().getLocation())
+                if ((main.getUtils().getMap() != Island.THE_END
                         || EndstoneProtectorManager.getMinibossStage() == null
                         || !EndstoneProtectorManager.isCanDetectSkull()
                     ) && buttonLocation == null) return;
@@ -1619,7 +1619,7 @@ public class RenderListener {
 
             case FETCHUR_TODAY:
                 boolean showDwarven = main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_ONLY_IN_DWARVENS)
-                        || LocationUtils.isInDwarvenMines(main.getUtils().getLocation());
+                        || main.getUtils().getMap() == Island.DWARVEN_MINES;
                 boolean showInventory = main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_INVENTORY_OPEN_ONLY)
                         || Minecraft.getMinecraft().currentScreen != null;
                 FetchurManager.FetchurItem fetchurItem = FetchurManager.getInstance().getCurrentFetchurItem();
@@ -1892,7 +1892,7 @@ public class RenderListener {
         boolean textMode;
         SlayerBoss slayerBoss;
         EnumUtils.SlayerQuest quest = main.getUtils().getSlayerQuest();
-        Location location = main.getUtils().getLocation();
+        String location = main.getUtils().getLocation();
         ConfigValues config = main.getConfigValues();
 
         switch (feature) {
@@ -2258,7 +2258,7 @@ public class RenderListener {
 
     public void drawDragonTrackers(Minecraft mc, float scale, ButtonLocation buttonLocation) {
         if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER_NEST_ONLY)
-                && main.getUtils().getLocation() != Location.DRAGONS_NEST && buttonLocation == null) {
+                && !main.getUtils().getLocation().equals("Dragon's Nest") && buttonLocation == null) {
             return;
         }
 

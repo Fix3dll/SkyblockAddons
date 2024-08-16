@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.features.EntityOutlines;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
@@ -9,7 +10,6 @@ import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
 import codes.biscuit.skyblockaddons.listeners.RenderListener;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
-import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.MathUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
@@ -179,7 +179,7 @@ public class FeatureTrackerQuest {
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent e) {
-        if (LocationUtils.isInMushroomDesert(main.getUtils().getLocation()) && e.type != 2) {
+        if (main.getUtils().getMap() == Island.THE_FARMING_ISLANDS && e.type != 2) {
             String stripped = TextUtils.stripColor(e.message.getFormattedText());
             // Once the player has started the hunt, start some timers
             Matcher matcher = TREVOR_FIND_ANIMAL_PATTERN.matcher(stripped);
@@ -302,7 +302,7 @@ public class FeatureTrackerQuest {
 
     private boolean isTrackerConditionsMet() {
         return main.getUtils().isOnSkyblock() && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled()
-                && LocationUtils.isInMushroomDesert(main.getUtils().getLocation());
+                && main.getUtils().getMap() == Island.THE_FARMING_ISLANDS;
     }
 
 

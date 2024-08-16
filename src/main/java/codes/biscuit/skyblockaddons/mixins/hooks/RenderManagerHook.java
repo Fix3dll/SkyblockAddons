@@ -1,9 +1,9 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
 import codes.biscuit.skyblockaddons.features.JerryPresent;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
@@ -28,7 +28,8 @@ public class RenderManagerHook {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
         if (main.getUtils().isOnSkyblock()) {
-            Location currentLocation = main.getUtils().getLocation();
+            String currentLocation = main.getUtils().getLocation();
+            Island currentMap = main.getUtils().getMap();
 
             if (main.getConfigValues().isEnabled(Feature.HIDE_BONES) && main.getInventoryUtils().isWearingSkeletonHelmet()) {
                 if (entityIn instanceof EntityItem && entityIn.ridingEntity instanceof EntityArmorStand && entityIn.ridingEntity.isInvisible()) {
@@ -47,19 +48,24 @@ public class RenderManagerHook {
                     }
                 }
             }
-            if (mc.theWorld != null && main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_NEAR_NPCS) && currentLocation != Location.GUEST_ISLAND && currentLocation != Location.THE_CATACOMBS) {
+            if (mc.theWorld != null && main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_NEAR_NPCS)
+                    && !main.getUtils().isGuest() && currentMap != Island.DUNGEON) {
                 if (entityIn instanceof EntityOtherPlayerMP && !NPCUtils.isNPC(entityIn) && NPCUtils.isNearNPC(entityIn)) {
                     returnValue.cancel();
                 }
             }
             if (main.getConfigValues().isEnabled(Feature.HIDE_SPAWN_POINT_PLAYERS)) {
                 BlockPos entityPosition = entityIn.getPosition();
-                if (entityIn instanceof EntityPlayer && entityPosition.getX() == -2 && entityPosition.getY() == 70 && entityPosition.getZ() == -69 && currentLocation == Location.VILLAGE) {
+                if (entityIn instanceof EntityPlayer
+                        && entityPosition.getX() == -2
+                        && entityPosition.getY() == 70
+                        && entityPosition.getZ() == -69
+                        && currentLocation.equals("Village")) {
                     returnValue.cancel();
                 }
             }
             if (main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_IN_LOBBY)) {
-                if (currentLocation == Location.VILLAGE || currentLocation == Location.AUCTION_HOUSE || currentLocation == Location.BANK) {
+                if (currentLocation.equals("Village") || currentLocation.equals("Auction House") || currentLocation.equals("Bank")) {
                     if ((entityIn instanceof EntityOtherPlayerMP || entityIn instanceof EntityFX || entityIn instanceof EntityItemFrame) &&
                             !NPCUtils.isNPC(entityIn) && entityIn.getDistanceSqToEntity(mc.thePlayer) > HIDE_RADIUS_SQUARED) {
                         returnValue.cancel();

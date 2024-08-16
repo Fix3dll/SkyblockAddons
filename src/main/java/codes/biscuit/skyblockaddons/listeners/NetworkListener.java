@@ -18,7 +18,6 @@ import com.google.common.cache.CacheBuilder;
 import io.netty.buffer.Unpooled;
 import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.packet.HypixelPacket;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import net.minecraft.client.Minecraft;
@@ -31,14 +30,13 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
-
-import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
 
 public class NetworkListener {
 
@@ -103,7 +101,7 @@ public class NetworkListener {
     @SubscribeEvent
     public void onServerDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         // Leave Skyblock when the player disconnects
-        EVENT_BUS.post(new SkyblockLeftEvent());
+        MinecraftForge.EVENT_BUS.post(new SkyblockLeftEvent());
         netHandler = null;
     }
 

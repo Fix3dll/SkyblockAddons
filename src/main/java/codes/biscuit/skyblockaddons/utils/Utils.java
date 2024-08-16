@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Attribute;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Location;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
@@ -150,12 +150,17 @@ public class Utils {
     /**
      * The player's current location in SkyBlock
      */
-    private Location location = Location.UNKNOWN;
+    private String location = "Unknown";
 
     /**
      * The player's current map in SkyBlock
      */
-    private String map = "null";
+    private Island map = Island.UNKNOWN;
+
+    /**
+     * The player's currently visiting someone's island in SkyBlock
+     */
+    private boolean isGuest = false;
 
     /**
      * The player's current mode in SkyBlock
@@ -184,7 +189,7 @@ public class Utils {
     /**
      * Dungeon floor information from the scoreboard
      */
-    private String dungeonFloor = "";
+    private String dungeonFloor = "0";
 
     /**
      * Plot name from the scoreboard
@@ -300,6 +305,7 @@ public class Utils {
         boolean foundServerID = false;
         boolean foundDate = false;
         boolean foundLocation = false;
+        boolean foundPlot = false;
         boolean foundTime = false;
         boolean foundCoins = false;
         boolean foundBits = false;
@@ -317,6 +323,8 @@ public class Utils {
 
             // Check title for skyblock
             String strippedScoreboardTitle = ScoreboardManager.getStrippedScoreboardTitle();
+            isGuest = strippedScoreboardTitle.endsWith("GUEST");
+
             for (String skyblock : SKYBLOCK_IN_ALL_LANGUAGES) {
                 if (strippedScoreboardTitle.startsWith(skyblock)) {
                     foundSkyblockTitle = true;
@@ -334,16 +342,16 @@ public class Utils {
                 Matcher dateMatcher = null;
 
                 for (int lineNumber = 0; lineNumber < ScoreboardManager.getNumberOfLines(); lineNumber++) {
-                    String scoreboardLine = ScoreboardManager.getScoreboardLines().get(lineNumber);
-                    String strippedScoreboardLine = ScoreboardManager.getStrippedScoreboardLines().get(lineNumber);
+                    String line = ScoreboardManager.getScoreboardLines().get(lineNumber);
+                    String strippedLine = ScoreboardManager.getStrippedScoreboardLines().get(lineNumber);
 
                     // Don't waste resources with empty strings
-                    if (strippedScoreboardLine.isEmpty())
+                    if (strippedLine.isEmpty())
                         continue;
 
                     // No need to try to find serverID after line 0
                     if (!foundServerID && lineNumber == 0) {
-                        Matcher matcher = SERVER_REGEX.matcher(strippedScoreboardLine);
+                        Matcher matcher = SERVER_REGEX.matcher(strippedLine);
 
                         if (matcher.find()) {
                             String serverType = matcher.group("serverType");
@@ -359,7 +367,7 @@ public class Utils {
 
                     // No need to try to find date after line 2
                     if (!foundDate && lineNumber < 3) {
-                        Matcher dateM = DATE_PATTERN.matcher(strippedScoreboardLine);
+                        Matcher dateM = DATE_PATTERN.matcher(strippedLine);
                         if (dateM.find()) {
                             dateMatcher = dateM;
                             foundDate = true;
@@ -369,7 +377,7 @@ public class Utils {
 
                     // No need to try to find date after line 3
                     if (foundDate && !foundTime && lineNumber < 4) {
-                        Matcher timeM = TIME_PATTERN.matcher(strippedScoreboardLine);
+                        Matcher timeM = TIME_PATTERN.matcher(strippedLine);
                         if (timeM.find()) {
                             currentDate = SkyblockDate.parse(dateMatcher, timeM);
                             foundTime = true;
@@ -379,64 +387,41 @@ public class Utils {
                         }
                     }
 
-                    // No need to try to find location after line 4
-                    if (!foundLocation && lineNumber < 5) {
-                        if (strippedScoreboardLine.contains("\u23E3")) {
-                            onRift = false;
+                    // No need to try to find location after line 5
+                    if (lineNumber < 6) {
+                        if (!foundLocation && (strippedLine.contains("⏣") || strippedLine.contains("ф"))) {
+                            onRift = strippedLine.contains("ф");
+                            location = strippedLine.substring(strippedLine.indexOf(' ') + 1).trim();
 
-                            // If the title line ends with "GUEST", then the player is visiting someone else's island.
-                            if (strippedScoreboardTitle.endsWith("GUEST")) {
-                                location = Location.GUEST_ISLAND;
-                                if (!strippedScoreboardLine.contains("Plot"))
-                                    location.setScoreboardName(
-                                            strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1)
-                                    );
-                                foundLocation = true;
-
-                            } else {
-                                for (Location loopLocation : Location.values()) {
-                                    String scoreboardName = loopLocation.getScoreboardName();
-                                    if (!strippedScoreboardLine.contains(scoreboardName))
-                                        continue;
-
-                                    // Special case causes Dwarven Village to map to Village
-                                    if ((loopLocation == Location.VILLAGE || loopLocation == Location.TAVERN)
-                                            && strippedScoreboardLine.contains("Dwarven")) {
-                                        continue;
-                                    } else if (loopLocation == Location.JERRY_POND
-                                            && strippedScoreboardLine.contains("Sunken")) {
-                                        continue;
-                                    } else if (loopLocation == Location.MOUNTAIN
-                                            && strippedScoreboardLine.contains("Desert")) {
-                                        continue;
-                                    } else if (loopLocation == Location.KUUDRAS_HOLLOW || loopLocation == Location.THE_CATACOMBS) {
-                                        // Catacombs and Kuudra contains the floor number, so it's a special case...
-                                        dungeonFloor = strippedScoreboardLine.substring(strippedScoreboardLine.lastIndexOf(" "));
-                                    } else if (loopLocation == Location.GARDEN_PLOT) {
-                                        plotName = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf("-") + 1);
-                                    }
-                                    location = loopLocation;
-                                    foundLocation = true;
-                                    break;
+                            if (map == Island.KUUDRA || map == Island.DUNGEON) {
+                                dungeonFloor = strippedLine.substring(strippedLine.lastIndexOf(" "));
+                            } else if (map == Island.GARDEN) {
+                                location = "The Garden";
+                            } else if (map == Island.CRIMSON_ISLE) {
+                                // Location fix
+                                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+                                double x = player.prevPosX;
+                                double y = player.prevPosY;
+                                double z = player.prevPosZ;
+                                if (-550 < x && x <-450 && 80 < y && y < 130 && -900 < z && z < -625) {
+                                    location = "Burning Desert";
                                 }
                             }
-                        } else if (strippedScoreboardLine.contains("\u0444")) {
-                            onRift = true;
-                            for (Location loopLocation : LocationUtils.getRiftLocations()) {
-                                if (strippedScoreboardLine.contains(loopLocation.getScoreboardName())) {
-                                    location = loopLocation;
-                                    foundLocation = true;
-                                    break;
-                                }
+
+                            foundLocation = true;
+                            continue;
+                        } else if (!foundPlot && map == Island.GARDEN /* && foundLocation*/) {
+                            if (strippedLine.contains("Plot -")) {
+                                plotName = strippedLine.substring(strippedLine.indexOf('-') + 2);
+                                foundPlot = true;
                             }
                         }
-                        if (foundLocation) continue;
                     }
 
                     // No need to try to find purse after line 8
                     if (!foundCoins && lineNumber < 9) {
-                        if (!onRift && (strippedScoreboardLine.startsWith("Piggy:") || strippedScoreboardLine.contains("Purse:"))) {
-                            String purseStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                        if (!onRift && (strippedLine.startsWith("Piggy:") || strippedLine.contains("Purse:"))) {
+                            String purseStr = strippedLine.substring(strippedLine.indexOf(' ') + 1);
                             try {
                                 purse = TextUtils.NUMBER_FORMAT.parse(purseStr).doubleValue();
                             } catch (ParseException ex) {
@@ -445,8 +430,8 @@ public class Utils {
                             }
                             foundCoins = true;
                             continue;
-                        } else if (onRift && strippedScoreboardLine.startsWith("Motes:")) {
-                            String motesStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                        } else if (onRift && strippedLine.startsWith("Motes:")) {
+                            String motesStr = strippedLine.substring(strippedLine.indexOf(' ') + 1);
                             try {
                                 motes = TextUtils.NUMBER_FORMAT.parse(motesStr).doubleValue();
                             } catch (ParseException ex) {
@@ -460,8 +445,8 @@ public class Utils {
 
                     // No need to try to find bits after line 9
                     if (!onRift && !foundBits && lineNumber < 10) {
-                        if (strippedScoreboardLine.startsWith("Bits:")) {
-                            String bitsStr = strippedScoreboardLine.substring(strippedScoreboardLine.indexOf(' ') + 1);
+                        if (strippedLine.startsWith("Bits:")) {
+                            String bitsStr = strippedLine.substring(strippedLine.indexOf(' ') + 1);
                             try {
                                 bits = TextUtils.NUMBER_FORMAT.parse(bitsStr).doubleValue();
                             } catch (ParseException ex) {
@@ -475,7 +460,7 @@ public class Utils {
 
                     // Tracker Mob Location line comes after coins always
                     if (!onRift && foundCoins && !foundTrackingAnimal) {
-                        if (strippedScoreboardLine.equals("Tracker Mob Location:")) {
+                        if (strippedLine.equals("Tracker Mob Location:")) {
                             isTrackingAnimal = true;
                             foundTrackingAnimal = true;
                             continue;
@@ -483,18 +468,18 @@ public class Utils {
                     }
 
                     // Lines after old switch-case
-                    if (strippedScoreboardLine.endsWith("Combat XP") || strippedScoreboardLine.endsWith("Kills")) {
-                        parseSlayerProgress(strippedScoreboardLine);
+                    if (strippedLine.endsWith("Combat XP") || strippedLine.endsWith("Kills")) {
+                        parseSlayerProgress(strippedLine);
                         continue;
                     }
 
-                    if (!onRift && !foundJerryWave && LocationUtils.isInWinterIsland(location)) {
-                        if (strippedScoreboardLine.startsWith("Wave")) {
+                    if (!onRift && !foundJerryWave && map == Island.JERRYS_WORKSHOP) {
+                        if (strippedLine.startsWith("Wave")) {
                             foundJerryWave = true;
 
                             int newJerryWave;
                             try {
-                                newJerryWave = Integer.parseInt(TextUtils.keepIntegerCharactersOnly(strippedScoreboardLine));
+                                newJerryWave = Integer.parseInt(TextUtils.keepIntegerCharactersOnly(strippedLine));
                             } catch (NumberFormatException ignored) {
                                 newJerryWave = 0;
                             }
@@ -506,7 +491,7 @@ public class Utils {
                         }
                     }
 
-                    if (!onRift && !foundInDungeon && strippedScoreboardLine.startsWith("Cleared: ")) {
+                    if (!onRift && !foundInDungeon && strippedLine.startsWith("Cleared: ")) {
                         foundInDungeon = true;
                         inDungeon = true;
 
@@ -519,7 +504,7 @@ public class Utils {
                     }
 
                     if (!foundSlayerQuest) {
-                        Matcher slayerMatcher = SLAYER_TYPE_REGEX.matcher(strippedScoreboardLine);
+                        Matcher slayerMatcher = SLAYER_TYPE_REGEX.matcher(strippedLine);
                         if (slayerMatcher.matches()) {
                             String type = slayerMatcher.group("type");
                             String levelRomanNumeral = slayerMatcher.group("level");
@@ -540,7 +525,7 @@ public class Utils {
                         }
                     }
 
-                    if (strippedScoreboardLine.equals("Slay the boss!")) {
+                    if (strippedLine.equals("Slay the boss!")) {
                         foundBossAlive = true;
                         slayerBossAlive = true;
                         continue;
@@ -548,14 +533,14 @@ public class Utils {
 
                     if (inDungeon) {
                         try {
-                            main.getDungeonManager().updateDungeonPlayer(scoreboardLine);
+                            main.getDungeonManager().updateDungeonPlayer(line);
                         } catch (NumberFormatException ex) {
-                            logger.error("Failed to update a dungeon player from the line " + scoreboardLine + ".", ex);
+                            logger.error("Failed to update a dungeon player from the line " + line + ".", ex);
                         }
                     }
 
                     // Check if the player is on the Hypixel Alpha Network
-                    if (lineNumber == ScoreboardManager.getNumberOfLines() - 1 && !foundAlphaIP && strippedScoreboardLine.contains("alpha.hypixel.net")) {
+                    if (lineNumber == ScoreboardManager.getNumberOfLines() - 1 && !foundAlphaIP && strippedLine.contains("alpha.hypixel.net")) {
                         foundAlphaIP = true;
                         alpha = true;
                         profileName = "Alpha";
@@ -567,7 +552,11 @@ public class Utils {
                 isTrackingAnimal = false;
             }
             if (!foundLocation) {
-                location = Location.UNKNOWN;
+                location = "Unknown";
+                dungeonFloor = "";
+            }
+            if (!foundPlot) {
+                plotName = "";
             }
             if (!foundJerryWave) {
                 jerryWave = -1;

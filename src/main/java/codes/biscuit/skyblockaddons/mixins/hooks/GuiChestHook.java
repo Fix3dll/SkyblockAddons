@@ -1,10 +1,10 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
-import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
@@ -136,7 +136,7 @@ public class GuiChestHook {
 
         // Essences from TabListParser#parseSections
         if (main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER) && inventoryType == InventoryType.SALVAGING
-                && main.getUtils().getLocation().equals(Location.DUNGEON_HUB)) {
+                && main.getUtils().getMap() == Island.DUNGEON_HUB) {
             int ySize = 222 - 108 + 6 * 18;
             float x = guiLeft - 117 - 5;
             float y = guiTop + ySize / 2F - 72 / 2F;

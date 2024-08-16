@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.features.tablist;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Location;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkillType;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
@@ -221,14 +221,14 @@ public class TabListParser {
                 }
 
                 if (parsedRainTime == null && main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER)
-                        && main.getUtils().getLocation() == Location.BIRCH_PARK
+                        && main.getUtils().getLocation().equals("Birch Park")
                         && (m = RAIN_TIME_PATTERN.matcher(stripped)).matches()) {
                     parsedRainTime = m.group("time");
                 }
 
                 if (!foundSkillSection && !foundSkill && main.getConfigValues().isDisabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
                     // The Catacombs still have old tab list instead of new Widgets
-                    if (main.getUtils().getLocation() == Location.THE_CATACOMBS
+                    if (main.getUtils().getMap() == Island.DUNGEON
                             && (m = OLD_SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
                         SkillType skillType = SkillType.getFromString(m.group("skill"));
                         int level = Integer.parseInt(m.group("level"));

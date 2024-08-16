@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.utils.LocationUtils;
+import codes.biscuit.skyblockaddons.core.Island;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -29,7 +29,7 @@ public class EndstoneProtectorManager {
     private static long lastWaveStart = -1;
 
     public static void checkGolemStatus() {
-        if (mc.theWorld != null && LocationUtils.isInTheEnd(main.getUtils().getLocation()) &&
+        if (mc.theWorld != null && main.getUtils().getMap() == Island.THE_END &&
                 main.getConfigValues().isEnabled(Feature.ENDSTONE_PROTECTOR_DISPLAY)) {
             World world = mc.theWorld;
 

@@ -47,7 +47,7 @@
   },
   "mining_2": {
     "map": "Deep Caverns",
-    "zones": {
+    "zones": [
       "Deep Caverns",
       "Gunpowder Mines",
       "Lapis Quarry",
@@ -55,7 +55,7 @@
       "Slimehill",
       "Diamond Reserve",
       "Obsidian Sanctuary"
-    }
+    ]
   },
   "mining_3": {
     "map": "Dwarven Mines",
@@ -290,5 +290,8 @@
   },
   "mineshaft": {
     "map": "Glacite Mineshafts"
+  },
+  "dark_auction": {
+    "map": "Dark Auction"
   }
 }
