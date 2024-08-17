@@ -23,7 +23,7 @@ public enum Island {
     GARDEN("Garden", "garden"),
     THE_RIFT("The Rift", "rift"),
     KUUDRA("Kuudra", "kuudra"),
-    MINESHAFT("Glacite Mineshaft", "mineshaft"),
+    MINESHAFT("Mineshaft", "mineshaft"),
     DARK_AUCTION("Dark Auction", "dark_auction"),
     UNKNOWN("null","null")
     ;
