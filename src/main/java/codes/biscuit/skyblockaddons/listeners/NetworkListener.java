@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.listeners;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.events.PacketEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
@@ -16,8 +17,10 @@ import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.buffer.Unpooled;
+import net.hypixel.data.type.GameType;
 import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.packet.HypixelPacket;
+import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import net.minecraft.client.Minecraft;
@@ -58,7 +61,7 @@ public class NetworkListener {
     public void onSkyblockJoined(SkyblockJoinedEvent event) {
         logger.info("Detected joining skyblock!");
         main.getUtils().setOnSkyblock(true);
-        if (main.getConfigValues().isEnabled(Feature.DISCORD_RPC)) {
+        if (Feature.DISCORD_RPC.isEnabled()) {
             main.getDiscordRPCManager().start();
         }
         updateHealth = main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
@@ -137,25 +140,23 @@ public class NetworkListener {
             S3FPacketCustomPayload payload = (S3FPacketCustomPayload) packet;
             String identifier = payload.getChannelName();
 
-            if (!HypixelModAPI.getInstance().getRegistry().isRegistered(identifier)) {
-                return;
+            if (HypixelModAPI.getInstance().getRegistry().isRegistered(identifier)) {
+                PacketBuffer buffer = payload.getBufferData();
+                buffer.retain();
+                Minecraft.getMinecraft().addScheduledTask(() -> {
+                    try {
+                        HypixelModAPI.getInstance().handle(identifier, new PacketSerializer(buffer));
+                    } catch (Exception ex) {
+                        logger.warn("Failed to handle ModAPI packet {}", identifier, ex);
+                    } finally {
+                        buffer.release();
+                    }
+                });
             }
-
-            PacketBuffer buffer = payload.getBufferData();
-            buffer.retain();
-            Minecraft.getMinecraft().addScheduledTask(() -> {
-                try {
-                    HypixelModAPI.getInstance().handle(identifier, new PacketSerializer(buffer));
-                } catch (Exception ex) {
-                    logger.warn("Failed to handle ModAPI packet {}", identifier, ex);
-                } finally {
-                    buffer.release();
-                }
-            });
         }
     }
 
-    public static boolean sendModAPIPacket(HypixelPacket packet) {
+    public static boolean sendHypixelPacket(HypixelPacket packet) {
         if (netHandler == null) {
             return false;
         }
@@ -172,4 +173,30 @@ public class NetworkListener {
         netHandler.addToSendQueue(new C17PacketCustomPayload(packet.getIdentifier(), buf));
         return true;
     }
+
+    public static void setupModAPI() {
+        HypixelModAPI modApi = HypixelModAPI.getInstance();
+        modApi.setPacketSender(NetworkListener::sendHypixelPacket);
+        modApi.createHandler(ClientboundLocationPacket.class, packet -> {
+            SkyblockAddons main = SkyblockAddons.getInstance();
+//            main.getUtils().sendMessage(packet.toString());
+            main.getUtils().setServerID(packet.getServerName());
+            String mode = packet.getMode().orElse("null");
+            main.getUtils().setMap(Island.getByMode(mode));
+            main.getUtils().setMode(mode);
+            if (packet.getServerType().orElse(null) == GameType.SKYBLOCK) {
+                if (Feature.DISCORD_RPC.isEnabled() && !main.getDiscordRPCManager().isActive()) {
+                    main.getDiscordRPCManager().start();
+                }
+            } else {
+                if (main.getUtils().isOnSkyblock()) {
+                    MinecraftForge.EVENT_BUS.post(new SkyblockLeftEvent());
+                }
+            }
+        }).onError(reason -> {
+            SkyblockAddons.getInstance().getUtils().sendMessage("Failed to send ModAPI packet: " + reason);
+        });
+        modApi.subscribeToEventPacket(ClientboundLocationPacket.class);
+    }
+
 }

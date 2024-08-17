@@ -1,13 +1,11 @@
 package codes.biscuit.skyblockaddons;
 
 import codes.biscuit.skyblockaddons.config.PetCacheManager;
-import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Rarity;
 import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
 import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
@@ -37,10 +35,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 import lombok.Getter;
 import lombok.Setter;
-import net.hypixel.data.type.GameType;
-import net.hypixel.data.type.ServerType;
-import net.hypixel.modapi.HypixelModAPI;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -62,8 +56,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
 
 @Getter
 @Mod(modid = "sbaunofficial",
@@ -88,8 +80,6 @@ public class SkyblockAddons {
 
     @Getter private static SkyblockAddons instance;
     @Getter private boolean fullyInitialized = false;
-
-    private static final HypixelModAPI modApi = HypixelModAPI.getInstance();
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static final Gson GSON = new GsonBuilder()
@@ -217,18 +207,7 @@ public class SkyblockAddons {
             TextUtils.NUMBER_FORMAT.setGroupingUsed(false);
         }
 
-        modApi.setPacketSender(NetworkListener::sendModAPIPacket);
-        modApi.createHandler(ClientboundLocationPacket.class, packet -> {
-//            this.getUtils().sendMessage(packet.toString());
-            this.getUtils().setServerID(packet.getServerName());
-            String mode = packet.getMode().orElse("null");
-            this.getUtils().setMap(Island.getByMode(mode));
-            this.getUtils().setMode(mode);
-            if (packet.getServerType().orElse(null) != GameType.SKYBLOCK && this.getUtils().isOnSkyblock()) {
-                MinecraftForge.EVENT_BUS.post(new SkyblockLeftEvent());
-            }
-        });
-        modApi.subscribeToEventPacket(ClientboundLocationPacket.class);
+        NetworkListener.setupModAPI();
     }
 
     @Mod.EventHandler
