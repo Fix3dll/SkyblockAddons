@@ -13,6 +13,7 @@ import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -180,10 +181,10 @@ public class NetworkListener {
         modApi.createHandler(ClientboundLocationPacket.class, packet -> {
             SkyblockAddons main = SkyblockAddons.getInstance();
 //            main.getUtils().sendMessage(packet.toString());
-            main.getUtils().setServerID(packet.getServerName());
             String mode = packet.getMode().orElse("null");
-            main.getUtils().setMap(Island.getByMode(mode));
             main.getUtils().setMode(mode);
+            main.getUtils().setMap(Island.getByMode(mode));
+            main.getUtils().setServerID(packet.getServerName());
             if (packet.getServerType().orElse(null) == GameType.SKYBLOCK) {
                 if (Feature.DISCORD_RPC.isEnabled() && !main.getDiscordRPCManager().isActive()) {
                     main.getDiscordRPCManager().start();
@@ -194,7 +195,10 @@ public class NetworkListener {
                 }
             }
         }).onError(reason -> {
-            SkyblockAddons.getInstance().getUtils().sendMessage("Failed to send ModAPI packet: " + reason);
+            Utils utils = SkyblockAddons.getInstance().getUtils();
+            utils.sendMessage("ModAPI packet failed: " + reason);
+            utils.setMap(Island.UNKNOWN);
+            utils.setMode("null");
         });
         modApi.subscribeToEventPacket(ClientboundLocationPacket.class);
     }
