@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.config;
 
-import codes.biscuit.hypixellocalizationlib.HypixelLanguage;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.features.FetchurManager;
@@ -48,7 +47,7 @@ public class PersistentValuesManager {
 
         private long lastTimeFetchur = 0L; // Last time the player gave Fetchur the correct item in ms from epoch
 
-        private HypixelLanguage hypixelLanguage = HypixelLanguage.ENGLISH;
+//        private HypixelLanguage hypixelLanguage = HypixelLanguage.ENGLISH;
     }
 
     public PersistentValuesManager(File configDir) {

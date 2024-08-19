@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerBoss;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
-import codes.biscuit.skyblockaddons.utils.pojo.PlayerData;
 import codes.biscuit.skyblockaddons.utils.pojo.Profile;
 import codes.biscuit.skyblockaddons.utils.pojo.ProfileMembers;
 import com.google.gson.reflect.TypeToken;
@@ -54,13 +53,14 @@ public class APIManager {
             connection.setRequestProperty("User-Agent", Utils.USER_AGENT);
 
             logger.info("Got response code {}", connection.getResponseCode());
-
+/*
             PlayerData playerData = SkyblockAddons.getGson().fromJson(new InputStreamReader(connection.getInputStream()), PlayerData.class);
             connection.disconnect();
 
             if (playerData != null && playerData.getLanguage() != null) {
                 main.getPersistentValuesManager().getPersistentValues().setHypixelLanguage(playerData.getLanguage());
             }
+*/
 
         } catch (Exception ex) {
             logger.warn("Failed to grab player's profiles API data!");

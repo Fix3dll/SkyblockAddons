@@ -120,10 +120,6 @@ dependencies {
         exclude(module = "gson")
         because("Different version conflicts with Minecraft's GSON")
     }
-    bundle("com.github.BiscuitDevelopment:HypixelLocalizationLib:7122472085") {
-        exclude(module = "gson")
-        because("Different version conflicts with Minecraft's GSON")
-    }
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
 }
 
