@@ -93,8 +93,8 @@ public class DataUtils {
 
     @Getter
     private static final HashMap<RemoteFileRequest<?>, Throwable> failedRequests = new HashMap<>();
-    
-    /** 
+
+    /**
      * Main CDN doesn't work for some users.
      * Use fallback CDN if a request fails twice or user is in China or Hong Kong.
      */
@@ -136,6 +136,7 @@ public class DataUtils {
      */
     public static void readLocalAndFetchOnline() {
         readLocalFileData();
+        DataUtils.loadOnlineData(new MayorRequest()); // API data
 
         if (USE_ONLINE_DATA) {
             fetchFromOnline();
@@ -167,7 +168,7 @@ public class DataUtils {
                         StandardCharsets.UTF_8)){
             Translations.setDefaultLangJson(gson.fromJson(inputStreamReader, JsonObject.class));
         } catch (Exception ex) {
-           handleLocalFileReadException(path,ex);
+            handleLocalFileReadException(path,ex);
         }
 
         // Containers
@@ -278,7 +279,7 @@ public class DataUtils {
         for (RemoteFileRequest<?> request : remoteRequests) {
             request.execute(futureRequestExecutionService);
         }
-        
+
         if (useFallbackCDN) {
             logger.warn("Could not reach main CDN. Some resources were fetched from fallback CDN.");
         }
@@ -312,6 +313,18 @@ public class DataUtils {
 
     public static void loadOnlineData(RemoteFileRequest<?> request) {
         request.execute(futureRequestExecutionService);
+
+        if (!request.isDone()) {
+            handleOnlineFileLoadException(
+                    request,
+                    new RuntimeException(
+                            String.format(
+                                    "Request for \"%s\" didn't finish in time for mod init.",
+                                    getFileNameFromUrlString(request.getURL())
+                            )
+                    )
+            );
+        }
 
         try {
             loadOnlineFile(request);
@@ -426,17 +439,18 @@ public class DataUtils {
             ChatComponentText failureMessageComponent = new ChatComponentText(
                     Translations.getMessage(
                             "messages.fileFetchFailed",
-                            EnumChatFormatting.AQUA + SkyblockAddons.MOD_NAME + EnumChatFormatting.RED, failedRequests.size()
+                            EnumChatFormatting.AQUA + SkyblockAddons.MOD_NAME + EnumChatFormatting.RED,
+                            failedRequests.size()
                     )
             );
             IChatComponent buttonRowComponent = new ChatComponentText("[" + Translations.getMessage("messages.copy") + "]")
                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE).setChatClickEvent(
-                            new ClickEvent(
-                                    ClickEvent.Action.RUN_COMMAND,
-                                    String.format("/sba internal copy %s", errorMessageBuilder)
+                                    new ClickEvent(
+                                            ClickEvent.Action.RUN_COMMAND,
+                                            String.format("/sba internal copy %s", errorMessageBuilder)
+                                    )
                             )
-                    )
-            );
+                    );
             failureMessageComponent.appendText("\n").appendSibling(buttonRowComponent);
 
             main.getUtils().sendMessage(failureMessageComponent, false);
@@ -468,7 +482,6 @@ public class DataUtils {
         remoteRequests.add(new EnchantmentsRequest());
         remoteRequests.add(new CooldownsRequest());
         remoteRequests.add(new SkillXpRequest());
-        remoteRequests.add(new MayorRequest());
         remoteRequests.add(new PetItemsRequest());
         remoteRequests.add(new LocationsRequest());
         remoteRequests.add(new SlayerLocationsRequest());
@@ -488,8 +501,10 @@ public class DataUtils {
         if (FMLClientHandler.instance().isLoading()) {
             throw new DataLoadingException(filePath, exception);
         } else {
-            CrashReport crashReport = CrashReport.makeCrashReport(exception, String.format("Loading data file at %s",
-                    filePath));
+            CrashReport crashReport = CrashReport.makeCrashReport(
+                    exception,
+                    String.format("Loading data file at %s", filePath)
+            );
             throw new ReportedException(crashReport);
         }
     }
@@ -520,9 +535,10 @@ public class DataUtils {
                 throw new DataLoadingException(url, exception);
             } else {
                 // Don't include URL because Fire strips URLs.
-                CrashReport crashReport = CrashReport.makeCrashReport(exception, String.format("Loading online data file" +
-                                " at %s",
-                        fileName));
+                CrashReport crashReport = CrashReport.makeCrashReport(
+                        exception,
+                        String.format("Loading online data file at %s", fileName)
+                );
                 throw new ReportedException(crashReport);
             }
         } else {
