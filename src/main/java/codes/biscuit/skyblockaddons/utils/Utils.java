@@ -9,6 +9,7 @@ import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
 import codes.biscuit.skyblockaddons.features.itemdrops.ItemDropChecker;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
@@ -177,6 +178,13 @@ public class Utils {
      * <i>We don't leave it blank in case the Mayor is not found</i>
      */
     private String mayor = "Fix3dll";
+
+    /**
+     * The current minister name
+     * <br>
+     * <i>We don't leave it blank in case the Minister is not found</i>
+     */
+    private Pair<String, String> ministerAndPerk = new Pair<>("Fix3dll", "Spaghetti code");
 
     /**
      * The current Jerry's Perkpocalypse mayor
