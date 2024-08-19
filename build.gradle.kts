@@ -109,7 +109,7 @@ dependencies {
     bundle("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false
     }
-    annotationProcessor("com.github.SpongePowered:Mixin:a60200d:processor")
+    annotationProcessor("org.spongepowered:mixin:0.8.7-SNAPSHOT:processor")
 
     bundle("net.hypixel:mod-api:1.0.1")
 
