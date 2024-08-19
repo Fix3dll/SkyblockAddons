@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.Translations;
 import lombok.Getter;
 import net.minecraft.block.Block;
@@ -19,7 +18,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -27,16 +25,6 @@ import java.util.Set;
 public class MinecraftHook {
 
     @Getter private static long lastLockedSlotItemChange = -1;
-
-    private static final Set<Location> DEEP_CAVERNS_LOCATIONS = EnumSet.of(Location.DEEP_CAVERNS, Location.GUNPOWDER_MINES,
-            Location.LAPIS_QUARRY, Location.PIGMAN_DEN, Location.SLIMEHILL, Location.DIAMOND_RESERVE, Location.OBSIDIAN_SANCTUARY);
-
-    private static final Set<Location> DWARVEN_MINES_LOCATIONS = EnumSet.of(Location.DWARVEN_MINES, Location.THE_LIFT, Location.DWARVEN_VILLAGE,
-            Location.GATES_TO_THE_MINES, Location.THE_FORGE, Location.FORGE_BASIN, Location.LAVA_SPRINGS, Location.PALACE_BRIDGE,
-            Location.ROYAL_PALACE, Location.ARISTOCRAT_PASSAGE, Location.HANGING_TERRACE, Location.CLIFFSIDE_VEINS,
-            Location.RAMPARTS_QUARRY, Location.DIVANS_GATEWAY, Location.FAR_RESERVE, Location.GOBLIN_BURROWS, Location.UPPER_MINES,
-            Location.MINERS_GUILD, Location.GREAT_ICE_WALL, Location.THE_MIST, Location.CC_MINECARTS_CO, Location.GRAND_LIBRARY,
-            Location.HANGING_COURT, Location.ROYAL_MINES);
 
     // The room with the puzzle is made of wood that you have to mine
     private static final AxisAlignedBB DWARVEN_PUZZLE_ROOM = new AxisAlignedBB(171, 195, 125, 192, 196, 146);
@@ -51,9 +39,6 @@ public class MinecraftHook {
     private static final Set<String> DWARVEN_MINEABLE_BLOCKS = new HashSet<>(Arrays.asList("minecraft:prismarine0",
             "minecraft:prismarine1", "minecraft:prismarine2", "minecraft:stone4", "minecraft:wool3", "minecraft:wool7",
             "minecraft:stained_hardened_clay9"));
-
-    private static final Set<Location> PARK_LOCATIONS = EnumSet.of(Location.BIRCH_PARK, Location.SPRUCE_WOODS, Location.SAVANNA_WOODLAND, Location.DARK_THICKET,
-            Location.JUNGLE_ISLAND, Location.MELODYS_PLATEAU);
 
     private static final Set<Block> LOGS = new HashSet<>(Arrays.asList(Blocks.log, Blocks.log2));
 

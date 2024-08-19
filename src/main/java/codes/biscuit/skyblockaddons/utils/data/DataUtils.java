@@ -2,8 +2,11 @@ package codes.biscuit.skyblockaddons.utils.data;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.features.PetManager;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
+import codes.biscuit.skyblockaddons.utils.pojo.LocationData;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.seacreatures.SeaCreature;
@@ -236,6 +239,35 @@ public class DataUtils {
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
+
+        // Locations Data
+        path = "/locations.json";
+        try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
+             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
+            HashMap<String, LocationData> result = gson.fromJson(
+                    inputStreamReader, new TypeToken<HashMap<String, LocationData>>() {}.getType()
+            );
+            for (Map.Entry<String, LocationData> entry : result.entrySet()) {
+                for (Island island : Island.values()) {
+                    if (island.getMode().equalsIgnoreCase(entry.getKey())) {
+                        island.setLocationData(entry.getValue());
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            handleLocalFileReadException(path,ex);
+        }
+
+        // Slayer Locations Data
+        path = "/slayerLocations.json";
+        try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
+             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
+            LocationUtils.setSlayerLocations(
+                    gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, List<String>>>() {}.getType())
+            );
+        } catch (Exception ex) {
+            handleLocalFileReadException(path,ex);
+        }
     }
 
     /*
@@ -438,6 +470,8 @@ public class DataUtils {
         remoteRequests.add(new SkillXpRequest());
         remoteRequests.add(new MayorRequest());
         remoteRequests.add(new PetItemsRequest());
+        remoteRequests.add(new LocationsRequest());
+        remoteRequests.add(new SlayerLocationsRequest());
     }
 
     /**

@@ -722,7 +722,7 @@ public class PlayerListener {
         Entity entity = e.entity;
 
         // Detect Brood Mother spawn
-        if (main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && LocationUtils.isInSpidersDen(main.getUtils().getLocation())) {
+        if (main.getConfigValues().isEnabled(Feature.BROOD_MOTHER_ALERT) && main.getUtils().getMap() == Island.SPIDERS_DEN) {
             if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Broodmother")) {
                 if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
                     lastBroodmother = System.currentTimeMillis();
@@ -745,9 +745,8 @@ public class PlayerListener {
                 }
             }
 
-            if (entity instanceof EntityOtherPlayerMP && main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_NEAR_NPCS) &&
-                    main.getUtils().getLocation() != Location.GUEST_ISLAND &&
-                    main.getUtils().getLocation() != Location.THE_CATACOMBS) {
+            if (entity instanceof EntityOtherPlayerMP && main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_NEAR_NPCS)
+                    && main.getUtils().isGuest() && main.getUtils().getMap() != Island.DUNGEON) {
                 float health = ((EntityOtherPlayerMP) entity).getHealth();
 
                 if (NPCUtils.getNpcLocations().containsKey(entity.getUniqueID())) {
@@ -765,8 +764,8 @@ public class PlayerListener {
         if (entity instanceof EntityArmorStand) {
             DeployableManager.getInstance().detectDeployables((EntityArmorStand) entity);
 
-            if (entity.hasCustomName()){
-                if (main.getUtils().getLocation() == Location.ISLAND) {
+            if (entity.hasCustomName()) {
+                if (main.getUtils().getMap() == Island.PRIVATE_ISLAND && !main.getUtils().isGuest()) {
                     int cooldown = main.getConfigValues().getWarningSeconds() * 1000 + 5000;
                     if (main.getConfigValues().isEnabled(Feature.MINION_FULL_WARNING) &&
                             entity.getCustomNameTag().equals("§cMy storage is full! :(")) {
@@ -872,7 +871,7 @@ public class PlayerListener {
         Minecraft mc = Minecraft.getMinecraft();
 
         for (Entity cubes : mc.theWorld.loadedEntityList) {
-            if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && LocationUtils.isInCrystalHollows(main.getUtils().getLocation())) {
+            if (main.getConfigValues().isEnabled(Feature.BAL_BOSS_ALERT) && main.getUtils().getMap() == Island.CRYSTAL_HOLLOWS) {
                 if (cubes instanceof EntityMagmaCube) {
                     EntitySlime magma = (EntitySlime) cubes;
                     if (magma.getSlimeSize() > 10) { // Find a big bal boss
@@ -1207,7 +1206,7 @@ public class PlayerListener {
         IBlockState blockState = mc.theWorld.getBlockState(e.blockPos);
         if (ORES.contains(Block.getStateId(blockState))) {
             boolean shouldIncrement = true;
-            if (main.getUtils().getLocation() == Location.ISLAND) {
+            if (main.getUtils().getMap() == Island.PRIVATE_ISLAND) {
                 if (blockState.getBlock() == Blocks.diamond_block) {
                     shouldIncrement = false;
                 }

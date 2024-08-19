@@ -206,6 +206,8 @@ public class SkyblockAddons {
         if (!this.configValues.isEnabled(Feature.NUMBER_SEPARATORS)) {
             TextUtils.NUMBER_FORMAT.setGroupingUsed(false);
         }
+
+        NetworkListener.setupModAPI();
     }
 
     @Mod.EventHandler

@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.features.discordrpc;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Location;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import com.google.gson.JsonObject;
@@ -12,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -73,18 +73,18 @@ public class DiscordRPCManager implements IPCListener {
     }
 
     public void updatePresence() {
-        Location location = SkyblockAddons.getInstance().getUtils().getLocation();
+        String location = SkyblockAddons.getInstance().getUtils().getLocation();
         SkyblockDate skyblockDate = SkyblockAddons.getInstance().getUtils().getCurrentDate();
         String skyblockDateString = skyblockDate != null ? skyblockDate.toString() : "";
 
         // Early Winter 10th, 12:10am - Village
-        String largeImageDescription = String.format("%s - %s", skyblockDateString, location.getScoreboardName());
-        String smallImageDescription = String.format("Using SkyblockAddons v%s", SkyblockAddons.VERSION+" | Icons by Hypixel Packs HQ");
+        String largeImageDescription = String.format("%s - %s", skyblockDateString, location);
+        String smallImageDescription = String.format("Using SkyblockAddons v%s", SkyblockAddons.VERSION);
         RichPresence presence = new RichPresence.Builder()
                 .setState(stateLine.getDisplayString(EnumUtils.DiscordStatusEntry.STATE))
                 .setDetails(detailsLine.getDisplayString(EnumUtils.DiscordStatusEntry.DETAILS))
                 .setStartTimestamp(startTimestamp)
-                .setLargeImage(location.getDiscordIconKey(), largeImageDescription)
+                .setLargeImage(location.toLowerCase(Locale.ENGLISH).replaceAll(" ", "-"), largeImageDescription)
                 .setSmallImage("skyblockicon", smallImageDescription)
                 .build();
         client.sendRichPresence(presence);
