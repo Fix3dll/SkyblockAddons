@@ -314,18 +314,6 @@ public class DataUtils {
     public static void loadOnlineData(RemoteFileRequest<?> request) {
         request.execute(futureRequestExecutionService);
 
-        if (!request.isDone()) {
-            handleOnlineFileLoadException(
-                    request,
-                    new RuntimeException(
-                            String.format(
-                                    "Request for \"%s\" didn't finish in time for mod init.",
-                                    getFileNameFromUrlString(request.getURL())
-                            )
-                    )
-            );
-        }
-
         try {
             loadOnlineFile(request);
         } catch (InterruptedException | ExecutionException | NullPointerException | IllegalArgumentException e) {
