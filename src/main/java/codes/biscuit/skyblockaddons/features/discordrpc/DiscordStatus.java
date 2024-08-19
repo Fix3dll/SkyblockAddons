@@ -26,12 +26,16 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
 
                 String location = main.getUtils().getLocation();
                 Island map = main.getUtils().getMap();
-                String prefix = main.getUtils().isOnRift() ? "\u0444 " : "\u23E3 ";
+                String prefix = main.getUtils().isOnRift() ? "ф " : "⏣ ";
 
                 switch (map) {
-                    // Don't display "Your Island."
+                    // Don't display "Your Island"
                     case PRIVATE_ISLAND:
-                        return "\u23E3 Private Island";
+                        if (main.getUtils().isGuest()) {
+                            return "Visiting " + location.trim();
+                        } else {
+                            return "⏣ Private Island";
+                        }
                     case GARDEN:
                         // If the title line ends with "GUEST", then the player is visiting someone else's island.
                         if (main.getUtils().isGuest()) {

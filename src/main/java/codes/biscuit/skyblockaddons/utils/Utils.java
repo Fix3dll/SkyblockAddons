@@ -92,6 +92,10 @@ public class Utils {
      * Matches the time line on the Skyblock scoreboard
      */
     private static final Pattern TIME_PATTERN = Pattern.compile("(?<hour>\\d{1,2}):(?<minute>\\d{2})(?<period>am|pm)");
+    /**
+     * Matches the pests on the Skyblock scoreboard
+     */
+    private static final Pattern PEST_PATTERN = Pattern.compile(" ൠ x\\d");
 
     /**
      * A dummy world object used for spawning fake entities for GUI features without affecting the actual world
@@ -412,7 +416,8 @@ public class Utils {
                             continue;
                         } else if (!foundPlot && map == Island.GARDEN /* && foundLocation*/) {
                             if (strippedLine.contains("Plot -")) {
-                                plotName = strippedLine.substring(strippedLine.indexOf('-') + 2);
+                                String rawPlotName = strippedLine.substring(strippedLine.indexOf('-') + 2);
+                                plotName = PEST_PATTERN.matcher(rawPlotName).replaceAll("");
                                 foundPlot = true;
                             }
                         }
