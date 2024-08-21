@@ -37,7 +37,7 @@ public class LocationUtils {
      * List of locations that counts in Glacite Tunnels
      */
     private static final Set<String> glaciteTunnelsLocations = Collections.unmodifiableSet(
-            Sets.newHashSet("Dwarven Base Camp", "Glacite Tunnels", "Glacite Lake")
+            Sets.newHashSet("Dwarven Base Camp", "Fossil Research Center", "Glacite Tunnels", "Glacite Lake")
     );
 
     /**
