@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
@@ -28,7 +29,6 @@ public class RenderManagerHook {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
         if (main.getUtils().isOnSkyblock()) {
-            String currentLocation = main.getUtils().getLocation();
             Island currentMap = main.getUtils().getMap();
 
             if (main.getConfigValues().isEnabled(Feature.HIDE_BONES) && main.getInventoryUtils().isWearingSkeletonHelmet()) {
@@ -56,16 +56,15 @@ public class RenderManagerHook {
             }
             if (main.getConfigValues().isEnabled(Feature.HIDE_SPAWN_POINT_PLAYERS)) {
                 BlockPos entityPosition = entityIn.getPosition();
-                if (entityIn instanceof EntityPlayer
+                if (entityIn instanceof EntityPlayer && LocationUtils.isOn("Village")
                         && entityPosition.getX() == -2
                         && entityPosition.getY() == 70
-                        && entityPosition.getZ() == -69
-                        && currentLocation.equals("Village")) {
+                        && entityPosition.getZ() == -69) {
                     returnValue.cancel();
                 }
             }
             if (main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_IN_LOBBY)) {
-                if (currentLocation.equals("Village") || currentLocation.equals("Auction House") || currentLocation.equals("Bank")) {
+                if (LocationUtils.isOn("Village", "Auction House", "Bank")) {
                     if ((entityIn instanceof EntityOtherPlayerMP || entityIn instanceof EntityFX || entityIn instanceof EntityItemFrame) &&
                             !NPCUtils.isNPC(entityIn) && entityIn.getDistanceSqToEntity(mc.thePlayer) > HIDE_RADIUS_SQUARED) {
                         returnValue.cancel();

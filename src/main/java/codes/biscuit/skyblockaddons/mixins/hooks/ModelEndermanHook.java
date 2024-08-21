@@ -9,7 +9,7 @@ public class ModelEndermanHook {
 
     public static void setEndermanColor() {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getUtils().isOnSkyblock() && LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation())
+        if (main.getUtils().isOnSkyblock() && LocationUtils.isOnZealotSpawnLocation()
                 && main.getConfigValues().isEnabled(Feature.CHANGE_ZEALOT_COLOR)) {
             int color = main.getConfigValues().getColor(Feature.CHANGE_ZEALOT_COLOR);
             ColorUtils.bindColor(color);

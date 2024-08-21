@@ -131,16 +131,15 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
 
     AUTO_STATUS("discordStatus.titleAuto", "discordStatus.descriptionAuto", () -> {
                 SkyblockAddons main = SkyblockAddons.getInstance();
-                String location = main.getUtils().getLocation();
-
-                if (location.equals("The End") || location.equals("Dragon's Nest")) {
-                    return DiscordStatus.ZEALOTS.displayMessageSupplier.get();
-                }
 
                 EnumUtils.SlayerQuest slayerQuest = main.getUtils().getSlayerQuest();
-                if (slayerQuest != null && LocationUtils.isSlayerLocation(slayerQuest, location)) {
+                if (slayerQuest != null && LocationUtils.isOnSlayerLocation(slayerQuest)) {
                     return (main.getUtils().isSlayerBossAlive() ? "Slaying a " : "Doing a ")
                             + slayerQuest.getScoreboardName() + " " + main.getUtils().getSlayerQuestLevel() + " boss.";
+                }
+
+                if (LocationUtils.isOnZealotSpawnLocation()) {
+                    return DiscordStatus.ZEALOTS.displayMessageSupplier.get();
                 }
 
                 if (main.getUtils().isOnRift()) {

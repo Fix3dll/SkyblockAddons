@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkillType;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -221,7 +222,7 @@ public class TabListParser {
                 }
 
                 if (parsedRainTime == null && main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER)
-                        && main.getUtils().getLocation().equals("Birch Park")
+                        && LocationUtils.isOn("Birch Park")
                         && (m = RAIN_TIME_PATTERN.matcher(stripped)).matches()) {
                     parsedRainTime = m.group("time");
                 }

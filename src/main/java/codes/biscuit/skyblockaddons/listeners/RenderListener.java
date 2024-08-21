@@ -980,7 +980,7 @@ public class RenderListener {
 
             case ZEALOT_COUNTER:
                 if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_ZEALOT_SPAWN_AREAS_ONLY) &&
-                        !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
+                        !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
                 text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getKills());
@@ -988,7 +988,7 @@ public class RenderListener {
 
             case SHOW_TOTAL_ZEALOT_COUNT:
                 if (main.getConfigValues().isEnabled(Feature.SHOW_TOTAL_ZEALOT_COUNT_ZEALOT_SPAWN_AREAS_ONLY) &&
-                        !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
+                        !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
                 if (main.getPersistentValuesManager().getPersistentValues().getTotalKills() <= 0) {
@@ -1001,7 +1001,7 @@ public class RenderListener {
 
             case SHOW_SUMMONING_EYE_COUNT:
                 if (main.getConfigValues().isEnabled(Feature.SHOW_SUMMONING_EYE_COUNT_ZEALOT_SPAWN_AREAS_ONLY) &&
-                        !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
+                        !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
                 text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount());
@@ -1009,7 +1009,7 @@ public class RenderListener {
 
             case SHOW_AVERAGE_ZEALOTS_PER_EYE:
                 if (main.getConfigValues().isEnabled(Feature.SHOW_AVERAGE_ZEALOTS_PER_EYE_ZEALOT_SPAWN_AREAS_ONLY) &&
-                        !LocationUtils.isZealotSpawnLocation(main.getUtils().getLocation()) && buttonLocation == null) {
+                        !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
                 int summoningEyeCount = main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount();
@@ -1025,7 +1025,7 @@ public class RenderListener {
             case BIRCH_PARK_RAINMAKER_TIMER:
                 long rainmakerTime = main.getPlayerListener().getRainmakerTimeEnd();
 
-                if (!main.getUtils().getLocation().equals("Birch Park") && buttonLocation == null)
+                if (!LocationUtils.isOn("Birch Park") && buttonLocation == null)
                     return;
 
                 String parsedRainTime = TabListParser.getParsedRainTime();
@@ -1892,14 +1892,13 @@ public class RenderListener {
         boolean textMode;
         SlayerBoss slayerBoss;
         EnumUtils.SlayerQuest quest = main.getUtils().getSlayerQuest();
-        String location = main.getUtils().getLocation();
         ConfigValues config = main.getConfigValues();
 
         switch (feature) {
             case REVENANT_SLAYER_TRACKER:
                 if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_CRYPTS)
                         && (quest != EnumUtils.SlayerQuest.REVENANT_HORROR
-                        || !LocationUtils.isSlayerLocation(EnumUtils.SlayerQuest.REVENANT_HORROR, location))) {
+                        || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.REVENANT_HORROR))) {
                     return;
                 }
                 colorByRarity = config.isEnabled(Feature.REVENANT_COLOR_BY_RARITY);
@@ -1910,7 +1909,7 @@ public class RenderListener {
             case TARANTULA_SLAYER_TRACKER:
                 if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_SPIDERS_DEN)
                         && (quest != EnumUtils.SlayerQuest.TARANTULA_BROODFATHER
-                        || !LocationUtils.isSlayerLocation(EnumUtils.SlayerQuest.TARANTULA_BROODFATHER, location))) {
+                        || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.TARANTULA_BROODFATHER))) {
                     return;
                 }
                 colorByRarity = config.isEnabled(Feature.TARANTULA_COLOR_BY_RARITY);
@@ -1921,7 +1920,7 @@ public class RenderListener {
             case SVEN_SLAYER_TRACKER:
                 if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_CASTLE)
                         && (quest != EnumUtils.SlayerQuest.SVEN_PACKMASTER
-                        || !LocationUtils.isSlayerLocation(EnumUtils.SlayerQuest.SVEN_PACKMASTER, location))) {
+                        || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.SVEN_PACKMASTER))) {
                     return;
                 }
                 colorByRarity = config.isEnabled(Feature.SVEN_COLOR_BY_RARITY);
@@ -1932,7 +1931,7 @@ public class RenderListener {
             case VOIDGLOOM_SLAYER_TRACKER:
                 if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_END)
                         && (quest != EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH
-                        || !LocationUtils.isSlayerLocation(EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH, location))) {
+                        || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH))) {
                     return;
                 }
                 colorByRarity = config.isEnabled(Feature.ENDERMAN_COLOR_BY_RARITY);
@@ -1943,7 +1942,7 @@ public class RenderListener {
             case INFERNO_SLAYER_TRACKER:
                 if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_CRIMSON)
                         && (quest != EnumUtils.SlayerQuest.INFERNO_DEMONLORD
-                        || !LocationUtils.isSlayerLocation(EnumUtils.SlayerQuest.INFERNO_DEMONLORD, location))) {
+                        || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.INFERNO_DEMONLORD))) {
                     return;
                 }
                 colorByRarity = config.isEnabled(Feature.INFERNO_COLOR_BY_RARITY);
@@ -1954,7 +1953,7 @@ public class RenderListener {
             case RIFTSTALKER_SLAYER_TRACKER:
                 if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_RIFT)
                         && (quest != EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND
-                        || !LocationUtils.isSlayerLocation(EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND, location))) {
+                        || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND))) {
                     return;
                 }
                 colorByRarity = config.isEnabled(Feature.RIFTSTALKER_COLOR_BY_RARITY);
@@ -2258,7 +2257,7 @@ public class RenderListener {
 
     public void drawDragonTrackers(Minecraft mc, float scale, ButtonLocation buttonLocation) {
         if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER_NEST_ONLY)
-                && !main.getUtils().getLocation().equals("Dragon's Nest") && buttonLocation == null) {
+                && !LocationUtils.isOn("Dragon's Nest") && buttonLocation == null) {
             return;
         }
 

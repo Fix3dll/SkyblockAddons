@@ -119,7 +119,7 @@ public class NetworkListener {
             if (!SlayerTracker.getInstance().isTrackerEnabled()) return;
 
             EnumUtils.SlayerQuest activeQuest = main.getUtils().getSlayerQuest();
-            if (activeQuest == null || !LocationUtils.isSlayerLocation(activeQuest, main.getUtils().getLocation())) return;
+            if (activeQuest == null || !LocationUtils.isOnSlayerLocation(activeQuest)) return;
 
             int entityID = ((S0DPacketCollectItem) packet).getCollectedItemEntityID();
             Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
