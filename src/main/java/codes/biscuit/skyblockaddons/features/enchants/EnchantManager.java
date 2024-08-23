@@ -271,8 +271,8 @@ public class EnchantManager {
         }
         for (Enchant.Stacking enchant : enchants.STACKING.values()) {
             if (extraAttributes.hasKey(enchant.nbtNum, Constants.NBT.TAG_ANY_NUMERIC)) {
-                int stackedEnchantNum = extraAttributes.getInteger(enchant.nbtNum);
-                Integer nextLevel = enchant.stackLevel.higher(stackedEnchantNum);
+                long stackedEnchantNum = extraAttributes.getLong(enchant.nbtNum);
+                Long nextLevel = enchant.stackLevel.higher(stackedEnchantNum);
                 String statLabel = Translations.getMessage("enchants." + enchant.statLabel);
                 ColorCode colorCode = SkyblockAddons.getInstance().getConfigValues().getRestrictedColor(Feature.SHOW_STACKING_ENCHANT_PROGRESS);
                 StringBuilder b = new StringBuilder();
@@ -561,7 +561,7 @@ public class EnchantManager {
         static class Stacking extends Enchant {
             String nbtNum;
             String statLabel;
-            TreeSet<Integer> stackLevel;
+            TreeSet<Long> stackLevel;
 
             public String toString() {
                 return nbtNum + " " + stackLevel.toString() + " " + super.toString();
