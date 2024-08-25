@@ -63,6 +63,7 @@ public enum SkyBlockOre {
     GOLD_ORE(
             state -> state.getBlock() == Blocks.gold_ore,
             () -> LocationUtils.isOn(Island.GOLD_MINE, Island.DEEP_CAVERNS, Island.DWARVEN_MINES, Island.CRYSTAL_HOLLOWS)
+                    || LocationUtils.isOn("Savanna Woodland")
     ),
     LAPIS_ORE(
             state -> state.getBlock() == Blocks.lapis_ore,
