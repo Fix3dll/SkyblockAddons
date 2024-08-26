@@ -343,7 +343,7 @@ public class EnumUtils {
                 Feature.HIDE_TRUE_DEFENSE),
         JASON54("jason54jg", "github.com/jason54jg", Feature.INFERNO_SLAYER_TRACKER, Feature.INFERNO_COLOR_BY_RARITY,
                 Feature.INFERNO_TEXT_MODE),
-        SOULTWISTRUNE("soultwistrune", "github.com/soultwistrune", Feature.RIFTSTALKER_SLAYER_TRACKER,
+        GLACIALVITALITY("GlacialVitality", "github.com/glacialvitality", Feature.RIFTSTALKER_SLAYER_TRACKER,
                 Feature.RIFTSTALKER_COLOR_BY_RARITY, Feature.RIFTSTALKER_TEXT_MODE),
         FIX3DLL("Fix3dll", "github.com/Fix3dll", Feature.FIRE_FREEZE_TIMER, Feature.HIDE_HAUNTED_SKULLS,
                 Feature.THUNDER_BOTTLE_DISPLAY, Feature.PET_DISPLAY);
