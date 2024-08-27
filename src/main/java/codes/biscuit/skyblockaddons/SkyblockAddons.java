@@ -96,8 +96,14 @@ public class SkyblockAddons {
 
     private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(MOD_NAME));
 
-    private static final ThreadPoolExecutor THREAD_EXECUTOR = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.MOD_NAME + " - #%d").build());
+    private static final ThreadPoolExecutor THREAD_EXECUTOR = new ThreadPoolExecutor(
+            0,
+            1,
+            60L,
+            TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(),
+            new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.MOD_NAME + " - #%d").build()
+    );
 
     private ConfigValues configValues;
     private PersistentValuesManager persistentValuesManager;
@@ -231,6 +237,22 @@ public class SkyblockAddons {
         Minecraft.getMinecraft().getTextureManager().bindTexture(SkyblockAddonsGui.LOGO_GLOW);
         fullyInitialized = true;
         FontRendererHook.onModInitialized();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            configValues.saveConfig();
+            persistentValuesManager.saveValues();
+            petCacheManager.saveValues();
+
+            THREAD_EXECUTOR.shutdown();
+            try {
+                //noinspection ResultOfMethodCallIgnored
+                THREAD_EXECUTOR.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+                THREAD_EXECUTOR.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }));
     }
 
     @Mod.EventHandler
