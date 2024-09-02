@@ -111,7 +111,10 @@ dependencies {
     }
     annotationProcessor("org.spongepowered:mixin:0.8.7-SNAPSHOT:processor")
 
-    bundle("net.hypixel:mod-api:1.0.1")
+    compileOnly("net.hypixel:mod-api-forge:1.0.1.1") {
+        exclude(group = "me.djtheredstoner", module = "DevAuth-forge-legacy")
+    }
+    bundle("net.hypixel:mod-api-forge-tweaker:1.0.1.1")
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
@@ -191,8 +194,8 @@ tasks.shadowJar {
     )
 
     // Relocate Discord RPC into the main codebase
-    relocate("com.jagrosh.discordipc", "shadow.discordipc")
-    relocate("net.hypixel.modapi", "shadow.modapi")
+    relocate("com.jagrosh.discordipc", "${project.group}.${modId}.discordipc")
+    relocate("net.hypixel.modapi.tweaker", "${project.group}.${modId}.modapi.tweaker")
 }
 
 tasks.withType(Test::class) {
