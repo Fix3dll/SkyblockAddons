@@ -264,7 +264,7 @@ public class DataUtils {
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
             LocationUtils.setSlayerLocations(
-                    gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, List<String>>>() {}.getType())
+                    gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, Set<String>>>() {}.getType())
             );
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);

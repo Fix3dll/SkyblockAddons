@@ -6,15 +6,15 @@ import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-public class SlayerLocationsRequest extends RemoteFileRequest<HashMap<String, List<String>>> {
+public class SlayerLocationsRequest extends RemoteFileRequest<HashMap<String, Set<String>>> {
     public SlayerLocationsRequest() {
         super(
                 "skyblock/slayerLocations.json",
-                new JSONResponseHandler<>(new TypeToken<HashMap<String, List<String>>>() {}.getType())
+                new JSONResponseHandler<>(new TypeToken<HashMap<String, Set<String>>>() {}.getType())
         );
     }
 

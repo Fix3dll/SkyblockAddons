@@ -36,7 +36,10 @@
       "Village",
       "Weaponsmith",
       "Wilderness",
-      "Wizard Tower"
+      "Wizard Tower",
+      "Rabbit House",
+      "Trade Center",
+      "Artist's Abode"
     ]
   },
   "mining_1": {
@@ -85,7 +88,11 @@
       "The Forge",
       "The Lift",
       "The Mist",
-      "Upper Mines"
+      "Upper Mines",
+      "Dwarven Base Camp",
+      "Fossil Research Center",
+      "Glacite Tunnels",
+      "Glacite Lake"
     ]
   },
   "combat_1": {

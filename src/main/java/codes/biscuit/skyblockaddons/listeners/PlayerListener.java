@@ -35,8 +35,6 @@ import com.google.common.math.DoubleMath;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPrismarine;
-import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -59,7 +57,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -124,19 +121,6 @@ public class PlayerListener {
     // All Rat pet sounds as instance with their respective sound categories, except the sound when it lays a cheese
     private static final Set<PositionedSoundRecord> RAT_SOUNDS = new HashSet<>(Arrays.asList(new PositionedSoundRecord(new ResourceLocation("minecraft", "mob.bat.idle"), 1.0f, 1.1904762f, 0.0f, 0.0f, 0.0f),
             new PositionedSoundRecord(new ResourceLocation("minecraft", "mob.chicken.step"), 0.15f, 1.0f, 0.0f, 0.0f, 0.0f)));
-
-    private static final Set<Integer> ORES = Sets.newHashSet(Block.getIdFromBlock(Blocks.coal_ore), Block.getIdFromBlock(Blocks.iron_ore),
-            Block.getIdFromBlock(Blocks.gold_ore), Block.getIdFromBlock(Blocks.redstone_ore), Block.getIdFromBlock(Blocks.emerald_ore),
-            Block.getIdFromBlock(Blocks.lapis_ore), Block.getIdFromBlock(Blocks.diamond_ore), Block.getIdFromBlock(Blocks.lit_redstone_ore),
-            Block.getIdFromBlock(Blocks.obsidian), Block.getIdFromBlock(Blocks.diamond_block),
-            Block.getIdFromBlock(Blocks.cobblestone), Block.getIdFromBlock(Blocks.quartz_ore),
-            Utils.getBlockMetaId(Blocks.stone, BlockStone.EnumType.DIORITE_SMOOTH.getMetadata()),
-            Utils.getBlockMetaId(Blocks.stained_hardened_clay, EnumDyeColor.CYAN.getMetadata()),
-            Utils.getBlockMetaId(Blocks.prismarine, BlockPrismarine.EnumType.ROUGH.getMetadata()),
-            Utils.getBlockMetaId(Blocks.prismarine, BlockPrismarine.EnumType.DARK.getMetadata()),
-            Utils.getBlockMetaId(Blocks.prismarine, BlockPrismarine.EnumType.BRICKS.getMetadata()),
-            Utils.getBlockMetaId(Blocks.wool, EnumDyeColor.LIGHT_BLUE.getMetadata()),
-            Utils.getBlockMetaId(Blocks.wool, EnumDyeColor.GRAY.getMetadata()));
 
     private long lastWorldJoin = -1;
     private long lastBal = -1;
@@ -1204,16 +1188,21 @@ public class PlayerListener {
     public void onBlockBreak(SkyblockBlockBreakEvent e) {
         Minecraft mc = Minecraft.getMinecraft();
         IBlockState blockState = mc.theWorld.getBlockState(e.blockPos);
-        if (ORES.contains(Block.getStateId(blockState))) {
-            boolean shouldIncrement = true;
-            if (main.getUtils().getMap() == Island.PRIVATE_ISLAND) {
-                if (blockState.getBlock() == Blocks.diamond_block) {
-                    shouldIncrement = false;
-                }
-                // TODO: Check if a minion is nearby to eliminate false positives
-            }
-            if (shouldIncrement) {
-                main.getPersistentValuesManager().addOresMined();
+
+        SkyBlockOre minedOre = SkyBlockOre.getByStateOrNull(blockState);
+        if (minedOre != null) {
+            switch (minedOre) {
+                case HARD_STONE_GLACIAL:
+                case HARD_STONE_HOLLOWS:
+                case STONE:
+                case NETHERRACK:
+                case RED_SAND:
+                case MYCELIUM:
+                case END_STONE:
+                    // They are not counted on Rock Pet Milestone
+                    break;
+                default:
+                    main.getPersistentValuesManager().addOresMined();
             }
         }
         if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
