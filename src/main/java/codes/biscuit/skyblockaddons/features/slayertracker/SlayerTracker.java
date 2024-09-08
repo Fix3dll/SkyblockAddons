@@ -162,7 +162,7 @@ public class SlayerTracker {
             }
             slayerTrackerData.getSlayerDropCounts().put(drop, slayerTrackerData.getSlayerDropCounts().getOrDefault(drop, 0) + amount);
 
-            if (DevUtils.isLoggingSlayerTrackerMessages()) {
+            if (DevUtils.isLoggingSlayerTracker()) {
                 main.getUtils().sendMessage(String.format("§fx%d §%s%s"
                         , amount
                         , drop.getRarity().getColorCode().getCode()

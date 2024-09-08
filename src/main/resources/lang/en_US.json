@@ -489,8 +489,8 @@
         "toggleSlayerTrackerLogging": {
           "help": "Toggles showing counted slayer tracker drops"
         },
-        "toggleMagmaTimerLogging": {
-          "help": "Toggles logging magma boss timer debug messages"
+        "toggleSkyBlockOreLogging": {
+          "help": "Toggles logging of mined SkyBlock ore"
         },
         "version": {
           "help": "Shows the mod's version"
@@ -539,9 +539,9 @@
           "disabled": "Slayer tracker drops will no longer be shown.",
           "enabled": "Slayer tracker drops will now be shown."
         },
-        "toggleMagmaTimerLogging": {
-          "disabled": "Magma boss timer messages will no longer be logged.",
-          "enabled": "Magma boss timer messages will now be logged."
+        "toggleSkyBlockOreLogging": {
+          "disabled": "Mined SkyBlock ores will no longer be shown.",
+          "enabled": "Mined SkyBlock ores will now be shown."
         },
         "version": {
           "hoverText": "Click to put in chat so you can copy."

@@ -224,7 +224,7 @@ public enum SkyBlockOre {
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT)
     ),
     LOW_TIER_TUNGSTEN(
-            state -> state.getBlock() == Blocks.cobblestone,
+            SkyBlockOre::isLowTierTungsten,
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT)
     ),
     HIGH_TIER_TUNGSTEN(
@@ -347,6 +347,11 @@ public enum SkyBlockOre {
     private static boolean isHighTierUmber(IBlockState state) {
         return state.getBlock() == Blocks.double_stone_slab2 &&
                 state.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE;
+    }
+
+    private static boolean isLowTierTungsten(IBlockState state) {
+        Block block = state.getBlock();
+        return block == Blocks.cobblestone || block == Blocks.stone_stairs || block == Blocks.stone_slab;
     }
 
     private static boolean isGemstoneWithColor(IBlockState state, EnumDyeColor color) {

@@ -1204,6 +1204,10 @@ public class PlayerListener {
                 default:
                     main.getPersistentValuesManager().addOresMined();
             }
+
+            if (DevUtils.isLoggingSkyBlockOre()) {
+                main.getUtils().sendMessage("§eMined ore: §f" + minedOre.name());
+            }
         }
         if (main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
             String itemId = ItemUtils.getSkyblockItemID(mc.thePlayer.getHeldItem());
