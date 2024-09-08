@@ -7,6 +7,7 @@ import net.minecraft.block.BlockSand;
 import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.BlockStone;
+import net.minecraft.block.BlockStoneSlab;
 import net.minecraft.block.BlockStoneSlabNew;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -351,7 +352,8 @@ public enum SkyBlockOre {
 
     private static boolean isLowTierTungsten(IBlockState state) {
         Block block = state.getBlock();
-        return block == Blocks.cobblestone || block == Blocks.stone_stairs || block == Blocks.stone_slab;
+        return block == Blocks.cobblestone || block == Blocks.stone_stairs ||
+                (block == Blocks.stone_slab && state.getValue(BlockStoneSlab.VARIANT) == BlockStoneSlab.EnumType.COBBLESTONE);
     }
 
     private static boolean isGemstoneWithColor(IBlockState state, EnumDyeColor color) {
