@@ -10,12 +10,18 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiContainerHook {
@@ -132,9 +138,20 @@ public class GuiContainerHook {
      */
     public static boolean onHandleMouseClick(Slot slot, int slotId, int clickedButton, int clickType) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS) {
-            lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
+        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+
+        // Saves clicks in Pets menu
+        if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS && currentScreen instanceof GuiChest) {
+            GuiChest chest = (GuiChest) currentScreen;
+            ContainerChest container = (ContainerChest) chest.inventorySlots;
+            IInventory lower = container.getLowerChestInventory();
+
+            ItemStack petBone = lower.getStackInSlot(4);
+            if (petBone != null && petBone.getItem() == Items.bone) {
+                lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
+            }
         }
+
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.getHasStack()
                 && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(slot.getStack())
                 && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getStack(), EnumDyeColor.BLACK));
