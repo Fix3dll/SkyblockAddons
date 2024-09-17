@@ -3,19 +3,21 @@ package codes.biscuit.skyblockaddons.core;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public enum CrimsonArmorAbilityStack {
 
     CRIMSON("Crimson", "Dominus", "ᝐ"),
     TERROR("Terror", "Hydra Strike", "⁑"),
     AURORA("Aurora", "Arcane Vision", "Ѫ"),
-    FERVOR("Fervor", "Fervor", "҉");
+    FERVOR("Fervor", "Fervor", "҉"),
+    HOLLOW("Hollow", "Spirit", "⚶");
 
-    @Getter private final String armorName;
-    @Getter private final String abilityName;
-    @Getter private final String symbol;
+    private final String armorName;
+    private final String abilityName;
+    private final String symbol;
 
     @SuppressWarnings("NonFinalFieldInEnum") //lombok plugin moment
-    @Setter @Getter private int currentValue = 0;
+    @Setter private int currentValue = 0;
 
     CrimsonArmorAbilityStack(String armorName, String abilityName, String symbol) {
         this.armorName = armorName;
