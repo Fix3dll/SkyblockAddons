@@ -436,6 +436,13 @@
     "material": "hopper",
     "rarity": "LEGENDARY"
   },
+  "PET_ITEM_TITANIUM_MINECART": {
+    "displayName": "§9Titanium Minecart",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "skullId": "7c748bc1-ab84-3844-8297-fd19d187a330",
+    "texture": "cae0d1550fda69833c6ab884746d039bd752a4f2e44472cc0a3b05c694f8059b"
+  },
   "REAPER_GEM": {
     "displayName": "§6Reaper Gem",
     "enchanted": true,
