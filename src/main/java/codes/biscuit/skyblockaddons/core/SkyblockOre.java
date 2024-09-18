@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockSand;
+import net.minecraft.block.BlockSilverfish;
 import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.BlockStone;
@@ -14,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 
-import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -146,7 +146,12 @@ public enum SkyblockOre {
     ),
     HARD_STONE_GLACIAL(
             SkyblockOre::isHardstoneGlacite,
-            () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
+            LocationUtils::isOnGlaciteTunnelsLocation,
+            BlockType.BLOCK
+    ),
+    HARD_STONE_MINESHAFT(
+            SkyblockOre::isHardstoneMineshaft,
+            () -> LocationUtils.isOn(Island.MINESHAFT),
             BlockType.BLOCK
     ),
 
@@ -284,9 +289,14 @@ public enum SkyblockOre {
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
             BlockType.DWARVEN_METAL
     ),
-    LOW_TIER_TUNGSTEN(
-            SkyblockOre::isLowTierTungsten,
-            () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
+    LOW_TIER_TUNGSTEN_GLACITE(
+            SkyblockOre::isLowTierTungstenGlacite,
+            LocationUtils::isOnGlaciteTunnelsLocation,
+            BlockType.DWARVEN_METAL
+    ),
+    LOW_TIER_TUNGSTEN_MINESHAFT(
+            SkyblockOre::isLowTierTungstenMineshaft,
+            () -> LocationUtils.isOn(Island.MINESHAFT),
             BlockType.DWARVEN_METAL
     ),
     HIGH_TIER_TUNGSTEN(
@@ -311,10 +321,12 @@ public enum SkyblockOre {
     }
 
     public static SkyblockOre getByStateOrNull(IBlockState state) {
-        return Arrays.stream(values())
-                .filter(oreBlock -> oreBlock.checkArea.get() && oreBlock.checkBlock.apply(state))
-                .findFirst()
-                .orElse(null);
+        for (SkyblockOre ore : values()) {
+            if (ore.checkArea.get() && ore.checkBlock.apply(state)) {
+                return ore;
+            }
+        }
+        return null;
     }
 
     private static boolean isLowTierMithril(IBlockState state) {
@@ -394,10 +406,17 @@ public enum SkyblockOre {
         return false;
     }
 
+    // Blocks.stone changed with Blocks.monster_egg on 0.20.6 update
     private static boolean isHardstoneGlacite(IBlockState state) {
         Block block = state.getBlock();
+        return (block == Blocks.monster_egg && state.getValue(BlockSilverfish.VARIANT) == BlockSilverfish.EnumType.STONE) ||
+                (block == Blocks.wool && state.getValue(BlockColored.COLOR) == EnumDyeColor.SILVER);
+    }
+
+    private static boolean isHardstoneMineshaft(IBlockState state) {
+        Block block = state.getBlock();
         return (block == Blocks.stone && state.getValue(BlockStone.VARIANT) == BlockStone.EnumType.STONE) ||
-                (block == Blocks.wool && state.getValue(BlockColored.COLOR) == EnumDyeColor.GRAY);
+                (block == Blocks.wool && state.getValue(BlockColored.COLOR) == EnumDyeColor.SILVER);
     }
 
     private static boolean isRedSand(IBlockState state) {
@@ -415,7 +434,13 @@ public enum SkyblockOre {
                 state.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE;
     }
 
-    private static boolean isLowTierTungsten(IBlockState state) {
+    // Blocks.cobblestone changed with Blocks.monster_egg on 0.20.6 update
+    private static boolean isLowTierTungstenGlacite(IBlockState state) {
+        Block block = state.getBlock();
+        return block == Blocks.monster_egg && state.getValue(BlockSilverfish.VARIANT) == BlockSilverfish.EnumType.COBBLESTONE;
+    }
+
+    private static boolean isLowTierTungstenMineshaft(IBlockState state) {
         Block block = state.getBlock();
         return block == Blocks.cobblestone || block == Blocks.stone_stairs ||
                 (block == Blocks.stone_slab && state.getValue(BlockStoneSlab.VARIANT) == BlockStoneSlab.EnumType.COBBLESTONE);
