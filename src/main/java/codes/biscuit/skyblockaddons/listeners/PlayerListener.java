@@ -1189,20 +1189,10 @@ public class PlayerListener {
         Minecraft mc = Minecraft.getMinecraft();
         IBlockState blockState = mc.theWorld.getBlockState(e.blockPos);
 
-        SkyBlockOre minedOre = SkyBlockOre.getByStateOrNull(blockState);
+        SkyblockOre minedOre = SkyblockOre.getByStateOrNull(blockState);
         if (minedOre != null) {
-            switch (minedOre) {
-                case HARD_STONE_GLACIAL:
-                case HARD_STONE_HOLLOWS:
-                case STONE:
-                case NETHERRACK:
-                case RED_SAND:
-                case MYCELIUM:
-                case END_STONE:
-                    // They are not counted on Rock Pet Milestone
-                    break;
-                default:
-                    main.getPersistentValuesManager().addOresMined();
+            if (minedOre.getBlockType() == SkyblockOre.BlockType.ORE) {
+                main.getPersistentValuesManager().addOresMined();
             }
 
             if (DevUtils.isLoggingSkyBlockOre()) {
