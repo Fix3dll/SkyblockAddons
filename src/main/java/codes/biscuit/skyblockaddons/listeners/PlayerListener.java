@@ -28,6 +28,8 @@ import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.*;
+import codes.biscuit.skyblockaddons.utils.data.DataUtils;
+import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 import lombok.Getter;
@@ -477,13 +479,14 @@ public class PlayerListener {
                 if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
                     return;
 
-                String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
-                String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
+//                String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
+//                String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
 
-                if (!mayorName.startsWith(main.getUtils().getMayor())) {
-                    main.getUtils().setMayor(mayorName);
-                    logger.info("Mayor changed to " + mayorName);
-                }
+                // Update new mayor data from API
+                DataUtils.loadOnlineData(new MayorRequest(true));
+
+//                main.getUtils().setMayor("mayorName");
+//                logger.info("Mayor changed to " + mayorName);
             }
         }
     }

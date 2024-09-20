@@ -1,9 +1,11 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
+import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
+import codes.biscuit.skyblockaddons.utils.pojo.ElectionData;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -15,7 +17,7 @@ import java.util.List;
 
 public class IslandButton extends GuiButton {
 
-    @Getter private List<IslandMarkerButton> markerButtons = new ArrayList<>();
+    @Getter private final List<IslandMarkerButton> markerButtons = new ArrayList<>();
 
     @Setter
     private boolean disableHover = false;
@@ -34,6 +36,12 @@ public class IslandButton extends GuiButton {
 
         for (IslandWarpGui.Marker marker : IslandWarpGui.Marker.values()) {
             if (marker.getIsland() == island) {
+                if (marker == IslandWarpGui.Marker.CARNIVAL) {
+                    ElectionData electionData = SkyblockAddons.getInstance().getElectionData();
+                    if (electionData != null && !electionData.isPerkActive("Chivalrous Carnival")) {
+                        continue;
+                    }
+                }
                 this.markerButtons.add(new IslandMarkerButton(marker));
             }
         }

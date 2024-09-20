@@ -1,7 +1,9 @@
 package codes.biscuit.skyblockaddons.misc.scheduler;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import lombok.Getter;
 
+@SuppressWarnings("JavadocDeclaration")
 public class ScheduledTask {
 
     private static volatile int currentId = 1;
@@ -11,9 +13,33 @@ public class ScheduledTask {
     private final int id;
     private int delay;
     private final int period;
+    /**
+     * -- GETTER --
+     * <br>Gets if the current task is an asynchronous task.
+     * @return True if the task is not run by main thread.
+     */
+    @Getter
     private final boolean async;
+    /**
+     * -- GETTER --
+     * <br>Gets if the current task is running.
+     * @return True if the task is running.
+     */
+    @Getter
     private boolean running;
+    /**
+     * -- GETTER --
+     * <br>Gets if the current task is canceled.
+     * @return True if the task is canceled.
+     */
+    @Getter
     private boolean canceled;
+    /**
+     * -- GETTER --
+     * <br>Gets if the current task is a repeating task.
+     * @return True if the task is a repeating task.
+     */
+    @Getter
     private boolean repeating;
     private Runnable task;
 
@@ -114,42 +140,6 @@ public class ScheduledTask {
      */
     public final int getPeriod() {
         return this.period;
-    }
-
-    /**
-     * Gets if the current task is an asynchronous task.
-     *
-     * @return True if the task is not run by main thread.
-     */
-    public boolean isAsync() {
-        return this.async;
-    }
-
-    /**
-     * Gets if the current task is canceled.
-     *
-     * @return True if the task is canceled.
-     */
-    public boolean isCanceled() {
-        return this.canceled;
-    }
-
-    /**
-     * Gets if the current task is running.
-     *
-     * @return True if the task is running.
-     */
-    public boolean isRunning() {
-        return this.running;
-    }
-
-    /**
-     * Gets if the current task is a repeating task.
-     *
-     * @return True if the task is a repeating task.
-     */
-    public boolean isRepeating() {
-        return repeating;
     }
 
     void setDelay(int delay) {

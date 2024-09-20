@@ -11,6 +11,16 @@ public class ElectionData {
     private Mayor mayor;
     private Current current;
 
+    public boolean isPerkActive(String perkName) {
+        for (Mayor.Perk perk : this.mayor.perks) {
+            if (perk.name.equals(perkName)) {
+                return true;
+            }
+        }
+
+        return mayor.minister != null && mayor.minister.name.equals(perkName);
+    }
+
     @Getter
     public static class Mayor {
         private String key;

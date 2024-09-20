@@ -245,7 +245,7 @@ public class IslandWarpGui extends GuiScreen {
         THE_BARN("The Barn", 1125, 850),
         HUB("Hub", 300, 820),
         PRIVATE_ISLAND("Private Island", 275, 1172),
-		GARDEN("Garden", 50, 1050),
+        GARDEN("Garden", 50, 1050),
         DUNGEON_HUB("Dungeon Hub", 1500, 1100),
         JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150)
         ;
@@ -300,19 +300,20 @@ public class IslandWarpGui extends GuiScreen {
     @Getter
     public enum Marker {
         PRIVATE_ISLAND("home", getMessage("warpMenu.home"), Island.PRIVATE_ISLAND, true, 72, 90),
-		
-		GARDEN("garden", getMessage("warpMenu.spawn"), Island.GARDEN, true, 160, 70),
+
+        GARDEN("garden", getMessage("warpMenu.spawn"), Island.GARDEN, true, 160, 70),
 
         JERRYS_WORKSHOP("workshop", getMessage("warpMenu.spawn"), Island.JERRYS_WORKSHOP, 35, 90),
 
-        HUB("hub", getMessage("warpMenu.spawn"), Island.HUB, true, 600, 200),
+        HUB("hub", getMessage("warpMenu.spawn"), Island.HUB, true, 610, 210),
         ELIZABETH("elizabeth", "Elizabeth", Island.HUB, 660, 150),
         CASTLE("castle", "Castle", Island.HUB, 130, 80),
         DARK_AUCTION("da", "Sirius Shack", Island.HUB, 385, 415),
-        CRYPT("crypt", "Crypts", Island.HUB, 550, 100),
-        WIZARD_TOWER("wizard", "Wizard Tower", Island.HUB, 475, 260),
+        CRYPT("crypt", "Crypts", Island.HUB, 580, 100),
+        WIZARD_TOWER("wizard", "Wizard Tower", Island.HUB, 490, 260),
         MUSEUM("museum", "Museum", Island.HUB, true, 310, 200),
         TRADE_CENTER("stonks", "Trade Center", Island.HUB, false, 530, 175),
+        CARNIVAL("carnival", "Carnival", Island.HUB, false, 480, 100),
 
         SPIDERS_DEN("spider", getMessage("warpMenu.spawn"), Island.SPIDERS_DEN, true, 345, 240),
         SPIDERS_DEN_NEST("nest", "Top of Nest", Island.SPIDERS_DEN, 450, 30),
@@ -335,7 +336,7 @@ public class IslandWarpGui extends GuiScreen {
 
         THE_BARN("barn", getMessage("warpMenu.spawn"), Island.THE_BARN, true, 140, 150),
         MUSHROOM_DESERT("desert", getMessage("warpMenu.spawn"), Island.MUSHROOM_DESERT, true, 210, 295),
-		TRAPPER("trapper", "Trapper's Hut", Island.MUSHROOM_DESERT, true, 300, 200),
+        TRAPPER("trapper", "Trapper's Hut", Island.MUSHROOM_DESERT, true, 300, 200),
 
         GOLD_MINE("gold", getMessage("warpMenu.spawn"), Island.GOLD_MINE, true, 86, 259),
 

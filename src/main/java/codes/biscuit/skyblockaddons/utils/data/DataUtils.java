@@ -15,8 +15,6 @@ import codes.biscuit.skyblockaddons.exceptions.DataLoadingException;
 import codes.biscuit.skyblockaddons.features.SkillXpManager;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
-import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.requests.*;
@@ -42,12 +40,10 @@ import org.apache.http.impl.client.HttpRequestFutureTask;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -58,9 +54,7 @@ import java.util.concurrent.ThreadFactory;
 public class DataUtils {
 
     private static final Gson gson = SkyblockAddons.getGson();
-
     private static final Logger logger = SkyblockAddons.getLogger();
-
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     private static final RequestConfig requestConfig = RequestConfig.custom()
@@ -88,11 +82,9 @@ public class DataUtils {
 
     private static final ArrayList<RemoteFileRequest<?>> remoteRequests = new ArrayList<>();
 
-    @Getter
-    private static final ArrayList<HttpRequestFutureTask<?>> httpRequestFutureTasks = new ArrayList<>();
+    @Getter private static final ArrayList<HttpRequestFutureTask<?>> httpRequestFutureTasks = new ArrayList<>();
 
-    @Getter
-    private static final HashMap<RemoteFileRequest<?>, Throwable> failedRequests = new HashMap<>();
+    @Getter private static final HashMap<String, Throwable> failedRequests = new HashMap<>();
 
     /**
      * Main CDN doesn't work for some users.
@@ -113,9 +105,7 @@ public class DataUtils {
 
     private static String path;
 
-    private static LocalizedStringsRequest localizedStringsRequest = null;
-
-    private static ScheduledTask languageLoadingTask = null;
+    private static LocalizationsRequest localizedStringsRequest = null;
 
     static {
         String country = Locale.getDefault().getCountry();
@@ -136,7 +126,7 @@ public class DataUtils {
      */
     public static void readLocalAndFetchOnline() {
         readLocalFileData();
-        DataUtils.loadOnlineData(new MayorRequest()); // API data
+        DataUtils.loadOnlineData(new MayorRequest(false)); // API data
 
         if (USE_ONLINE_DATA) {
             fetchFromOnline();
@@ -297,38 +287,24 @@ public class DataUtils {
             RemoteFileRequest<?> request = requestIterator.next();
 
             if (!request.isDone()) {
-                handleOnlineFileLoadException(request,
-                        new RuntimeException(String.format("Request for \"%s\" didn't finish in time for mod init.",
-                                getFileNameFromUrlString(request.getURL()))));
+                handleOnlineFileLoadException(
+                        request.getURL(),
+                        new RuntimeException(
+                                String.format(
+                                        "Request for \"%s\" didn't finish in time for mod init.",
+                                        getFileNameFromUrlString(request.getURL())
+                                )
+                        ),
+                        request.isEssential()
+                );
             }
 
-            try {
-                loadOnlineFile(request);
-                requestIterator.remove();
-            } catch (InterruptedException | ExecutionException | NullPointerException | IllegalArgumentException e) {
-                handleOnlineFileLoadException(Objects.requireNonNull(request), e);
-            }
+            requestIterator.remove();
         }
     }
 
     public static void loadOnlineData(RemoteFileRequest<?> request) {
         request.execute(futureRequestExecutionService);
-
-        try {
-            loadOnlineFile(request);
-        } catch (InterruptedException | ExecutionException | NullPointerException | IllegalArgumentException e) {
-            logger.error(String.format("Failed to load \"%s\" from the server.",
-                    getFileNameFromUrlString(request.getURL())));
-        }
-    }
-
-    /**
-     * Loads a received online data file into the mod.
-     *
-     * @param request the {@code RemoteFileRequest} for the file
-     */
-    public static void loadOnlineFile(RemoteFileRequest<?> request) throws ExecutionException, InterruptedException {
-        request.load();
     }
 
     /**
@@ -370,46 +346,13 @@ public class DataUtils {
                 if (!futureTask.isDone()) {
                     futureTask.cancel(false);
                 }
-            } else if (languageLoadingTask != null) {
-                languageLoadingTask.cancel();
             }
 
-            localizedStringsRequest = new LocalizedStringsRequest(language);
+            localizedStringsRequest = new LocalizationsRequest(language);
             localizedStringsRequest.execute(futureRequestExecutionService);
-            languageLoadingTask = main.getNewScheduler().scheduleLimitedRepeatingTask(new SkyblockRunnable() {
-                @Override
-                public void run() {
-                    if (localizedStringsRequest != null) {
-                        if (localizedStringsRequest.isDone()) {
-                            try {
-                                loadOnlineFile(localizedStringsRequest);
-                            } catch (InterruptedException | ExecutionException | NullPointerException | IllegalArgumentException e) {
-//                                handleOnlineFileLoadException(Objects.requireNonNull(localizedStringsRequest), e);
-                            }
-                            cancel();
-                        }
-                    } else {
-                        cancel();
-                    }
-                }
-            }, 10, 20, 8);
         }
 
         // logger.info("Finished loading localized strings.");
-    }
-
-    // TODO: Shut it down and restart it as needed?
-    /**
-     * Shuts down {@link DataUtils#futureRequestExecutionService} and the underlying {@code ExecutorService} and
-     * {@code ClosableHttpClient}.
-     */
-    public static void shutdownExecutorService() {
-        try {
-            futureRequestExecutionService.close();
-            logger.debug("Executor service shut down.");
-        } catch (IOException e) {
-            logger.error("Failed to shut down executor service.", e);
-        }
     }
 
     /**
@@ -419,8 +362,8 @@ public class DataUtils {
         if (!failureMessageShown && !failedRequests.isEmpty()) {
             StringBuilder errorMessageBuilder = new StringBuilder("Failed Requests:\n");
 
-            for (Map.Entry<RemoteFileRequest<?>, Throwable> failedRequest : failedRequests.entrySet()) {
-                errorMessageBuilder.append(failedRequest.getKey().getURL()).append("\n");
+            for (Map.Entry<String, Throwable> failedRequest : failedRequests.entrySet()) {
+                errorMessageBuilder.append(failedRequest.getKey()).append("\n");
                 errorMessageBuilder.append(failedRequest.getValue().toString()).append("\n");
             }
 
@@ -504,13 +447,12 @@ public class DataUtils {
      * If the game is initialized, it crashes the game with a crash report containing the file name and the stacktrace
      * of the given {@code Throwable}.
      *
-     * @param request the {@code RemoteFileRequest} for the file that failed to load
+     * @param urlString the requestPath for the file that failed to load
      * @param exception the exception that occurred
      */
-    private static void handleOnlineFileLoadException(RemoteFileRequest<?> request, Throwable exception) {
-        String url = request.getURL();
-        String fileName = getFileNameFromUrlString(url);
-        failedRequests.put(request, exception);
+    static void handleOnlineFileLoadException(String urlString, Throwable exception, boolean essential) {
+        String fileName = getFileNameFromUrlString(urlString);
+        failedRequests.put(urlString, exception);
 
         // The loader encountered a file name it didn't expect.
         if (exception instanceof IllegalArgumentException) {
@@ -518,9 +460,9 @@ public class DataUtils {
             return;
         }
 
-        if (request.isEssential()) {
+        if (essential) {
             if (FMLClientHandler.instance().isLoading()) {
-                throw new DataLoadingException(url, exception);
+                throw new DataLoadingException(urlString, exception);
             } else {
                 // Don't include URL because Fire strips URLs.
                 CrashReport crashReport = CrashReport.makeCrashReport(

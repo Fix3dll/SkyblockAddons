@@ -9,6 +9,7 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
 import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
+import codes.biscuit.skyblockaddons.utils.pojo.ElectionData;
 import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonManager;
@@ -115,13 +116,13 @@ public class SkyblockAddons {
     private final InventoryUtils inventoryUtils;
     private final Utils utils;
     private final Updater updater;
-    @Setter
-    private OnlineData onlineData;
+    @Setter private OnlineData onlineData;
     private final DiscordRPCManager discordRPCManager;
     private final Scheduler scheduler;
     private final NewScheduler newScheduler;
     private final DungeonManager dungeonManager;
     private final SkillXpManager skillXpManager;
+    @Setter private ElectionData electionData;
 
     private boolean usingLabymod;
     private boolean usingOofModv1;
