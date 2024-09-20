@@ -1,14 +1,18 @@
 package codes.biscuit.skyblockaddons.features.backpacks;
 
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.HashMap;
 
 /**
- * Class with information on the currently opened backpack
+ * Class with information of backpacks
  */
 public class BackpackInventoryManager {
 
-    @Getter @Setter
-    private static BackpackColor backpackColor;
+    /**
+     * Backpack slot and color pairs
+     */
+    @Getter
+    private static final HashMap<Integer, BackpackColor> backpackColor = new HashMap<>();
 
 }

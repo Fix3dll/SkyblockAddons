@@ -360,9 +360,9 @@
       "maxLevel": 7,
       "nbtName": "power"
     },
-    "pristine": {
+    "prismatic": {
       "goodLevel": 0,
-      "loreName": "Pristine",
+      "loreName": "Prismatic",
       "maxLevel": 5,
       "nbtName": "pristine"
     },
@@ -807,6 +807,12 @@
       "loreName": "Flash",
       "maxLevel": 5,
       "nbtName": "ultimate_flash"
+    },
+    "flowstate": {
+      "goodLevel": 0,
+      "loreName": "Flowstate",
+      "maxLevel": 3,
+      "nbtName": "ultimate_flowstate"
     },
     "habanero tactics": {
       "goodLevel": 0,

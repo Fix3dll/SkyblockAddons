@@ -44,6 +44,7 @@ public class ItemUtils {
      * <p><i>Recombobulated Special items have exception for rarity pattern.<i/></p>
      */
     private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("§l(?<rarity>[A-Z]+(?: SPECIAL)?) ?(?<type>[A-Z ]+)?(?:§[0-9a-f]§l§ka)?$");
+    private static final Pattern BACKPACK_SLOT_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
     @Setter private static Map<String, CompactorItem> compactorItems;
     @Setter private static Map<String, ContainerData> containers;
 
@@ -147,7 +148,6 @@ public class ItemUtils {
         return item.getSubCompound("ExtraAttributes", false);
     }
 
-
     /**
      * Returns the {@code enchantments} compound tag from the item's NBT data.
      *
@@ -160,24 +160,37 @@ public class ItemUtils {
     }
 
     /**
-     * @return The Skyblock reforge of a given itemstack
+     * Returns the Skyblock Reforge of a given {@link ItemStack}
+     * @param itemStack the itemStack to check
+     * @return the Reforge (in lowercase) of this itemStack or {@code null} if this isn't a valid item or reforge
      */
-    public static String getReforge(ItemStack item) {
-        if (item.hasTagCompound()) {
-            NBTTagCompound extraAttributes = item.getTagCompound();
+    public static String getReforge(ItemStack itemStack) {
+        if (itemStack.hasTagCompound()) {
+            NBTTagCompound extraAttributes = itemStack.getTagCompound();
             if (extraAttributes.hasKey("ExtraAttributes")) {
-                extraAttributes = extraAttributes.getCompoundTag("ExtraAttributes");
-                if (extraAttributes.hasKey("modifier")) {
-                    String reforge = WordUtils.capitalizeFully(extraAttributes.getString("modifier"));
-
-                    reforge = reforge.replace("_sword", ""); //fixes reforges like "Odd_sword"
-                    reforge = reforge.replace("_bow", "");
-                    reforge = reforge.replace("Warped", "Hyper"); // exception
-
-                    return reforge;
-                }
+                return  getReforge(extraAttributes.getCompoundTag("ExtraAttributes"));
             }
         }
+
+        return null;
+    }
+
+    /**
+     * Returns the Skyblock Reforge of a given Skyblock Extra Attributes NBT Compound
+     * @param extraAttributes the NBT to check
+     * @return the Reforge (in lowercase) of this item or {@code null} if this isn't a valid item or reforge
+     */
+    public static String getReforge(NBTTagCompound extraAttributes) {
+        if (extraAttributes != null && extraAttributes.hasKey("modifier", NBT_STRING)) {
+            String reforge = WordUtils.capitalizeFully(extraAttributes.getString("modifier"));
+
+            reforge = reforge.replace("_sword", ""); //fixes reforges like "Odd_sword"
+            reforge = reforge.replace("_bow", "");
+            reforge = reforge.replace("Warped", "Hyper"); // exception
+
+            return reforge;
+        }
+
         return null;
     }
 
@@ -252,18 +265,6 @@ public class ItemUtils {
     }
 
     /**
-     * Checks if the given {@code ItemStack} is a backpack
-     *
-     * @param stack the {@code ItemStack} to check
-     * @return {@code true} if {@code stack} is a backpack, {@code false} otherwise
-     */
-    public static boolean isBackpack(ItemStack stack) {
-        NBTTagCompound extraAttributes = getExtraAttributes(stack);
-        ContainerData containerData = containers.get(getSkyblockItemID(extraAttributes));
-        return containerData != null && containerData.isBackpack();
-    }
-
-    /**
      * Checks if the given {@code ItemStack} is a builders wand
      * See {@link codes.biscuit.skyblockaddons.mixins.hooks.PlayerControllerMPHook#onWindowClick(int, int, int, EntityPlayer, ReturnValue)}
      * for a commented-out implementation (may come back in the future).
@@ -292,13 +293,13 @@ public class ItemUtils {
                     return BackpackColor.valueOf(extraAttributes.getString(containerData.getColorTag()));
                 } catch (IllegalArgumentException ignored) {
                 }
-                return BackpackColor.WHITE;
+                return BackpackColor.DEFAULT;
             } else if (extraAttributes.hasKey("backpack_color")) {
                 try {
                     return BackpackColor.valueOf(extraAttributes.getString("backpack_color"));
                 } catch (IllegalArgumentException ignored) {
                 }
-                return BackpackColor.WHITE;
+                return BackpackColor.DEFAULT;
             }
         }
 
@@ -306,17 +307,20 @@ public class ItemUtils {
     }
 
     /**
-     * Returns the Skyblock Reforge of a given Skyblock Extra Attributes NBT Compound
-     *
-     * @param extraAttributes the NBT to check
-     * @return the Reforge (in lowercase) of this item or {@code null} if this isn't a valid Skyblock NBT or reforge
+     * Gets slot number from the {@link ItemStack} on the slot.
+     * <br>See also {@link ItemUtils#BACKPACK_SLOT_PATTERN}
+     * @param itemStack Backpack {@link ItemStack}
+     * @return returns the slot number as integer else 0
      */
-    public static String getReforge(NBTTagCompound extraAttributes) {
-        if (extraAttributes != null && extraAttributes.hasKey("modifier", NBT_STRING)) {
-            return extraAttributes.getString("modifier");
+    public static int getBackpackSlot(ItemStack itemStack) {
+        if (itemStack == null || !itemStack.hasDisplayName()) return 0;
+
+        Matcher matcher = BACKPACK_SLOT_PATTERN.matcher(itemStack.getDisplayName());
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group("slot"));
         }
 
-        return null;
+        return 0;
     }
 
     /**

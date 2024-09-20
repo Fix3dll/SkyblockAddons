@@ -32,6 +32,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -79,7 +80,6 @@ public class GuiChestHook {
         Keyboard.enableRepeatEvents(false);
 
         islandWarpGui = null;
-        BackpackInventoryManager.setBackpackColor(null);
 
         if (main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)) {
             InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
@@ -346,22 +346,21 @@ public class GuiChestHook {
         }
     }
 
-    public static void color(float colorRed, float colorGreen, float colorBlue, float colorAlpha, IInventory lowerChestInventory) { //Item item, ItemStack stack
+    public static List<Float> color(IInventory lowerChestInventory) {
         if (!main.getUtils().isOnSkyblock()) {
-            return;
+            return Collections.emptyList();
         }
 
-        if (main.getConfigValues().isEnabled(Feature.SHOW_BACKPACK_PREVIEW) &&
-                main.getConfigValues().isEnabled(Feature.MAKE_BACKPACK_INVENTORIES_COLORED) && lowerChestInventory.hasCustomName()) {
-            if (lowerChestInventory.getDisplayName().getUnformattedText().contains("Backpack")) {
-                if (BackpackInventoryManager.getBackpackColor() != null) {
-                    BackpackColor color = BackpackInventoryManager.getBackpackColor();
-                    GlStateManager.color(color.getR(), color.getG(), color.getB(), 1);
-                    return;
+        if (Feature.SHOW_BACKPACK_PREVIEW.isEnabled() && Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+            if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE_BACKPACK) {
+                int pageNum = main.getInventoryUtils().getInventoryPageNum();
+                if (BackpackInventoryManager.getBackpackColor().containsKey(pageNum)) {
+                    BackpackColor color = BackpackInventoryManager.getBackpackColor().get(pageNum);
+                    return Arrays.asList(color.getR(), color.getG(), color.getB(), 1.0F);
                 }
             }
         }
-        GlStateManager.color(colorRed, colorGreen, colorBlue, colorAlpha);
+        return Collections.emptyList();
     }
 
     public static void mouseReleased(ReturnValue<?> returnValue) {

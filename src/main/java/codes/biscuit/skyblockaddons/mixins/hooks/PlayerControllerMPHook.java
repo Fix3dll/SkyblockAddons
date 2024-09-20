@@ -4,53 +4,20 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.events.SkyblockBlockBreakEvent;
-import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
-import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
-import com.google.common.collect.Sets;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockPrismarine;
-import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.Set;
-
 public class PlayerControllerMPHook {
-
-    /**
-     * clickModifier value in {@link #onWindowClick(int, int, int, EntityPlayer, ReturnValue)}  for shift-clicks
-     */
-    private static final int SHIFTCLICK_CLICK_TYPE = 1;
-
-    /**
-     * Cooldown between playing error sounds to avoid stacking up
-     */
-    private static final int CRAFTING_PATTERN_SOUND_COOLDOWN = 400;
-
-    private static long lastCraftingSoundPlayed = 0;
-
-    private static final Set<Integer> ORES = Sets.newHashSet(Block.getIdFromBlock(Blocks.coal_ore), Block.getIdFromBlock(Blocks.iron_ore),
-            Block.getIdFromBlock(Blocks.gold_ore), Block.getIdFromBlock(Blocks.redstone_ore), Block.getIdFromBlock(Blocks.emerald_ore),
-            Block.getIdFromBlock(Blocks.lapis_ore), Block.getIdFromBlock(Blocks.diamond_ore), Block.getIdFromBlock(Blocks.lit_redstone_ore),
-            Utils.getBlockMetaId(Blocks.stone, BlockStone.EnumType.DIORITE_SMOOTH.getMetadata()),
-            Utils.getBlockMetaId(Blocks.stained_hardened_clay, EnumDyeColor.CYAN.getMetadata()),
-            Utils.getBlockMetaId(Blocks.prismarine, BlockPrismarine.EnumType.ROUGH.getMetadata()),
-            Utils.getBlockMetaId(Blocks.prismarine, BlockPrismarine.EnumType.DARK.getMetadata()),
-            Utils.getBlockMetaId(Blocks.prismarine, BlockPrismarine.EnumType.BRICKS.getMetadata()),
-            Utils.getBlockMetaId(Blocks.wool, EnumDyeColor.LIGHT_BLUE.getMetadata()),
-            Utils.getBlockMetaId(Blocks.wool, EnumDyeColor.GRAY.getMetadata()));
 
     /**
      * Checks if an item is being dropped and if an item is being dropped, whether it is allowed to be dropped.
@@ -131,13 +98,6 @@ public class PlayerControllerMPHook {
                     slotIn = slots.getSlot(slotId);
                 } catch (IndexOutOfBoundsException e) {
                     slotIn = null;
-                }
-
-                if (mouseButtonClicked == 1 && slotIn != null && slotIn.getHasStack() && slotIn.getStack().getItem() == Items.skull) {
-                    BackpackColor color = ItemUtils.getBackpackColor(slotIn.getStack());
-                    if (color != null) {
-                        BackpackInventoryManager.setBackpackColor(color);
-                    }
                 }
 
                 // Prevent clicking on locked slots.

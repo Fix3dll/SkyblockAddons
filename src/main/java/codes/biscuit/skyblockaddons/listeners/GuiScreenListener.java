@@ -6,6 +6,8 @@ import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.events.InventoryLoadingDoneEvent;
 import codes.biscuit.skyblockaddons.features.PetManager;
+import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
+import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.LocationEditGui;
@@ -15,14 +17,17 @@ import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
+import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -71,7 +76,7 @@ public class GuiScreenListener {
             addInventoryChangeListener(chestInventory);
 
             // Backpack opening sound
-            if (main.getConfigValues().isEnabled(Feature.BACKPACK_OPENING_SOUND) && chestInventory.hasCustomName()) {
+            if (Feature.BACKPACK_OPENING_SOUND.isEnabled() && chestInventory.hasCustomName()) {
                 if (chestInventory.getDisplayName().getUnformattedText().contains("Backpack")) {
                     lastBackpackOpenMs = System.currentTimeMillis();
 
@@ -157,9 +162,34 @@ public class GuiScreenListener {
 
     @SubscribeEvent
     public void onInventoryLoadingDone(InventoryLoadingDoneEvent e) {
+        GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
+
         if (listenedInventory != null) {
             removeInventoryChangeListener(listenedInventory);
             lastInventoryChangeMs = -1;
+        }
+
+        if (guiScreen instanceof GuiChest) {
+            GuiChest guiChest = (GuiChest) guiScreen;
+            InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().updateInventoryType(guiChest);
+            InventoryBasic chestInventory = (InventoryBasic) guiChest.lowerChestInventory;
+
+            // Save backpack colors
+            if (inventoryType == InventoryType.STORAGE) {
+                for (int i = 0; i < chestInventory.getSizeInventory(); i++) {
+                    ItemStack item = chestInventory.getStackInSlot(i);
+                    if (item == null || item.getItem() != Items.skull) continue;
+
+                    BackpackColor backpackColor = ItemUtils.getBackpackColor(item);
+                    if (backpackColor != null) {
+                        int slot = ItemUtils.getBackpackSlot(item);
+                        if (slot != 0) {
+                            BackpackInventoryManager.getBackpackColor().put(slot, backpackColor);
+                        }
+                    }
+                }
+            }
+
         }
     }
 

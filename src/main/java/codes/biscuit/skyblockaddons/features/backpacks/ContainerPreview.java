@@ -9,10 +9,8 @@ import java.util.List;
 @Getter
 public class ContainerPreview {
 
-    @Setter
-    private int x;
-    @Setter
-    private int y;
+    @Setter private int x;
+    @Setter private int y;
     private final int numRows;
     private final int numCols;
     private final List<ItemStack> items;
@@ -26,11 +24,5 @@ public class ContainerPreview {
         this.backpackColor = backpackColor;
         this.numRows = Math.min(rows, 6);
         this.numCols = Math.min(cols, 9);
-    }
-
-    public ContainerPreview(List<ItemStack> items, String backpackName, BackpackColor backpackColor, int rows, int cols, int x, int y) {
-        this(items, backpackName, backpackColor, rows, cols);
-        this.x = x;
-        this.y = y;
     }
 }

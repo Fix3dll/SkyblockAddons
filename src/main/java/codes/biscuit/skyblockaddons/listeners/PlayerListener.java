@@ -15,8 +15,6 @@ import codes.biscuit.skyblockaddons.features.EndstoneProtectorManager;
 import codes.biscuit.skyblockaddons.features.FetchurManager;
 import codes.biscuit.skyblockaddons.features.JerryPresent;
 import codes.biscuit.skyblockaddons.features.PetManager;
-import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
-import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
@@ -589,13 +587,7 @@ public class PlayerListener {
         ItemStack heldItem = e.entityPlayer.getHeldItem();
 
         if (main.getUtils().isOnSkyblock() && heldItem != null) {
-            // Change the GUI background color when a backpack is opened to match the backpack's color.
-            if (heldItem.getItem() == Items.skull) {
-                BackpackColor color = ItemUtils.getBackpackColor(heldItem);
-                if (color != null) {
-                    BackpackInventoryManager.setBackpackColor(color);
-                }
-            } else if (heldItem.getItem() == Items.fishing_rod
+            if (heldItem.getItem() == Items.fishing_rod
                     && (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
                 // Update fishing status if the player is fishing and reels in their rod.
                 if (main.getConfigValues().isEnabled(Feature.FISHING_SOUND_INDICATOR) && isHoldingRod()) {

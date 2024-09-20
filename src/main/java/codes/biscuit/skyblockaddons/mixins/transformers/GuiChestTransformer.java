@@ -2,10 +2,10 @@ package codes.biscuit.skyblockaddons.mixins.transformers;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -13,15 +13,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.io.IOException;
+import java.util.List;
 
-@Mixin(GuiChest.class)
+@Mixin(value = GuiChest.class, priority = 100)
 public abstract class GuiChestTransformer extends GuiContainer {
-    @Unique private static final SkyblockAddons sba$main = SkyblockAddons.getInstance();
     @Shadow public IInventory lowerChestInventory;
     @Shadow private IInventory upperChestInventory;
 
@@ -29,23 +29,31 @@ public abstract class GuiChestTransformer extends GuiContainer {
         super(inventorySlotsIn);
     }
 
-    @Redirect(method = "drawGuiContainerBackgroundLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;color(FFFF)V"))
-    protected void drawGuiContainerBackgroundLayer(float colorRed, float colorGreen, float colorBlue, float colorAlpha) {
-        GuiChestHook.color(1.0F, 1.0F, 1.0F, 1.0F, this.lowerChestInventory);
+    @ModifyArgs(method = "drawGuiContainerBackgroundLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;color(FFFF)V"))
+    protected void sba$drawGuiContainerBackgroundColor(Args args) {
+        List<Float> rgba = GuiChestHook.color(this.lowerChestInventory);
+        for (int i = 0; i < rgba.size(); i++) {
+            args.set(i, rgba.get(i));
+        }
     }
 
-    @SuppressWarnings("UnreachableCode")
     @Override
-    public void drawString(FontRenderer instance, String text, int x, int y, int color) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        SkyblockAddons main = SkyblockAddons.getInstance();
+
         GuiChestHook.onRenderChestForegroundLayer((GuiChest) (Object) this);
-        int backpackColor = 4210752; // vanilla color
-        if (sba$main.getUtils().isOnSkyblock() && sba$main.getConfigValues().isEnabled(Feature.SHOW_BACKPACK_PREVIEW)
-                && sba$main.getConfigValues().isEnabled(Feature.MAKE_BACKPACK_INVENTORIES_COLORED)
-                && BackpackInventoryManager.getBackpackColor() != null) {
-            backpackColor = BackpackInventoryManager.getBackpackColor().getInventoryTextColor();
+
+        int color = 4210752; // vanilla color
+        if (main.getUtils().isOnSkyblock() && Feature.SHOW_BACKPACK_PREVIEW.isEnabled() && Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+            BackpackColor backpackColor = BackpackInventoryManager.getBackpackColor().get(
+                    main.getInventoryUtils().getInventoryPageNum()
+            );
+            if (backpackColor != null) {
+                color = backpackColor.getInventoryTextColor();
+            }
         }
-        this.fontRendererObj.drawString(this.lowerChestInventory.getDisplayName().getUnformattedText(), 8, 6, backpackColor);
-        this.fontRendererObj.drawString(this.upperChestInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, backpackColor);
+        this.fontRendererObj.drawString(this.lowerChestInventory.getDisplayName().getUnformattedText(), 8, 6, color);
+        this.fontRendererObj.drawString(this.upperChestInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, color);
     }
 
     @Override
