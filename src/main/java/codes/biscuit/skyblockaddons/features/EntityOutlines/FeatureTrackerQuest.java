@@ -65,8 +65,7 @@ public class FeatureTrackerQuest {
      */
     // TODO: This should not be static after the feature refactor
     public static void drawTrackerLocationIndicator(Minecraft mc, float scale, ButtonLocation buttonLocation) {
-        if ((main.getConfigValues().isEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES)
-                && main.getConfigValues().isEnabled(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
+        if ((Feature.areEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES,Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
                 && main.getUtils().isTrackingAnimal()) || buttonLocation != null) {
             RenderListener listener = main.getRenderListener();
             float x = main.getConfigValues().getActualX(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR);

@@ -463,4 +463,23 @@ public enum Feature {
         ConfigValues values = SkyblockAddons.getInstance().getConfigValues();
         return values != null && values.isEnabled(this);
     }
+
+    /**
+     * Checks that all specified {@link Feature}s are active
+     * @param features {@link Feature}(s)
+     * @return true if they are enabled else false
+     */
+    public static boolean areEnabled(Feature... features) {
+        if (features == null || features.length == 0) {
+            throw new IllegalArgumentException("\"features\" cannot be null or empty");
+        }
+        ConfigValues configValues = SkyblockAddons.getInstance().getConfigValues();
+
+        for (Feature feature : features) {
+            if (configValues.isDisabled(feature)) {
+                return false; // short-circuit
+            }
+        }
+        return true;
+    }
 }

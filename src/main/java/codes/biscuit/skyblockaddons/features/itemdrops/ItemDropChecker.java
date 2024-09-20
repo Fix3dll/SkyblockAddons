@@ -127,7 +127,7 @@ public class ItemDropChecker {
                     }
                 }
             }
-        } else if (main.getConfigValues().isEnabled(Feature.DROP_CONFIRMATION) && main.getConfigValues().isEnabled(Feature.DOUBLE_DROP_IN_OTHER_GAMES)) {
+        } else if (Feature.areEnabled(Feature.DROP_CONFIRMATION, Feature.DOUBLE_DROP_IN_OTHER_GAMES)) {
             return dropConfirmed(item, 2, playAlert);
 
         } else {

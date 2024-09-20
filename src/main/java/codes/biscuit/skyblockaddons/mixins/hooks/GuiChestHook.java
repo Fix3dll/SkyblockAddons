@@ -351,7 +351,7 @@ public class GuiChestHook {
             return Collections.emptyList();
         }
 
-        if (Feature.SHOW_BACKPACK_PREVIEW.isEnabled() && Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+        if (Feature.areEnabled(Feature.SHOW_BACKPACK_PREVIEW, Feature.MAKE_BACKPACK_INVENTORIES_COLORED)) {
             if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE_BACKPACK) {
                 int pageNum = main.getInventoryUtils().getInventoryPageNum();
                 if (BackpackInventoryManager.getBackpackColor().containsKey(pageNum)) {

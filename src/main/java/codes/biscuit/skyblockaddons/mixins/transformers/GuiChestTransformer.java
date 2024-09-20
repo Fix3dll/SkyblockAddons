@@ -44,7 +44,7 @@ public abstract class GuiChestTransformer extends GuiContainer {
         GuiChestHook.onRenderChestForegroundLayer((GuiChest) (Object) this);
 
         int color = 4210752; // vanilla color
-        if (main.getUtils().isOnSkyblock() && Feature.SHOW_BACKPACK_PREVIEW.isEnabled() && Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+        if (main.getUtils().isOnSkyblock() && Feature.areEnabled(Feature.SHOW_BACKPACK_PREVIEW, Feature.MAKE_BACKPACK_INVENTORIES_COLORED)) {
             BackpackColor backpackColor = BackpackInventoryManager.getBackpackColor().get(
                     main.getInventoryUtils().getInventoryPageNum()
             );
