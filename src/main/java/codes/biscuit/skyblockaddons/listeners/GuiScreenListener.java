@@ -88,7 +88,7 @@ public class GuiScreenListener {
                 }
             }
 
-            if (main.getConfigValues().isEnabled(Feature.SHOW_BACKPACK_PREVIEW)) {
+            if (Feature.SHOW_BACKPACK_PREVIEW.isEnabled()) {
                 if (inventoryType == InventoryType.STORAGE_BACKPACK || inventoryType == InventoryType.ENDER_CHEST) {
                     ContainerPreviewManager.onContainerOpen(chestInventory);
                 }
@@ -108,6 +108,7 @@ public class GuiScreenListener {
         // Closing a container
         if (guiScreen == null && oldGuiScreen instanceof GuiContainer) {
             lastContainerCloseMs = System.currentTimeMillis();
+            main.getInventoryUtils().setInventoryType(null);
         }
 
         // Closing or switching to a different GuiChest
@@ -131,7 +132,7 @@ public class GuiScreenListener {
     public void onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre event) {
         int eventKey = Keyboard.getEventKey();
 
-        if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE) && eventKey == main.getDeveloperCopyNBTKey().getKeyCode() && Keyboard.getEventKeyState()) {
+        if (Feature.DEVELOPER_MODE.isEnabled() && eventKey == main.getDeveloperCopyNBTKey().getKeyCode() && Keyboard.getEventKeyState()) {
             // Copy Item NBT
             GuiScreen currentScreen = event.gui;
 
@@ -170,11 +171,10 @@ public class GuiScreenListener {
 
         if (guiScreen instanceof GuiChest) {
             GuiChest guiChest = (GuiChest) guiScreen;
-            InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().updateInventoryType(guiChest);
             InventoryBasic chestInventory = (InventoryBasic) guiChest.lowerChestInventory;
 
             // Save backpack colors
-            if (inventoryType == InventoryType.STORAGE) {
+            if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE) {
                 for (int i = 0; i < chestInventory.getSizeInventory(); i++) {
                     ItemStack item = chestInventory.getStackInSlot(i);
                     if (item == null || item.getItem() != Items.skull) continue;
@@ -205,7 +205,7 @@ public class GuiScreenListener {
             return;
         }
 
-        if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && event.gui instanceof GuiContainer) {
+        if (Feature.LOCK_SLOTS.isEnabled() && event.gui instanceof GuiContainer) {
             GuiContainer guiContainer = (GuiContainer) event.gui;
 
             if (eventButton >= 0) {

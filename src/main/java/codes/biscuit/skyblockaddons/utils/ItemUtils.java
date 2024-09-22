@@ -4,19 +4,18 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Rarity;
 import codes.biscuit.skyblockaddons.core.ItemType;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
-import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.utils.pojo.PetInfo;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.CompactorItem;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.ContainerData;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.Rune;
 import lombok.Setter;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,8 +94,13 @@ public class ItemUtils {
      */
     public static ItemStack getPersonalCompactorItemStack(String personalCompactorSkyblockID) {
         CompactorItem compactorItem = compactorItems.get(personalCompactorSkyblockID);
-        return compactorItem != null ? compactorItem.getItemStack() : ItemUtils.createSkullItemStack("§7Unknown (" + personalCompactorSkyblockID + ")", Collections.singletonList("§6also biscut was here hi!!"), personalCompactorSkyblockID,
-                "724c64a2-fc8b-4842-852b-6b4c2c6ef241", "e0180f4aeb6929f133c9ff10476ab496f74c46cf8b3be6809798a974929ccca3");
+        return compactorItem != null ? compactorItem.getItemStack() : ItemUtils.createSkullItemStack(
+                EnumChatFormatting.GOLD + personalCompactorSkyblockID,
+                Collections.singletonList("§cSBA cannot found this item!"),
+                personalCompactorSkyblockID,
+                "577218c5-279a-4c2b-9afe-2dbd419e7937",
+                "ecc58cb55b1a11e6d88c2d4d1a6366c23887dee26304bda412c4a51825f199"
+        );
     }
 
     /**
@@ -244,7 +249,6 @@ public class ItemUtils {
         }
     }
 
-
     /**
      * Returns the Skyblock Item ID of a given Skyblock Extra Attributes NBT Compound
      *
@@ -262,20 +266,6 @@ public class ItemUtils {
         }
 
         return itemId;
-    }
-
-    /**
-     * Checks if the given {@code ItemStack} is a builders wand
-     * See {@link codes.biscuit.skyblockaddons.mixins.hooks.PlayerControllerMPHook#onWindowClick(int, int, int, EntityPlayer, ReturnValue)}
-     * for a commented-out implementation (may come back in the future).
-     *
-     * @param stack the {@code ItemStack} to check
-     * @return {@code true} if {@code stack} is a backpack, {@code false} otherwise
-     */
-    public static boolean isBuildersWand(ItemStack stack) {
-        NBTTagCompound extraAttributes = getExtraAttributes(stack);
-        ContainerData containerData = containers.get(getSkyblockItemID(extraAttributes));
-        return containerData != null && containerData.isBuildersWand();
     }
 
     /**
@@ -590,6 +580,16 @@ public class ItemUtils {
             return ea.getInteger("thunder_charge");
         }
         return 0;
+    }
+
+    public static UUID getUuid(ItemStack itemStack) {
+        NBTTagCompound extraAttributes = getExtraAttributes(itemStack);
+
+        if (extraAttributes != null && extraAttributes.hasKey("uuid")) {
+            return UUID.fromString(extraAttributes.getString("uuid"));
+        }
+
+        return null;
     }
 
     /**

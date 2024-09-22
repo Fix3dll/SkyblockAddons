@@ -5,10 +5,12 @@ import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.skyblockdata.ContainerData;
+import codes.biscuit.skyblockaddons.utils.skyblockdata.ContainerData.ContainerType;
 import lombok.Getter;
 import lombok.NonNull;
 import net.minecraft.client.Minecraft;
@@ -18,6 +20,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -43,6 +46,7 @@ import java.util.regex.Pattern;
 public class ContainerPreviewManager {
 
     private static final Logger logger = SkyblockAddons.getLogger();
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("skyblockaddons", "containerPreview.png");
     private static final Pattern BACKPACK_STORAGE_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
@@ -52,6 +56,8 @@ public class ContainerPreviewManager {
      * The container preview to render
      */
     private static ContainerPreview currentContainerPreview;
+    private static UUID cachedBackpackUuid;
+    private static ContainerPreview cachedContainerPreview;
 
     /**
      * The current container inventory that will be saved to the cache after it is fully initialized
@@ -101,20 +107,22 @@ public class ContainerPreviewManager {
             String compressedDataTag = containerData.getCompressedItemStacksTag();
             List<String> dataTags = containerData.getItemStackDataTags();
 
-            if (compressedDataTag != null) {
-                if (extraAttributes.hasKey(compressedDataTag, Constants.NBT.TAG_BYTE_ARRAY)) {
-                    byte[] bytes = extraAttributes.getByteArray(compressedDataTag);
-                    items = decompressItems(bytes);
-                }
+            if (compressedDataTag != null && extraAttributes.hasKey(compressedDataTag, Constants.NBT.TAG_BYTE_ARRAY)) {
+                byte[] bytes = extraAttributes.getByteArray(compressedDataTag);
+                items = decompressItems(bytes);
             } else if (dataTags != null) {
                 items = new ArrayList<>(containerSize);
                 Iterator<String> dataTagsIterator = dataTags.iterator();
                 for (int itemNumber = 0; itemNumber < containerSize && dataTagsIterator.hasNext(); itemNumber++) {
                     String key = dataTagsIterator.next();
-                    if (!extraAttributes.hasKey(key)) {
-                        continue;
+                    if (extraAttributes.hasKey(key)) {
+                        items.add(ItemUtils.getPersonalCompactorItemStack(extraAttributes.getString(key)));
+                    } else {
+                        items.add(
+                                new ItemStack(Blocks.stained_glass_pane, 1, 5)
+                                        .setStackDisplayName("§aAuto-Craft Slot #" + (itemNumber + 1))
+                        );
                     }
-                    items.add(ItemUtils.getPersonalCompactorItemStack(extraAttributes.getString(key)));
                 }
             }
             if (items == null) {
@@ -123,9 +131,23 @@ public class ContainerPreviewManager {
 
             // Get the container color
             BackpackColor color = ItemUtils.getBackpackColor(stack);
-            String name = containerData.isPersonalCompactor() ? null : TextUtils.stripColor(stack.getDisplayName());
+            String name;
+            switch (containerData.getType()) {
+                case PERSONAL_COMPACTOR:
+                case PERSONAL_DELETOR:
+                    name = null;
+                    break;
+                default:
+                    name = TextUtils.stripColor(stack.getDisplayName());
+                    break;
+            }
 
-            return new ContainerPreview(items, name, color, containerData.getNumRows(), containerData.getNumCols());
+            boolean active = false;
+            if (extraAttributes.hasKey("PERSONAL_DELETOR_ACTIVE")) {
+                active = extraAttributes.getBoolean("PERSONAL_DELETOR_ACTIVE");
+            }
+
+            return new ContainerPreview(items, name, color, containerData.getNumRows(), containerData.getNumCols(), containerData.getType(), active);
         }
         return null;
     }
@@ -133,12 +155,13 @@ public class ContainerPreviewManager {
     /**
      * Saves {@code containerInventory} to the container inventory cache if it's not {@code null} when a
      * {@link net.minecraft.client.gui.inventory.GuiChest} is closed.
-     * 
-     * @see codes.biscuit.skyblockaddons.listeners.GuiScreenListener#onGuiOpen(GuiOpenEvent) 
+     *
+     * @see codes.biscuit.skyblockaddons.listeners.GuiScreenListener#onGuiOpen(GuiOpenEvent)
      */
     public static void onContainerClose() {
         if (containerInventory != null) {
             saveStorageContainerInventory();
+            main.getInventoryUtils().setInventoryPageNum(0);
         }
     }
 
@@ -150,7 +173,7 @@ public class ContainerPreviewManager {
      */
     public static void onContainerOpen(@NonNull InventoryBasic containerInventory) {
         ContainerPreviewManager.containerInventory = containerInventory;
-        storageKey = SkyblockAddons.getInstance().getInventoryUtils().getInventoryKey();
+        storageKey = main.getInventoryUtils().getInventoryKey();
     }
 
     private static List<ItemStack> decompressItems(byte[] bytes) {
@@ -183,163 +206,176 @@ public class ContainerPreviewManager {
 
     public static void drawContainerPreviews(GuiContainer guiContainer, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getMinecraft();
-        SkyblockAddons main = SkyblockAddons.getInstance();
 
-        if (currentContainerPreview != null) {
-            int x = currentContainerPreview.getX();
-            int y = currentContainerPreview.getY();
+        if (currentContainerPreview == null) return;
 
-            List<ItemStack> items = currentContainerPreview.getItems();
-            int length = items.size();
-            int rows = currentContainerPreview.getNumRows();
-            int cols = currentContainerPreview.getNumCols();
+        int x = currentContainerPreview.getX();
+        int y = currentContainerPreview.getY();
 
-            int screenHeight = guiContainer.height;
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        List<ItemStack> items = currentContainerPreview.getItems();
+        int length = items.size();
+        int rows = currentContainerPreview.getNumRows();
+        int cols = currentContainerPreview.getNumCols();
 
-            ItemStack tooltipItem = null;
+        int screenHeight = guiContainer.height;
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            if (main.getConfigValues().getBackpackStyle() == EnumUtils.BackpackStyle.GUI) {
-                mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
-                GlStateManager.disableLighting();
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(0,0,300);
-                int textColor = 4210752;
-                if (main.getConfigValues().isEnabled(Feature.MAKE_BACKPACK_INVENTORIES_COLORED)) {
-                    BackpackColor color = currentContainerPreview.getBackpackColor();
-                    if (color != null) {
-                        GlStateManager.color(color.getR(), color.getG(), color.getB(), 1);
-                        textColor = color.getInventoryTextColor();
+        ItemStack tooltipItem = null;
+
+        if (main.getConfigValues().getBackpackStyle() == EnumUtils.BackpackStyle.GUI) {
+            mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
+            GlStateManager.disableLighting();
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0,0,300);
+            int textColor = 4210752;
+            if (Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+                BackpackColor color = currentContainerPreview.getBackpackColor();
+                ContainerType type = currentContainerPreview.getContainerType();
+                if (color != null && color != BackpackColor.DEFAULT) {
+                    GlStateManager.color(color.getR(), color.getG(), color.getB(), 1.0F);
+                    textColor = color.getInventoryTextColor();
+                } else if (type == ContainerType.PERSONAL_COMPACTOR || type == ContainerType.PERSONAL_DELETOR) {
+                    if (currentContainerPreview.isActive()) {
+                        GlStateManager.color(0.306F, 0.533F, 0.173F, 1.0F);
+                    } else {
+                        GlStateManager.color(0.733F, 0.227F, 0.176F, 1.0F);
                     }
                 }
+            }
 
-                final int textureBorder = 7;
-                final int textureTopBorder = 17;
-                final int textureItemSquare = 18;
+            final int textureBorder = 7;
+            final int textureTopBorder = 17;
+            final int textureItemSquare = 18;
 
-                // Our chest has these properties
-                final int topBorder = currentContainerPreview.getName() == null ? textureBorder : textureTopBorder;
-                int totalWidth = cols * textureItemSquare + 2 * textureBorder;
-                int totalHeight = rows * textureItemSquare + topBorder + textureBorder;
-                int squaresEndWidth = totalWidth - textureBorder;
-                int squaresEndHeight = totalHeight - textureBorder;
+            // Our chest has these properties
+            final int topBorder = currentContainerPreview.getName() == null ? textureBorder : textureTopBorder;
+            int totalWidth = cols * textureItemSquare + 2 * textureBorder;
+            int totalHeight = rows * textureItemSquare + topBorder + textureBorder;
+            int squaresEndWidth = totalWidth - textureBorder;
+            int squaresEndHeight = totalHeight - textureBorder;
 
-                if (x + totalWidth > guiContainer.width) {
-                    x -= totalWidth;
-                }
+            if (x + totalWidth > guiContainer.width) {
+                x -= totalWidth;
+            }
 
-                if (y + totalHeight > screenHeight) {
-                    y = screenHeight - totalHeight;
-                }
+            if (y + totalHeight > screenHeight) {
+                y = screenHeight - totalHeight;
+            }
 
-                // If there is no name, don't render the full top of the chest to make things look cleaner
-                if (currentContainerPreview.getName() == null) {
-                    // Draw top border
-                    guiContainer.drawTexturedModalRect(x, y, 0, 0, squaresEndWidth, topBorder);
-                    // Draw left-side and all GUI display rows ("squares")
-                    guiContainer.drawTexturedModalRect(x, y + topBorder, 0, textureTopBorder, squaresEndWidth, squaresEndHeight - topBorder);
-                } else {
-                    // Draw the top-left of the container
-                    guiContainer.drawTexturedModalRect(x, y, 0, 0, squaresEndWidth, squaresEndHeight);
-                }
-                // Draw the top-right of the container
-                guiContainer.drawTexturedModalRect(x + squaresEndWidth, y, 169, 0, textureBorder, squaresEndHeight);
-                // Draw the bottom-left of the container
-                guiContainer.drawTexturedModalRect(x, y + squaresEndHeight, 0, 125, squaresEndWidth, textureBorder);
-                // Draw the bottom-right of the container
-                guiContainer.drawTexturedModalRect(x + squaresEndWidth, y + squaresEndHeight, 169, 125, textureBorder, textureBorder);
-
-                if (currentContainerPreview.getName() != null) {
-                    String name = currentContainerPreview.getName();
-                    if (main.getUtils().isUsingFSRcontainerPreviewTexture()) {
-                        name = ColorCode.GOLD + TextUtils.stripColor(name);
-                    }
-                    mc.fontRendererObj.drawString(name, x + 8, y + 6, textColor);
-                }
-
-                GlStateManager.popMatrix();
-                GlStateManager.enableLighting();
-
-                RenderHelper.enableGUIStandardItemLighting();
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                GlStateManager.enableRescaleNormal();
-                int itemStartX = x + textureBorder + 1;
-                int itemStartY = y + topBorder + 1;
-                for (int i = 0; i < length; i++) {
-                    ItemStack item = items.get(i);
-                    if (item != null) {
-                        int itemX = itemStartX + ((i % cols) * textureItemSquare);
-                        int itemY = itemStartY + ((i / cols) * textureItemSquare);
-
-                        RenderItem renderItem = mc.getRenderItem();
-                        guiContainer.zLevel = 200;
-                        renderItem.zLevel = 200;
-                        renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
-                        renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
-                        guiContainer.zLevel = 0;
-                        renderItem.zLevel = 0;
-
-                        if (frozen && mouseX > itemX && mouseX < itemX + 16 && mouseY > itemY && mouseY < itemY + 16) {
-                            tooltipItem = item;
-                        }
-                    }
-                }
+            // If there is no name, don't render the full top of the chest to make things look cleaner
+            if (currentContainerPreview.getName() == null) {
+                // Draw top border
+                guiContainer.drawTexturedModalRect(x, y, 0, 0, squaresEndWidth, topBorder);
+                // Draw left-side and all GUI display rows ("squares")
+                guiContainer.drawTexturedModalRect(x, y + topBorder, 0, textureTopBorder, squaresEndWidth, squaresEndHeight - topBorder);
             } else {
-                int totalWidth = (16 * cols) + 3;
-                if (x + totalWidth > guiContainer.width) {
-                    x -= totalWidth;
+                // Draw the top-left of the container
+                guiContainer.drawTexturedModalRect(x, y, 0, 0, squaresEndWidth, squaresEndHeight);
+            }
+            // Draw the top-right of the container
+            guiContainer.drawTexturedModalRect(x + squaresEndWidth, y, 169, 0, textureBorder, squaresEndHeight);
+            // Draw the bottom-left of the container
+            guiContainer.drawTexturedModalRect(x, y + squaresEndHeight, 0, 125, squaresEndWidth, textureBorder);
+            // Draw the bottom-right of the container
+            guiContainer.drawTexturedModalRect(x + squaresEndWidth, y + squaresEndHeight, 169, 125, textureBorder, textureBorder);
+
+            if (currentContainerPreview.getName() != null) {
+                String name = currentContainerPreview.getName();
+                if (main.getUtils().isUsingFSRcontainerPreviewTexture()) {
+                    name = ColorCode.GOLD + TextUtils.stripColor(name);
                 }
-                int totalHeight = (16 * rows) + 3;
-                if (y + totalHeight > screenHeight) {
-                    y = screenHeight - totalHeight;
-                }
+                mc.fontRendererObj.drawString(name, x + 8, y + 6, textColor);
+            }
 
-                GlStateManager.disableLighting();
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(0,0, 300);
-                Gui.drawRect(x, y, x + totalWidth, y + totalHeight, ColorCode.DARK_GRAY.getColor(250));
-                GlStateManager.popMatrix();
-                GlStateManager.enableLighting();
+            GlStateManager.popMatrix();
+            GlStateManager.enableLighting();
 
-                RenderHelper.enableGUIStandardItemLighting();
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                GlStateManager.enableRescaleNormal();
-                for (int i = 0; i < length; i++) {
-                    ItemStack item = items.get(i);
-                    if (item != null) {
-                        int itemX = x + ((i % cols) * 16);
-                        int itemY = y + ((i / cols) * 16);
+            RenderHelper.enableGUIStandardItemLighting();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
+            int itemStartX = x + textureBorder + 1;
+            int itemStartY = y + topBorder + 1;
+            for (int i = 0; i < length; i++) {
+                ItemStack item = items.get(i);
+                if (item != null) {
+                    int itemX = itemStartX + ((i % cols) * textureItemSquare);
+                    int itemY = itemStartY + ((i / cols) * textureItemSquare);
 
-                        RenderItem renderItem = mc.getRenderItem();
-                        guiContainer.zLevel = 200;
-                        renderItem.zLevel = 200;
-                        renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
-                        renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
-                        guiContainer.zLevel = 0;
-                        renderItem.zLevel = 0;
+                    RenderItem renderItem = mc.getRenderItem();
+                    guiContainer.zLevel = 200;
+                    renderItem.zLevel = 200;
+                    renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
+                    renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
+                    guiContainer.zLevel = 0;
+                    renderItem.zLevel = 0;
 
-                        if (frozen && mouseX > itemX && mouseX < itemX+16 && mouseY > itemY && mouseY < itemY+16) {
-                            tooltipItem = item;
-                        }
+                    if (frozen && mouseX > itemX && mouseX < itemX + 16 && mouseY > itemY && mouseY < itemY + 16) {
+                        tooltipItem = item;
                     }
                 }
             }
-            if (tooltipItem != null) {
-                // Translate up to fix patcher glitch
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(0,0, 302);
-                drawingFrozenItemTooltip = true;
-                guiContainer.drawHoveringText(tooltipItem.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips), mouseX, mouseY);
-                drawingFrozenItemTooltip = false;
-                GlStateManager.popMatrix();
+        } else {
+            int totalWidth = (16 * cols) + 3;
+            if (x + totalWidth > guiContainer.width) {
+                x -= totalWidth;
             }
-            if (!frozen) {
-                currentContainerPreview = null;
+            int totalHeight = (16 * rows) + 3;
+            if (y + totalHeight > screenHeight) {
+                y = screenHeight - totalHeight;
             }
+
+            GlStateManager.disableLighting();
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0,0, 300);
+            Gui.drawRect(x - 3, y - 3, x + totalWidth, y + totalHeight, getRectColor());
+            GlStateManager.popMatrix();
             GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
+
+            RenderHelper.enableGUIStandardItemLighting();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
+            for (int i = 0; i < length; i++) {
+                ItemStack item = items.get(i);
+                if (item != null) {
+                    int itemX = x + ((i % cols) * 16);
+                    int itemY = y + ((i / cols) * 16);
+
+                    RenderItem renderItem = mc.getRenderItem();
+                    guiContainer.zLevel = 200;
+                    renderItem.zLevel = 200;
+                    renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
+                    renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
+                    guiContainer.zLevel = 0;
+                    renderItem.zLevel = 0;
+
+                    if (frozen && mouseX > itemX && mouseX < itemX+16 && mouseY > itemY && mouseY < itemY+16) {
+                        tooltipItem = item;
+                    }
+                }
+            }
         }
+        if (tooltipItem != null) {
+            // Translate up to fix patcher glitch
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0,0, 302);
+            drawingFrozenItemTooltip = true;
+            DrawUtils.drawHoveringText(
+                    tooltipItem.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips),
+                    mouseX,
+                    mouseY,
+                    guiContainer.width,
+                    guiContainer.height,
+                    -1
+            );
+            drawingFrozenItemTooltip = false;
+            GlStateManager.popMatrix();
+        }
+        if (!frozen) {
+            currentContainerPreview = null;
+        }
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+        RenderHelper.enableStandardItemLighting();
     }
 
     /**
@@ -360,26 +396,28 @@ public class ContainerPreviewManager {
         String skyblockID = TextUtils.getBackpackIDFromLore(ItemUtils.getItemLore(stack).get(0));
         ContainerData containerData = ItemUtils.getContainerData(skyblockID);
         int rows = 6, cols = 9;
+        ContainerType containerType = null;
         if (containerData != null) {
             // Hybrid system for jumbo backpacks means they get only 5 rows in the container (but old ones that haven't been converted get 6 outside of it)
             rows = Math.min(containerData.getNumRows(), 5);
             cols = containerData.getNumCols();
+            containerType = containerData.getType();
         } else if (TextUtils.stripColor(stack.getDisplayName()).toUpperCase().startsWith("ENDER CHEST")) {
             rows = Math.min(5, (int) Math.ceil(items.size() / 9F));
+            containerType = ContainerType.BACKPACK;
         }
 
-        return new ContainerPreview(items, TextUtils.stripColor(stack.getDisplayName()), color, rows, cols);
+        return new ContainerPreview(items, TextUtils.stripColor(stack.getDisplayName()), color, rows, cols, containerType);
     }
-    
+
     /**
      * Returns whether the backpack freeze key is down
      *
      * @return {@code true} if the backpack freeze key is down, {@code false} otherwise
      */
     private static boolean isFreezeKeyDown() {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-
         if (main.getFreezeBackpackKey().isKeyDown()) return true;
+
         try {
             if (Keyboard.isKeyDown(main.getFreezeBackpackKey().getKeyCode())) return true;
         } catch (Exception ignored) {
@@ -395,8 +433,6 @@ public class ContainerPreviewManager {
      * @see codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook#keyTyped(int) ;
      */
     public static void onContainerKeyTyped(int keyCode) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-
         if (main.getUtils().isOnSkyblock()) {
             if (keyCode == 1 || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()) {
                 frozen = false;
@@ -419,37 +455,54 @@ public class ContainerPreviewManager {
      * @return {@code true} if a container preview is rendered, {@code false} otherwise
      */
     public static boolean onRenderTooltip(ItemStack itemStack, int x, int y) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-
         // Cancel tooltips while containers are frozen and we aren't trying to render a tooltip in the backpack
         if (frozen && !drawingFrozenItemTooltip) {
             return true;
         }
 
-        if (main.getConfigValues().isEnabled(Feature.SHOW_BACKPACK_PREVIEW)) {
-            // Don't show if we only want to show while holding shift, and the player isn't holding shift
-            if (main.getConfigValues().isEnabled(Feature.SHOW_BACKPACK_HOLDING_SHIFT) && !GuiScreen.isShiftKeyDown()) {
-                return false;
-            }
-            // Don't render the preview the item represents a crafting recipe or the result of one.
-            if (ItemUtils.isMenuItem(itemStack)) {
-                return false;
-            }
+        if (!Feature.SHOW_BACKPACK_PREVIEW.isEnabled()) {
+            return false;
+        }
 
-            ContainerPreview containerPreview = null;
+        // Don't show if we only want to show while holding shift, and the player isn't holding shift
+        if (Feature.SHOW_BACKPACK_HOLDING_SHIFT.isEnabled() && !GuiScreen.isShiftKeyDown()) {
+            return false;
+        }
+        // Don't render the preview the item represents a crafting recipe or the result of one.
+        if (ItemUtils.isMenuItem(itemStack)) {
+            return false;
+        }
+
+        UUID newUuid = ItemUtils.getUuid(itemStack);
+        String strippedName = TextUtils.stripColor(itemStack.getDisplayName());
+        Matcher m = ENDERCHEST_STORAGE_PATTERN.matcher(strippedName);
+        boolean enderChestMatched = false;
+
+        // Do not waste resources to process non-UUID items (except Ender Chests cus icons doesn't have UUID)
+        if (newUuid == null) {
+            if (Feature.SHOW_ENDER_CHEST_PREVIEW.isEnabled() && m.matches()) {
+                enderChestMatched = true;
+            } else {
+                return false;
+            }
+        }
+
+        if (cachedBackpackUuid == null || !cachedBackpackUuid.equals(newUuid)) {
+            cachedBackpackUuid = newUuid;
+            cachedContainerPreview = null;
+
             // Check for cached storage previews
             if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE) {
-                String strippedName = TextUtils.stripColor(itemStack.getDisplayName());
-                Matcher m;
                 String storageKey = null;
-                if ((m = BACKPACK_STORAGE_PATTERN.matcher(strippedName)).matches()) {
+
+                if (enderChestMatched) {
+                    int enderChestPage = Integer.parseInt(m.group("page"));
+                    storageKey = InventoryType.ENDER_CHEST.getInventoryName() + enderChestPage;
+                } else if ((m = BACKPACK_STORAGE_PATTERN.matcher(strippedName)).matches()) {
                     int pageNum = Integer.parseInt(m.group("slot"));
                     storageKey = InventoryType.STORAGE_BACKPACK.getInventoryName() + pageNum;
-                } else if (main.getConfigValues().isEnabled(Feature.SHOW_ENDER_CHEST_PREVIEW) &&
-                        (m = ENDERCHEST_STORAGE_PATTERN.matcher(strippedName)).matches()) {
-                    int pageNum = Integer.parseInt(m.group("page"));
-                    storageKey = InventoryType.ENDER_CHEST.getInventoryName() + pageNum;
                 }
+
                 if (storageKey != null) {
                     Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getStorageCache();
                     if (cache.get(storageKey) != null) {
@@ -457,19 +510,21 @@ public class ContainerPreviewManager {
                         List<ItemStack> items = decompressItems(bytes);
                         // Clip out the top
                         items = items.subList(9, items.size());
-                        containerPreview = getFromStorageBackpack(itemStack, items);
+                        cachedContainerPreview = getFromStorageBackpack(itemStack, items);
                     }
                 }
             }
             // Check for normal previews
-            if (containerPreview == null) {
+            if (cachedContainerPreview == null) {
                 // Check the subfeature conditions
                 NBTTagCompound extraAttributes = ItemUtils.getExtraAttributes(itemStack);
                 ContainerData containerData = ItemUtils.getContainerData(ItemUtils.getSkyblockItemID(extraAttributes));
 
                 // TODO: Does checking menu item handle the baker inventory thing?
-                if (containerData == null || (containerData.isCakeBag() && main.getConfigValues().isDisabled(Feature.CAKE_BAG_PREVIEW)) ||
-                        (containerData.isPersonalCompactor() && main.getConfigValues().isDisabled(Feature.SHOW_PERSONAL_COMPACTOR_PREVIEW))) {
+                if (containerData == null || (containerData.isCakeBag() && Feature.CAKE_BAG_PREVIEW.isDisabled()) ||
+                        ((containerData.isBuildersRuler() || containerData.isBuildersWand()) && Feature.BUILDERS_TOOL_PREVIEW.isDisabled()) ||
+                        ((containerData.isPersonalCompactor() || containerData.isPersonalDeletor()) && Feature.PERSONAL_COMPACTOR_PREVIEW.isDisabled())
+                ) {
                     return false;
                 }
 
@@ -492,25 +547,25 @@ public class ContainerPreviewManager {
                     }
                 }
 
-                containerPreview = ContainerPreviewManager.getFromItem(itemStack);
+                cachedContainerPreview = ContainerPreviewManager.getFromItem(itemStack);
+            }
+        }
+
+        if (cachedContainerPreview != null) {
+            cachedContainerPreview.setX(x);
+            cachedContainerPreview.setY(y);
+
+            // Handle the freeze container toggle
+            if (isFreezeKeyDown() && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
+                lastToggleFreezeTime = System.currentTimeMillis();
+                frozen = !frozen;
+                currentContainerPreview = cachedContainerPreview;
             }
 
-            if (containerPreview != null) {
-                containerPreview.setX(x);
-                containerPreview.setY(y);
-
-                // Handle the freeze container toggle
-                if (isFreezeKeyDown() && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
-                    lastToggleFreezeTime = System.currentTimeMillis();
-                    frozen = !frozen;
-                    currentContainerPreview = containerPreview;
-                }
-
-                if (!frozen) {
-                    currentContainerPreview = containerPreview;
-                }
-                return true;
+            if (!frozen) {
+                currentContainerPreview = cachedContainerPreview;
             }
+            return true;
         }
 
         return frozen;
@@ -570,10 +625,10 @@ public class ContainerPreviewManager {
             if (dirty) {
                 if (cachedContainer == null) {
                     cache.put(storageKey, new CompressedStorage(inventoryContents));
-                    logger.info("Cached new container " + storageKey + ".");
+                    logger.info("Cached new container {}.", storageKey);
                 } else {
                     cachedContainer.setStorage(inventoryContents);
-                    logger.info("Refreshed cache for container " + storageKey + ".");
+                    logger.info("Refreshed cache for container {}.", storageKey);
                 }
 
                 SkyblockAddons.getInstance().getPersistentValuesManager().saveValues();
@@ -600,5 +655,21 @@ public class ContainerPreviewManager {
     private static void resetCurrentContainer() {
         containerInventory = null;
         storageKey = null;
+    }
+
+    private static int getRectColor() {
+        int rectColor = ColorCode.DARK_GRAY.getColor(250);
+
+        if (Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+            ContainerType type = currentContainerPreview.getContainerType();
+            if (type == ContainerType.PERSONAL_COMPACTOR || type == ContainerType.PERSONAL_DELETOR) {
+                if (currentContainerPreview.isActive()) {
+                    rectColor = ColorCode.DARK_GREEN.getColor(250);
+                } else {
+                    rectColor = ColorCode.DARK_RED.getColor(250);
+                }
+            }
+        }
+        return rectColor;
     }
 }

@@ -18,7 +18,7 @@ import java.util.*;
 public enum Feature {
 
     DROP_CONFIRMATION(1, "settings.itemDropConfirmation", new GuiFeatureData(ColorCode.RED, true), true, EnumUtils.FeatureSetting.ENABLED_IN_OTHER_GAMES),
-    SHOW_BACKPACK_PREVIEW(3, "settings.showBackpackPreview", null, false, EnumUtils.FeatureSetting.BACKPACK_STYLE, EnumUtils.FeatureSetting.SHOW_ONLY_WHEN_HOLDING_SHIFT, EnumUtils.FeatureSetting.MAKE_INVENTORY_COLORED, EnumUtils.FeatureSetting.ENABLE_CAKE_BAG_PREVIEW, EnumUtils.FeatureSetting.ENABLE_PERSONAL_COMPACTOR_PREVIEW, EnumUtils.FeatureSetting.SHOW_ENDER_CHEST_PREVIEW),
+    SHOW_BACKPACK_PREVIEW(3, "settings.showBackpackPreview", null, false, EnumUtils.FeatureSetting.BACKPACK_STYLE, EnumUtils.FeatureSetting.SHOW_ONLY_WHEN_HOLDING_SHIFT, EnumUtils.FeatureSetting.MAKE_INVENTORY_COLORED, EnumUtils.FeatureSetting.CAKE_BAG_PREVIEW, EnumUtils.FeatureSetting.PERSONAL_COMPACTOR_PREVIEW, EnumUtils.FeatureSetting.ENDER_CHEST_PREVIEW, EnumUtils.FeatureSetting.BUILDERS_TOOL_PREVIEW),
     HIDE_BONES(4, "settings.hideSkeletonHatBones", null, false),
     SKELETON_BAR(5, "settings.skeletonHatBonesBar", new GuiFeatureData(EnumUtils.DrawType.SKELETON_BAR), false),
     HIDE_FOOD_ARMOR_BAR(6, "settings.hideFoodAndArmor", null, false),
@@ -69,7 +69,7 @@ public enum Feature {
     ZEALOT_COUNTER(66, "settings.zealotCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), false, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     TICKER_CHARGES_DISPLAY(67, "settings.tickerChargesDisplay", new GuiFeatureData(EnumUtils.DrawType.TICKER, null), false),
     NO_ARROWS_LEFT_ALERT(69, "settings.noArrowsLeftAlert", new GuiFeatureData(ColorCode.RED), false),
-    CAKE_BAG_PREVIEW(71, "settings.showCakeBagPreview", null, true),
+    CAKE_BAG_PREVIEW(71, null, true),
     REPEAT_FULL_INVENTORY_WARNING(73, null, true),
     SKYBLOCK_ADDONS_BUTTON_IN_PAUSE_MENU(76, "settings.skyblockAddonsButtonInPauseMenu", null, false),
     SHOW_TOTAL_ZEALOT_COUNT(77, "settings.showTotalZealotCount", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), true, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
@@ -130,7 +130,7 @@ public enum Feature {
     HIDE_WHEN_NOT_IN_SPIDERS_DEN(134, null, false),
     HIDE_WHEN_NOT_IN_CASTLE(135, null, false),
     DUNGEON_DEATH_COUNTER(136, "settings.dungeonDeathCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), true),
-    SHOW_PERSONAL_COMPACTOR_PREVIEW(137, null, false),
+    PERSONAL_COMPACTOR_PREVIEW(137, null, false),
     ROCK_PET_TRACKER(138, "settings.rockPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GRAY), true),
     DOLPHIN_PET_TRACKER(139, "settings.dolphinPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.AQUA), true, EnumUtils.FeatureSetting.SHOW_ONLY_HOLDING_FISHING_ROD),
     SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY(140, "settings.dungeonsTeammateNameOverlay", null, false, EnumUtils.FeatureSetting.STOP_NAME_OVERLAY_WHEN_CLOSE),
@@ -235,6 +235,7 @@ public enum Feature {
     OUTLINE_SHOWCASE_ITEMS(245, null, false),
     PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
     STOP_NAME_OVERLAY_WHEN_CLOSE(247, null, true),
+    BUILDERS_TOOL_PREVIEW(248, null, false),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -276,7 +277,7 @@ public enum Feature {
             TARANTULA_COLOR_BY_RARITY, SVEN_COLOR_BY_RARITY, REVENANT_TEXT_MODE, TARANTULA_TEXT_MODE, SVEN_TEXT_MODE,
             DRAGON_STATS_TRACKER_COLOR_BY_RARITY, HIDE_WHEN_NOT_IN_CASTLE, HIDE_WHEN_NOT_IN_SPIDERS_DEN, HIDE_WHEN_NOT_IN_END,
             ENDERMAN_COLOR_BY_RARITY, ENDERMAN_TEXT_MODE, HIDE_WHEN_NOT_IN_CRIMSON, INFERNO_COLOR_BY_RARITY, INFERNO_TEXT_MODE,
-            HIDE_WHEN_NOT_IN_CRYPTS, HIDE_WHEN_NOT_IN_RIFT, SHOW_PERSONAL_COMPACTOR_PREVIEW, SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP,
+            HIDE_WHEN_NOT_IN_CRYPTS, HIDE_WHEN_NOT_IN_RIFT, PERSONAL_COMPACTOR_PREVIEW, SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP,
             SHOW_SKILL_XP_GAINED, SHOW_SALVAGE_ESSENCES_COUNTER, HEALING_CIRCLE_OPACITY, ENCHANTMENTS_HIGHLIGHT,
             ENCHANTMENT_COMMA_COLOR, ENCHANTMENT_PERFECT_COLOR, ENCHANTMENT_GREAT_COLOR, ENCHANTMENT_GOOD_COLOR,
             ENCHANTMENT_POOR_COLOR, BIGGER_WAKE, HIDE_ENCHANT_DESCRIPTION, HIDE_GREY_ENCHANTS,
@@ -460,8 +461,12 @@ public enum Feature {
     }
 
     public boolean isEnabled() {
+        return !isDisabled();
+    }
+
+    public boolean isDisabled() {
         ConfigValues values = SkyblockAddons.getInstance().getConfigValues();
-        return values != null && values.isEnabled(this);
+        return values != null && values.isDisabled(this);
     }
 
     /**

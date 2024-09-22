@@ -70,11 +70,11 @@ public class InventoryUtils {
     @Getter
     private boolean haveFullThunderBottle;
 
-    @Getter
+    @Getter @Setter
     private InventoryType inventoryType;
     @Getter
     String inventoryKey;
-    @Getter
+    @Getter @Setter
     private int inventoryPageNum;
     @Getter
     private String inventorySubtype;

@@ -33,15 +33,15 @@ public enum BackpackColor {
     }
 
     public float getR() {
-        return (float)r/255;
+        return r/255F;
     }
 
     public float getG() {
-        return (float)g/255;
+        return g/255F;
     }
 
     public float getB() {
-        return (float)b/255;
+        return b/255F;
     }
 
     private static final Set<BackpackColor> darkColors = EnumSet.of(BackpackColor.BLACK, BackpackColor.PURPLE,

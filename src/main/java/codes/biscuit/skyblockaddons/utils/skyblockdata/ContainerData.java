@@ -6,10 +6,11 @@ import java.util.List;
 
 public class ContainerData {
 
-    private enum ContainerType {
+    public enum ContainerType {
         BACKPACK,
         NEW_YEARS_CAKE,
         PERSONAL_COMPACTOR,
+        PERSONAL_DELETOR,
         BUILDERS_WAND,
         BUILDERS_RULER
     }
@@ -17,7 +18,7 @@ public class ContainerData {
     /**
      * The container type (see {@link ContainerType}).
      */
-    private ContainerType type;
+    @Getter private ContainerType type;
 
     /**
      * The size of the container
@@ -57,6 +58,10 @@ public class ContainerData {
 
     public boolean isPersonalCompactor() {
         return type == ContainerType.PERSONAL_COMPACTOR;
+    }
+
+    public boolean isPersonalDeletor() {
+        return type == ContainerType.PERSONAL_DELETOR;
     }
 
     public boolean isBuildersWand() {
