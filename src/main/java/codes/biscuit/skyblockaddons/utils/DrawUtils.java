@@ -734,8 +734,8 @@ public class DrawUtils {
                                         int bottom,
                                         int startColor,
                                         int endColor) {
-        float[] startRGBA = getNormalizedRGBA(startColor);
-        float[] endRGBA = getNormalizedRGBA(endColor);
+        float[] startRGBA = ColorUtils.getNormalizedRGBA(startColor);
+        float[] endRGBA = ColorUtils.getNormalizedRGBA(endColor);
 
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
@@ -756,14 +756,5 @@ public class DrawUtils {
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
-    }
-
-    private static float[] getNormalizedRGBA(int color) {
-        return new float[] {
-                (float) (color >> 16 & 255) / 255.0F,
-                (float) (color >> 8 & 255) / 255.0F,
-                (float) (color & 255) / 255.0F,
-                (float) (color >> 24 & 255) / 255.0F,
-        };
     }
 }

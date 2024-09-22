@@ -109,6 +109,15 @@ public class ColorUtils {
         return a << 24 | r << 16 | g << 8 | b;
     }
 
+    public static float[] getNormalizedRGBA(int color) {
+        return new float[] {
+                (float) (color >> 16 & 255) / 255.0F,
+                (float) (color >> 8 & 255) / 255.0F,
+                (float) (color & 255) / 255.0F,
+                (float) (color >> 24 & 255) / 255.0F,
+        };
+    }
+
     public static SkyblockColor getDummySkyblockColor(int color) {
         return getDummySkyblockColor(SkyblockColor.ColorAnimation.NONE, color);
     }
