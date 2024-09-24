@@ -724,8 +724,8 @@ public class PlayerListener {
                 }
             }
 
-            if (entity instanceof EntityOtherPlayerMP && main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_NEAR_NPCS)
-                    && main.getUtils().isGuest() && main.getUtils().getMap() != Island.DUNGEON) {
+            if (entity instanceof EntityOtherPlayerMP && Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled()
+                    && !main.getUtils().isGuest() && main.getUtils().getMap() != Island.DUNGEON) {
                 float health = ((EntityOtherPlayerMP) entity).getHealth();
 
                 if (NPCUtils.getNpcLocations().containsKey(entity.getUniqueID())) {

@@ -48,8 +48,8 @@ public class RenderManagerHook {
                     }
                 }
             }
-            if (mc.theWorld != null && main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_NEAR_NPCS)
-                    && !main.getUtils().isGuest() && currentMap != Island.DUNGEON) {
+            if (mc.theWorld != null && Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled() && !main.getUtils().isGuest()
+                    && currentMap != Island.DUNGEON) {
                 if (entityIn instanceof EntityOtherPlayerMP && !NPCUtils.isNPC(entityIn) && NPCUtils.isNearNPC(entityIn)) {
                     returnValue.cancel();
                 }
