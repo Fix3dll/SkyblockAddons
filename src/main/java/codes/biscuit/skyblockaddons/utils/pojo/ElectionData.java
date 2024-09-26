@@ -18,7 +18,7 @@ public class ElectionData {
             }
         }
 
-        return mayor.minister != null && mayor.minister.name.equals(perkName);
+        return mayor.minister != null && mayor.minister.perk.name.equals(perkName);
     }
 
     @Getter
