@@ -142,7 +142,7 @@ public class RenderListener {
             , new SlayerArmorProgress(new ItemStack(Items.leather_helmet))
     };
 
-    private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?:§[a-f0-9]?(?:✪|[➊-➒]))+");
+    private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?:(?:§[a-f0-9])?✪)+(?:§[a-f0-9]?[➊-➒])?");
 
     private static EntityArmorStand deployableDummyArmorStand;
     private static EntityZombie revenant;
@@ -1124,7 +1124,7 @@ public class RenderListener {
                 if (holdingItem == null || skyblockItemID == null) {
                     return;
                 } else if (DamageDisplayItem.getByID(skyblockItemID) != null) {
-                    text = DUNGEON_STAR_PATTERN.matcher(holdingItem.getDisplayName()).replaceAll("");
+                    text = DUNGEON_STAR_PATTERN.matcher(holdingItem.getDisplayName()).replaceFirst("");
                 } else {
                     return;
                 }
