@@ -19,10 +19,20 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    private static boolean forceUpdate;
+    /** New mayor name according to latest election results from chat */
+    private static String newMayorName = "";
     private static ScheduledTask jerryMayorTask;
 
-    public MayorRequest(boolean forceUpdate) {
+    public MayorRequest() {
+        this("");
+    }
+
+    /**
+     * This constructor is used to update the API data after the mayor election is completed and the new mayor is
+     * announced via chat.
+     * @param newMayorName according to the latest election results in the chat, the name of the new mayor
+     */
+    public MayorRequest(String newMayorName) {
         super(
                 "https://api.hypixel.net/v2/resources/skyblock/election",
                 new JSONResponseHandler<>(ElectionData.class),
@@ -30,10 +40,10 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
                 false,
                 true
         );
-        MayorRequest.forceUpdate = forceUpdate;
+        MayorRequest.newMayorName = newMayorName;
     }
 
-     private static class MayorCallback extends DataFetchCallback<ElectionData> {
+    private static class MayorCallback extends DataFetchCallback<ElectionData> {
 
         public MayorCallback(String path) {
             super(LOGGER, URI.create(path));
@@ -43,12 +53,12 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
         public void completed(ElectionData result) {
             super.completed(result);
             main.setElectionData(result);
+            String mayorName = result.getMayor().getName();
+
             if (Feature.DEVELOPER_MODE.isEnabled()) {
-                LOGGER.info("lastUpdated: {}", new Date(result.getLastUpdated()));
+                LOGGER.info("lastUpdated: {}, mayor: {}", new Date(result.getLastUpdated()), mayorName);
             }
 
-            String oldMayorName = main.getUtils().getMayor();
-            String mayorName = result.getMayor().getName();
             main.getUtils().setMayor(mayorName == null ? "Fix3dll" : mayorName);
 
             ElectionData.Mayor.Minister minister = result.getMayor().getMinister();
@@ -59,26 +69,21 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
             }
 
             // Jerry's Perkpocalypse mayor updater
-            if ("Jerry".equalsIgnoreCase(mayorName) && jerryMayorTask == null) {
+            if ("Jerry".equals(mayorName) && jerryMayorTask == null) {
                 jerryMayorTask = scheduleJerryMayorTask();
             } else if (jerryMayorTask != null) {
                 jerryMayorTask.cancel();
                 jerryMayorTask = null;
             }
 
-            if (MayorRequest.forceUpdate) {
-                // If ElectionData is not updated
-                // TODO could be more reliable?
-                boolean isUpdated = !oldMayorName.equals(mayorName);
-                if (isUpdated) {
-                    MayorRequest.forceUpdate = false;
-                } else {
-                    scheduleUpdateTask();
-                }
+            // If newMayorName is not equals to new API data's mayor field,
+            // schedule new update based on next update time of API data.
+            if (!newMayorName.isEmpty() && !newMayorName.equals(mayorName)) {
+                scheduleUpdateTask(newMayorName);
             }
         }
 
-        private void scheduleUpdateTask() {
+        private void scheduleUpdateTask(String expectedMayorName) {
             // election endpoint is updated every 5 minutes (+5 minutes and bonus 5 seconds)
             long nextUpdateTime = main.getElectionData().getLastUpdated() + 305000L;
             int delayTick = (int) (nextUpdateTime - System.currentTimeMillis()) / 50;
@@ -86,7 +91,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
             main.getNewScheduler().runAsync(new SkyblockRunnable() {
                 @Override
                 public void run() {
-                    DataUtils.loadOnlineData(new MayorRequest(true));
+                    DataUtils.loadOnlineData(new MayorRequest(expectedMayorName));
                 }
             }, delayTick);
         }

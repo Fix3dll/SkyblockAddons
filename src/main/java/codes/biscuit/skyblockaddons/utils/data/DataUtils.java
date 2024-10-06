@@ -126,7 +126,7 @@ public class DataUtils {
      */
     public static void readLocalAndFetchOnline() {
         readLocalFileData();
-        DataUtils.loadOnlineData(new MayorRequest(false)); // API data
+        DataUtils.loadOnlineData(new MayorRequest()); // API data
 
         if (USE_ONLINE_DATA) {
             fetchFromOnline();

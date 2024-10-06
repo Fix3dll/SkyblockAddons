@@ -471,22 +471,20 @@ public class PlayerListener {
             }
         }
 
-        // Skytils mayor detection from chat adaption for Java
-        // https://github.com/Skytils/SkytilsMod/blob/1.x/src/main/kotlin/gg/skytils/skytilsmod/features/impl/handlers/MayorInfo.kt#L96
-        if (unformattedText.equals("§eEverybody unlocks §6exclusive §eperks! §a§l[HOVER TO VIEW]")) {
+        if (unformattedText.contains("§eis elected Mayor for the year, §6gg§e!")) {
             if (!main.getUtils().isAlpha()) {
                 HoverEvent hoverEvent = e.message.getChatStyle().getChatHoverEvent();
                 if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
                     return;
 
-//                String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
-//                String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
+                String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
+                String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
 
                 // Update new mayor data from API
-                DataUtils.loadOnlineData(new MayorRequest(true));
+                DataUtils.loadOnlineData(new MayorRequest(mayorName));
 
-//                main.getUtils().setMayor("mayorName");
-//                logger.info("Mayor changed to " + mayorName);
+                main.getUtils().setMayor(mayorName);
+                logger.info("Mayor changed to " + mayorName);
             }
         }
     }
