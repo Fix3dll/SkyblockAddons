@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.utils.pojo;
+package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
 import codes.biscuit.skyblockaddons.core.Rarity;
 import lombok.Getter;

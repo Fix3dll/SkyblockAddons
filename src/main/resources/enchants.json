@@ -270,6 +270,12 @@
       "maxLevel": 2,
       "nbtName": "knockback"
     },
+    "lapidary": {
+      "goodLevel": 0,
+      "loreName": "Lapidary",
+      "maxLevel": 5,
+      "nbtName": "lapidary"
+    },
     "lethality": {
       "goodLevel": 5,
       "loreName": "Lethality",

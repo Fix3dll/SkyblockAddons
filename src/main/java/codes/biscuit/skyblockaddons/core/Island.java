@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.core;
 
-import codes.biscuit.skyblockaddons.utils.pojo.LocationData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.LocationData;
 import lombok.Getter;
 import lombok.Setter;
 

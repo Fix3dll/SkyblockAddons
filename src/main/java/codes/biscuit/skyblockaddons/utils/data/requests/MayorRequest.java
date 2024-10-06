@@ -9,7 +9,7 @@ import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
-import codes.biscuit.skyblockaddons.utils.pojo.ElectionData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;

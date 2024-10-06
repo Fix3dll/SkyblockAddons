@@ -5,7 +5,7 @@ import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
-import codes.biscuit.skyblockaddons.utils.skyblockdata.ContainerData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.Logger;
 

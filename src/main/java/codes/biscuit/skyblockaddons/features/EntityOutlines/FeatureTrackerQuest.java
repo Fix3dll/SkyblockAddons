@@ -191,8 +191,8 @@ public class FeatureTrackerQuest {
                 // The player has 10 minutes to kill the animal
                 CooldownManager.put("TREVOR_THE_TRAPPER_HUNT", 600000);
                 // The player has cooldown before they can receive another animal after killing the current one
-                if (main.getUtils().getMayor().startsWith("Finnegan")
-                        || main.getUtils().getJerryMayor().startsWith("Finnegan")
+                if (main.getUtils().getMayor().equals("Finnegan")
+                        || main.getUtils().getJerryMayor().equals("Finnegan")
                         || (main.getUtils().getMinisterAndPerk().getKey().equals("Finnegan")
                         && main.getUtils().getMinisterAndPerk().getValue().equals("Pelt-pocalypse"))) {
                     CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 16000);

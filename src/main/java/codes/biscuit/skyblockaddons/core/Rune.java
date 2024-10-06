@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.utils.skyblockdata;
+package codes.biscuit.skyblockaddons.core;
 
 import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;

@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-import static codes.biscuit.skyblockaddons.utils.skyblockdata.ContainerData.ContainerType;
+import static codes.biscuit.skyblockaddons.utils.data.skyblockdata.ContainerData.ContainerType;
 
 @Getter
 public class ContainerPreview {

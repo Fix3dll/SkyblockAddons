@@ -2,12 +2,12 @@ package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.InventoryType;
+import codes.biscuit.skyblockaddons.core.PetInfo;
 import codes.biscuit.skyblockaddons.core.Rarity;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
-import codes.biscuit.skyblockaddons.utils.pojo.PetInfo;
-import codes.biscuit.skyblockaddons.utils.skyblockdata.PetItem;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.PetItem;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
@@ -174,7 +174,7 @@ public class PetManager {
      * Parses the petInfo in the pet's ExtraAttributes to JsonObject after than converts to {@link Pet}
      * @param stack The pet ItemStack
      * @return {@link Pet}
-     * @see codes.biscuit.skyblockaddons.utils.pojo.PetInfo
+     * @see PetInfo
      * @author Fix3dll
      */
     private Pet getPetFromItemStack(ItemStack stack) {

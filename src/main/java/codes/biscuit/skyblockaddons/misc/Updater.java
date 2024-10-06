@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.misc;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
-import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import lombok.Getter;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;

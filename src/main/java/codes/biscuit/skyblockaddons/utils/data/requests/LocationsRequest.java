@@ -5,7 +5,7 @@ import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
-import codes.biscuit.skyblockaddons.utils.pojo.LocationData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.LocationData;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.Logger;
 

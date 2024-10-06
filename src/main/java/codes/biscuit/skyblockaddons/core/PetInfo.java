@@ -1,6 +1,5 @@
-package codes.biscuit.skyblockaddons.utils.pojo;
+package codes.biscuit.skyblockaddons.core;
 
-import codes.biscuit.skyblockaddons.core.Rarity;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;

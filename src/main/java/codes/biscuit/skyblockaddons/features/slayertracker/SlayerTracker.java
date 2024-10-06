@@ -5,7 +5,7 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
-import codes.biscuit.skyblockaddons.utils.skyblockdata.Rune;
+import codes.biscuit.skyblockaddons.core.Rune;
 import lombok.Getter;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;

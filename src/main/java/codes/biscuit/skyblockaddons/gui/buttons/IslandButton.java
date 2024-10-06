@@ -5,7 +5,7 @@ import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
-import codes.biscuit.skyblockaddons.utils.pojo.ElectionData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;

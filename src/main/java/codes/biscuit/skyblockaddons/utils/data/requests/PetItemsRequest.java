@@ -5,7 +5,7 @@ import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
-import codes.biscuit.skyblockaddons.utils.skyblockdata.PetItem;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.PetItem;
 
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.Logger;

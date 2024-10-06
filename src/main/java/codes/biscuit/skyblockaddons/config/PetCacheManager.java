@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.config;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.PetInfo;
 import codes.biscuit.skyblockaddons.features.PetManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class PetCacheManager {
 
         /**
          * key = index + 45 * (pageNum - 1), value = {@link PetManager.Pet}
-         * @see codes.biscuit.skyblockaddons.utils.pojo.PetInfo
+         * @see PetInfo
          */
         @Getter private final HashMap<Integer, PetManager.Pet> petMap = new HashMap<>();
     }

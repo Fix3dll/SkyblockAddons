@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.utils.data.requests;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
-import codes.biscuit.skyblockaddons.utils.pojo.OnlineData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
 import org.apache.logging.log4j.Logger;
