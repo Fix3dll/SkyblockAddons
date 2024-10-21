@@ -943,20 +943,6 @@ public class PlayerListener {
         }
         insertAt = Math.max(0, insertAt);
 
-        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
-
-        if (inventoryType != null && inventoryType.equals(InventoryType.CALENDAR)
-                && hoveredItem.getItem().equals(Items.skull) && hoveredItem.getDisplayName().contains("Mayor ")) {
-
-            String mayorName = hoveredItem.getDisplayName();
-            mayorName = mayorName.substring(mayorName.indexOf(' ') + 1);
-
-            if (!mayorName.startsWith(main.getUtils().getMayor())) {
-                main.getUtils().setMayor(mayorName);
-                logger.info("Mayor changed to " + mayorName);
-            }
-        }
-
         NBTTagCompound extraAttributes = ItemUtils.getExtraAttributes(hoveredItem);
         if (extraAttributes != null) {
             if (main.getConfigValues().isEnabled(Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE)

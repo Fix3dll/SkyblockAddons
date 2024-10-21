@@ -21,6 +21,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
 
     /** New mayor name according to latest election results from chat */
     private static String newMayorName = "";
+    private static ScheduledTask updateTask;
     private static ScheduledTask jerryMayorTask;
 
     public MayorRequest() {
@@ -54,41 +55,53 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
             super.completed(result);
             main.setElectionData(result);
             String mayorName = result.getMayor().getName();
+            boolean isMayorJerry = "Jerry".equals(mayorName);
 
             if (Feature.DEVELOPER_MODE.isEnabled()) {
                 LOGGER.info("lastUpdated: {}, mayor: {}", new Date(result.getLastUpdated()), mayorName);
             }
 
-            main.getUtils().setMayor(mayorName == null ? "Fix3dll" : mayorName);
+            // If initial request or request completed with expected result
+            if (newMayorName.isEmpty() || newMayorName.equals(mayorName)) {
+                main.getUtils().setMayor(mayorName == null ? "Fix3dll" : mayorName);
 
-            ElectionData.Mayor.Minister minister = result.getMayor().getMinister();
-            if (minister != null && minister.getPerk() != null) {
-                main.getUtils().setMinisterAndPerk(
-                        new Pair<>(minister.getName(), minister.getPerk().getName())
-                );
+                ElectionData.Mayor.Minister minister = result.getMayor().getMinister();
+                if (minister != null && minister.getPerk() != null) {
+                    main.getUtils().setMinisterAndPerk(
+                            new Pair<>(minister.getName(), minister.getPerk().getName())
+                    );
+                }
             }
 
             // Jerry's Perkpocalypse mayor updater
-            if ("Jerry".equals(mayorName) && jerryMayorTask == null) {
+            if (isMayorJerry && jerryMayorTask == null) {
                 jerryMayorTask = scheduleJerryMayorTask();
-            } else if (jerryMayorTask != null) {
+            } else if (!isMayorJerry && jerryMayorTask != null) {
                 jerryMayorTask.cancel();
                 jerryMayorTask = null;
             }
 
             // If newMayorName is not equals to new API data's mayor field,
             // schedule new update based on next update time of API data.
-            if (!newMayorName.isEmpty() && !newMayorName.equals(mayorName)) {
-                scheduleUpdateTask(newMayorName);
+            if (!newMayorName.isEmpty() && !newMayorName.equals(mayorName) && updateTask == null) {
+                updateTask = scheduleUpdateTask(newMayorName);
+                LOGGER.info("Update task scheduled.");
+            } else if (newMayorName.equals(mayorName)) {
+                if (updateTask != null) {
+                    updateTask.cancel();
+                    updateTask = null;
+                    LOGGER.info("Scheduled update task completed.");
+                }
+                newMayorName = "";
             }
         }
 
-        private void scheduleUpdateTask(String expectedMayorName) {
-            // election endpoint is updated every 5 minutes (+5 minutes and bonus 5 seconds)
-            long nextUpdateTime = main.getElectionData().getLastUpdated() + 305000L;
+        private ScheduledTask scheduleUpdateTask(String expectedMayorName) {
+            // election endpoint is updated every 5 minutes (+5 minutes and bonus 3 seconds)
+            long nextUpdateTime = main.getElectionData().getLastUpdated() + 303000L;
             int delayTick = (int) (nextUpdateTime - System.currentTimeMillis()) / 50;
 
-            main.getNewScheduler().runAsync(new SkyblockRunnable() {
+            return main.getNewScheduler().runAsync(new SkyblockRunnable() {
                 @Override
                 public void run() {
                     DataUtils.loadOnlineData(new MayorRequest(expectedMayorName));
@@ -97,15 +110,11 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
         }
 
         private ScheduledTask scheduleJerryMayorTask() {
-            if (!main.getUtils().getMayor().startsWith("Jerry")) return null;
-
             return main.getNewScheduler().runAsync(new SkyblockRunnable() {
                 @Override
                 public void run() {
                     if (System.currentTimeMillis() > main.getUtils().getJerryMayorUpdateTime()) {
-                        if (main.getUtils().isOnSkyblock()) {
-                            DataUtils.loadOnlineData(new JerryMayorRequest());
-                        }
+                        DataUtils.loadOnlineData(new JerryMayorRequest());
                     }
                 }
             }, 0, 60 * 20);

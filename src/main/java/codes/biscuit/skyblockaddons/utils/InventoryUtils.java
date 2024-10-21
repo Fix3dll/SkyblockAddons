@@ -7,6 +7,8 @@ import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.features.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
+import codes.biscuit.skyblockaddons.utils.data.DataUtils;
+import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -473,7 +475,10 @@ public class InventoryUtils {
                     if (inventoryTypeItr.equals(InventoryType.MAYOR)) {
                         try {
                             String mayorName = m.group("mayor");
-                            if (!mayorName.startsWith(main.getUtils().getMayor())) {
+                            if (!mayorName.equals(main.getUtils().getMayor())) {
+                                // Update new mayor data from API
+                                DataUtils.loadOnlineData(new MayorRequest(mayorName));
+
                                 main.getUtils().setMayor(mayorName);
                                 logger.info("Mayor changed to {}", mayorName);
                             }

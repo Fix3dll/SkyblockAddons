@@ -18,6 +18,8 @@ import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import codes.biscuit.skyblockaddons.utils.data.DataUtils;
+import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -32,6 +34,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -47,6 +50,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GuiScreenListener {
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Logger logger = SkyblockAddons.getLogger();
 
     private InventoryChangeListener inventoryChangeListener;
     private InventoryBasic listenedInventory;
@@ -185,6 +189,26 @@ public class GuiScreenListener {
                         if (slot != 0) {
                             BackpackInventoryManager.getBackpackColor().put(slot, backpackColor);
                         }
+                    }
+                }
+            } else if (main.getInventoryUtils().getInventoryType() == InventoryType.CALENDAR) {
+                for (int i = 0; i < chestInventory.getSizeInventory(); i++) {
+                    ItemStack item = chestInventory.getStackInSlot(i);
+                    if (item == null || item.getItem() != Items.skull) continue;
+
+                    if (item.getDisplayName().contains("Mayor ")) {
+                        String mayorName = item.getDisplayName();
+                        mayorName = mayorName.substring(mayorName.indexOf(' ') + 1);
+
+                        if (!mayorName.equals(main.getUtils().getMayor())) {
+                            // Update new mayor data from API
+                            DataUtils.loadOnlineData(new MayorRequest(mayorName));
+
+                            main.getUtils().setMayor(mayorName);
+                            logger.info("Mayor changed to {}", mayorName);
+                        }
+
+                        break;
                     }
                 }
             }
