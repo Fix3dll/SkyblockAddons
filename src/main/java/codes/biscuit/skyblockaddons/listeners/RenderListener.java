@@ -2559,7 +2559,7 @@ public class RenderListener {
 
     public void drawDeployableStatus(Minecraft mc, float scale, ButtonLocation buttonLocation) {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
-        if (buttonLocation != null) {
+        if (buttonLocation != null && activeDeployable == null) {
             activeDeployable = DeployableManager.DUMMY_POWER_ORB_ENTRY;
         }
         if (activeDeployable != null) {
@@ -2600,8 +2600,9 @@ public class RenderListener {
         }
 
         Entity entity = null;
-        if (DeployableManager.getInstance().getActiveDeployable() != null) {
-            UUID uuidOfActiveDep = DeployableManager.getInstance().getActiveDeployable().getUuid();
+        DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
+        if (activeDeployable != null) {
+            UUID uuidOfActiveDep = activeDeployable.getUuid();
             if (uuidOfActiveDep != null) {
                 entity = Utils.getEntityByUUID(uuidOfActiveDep);
             }
@@ -2734,8 +2735,9 @@ public class RenderListener {
         }
 
         Entity entity = null;
-        if (DeployableManager.getInstance().getActiveDeployable() != null) {
-            UUID uuidOfActiveDep = DeployableManager.getInstance().getActiveDeployable().getUuid();
+        DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
+        if (activeDeployable != null) {
+            UUID uuidOfActiveDep = activeDeployable.getUuid();
             if (uuidOfActiveDep != null) {
                 entity = Utils.getEntityByUUID(uuidOfActiveDep);
             }
