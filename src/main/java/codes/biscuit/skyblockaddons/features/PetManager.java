@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class PetManager {
     //private static final Pattern SELECTED_PET_PATTERN = Pattern.compile("(?:§.)*Selected pet: §(?<rarity>\\w)(?<pet>[\\w ]+)");
-    private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(] )(§8\\[§.(?<cosmeticLevel>\\d+))?(.*)");
+    private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(] )(§8\\[§.)?(?<cosmeticLevel>\\d+)?(.*)");
 
     /** The PetManager instance.*/
     @Getter private static final PetManager instance = new PetManager();
@@ -130,15 +130,17 @@ public class PetManager {
             if (pet.displayName.contains(petName) && pet.petInfo.getPetRarity() == rarity) {
                 Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
                 if (m.matches()) {
-                    boolean isCurrentPet = currentPet.petInfo.getUniqueId() == pet.petInfo.getUniqueId();
+                    boolean isCurrentPet = currentPet != null && currentPet.petInfo.getUniqueId() == pet.petInfo.getUniqueId();
                     String cosmeticLevelGroup = m.group("cosmeticLevel");
 
-                    if (cosmeticLevelGroup == null && pet.petLevel == newLevel - 1) {
-                        pet.petLevel = newLevel;
-                        pet.displayName = m.group(1) + newLevelString + m.group(3) + m.group(6);
-                    } else if (cosmeticLevelGroup != null && newLevel > pet.petLevel) {
-                        int cosmeticLevel = newLevel - pet.petLevel;
-                        pet.displayName = m.group(1) + m.group(2) + m.group(3) + m.group(4) + cosmeticLevel + m.group(6);
+                    if (pet.petLevel < newLevel) {
+                        if (cosmeticLevelGroup != null) {
+                            int cosmeticLevel = newLevel - pet.petLevel;
+                            pet.displayName = m.group(1) + m.group(2) + m.group(3) + m.group(4) + cosmeticLevel + m.group(6);
+                        } else {
+                            pet.petLevel = newLevel;
+                            pet.displayName = m.group(1) + newLevelString + m.group(3) + m.group(6);
+                        }
                     } else {
                         continue;
                     }
