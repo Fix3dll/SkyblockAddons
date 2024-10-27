@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 public class PetManager {
     //private static final Pattern SELECTED_PET_PATTERN = Pattern.compile("(?:§.)*Selected pet: §(?<rarity>\\w)(?<pet>[\\w ]+)");
     private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(] )(§8\\[§.)?(?<cosmeticLevel>\\d+)?(.*)");
+    private static final Pattern FAVORITE_PATTERN = Pattern.compile("§e⭐ ");
 
     /** The PetManager instance.*/
     @Getter private static final PetManager instance = new PetManager();
@@ -180,7 +181,12 @@ public class PetManager {
      * @author Fix3dll
      */
     private Pet getPetFromItemStack(ItemStack stack) {
-        String displayName = stack.getDisplayName();
+        String displayName;
+        if (stack.hasDisplayName()) {
+            displayName = FAVORITE_PATTERN.matcher(stack.getDisplayName()).replaceAll("");
+        } else {
+            return null;
+        }
 
         int petLevel = TextUtils.getPetLevelFromDisplayName(displayName);
         if (petLevel == -1) return null;
