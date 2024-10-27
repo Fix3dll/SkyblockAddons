@@ -783,7 +783,7 @@ public class RenderListener {
 
         switch (feature) {
             case MANA_TEXT:
-                text = TextUtils.formatNumber(getAttribute(Attribute.MANA)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_MANA));
+                text = TextUtils.formatNumber(getAttribute(Attribute.MANA)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_MANA)) + (main.getConfigValues().isEnabled(Feature.MANA_TEXT_ICON) ? "✎" : "");
                 break;
 
             case OVERFLOW_MANA:
@@ -803,6 +803,10 @@ public class RenderListener {
                 } else {
                     text += TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
                 }
+                if (main.getConfigValues().isEnabled(Feature.HEALTH_TEXT_ICON)) {
+                    text +=  "❤";
+                }
+
                 break;
 
             case CRIMSON_ARMOR_ABILITY_STACKS:
@@ -816,7 +820,7 @@ public class RenderListener {
 
             case DEFENCE_TEXT:
                 if (onRift) return;
-                text = TextUtils.formatNumber(getAttribute(Attribute.DEFENCE));
+                text = TextUtils.formatNumber(getAttribute(Attribute.DEFENCE)) + (main.getConfigValues().isEnabled(Feature.DEFENCE_TEXT_ICON) ? "❈" : "");
                 break;
 
             case OTHER_DEFENCE_STATS:
@@ -828,7 +832,7 @@ public class RenderListener {
 
             case EFFECTIVE_HEALTH_TEXT:
                 if (onRift) return;
-                text = TextUtils.formatNumber(Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F)));
+                text = TextUtils.formatNumber(Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F))) + (main.getConfigValues().isEnabled(Feature.EFFECTIVE_HEALTH_TEXT) ? "❤" : "");
                 break;
 
             case DRILL_FUEL_TEXT:
@@ -1662,7 +1666,7 @@ public class RenderListener {
 
                     color = main.getConfigValues().getColor(feature);
                     DrawUtils.drawText(
-                            "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH))
+                            "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH)) + (main.getConfigValues().isEnabled(Feature.HEALTH_TEXT_ICON) ? "❤" : "")
                             , x + formattedHealthWidth
                             , y
                             , color
