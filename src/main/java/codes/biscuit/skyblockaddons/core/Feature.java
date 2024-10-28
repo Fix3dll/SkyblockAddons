@@ -31,11 +31,11 @@ public enum Feature {
     USE_VANILLA_TEXTURE_DEFENCE(17, "settings.useVanillaTexture", null, true),
     SHOW_BACKPACK_HOLDING_SHIFT(18, "settings.showOnlyWhenHoldingShift", null, true),
     MANA_BAR(19, "settings.manaBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.BLUE), false),
-    MANA_TEXT(20, "settings.manaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.BLUE), false),
+    MANA_TEXT(20, "settings.manaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.BLUE), false, EnumUtils.FeatureSetting.MANA_TEXT_ICON),
     HEALTH_BAR(21, "settings.healthBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.RED), true, EnumUtils.FeatureSetting.CHANGE_BAR_COLOR_WITH_POTIONS, EnumUtils.FeatureSetting.HEALTH_PREDICTION, EnumUtils.FeatureSetting.HIDE_HEALTH_BAR_ON_RIFT),
-    HEALTH_TEXT(22, "settings.healthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false, EnumUtils.FeatureSetting.HIDE_HEALTH_TEXT_ON_RIFT, EnumUtils.FeatureSetting.HEART_INSTEAD_HEALTH_ON_RIFT),
+    HEALTH_TEXT(22, "settings.healthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false, EnumUtils.FeatureSetting.HIDE_HEALTH_TEXT_ON_RIFT, EnumUtils.FeatureSetting.HEART_INSTEAD_HEALTH_ON_RIFT, EnumUtils.FeatureSetting.HEALTH_TEXT_ICON),
     DEFENCE_ICON(23, "settings.defenseIcon", new GuiFeatureData(EnumUtils.DrawType.DEFENCE_ICON), false, EnumUtils.FeatureSetting.USE_VANILLA_TEXTURE),
-    DEFENCE_TEXT(24, "settings.defenseNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), false, EnumUtils.FeatureSetting.OTHER_DEFENCE_STATS),
+    DEFENCE_TEXT(24, "settings.defenseNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), false, EnumUtils.FeatureSetting.OTHER_DEFENCE_STATS, EnumUtils.FeatureSetting.DEFENCE_TEXT_ICON),
     DEFENCE_PERCENTAGE(25, "settings.defensePercentage", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), true),
     HEALTH_UPDATES(26, "settings.healthUpdates", new GuiFeatureData(EnumUtils.DrawType.TEXT), false, EnumUtils.FeatureSetting.HIDE_HEALTH_UPDATES_ON_RIFT), // Health updates all credit to DidiSkywalker#9975
     HIDE_PLAYERS_IN_LOBBY(27, "settings.hidePlayersInLobby", null, true),
@@ -183,7 +183,7 @@ public enum Feature {
     HEALTH_PREDICTION(194, "settings.vanillaHealthPrediction", null, true),
     DISABLE_EMPTY_GLASS_PANES(195, "settings.hideMenuGlassPanes", null, false),
     ENTITY_OUTLINES(196, "settings.entityOutlines", null, false, EnumUtils.FeatureSetting.OUTLINE_DUNGEON_TEAMMATES, EnumUtils.FeatureSetting.ITEM_GLOW, EnumUtils.FeatureSetting.OUTLINE_SHOWCASE_ITEMS, EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY),
-    EFFECTIVE_HEALTH_TEXT(197, "settings.effectiveHealthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_GREEN), false),
+    EFFECTIVE_HEALTH_TEXT(197, "settings.effectiveHealthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_GREEN), false, EnumUtils.FeatureSetting.EFFECTIVE_HEALTH_TEXT_ICON),
     ABBREVIATE_SKILL_XP_DENOMINATOR(198, "settings.abbreviateSkillXpDenominator", null, true),
     OTHER_DEFENCE_STATS(199, "settings.otherDefenseStats", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GREEN), false),
     // Release v1.6
@@ -236,6 +236,10 @@ public enum Feature {
     PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
     STOP_NAME_OVERLAY_WHEN_CLOSE(247, null, true),
     BUILDERS_TOOL_PREVIEW(248, null, false),
+    HEALTH_TEXT_ICON(249, "settings.healthTextIcon", true),
+    MANA_TEXT_ICON(250, "settings.manaTextIcon", true),
+    DEFENCE_TEXT_ICON(251, "settings.defenceTextIcon", true),
+    EFFECTIVE_HEALTH_TEXT_ICON(252, "settings.effectiveHealthTextIcon", true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),
@@ -289,7 +293,7 @@ public enum Feature {
             SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT,
             HIDE_ONLY_OUTSIDE_RIFT, FIRE_FREEZE_SOUND, FIRE_FREEZE_WHEN_HOLDING, HEART_INSTEAD_HEALTH_ON_RIFT,
             OUTLINE_SHOWCASE_ITEMS, CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD, DRAGON_STATS_TRACKER_NEST_ONLY,
-            STOP_NAME_OVERLAY_WHEN_CLOSE);
+            STOP_NAME_OVERLAY_WHEN_CLOSE, HEALTH_TEXT_ICON, MANA_TEXT_ICON, DEFENCE_TEXT_ICON, EFFECTIVE_HEALTH_TEXT_ICON);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'

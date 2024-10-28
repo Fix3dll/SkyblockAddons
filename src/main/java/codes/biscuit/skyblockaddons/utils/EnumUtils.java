@@ -258,6 +258,10 @@ public class EnumUtils {
         PET_ITEM_STYLE("settings.petItemStyle", -1),
         STOP_NAME_OVERLAY_WHEN_CLOSE("settings.stopNameOverlayWhenClose", 247),
         BUILDERS_TOOL_PREVIEW("settings.showBuildersToolPreview", 248),
+        HEALTH_TEXT_ICON("settings.healthTextIcon", 249),
+        MANA_TEXT_ICON("settings.manaTextIcon", 250),
+        DEFENCE_TEXT_ICON("settings.defenceTextIcon", 251),
+        EFFECTIVE_HEALTH_TEXT_ICON("settings.effectiveHealthTextIcon", 252),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),
