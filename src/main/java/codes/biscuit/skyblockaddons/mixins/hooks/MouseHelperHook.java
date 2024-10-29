@@ -8,7 +8,7 @@ public class MouseHelperHook {
 
     public static void ungrabMouseCursor(int new_x, int new_y) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getConfigValues().isDisabled(Feature.DONT_RESET_CURSOR_INVENTORY) || main.getPlayerListener().shouldResetMouse()) {
+        if (Feature.DONT_RESET_CURSOR_INVENTORY.isDisabled() || main.getPlayerListener().shouldResetMouse()) {
             Mouse.setCursorPosition(new_x, new_y);
             Mouse.setGrabbed(false);
         }

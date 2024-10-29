@@ -29,8 +29,7 @@ public class EndstoneProtectorManager {
     private static long lastWaveStart = -1;
 
     public static void checkGolemStatus() {
-        if (mc.theWorld != null && main.getUtils().getMap() == Island.THE_END &&
-                main.getConfigValues().isEnabled(Feature.ENDSTONE_PROTECTOR_DISPLAY)) {
+        if (mc.theWorld != null && main.getUtils().getMap() == Island.THE_END && Feature.ENDSTONE_PROTECTOR_DISPLAY.isEnabled()) {
             World world = mc.theWorld;
 
             Chunk chunk = world.getChunkFromBlockCoords(new BlockPos(-689, 5, -273)); // This is the original spawn.
@@ -103,7 +102,9 @@ public class EndstoneProtectorManager {
         private static Stage lastStage = null;
         private static BlockPos lastPos = null;
 
-        private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.MOD_NAME + " - Endstone Protector #%d").build());
+        private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor(
+                new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.MOD_NAME + " - Endstone Protector #%d").build()
+        );
 
         public static Stage detectStage() {
             EXECUTOR.submit(() -> {

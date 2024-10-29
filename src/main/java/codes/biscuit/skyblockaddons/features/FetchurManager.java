@@ -106,7 +106,7 @@ public class FetchurManager {
             currentItemSaved = item;
             SkyblockAddons main = SkyblockAddons.getInstance();
             // Warn player when there's a change
-            if (main.getConfigValues().isEnabled(Feature.WARN_WHEN_FETCHUR_CHANGES)) {
+            if (Feature.WARN_WHEN_FETCHUR_CHANGES.isEnabled()) {
                 main.getUtils().playLoudSound("random.orb", 0.5);
                 main.getRenderListener().setTitleFeature(Feature.WARN_WHEN_FETCHUR_CHANGES);
                 main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());

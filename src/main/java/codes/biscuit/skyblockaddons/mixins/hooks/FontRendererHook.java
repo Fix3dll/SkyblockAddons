@@ -31,9 +31,8 @@ public class FontRendererHook {
     public static void beforeRenderChar() {
         if (!shouldRenderChroma()) return;
 
-        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
-        if (currentDrawState.shouldManuallyRecolorFont() || (config.isEnabled(Feature.TURN_ALL_TEXTS_CHROMA)
-                && config.getChromaMode() == EnumUtils.ChromaMode.ALL_SAME_COLOR)) {
+        if (currentDrawState.shouldManuallyRecolorFont() || (Feature.TURN_ALL_TEXTS_CHROMA.isEnabled()
+                && SkyblockAddons.getInstance().getConfigValues().getChromaMode() == EnumUtils.ChromaMode.ALL_SAME_COLOR)) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }

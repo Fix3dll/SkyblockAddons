@@ -58,7 +58,7 @@ public class ButtonToggle extends ButtonFeature {
         mc.getTextureManager().bindTexture(TOGGLE_BORDER);
         DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
 
-        boolean enabled = main.getConfigValues().isEnabled(feature);
+        boolean enabled = feature.isEnabled();
         boolean remoteDisabled = main.getConfigValues().isRemoteDisabled(feature);
 
         if (enabled) {

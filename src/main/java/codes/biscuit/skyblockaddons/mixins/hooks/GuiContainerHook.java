@@ -50,7 +50,7 @@ public class GuiContainerHook {
 
         if (theSlot != null) {
             SkyblockAddons main = SkyblockAddons.getInstance();
-            if (theSlot.getHasStack() && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES)
+            if (theSlot.getHasStack() && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled()
                     && main.getUtils().isEmptyGlassPane(theSlot.getStack())) {
                 return;
             }
@@ -58,7 +58,7 @@ public class GuiContainerHook {
             Container container = Minecraft.getMinecraft().thePlayer.openContainer;
             int slotNum = theSlot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
             main.getUtils().setLastHoveredSlot(slotNum);
-            if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.LOCK_SLOTS)
+            if (main.getUtils().isOnSkyblock() && Feature.LOCK_SLOTS.isEnabled()
                     && main.getConfigValues().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
                 guiContainer.drawGradientRect(left, top, right, bottom, OVERLAY_RED, OVERLAY_RED);
@@ -74,7 +74,7 @@ public class GuiContainerHook {
         Container container = mc.thePlayer.openContainer;
 
         if (slot != null) {
-            if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && main.getUtils().isOnSkyblock()) {
+            if (Feature.LOCK_SLOTS.isEnabled() && main.getUtils().isOnSkyblock()) {
                 int slotNum = slot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
                 if (main.getConfigValues().getLockedSlots().contains(slotNum)
                         && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
@@ -95,7 +95,7 @@ public class GuiContainerHook {
         SkyblockAddons main = SkyblockAddons.getInstance();
         Minecraft mc = Minecraft.getMinecraft();
         if (main.getUtils().isOnSkyblock()) {
-            if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && (keyCode != 1 && keyCode != mc.gameSettings.keyBindInventory.getKeyCode())) {
+            if (Feature.LOCK_SLOTS.isEnabled() && (keyCode != 1 && keyCode != mc.gameSettings.keyBindInventory.getKeyCode())) {
                 int slot = main.getUtils().getLastHoveredSlot();
                 boolean isHotkeying = false;
                 if (mc.thePlayer.inventory.getItemStack() == null && theSlot != null) {
@@ -127,8 +127,11 @@ public class GuiContainerHook {
                     }
                 }
             }
-            if (mc.gameSettings.keyBindDrop.getKeyCode() == keyCode && main.getConfigValues().isEnabled(Feature.STOP_DROPPING_SELLING_RARE_ITEMS) && !main.getUtils().isInDungeon()) {
-                if (!main.getUtils().getItemDropChecker().canDropItem(theSlot)) returnValue.cancel();
+            if (mc.gameSettings.keyBindDrop.getKeyCode() == keyCode
+                    && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled()
+                    && !main.getUtils().isInDungeon()
+                    && !main.getUtils().getItemDropChecker().canDropItem(theSlot)) {
+                returnValue.cancel();
             }
         }
     }
@@ -153,7 +156,7 @@ public class GuiContainerHook {
         }
 
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.getHasStack()
-                && main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(slot.getStack())
+                && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && main.getUtils().isEmptyGlassPane(slot.getStack())
                 && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getStack(), EnumDyeColor.BLACK));
     }
 }

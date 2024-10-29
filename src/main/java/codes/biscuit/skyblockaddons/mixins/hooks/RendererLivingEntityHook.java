@@ -31,8 +31,8 @@ public class RendererLivingEntityHook {
 
     public static int setOutlineColor(EntityLivingBase entity, int originalColor) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getConfigValues().isEnabled(Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES) &&
-                main.getUtils().isInDungeon() && main.getDungeonManager().getTeammates().containsKey(entity.getName())) {
+        if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() && main.getUtils().isInDungeon()
+                && main.getDungeonManager().getTeammates().containsKey(entity.getName())) {
             DungeonPlayer dungeonPlayer = main.getDungeonManager().getTeammates().get(entity.getName());
 
             if (dungeonPlayer.isCritical()) {

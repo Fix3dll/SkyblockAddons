@@ -73,7 +73,7 @@ public class LocationEditGui extends GuiScreen {
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
             // Don't display features that have been disabled
-            if (feature.getGuiFeatureData() != null && !main.getConfigValues().isDisabled(feature)) {
+            if (feature.getGuiFeatureData() != null && feature.isEnabled()) {
                 ButtonLocation buttonLocation = new ButtonLocation(feature);
                 buttonList.add(buttonLocation);
                 buttonLocations.put(feature, buttonLocation);
@@ -122,7 +122,7 @@ public class LocationEditGui extends GuiScreen {
         clearAllResizeButtons();
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
-            if (!main.getConfigValues().isDisabled(feature)) { // Don't display features that have been disabled
+            if (feature.isEnabled()) { // Don't display features that have been disabled
                 addResizeCorners(feature);
             }
         }
@@ -132,7 +132,7 @@ public class LocationEditGui extends GuiScreen {
         clearAllResizeButtons();
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
-            if (!main.getConfigValues().isDisabled(feature)) { // Don't display features that have been disabled
+            if (feature.isEnabled()) { // Don't display features that have been disabled
                 if (feature.getGuiFeatureData() != null && feature.getGuiFeatureData().getDrawType() == EnumUtils.DrawType.BAR) {
                     addResizeCorners(feature);
                 }
@@ -373,7 +373,7 @@ public class LocationEditGui extends GuiScreen {
 
                             if (thisSnap.getHeight() < SNAPPING_RADIUS) {
                                 if (horizontalSnap == null || thisSnap.getHeight() < horizontalSnap.getHeight()) {
-                                    if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+                                    if (Feature.DEVELOPER_MODE.isEnabled()) {
                                         DrawUtils.drawRectAbsolute(snapX - 0.5, 0, snapX + 0.5, mc.displayHeight, 0xFF0000FF);
                                     }
                                     horizontalSnap = thisSnap;
@@ -405,7 +405,7 @@ public class LocationEditGui extends GuiScreen {
 
                             if (thisSnap.getWidth() < SNAPPING_RADIUS) {
                                 if (verticalSnap == null || thisSnap.getWidth() < verticalSnap.getWidth()) {
-                                    if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+                                    if (Feature.DEVELOPER_MODE.isEnabled()) {
                                         DrawUtils.drawRectAbsolute(0, snapY - 0.5, mc.displayWidth, snapY + 0.5, 0xFF0000FF);
                                     }
                                     verticalSnap = thisSnap;
@@ -667,7 +667,7 @@ public class LocationEditGui extends GuiScreen {
                 main.getConfigValues().setAllCoordinatesToDefault();
                 main.getConfigValues().putDefaultBarSizes();
                 for (Feature guiFeature : Feature.getGuiFeatures()) {
-                    if (!main.getConfigValues().isDisabled(guiFeature)) { // Don't display features that have been disabled
+                    if (guiFeature.isEnabled()) { // Don't display features that have been disabled
                         if (guiFeature == Feature.HEALTH_BAR || guiFeature == Feature.MANA_BAR || guiFeature == Feature.DRILL_FUEL_BAR) {
                             addResizeCorners(guiFeature);
                         }

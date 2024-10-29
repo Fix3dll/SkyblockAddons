@@ -135,7 +135,7 @@ public class Scheduler {
                 main.getInventoryUtils().showFullInventoryWarning();
 
                 // Schedule a repeat if needed.
-                if (main.getConfigValues().isEnabled(Feature.REPEAT_FULL_INVENTORY_WARNING)) {
+                if (Feature.REPEAT_FULL_INVENTORY_WARNING.isEnabled()) {
                     main.getScheduler().schedule(Scheduler.CommandType.SHOW_FULL_INVENTORY_WARNING, 10);
                     main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, 10 + main.getConfigValues().getWarningSeconds());
                 }

@@ -14,8 +14,7 @@ public class GuiIngameCustomHook {
     }
 
     public static boolean shouldRenderHealth() {
-        return shouldRender(Feature.HIDE_HEALTH_BAR)
-                || (main.getConfigValues().isEnabled(Feature.HIDE_ONLY_OUTSIDE_RIFT) && main.getUtils().isOnRift());
+        return shouldRender(Feature.HIDE_HEALTH_BAR) || (Feature.HIDE_ONLY_OUTSIDE_RIFT.isEnabled() && main.getUtils().isOnRift());
     }
 
     public static boolean shouldRenderFood() {
@@ -30,6 +29,6 @@ public class GuiIngameCustomHook {
         if (!main.getUtils().isOnSkyblock()) {
             return true;
         }
-        return !main.getConfigValues().isEnabled(feature);
+        return feature.isDisabled();
     }
 }

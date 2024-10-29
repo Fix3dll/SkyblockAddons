@@ -129,7 +129,7 @@ public class FeatureTrackerQuest {
     @SubscribeEvent
     public void onEntityOutline(RenderEntityOutlineEvent e) {
         if (e.getType() == RenderEntityOutlineEvent.Type.NO_XRAY) {
-            if (isTrackerConditionsMet() && SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY)
+            if (isTrackerConditionsMet() && Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY.isEnabled()
                     && trackingAnimalRarity != null && entityToOutline != null && entityToOutline.getAnimal() != null
                     && !mc.thePlayer.isPotionActive(Potion.blindness)) {
                 e.queueEntityToOutline(entityToOutline.getAnimal(), entityToOutline.getRarity().getColorInt());

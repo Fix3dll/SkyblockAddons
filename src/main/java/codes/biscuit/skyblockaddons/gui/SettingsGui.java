@@ -199,7 +199,7 @@ public class SettingsGui extends GuiScreen {
             ButtonFeature button = (ButtonFeature) abstractButton;
             Feature feature = button.getFeature();
             if (feature == null) return;
-            if (main.getConfigValues().isDisabled(feature)) {
+            if (feature.isDisabled()) {
                 feature.setEnabled(true);
             } else {
                 feature.setEnabled(false);

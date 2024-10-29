@@ -202,7 +202,7 @@ public class SkyblockAddons {
          in the first place since creating a KeyBinding object already adds it to the main key bind list. I need to manually
          de-register it so its default key doesn't conflict with other key bindings with the same key.
          */
-        if (!this.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+        if (Feature.DEVELOPER_MODE.isDisabled()) {
             getDeveloperCopyNBTKey().deRegister();
         }
 
@@ -210,7 +210,7 @@ public class SkyblockAddons {
         usingOofModv1 = utils.isModLoaded("refractionoof", "1.0");
         usingPatcher = utils.isModLoaded("patcher");
 
-        if (!this.configValues.isEnabled(Feature.NUMBER_SEPARATORS)) {
+        if (Feature.NUMBER_SEPARATORS.isDisabled()) {
             TextUtils.NUMBER_FORMAT.setGroupingUsed(false);
         }
 
@@ -228,7 +228,7 @@ public class SkyblockAddons {
             }
         }
 
-        if (configValues.isEnabled(Feature.FANCY_WARP_MENU)) {
+        if (Feature.FANCY_WARP_MENU.isEnabled()) {
             // Load in these textures so they don't lag the user loading them in later...
             for (IslandWarpGui.Island island : IslandWarpGui.Island.values()) {
                 Minecraft.getMinecraft().getTextureManager().bindTexture(island.getResourceLocation());

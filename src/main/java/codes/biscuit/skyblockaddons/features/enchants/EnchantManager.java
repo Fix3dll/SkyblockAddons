@@ -82,7 +82,6 @@ public class EnchantManager {
         }
         // Update the cache so we have something to which to compare later
         loreCache.updateBefore(loreList);
-        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
 
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
         int startEnchant = -1, endEnchant = -1, maxTooltipWidth = 0;
@@ -129,7 +128,7 @@ public class EnchantManager {
                 if (enchant != null) {
                     // Get the original (input) formatting code of the enchantment, which may have been affected by other mods
                     String inputFormatEnchant = "null";
-                    if (config.isDisabled(Feature.ENCHANTMENTS_HIGHLIGHT)) {
+                    if (Feature.ENCHANTMENTS_HIGHLIGHT.isDisabled()) {
                         inputFormatEnchant = getInputEnchantFormat(loreList.get(i), m.group());
                     }
                     lastEnchant = new FormattedEnchant(enchant, level, inputFormatEnchant);
@@ -167,7 +166,7 @@ public class EnchantManager {
         loreList.subList(startEnchant, endEnchant + 1).clear();
 
         List<String> insertEnchants;
-        EnchantListLayout layout = config.getEnchantLayout();
+        EnchantListLayout layout = SkyblockAddons.getInstance().getConfigValues().getEnchantLayout();
         // Pack as many enchantments as we can into one line (while not overstuffing it)
         if (layout == EnchantListLayout.COMPRESS && numEnchants != 1) {
             insertEnchants = new ArrayList<>();
@@ -202,7 +201,7 @@ public class EnchantManager {
             insertEnchants = new ArrayList<>();
 
             String comma;
-            if (config.isEnabled(Feature.ENCHANTMENTS_HIGHLIGHT)) {
+            if (Feature.ENCHANTMENTS_HIGHLIGHT.isEnabled()) {
                 comma = SkyblockAddons.getInstance().getConfigValues().getRestrictedColor(Feature.ENCHANTMENT_COMMA_COLOR) + COMMA;
             } else {
                 comma = COMMA;
@@ -233,7 +232,7 @@ public class EnchantManager {
         // Prints each enchantment out on a separate line. Also adds the lore if need be
         else {
             // Add each enchantment (one per line) + add enchant lore (if available)
-            if (config.isDisabled(Feature.HIDE_ENCHANT_DESCRIPTION)) {
+            if (Feature.HIDE_ENCHANT_DESCRIPTION.isDisabled()) {
                 insertEnchants = new ArrayList<>((hasLore ? 3 : 1) * numEnchants);
                 for (FormattedEnchant enchant : orderedEnchants) {
                     // Add the enchant
@@ -266,7 +265,7 @@ public class EnchantManager {
      * @return the index after the point at which we inserted new lines, or {@param insertAt} if we didn't insert anything.
      */
     public static int insertStackingEnchantProgress(List<String> loreList, NBTTagCompound extraAttributes, int insertAt) {
-        if (extraAttributes == null || SkyblockAddons.getInstance().getConfigValues().isDisabled(Feature.SHOW_STACKING_ENCHANT_PROGRESS)) {
+        if (extraAttributes == null || Feature.SHOW_STACKING_ENCHANT_PROGRESS.isDisabled()) {
             return insertAt;
         }
         for (Enchant.Stacking enchant : enchants.STACKING.values()) {
@@ -443,7 +442,7 @@ public class EnchantManager {
             return -1;
         }
         int lastGreyEnchant = -1;
-        boolean removeGreyEnchants = SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.HIDE_GREY_ENCHANTS);
+        boolean removeGreyEnchants = Feature.HIDE_GREY_ENCHANTS.isEnabled();
 
         // Start at index 1 since index 0 is the title
         int total = 0;
@@ -653,15 +652,14 @@ public class EnchantManager {
         }
 
         public String getFormattedString() {
-            ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
             StringBuilder b = new StringBuilder();
-            if (config.isEnabled(Feature.ENCHANTMENTS_HIGHLIGHT)) {
+            if (Feature.ENCHANTMENTS_HIGHLIGHT.isEnabled()) {
                 b.append(enchant.getFormattedName(level));
             } else {
                 return inputFormattedString;
             }
             b.append(" ");
-            if (config.isEnabled(Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS)) {
+            if (Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS.isEnabled()) {
                 b.append(level);
             } else {
                 b.append(RomanNumeralParser.integerToRoman(level));

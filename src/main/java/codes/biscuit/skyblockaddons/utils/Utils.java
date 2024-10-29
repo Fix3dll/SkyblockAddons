@@ -605,7 +605,7 @@ public class Utils {
     private float lastCompletion;
 
     private void parseSlayerProgress(String line) {
-        if (!main.getConfigValues().isEnabled(Feature.BOSS_APPROACH_ALERT)) return;
+        if (Feature.BOSS_APPROACH_ALERT.isDisabled()) return;
 
         Matcher matcher = SLAYER_PROGRESS_REGEX.matcher(line);
         if (matcher.find()) {
@@ -621,7 +621,7 @@ public class Utils {
             float completion = progress / total;
 
             if (completion > 0.85) {
-                if (!triggeredSlayerWarning || (main.getConfigValues().isEnabled(Feature.REPEAT_SLAYER_BOSS_WARNING) && completion != lastCompletion)) {
+                if (!triggeredSlayerWarning || (Feature.REPEAT_SLAYER_BOSS_WARNING.isEnabled() && completion != lastCompletion)) {
                     triggeredSlayerWarning = true;
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setTitleFeature(Feature.BOSS_APPROACH_ALERT);
@@ -758,10 +758,6 @@ public class Utils {
             }
         }
         return false;
-    }
-
-    public boolean isAxe(Item item) {
-        return item instanceof ItemAxe;
     }
 
     private boolean depthEnabled;

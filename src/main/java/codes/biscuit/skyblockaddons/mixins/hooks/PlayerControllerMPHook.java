@@ -82,7 +82,7 @@ public class PlayerControllerMPHook {
 
         if (main.getUtils().isOnSkyblock()) {
             // Prevent dropping rare items
-            if (main.getConfigValues().isEnabled(Feature.STOP_DROPPING_SELLING_RARE_ITEMS) && !main.getUtils().isInDungeon()) {
+            if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()) {
                 if (checkItemDrop(mode, slotNum, itemStack)) {
                     returnValue.cancel();
                 }
@@ -101,8 +101,7 @@ public class PlayerControllerMPHook {
                 }
 
                 // Prevent clicking on locked slots.
-                if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS)
-                        && main.getConfigValues().getLockedSlots().contains(slotNum)
+                if (Feature.LOCK_SLOTS.isEnabled() && main.getConfigValues().getLockedSlots().contains(slotNum)
                         && (slotNum >= 9 || player.openContainer instanceof ContainerPlayer && slotNum >= 5)) {
                     if (mouseButtonClicked == 1 && mode == 0 && slotIn != null && slotIn.getHasStack() && slotIn.getStack().getItem() == Items.skull) {
 
@@ -119,8 +118,7 @@ public class PlayerControllerMPHook {
                     returnValue.cancel();
                 }
             }
-        }
-        else {
+        } else {
             if (checkItemDrop(mode, slotNum, itemStack)) {
                 returnValue.cancel();
             }

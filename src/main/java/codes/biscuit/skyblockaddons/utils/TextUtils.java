@@ -61,8 +61,7 @@ public class TextUtils {
      */
     public static String formatNumber(Number number) {
         // This null check is here for TextUtilsTests
-        if (SkyblockAddons.getInstance() == null ||
-                SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.NUMBER_SEPARATORS)) {
+        if (SkyblockAddons.getInstance() == null || Feature.NUMBER_SEPARATORS.isEnabled()) {
             return NUMBER_FORMAT.format(number);
         } else {
             return NUMBER_FORMAT_NO_GROUPING.format(number);

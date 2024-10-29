@@ -36,12 +36,12 @@ public class SlayerTracker {
      * @return {@code true} if at least one slayer tracker is enabled, {@code false} otherwise
      */
     public boolean isTrackerEnabled() {
-        return main.getConfigValues().isEnabled(Feature.REVENANT_SLAYER_TRACKER) ||
-                main.getConfigValues().isEnabled(Feature.TARANTULA_SLAYER_TRACKER) ||
-                main.getConfigValues().isEnabled(Feature.SVEN_SLAYER_TRACKER) ||
-                main.getConfigValues().isEnabled(Feature.VOIDGLOOM_SLAYER_TRACKER) ||
-                main.getConfigValues().isEnabled(Feature.INFERNO_SLAYER_TRACKER) ||
-                main.getConfigValues().isEnabled(Feature.RIFTSTALKER_SLAYER_TRACKER);
+        return Feature.REVENANT_SLAYER_TRACKER.isEnabled() ||
+                Feature.TARANTULA_SLAYER_TRACKER.isEnabled() ||
+                Feature.SVEN_SLAYER_TRACKER.isEnabled() ||
+                Feature.VOIDGLOOM_SLAYER_TRACKER.isEnabled() ||
+                Feature.INFERNO_SLAYER_TRACKER.isEnabled() ||
+                Feature.RIFTSTALKER_SLAYER_TRACKER.isEnabled();
     }
 
     /**

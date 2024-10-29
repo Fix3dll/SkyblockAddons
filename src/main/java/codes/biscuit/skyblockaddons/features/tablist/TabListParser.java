@@ -206,7 +206,7 @@ public class TabListParser {
                 String stripped = TextUtils.stripColor(line).trim();
                 Matcher m;
 
-                if (!foundEssenceSection && main.getConfigValues().isEnabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)
+                if (!foundEssenceSection && Feature.SHOW_SALVAGE_ESSENCES_COUNTER.isEnabled()
                         && stripped.contains("Essence:")) {
                     foundEssenceSection = true;
                 }
@@ -221,13 +221,13 @@ public class TabListParser {
                     }
                 }
 
-                if (parsedRainTime == null && main.getConfigValues().isEnabled(Feature.BIRCH_PARK_RAINMAKER_TIMER)
+                if (parsedRainTime == null && Feature.BIRCH_PARK_RAINMAKER_TIMER.isEnabled()
                         && LocationUtils.isOn("Birch Park")
                         && (m = RAIN_TIME_PATTERN.matcher(stripped)).matches()) {
                     parsedRainTime = m.group("time");
                 }
 
-                if (!foundSkillSection && !foundSkill && main.getConfigValues().isDisabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
+                if (!foundSkillSection && !foundSkill && Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP.isDisabled()) {
                     // The Catacombs still have old tab list instead of new Widgets
                     if (main.getUtils().getMap() == Island.DUNGEON
                             && (m = OLD_SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
@@ -333,11 +333,10 @@ public class TabListParser {
      * @return true If related features disabled
      */
     private static boolean isRelatedFeaturesDisabled() {
-        return main.getConfigValues().isDisabled(Feature.COMPACT_TAB_LIST)
-                && main.getConfigValues().isDisabled(Feature.SHOW_SALVAGE_ESSENCES_COUNTER)
-                && main.getConfigValues().isDisabled(Feature.BIRCH_PARK_RAINMAKER_TIMER)
-                && main.getConfigValues().isDisabled(Feature.CANDY_POINTS_COUNTER)
-                && (main.getConfigValues().isDisabled(Feature.SKILL_DISPLAY)
-                || main.getConfigValues().isEnabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP));
+        return Feature.COMPACT_TAB_LIST.isDisabled()
+                && Feature.SHOW_SALVAGE_ESSENCES_COUNTER.isDisabled()
+                && Feature.BIRCH_PARK_RAINMAKER_TIMER.isDisabled()
+                && Feature.CANDY_POINTS_COUNTER.isDisabled()
+                && (Feature.SKILL_DISPLAY.isDisabled() || Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP.isEnabled());
     }
 }

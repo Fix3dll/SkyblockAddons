@@ -162,8 +162,8 @@ public class DungeonMapManager {
         float centerOffset = -((mapSize - size) / zoomScaleFactor);
         GlStateManager.translate(centerOffset, centerOffset, 0);
 
-        boolean rotate = main.getConfigValues().isEnabled(Feature.ROTATE_MAP);
-        boolean rotateOnPlayer = main.getConfigValues().isEnabled(Feature.CENTER_ROTATION_ON_PLAYER);
+        boolean rotate = Feature.ROTATE_MAP.isEnabled();
+        boolean rotateOnPlayer = Feature.CENTER_ROTATION_ON_PLAYER.isEnabled();
 
         if (isScoreSummary) {
             rotate = false;
@@ -375,7 +375,7 @@ public class DungeonMapManager {
             float f4 = (float)(iconType / 4 + 1) / 4.0F;
 
             NetworkPlayerInfo markerNetworkPlayerInfo = null;
-            if (main.getConfigValues().isEnabled(Feature.SHOW_PLAYER_HEADS_ON_MAP) && mapMarker.getPlayerName() != null) {
+            if (Feature.SHOW_PLAYER_HEADS_ON_MAP.isEnabled() && mapMarker.getPlayerName() != null) {
                 for (NetworkPlayerInfo networkPlayerInfo : mc.getNetHandler().getPlayerInfoMap()) {
                     if (mapMarker.getPlayerName().equals(networkPlayerInfo.getGameProfile().getName())) {
                         markerNetworkPlayerInfo = networkPlayerInfo;
@@ -390,8 +390,7 @@ public class DungeonMapManager {
 
                 GlStateManager.color(1, 1, 1, 1);
 
-                if (main.getConfigValues().isEnabled(Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES) &&
-                        teammates.containsKey(mapMarker.getPlayerName())) {
+                if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() && teammates.containsKey(mapMarker.getPlayerName())) {
                     DungeonPlayer dungeonPlayer = teammates.get(mapMarker.getPlayerName());
                     if (dungeonPlayer.isLow()) {
                         GlStateManager.color(1, 1, 0.5F, 1);

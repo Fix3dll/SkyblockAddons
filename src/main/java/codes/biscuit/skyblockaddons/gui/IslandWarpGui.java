@@ -70,11 +70,11 @@ public class IslandWarpGui extends GuiScreen {
         int y = Math.round(screenHeight/ISLAND_SCALE-SHIFT_TOP);
 
         this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60 * 2, 50,
-                () -> main.getConfigValues().isEnabled(Feature.FANCY_WARP_MENU),
-                () -> Feature.FANCY_WARP_MENU.setEnabled(!main.getConfigValues().isEnabled(Feature.FANCY_WARP_MENU))));
+                Feature.FANCY_WARP_MENU::isEnabled,
+                () -> Feature.FANCY_WARP_MENU.setEnabled(Feature.FANCY_WARP_MENU.isDisabled())));
         this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60, 50,
-                () -> main.getConfigValues().isEnabled(Feature.DOUBLE_WARP),
-                () -> Feature.DOUBLE_WARP.setEnabled(!main.getConfigValues().isEnabled(Feature.DOUBLE_WARP))));
+                Feature.DOUBLE_WARP::isEnabled,
+                () -> Feature.DOUBLE_WARP.setEnabled(Feature.DOUBLE_WARP.isDisabled())));
     }
 
     @Override
@@ -156,7 +156,7 @@ public class IslandWarpGui extends GuiScreen {
             SkyblockAddons main = SkyblockAddons.getInstance();
             mc.displayGuiScreen(null);
 
-            if (main.getConfigValues().isEnabled(Feature.DOUBLE_WARP)) {
+            if (Feature.DOUBLE_WARP.isEnabled()) {
                 doubleWarpMarker = selectedMarker;
 
                 // Remove the marker if it didn't trigger for some reason...

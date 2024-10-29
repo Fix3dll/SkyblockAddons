@@ -56,7 +56,7 @@ public class MinecraftHook {
             if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
                 Entity entityIn = mc.objectMouseOver.entityHit;
 
-                if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && entityIn instanceof EntityItemFrame && ((EntityItemFrame)entityIn).getDisplayedItem() == null) {
+                if (Feature.LOCK_SLOTS.isEnabled() && entityIn instanceof EntityItemFrame && ((EntityItemFrame)entityIn).getDisplayedItem() == null) {
                     int slot = mc.thePlayer.inventory.currentItem + 36;
                     if (main.getConfigValues().getLockedSlots().contains(slot) && slot >= 9) {
                         main.getUtils().playLoudSound("note.bass", 0.5);
@@ -72,16 +72,16 @@ public class MinecraftHook {
         Minecraft mc = Minecraft.getMinecraft();
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())) {
+        if (Feature.LOCK_SLOTS.isEnabled() && (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())) {
             int slot = mc.thePlayer.inventory.currentItem + 36;
-            if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && main.getConfigValues().getLockedSlots().contains(slot)
+            if (Feature.LOCK_SLOTS.isEnabled() && main.getConfigValues().getLockedSlots().contains(slot)
                     && (slot >= 9 || mc.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5)) {
 
                 MinecraftHook.lastLockedSlotItemChange = System.currentTimeMillis();
             }
 
             ItemStack heldItemStack = mc.thePlayer.getHeldItem();
-            if (heldItemStack != null && main.getConfigValues().isEnabled(Feature.STOP_DROPPING_SELLING_RARE_ITEMS) && !main.getUtils().isInDungeon()
+            if (heldItemStack != null && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()
                     && !main.getUtils().getItemDropChecker().canDropItem(heldItemStack, true, false)) {
 
                 MinecraftHook.lastLockedSlotItemChange = System.currentTimeMillis();

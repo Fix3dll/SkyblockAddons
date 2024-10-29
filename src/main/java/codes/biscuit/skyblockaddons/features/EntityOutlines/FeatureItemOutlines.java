@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.features.EntityOutlines;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Rarity;
@@ -31,10 +30,6 @@ public class FeatureItemOutlines {
      * Cached value of the client's SkyBlock map
      */
     private static Island map;
-    /**
-     * Cached value of the client's config
-     */
-    private static ConfigValues config;
 
     /**
      * Entity-level predicate to determine whether a specific entity should be outlined, and if so, what color.
@@ -47,7 +42,7 @@ public class FeatureItemOutlines {
         if (e instanceof EntityItem) {
             EntityItem item = (EntityItem) e;
             // Don't display showcase blocks if player doesn't want them or is outside the building
-            if (LocationUtils.getShowcaseLocations().contains(location) || config.isDisabled(Feature.OUTLINE_SHOWCASE_ITEMS)
+            if (LocationUtils.getShowcaseLocations().contains(location) || Feature.OUTLINE_SHOWCASE_ITEMS.isDisabled()
                     && isShopShowcaseItem(item)) {
                 return null;
             }
@@ -73,8 +68,8 @@ public class FeatureItemOutlines {
      * @return {@code false} if no entities should be outlined (i.e., accept if the player has item outlines enabled for the current skyblock location)
      */
     private static boolean shouldOutline() {
-        return config.isEnabled(Feature.MAKE_DROPPED_ITEMS_GLOW)
-                && (config.isEnabled(Feature.SHOW_GLOWING_ITEMS_ON_ISLAND) || map != Island.PRIVATE_ISLAND);
+        return Feature.MAKE_DROPPED_ITEMS_GLOW.isEnabled()
+                && (Feature.SHOW_GLOWING_ITEMS_ON_ISLAND.isEnabled() || map != Island.PRIVATE_ISLAND);
     }
 
     /**
@@ -103,7 +98,6 @@ public class FeatureItemOutlines {
         SkyblockAddons main = SkyblockAddons.getInstance();
         location = main.getUtils().getLocation();
         map = main.getUtils().getMap();
-        config = main.getConfigValues();
 
         if (e.getType() == Type.XRAY) {
             // Test whether we should add any entities at all

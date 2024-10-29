@@ -53,8 +53,7 @@ public class FeatureDungeonTeammateOutlines {
      * @return {@code false} iff no entities should be outlined (i.e., accept if the player is in a dungeon)
      */
     private static boolean GLOBAL_TEST() {
-        return SkyblockAddons.getInstance().getConfigValues().isEnabled(Feature.OUTLINE_DUNGEON_TEAMMATES) &&
-                SkyblockAddons.getInstance().getUtils().isInDungeon();
+        return Feature.OUTLINE_DUNGEON_TEAMMATES.isEnabled() && SkyblockAddons.getInstance().getUtils().isInDungeon();
     }
 
     /**

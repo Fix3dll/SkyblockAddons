@@ -10,7 +10,7 @@ public class ItemHook {
 
     public static boolean isItemDamaged(ItemStack stack) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
+        if (main.getUtils().isOnSkyblock() && Feature.SHOW_ITEM_COOLDOWNS.isEnabled()) {
             if(CooldownManager.isOnCooldown(stack)) {
                 return true;
             }
@@ -20,7 +20,7 @@ public class ItemHook {
 
     public static void getDurabilityForDisplay(ItemStack stack, ReturnValue<Double> returnValue) { //Item item, ItemStack stack
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.SHOW_ITEM_COOLDOWNS)) {
+        if (main.getUtils().isOnSkyblock() && Feature.SHOW_ITEM_COOLDOWNS.isEnabled()) {
             if(CooldownManager.isOnCooldown(stack)) {
                 returnValue.cancel(CooldownManager.getRemainingCooldownPercent(stack));
             }

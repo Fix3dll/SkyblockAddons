@@ -44,7 +44,7 @@ public class InventoryUtils {
     public static final HashSet<String> BAT_PERSON_SET_IDS = new HashSet<>(
             Arrays.asList("BAT_PERSON_BOOTS", "BAT_PERSON_LEGGINGS", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_HELMET")
     );
-    private static final Pattern REVENANT_UPGRADE_PATTERN = Pattern.compile("Next Upgrade: \\+([0-9]+❈) \\(([0-9,]+)/([0-9,]+)\\)");
+    private static final Pattern SLAYER_ARMOR_STACK_PATTERN = Pattern.compile("Next Upgrade: \\+([0-9]+❈) \\(([0-9,]+)/([0-9,]+)\\)");
     private List<ItemStack> previousInventory;
     private final Multimap<String, ItemDiff> itemPickupLog = ArrayListMultimap.create();
 
@@ -196,13 +196,13 @@ public class InventoryUtils {
                 }
             });
 
-            if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER)) {
+            if (Feature.DRAGON_STATS_TRACKER.isEnabled()) {
                 DragonTracker.getInstance().checkInventoryDifferenceForDrops(inventoryDifference);
             }
 
             // Add changes to already logged changes of the same item, so it will increase/decrease the amount
             // instead of displaying the same item twice
-            if (main.getConfigValues().isEnabled(Feature.ITEM_PICKUP_LOG)) {
+            if (Feature.ITEM_PICKUP_LOG.isEnabled()) {
                 for (ItemDiff diff : inventoryDifference) {
                     Collection<ItemDiff> itemDiffs = itemPickupLog.get(diff.getDisplayName());
                     if (itemDiffs.size() <= 0) {
@@ -249,7 +249,7 @@ public class InventoryUtils {
      * @param p Player to check
      */
     public void checkIfInventoryIsFull(Minecraft mc, EntityPlayerSP p) {
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.FULL_INVENTORY_WARNING)) {
+        if (main.getUtils().isOnSkyblock() && Feature.FULL_INVENTORY_WARNING.isEnabled()) {
             /*
             If the inventory is full, show the full inventory warning.
             Slot 8 is the Skyblock menu/quiver arrow slot. It's ignored so shooting with a full inventory
@@ -272,7 +272,7 @@ public class InventoryUtils {
                 main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
 
                 // Schedule a repeat if needed.
-                if (main.getConfigValues().isEnabled(Feature.REPEAT_FULL_INVENTORY_WARNING)) {
+                if (Feature.REPEAT_FULL_INVENTORY_WARNING.isEnabled()) {
                     main.getScheduler().schedule(Scheduler.CommandType.SHOW_FULL_INVENTORY_WARNING, 10);
                     main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, 10 + main.getConfigValues().getWarningSeconds());
                 }
@@ -296,7 +296,7 @@ public class InventoryUtils {
      * @param p Player to check
      */
     public void checkIfWearingSkeletonHelmet(EntityPlayerSP p) {
-        if (main.getConfigValues().isEnabled(Feature.SKELETON_BAR)) {
+        if (Feature.SKELETON_BAR.isEnabled()) {
             ItemStack item = p.getEquipmentInSlot(4);
             if (item != null && "SKELETON_HELMET".equals(ItemUtils.getSkyblockItemID(item))) {
                 wearingSkeletonHelmet = true;
@@ -312,7 +312,7 @@ public class InventoryUtils {
      * @param p the player to check
      */
     public void checkIfUsingArrowPoison(EntityPlayerSP p) {
-        if (main.getConfigValues().isEnabled(Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON)) {
+        if (Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON.isEnabled()) {
             for (ItemStack item : p.inventory.mainInventory) {
                 if (item != null) {
                     String itemID = ItemUtils.getSkyblockItemID(item);
@@ -348,7 +348,7 @@ public class InventoryUtils {
      * @param p EntityPlayerSP
      */
     public void checkIfThunderBottle(EntityPlayerSP p) {
-        if (main.getConfigValues().isEnabled(Feature.THUNDER_BOTTLE_DISPLAY)) {
+        if (Feature.THUNDER_BOTTLE_DISPLAY.isEnabled()) {
             if (emptyThunderBottle != null && !ArrayUtils.contains(p.inventory.mainInventory, emptyThunderBottle))
                 emptyThunderBottle = null;
 
@@ -379,45 +379,45 @@ public class InventoryUtils {
      * @param p the player to check
      */
     public void checkIfWearingSlayerArmor(EntityPlayerSP p) {
-        if (main.getConfigValues().isEnabled(Feature.SLAYER_INDICATOR)) {
-            for (int i = 3; i >= 0; i--) {
-                ItemStack itemStack = p.inventory.armorInventory[i];
-                String itemID = itemStack != null ? ItemUtils.getSkyblockItemID(itemStack) : null;
+        if (Feature.SLAYER_INDICATOR.isDisabled()) return;
 
-                if (itemID != null && (itemID.startsWith("REVENANT") || itemID.startsWith("TARANTULA") ||
-                        itemID.startsWith("FINAL_DESTINATION") || itemID.startsWith("REAPER"))) {
-                    String percent = null;
-                    String defence = null;
-                    List<String> lore = ItemUtils.getItemLore(itemStack);
-                    for (String loreLine : lore) {
-                        Matcher matcher = REVENANT_UPGRADE_PATTERN.matcher(TextUtils.stripColor(loreLine));
-                        if (matcher.matches()) { // Example: line§5§o§7Next Upgrade: §a+240❈ §8(§a14,418§7/§c15,000§8)
-                            try {
-                                float percentage = Float.parseFloat(matcher.group(2).replace(",", "")) /
-                                        Integer.parseInt(matcher.group(3).replace(",", "")) * 100;
-                                BigDecimal bigDecimal = new BigDecimal(percentage).setScale(0, RoundingMode.HALF_UP);
-                                percent = bigDecimal.toString();
-                                defence = ColorCode.GREEN + matcher.group(1);
-                                break;
-                            } catch (NumberFormatException ignored) {
-                            }
+        for (int i = 3; i >= 0; i--) {
+            ItemStack itemStack = p.inventory.armorInventory[i];
+            String itemID = itemStack != null ? ItemUtils.getSkyblockItemID(itemStack) : null;
+
+            if (itemID != null && (itemID.startsWith("REVENANT") || itemID.startsWith("TARANTULA") ||
+                    itemID.startsWith("FINAL_DESTINATION") || itemID.startsWith("REAPER"))) {
+                String percent = null;
+                String defence = null;
+                List<String> lore = ItemUtils.getItemLore(itemStack);
+                for (String loreLine : lore) {
+                    Matcher matcher = SLAYER_ARMOR_STACK_PATTERN.matcher(TextUtils.stripColor(loreLine));
+                    if (matcher.matches()) { // Example: line§5§o§7Next Upgrade: §a+240❈ §8(§a14,418§7/§c15,000§8)
+                        try {
+                            float percentage = Float.parseFloat(matcher.group(2).replace(",", "")) /
+                                    Integer.parseInt(matcher.group(3).replace(",", "")) * 100;
+                            BigDecimal bigDecimal = new BigDecimal(percentage).setScale(0, RoundingMode.HALF_UP);
+                            percent = bigDecimal.toString();
+                            defence = ColorCode.GREEN + matcher.group(1);
+                            break;
+                        } catch (NumberFormatException ignored) {
                         }
                     }
-                    if (percent != null && defence != null) {
-                        SlayerArmorProgress currentProgress = slayerArmorProgresses[i];
-
-                        if (currentProgress == null || itemStack != currentProgress.getItemStack()) {
-                            // The item has changed or didn't exist. Create new object.
-                            slayerArmorProgresses[i] = new SlayerArmorProgress(itemStack, percent, defence);
-                        } else {
-                            // The item has remained the same. Just update the stats.
-                            currentProgress.setPercent(percent);
-                            currentProgress.setDefence(defence);
-                        }
-                    }
-                } else {
-                    slayerArmorProgresses[i] = null;
                 }
+                if (percent != null && defence != null) {
+                    SlayerArmorProgress currentProgress = slayerArmorProgresses[i];
+
+                    if (currentProgress == null || itemStack != currentProgress.getItemStack()) {
+                        // The item has changed or didn't exist. Create new object.
+                        slayerArmorProgresses[i] = new SlayerArmorProgress(itemStack, percent, defence);
+                    } else {
+                        // The item has remained the same. Just update the stats.
+                        currentProgress.setPercent(percent);
+                        currentProgress.setDefence(defence);
+                    }
+                }
+            } else {
+                slayerArmorProgresses[i] = null;
             }
         }
     }

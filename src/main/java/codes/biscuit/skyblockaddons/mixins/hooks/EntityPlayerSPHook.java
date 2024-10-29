@@ -20,7 +20,7 @@ public class EntityPlayerSPHook {
         ItemStack heldItemStack = mc.thePlayer.getHeldItem();
 
         if ((main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())) {
-            if (main.getConfigValues().isEnabled(Feature.LOCK_SLOTS) && !main.getUtils().isInDungeon()) {
+            if (Feature.LOCK_SLOTS.isEnabled() && !main.getUtils().isInDungeon()) {
                 int slot = mc.thePlayer.inventory.currentItem + 36;
                 if (main.getConfigValues().getLockedSlots().contains(slot) && (slot >= 9 || mc.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5)) {
                     main.getUtils().playLoudSound("note.bass", 0.5);
@@ -37,7 +37,7 @@ public class EntityPlayerSPHook {
                 }
             }
 
-            if (heldItemStack != null && main.getConfigValues().isEnabled(Feature.STOP_DROPPING_SELLING_RARE_ITEMS) && !main.getUtils().isInDungeon()) {
+            if (heldItemStack != null && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()) {
                 if (!main.getUtils().getItemDropChecker().canDropItem(heldItemStack, true)) {
                     main.getUtils().sendMessage(main.getConfigValues().getRestrictedColor(Feature.STOP_DROPPING_SELLING_RARE_ITEMS) + Translations.getMessage("messages.cancelledDropping"));
                     returnValue.cancel();
@@ -53,8 +53,8 @@ public class EntityPlayerSPHook {
             }
         }
 
-        if (heldItemStack != null && main.getConfigValues().isEnabled(Feature.DROP_CONFIRMATION) && !main.getUtils().isInDungeon() && (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer()
-                || main.getConfigValues().isEnabled(Feature.DOUBLE_DROP_IN_OTHER_GAMES))) {
+        if (heldItemStack != null && Feature.DROP_CONFIRMATION.isEnabled() && !main.getUtils().isInDungeon()
+                && (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer() || Feature.DOUBLE_DROP_IN_OTHER_GAMES.isEnabled())) {
             lastDrop = Minecraft.getSystemTime();
 
             String heldItemName = heldItemStack.hasDisplayName() ? heldItemStack.getDisplayName() : heldItemStack.getUnlocalizedName();

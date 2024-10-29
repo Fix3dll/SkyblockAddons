@@ -353,7 +353,7 @@ public enum Feature {
             SkyblockAddons main = SkyblockAddons.getInstance();
             SkyblockKeyBinding devModeKeyBinding = main.getDeveloperCopyNBTKey();
 
-            if (main.getConfigValues().isEnabled(DEVELOPER_MODE)) {
+            if (DEVELOPER_MODE.isEnabled()) {
                 devModeKeyBinding.register();
             } else if (devModeKeyBinding.isRegistered()) {
                 devModeKeyBinding.deRegister();
@@ -470,7 +470,7 @@ public enum Feature {
 
     public boolean isDisabled() {
         ConfigValues values = SkyblockAddons.getInstance().getConfigValues();
-        return values != null && values.isDisabled(this);
+        return values != null && (values.getDisabledFeatures().contains(this) || values.isRemoteDisabled(this));
     }
 
     /**
@@ -482,10 +482,9 @@ public enum Feature {
         if (features == null || features.length == 0) {
             throw new IllegalArgumentException("\"features\" cannot be null or empty");
         }
-        ConfigValues configValues = SkyblockAddons.getInstance().getConfigValues();
 
         for (Feature feature : features) {
-            if (configValues.isDisabled(feature)) {
+            if (feature.isDisabled()) {
                 return false; // short-circuit
             }
         }

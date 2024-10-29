@@ -31,7 +31,7 @@ public class RenderManagerHook {
         if (main.getUtils().isOnSkyblock()) {
             Island currentMap = main.getUtils().getMap();
 
-            if (main.getConfigValues().isEnabled(Feature.HIDE_BONES) && main.getInventoryUtils().isWearingSkeletonHelmet()) {
+            if (Feature.HIDE_BONES.isEnabled() && main.getInventoryUtils().isWearingSkeletonHelmet()) {
                 if (entityIn instanceof EntityItem && entityIn.ridingEntity instanceof EntityArmorStand && entityIn.ridingEntity.isInvisible()) {
                     EntityItem entityItem = (EntityItem) entityIn;
                     if (entityItem.getEntityItem().getItem().equals(Items.bone)) {
@@ -39,7 +39,7 @@ public class RenderManagerHook {
                     }
                 }
             }
-            if (main.getConfigValues().isEnabled(Feature.HIDE_HAUNTED_SKULLS) && main.getUtils().isInDungeon()) {
+            if (Feature.HIDE_HAUNTED_SKULLS.isEnabled() && main.getUtils().isInDungeon()) {
                 if (entityIn instanceof EntityArmorStand && entityIn.isInvisible()) {
                     EntityArmorStand armorStand = (EntityArmorStand) entityIn;
                     String skullID = ItemUtils.getSkullTexture(armorStand.getEquipmentInSlot(4));
@@ -54,7 +54,7 @@ public class RenderManagerHook {
                     returnValue.cancel();
                 }
             }
-            if (main.getConfigValues().isEnabled(Feature.HIDE_SPAWN_POINT_PLAYERS)) {
+            if (Feature.HIDE_SPAWN_POINT_PLAYERS.isEnabled()) {
                 BlockPos entityPosition = entityIn.getPosition();
                 if (entityIn instanceof EntityPlayer && LocationUtils.isOn("Village")
                         && entityPosition.getX() == -2
@@ -63,15 +63,13 @@ public class RenderManagerHook {
                     returnValue.cancel();
                 }
             }
-            if (main.getConfigValues().isEnabled(Feature.HIDE_PLAYERS_IN_LOBBY)) {
-                if (LocationUtils.isOn("Village", "Auction House", "Bank")) {
-                    if ((entityIn instanceof EntityOtherPlayerMP || entityIn instanceof EntityFX || entityIn instanceof EntityItemFrame) &&
-                            !NPCUtils.isNPC(entityIn) && entityIn.getDistanceSqToEntity(mc.thePlayer) > HIDE_RADIUS_SQUARED) {
-                        returnValue.cancel();
-                    }
+            if (Feature.HIDE_PLAYERS_IN_LOBBY.isEnabled() && LocationUtils.isOn("Village", "Auction House", "Bank")) {
+                if ((entityIn instanceof EntityOtherPlayerMP || entityIn instanceof EntityFX || entityIn instanceof EntityItemFrame)
+                        && !NPCUtils.isNPC(entityIn) && entityIn.getDistanceSqToEntity(mc.thePlayer) > HIDE_RADIUS_SQUARED) {
+                    returnValue.cancel();
                 }
             }
-            if (main.getConfigValues().isEnabled(Feature.HIDE_OTHER_PLAYERS_PRESENTS)) {
+            if (Feature.HIDE_OTHER_PLAYERS_PRESENTS.isEnabled()) {
                 JerryPresent present = JerryPresent.getJerryPresents().get(entityIn.getUniqueID());
                 if (present != null && present.shouldHide()) {
                     returnValue.cancel();

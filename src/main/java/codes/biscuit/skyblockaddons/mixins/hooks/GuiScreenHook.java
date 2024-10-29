@@ -12,12 +12,15 @@ public class GuiScreenHook {
     public static boolean onRenderTooltip(ItemStack itemStack, int x, int y) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        if (main.getConfigValues().isEnabled(Feature.DISABLE_EMPTY_GLASS_PANES) && main.getUtils().isEmptyGlassPane(itemStack)) {
+        if (Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && main.getUtils().isEmptyGlassPane(itemStack)) {
             return true;
         }
 
-        if (main.getConfigValues().isDisabled(Feature.SHOW_EXPERIMENTATION_TABLE_TOOLTIPS) && (main.getInventoryUtils().getInventoryType() == InventoryType.ULTRASEQUENCER || main.getInventoryUtils().getInventoryType() == InventoryType.CHRONOMATRON)) {
-            return true;
+        if (Feature.SHOW_EXPERIMENTATION_TABLE_TOOLTIPS.isDisabled()) {
+            InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+            if (inventoryType == InventoryType.ULTRASEQUENCER || inventoryType == InventoryType.CHRONOMATRON) {
+                return true;
+            }
         }
 
         return ContainerPreviewManager.onRenderTooltip(itemStack, x, y);

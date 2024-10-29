@@ -18,7 +18,7 @@ public class TileEntityEnderChestRendererHook {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
         if (main.getUtils().isOnSkyblock() && Minecraft.getMinecraft().currentScreen == null
-                && main.getConfigValues().isEnabled(Feature.MAKE_ENDERCHESTS_GREEN_IN_END)
+                && Feature.MAKE_ENDERCHESTS_GREEN_IN_END.isEnabled()
                 && LocationUtils.isOnZealotSpawnLocation()) {
             tileEntityEnderChestRenderer.bindTexture(BLANK_ENDERCHEST);
         } else {
@@ -29,7 +29,7 @@ public class TileEntityEnderChestRendererHook {
     public static void setEnderchestColor() {
         SkyblockAddons main = SkyblockAddons.getInstance();
         if (main.getUtils().isOnSkyblock() && Minecraft.getMinecraft().currentScreen == null
-                && main.getConfigValues().isEnabled(Feature.MAKE_ENDERCHESTS_GREEN_IN_END)
+                && Feature.MAKE_ENDERCHESTS_GREEN_IN_END.isEnabled()
                 && LocationUtils.isOnZealotSpawnLocation()) {
             int color = main.getConfigValues().getColor(Feature.MAKE_ENDERCHESTS_GREEN_IN_END);
             if (color == ColorCode.GREEN.getColor()) {

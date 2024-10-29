@@ -8,7 +8,7 @@ public class GuiNewChatHook {
 
     public static String getUnformattedText(IChatComponent iChatComponent) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main != null && main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+        if (main != null && Feature.DEVELOPER_MODE.isEnabled()) {
             return iChatComponent.getFormattedText(); // For logging colored messages...
         }
         return iChatComponent.getUnformattedText();

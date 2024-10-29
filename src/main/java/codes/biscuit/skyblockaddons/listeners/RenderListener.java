@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.listeners;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.*;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonClass;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonMilestone;
@@ -225,7 +224,7 @@ public class RenderListener {
     public void onRenderLiving(RenderLivingEvent.Specials.Pre<EntityLivingBase> e) {
         Entity entity = e.entity;
         if (entity.hasCustomName()) {
-            if (main.getConfigValues().isEnabled(Feature.MINION_DISABLE_LOCATION_WARNING)) {
+            if (Feature.MINION_DISABLE_LOCATION_WARNING.isEnabled()) {
                 if (entity.getCustomNameTag().startsWith("§cThis location isn't perfect! :(")) {
                     e.setCanceled(true);
                 }
@@ -243,7 +242,7 @@ public class RenderListener {
                 }
             }
 
-            if (main.getConfigValues().isEnabled(Feature.HIDE_SVEN_PUP_NAMETAGS)) {
+            if (Feature.HIDE_SVEN_PUP_NAMETAGS.isEnabled()) {
                 if (entity instanceof EntityArmorStand
                         && entity.hasCustomName()
                         && entity.getCustomNameTag().contains("Sven Pup")) {
@@ -260,16 +259,14 @@ public class RenderListener {
         Minecraft mc = Minecraft.getMinecraft();
         if (!(mc.currentScreen instanceof LocationEditGui) && !(mc.currentScreen instanceof GuiNotification)) {
             GlStateManager.disableBlend();
-            if (main.getConfigValues().isEnabled(Feature.DARK_AUCTION_TIMER)
-                    && main.getConfigValues().isEnabled(Feature.SHOW_DARK_AUCTION_TIMER_IN_OTHER_GAMES)) {
+            if (Feature.areEnabled(Feature.DARK_AUCTION_TIMER, Feature.SHOW_DARK_AUCTION_TIMER_IN_OTHER_GAMES)) {
                 float scale = main.getConfigValues().getGuiScale(Feature.DARK_AUCTION_TIMER);
                 GlStateManager.pushMatrix();
                 GlStateManager.scale(scale, scale, 1);
                 drawText(Feature.DARK_AUCTION_TIMER, scale, mc, null);
                 GlStateManager.popMatrix();
             }
-            if (main.getConfigValues().isEnabled(Feature.FARM_EVENT_TIMER)
-                    && main.getConfigValues().isEnabled(Feature.SHOW_FARM_EVENT_TIMER_IN_OTHER_GAMES)) {
+            if (Feature.areEnabled(Feature.FARM_EVENT_TIMER, Feature.SHOW_FARM_EVENT_TIMER_IN_OTHER_GAMES)) {
                 float scale = main.getConfigValues().getGuiScale(Feature.FARM_EVENT_TIMER);
                 GlStateManager.pushMatrix();
                 GlStateManager.scale(scale, scale, 1);
@@ -404,7 +401,7 @@ public class RenderListener {
             GlStateManager.disableBlend();
 
             for (Feature feature : Feature.getGuiFeatures()) {
-                if (main.getConfigValues().isEnabled(feature)) {
+                if (feature.isEnabled()) {
                     if (feature == Feature.SKELETON_BAR && !main.getInventoryUtils().isWearingSkeletonHelmet())
                         continue;
                     if (feature == Feature.HEALTH_UPDATES && main.getPlayerListener().getHealthUpdate() == null)
@@ -456,7 +453,7 @@ public class RenderListener {
                 }
                 break;
             case HEALTH_BAR:
-                if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_BAR_ON_RIFT) && main.getUtils().isOnRift())
+                if (Feature.HIDE_HEALTH_BAR_ON_RIFT.isEnabled() && main.getUtils().isOnRift())
                     return;
                 fill = getAttribute(Attribute.HEALTH) / getAttribute(Attribute.MAX_HEALTH);
                 break;
@@ -507,23 +504,21 @@ public class RenderListener {
                 if (buttonLocation == null && !ItemUtils.isDrill(mc.thePlayer.getHeldItem())) return;
                 break;
             case HEALTH_BAR:
-                if (main.getConfigValues().isEnabled(Feature.CHANGE_BAR_COLOR_FOR_POTIONS)) {
-                    if (mc.thePlayer != null) {
-                        if (mc.thePlayer.isPotionActive(19/* Poison */)) {
-                            color = ColorUtils.getDummySkyblockColor(
-                                    ColorCode.DARK_GREEN.getColor()
-                                    , main.getConfigValues().getChromaFeatures().contains(feature)
-                            );
-                        } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
-                            color = ColorUtils.getDummySkyblockColor(
-                                    ColorCode.DARK_GRAY.getColor()
-                                    , main.getConfigValues().getChromaFeatures().contains(feature)
-                            );
-                        } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
-                            if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
-                                fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
-                                hasAbsorption = true;
-                            }
+                if (Feature.CHANGE_BAR_COLOR_FOR_POTIONS.isEnabled() && mc.thePlayer != null) {
+                    if (mc.thePlayer.isPotionActive(19/* Poison */)) {
+                        color = ColorUtils.getDummySkyblockColor(
+                                ColorCode.DARK_GREEN.getColor()
+                                , main.getConfigValues().getChromaFeatures().contains(feature)
+                        );
+                    } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
+                        color = ColorUtils.getDummySkyblockColor(
+                                ColorCode.DARK_GRAY.getColor()
+                                , main.getConfigValues().getChromaFeatures().contains(feature)
+                        );
+                    } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
+                        if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
+                            fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
+                            hasAbsorption = true;
                         }
                     }
                 }
@@ -745,7 +740,7 @@ public class RenderListener {
         if (main.getUtils().isOnRift())
             return;
 
-        if (main.getConfigValues().isDisabled(Feature.USE_VANILLA_TEXTURE_DEFENCE)) {
+        if (Feature.USE_VANILLA_TEXTURE_DEFENCE.isDisabled()) {
             mc.getTextureManager().bindTexture(icons);
         } else {
             mc.getTextureManager().bindTexture(DEFENCE_VANILLA);
@@ -792,10 +787,10 @@ public class RenderListener {
                 break;
 
             case HEALTH_TEXT:
-                if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_TEXT_ON_RIFT) && main.getUtils().isOnRift())
+                if (Feature.HIDE_HEALTH_TEXT_ON_RIFT.isEnabled() && main.getUtils().isOnRift())
                     return;
                 // Dividing with 2 for show heart value instead of health value. 1 heart == 2 health
-                boolean shouldHeart = main.getConfigValues().isEnabled(Feature.HEART_INSTEAD_HEALTH_ON_RIFT);
+                boolean shouldHeart = Feature.HEART_INSTEAD_HEALTH_ON_RIFT.isEnabled();
 
                 text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH) / (shouldHeart ? 2 : 1)) + "/";
                 if (main.getUtils().isOnRift()) {
@@ -840,7 +835,7 @@ public class RenderListener {
 
                 if (heldDrill) {
                     text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/";
-                    if (main.getConfigValues().isEnabled(Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR))
+                    if (Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR.isEnabled())
                         text += TextUtils.abbreviate((int) getAttribute(Attribute.MAX_FUEL));
                     else
                         text += TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));
@@ -870,7 +865,7 @@ public class RenderListener {
                 break;
 
             case HEALTH_UPDATES:
-                if(main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_UPDATES_ON_RIFT) && main.getUtils().isOnRift())
+                if (Feature.HIDE_HEALTH_UPDATES_ON_RIFT.isEnabled() && main.getUtils().isOnRift())
                     return;
                 Float healthUpdate = main.getPlayerListener().getHealthUpdate();
                 if (buttonLocation == null) {
@@ -952,15 +947,15 @@ public class RenderListener {
                     if (text == null) return;
                 } else {
                     StringBuilder previewBuilder = new StringBuilder();
-                    if (main.getConfigValues().isEnabled(Feature.SHOW_SKILL_XP_GAINED)) {
+                    if (Feature.SHOW_SKILL_XP_GAINED.isEnabled()) {
                         previewBuilder.append("+123 ");
                     }
-                    if (main.getConfigValues().isEnabled(Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
+                    if (Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP.isEnabled()) {
                         previewBuilder.append("40% ");
                     } else {
                         previewBuilder.append("(2000/5000) ");
                     }
-                    if (main.getConfigValues().isEnabled(Feature.SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL)) {
+                    if (Feature.SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL.isEnabled()) {
                         previewBuilder.append(" - ")
                                 .append(Translations.getMessage("messages.actionsLeft", 3000))
                                 .append(" ");
@@ -983,7 +978,7 @@ public class RenderListener {
                 break;
 
             case ZEALOT_COUNTER:
-                if (main.getConfigValues().isEnabled(Feature.ZEALOT_COUNTER_ZEALOT_SPAWN_AREAS_ONLY) &&
+                if (Feature.ZEALOT_COUNTER_ZEALOT_SPAWN_AREAS_ONLY.isEnabled() &&
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
@@ -991,7 +986,7 @@ public class RenderListener {
                 break;
 
             case SHOW_TOTAL_ZEALOT_COUNT:
-                if (main.getConfigValues().isEnabled(Feature.SHOW_TOTAL_ZEALOT_COUNT_ZEALOT_SPAWN_AREAS_ONLY) &&
+                if (Feature.SHOW_TOTAL_ZEALOT_COUNT_ZEALOT_SPAWN_AREAS_ONLY.isEnabled() &&
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
@@ -1004,7 +999,7 @@ public class RenderListener {
                 break;
 
             case SHOW_SUMMONING_EYE_COUNT:
-                if (main.getConfigValues().isEnabled(Feature.SHOW_SUMMONING_EYE_COUNT_ZEALOT_SPAWN_AREAS_ONLY) &&
+                if (Feature.SHOW_SUMMONING_EYE_COUNT_ZEALOT_SPAWN_AREAS_ONLY.isEnabled() &&
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
@@ -1012,7 +1007,7 @@ public class RenderListener {
                 break;
 
             case SHOW_AVERAGE_ZEALOTS_PER_EYE:
-                if (main.getConfigValues().isEnabled(Feature.SHOW_AVERAGE_ZEALOTS_PER_EYE_ZEALOT_SPAWN_AREAS_ONLY) &&
+                if (Feature.SHOW_AVERAGE_ZEALOTS_PER_EYE_ZEALOT_SPAWN_AREAS_ONLY.isEnabled() &&
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
@@ -1106,7 +1101,7 @@ public class RenderListener {
                 break;
 
             case DOLPHIN_PET_TRACKER:
-                if (main.getConfigValues().isEnabled(Feature.SHOW_ONLY_HOLDING_FISHING_ROD) && !main.getPlayerListener().isHoldingRod())
+                if (Feature.SHOW_ONLY_HOLDING_FISHING_ROD.isEnabled() && !main.getPlayerListener().isHoldingRod())
                     return;
                 text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled());
                 break;
@@ -1141,7 +1136,7 @@ public class RenderListener {
             case FETCHUR_TODAY:
                 FetchurManager.FetchurItem fetchurItem = FetchurManager.getInstance().getCurrentFetchurItem();
                 if (!FetchurManager.getInstance().hasFetchedToday() || buttonLocation != null) {
-                    if (main.getConfigValues().isEnabled(Feature.SHOW_FETCHUR_ITEM_NAME)) {
+                    if (Feature.SHOW_FETCHUR_ITEM_NAME.isEnabled()) {
                         text = Translations.getMessage(
                                 "messages.fetchurItem"
                                 , fetchurItem.getItemStack().stackSize + "x " + fetchurItem.getItemText()
@@ -1160,7 +1155,7 @@ public class RenderListener {
                 if (buttonLocation != null) {
                     text = "Fire Freeze in 5,00";
                 } else {
-                    if (main.getConfigValues().isEnabled(Feature.FIRE_FREEZE_WHEN_HOLDING) && !main.getPlayerListener().isHoldingFireFreeze())
+                    if (Feature.FIRE_FREEZE_WHEN_HOLDING.isEnabled() && !main.getPlayerListener().isHoldingFireFreeze())
                         return;
 
                     long fireFreezeTimer = main.getPlayerListener().getFireFreezeTimer();
@@ -1171,7 +1166,7 @@ public class RenderListener {
                     if (countdown > 0) {
                         text = String.format("Fire Freeze in %.2f", countdown);
                     } else {
-                        if (main.getConfigValues().isEnabled(Feature.FIRE_FREEZE_SOUND)) {
+                        if (Feature.FIRE_FREEZE_SOUND.isEnabled()) {
                             main.getUtils().playLoudSound("mob.wither.spawn", 1);
                         }
                         main.getPlayerListener().setFireFreezeTimer(0);
@@ -1254,7 +1249,7 @@ public class RenderListener {
                 break;
 
             case FETCHUR_TODAY:
-                if (main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_ITEM_NAME)) {
+                if (Feature.SHOW_FETCHUR_ITEM_NAME.isDisabled()) {
                     width += 18;
                     height += 9;
                 }
@@ -1622,9 +1617,9 @@ public class RenderListener {
                 break;
 
             case FETCHUR_TODAY:
-                boolean showDwarven = main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_ONLY_IN_DWARVENS)
+                boolean showDwarven = Feature.SHOW_FETCHUR_ONLY_IN_DWARVENS.isDisabled()
                         || main.getUtils().getMap() == Island.DWARVEN_MINES;
-                boolean showInventory = main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_INVENTORY_OPEN_ONLY)
+                boolean showInventory = Feature.SHOW_FETCHUR_INVENTORY_OPEN_ONLY.isDisabled()
                         || Minecraft.getMinecraft().currentScreen != null;
                 FetchurManager.FetchurItem fetchurItem = FetchurManager.getInstance().getCurrentFetchurItem();
 
@@ -1635,7 +1630,7 @@ public class RenderListener {
 
                     FontRendererHook.setupFeatureFont(feature);
 
-                    if (main.getConfigValues().isDisabled(Feature.SHOW_FETCHUR_ITEM_NAME)) {
+                    if (Feature.SHOW_FETCHUR_ITEM_NAME.isDisabled()) {
                         DrawUtils.drawText(text, x + 1, y + 4, color); // Line related to the "Fetchur wants" text
                         float offsetX = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
                         renderItemAndOverlay(
@@ -1896,72 +1891,71 @@ public class RenderListener {
         boolean textMode;
         SlayerBoss slayerBoss;
         EnumUtils.SlayerQuest quest = main.getUtils().getSlayerQuest();
-        ConfigValues config = main.getConfigValues();
 
         switch (feature) {
             case REVENANT_SLAYER_TRACKER:
-                if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_CRYPTS)
+                if (buttonLocation == null && Feature.HIDE_WHEN_NOT_IN_CRYPTS.isEnabled()
                         && (quest != EnumUtils.SlayerQuest.REVENANT_HORROR
                         || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.REVENANT_HORROR))) {
                     return;
                 }
-                colorByRarity = config.isEnabled(Feature.REVENANT_COLOR_BY_RARITY);
-                textMode = config.isEnabled(Feature.REVENANT_TEXT_MODE);
+                colorByRarity = Feature.REVENANT_COLOR_BY_RARITY.isEnabled();
+                textMode = Feature.REVENANT_TEXT_MODE.isEnabled();
                 slayerBoss = SlayerBoss.REVENANT;
                 break;
 
             case TARANTULA_SLAYER_TRACKER:
-                if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_SPIDERS_DEN)
+                if (buttonLocation == null && Feature.HIDE_WHEN_NOT_IN_SPIDERS_DEN.isEnabled()
                         && (quest != EnumUtils.SlayerQuest.TARANTULA_BROODFATHER
                         || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.TARANTULA_BROODFATHER))) {
                     return;
                 }
-                colorByRarity = config.isEnabled(Feature.TARANTULA_COLOR_BY_RARITY);
-                textMode = config.isEnabled(Feature.TARANTULA_TEXT_MODE);
+                colorByRarity = Feature.TARANTULA_COLOR_BY_RARITY.isEnabled();
+                textMode = Feature.TARANTULA_TEXT_MODE.isEnabled();
                 slayerBoss = SlayerBoss.TARANTULA;
                 break;
 
             case SVEN_SLAYER_TRACKER:
-                if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_CASTLE)
+                if (buttonLocation == null && Feature.HIDE_WHEN_NOT_IN_CASTLE.isEnabled()
                         && (quest != EnumUtils.SlayerQuest.SVEN_PACKMASTER
                         || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.SVEN_PACKMASTER))) {
                     return;
                 }
-                colorByRarity = config.isEnabled(Feature.SVEN_COLOR_BY_RARITY);
-                textMode = config.isEnabled(Feature.SVEN_TEXT_MODE);
+                colorByRarity = Feature.SVEN_COLOR_BY_RARITY.isEnabled();
+                textMode = Feature.SVEN_TEXT_MODE.isEnabled();
                 slayerBoss = SlayerBoss.SVEN;
                 break;
 
             case VOIDGLOOM_SLAYER_TRACKER:
-                if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_END)
+                if (buttonLocation == null && Feature.HIDE_WHEN_NOT_IN_END.isEnabled()
                         && (quest != EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH
                         || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH))) {
                     return;
                 }
-                colorByRarity = config.isEnabled(Feature.ENDERMAN_COLOR_BY_RARITY);
-                textMode = config.isEnabled(Feature.ENDERMAN_TEXT_MODE);
+                colorByRarity = Feature.ENDERMAN_COLOR_BY_RARITY.isEnabled();
+                textMode = Feature.ENDERMAN_TEXT_MODE.isEnabled();
                 slayerBoss = SlayerBoss.VOIDGLOOM;
                 break;
 
             case INFERNO_SLAYER_TRACKER:
-                if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_CRIMSON)
+                if (buttonLocation == null && Feature.HIDE_WHEN_NOT_IN_CRIMSON.isEnabled()
                         && (quest != EnumUtils.SlayerQuest.INFERNO_DEMONLORD
                         || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.INFERNO_DEMONLORD))) {
                     return;
                 }
-                colorByRarity = config.isEnabled(Feature.INFERNO_COLOR_BY_RARITY);
-                textMode = config.isEnabled(Feature.INFERNO_TEXT_MODE);
+                colorByRarity = Feature.INFERNO_COLOR_BY_RARITY.isEnabled();
+                textMode = Feature.INFERNO_TEXT_MODE.isEnabled();
                 slayerBoss = SlayerBoss.INFERNO;
                 break;
 
             case RIFTSTALKER_SLAYER_TRACKER:
-                if (buttonLocation == null && config.isEnabled(Feature.HIDE_WHEN_NOT_IN_RIFT)
+                if (buttonLocation == null && Feature.HIDE_WHEN_NOT_IN_RIFT.isEnabled()
                         && (quest != EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND
                         || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.RIFTSTALKER_BLOODFIEND))) {
                     return;
                 }
-                colorByRarity = config.isEnabled(Feature.RIFTSTALKER_COLOR_BY_RARITY);
-                textMode = config.isEnabled(Feature.RIFTSTALKER_TEXT_MODE);
+                colorByRarity = Feature.RIFTSTALKER_COLOR_BY_RARITY.isEnabled();
+                textMode = Feature.RIFTSTALKER_TEXT_MODE.isEnabled();
                 slayerBoss = SlayerBoss.RIFTSTALKER;
                 break;
 
@@ -1969,9 +1963,9 @@ public class RenderListener {
                 return;
         }
 
-        float x = config.getActualX(feature);
-        float y = config.getActualY(feature);
-        int color = config.getColor(feature);
+        float x = main.getConfigValues().getActualX(feature);
+        float y = main.getConfigValues().getActualY(feature);
+        int color = main.getConfigValues().getColor(feature);
 
         if (textMode) {
             int lineHeight = 8;
@@ -2260,7 +2254,7 @@ public class RenderListener {
     }
 
     public void drawDragonTrackers(Minecraft mc, float scale, ButtonLocation buttonLocation) {
-        if (main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER_NEST_ONLY)
+        if (Feature.DRAGON_STATS_TRACKER_NEST_ONLY.isEnabled()
                 && !LocationUtils.isOn("Dragon's Nest") && buttonLocation == null) {
             return;
         }
@@ -2270,8 +2264,8 @@ public class RenderListener {
             recentDragons = DragonTracker.getDummyDragons();
         }
 
-        boolean colorByRarity = main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER_COLOR_BY_RARITY);
-        boolean textMode = main.getConfigValues().isEnabled(Feature.DRAGON_STATS_TRACKER_TEXT_MODE);
+        boolean colorByRarity = Feature.DRAGON_STATS_TRACKER_COLOR_BY_RARITY.isEnabled();
+        boolean textMode = Feature.DRAGON_STATS_TRACKER_TEXT_MODE.isEnabled();
 
         int spacerHeight = 3;
         String never = Translations.getMessage("dragonTracker.never");
@@ -2696,7 +2690,7 @@ public class RenderListener {
         }
 
         // For better visual (maybe?)
-        if (main.getConfigValues().isEnabled(Feature.EXPAND_DEPLOYABLE_STATUS) && display.size() > 3) {
+        if (Feature.EXPAND_DEPLOYABLE_STATUS.isEnabled() && display.size() > 3) {
             List<String> displayCopy = new LinkedList<>(display);
             display.clear();
 
@@ -2787,7 +2781,7 @@ public class RenderListener {
 
     @SubscribeEvent()
     public void onRenderRemoveBars(RenderGameOverlayEvent.Pre e) {
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.COMPACT_TAB_LIST)) {
+        if (main.getUtils().isOnSkyblock() && Feature.COMPACT_TAB_LIST.isEnabled()) {
             if (e.type == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {
                 if (TabListParser.getRenderColumns() != null) {
                     e.setCanceled(true);
@@ -2798,22 +2792,22 @@ public class RenderListener {
 
         if (e.type == RenderGameOverlayEvent.ElementType.ALL) {
             if (main.getUtils().isOnSkyblock()) {
-                if (main.getConfigValues().isEnabled(Feature.HIDE_FOOD_ARMOR_BAR)) {
+                if (Feature.HIDE_FOOD_ARMOR_BAR.isEnabled()) {
                     GuiIngameForge.renderFood = false;
                     GuiIngameForge.renderArmor = false;
                 }
-                if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_BAR)) {
-                    GuiIngameForge.renderHealth = main.getConfigValues().isEnabled(Feature.HIDE_ONLY_OUTSIDE_RIFT)
+                if (Feature.HIDE_HEALTH_BAR.isEnabled()) {
+                    GuiIngameForge.renderHealth = Feature.HIDE_ONLY_OUTSIDE_RIFT.isEnabled()
                             && main.getUtils().isOnRift();
                 }
-                if (main.getConfigValues().isEnabled(Feature.HIDE_PET_HEALTH_BAR)) {
+                if (Feature.HIDE_PET_HEALTH_BAR.isEnabled()) {
                     GuiIngameForge.renderHealthMount = false;
                 }
             } else {
-                if (main.getConfigValues().isEnabled(Feature.HIDE_HEALTH_BAR)) {
+                if (Feature.HIDE_HEALTH_BAR.isEnabled()) {
                     GuiIngameForge.renderHealth = true;
                 }
-                if (main.getConfigValues().isEnabled(Feature.HIDE_FOOD_ARMOR_BAR)) {
+                if (Feature.HIDE_FOOD_ARMOR_BAR.isEnabled()) {
                     GuiIngameForge.renderArmor = true;
                 }
             }
@@ -2881,8 +2875,8 @@ public class RenderListener {
         HealingCircleManager.renderHealingCircleOverlays(partialTicks);
 
         if (main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon()
-                && (main.getConfigValues().isEnabled(Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES)
-                || main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY))
+                && (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled()
+                || Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled())
         ) {
             Entity renderViewEntity = mc.getRenderViewEntity();
             Vector3d viewPosition = Utils.getPlayerViewPosition();
@@ -2908,7 +2902,7 @@ public class RenderListener {
                 y -= viewPosition.y;
                 z -= viewPosition.z;
 
-                if (main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY)) {
+                if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
                     y += 0.35F;
                 }
 
@@ -2918,7 +2912,7 @@ public class RenderListener {
 
                 double distanceScale = Math.max(1, renderViewEntity.getPositionVector().distanceTo(entity.getPositionVector()) / 10F);
 
-                if (main.getConfigValues().isEnabled(Feature.OUTLINE_DUNGEON_TEAMMATES)) {
+                if (Feature.OUTLINE_DUNGEON_TEAMMATES.isEnabled()) {
                     y += entity.height + 0.75F + (iconSize * distanceScale) / 40F;
                 } else {
                     y += entity.height / 2F + 0.25F;
@@ -2944,7 +2938,7 @@ public class RenderListener {
                 GlStateManager.color(1, 1, 1, 1);
                 GlStateManager.enableAlpha();
 
-                if (main.getConfigValues().isEnabled(Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES)
+                if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled()
                         && (!dungeonPlayer.isGhost() && (dungeonPlayer.isCritical() || dungeonPlayer.isLow()))) {
                     Tessellator tessellator = Tessellator.getInstance();
                     WorldRenderer worldrenderer = tessellator.getWorldRenderer();
@@ -2973,7 +2967,7 @@ public class RenderListener {
                     );
                 }
 
-                if (!dungeonPlayer.isGhost() && main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY)) {
+                if (!dungeonPlayer.isGhost() && Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
                     if (shouldRenderNameOverlay(entity)) {
                         String nameOverlay =
                                 ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] "
@@ -3005,7 +2999,7 @@ public class RenderListener {
      */
     private boolean shouldRenderNameOverlay(EntityPlayer teammate) {
         EntityPlayerSP thePlayer = Minecraft.getMinecraft().thePlayer;
-        return main.getConfigValues().isDisabled(Feature.STOP_NAME_OVERLAY_WHEN_CLOSE)
+        return Feature.STOP_NAME_OVERLAY_WHEN_CLOSE.isDisabled()
                 || teammate.isSneaking()
                 || teammate.getDistanceToEntity(thePlayer) > 10
                 || !teammate.canEntityBeSeen(thePlayer);

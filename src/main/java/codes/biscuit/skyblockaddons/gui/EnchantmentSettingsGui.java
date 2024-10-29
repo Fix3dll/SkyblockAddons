@@ -148,7 +148,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
             ButtonFeature button = (ButtonFeature) abstractButton;
             Feature feature = button.getFeature();
             if (feature == null) return;
-            feature.setEnabled(!main.getConfigValues().isEnabled(feature));
+            feature.setEnabled(feature.isDisabled());
 
         } else if (abstractButton instanceof ButtonArrow) {
             ButtonArrow arrow = (ButtonArrow) abstractButton;

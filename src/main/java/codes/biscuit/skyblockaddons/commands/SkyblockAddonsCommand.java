@@ -82,7 +82,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                 "§b● " + CommandSyntax.VERSION + " §7-§r " + getMessage("commands.usage.sba.version.help") + "\n" +
                 "§b● " + CommandSyntax.DEV + " §7-§r " + getMessage("commands.usage.sba.dev.help");
 
-        if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+        if (Feature.DEVELOPER_MODE.isEnabled()) {
             usage = usage + "\n" +
                     "§b● " + CommandSyntax.BRAND + " §7- " + getDevPrefixFormatted() + getMessage("commands.usage.sba.brand.help") + "\n" +
                     "§b● " + CommandSyntax.COPY_BLOCK + " §7- " + getDevPrefixFormatted() +  getMessage("commands.usage.sba.copyBlock.help") + "\n" +
@@ -142,7 +142,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                     }
                     return getListOfStringsMatchingLastWord(args, slayers);
 
-                } else if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+                } else if (Feature.DEVELOPER_MODE.isEnabled()) {
                     if (args[0].equalsIgnoreCase("copyEntity")) {
                         return getListOfStringsMatchingLastWord(args, DevUtils.ALL_ENTITY_NAMES);
                     } else if (args[0].equalsIgnoreCase("copySidebar")) {
@@ -203,7 +203,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                 SkyblockKeyBinding devModeKeyBinding = main.getDeveloperCopyNBTKey();
                 Feature.DEVELOPER_MODE.setEnabled(!Feature.DEVELOPER_MODE.isEnabled());
 
-                if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+                if (Feature.DEVELOPER_MODE.isEnabled()) {
                     main.getUtils().sendMessage(ColorCode.GREEN + getMessage("commands.responses.sba.dev.enabled",
                             GameSettings.getKeyDisplayString(devModeKeyBinding.getKeyCode())));
                 } else {
@@ -303,7 +303,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                                 getMessage("messages.copied"));
                     }
                 }
-            } else if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+            } else if (Feature.DEVELOPER_MODE.isEnabled()) {
                 if (args[0].equalsIgnoreCase("brand")) {
                     String serverBrand = DevUtils.getServerBrand();
 
@@ -427,7 +427,7 @@ public class SkyblockAddonsCommand extends CommandBase {
      Developer mode commands are not included if developer mode is disabled.
      */
     private List<String> getSubCommandTabCompletionOptions(String[] args) {
-        if (main.getConfigValues().isEnabled(Feature.DEVELOPER_MODE)) {
+        if (Feature.DEVELOPER_MODE.isEnabled()) {
             return getListOfStringsMatchingLastWord(args, SUBCOMMANDS);
         } else {
             return getListOfStringsMatchingLastWord(args, Arrays.copyOf(SUBCOMMANDS, 7));

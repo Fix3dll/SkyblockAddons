@@ -232,7 +232,7 @@ public class EntityOutlineRenderer {
         }
 
         // Main toggle for outlines features
-        if (main.getConfigValues().isDisabled(Feature.ENTITY_OUTLINES)) {
+        if (Feature.ENTITY_OUTLINES.isDisabled()) {
             return false;
         }
 

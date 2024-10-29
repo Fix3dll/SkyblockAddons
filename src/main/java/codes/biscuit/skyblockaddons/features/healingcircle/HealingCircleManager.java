@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class HealingCircleManager {
 
-    private static SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     @Getter private static Set<HealingCircle> healingCircles = Sets.newConcurrentHashSet();
 
     public static void addHealingCircleParticle(HealingCircleParticle healingCircleParticle) {
@@ -44,7 +44,7 @@ public class HealingCircleManager {
     }
 
     public static void renderHealingCircleOverlays(float partialTicks) {
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.SHOW_HEALING_CIRCLE_WALL)) {
+        if (main.getUtils().isOnSkyblock() && Feature.SHOW_HEALING_CIRCLE_WALL.isEnabled()) {
 
             Iterator<HealingCircle> healingCircleIterator = healingCircles.iterator();
             while (healingCircleIterator.hasNext()) {

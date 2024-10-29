@@ -18,7 +18,7 @@ public class RenderItemHook {
     public static void renderArrowPoisonEffect(IBakedModel model, ItemStack stack) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        if (main.getUtils().isOnSkyblock() && main.getConfigValues().isEnabled(Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON)
+        if (main.getUtils().isOnSkyblock() && Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON.isEnabled()
                 && (main.getInventoryUtils().isUsingToxicArrowPoison() || main.getInventoryUtils().isUsingTwilightArrowPoison())
                 && Items.bow.equals(stack.getItem()) && main.getUtils().itemIsInHotbar(stack)) {
             TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();

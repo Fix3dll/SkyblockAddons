@@ -300,7 +300,7 @@ public class SkyblockAddonsGui extends GuiScreen {
 
             } else if (abstractButton instanceof ButtonToggle) {
                 if (main.getConfigValues().isRemoteDisabled(feature)) return;
-                if (main.getConfigValues().isDisabled(feature)) {
+                if (feature.isDisabled()) {
                     feature.setEnabled(true);
                     switch (feature) {
                         case DISCORD_RPC:
