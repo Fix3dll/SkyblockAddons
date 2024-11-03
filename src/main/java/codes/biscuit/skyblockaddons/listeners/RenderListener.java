@@ -96,16 +96,16 @@ public class RenderListener {
 
     private static final ItemStack WATER_BUCKET = new ItemStack(Items.water_bucket);
     private static final ItemStack ROCK_PET = ItemUtils.createSkullItemStack(
-            "§f§f§7[Lvl 100] §6Rock"
+            "§7[Lvl 100] §6Rock"
             , null
-            , "1ed7c993-8190-3055-a48c-f70f71b17284"
-            , "cb2b5d48e57577563aca31735519cb622219bc058b1f34648b67b8e71bc0fa"
+            , "988354a0-b787-3ca5-b782-d0db5e7b876a"
+            , "7df8aab57136df2296c7c6f969ff25d58116fe2ec59b96a85ba4927e1f6779e6"
     );
     private static final ItemStack DOLPHIN_PET = ItemUtils.createSkullItemStack(
-            "§f§f§7[Lvl 100] §6Dolphin"
+            "§7[Lvl 100] §6Dolphin"
             , null
-            , "48f53ffe-a3f0-3280-aac0-11cc0d6121f4"
-            , "cefe7d803a45aa2af1993df2544a28df849a762663719bfefc58bf389ab7f5"
+            , "9001c25b-f0ff-3748-82c5-7bd117935ce2"
+            , "1415d2c543e34bb88ede94d79b9427691fc9be72daad8831a9ef297180546e18"
     );
     private static final ItemStack CHEST = new ItemStack(Item.getItemFromBlock(Blocks.chest));
     private static final ItemStack SKULL = ItemUtils.createSkullItemStack(
@@ -117,14 +117,14 @@ public class RenderListener {
     private static final ItemStack GREEN_CANDY = ItemUtils.createSkullItemStack(
             "Green Candy"
             , "GREEN_CANDY"
-            , "0961dbb3-2167-3f75-92e4-ec8eb4f57e55"
-            , "ce0622d01cfdae386cc7dd83427674b422f46d0a57e67a20607e6ca4b9af3b01"
+            , "e5190c90-5144-3e4e-a545-8499ea3503ca"
+            , "e31c0bd76a655d5d8fea5b06daaf1fb8d8060bf0823ebbc6eb6f99c8ee5a35aa"
     );
     private static final ItemStack PURPLE_CANDY = ItemUtils.createSkullItemStack(
             "Purple Candy"
             , "PURPLE_CANDY"
-            , "5b0e6bf0-6312-3476-b5f8-dbc9a8849a1f"
-            , "95d7aee4e97ad84095f55405ee1305d1fc8554c309edb12a1db863cde9c1ec80"
+            , "60a5c7bc-a65b-3772-889f-8831d4329fc4"
+            , "91611d874e874e322a1199b3b7b9e934bbb0dbed587ee8fcd6ccc1b07e281651"
     );
     private static final ItemStack THUNDER_IN_A_BOTTLE = ItemUtils.createSkullItemStack(
             "§5Thunder in a Bottle",

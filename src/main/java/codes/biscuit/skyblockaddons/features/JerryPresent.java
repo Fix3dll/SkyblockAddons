@@ -137,10 +137,10 @@ public class JerryPresent extends EntityAggregate {
     }
 
     private enum PresentColor {
-        WHITE("7732c5e4-1800-3b90-a70f-727d2969254b"),
-        GREEN("d5eb6a2a-3f10-3d6b-ba6a-4d46bb58a5cb"),
-        RED("bc74cb05-2758-3395-93ec-70452a983604"),
-        PARTY("4091eae2-1088-380a-b548-33f5daeea601");
+        WHITE("3047a516-415b-3bf4-b597-b78fd2a9ccf4"),
+        GREEN("5fa813c0-5519-30c4-a53c-955945e93e10"),
+        RED("4afe5d71-918f-3741-a969-5f785c5b2945"),
+        PARTY("7709e502-6eb4-34f7-9566-264606689fb2");
 
         private final String skullID;
 
