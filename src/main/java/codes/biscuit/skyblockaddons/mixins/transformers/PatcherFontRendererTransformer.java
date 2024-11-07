@@ -13,7 +13,7 @@ public class PatcherFontRendererTransformer {
 
     @Inject(method = "renderStringAtPos(Ljava/lang/String;Z)Z", at = @At("HEAD"), cancellable = true)
     public void overridePatcherFontRenderer(String string, boolean shadow, CallbackInfoReturnable<Boolean> cir) {
-        if (FontRendererHook.shouldRenderChroma()) {
+        if (FontRendererHook.shouldRenderChroma() || string.contains("§z") || string.contains("§Z")) {
             cir.cancel();
             cir.setReturnValue(false);
         }

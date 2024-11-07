@@ -258,7 +258,6 @@ public enum Feature {
     TEXT_STYLE(-1, "settings.textStyle", null, false),
     CHROMA_SPEED(-1, "settings.chromaSpeed", null, false),
     CHROMA_MODE(-1, "settings.chromaMode", null, false),
-    @Deprecated CHROMA_FADE_WIDTH(-1, "settings.chromaFadeWidth", null, false),
     CHROMA_SIZE(-1, "settings.chromaSize", null, false),
     CHROMA_SATURATION(-1, "settings.chromaSaturation", null, false),
     CHROMA_BRIGHTNESS(-1, "settings.chromaBrightness", null, false),

@@ -75,7 +75,6 @@ public class ConfigValues {
     @Deprecated
     private final MutableFloat oldChromaSpeed = new MutableFloat(0.19354838F); // 2.0
     private final MutableObject<EnumUtils.ChromaMode> chromaMode = new MutableObject<>(EnumUtils.ChromaMode.FADE);
-    private final MutableFloat chromaFadeWidth = new MutableFloat(0.22580644F); // 10° Hue
     private final MutableObject<DiscordStatus> discordDetails = new MutableObject<>(DiscordStatus.LOCATION);
     private final MutableObject<DiscordStatus> discordStatus = new MutableObject<>(DiscordStatus.AUTO_STATUS);
     private final MutableObject<DiscordStatus> discordAutoDefault = new MutableObject<>(DiscordStatus.NONE);
@@ -211,7 +210,6 @@ public class ConfigValues {
             deserializeNumber(healingCircleOpacity, "healingCircleOpacity", float.class);
             deserializeNumber(chromaSize, "chromaSize", float.class);
             deserializeEnumValueFromOrdinal(chromaMode, "chromaMode");
-            deserializeNumber(chromaFadeWidth, "chromaFadeWidth", float.class);
             deserializeEnumValueFromOrdinal(discordStatus, "discordStatus");
             deserializeEnumValueFromOrdinal(discordDetails, "discordDetails");
             deserializeEnumValueFromOrdinal(discordAutoDefault, "discordAutoDefault");
@@ -972,14 +970,6 @@ public class ConfigValues {
 
     public void setChromaMode(EnumUtils.ChromaMode chromaMode) {
         this.chromaMode.setValue(chromaMode);
-    }
-
-    public void setChromaFadeWidth(float chromaFadeWidth) {
-        this.chromaFadeWidth.setValue(chromaFadeWidth);
-    }
-
-    public float getChromaFadeWidth() {
-        return chromaFadeWidth.getValue();
     }
 
     public void setDiscordDetails(DiscordStatus discordDetails) {
