@@ -718,6 +718,26 @@ public class ConfigValues {
         return false;
     }
 
+    /**
+     * @param feature The feature to check.
+     * @return Whether the feature is disabled.
+     * @deprecated Use {@link Feature#isDisabled()}
+     */
+    @Deprecated
+    public boolean isDisabled(Feature feature) {
+        return disabledFeatures.contains(feature) || isRemoteDisabled(feature);
+    }
+
+    /**
+     * @param feature The feature to check.
+     * @return Whether the feature is enabled.
+     * @deprecated Use {@link Feature#isEnabled()}
+     */
+    @Deprecated
+    public boolean isEnabled(Feature feature) {
+        return !isDisabled(feature);
+    }
+
     // TODO Don't force alpha in the future...
     public int getColor(Feature feature) {
         return this.getColor(feature, 255);
