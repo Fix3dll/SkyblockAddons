@@ -778,7 +778,9 @@ public class RenderListener {
 
         switch (feature) {
             case MANA_TEXT:
-                text = TextUtils.formatNumber(getAttribute(Attribute.MANA)) + "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_MANA)) + (Feature.MANA_TEXT_ICON.isEnabled() ? "✎" : "");
+                text = TextUtils.formatNumber(getAttribute(Attribute.MANA)) + "/"
+                        + TextUtils.formatNumber(getAttribute(Attribute.MAX_MANA))
+                        + (Feature.MANA_TEXT_ICON.isEnabled() ? "✎" : "");
                 break;
 
             case OVERFLOW_MANA:
@@ -792,9 +794,9 @@ public class RenderListener {
                 // Dividing with 2 for show heart value instead of health value. 1 heart == 2 health
                 boolean shouldHeart = Feature.HEART_INSTEAD_HEALTH_ON_RIFT.isEnabled();
 
-                text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH) / (shouldHeart ? 2 : 1)) + "/";
+                text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH) / (shouldHeart ? 2F : 1F)) + "/";
                 if (main.getUtils().isOnRift()) {
-                    text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH) / (shouldHeart ? 2 : 1));
+                    text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH) / (shouldHeart ? 2F : 1F));
                 } else {
                     text += TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
                 }
@@ -827,7 +829,9 @@ public class RenderListener {
 
             case EFFECTIVE_HEALTH_TEXT:
                 if (onRift) return;
-                text = TextUtils.formatNumber(Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F))) + (Feature.EFFECTIVE_HEALTH_TEXT_ICON.isEnabled() ? "❤" : "");
+                text = TextUtils.formatNumber(
+                        Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F))
+                ) + (Feature.EFFECTIVE_HEALTH_TEXT_ICON.isEnabled() ? "❤" : "");
                 break;
 
             case DRILL_FUEL_TEXT:
@@ -840,7 +844,7 @@ public class RenderListener {
                     else
                         text += TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));
                 } else if (buttonLocation != null){
-                    text = "3,000/3,000";
+                    text = TextUtils.formatNumber(3000) + "/" + TextUtils.formatNumber(3000);
                 } else {
                     return;
                 }
@@ -982,7 +986,7 @@ public class RenderListener {
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
-                text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getKills());
+                text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getKills());
                 break;
 
             case SHOW_TOTAL_ZEALOT_COUNT:
@@ -991,9 +995,9 @@ public class RenderListener {
                     return;
                 }
                 if (main.getPersistentValuesManager().getPersistentValues().getTotalKills() <= 0) {
-                    text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getKills());
+                    text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getKills());
                 } else {
-                    text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getTotalKills()
+                    text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getTotalKills()
                             + main.getPersistentValuesManager().getPersistentValues().getKills());
                 }
                 break;
@@ -1003,7 +1007,7 @@ public class RenderListener {
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
-                text = String.valueOf(main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount());
+                text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount());
                 break;
 
             case SHOW_AVERAGE_ZEALOTS_PER_EYE:
@@ -1014,7 +1018,7 @@ public class RenderListener {
                 int summoningEyeCount = main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount();
 
                 if (summoningEyeCount > 0) {
-                    text = String.valueOf(Math.round(main.getPersistentValuesManager().getPersistentValues().getTotalKills()
+                    text = TextUtils.formatNumber(Math.round(main.getPersistentValuesManager().getPersistentValues().getTotalKills()
                             / (double) main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount()));
                 } else {
                     text = "0"; // Avoid zero division.
@@ -1178,15 +1182,17 @@ public class RenderListener {
             case THUNDER_BOTTLE_DISPLAY:
                 ItemStack emptyBottle = main.getInventoryUtils().getEmptyThunderBottle();
                 boolean haveFullThunderBottle = main.getInventoryUtils().isHaveFullThunderBottle();
+                final String thunderBottleCapacity = TextUtils.formatNumber(50000);
+
                 if (buttonLocation == null && emptyBottle == null && !haveFullThunderBottle)
                     return;
 
                 if (emptyBottle != null) {
-                    text = TextUtils.formatNumber(ItemUtils.getThunderCharge(emptyBottle)) + "/50,000";
+                    text = TextUtils.formatNumber(ItemUtils.getThunderCharge(emptyBottle)) + "/" + thunderBottleCapacity;
                 } else if (haveFullThunderBottle) {
                     text = "§aFull!";
                 } else /*buttonLocation != null*/ {
-                    text = "49,999/50,000";
+                    text = TextUtils.formatNumber(49999) + "/" + thunderBottleCapacity;
                 }
                 break;
 
@@ -1217,17 +1223,9 @@ public class RenderListener {
         switch (feature) {
             case ZEALOT_COUNTER:
             case SHOW_AVERAGE_ZEALOTS_PER_EYE:
-                width = mc.fontRendererObj.getStringWidth("500") + 18;
-                height += 9;
-                break;
-
             case SHOW_TOTAL_ZEALOT_COUNT:
-                width = mc.fontRendererObj.getStringWidth("30000") + 18;
-                height += 9;
-                break;
-
             case SHOW_SUMMONING_EYE_COUNT:
-                width = mc.fontRendererObj.getStringWidth("100") + 18;
+                width = mc.fontRendererObj.getStringWidth(text) + 18;
                 height += 9;
                 break;
 
@@ -1278,11 +1276,11 @@ public class RenderListener {
                 int green = candyCounts.get(CandyType.GREEN);
                 int purple = candyCounts.get(CandyType.PURPLE);
                 if (buttonLocation != null || green > 0) {
-                    width += 16 + 1 + mc.fontRendererObj.getStringWidth(String.valueOf(green));
+                    width += 16 + 1 + mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(green));
                 }
                 if (buttonLocation != null || purple > 0) {
                     if (green > 0) width += 1;
-                    width += 16 + 1 + mc.fontRendererObj.getStringWidth(String.valueOf(purple)) + 1;
+                    width += 16 + 1 + mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(purple)) + 1;
                 }
                 height = 16 + 8;
                 break;
@@ -1411,7 +1409,7 @@ public class RenderListener {
                 int count = EndstoneProtectorManager.getZealotCount();
 
                 FontRendererHook.setupFeatureFont(feature);
-                DrawUtils.drawText(String.valueOf(count), x + 16 + 2, y + 4, color);
+                DrawUtils.drawText(TextUtils.formatNumber(count), x + 16 + 2, y + 4, color);
                 FontRendererHook.endFeatureFont();
                 break;
 
@@ -1594,24 +1592,24 @@ public class RenderListener {
 
                     currentX += 16 + 1;
                     FontRendererHook.setupFeatureFont(feature);
-                    DrawUtils.drawText(String.valueOf(green), currentX, y + 4, color);
+                    DrawUtils.drawText(TextUtils.formatNumber(green), currentX, y + 4, color);
                     FontRendererHook.endFeatureFont();
                 }
                 if (buttonLocation != null || purple > 0) {
                     if (buttonLocation != null || green > 0) {
-                        currentX += mc.fontRendererObj.getStringWidth(String.valueOf(green)) + 1;
+                        currentX += mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(green)) + 1;
                     }
 
                     renderItem(PURPLE_CANDY, currentX, y);
 
                     currentX += 16 + 1;
                     FontRendererHook.setupFeatureFont(feature);
-                    DrawUtils.drawText(String.valueOf(purple), currentX, y + 4, color);
+                    DrawUtils.drawText(TextUtils.formatNumber(purple), currentX, y + 4, color);
                     FontRendererHook.endFeatureFont();
                 }
 
                 FontRendererHook.setupFeatureFont(feature);
-                text = points + " Points";
+                text = TextUtils.formatNumber(points) + " Points";
                 DrawUtils.drawText(text, x + width / 2F - mc.fontRendererObj.getStringWidth(text) / 2F, y + 16, color);
                 FontRendererHook.endFeatureFont();
                 break;
@@ -1821,7 +1819,7 @@ public class RenderListener {
             DrawUtils.drawModalRectWithCustomSizedTexture(currentX, currentY, 0, 0, 16, 16, 16, 16);
 
             FontRendererHook.setupFeatureFont(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
-            DrawUtils.drawText(String.valueOf(value), currentX + 18 + 2, currentY + 5, color);
+            DrawUtils.drawText(TextUtils.formatNumber(value), currentX + 18 + 2, currentY + 5, color);
             FontRendererHook.endFeatureFont();
 
             count++;
@@ -1843,7 +1841,7 @@ public class RenderListener {
         for (Map.Entry<BaitManager.BaitType, Integer> entry : baits.entrySet()) {
             longestLineWidth = Math.max(
                     longestLineWidth
-                    , mc.fontRendererObj.getStringWidth(String.valueOf(entry.getValue()))
+                    , mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(entry.getValue()))
             );
         }
 
@@ -1873,7 +1871,7 @@ public class RenderListener {
             int color = main.getConfigValues().getColor(Feature.BAIT_LIST);
             FontRendererHook.setupFeatureFont(Feature.BAIT_LIST);
             DrawUtils.drawText(
-                    String.valueOf(entry.getValue())
+                    TextUtils.formatNumber(entry.getValue())
                     , x + iconSize + spacing
                     , y + (iconSize / 2F) - (8 / 2F)
                     , color

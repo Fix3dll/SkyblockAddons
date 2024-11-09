@@ -210,10 +210,6 @@ public class SkyblockAddons {
         usingOofModv1 = utils.isModLoaded("refractionoof", "1.0");
         usingPatcher = utils.isModLoaded("patcher");
 
-        if (Feature.NUMBER_SEPARATORS.isDisabled()) {
-            TextUtils.NUMBER_FORMAT.setGroupingUsed(false);
-        }
-
         NetworkListener.setupModAPI();
     }
 
