@@ -52,6 +52,10 @@ public class PetCacheManager {
             ) {
                 petCache = SkyblockAddons.getGson().fromJson(reader, PetCacheManager.PetCache.class);
 
+                // If cache file is completely empty because it is corrupted, Gson will return null
+                if (petCache == null) {
+                    petCache = new PetCache();
+                }
             } catch (Exception ex) {
                 logger.error("Error while loading pet cache!", ex);
             }

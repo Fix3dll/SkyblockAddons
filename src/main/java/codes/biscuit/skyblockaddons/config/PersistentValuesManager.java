@@ -63,6 +63,10 @@ public class PersistentValuesManager {
             try (FileReader reader = new FileReader(persistentValuesFile)) {
                 persistentValues = SkyblockAddons.getGson().fromJson(reader, PersistentValues.class);
 
+                // If the file is completely empty because it is corrupted, Gson will return null
+                if (persistentValues == null) {
+                    persistentValues = new PersistentValues();
+                }
             } catch (Exception ex) {
                 logger.error("Error loading persistent values!", ex);
             }
