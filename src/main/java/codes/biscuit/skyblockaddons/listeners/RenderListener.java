@@ -789,10 +789,10 @@ public class RenderListener {
                 break;
 
             case HEALTH_TEXT:
-                if (Feature.HIDE_HEALTH_TEXT_ON_RIFT.isEnabled() && main.getUtils().isOnRift())
-                    return;
+                if (Feature.HIDE_HEALTH_TEXT_ON_RIFT.isEnabled() && onRift) return;
+
                 // Dividing with 2 for show heart value instead of health value. 1 heart == 2 health
-                boolean shouldHeart = Feature.HEART_INSTEAD_HEALTH_ON_RIFT.isEnabled();
+                boolean shouldHeart = Feature.HEART_INSTEAD_HEALTH_ON_RIFT.isEnabled() && onRift;
 
                 text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH) / (shouldHeart ? 2F : 1F)) + "/";
                 if (main.getUtils().isOnRift()) {
