@@ -74,7 +74,8 @@ public class PetManager {
                     if (pet == null) continue;
 
                     // For unique index slot: add 45 slot = 5 row for each page except first page
-                    int sbaPetIndex = i + 45 * (pageNum - 1);
+                    // If pageNum == 0, there is no page indicator in the title, there is only 1 pet page.
+                    int sbaPetIndex = i + 45 * (pageNum == 0 ? 0 : pageNum - 1);
 
                     Pet oldPet = main.getPetCacheManager().getPet(sbaPetIndex);
 

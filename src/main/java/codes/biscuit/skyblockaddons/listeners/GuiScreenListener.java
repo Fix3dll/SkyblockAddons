@@ -354,7 +354,10 @@ public class GuiScreenListener {
         Pair<Integer, Integer> clickedButton = GuiContainerHook.getLastClickedButtonOnPetsMenu();
         if (clickedButton == null) return;
 
-        int index = clickedButton.getKey() + 45 * (main.getInventoryUtils().getInventoryPageNum() - 1);
+        int pageNum = main.getInventoryUtils().getInventoryPageNum();
+        // If pageNum == 0, there is no page indicator in the title, there is only 1 pet page.
+        int index = clickedButton.getKey() + 45 * (pageNum == 0 ? 0 : pageNum -1);
+
         if (petMap.containsKey(index)) {
             PetManager.Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
