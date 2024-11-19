@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,9 +50,6 @@ import java.util.stream.Collectors;
 
 /**
  * This is a class of utilities for SkyblockAddons developers.
- *
- * @author ILikePlayingGames
- * @version 2.3
  */
 public class DevUtils {
     //TODO: Add options to enter custom action bar messages to test ActionBarParser
@@ -582,10 +580,17 @@ public class DevUtils {
      * This method reloads all of the mod's resources from the corresponding files.
      */
     public static void reloadResources() {
-        logger.info("Reloading resources...");
+        if (mc.thePlayer != null) {
+            main.getUtils().sendMessage("Reloading resources...");
+        } else {
+            logger.info("Reloading resources...");
+        }
+        DataUtils.setFailureMessageShown(false);
         DataUtils.readLocalAndFetchOnline();
         main.getPersistentValuesManager().loadValues();
-        ((SimpleReloadableResourceManager) mc.getResourceManager()).reloadResourcePack(FMLClientHandler.instance().getResourcePackFor(SkyblockAddons.MOD_ID));
+        ((SimpleReloadableResourceManager) mc.getResourceManager()).reloadResourcePack(
+                FMLClientHandler.instance().getResourcePackFor(SkyblockAddons.MOD_ID)
+        );
         try {
             Method notifyReloadListenersMethod = SimpleReloadableResourceManager.class.getDeclaredMethod(
                     SkyblockAddonsASMTransformer.isDeobfuscated() ? "notifyReloadListeners" : "func_110544_b"
@@ -595,7 +600,20 @@ public class DevUtils {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             logger.error("An error occurred while reloading the mod's resources.", e);
         }
-        logger.info("Resources reloaded");
+        SkyblockAddons.getInstance().getNewScheduler().runAsync(new SkyblockRunnable() {
+            @Override
+            public void run() {
+                if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
+                    DataUtils.onSkyblockJoined();
+                    if (mc.thePlayer != null) {
+                        main.getUtils().sendMessage("Resources reloaded.");
+                    } else {
+                        logger.info("Resources reloaded.");
+                    }
+                    this.cancel();
+                }
+            }
+        }, 0, 5);
     }
 
     /*

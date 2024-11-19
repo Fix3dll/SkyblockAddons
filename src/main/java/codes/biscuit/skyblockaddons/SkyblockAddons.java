@@ -162,10 +162,6 @@ public class SkyblockAddons {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
-        if (DataUtils.USE_ONLINE_DATA) {
-            DataUtils.loadOnlineData();
-        }
-
         MinecraftForge.EVENT_BUS.register(new NetworkListener());
         MinecraftForge.EVENT_BUS.register(playerListener);
         MinecraftForge.EVENT_BUS.register(guiScreenListener);
@@ -249,7 +245,7 @@ public class SkyblockAddons {
                 THREAD_EXECUTOR.shutdownNow();
                 Thread.currentThread().interrupt();
             }
-        }));
+        }, "SkyblockAddons-Shutdown"));
     }
 
     @Mod.EventHandler

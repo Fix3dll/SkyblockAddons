@@ -26,14 +26,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.*;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.FutureRequestExecutionMetrics;
 import org.apache.http.impl.client.FutureRequestExecutionService;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpRequestFutureTask;
@@ -80,11 +81,12 @@ public class DataUtils {
     private static final FutureRequestExecutionService futureRequestExecutionService =
             new FutureRequestExecutionService(httpClient, executorService);
 
+    @Getter private static final FutureRequestExecutionMetrics executionServiceMetrics =
+            futureRequestExecutionService.metrics();
+
     private static final ArrayList<RemoteFileRequest<?>> remoteRequests = new ArrayList<>();
 
-    @Getter private static final ArrayList<HttpRequestFutureTask<?>> httpRequestFutureTasks = new ArrayList<>();
-
-    @Getter private static final HashMap<String, Throwable> failedRequests = new HashMap<>();
+    private static final HashMap<String, Throwable> failedRequests = new HashMap<>();
 
     /**
      * Main CDN doesn't work for some users.
@@ -92,8 +94,9 @@ public class DataUtils {
      */
     static boolean useFallbackCDN;
 
-    // Whether the failed requests error was shown in chat, used to make it show only once per session
-    private static boolean failureMessageShown = false;
+    // Whether the failed requests error was shown in chat,
+    // used to make it show only once per session except reloadRes command
+    @Setter private static boolean failureMessageShown = false;
 
     /**
      * The mod uses the online data files if this is {@code true} and local data if this is {@code false}.
@@ -275,34 +278,6 @@ public class DataUtils {
         }
     }
 
-    /**
-     * Loads the received online data files into the mod.
-     *
-     * @see SkyblockAddons#preInit(FMLPreInitializationEvent)
-     */
-    public static void loadOnlineData() {
-        Iterator<RemoteFileRequest<?>> requestIterator = remoteRequests.iterator();
-
-        while (requestIterator.hasNext()) {
-            RemoteFileRequest<?> request = requestIterator.next();
-
-            if (!request.isDone()) {
-                handleOnlineFileLoadException(
-                        request.getURL(),
-                        new RuntimeException(
-                                String.format(
-                                        "Request for \"%s\" didn't finish in time for mod init.",
-                                        getFileNameFromUrlString(request.getURL())
-                                )
-                        ),
-                        request.isEssential()
-                );
-            }
-
-            requestIterator.remove();
-        }
-    }
-
     public static void loadOnlineData(RemoteFileRequest<?> request) {
         request.execute(futureRequestExecutionService);
     }
@@ -386,6 +361,7 @@ public class DataUtils {
 
             main.getUtils().sendMessage(failureMessageComponent, false);
             failureMessageShown = true;
+            failedRequests.clear();
         }
     }
 

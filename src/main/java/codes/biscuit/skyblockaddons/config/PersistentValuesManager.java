@@ -40,8 +40,6 @@ public class PersistentValuesManager {
         private DragonTrackerData dragonTracker = new DragonTrackerData();
         private Map<String, CompressedStorage> storageCache = new HashMap<>();
 
-        private boolean blockCraftingIncompletePatterns = true; // unused after crafting pattern removal
-
         private int oresMined = 0;
         private int seaCreaturesKilled = 0;
 
