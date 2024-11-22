@@ -345,7 +345,7 @@
     "pesterminator": {
       "goodLevel": 0,
       "loreName": "Pesterminator",
-      "maxLevel": 5,
+      "maxLevel": 6,
       "nbtName": "pesterminator"
     },
     "piercing": {
@@ -447,7 +447,7 @@
     "scavenger": {
       "goodLevel": 3,
       "loreName": "Scavenger",
-      "maxLevel": 5,
+      "maxLevel": 6,
       "nbtName": "scavenger"
     },
     "sharpness": {
