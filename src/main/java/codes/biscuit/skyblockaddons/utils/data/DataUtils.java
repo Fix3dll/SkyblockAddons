@@ -5,6 +5,7 @@ import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.features.PetManager;
+import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.LocationData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
@@ -26,7 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
-import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.*;
@@ -44,7 +45,13 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -86,17 +93,15 @@ public class DataUtils {
 
     private static final ArrayList<RemoteFileRequest<?>> remoteRequests = new ArrayList<>();
 
-    private static final HashMap<String, Throwable> failedRequests = new HashMap<>();
+    private static final TreeMap<String, Throwable> failedRequests = new TreeMap<>();
 
-    /**
-     * Main CDN doesn't work for some users.
-     * Use fallback CDN if a request fails twice or user is in China or Hong Kong.
-     */
-    static boolean useFallbackCDN;
+    static boolean fallbackCDNUsed = false;
+
+    static final HashSet<String> failedUris = new HashSet<>();
 
     // Whether the failed requests error was shown in chat,
     // used to make it show only once per session except reloadRes command
-    @Setter private static boolean failureMessageShown = false;
+    private static boolean failureMessageShown = false;
 
     /**
      * The mod uses the online data files if this is {@code true} and local data if this is {@code false}.
@@ -104,20 +109,16 @@ public class DataUtils {
      * the environment variable {@code FETCH_DATA_ONLINE}.
      */
     public static final boolean USE_ONLINE_DATA = !SkyblockAddonsASMTransformer.isDeobfuscated() ||
-            System.getenv().containsKey("FETCH_DATA_ONLINE");
+            Boolean.getBoolean("sba.data.online");
 
     private static String path;
 
     private static LocalizationsRequest localizedStringsRequest = null;
 
     static {
-        String country = Locale.getDefault().getCountry();
-        if (country.equals("CN") || country.equals("HK")) {
-            useFallbackCDN = true;
-        }
         connectionManager.setMaxTotal(5);
         connectionManager.setDefaultMaxPerRoute(5);
-        registerRemoteRequests();
+        registerNewRemoteRequests();
     }
 
     //TODO: Migrate all data file loading to this class
@@ -271,10 +272,28 @@ public class DataUtils {
     private static void fetchFromOnline() {
         for (RemoteFileRequest<?> request : remoteRequests) {
             request.execute(futureRequestExecutionService);
-        }
+            if (request.getURL().contains(DataConstants.CDN_BASE_URL)) {
+                SkyblockAddons.getInstance().getNewScheduler().runAsync(new SkyblockRunnable() {
+                    @Override
+                    public void run() {
+                        if (request.isDone() && failedUris.contains(request.getURL())) {
+                            request.setFallbackCDN();
+                            request.execute(futureRequestExecutionService);
 
-        if (useFallbackCDN) {
-            logger.warn("Could not reach main CDN. Some resources were fetched from fallback CDN.");
+                            if (!fallbackCDNUsed) {
+                                if (Minecraft.getMinecraft().thePlayer != null) {
+                                    main.getUtils().sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
+                                } else {
+                                    logger.warn(Translations.getMessage("messages.fallbackCdnUsed"));
+                                }
+                                fallbackCDNUsed = true;
+                            }
+
+                            this.cancel();
+                        }
+                    }
+                }, 0, 2);
+            }
         }
     }
 
@@ -331,7 +350,7 @@ public class DataUtils {
     }
 
     /**
-     * Displays a message when the player first joins Skyblock asking them to report failed requests to our Discord server.
+     * Displays a message when the player first joins Skyblock.
      */
     public static void onSkyblockJoined() {
         if (!failureMessageShown && !failedRequests.isEmpty()) {
@@ -350,13 +369,22 @@ public class DataUtils {
                     )
             );
             IChatComponent buttonRowComponent = new ChatComponentText("[" + Translations.getMessage("messages.copy") + "]")
-                    .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE).setChatClickEvent(
+                    .setChatStyle(
+                            new ChatStyle().setColor(EnumChatFormatting.WHITE).setChatClickEvent(
                                     new ClickEvent(
                                             ClickEvent.Action.RUN_COMMAND,
                                             String.format("/sba internal copy %s", errorMessageBuilder)
                                     )
                             )
                     );
+            buttonRowComponent.appendText("  ");
+            buttonRowComponent.appendSibling(new ChatComponentText("[" + Translations.getMessage("messages.retry") + "]")
+                    .setChatStyle(
+                            new ChatStyle().setColor(EnumChatFormatting.WHITE).setChatClickEvent(
+                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sba reloadRes")
+                            )
+                    )
+            );
             failureMessageComponent.appendText("\n").appendSibling(buttonRowComponent);
 
             main.getUtils().sendMessage(failureMessageComponent, false);
@@ -378,7 +406,17 @@ public class DataUtils {
         return url.substring(fileNameIndex, queryParamIndex > fileNameIndex ? queryParamIndex : url.length());
     }
 
-    private static void registerRemoteRequests() {
+    /**
+     * After clearing the list, it constructs new requests and adds them to the list.
+     * It also resets the {@link DataUtils#fallbackCDNUsed}, {@link DataUtils#failureMessageShown} and
+     * {@link DataUtils#failedUris} values.
+     */
+    public static void registerNewRemoteRequests() {
+        remoteRequests.clear();
+        failedUris.clear();
+        fallbackCDNUsed = false;
+        failureMessageShown = false;
+
         remoteRequests.add(new OnlineDataRequest());
 //        if (SkyblockAddons.getInstance().getConfigValues().getLanguage() != Language.ENGLISH) {
 //            remoteRequests.add(new LocalizedStringsRequest(SkyblockAddons.getInstance().getConfigValues().getLanguage()));

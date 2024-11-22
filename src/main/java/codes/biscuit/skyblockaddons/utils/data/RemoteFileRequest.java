@@ -10,7 +10,7 @@ import org.apache.http.impl.client.HttpRequestFutureTask;
 
 public class RemoteFileRequest<T> {
     protected static final String NO_DATA_RECEIVED_ERROR = "No data received for get request to \"%s\"";
-    private final String REQUEST_URL;
+    private String REQUEST_URL;
     private final ResponseHandler<T> RESPONSE_HANDLER;
     private final FutureCallback<T> FETCH_CALLBACK;
     private final boolean ESSENTIAL;
@@ -30,7 +30,7 @@ public class RemoteFileRequest<T> {
 
     public RemoteFileRequest(@NonNull String requestPath, @NonNull ResponseHandler<T> responseHandler,
                              DataFetchCallback<T> dataFetchCallback, boolean essential, boolean usingCustomUrl) {
-        REQUEST_URL = usingCustomUrl ? requestPath : getCDNBaseURL() + requestPath;
+        REQUEST_URL = usingCustomUrl ? requestPath : DataConstants.CDN_BASE_URL + requestPath;
         RESPONSE_HANDLER = responseHandler;
         FETCH_CALLBACK = dataFetchCallback;
         ESSENTIAL = essential;
@@ -45,6 +45,10 @@ public class RemoteFileRequest<T> {
         return REQUEST_URL;
     }
 
+    public void setFallbackCDN() {
+        this.REQUEST_URL = REQUEST_URL.replace(DataConstants.CDN_BASE_URL, DataConstants.FALLBACK_CDN_BASE_URL);
+    }
+
     public boolean isEssential() {
         return ESSENTIAL;
     }
@@ -54,6 +58,6 @@ public class RemoteFileRequest<T> {
     }
 
     protected static String getCDNBaseURL() {
-        return DataUtils.useFallbackCDN ? DataConstants.FALLBACK_CDN_BASE_URL : DataConstants.CDN_BASE_URL;
+        return DataConstants.CDN_BASE_URL;
     }
 }

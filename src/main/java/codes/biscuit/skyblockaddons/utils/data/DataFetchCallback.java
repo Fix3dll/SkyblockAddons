@@ -14,6 +14,7 @@ public abstract class DataFetchCallback<T> implements FutureCallback<T> {
     private final Logger logger;
     private final String urlString;
     private final boolean isEssential;
+    private Exception firstFail = null;
 
     public DataFetchCallback(Logger logger, URI url) {
         this(logger, url, false);
@@ -33,11 +34,20 @@ public abstract class DataFetchCallback<T> implements FutureCallback<T> {
     @Override
     public void failed(Exception ex) {
         logger.error(
-                "Failed to fetch \"{}\" data from the server. The local copy will be used instead.",
-                DataUtils.getFileNameFromUrlString(urlString)
+                "Failed to fetch \"{}\" data from the server. The local copy will be used instead.\n{}",
+                DataUtils.getFileNameFromUrlString(urlString), ex.getMessage()
         );
-        logger.error(ex.getMessage());
-        DataUtils.handleOnlineFileLoadException(urlString, ex, isEssential);
+
+        // If both the main and fallback CDNs fail, log both.
+        if (DataUtils.failedUris.contains(urlString) && firstFail != null) {
+            String fallbackAddress = urlString.replace(DataConstants.CDN_BASE_URL, DataConstants.FALLBACK_CDN_BASE_URL);
+            DataUtils.handleOnlineFileLoadException(urlString, firstFail, isEssential);
+            DataUtils.handleOnlineFileLoadException(fallbackAddress, ex, isEssential);
+        } else if (!urlString.contains(DataConstants.CDN_BASE_URL)) {
+            DataUtils.handleOnlineFileLoadException(urlString, ex, isEssential);
+        }
+
+        if (firstFail == null) firstFail = ex;
     }
 
     @Override

@@ -581,11 +581,11 @@ public class DevUtils {
      */
     public static void reloadResources() {
         if (mc.thePlayer != null) {
-            main.getUtils().sendMessage("Reloading resources...");
+            main.getUtils().sendMessage(Translations.getMessage("messages.reloadingResources"));
         } else {
-            logger.info("Reloading resources...");
+            logger.info(Translations.getMessage("messages.reloadingResources"));
         }
-        DataUtils.setFailureMessageShown(false);
+        DataUtils.registerNewRemoteRequests();
         DataUtils.readLocalAndFetchOnline();
         main.getPersistentValuesManager().loadValues();
         ((SimpleReloadableResourceManager) mc.getResourceManager()).reloadResourcePack(
@@ -606,9 +606,9 @@ public class DevUtils {
                 if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
                     DataUtils.onSkyblockJoined();
                     if (mc.thePlayer != null) {
-                        main.getUtils().sendMessage("Resources reloaded.");
+                        main.getUtils().sendMessage(Translations.getMessage("messages.resourcesReloaded"));
                     } else {
-                        logger.info("Resources reloaded.");
+                        logger.info(Translations.getMessage("messages.resourcesReloaded"));
                     }
                     this.cancel();
                 }
