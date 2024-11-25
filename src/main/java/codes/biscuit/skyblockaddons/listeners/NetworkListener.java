@@ -53,7 +53,7 @@ public class NetworkListener {
         if (Feature.DISCORD_RPC.isEnabled()) {
             main.getDiscordRPCManager().start();
         }
-        updateHealth = main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
+        updateHealth = main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
             @Override
             public void run() {
                 main.getPlayerListener().updateLastSecondHealth();
@@ -72,7 +72,7 @@ public class NetworkListener {
             main.getDiscordRPCManager().stop();
         }
         if (updateHealth != null) {
-            main.getNewScheduler().cancel(updateHealth);
+            updateHealth.cancel();
             updateHealth = null;
         }
     }

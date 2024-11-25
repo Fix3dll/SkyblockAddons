@@ -600,7 +600,7 @@ public class DevUtils {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             logger.error("An error occurred while reloading the mod's resources.", e);
         }
-        SkyblockAddons.getInstance().getNewScheduler().runAsync(new SkyblockRunnable() {
+        SkyblockAddons.getInstance().getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
             @Override
             public void run() {
                 if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
@@ -613,7 +613,7 @@ public class DevUtils {
                     this.cancel();
                 }
             }
-        }, 0, 5);
+        }, 0, 2);
     }
 
     /*

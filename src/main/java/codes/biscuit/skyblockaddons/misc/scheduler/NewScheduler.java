@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.misc.scheduler;
 
+import codes.biscuit.skyblockaddons.SkyblockAddons;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -33,7 +34,7 @@ public class NewScheduler {
 
                 try {
                     for (ScheduledTask scheduledTask : this.pendingTasks) {
-                        if (this.getTotalTicks() >= (scheduledTask.getAddedTicks() + scheduledTask.getDelay())) {
+                        if (this.getTotalTicks() >= (scheduledTask.getCreationTick() + scheduledTask.getDelay())) {
                             scheduledTask.start();
 
                             if (scheduledTask.isRepeating()) {
@@ -46,7 +47,7 @@ public class NewScheduler {
                         }
                     }
                 } catch (Throwable ex) {
-                    ex.printStackTrace();
+                    SkyblockAddons.getLogger().error("Scheduler ticking error: ", ex);
                 }
             }
         }
@@ -59,40 +60,6 @@ public class NewScheduler {
         });
     }
 
-    public void cancel(ScheduledTask task) {
-        task.cancel();
-    }
-    /**
-     * Repeats a task (synchronously) every tick.<br><br>
-     *
-     * Warning: This method is run on the main thread, don't do anything heavy.
-     * @param task The task to run.
-     * @return The scheduled task.
-     */
-    public ScheduledTask repeat(SkyblockRunnable task) {
-        return this.scheduleRepeatingTask(task, 0, 1);
-    }
-
-    /**
-     * Repeats a task (asynchronously) every tick.
-     *
-     * @param task The task to run.
-     * @return The scheduled task.
-     */
-    public ScheduledTask repeatAsync(SkyblockRunnable task) {
-        return this.runAsync(task, 0, 1);
-    }
-
-    /**
-     * Runs a task (asynchronously) on the next tick.
-     *
-     * @param task The task to run.
-     * @return The scheduled task.
-     */
-    public ScheduledTask runAsync(SkyblockRunnable task) {
-        return this.runAsync(task, 0);
-    }
-
     /**
      * Runs a task (asynchronously) on the next tick.
      *
@@ -100,8 +67,8 @@ public class NewScheduler {
      * @param delay The delay (in ticks) to wait before the task is ran.
      * @return The scheduled task.
      */
-    public ScheduledTask runAsync(SkyblockRunnable task, int delay) {
-        return this.runAsync(task, delay, 0);
+    public ScheduledTask scheduleAsyncTask(SkyblockRunnable task, int delay) {
+        return this.scheduleAsyncTask(task, delay, 0);
     }
 
     /**
@@ -112,7 +79,7 @@ public class NewScheduler {
      * @param period The delay (in ticks) to wait before calling the task again.
      * @return The scheduled task.
      */
-    public ScheduledTask runAsync(SkyblockRunnable task, int delay, int period) {
+    public ScheduledTask scheduleAsyncTask(SkyblockRunnable task, int delay, int period) {
         ScheduledTask scheduledTask = new ScheduledTask(task, delay, period, true);
         this.pendingTasks.add(scheduledTask);
         return scheduledTask;
@@ -122,21 +89,11 @@ public class NewScheduler {
      * Runs a task (synchronously) on the next tick.
      *
      * @param task The task to run.
-     * @return The scheduled task.
-     */
-    public ScheduledTask scheduleTask(SkyblockRunnable task) {
-        return this.scheduleDelayedTask(task, 0);
-    }
-
-    /**
-     * Runs a task (synchronously) on the next tick.
-     *
-     * @param task The task to run.
      * @param delay The delay (in ticks) to wait before the task is ran.
      * @return The scheduled task.
      */
-    public ScheduledTask scheduleDelayedTask(SkyblockRunnable task, int delay) {
-        return this.scheduleRepeatingTask(task, delay, 0);
+    public ScheduledTask scheduleTask(SkyblockRunnable task, int delay) {
+        return this.scheduleTask(task, delay, 0);
     }
 
     /**
@@ -147,8 +104,8 @@ public class NewScheduler {
      * @param period The delay (in ticks) to wait before calling the task again.
      * @return The scheduled task.
      */
-    public ScheduledTask scheduleRepeatingTask(SkyblockRunnable task, int delay, int period) {
-        return this.scheduleRepeatingTask(task, delay, period, false);
+    public ScheduledTask scheduleTask(SkyblockRunnable task, int delay, int period) {
+        return this.scheduleTask(task, delay, period, false);
     }
 
     /**
@@ -161,7 +118,7 @@ public class NewScheduler {
      *              synchronous task.
      * @return The scheduled task.
      */
-    public ScheduledTask scheduleRepeatingTask(SkyblockRunnable task, int delay, int period, boolean queued) {
+    public ScheduledTask scheduleTask(SkyblockRunnable task, int delay, int period, boolean queued) {
         ScheduledTask scheduledTask = new ScheduledTask(task, delay, period, false);
         if (queued) {
             this.queuedTasks.add(scheduledTask);
@@ -171,57 +128,4 @@ public class NewScheduler {
         return scheduledTask;
     }
 
-    /**
-     * Runs a task (synchronously) on the next tick.
-     *
-     * @param task The task to run.
-     * @param delay The delay (in ticks) to wait before the task is ran.
-     * @param period The delay (in ticks) to wait before calling the task again.
-     * @param runLimit The maximum number of times the task should be run.
-     * @return The scheduled task.
-     */
-    public LimitedRepeatingScheduledTask scheduleLimitedRepeatingTask(SkyblockRunnable task, int delay, int period, int runLimit) {
-        return this.scheduleLimitedRepeatingTask(task, delay, period, runLimit,false);
-    }
-
-    /**
-     * Runs a task (synchronously) on the next tick.
-     *
-     * @param task The task to run.
-     * @param delay The delay (in ticks) to wait before the task is run.
-     * @param period The delay (in ticks) to wait before calling the task again.
-     * @param runLimit The maximum number of times the task should be run.
-     * @param queued Whether to queue this task to be run next loop; to be used for scheduling tasks directly from a
-     *              synchronous task.
-     * @return The scheduled task.
-     */
-    public LimitedRepeatingScheduledTask scheduleLimitedRepeatingTask(SkyblockRunnable task, int delay, int period, int runLimit, boolean queued) {
-        LimitedRepeatingScheduledTask limitedRepeatingScheduledTask = new LimitedRepeatingScheduledTask(task, delay, period, false, runLimit);
-        if (queued) {
-            this.queuedTasks.add(limitedRepeatingScheduledTask);
-        } else {
-            this.pendingTasks.add(limitedRepeatingScheduledTask);
-        }
-        return limitedRepeatingScheduledTask;
-    }
-
-    /**
-     * Runs a task  on the next tick.
-     *
-     * @param scheduledTask The ScheduledTask to run.
-     */
-    public void schedule(ScheduledTask scheduledTask) {
-        this.pendingTasks.add(scheduledTask);
-    }
-
-    /**
-     * Causes the currently executing thread to sleep (temporarily cease execution) for the specified number of milliseconds, subject to the precision and accuracy of system timers and schedulers. The thread does not lose ownership of any monitors.
-     *
-     * @param millis the length of time to sleep in milliseconds
-     */
-    public static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignored) { }
-    }
 }

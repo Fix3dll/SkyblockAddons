@@ -101,7 +101,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
             long nextUpdateTime = main.getElectionData().getLastUpdated() + 303000L;
             int delayTick = (int) (nextUpdateTime - System.currentTimeMillis()) / 50;
 
-            return main.getNewScheduler().runAsync(new SkyblockRunnable() {
+            return main.getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
                 @Override
                 public void run() {
                     DataUtils.loadOnlineData(new MayorRequest(expectedMayorName));
@@ -110,7 +110,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
         }
 
         private ScheduledTask scheduleJerryMayorTask() {
-            return main.getNewScheduler().runAsync(new SkyblockRunnable() {
+            return main.getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
                 @Override
                 public void run() {
                     if (System.currentTimeMillis() > main.getUtils().getJerryMayorUpdateTime()) {

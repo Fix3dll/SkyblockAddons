@@ -1,49 +1,26 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import lombok.Getter;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 public class MinecraftHook {
 
     @Getter private static long lastLockedSlotItemChange = -1;
 
-    // The room with the puzzle is made of wood that you have to mine
-    private static final AxisAlignedBB DWARVEN_PUZZLE_ROOM = new AxisAlignedBB(171, 195, 125, 192, 196, 146);
-
-    private static final Set<Block> DEEP_CAVERNS_MINEABLE_BLOCKS = new HashSet<>(Arrays.asList(Blocks.coal_ore, Blocks.iron_ore, Blocks.gold_ore, Blocks.redstone_ore, Blocks.emerald_ore,
-            Blocks.diamond_ore, Blocks.diamond_block, Blocks.obsidian, Blocks.lapis_ore, Blocks.lit_redstone_ore));
-
-    private static final Set<Block> NETHER_MINEABLE_BLOCKS = new HashSet<>(Arrays.asList(Blocks.glowstone, Blocks.quartz_ore, Blocks.nether_wart));
-
-    // TODO: Make this less computationally expensive
-    // More specifically, should be cyan hardened clay, grey/light blue wool, dark prismarine, prismarine brick, prismarine, polished diorite
-    private static final Set<String> DWARVEN_MINEABLE_BLOCKS = new HashSet<>(Arrays.asList("minecraft:prismarine0",
-            "minecraft:prismarine1", "minecraft:prismarine2", "minecraft:stone4", "minecraft:wool3", "minecraft:wool7",
-            "minecraft:stained_hardened_clay9"));
-
-    private static final Set<Block> LOGS = new HashSet<>(Arrays.asList(Blocks.log, Blocks.log2));
-
-    private static final long lastStemMessage = -1;
-    private static final long lastUnmineableMessage = -1;
     public static BlockPos prevClickBlock = new BlockPos(-1, -1, -1);
     public static long startMineTime = Long.MAX_VALUE;
 
@@ -82,7 +59,7 @@ public class MinecraftHook {
 
             ItemStack heldItemStack = mc.thePlayer.getHeldItem();
             if (heldItemStack != null && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()
-                    && !main.getUtils().getItemDropChecker().canDropItem(heldItemStack, true, false)) {
+                    && !ItemDropChecker.canDropItem(heldItemStack, true, false)) {
 
                 MinecraftHook.lastLockedSlotItemChange = System.currentTimeMillis();
             }

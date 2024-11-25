@@ -275,7 +275,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                 // If player tries to open "Edit GUI Locations" from outside
                 if (mc.thePlayer == null) {
                     showWarning = true;
-                    main.getNewScheduler().scheduleDelayedTask(new SkyblockRunnable() {
+                    main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
                         @Override
                         public void run() {
                             showWarning = false;

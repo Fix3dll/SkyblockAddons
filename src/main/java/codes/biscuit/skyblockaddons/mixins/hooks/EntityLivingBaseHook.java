@@ -22,7 +22,7 @@ public class EntityLivingBaseHook {
             long now = System.currentTimeMillis();
             nightVisionEffectsToRemove.add(now);
 
-            main.getNewScheduler().scheduleDelayedTask(new SkyblockRunnable() {
+            main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
                 @Override
                 public void run() {
                     if (nightVisionEffectsToRemove.remove(now)) {

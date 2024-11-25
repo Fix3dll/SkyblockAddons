@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.events.SkyblockBlockBreakEvent;
@@ -35,7 +36,7 @@ public class PlayerControllerMPHook {
             if (slotNum == -999) {
                 // Is the player holding an item stack with their mouse?
                 if (heldStack != null) {
-                    return !SkyblockAddons.getInstance().getUtils().getItemDropChecker().canDropItem(heldStack);
+                    return !ItemDropChecker.canDropItem(heldStack);
                 }
             }
         }

@@ -119,7 +119,7 @@ public class ActionBarParser {
 
         // If the action bar is displaying player stats and the defense section is absent, the player's defense is zero.
         if (actionBar.contains("❤") && !actionBar.contains("❈") && splitMessage.length == 2) {
-            setAttribute(Attribute.DEFENCE, 0);
+            PlayerStats.DEFENCE.setValue(0);
         }
 
         for (String section : splitMessage) {
@@ -279,10 +279,10 @@ public class ActionBarParser {
                 }
             }
             healthLock = false;
-            boolean postSetLock = main.getUtils().getAttributes().get(Attribute.MAX_HEALTH).getValue() != maxHealth ||
-                    (Math.abs(main.getUtils().getAttributes().get(Attribute.HEALTH).getValue() - newHealth) / maxHealth) > .05;
-            setAttribute(Attribute.HEALTH, newHealth);
-            setAttribute(Attribute.MAX_HEALTH, maxHealth);
+            boolean postSetLock = PlayerStats.MAX_HEALTH.getValue() != maxHealth
+                    || (Math.abs(PlayerStats.HEALTH.getValue() - newHealth) / maxHealth) > .05;
+            if (!healthLock) PlayerStats.HEALTH.setValue(newHealth);
+            PlayerStats.MAX_HEALTH.setValue(maxHealth);
             healthLock = postSetLock;
         }
         return returnString;
@@ -300,13 +300,13 @@ public class ActionBarParser {
         // 421/421✎ -10ʬ
         Matcher m = MANA_PATTERN_S.matcher(TextUtils.stripColor(manaSection).trim());
         if (m.matches()) {
-            setAttribute(Attribute.MANA, parseFloat(m.group("num")));
-            setAttribute(Attribute.MAX_MANA, parseFloat(m.group("den")));
+            PlayerStats.MANA.setValue(parseFloat(m.group("num")));
+            PlayerStats.MAX_MANA.setValue(parseFloat(m.group("den")));
             float overflowMana = 0;
             if (m.group("overflow") != null) {
                 overflowMana = parseFloat(m.group("overflow"));
             }
-            setAttribute(Attribute.OVERFLOW_MANA, overflowMana);
+            PlayerStats.OVERFLOW_MANA.setValue(overflowMana);
             main.getRenderListener().setPredictMana(false);
             if (Feature.MANA_BAR.isEnabled() || Feature.MANA_TEXT.isEnabled()) {
                 return null;
@@ -330,7 +330,7 @@ public class ActionBarParser {
         Matcher m = DEFENSE_PATTERN_S.matcher(stripped);
         if (m.matches()) {
             float defense = parseFloat(m.group("defense"));
-            setAttribute(Attribute.DEFENCE, defense);
+            PlayerStats.DEFENCE.setValue(defense);
             otherDefense = TextUtils.getFormattedString(defenseSection, m.group("other").trim());
             if (Feature.DEFENCE_TEXT.isEnabled() || Feature.DEFENCE_PERCENTAGE.isEnabled()) {
                 return null;
@@ -501,8 +501,8 @@ public class ActionBarParser {
         // splitStats should convert into [1798, 3000]
         int fuel = Math.max(0, Integer.parseInt(splitStats[0]));
         int maxFuel = Math.max(1, Integer.parseInt(splitStats[1]));
-        setAttribute(Attribute.FUEL, fuel);
-        setAttribute(Attribute.MAX_FUEL, maxFuel);
+        PlayerStats.FUEL.setValue(fuel);
+        PlayerStats.MAX_FUEL.setValue(maxFuel);
         if (Feature.DRILL_FUEL_BAR.isEnabled() || Feature.DRILL_FUEL_TEXT.isEnabled()) {
             return null;
         } else {
@@ -524,15 +524,4 @@ public class ActionBarParser {
         }
     }
 
-    /**
-     * Sets an attribute in {@link Utils}
-     * Ignores health if it's locked
-     *
-     * @param attribute Attribute
-     * @param value     Attribute value
-     */
-    private void setAttribute(Attribute attribute, float value) {
-        if (attribute == Attribute.HEALTH && healthLock) return;
-        main.getUtils().getAttributes().get(attribute).setValue(value);
-    }
 }

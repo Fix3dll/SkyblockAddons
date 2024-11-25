@@ -1,19 +1,16 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Attribute;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
-import codes.biscuit.skyblockaddons.features.itemdrops.ItemDropChecker;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -23,7 +20,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
@@ -35,7 +31,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableFloat;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
@@ -116,16 +111,6 @@ public class Utils {
 
     // I know this is messy af, but frustration led me to take this dark path - said someone not biscuit
     public static boolean blockNextClick;
-
-    /**
-     * Get a player's attributes. This includes health, mana, and defence.
-     */
-    private Map<Attribute, MutableFloat> attributes = new EnumMap<>(Attribute.class);
-
-    /**
-     * This is the item checker that makes sure items being dropped or sold are allowed to be dropped or sold.
-     */
-    private final ItemDropChecker itemDropChecker = new ItemDropChecker();
 
     /**
      * List of reforges that the player is looking to find.
@@ -245,13 +230,6 @@ public class Utils {
     private boolean slayerBossAlive;
 
     public Utils() {
-        addDefaultStats();
-    }
-
-    private void addDefaultStats() {
-        for (Attribute attribute : Attribute.values()) {
-            attributes.put(attribute, new MutableFloat(attribute.getDefaultValue()));
-        }
     }
 
     public void sendMessage(String text, boolean prefix) {
@@ -905,7 +883,4 @@ public class Utils {
         return null;
     }
 
-    public static int getBlockMetaId(Block block, int meta) {
-        return Block.getStateId(block.getStateFromMeta(meta));
-    }
 }

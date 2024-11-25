@@ -8,9 +8,7 @@ import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import org.apache.commons.lang3.mutable.MutableFloat;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -85,11 +83,9 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
 
     STATS("discordStatus.titleStats", "discordStatus.descriptionStats",
             () -> {
-                final Map<Attribute, MutableFloat> attributes = SkyblockAddons.getInstance().getUtils().getAttributes();
-
-                String health = TextUtils.formatNumber(attributes.get(Attribute.HEALTH).getValue());
-                String defense = TextUtils.formatNumber(attributes.get(Attribute.DEFENCE).getValue());
-                String mana = TextUtils.formatNumber(attributes.get(Attribute.MANA).getValue());
+                String health = TextUtils.formatNumber(PlayerStats.HEALTH.getValue());
+                String defense = TextUtils.formatNumber(PlayerStats.DEFENCE.getValue());
+                String mana = TextUtils.formatNumber(PlayerStats.MANA.getValue());
 
                 return String.format("%s\u2764 %s\u2748 %s\u270E", health, defense, mana);
             }),

@@ -245,7 +245,7 @@ public class PlayerListener {
 
             if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
                 int manaLost = Integer.parseInt(unformattedText.split(Pattern.quote("! ("))[1].split(Pattern.quote(" Mana)"))[0]);
-                changeMana(-manaLost);
+                PlayerStats.MANA.setValue(PlayerStats.MANA.getValue() - manaLost);
             } else if ((matcher = AUTOPET_PATTERN.matcher(formattedText)).matches()) {
                 PetManager.getInstance().findCurrentPetFromAutopet(
                         matcher.group("level"), matcher.group("rarityColor"), matcher.group("name")
@@ -632,8 +632,8 @@ public class PlayerListener {
             if (timerTick == 20) {
                 // Add natural mana every second (increase is based on your max mana).
                 if (main.getRenderListener().isPredictMana()) {
-                    float mana = getAttribute(Attribute.MANA);
-                    float maxMana = getAttribute(Attribute.MAX_MANA);
+                    float mana = PlayerStats.MANA.getValue();
+                    float maxMana = PlayerStats.MAX_MANA.getValue();
 
                     // If regen-ing, cap at the max mana
                     if (mana < maxMana) {
@@ -643,7 +643,7 @@ public class PlayerListener {
                         if (activeDeployable != null)
                             predictedRegenMana += (float) (maxMana * activeDeployable.getDeployable().getManaRegen() / 50);
 
-                        setAttribute(Attribute.MANA, Math.min(mana + predictedRegenMana, maxMana));
+                        PlayerStats.MANA.setValue(Math.min(mana + predictedRegenMana, maxMana));
                     }
                     // If above mana cap, do nothing
                 }
@@ -877,7 +877,7 @@ public class PlayerListener {
                 AxisAlignedBB playerRadius = new AxisAlignedBB(p.posX - 3, p.posY - 3, p.posZ - 3, p.posX + 3, p.posY + 3, p.posZ + 3);
                 if (playerRadius.isVecInside(arrow.getPositionVector())) {
 //                    System.out.println("Spawned explosive arrow!");
-                    main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
+                    main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
                         @Override
                         public void run() {
                             if (arrow.isDead || arrow.isCollided || arrow.inGround) {
@@ -1211,7 +1211,7 @@ public class PlayerListener {
     }
 
     public void updateLastSecondHealth() {
-        float health = getAttribute(Attribute.HEALTH);
+        float health = PlayerStats.HEALTH.getValue();
         // Update the health gained/lost over the last second
         if (Feature.HEALTH_UPDATES.isEnabled() && actionBarParser.getLastSecondHealth() != health) {
             actionBarParser.setHealthUpdate(health - actionBarParser.getLastSecondHealth());
@@ -1226,18 +1226,6 @@ public class PlayerListener {
 
     Float getHealthUpdate() {
         return actionBarParser.getHealthUpdate();
-    }
-
-    private void changeMana(float change) {
-        setAttribute(Attribute.MANA, getAttribute(Attribute.MANA) + change);
-    }
-
-    private float getAttribute(Attribute attribute) {
-        return main.getUtils().getAttributes().get(attribute).getValue();
-    }
-
-    private void setAttribute(Attribute attribute, float value) {
-        main.getUtils().getAttributes().get(attribute).setValue(value);
     }
 
     /**
@@ -1311,17 +1299,17 @@ public class PlayerListener {
         if (p != null) {
             if (main.getUtils().isOnRift()) {
                 if (Feature.HEALTH_BAR.isEnabled() || Feature.HEALTH_TEXT.isEnabled()) {
-                    setAttribute(Attribute.MAX_RIFT_HEALTH, p.getMaxHealth());
-                    setAttribute(Attribute.HEALTH, p.getHealth());
+                    PlayerStats.MAX_RIFT_HEALTH.setValue(p.getMaxHealth());
+                    PlayerStats.HEALTH.setValue(p.getHealth());
                 }
             } else {
                 // Reverse calculate the player's health by using the player's vanilla hearts.
                 // Also calculate the health change for the gui item.
                 if (Feature.HEALTH_PREDICTION.isEnabled()) {
-                    float newHealth = getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)
-                            ? getAttribute(Attribute.HEALTH)
-                            : Math.round(getAttribute(Attribute.MAX_HEALTH) * ((p.getHealth()) / p.getMaxHealth()));
-                    setAttribute(Attribute.HEALTH, newHealth);
+                    float newHealth = PlayerStats.HEALTH.getValue() > PlayerStats.MAX_HEALTH.getValue()
+                            ? PlayerStats.HEALTH.getValue()
+                            : Math.round(PlayerStats.MAX_HEALTH.getValue() * ((p.getHealth()) / p.getMaxHealth()));
+                    PlayerStats.HEALTH.setValue(newHealth);
                 }
             }
         }

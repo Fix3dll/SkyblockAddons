@@ -160,7 +160,7 @@ public class IslandWarpGui extends GuiScreen {
                 doubleWarpMarker = selectedMarker;
 
                 // Remove the marker if it didn't trigger for some reason...
-                main.getNewScheduler().scheduleDelayedTask(new SkyblockRunnable() {
+                main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
                     @Override
                     public void run() {
                         if (doubleWarpMarker != null) {

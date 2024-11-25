@@ -290,7 +290,7 @@ public class GuiScreenListener {
         inventoryChangeListener = new InventoryChangeListener(this);
         inventory.addInventoryChangeListener(inventoryChangeListener);
         listenedInventory = inventory;
-        inventoryChangeTimeCheckTask = main.getNewScheduler().scheduleRepeatingTask(new SkyblockRunnable() {
+        inventoryChangeTimeCheckTask = main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
             @Override
             public void run() {
                 checkLastInventoryChangeTime();

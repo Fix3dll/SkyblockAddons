@@ -273,7 +273,7 @@ public class DataUtils {
         for (RemoteFileRequest<?> request : remoteRequests) {
             request.execute(futureRequestExecutionService);
             if (request.getURL().contains(DataConstants.CDN_BASE_URL)) {
-                SkyblockAddons.getInstance().getNewScheduler().runAsync(new SkyblockRunnable() {
+                SkyblockAddons.getInstance().getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
                     @Override
                     public void run() {
                         if (request.isDone() && failedUris.contains(request.getURL())) {

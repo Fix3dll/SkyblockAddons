@@ -435,10 +435,10 @@ public class RenderListener {
 
         switch (feature) {
             case MANA_BAR:
-                fill = getAttribute(Attribute.MANA) / getAttribute(Attribute.MAX_MANA);
+                fill = PlayerStats.MANA.getValue() / PlayerStats.MAX_MANA.getValue();
                 break;
             case DRILL_FUEL_BAR:
-                fill = getAttribute(Attribute.FUEL) / getAttribute(Attribute.MAX_FUEL);
+                fill = PlayerStats.FUEL.getValue() / PlayerStats.MAX_FUEL.getValue();
                 break;
             case SKILL_PROGRESS_BAR:
                 if (buttonLocation == null) {
@@ -455,7 +455,7 @@ public class RenderListener {
             case HEALTH_BAR:
                 if (Feature.HIDE_HEALTH_BAR_ON_RIFT.isEnabled() && main.getUtils().isOnRift())
                     return;
-                fill = getAttribute(Attribute.HEALTH) / getAttribute(Attribute.MAX_HEALTH);
+                fill = PlayerStats.HEALTH.getValue() / PlayerStats.MAX_HEALTH.getValue();
                 break;
             default:
                 return;
@@ -516,16 +516,16 @@ public class RenderListener {
                                 , main.getConfigValues().getChromaFeatures().contains(feature)
                         );
                     } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
-                        if (getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
-                            fill = getAttribute(Attribute.MAX_HEALTH) / getAttribute(Attribute.HEALTH);
+                        if (PlayerStats.HEALTH.getValue() > PlayerStats.MAX_HEALTH.getValue()) {
+                            fill = PlayerStats.MAX_HEALTH.getValue() / PlayerStats.HEALTH.getValue();
                             hasAbsorption = true;
                         }
                     }
                 }
 
                 if (main.getUtils().isOnRift()) {
-                    float maxCurrentHealth = getAttribute(Attribute.MAX_RIFT_HEALTH);
-                    fill = getAttribute(Attribute.HEALTH) / maxCurrentHealth;
+                    float maxCurrentHealth = PlayerStats.MAX_RIFT_HEALTH.getValue();
+                    fill = PlayerStats.HEALTH.getValue() / maxCurrentHealth;
 
                     if (maxCurrentHealth > maxRiftHealth)
                         maxRiftHealth = maxCurrentHealth;
@@ -778,14 +778,14 @@ public class RenderListener {
 
         switch (feature) {
             case MANA_TEXT:
-                text = TextUtils.formatNumber(getAttribute(Attribute.MANA)) + "/"
-                        + TextUtils.formatNumber(getAttribute(Attribute.MAX_MANA))
+                text = TextUtils.formatNumber(PlayerStats.MANA.getValue()) + "/"
+                        + TextUtils.formatNumber(PlayerStats.MAX_MANA.getValue())
                         + (Feature.MANA_TEXT_ICON.isEnabled() ? "✎" : "");
                 break;
 
             case OVERFLOW_MANA:
-                if (getAttribute(Attribute.OVERFLOW_MANA) == 0 && buttonLocation == null) return;
-                text = TextUtils.formatNumber(getAttribute(Attribute.OVERFLOW_MANA)) + "ʬ";
+                if (PlayerStats.OVERFLOW_MANA.getValue() == 0 && buttonLocation == null) return;
+                text = TextUtils.formatNumber(PlayerStats.OVERFLOW_MANA.getValue()) + "ʬ";
                 break;
 
             case HEALTH_TEXT:
@@ -794,11 +794,11 @@ public class RenderListener {
                 // Dividing with 2 for show heart value instead of health value. 1 heart == 2 health
                 boolean shouldHeart = Feature.HEART_INSTEAD_HEALTH_ON_RIFT.isEnabled() && onRift;
 
-                text = TextUtils.formatNumber(getAttribute(Attribute.HEALTH) / (shouldHeart ? 2F : 1F)) + "/";
+                text = TextUtils.formatNumber(PlayerStats.HEALTH.getValue() / (shouldHeart ? 2F : 1F)) + "/";
                 if (main.getUtils().isOnRift()) {
-                    text += TextUtils.formatNumber(getAttribute(Attribute.MAX_RIFT_HEALTH) / (shouldHeart ? 2F : 1F));
+                    text += TextUtils.formatNumber(PlayerStats.MAX_RIFT_HEALTH.getValue() / (shouldHeart ? 2F : 1F));
                 } else {
-                    text += TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH));
+                    text += TextUtils.formatNumber(PlayerStats.MAX_HEALTH.getValue());
                 }
                 if (Feature.HEALTH_TEXT_ICON.isEnabled()) {
                     text +=  "❤";
@@ -817,7 +817,7 @@ public class RenderListener {
 
             case DEFENCE_TEXT:
                 if (onRift) return;
-                text = TextUtils.formatNumber(getAttribute(Attribute.DEFENCE)) + (Feature.DEFENCE_TEXT_ICON.isEnabled() ? "❈" : "");
+                text = TextUtils.formatNumber(PlayerStats.DEFENCE.getValue()) + (Feature.DEFENCE_TEXT_ICON.isEnabled() ? "❈" : "");
                 break;
 
             case OTHER_DEFENCE_STATS:
@@ -830,7 +830,7 @@ public class RenderListener {
             case EFFECTIVE_HEALTH_TEXT:
                 if (onRift) return;
                 text = TextUtils.formatNumber(
-                        Math.round(getAttribute(Attribute.HEALTH) * (1 + getAttribute(Attribute.DEFENCE) / 100F))
+                        Math.round(PlayerStats.HEALTH.getValue() * (1 + PlayerStats.DEFENCE.getValue() / 100F))
                 ) + (Feature.EFFECTIVE_HEALTH_TEXT_ICON.isEnabled() ? "❤" : "");
                 break;
 
@@ -838,11 +838,11 @@ public class RenderListener {
                 boolean heldDrill = mc.thePlayer != null && ItemUtils.isDrill(mc.thePlayer.getHeldItem());
 
                 if (heldDrill) {
-                    text = TextUtils.formatNumber(getAttribute(Attribute.FUEL)) + "/";
+                    text = TextUtils.formatNumber(PlayerStats.FUEL.getValue()) + "/";
                     if (Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR.isEnabled())
-                        text += TextUtils.abbreviate((int) getAttribute(Attribute.MAX_FUEL));
+                        text += TextUtils.abbreviate((int) PlayerStats.MAX_FUEL.getValue());
                     else
-                        text += TextUtils.formatNumber(getAttribute(Attribute.MAX_FUEL));
+                        text += TextUtils.formatNumber(PlayerStats.MAX_FUEL.getValue());
                 } else if (buttonLocation != null){
                     text = TextUtils.formatNumber(3000) + "/" + TextUtils.formatNumber(3000);
                 } else {
@@ -852,7 +852,7 @@ public class RenderListener {
 
             case DEFENCE_PERCENTAGE:
                 if (onRift) return;
-                double doubleDefence = getAttribute(Attribute.DEFENCE);
+                double doubleDefence = PlayerStats.DEFENCE.getValue();
                 double percentage = doubleDefence / (doubleDefence + 100) * 100; //Taken from https://wiki.hypixel.net/Defense
                 BigDecimal bigDecimal = new BigDecimal(percentage).setScale(1, RoundingMode.HALF_UP);
                 text = bigDecimal + "%";
@@ -1646,8 +1646,9 @@ public class RenderListener {
 
             case HEALTH_TEXT:
                 // 22 -> Absorption
-                if (mc.thePlayer != null && mc.thePlayer.isPotionActive(22) && getAttribute(Attribute.HEALTH) > getAttribute(Attribute.MAX_HEALTH)) {
-                    String formattedHealth = TextUtils.formatNumber(getAttribute(Attribute.HEALTH));
+                if (mc.thePlayer != null && mc.thePlayer.isPotionActive(22)
+                        && PlayerStats.HEALTH.getValue() > PlayerStats.MAX_HEALTH.getValue()) {
+                    String formattedHealth = TextUtils.formatNumber(PlayerStats.HEALTH.getValue());
                     int formattedHealthWidth = mc.fontRendererObj.getStringWidth(formattedHealth);
 
                     color = ColorUtils.getDummySkyblockColor(
@@ -1659,7 +1660,7 @@ public class RenderListener {
 
                     color = main.getConfigValues().getColor(feature);
                     DrawUtils.drawText(
-                            "/" + TextUtils.formatNumber(getAttribute(Attribute.MAX_HEALTH)) + (Feature.HEALTH_TEXT_ICON.isEnabled() ? "❤" : "")
+                            "/" + TextUtils.formatNumber(PlayerStats.MAX_HEALTH.getValue()) + (Feature.HEALTH_TEXT_ICON.isEnabled() ? "❤" : "")
                             , x + formattedHealthWidth
                             , y
                             , color
@@ -2644,7 +2645,7 @@ public class RenderListener {
         int passIndex = 0;
 
         if (deployable.getHealthRegen() > 0.0) {
-            float maxHealth = main.getUtils().getAttributes().get(Attribute.MAX_HEALTH).getValue();
+            float maxHealth = PlayerStats.MAX_HEALTH.getValue();
             float healthRegen = (float) (maxHealth * deployable.getHealthRegen());
             if (main.getUtils().getSlayerQuest() == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER
                     && main.getUtils().getSlayerQuestLevel() >= 2) {
@@ -2655,7 +2656,7 @@ public class RenderListener {
         }
 
         if (deployable.getManaRegen() > 0.0) {
-            float maxMana = main.getUtils().getAttributes().get(Attribute.MAX_MANA).getValue();
+            float maxMana = PlayerStats.MAX_MANA.getValue();
             float manaRegen = (float) (maxMana * deployable.getManaRegen() / 50);
             display.add(String.format("§b+%s ✎/s", TextUtils.formatNumber(manaRegen)));
             passIndex++;
@@ -2768,13 +2769,6 @@ public class RenderListener {
         }
 
         main.getUtils().restoreGLOptions();
-    }
-
-    /**
-     * Easily grab an attribute from utils.
-     */
-    private float getAttribute(Attribute attribute) {
-        return main.getUtils().getAttributes().get(attribute).getValue();
     }
 
     @SubscribeEvent()

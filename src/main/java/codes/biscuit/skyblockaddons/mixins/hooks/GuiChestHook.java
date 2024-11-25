@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
+import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
@@ -324,7 +325,7 @@ public class GuiChestHook {
             if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()
                     && NPCUtils.isSellMerchant(lowerChestInventory)
                     && slotIn != null && slotIn.inventory instanceof InventoryPlayer
-                    && !main.getUtils().getItemDropChecker().canDropItem(slotIn)) {
+                    && !ItemDropChecker.canDropItem(slotIn)) {
                     returnValue.cancel();
             }
         }

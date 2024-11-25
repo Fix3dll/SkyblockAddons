@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.features.itemdrops;
+package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
@@ -20,18 +20,18 @@ import java.util.List;
  *
  * @author ILikePlayingGames
  * @version 0.1
- * @see ItemDropList
+ * @see codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData
  */
 public class ItemDropChecker {
 
     private static final long DROP_CONFIRMATION_TIMEOUT = 3000L;
 
-    private final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     // Variables used for checking drop confirmations
-    private ItemStack itemOfLastDropAttempt;
-    private long timeOfLastDropAttempt;
-    private int attemptsRequiredToConfirm;
+    private static ItemStack itemOfLastDropAttempt;
+    private static long timeOfLastDropAttempt;
+    private static int attemptsRequiredToConfirm;
 
     /**
      * Checks if this item can be dropped or sold.
@@ -41,7 +41,7 @@ public class ItemDropChecker {
      * @param item the item to check
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
-    public boolean canDropItem(ItemStack item) {
+    public static boolean canDropItem(ItemStack item) {
         return canDropItem(item, false);
     }
 
@@ -51,7 +51,7 @@ public class ItemDropChecker {
      * @param slot the inventory slot to check
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
-    public boolean canDropItem(Slot slot) {
+    public static boolean canDropItem(Slot slot) {
         if (slot != null && slot.getHasStack()) {
             return canDropItem(slot.getStack());
         }
@@ -67,7 +67,7 @@ public class ItemDropChecker {
      * @param itemIsInHotbar whether this item is in the player's hotbar
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
-    public boolean canDropItem(ItemStack item, boolean itemIsInHotbar) {
+    public static boolean canDropItem(ItemStack item, boolean itemIsInHotbar) {
         return canDropItem(item, itemIsInHotbar, true);
     }
 
@@ -79,7 +79,7 @@ public class ItemDropChecker {
      * @param playAlert plays an alert sound if {@code true} and a drop attempt is denied, otherwise the sound doesn't play
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
-    public boolean canDropItem(ItemStack item, boolean itemIsInHotbar, boolean playAlert) {
+    public static boolean canDropItem(ItemStack item, boolean itemIsInHotbar, boolean playAlert) {
         if (main.getUtils().isOnSkyblock()) {
             String itemID = ItemUtils.getSkyblockItemID(item);
             Rarity itemRarity = ItemUtils.getRarity(item);
@@ -145,7 +145,7 @@ public class ItemDropChecker {
      * @param playAlert plays an alert sound if {@code true} and a drop attempt is denied, otherwise the sound doesn't play
      * @return {@code true} if the player has dropped the item enough
      */
-    public boolean dropConfirmed(ItemStack item, int numberOfActions, boolean playAlert) {
+    public static boolean dropConfirmed(ItemStack item, int numberOfActions, boolean playAlert) {
         if (item == null) {
             throw new NullPointerException("Item cannot be null!");
 
@@ -184,7 +184,7 @@ public class ItemDropChecker {
      * Called whenever a drop confirmation fails due to the player not attempting to drop the item enough times.
      * A message is sent and a sound is played notifying the player how many more times they need to drop the item.
      */
-    public void onDropConfirmationFail() {
+    public static void onDropConfirmationFail() {
         ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.DROP_CONFIRMATION);
 
         if (attemptsRequiredToConfirm >= 2) {
@@ -202,14 +202,14 @@ public class ItemDropChecker {
     /**
      * Plays an alert sound when a drop attempt is denied.
      */
-    public void playAlert() {
+    public static void playAlert() {
         main.getUtils().playLoudSound("note.bass", 0.5);
     }
 
     /**
      * Reset the drop confirmation settings.
      */
-    public void resetDropConfirmation() {
+    public static void resetDropConfirmation() {
         itemOfLastDropAttempt = null;
         timeOfLastDropAttempt = 0L;
         attemptsRequiredToConfirm = 0;

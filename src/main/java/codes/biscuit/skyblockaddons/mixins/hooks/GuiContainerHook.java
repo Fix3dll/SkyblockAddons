@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
@@ -130,7 +131,7 @@ public class GuiContainerHook {
             if (mc.gameSettings.keyBindDrop.getKeyCode() == keyCode
                     && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled()
                     && !main.getUtils().isInDungeon()
-                    && !main.getUtils().getItemDropChecker().canDropItem(theSlot)) {
+                    && !ItemDropChecker.canDropItem(theSlot)) {
                 returnValue.cancel();
             }
         }
