@@ -2,15 +2,11 @@ package codes.biscuit.skyblockaddons.core;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
-import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureTrackerQuest;
-import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
 import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import com.google.common.collect.Sets;
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
 
 import java.util.*;
 
@@ -405,50 +401,15 @@ public enum Feature {
         return guiFeatureData != null && guiFeatureData.getDefaultColor() != null;
     }
 
-    public void draw(float scale, Minecraft mc, ButtonLocation buttonLocation) {
-        if (guiFeatureData == null || guiFeatureData.getDrawType() == null) return;
-
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        switch (guiFeatureData.getDrawType()) {
-            case SKELETON_BAR:
-                main.getRenderListener().drawSkeletonBar(mc, scale, buttonLocation);
-                break;
-            case BAR:
-                main.getRenderListener().drawBar(this, scale, mc, buttonLocation);
-                break;
-            case TEXT:
-                main.getRenderListener().drawText(this, scale, mc, buttonLocation);
-                break;
-            case PICKUP_LOG:
-                main.getRenderListener().drawItemPickupLog(scale, buttonLocation);
-                break;
-            case DEFENCE_ICON:
-                main.getRenderListener().drawIcon(scale, mc, buttonLocation);
-                break;
-            case REVENANT_PROGRESS:
-                main.getRenderListener().drawRevenantIndicator(scale, mc, buttonLocation);
-                break;
-            case DEPLOYABLE_DISPLAY:
-                main.getRenderListener().drawDeployableStatus(mc, scale, buttonLocation);
-                break;
-            case TICKER:
-                main.getRenderListener().drawScorpionFoilTicker(mc, scale, buttonLocation);
-                break;
-            case BAIT_LIST_DISPLAY:
-                main.getRenderListener().drawBaitList(mc, scale, buttonLocation);
-                break;
-            case DUNGEONS_MAP:
-                DungeonMapManager.drawDungeonsMap(mc, scale, buttonLocation);
-                break;
-            case SLAYER_TRACKERS:
-                main.getRenderListener().drawSlayerTrackers(this, mc, scale, buttonLocation);
-                break;
-            case DRAGON_STATS_TRACKER:
-                main.getRenderListener().drawDragonTrackers(mc, scale, buttonLocation);
-                break;
-            case PROXIMITY_INDICATOR:
-                FeatureTrackerQuest.drawTrackerLocationIndicator(mc, scale, buttonLocation);
-                break;
+    /**
+     * If the Feature is renderable, it returns GuiFeatureData that holds the data.
+     * @return {@link GuiFeatureData} of renderable feature, if not returns null
+     */
+    public GuiFeatureData getGuiFeatureData() {
+        if (guiFeatureData == null || guiFeatureData.getDrawType() == null) {
+            return null;
+        } else {
+            return guiFeatureData;
         }
     }
 

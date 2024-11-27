@@ -209,7 +209,7 @@ public class SettingsGui extends GuiScreen {
                     GuiIngameForge.renderHealth = true;
                 } else if (feature == Feature.REPEAT_FULL_INVENTORY_WARNING) {
                     // Remove queued warnings when the repeat setting is turned off.
-                    main.getScheduler().removeQueuedFullInventoryWarnings();
+                    main.getRenderListener().getTitleResetTask().cancel();
                 }
             }
         } else if (feature == Feature.SHOW_BACKPACK_PREVIEW) {

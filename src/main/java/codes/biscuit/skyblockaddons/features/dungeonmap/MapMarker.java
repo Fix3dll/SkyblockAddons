@@ -21,7 +21,7 @@ public class MapMarker {
     private float z;
     private float rotation;
     private String playerName;
-    private String mapMarkerName;
+    @Setter private String mapMarkerName;
     private boolean wearingHat;
 
     public MapMarker(EntityPlayer player) {
@@ -41,10 +41,6 @@ public class MapMarker {
         this.x = x;
         this.z = z;
         this.rotation = rotation;
-    }
-
-    public void setMapMarkerName(String mapMarkerName) {
-        this.mapMarkerName = mapMarkerName;
     }
 
     public EntityPlayer getPlayer() {

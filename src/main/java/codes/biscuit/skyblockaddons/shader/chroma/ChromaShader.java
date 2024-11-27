@@ -16,7 +16,7 @@ public abstract class ChromaShader extends Shader {
         // Chroma size is made proportionate to the size of the screen (ex. in a 1920px width screen, 100 = 1920)
         registerUniform(UniformType.FLOAT, "chromaSize", () -> main.getConfigValues().getChromaSize().floatValue() * (Minecraft.getMinecraft().displayWidth / 100F));
         registerUniform(UniformType.FLOAT, "timeOffset", () -> {
-            float ticks = (float) main.getNewScheduler().getTotalTicks() + Utils.getPartialTicks();
+            float ticks = (float) main.getScheduler().getTotalTicks() + Utils.getPartialTicks();
             float chromaSpeed = main.getConfigValues().getChromaSpeed().floatValue() / 360F;
             return ticks * chromaSpeed;
         });

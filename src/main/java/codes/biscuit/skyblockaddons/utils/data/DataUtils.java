@@ -5,7 +5,6 @@ import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.features.PetManager;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.LocationData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
@@ -273,24 +272,21 @@ public class DataUtils {
         for (RemoteFileRequest<?> request : remoteRequests) {
             request.execute(futureRequestExecutionService);
             if (request.getURL().contains(DataConstants.CDN_BASE_URL)) {
-                SkyblockAddons.getInstance().getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
-                    @Override
-                    public void run() {
-                        if (request.isDone() && failedUris.contains(request.getURL())) {
-                            request.setFallbackCDN();
-                            request.execute(futureRequestExecutionService);
+                SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
+                    if (request.isDone() && failedUris.contains(request.getURL())) {
+                        request.setFallbackCDN();
+                        request.execute(futureRequestExecutionService);
 
-                            if (!fallbackCDNUsed) {
-                                if (Minecraft.getMinecraft().thePlayer != null) {
-                                    main.getUtils().sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
-                                } else {
-                                    logger.warn(Translations.getMessage("messages.fallbackCdnUsed"));
-                                }
-                                fallbackCDNUsed = true;
+                        if (!fallbackCDNUsed) {
+                            if (Minecraft.getMinecraft().thePlayer != null) {
+                                main.getUtils().sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
+                            } else {
+                                logger.warn(Translations.getMessage("messages.fallbackCdnUsed"));
                             }
-
-                            this.cancel();
+                            fallbackCDNUsed = true;
                         }
+
+                        scheduledTask.cancel();
                     }
                 }, 0, 2);
             }

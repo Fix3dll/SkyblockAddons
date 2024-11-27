@@ -6,7 +6,7 @@ import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.features.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
-import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
+import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
@@ -20,7 +20,14 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerBeacon;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.ContainerFurnace;
+import net.minecraft.inventory.ContainerHopper;
+import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ReportedException;
@@ -82,6 +89,8 @@ public class InventoryUtils {
     private String inventorySubtype;
     private final SkyblockAddons main = SkyblockAddons.getInstance();
 
+    private ScheduledTask repeatWarningTask = null;
+    private boolean inQuiverMode = false;
 
     /**
      * Copies an inventory into a List of copied ItemStacks
@@ -257,24 +266,41 @@ public class InventoryUtils {
              */
             for (int i = 0; i < p.inventory.mainInventory.length; i++) {
                 // If we find an empty slot that isn't slot 8, remove any queued warnings and stop checking.
-                if (p.inventory.mainInventory[i] == null && i != 8) {
+                ItemStack idxItem = p.inventory.mainInventory[i];
+                if (idxItem == null && i != 8) {
                     if (inventoryWarningShown) {
-                        main.getScheduler().removeQueuedFullInventoryWarnings();
+                        if (repeatWarningTask != null) {
+                            repeatWarningTask.cancel();
+                            repeatWarningTask = null;
+                        }
+                        main.getRenderListener().getTitleResetTask().cancel();
                     }
                     inventoryWarningShown = false;
                     return;
+                } else if (idxItem != null && i == 8 && idxItem.getItem() == Items.feather) {
+                    inQuiverMode = true;
+                    return;
                 }
             }
+            inQuiverMode = false;
 
             // If we make it here, the inventory is full. Show the warning.
             if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld() && !inventoryWarningShown) {
                 showFullInventoryWarning();
-                main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
 
                 // Schedule a repeat if needed.
                 if (Feature.REPEAT_FULL_INVENTORY_WARNING.isEnabled()) {
-                    main.getScheduler().schedule(Scheduler.CommandType.SHOW_FULL_INVENTORY_WARNING, 10);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, 10 + main.getConfigValues().getWarningSeconds());
+                    repeatWarningTask = main.getScheduler().scheduleTask(
+                            scheduledTask -> {
+                                if (mc.theWorld == null || mc.thePlayer == null || !main.getUtils().isOnSkyblock() || inQuiverMode) {
+                                    return;
+                                }
+                                showFullInventoryWarning();
+                            },
+                            10 * 20,
+                            10 * 20,
+                            true
+                    );
                 }
 
                 inventoryWarningShown = true;

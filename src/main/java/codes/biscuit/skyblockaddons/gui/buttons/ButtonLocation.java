@@ -44,9 +44,9 @@ public class ButtonLocation extends ButtonFeature {
         GlStateManager.scale(scale, scale, 1);
 
         if (feature == Feature.DEFENCE_ICON) { // this one is just a little different
-            main.getRenderListener().drawIcon(scale, mc, this);
+            main.getRenderListener().drawIcon(scale, this);
         } else {
-            feature.draw(scale, mc, this);
+            main.getRenderListener().drawFeature(feature, scale,this);
         }
         GlStateManager.popMatrix();
 

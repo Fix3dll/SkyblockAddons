@@ -6,7 +6,6 @@ import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonToggleNew;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandButton;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandMarkerButton;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
@@ -160,12 +159,9 @@ public class IslandWarpGui extends GuiScreen {
                 doubleWarpMarker = selectedMarker;
 
                 // Remove the marker if it didn't trigger for some reason...
-                main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
-                    @Override
-                    public void run() {
-                        if (doubleWarpMarker != null) {
-                            doubleWarpMarker = null;
-                        }
+                main.getScheduler().scheduleTask(scheduledTask -> {
+                    if (doubleWarpMarker != null) {
+                        doubleWarpMarker = null;
                     }
                 }, 20);
             }

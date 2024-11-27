@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Translations;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -600,18 +599,15 @@ public class DevUtils {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             logger.error("An error occurred while reloading the mod's resources.", e);
         }
-        SkyblockAddons.getInstance().getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
-            @Override
-            public void run() {
-                if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
-                    DataUtils.onSkyblockJoined();
-                    if (mc.thePlayer != null) {
-                        main.getUtils().sendMessage(Translations.getMessage("messages.resourcesReloaded"));
-                    } else {
-                        logger.info(Translations.getMessage("messages.resourcesReloaded"));
-                    }
-                    this.cancel();
+        SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
+            if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
+                DataUtils.onSkyblockJoined();
+                if (mc.thePlayer != null) {
+                    main.getUtils().sendMessage(Translations.getMessage("messages.resourcesReloaded"));
+                } else {
+                    logger.info(Translations.getMessage("messages.resourcesReloaded"));
                 }
+                scheduledTask.cancel();
             }
         }, 0, 2);
     }

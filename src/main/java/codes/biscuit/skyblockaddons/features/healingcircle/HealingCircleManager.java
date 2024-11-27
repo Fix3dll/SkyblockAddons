@@ -17,7 +17,7 @@ import java.util.Set;
 public class HealingCircleManager {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    @Getter private static Set<HealingCircle> healingCircles = Sets.newConcurrentHashSet();
+    @Getter private static final Set<HealingCircle> healingCircles = Sets.newConcurrentHashSet();
 
     public static void addHealingCircleParticle(HealingCircleParticle healingCircleParticle) {
         HealingCircle nearbyHealingCircle = null;
@@ -72,7 +72,14 @@ public class HealingCircleManager {
                     GlStateManager.disableTexture2D();
 
                     boolean chroma = main.getConfigValues().getChromaFeatures().contains(Feature.SHOW_HEALING_CIRCLE_WALL);
-                    int color = main.getConfigValues().getColor(Feature.SHOW_HEALING_CIRCLE_WALL, ColorUtils.getAlphaIntFromFloat(MathUtils.clamp(main.getConfigValues().getHealingCircleOpacity().floatValue(), 0, 1)));
+                    int color = main.getConfigValues().getColor(
+                            Feature.SHOW_HEALING_CIRCLE_WALL,
+                            ColorUtils.getAlphaIntFromFloat(
+                                    MathUtils.clamp(
+                                            main.getConfigValues().getHealingCircleOpacity().floatValue(), 0, 1
+                                    )
+                            )
+                    );
                     DrawUtils.drawCylinder(circleCenter.getX(), 0, circleCenter.getY(), HealingCircle.RADIUS, 255, ColorUtils.getDummySkyblockColor(color, chroma));
 
                     GlStateManager.enableCull();

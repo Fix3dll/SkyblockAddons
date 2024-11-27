@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.utils.data.requests;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
@@ -101,21 +100,16 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
             long nextUpdateTime = main.getElectionData().getLastUpdated() + 303000L;
             int delayTick = (int) (nextUpdateTime - System.currentTimeMillis()) / 50;
 
-            return main.getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
-                @Override
-                public void run() {
-                    DataUtils.loadOnlineData(new MayorRequest(expectedMayorName));
-                }
-            }, delayTick);
+            return main.getScheduler().scheduleAsyncTask(
+                    scheduledTask -> DataUtils.loadOnlineData(new MayorRequest(expectedMayorName)),
+                    delayTick
+            );
         }
 
         private ScheduledTask scheduleJerryMayorTask() {
-            return main.getNewScheduler().scheduleAsyncTask(new SkyblockRunnable() {
-                @Override
-                public void run() {
-                    if (System.currentTimeMillis() > main.getUtils().getJerryMayorUpdateTime()) {
-                        DataUtils.loadOnlineData(new JerryMayorRequest());
-                    }
+            return main.getScheduler().scheduleAsyncTask(scheduledTask -> {
+                if (System.currentTimeMillis() > main.getUtils().getJerryMayorUpdateTime()) {
+                    DataUtils.loadOnlineData(new JerryMayorRequest());
                 }
             }, 0, 60 * 20);
         }

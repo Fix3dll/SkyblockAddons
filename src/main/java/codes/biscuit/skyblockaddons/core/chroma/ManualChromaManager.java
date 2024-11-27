@@ -58,7 +58,7 @@ public class ManualChromaManager {
         float chromaSize = SkyblockAddons.getInstance().getConfigValues().getChromaSize().floatValue() * (Minecraft.getMinecraft().displayWidth / 100F);
         float chromaSpeed = SkyblockAddons.getInstance().getConfigValues().getChromaSpeed().floatValue() / 360F;
 
-        float ticks = (float) SkyblockAddons.getInstance().getNewScheduler().getTotalTicks() + Utils.getPartialTicks();
+        float ticks = (float) SkyblockAddons.getInstance().getScheduler().getTotalTicks() + Utils.getPartialTicks();
         float timeOffset = ticks * chromaSpeed;
 
         float newHue = ((x + y) / chromaSize - timeOffset) % 1;
@@ -79,7 +79,7 @@ public class ManualChromaManager {
         float chromaSize = SkyblockAddons.getInstance().getConfigValues().getChromaSize().floatValue() * (Minecraft.getMinecraft().displayWidth / 100F);
         float chromaSpeed = SkyblockAddons.getInstance().getConfigValues().getChromaSpeed().floatValue() / 360F;
 
-        float ticks = (float) SkyblockAddons.getInstance().getNewScheduler().getTotalTicks() + Utils.getPartialTicks();
+        float ticks = (float) SkyblockAddons.getInstance().getScheduler().getTotalTicks() + Utils.getPartialTicks();
         float timeOffset = ticks * chromaSpeed;
 
         float newHue = ((x - y + z) / (chromaSize / 20F) - timeOffset) % 1;

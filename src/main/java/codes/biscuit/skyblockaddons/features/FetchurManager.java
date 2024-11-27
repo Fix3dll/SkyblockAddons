@@ -2,7 +2,6 @@ package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -109,7 +108,6 @@ public class FetchurManager {
             if (Feature.WARN_WHEN_FETCHUR_CHANGES.isEnabled()) {
                 main.getUtils().playLoudSound("random.orb", 0.5);
                 main.getRenderListener().setTitleFeature(Feature.WARN_WHEN_FETCHUR_CHANGES);
-                main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
             }
         }
     }

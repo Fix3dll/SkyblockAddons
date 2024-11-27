@@ -4,7 +4,6 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -275,12 +274,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                 // If player tries to open "Edit GUI Locations" from outside
                 if (mc.thePlayer == null) {
                     showWarning = true;
-                    main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
-                        @Override
-                        public void run() {
-                            showWarning = false;
-                        }
-                    }, 60);
+                    main.getScheduler().scheduleTask(scheduledTask -> showWarning = false, 60);
                 } else {
                     main.getUtils().setFadingIn(false);
                     mc.displayGuiScreen(new LocationEditGui(page, tab));
@@ -328,7 +322,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                             break;
                         case FULL_INVENTORY_WARNING:
                             main.getInventoryUtils().setInventoryWarningShown(false);
-                            main.getScheduler().removeQueuedFullInventoryWarnings();
+                            main.getRenderListener().getTitleResetTask().cancel();
                             break;
                         case DISCORD_RPC:
                             main.getDiscordRPCManager().stop();

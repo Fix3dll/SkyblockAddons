@@ -24,7 +24,6 @@ import codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.listeners.*;
 import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.misc.Updater;
-import codes.biscuit.skyblockaddons.misc.scheduler.NewScheduler;
 import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.*;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
@@ -119,7 +118,6 @@ public class SkyblockAddons {
     @Setter private OnlineData onlineData;
     private final DiscordRPCManager discordRPCManager;
     private final Scheduler scheduler;
-    private final NewScheduler newScheduler;
     private final DungeonManager dungeonManager;
     private final SkillXpManager skillXpManager;
     @Setter private ElectionData electionData;
@@ -143,7 +141,6 @@ public class SkyblockAddons {
         utils = new Utils();
         updater = new Updater();
         scheduler = new Scheduler();
-        newScheduler = new NewScheduler();
         dungeonManager = new DungeonManager();
         discordRPCManager = new DiscordRPCManager();
         skillXpManager = new SkillXpManager();
@@ -167,7 +164,6 @@ public class SkyblockAddons {
         MinecraftForge.EVENT_BUS.register(guiScreenListener);
         MinecraftForge.EVENT_BUS.register(renderListener);
         MinecraftForge.EVENT_BUS.register(scheduler);
-        MinecraftForge.EVENT_BUS.register(newScheduler);
         MinecraftForge.EVENT_BUS.register(new FeatureItemOutlines());
         MinecraftForge.EVENT_BUS.register(new FeatureDungeonTeammateOutlines());
         MinecraftForge.EVENT_BUS.register(new EntityOutlineRenderer());

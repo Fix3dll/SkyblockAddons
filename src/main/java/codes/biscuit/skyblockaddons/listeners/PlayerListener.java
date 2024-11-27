@@ -25,9 +25,16 @@ import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
 import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
-import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
-import codes.biscuit.skyblockaddons.utils.*;
+
+import codes.biscuit.skyblockaddons.utils.ActionBarParser;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.DevUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.InventoryUtils;
+import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import codes.biscuit.skyblockaddons.utils.RomanNumeralParser;
+import codes.biscuit.skyblockaddons.utils.ScoreboardManager;
+import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import com.google.common.collect.Sets;
@@ -125,7 +132,7 @@ public class PlayerListener {
     private long lastWorldJoin = -1;
     private long lastBal = -1;
     private long lastBroodmother = -1;
-    private int balTick = -1;
+    private int balTick = 0;
     private int timerTick = 1;
     private long lastMinionSound = -1;
     private long lastFishingAlert = 0;
@@ -280,14 +287,12 @@ public class PlayerListener {
             } else if (Feature.SUMMONING_EYE_ALERT.isEnabled() && formattedText.equals("§r§6§lRARE DROP! §r§5Summoning Eye§r")) {
                 main.getUtils().playLoudSound("random.orb", 0.5); // credits to tomotomo, thanks lol
                 main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
-                main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
 
             } else if (formattedText.equals("§r§aA special §r§5Zealot §r§ahas spawned nearby!§r")) {
                 if (Feature.SPECIAL_ZEALOT_ALERT.isEnabled()) {
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
                     main.getRenderListener().setTitleFeature(Feature.SPECIAL_ZEALOT_ALERT);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
                 if (Feature.ZEALOT_COUNTER.isEnabled()) {
                     // Edit the message to include counter.
@@ -306,7 +311,6 @@ public class PlayerListener {
                         && SeaCreatureManager.getInstance().getLegendarySeaCreatureSpawnMessages().contains(unformattedText)) {
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setTitleFeature(Feature.LEGENDARY_SEA_CREATURE_WARNING);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
 
             } else if (formattedText.startsWith("§r§eIt's a §r§aDouble Hook§r§e!")) {
@@ -400,14 +404,12 @@ public class PlayerListener {
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
                     main.getRenderListener().setArrowsLeft(-1);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
 
                 } else if ((matcher = ONLY_HAVE_ARROWS_LEFT_PATTERN.matcher(formattedText)).matches()) {
                     int arrowsLeft = Integer.parseInt(matcher.group("arrows"));
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
                     main.getRenderListener().setArrowsLeft(arrowsLeft);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_SUBTITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
             }
 
@@ -618,8 +620,8 @@ public class PlayerListener {
             Minecraft mc = Minecraft.getMinecraft();
             if (mc == null) return;
             timerTick++;
+            balTick++;
 
-            // Predict health every tick if needed.
             ScoreboardManager.tick();
 
             if (actionBarParser.getHealthUpdate() != null && System.currentTimeMillis() - actionBarParser.getLastHealthUpdate() > 3000) {
@@ -666,7 +668,7 @@ public class PlayerListener {
                         main.getInventoryUtils().checkIfUsingArrowPoison(player);
                         main.getInventoryUtils().checkIfWearingSlayerArmor(player);
                         main.getInventoryUtils().checkIfThunderBottle(player);
-                        if (shouldTriggerFishingIndicator()) { // The logic fits better in its own function
+                        if (shouldTriggerFishingIndicator(mc)) { // The logic fits better in its own function
                             main.getUtils().playLoudSound("random.successful_hit", 0.8);
                         }
                         if (Feature.FETCHUR_TODAY.isEnabled()) {
@@ -689,6 +691,7 @@ public class PlayerListener {
 
             } else if (timerTick > 20) { // To keep the timer going from 1 to 21 only.
                 timerTick = 1;
+                balTick = 0;
             }
         }
     }
@@ -704,7 +707,6 @@ public class PlayerListener {
                 if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
                     lastBroodmother = System.currentTimeMillis();
                     main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
                 if (entity.ticksExisted < 13 && entity.ticksExisted % 3 == 0)
                     main.getUtils().playLoudSound("random.orb", 0.5);
@@ -751,10 +753,6 @@ public class PlayerListener {
                             lastMinionSound = now;
                             main.getUtils().playLoudSound("random.pop", 1);
                             main.getRenderListener().setSubtitleFeature(Feature.MINION_FULL_WARNING);
-                            main.getScheduler().schedule(
-                                    Scheduler.CommandType.RESET_SUBTITLE_FEATURE
-                                    , main.getConfigValues().getWarningSeconds())
-                            ;
                         }
                     } else if (Feature.MINION_STOP_WARNING.isEnabled()) {
                         Matcher matcher = MINION_CANT_REACH_PATTERN.matcher(entity.getCustomNameTag());
@@ -767,10 +765,6 @@ public class PlayerListener {
                                 String mobName = matcher.group("mobName");
                                 main.getRenderListener().setCannotReachMobName(mobName);
                                 main.getRenderListener().setSubtitleFeature(Feature.MINION_STOP_WARNING);
-                                main.getScheduler().schedule(
-                                        Scheduler.CommandType.RESET_SUBTITLE_FEATURE
-                                        , main.getConfigValues().getWarningSeconds()
-                                );
                             }
                         }
                     }
@@ -852,11 +846,10 @@ public class PlayerListener {
                 if (cubes instanceof EntityMagmaCube) {
                     EntitySlime magma = (EntitySlime) cubes;
                     if (magma.getSlimeSize() > 10) { // Find a big bal boss
-                        if ((lastBal == -1 || System.currentTimeMillis() - lastBal > 240000)) {
+                        if ((lastBal == -1 || System.currentTimeMillis() - lastBal > 60000)) {
                             lastBal = System.currentTimeMillis();
                             main.getRenderListener().setTitleFeature(Feature.BAL_BOSS_ALERT); // Enable warning and disable again in four seconds.
-                            balTick = 16; // so the sound plays instantly
-                            main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
+                            balTick = 0; // so the sound plays instantly
                         }
                         // Play sound every 4 ticks or 1/5 second.
                         if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && balTick % 4 == 0) {
@@ -877,40 +870,36 @@ public class PlayerListener {
                 AxisAlignedBB playerRadius = new AxisAlignedBB(p.posX - 3, p.posY - 3, p.posZ - 3, p.posX + 3, p.posY + 3, p.posZ + 3);
                 if (playerRadius.isVecInside(arrow.getPositionVector())) {
 //                    System.out.println("Spawned explosive arrow!");
-                    main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
-                        @Override
-                        public void run() {
-                            if (arrow.isDead || arrow.isCollided || arrow.inGround) {
-                                cancel();
+                    main.getScheduler().scheduleTask(scheduledTask -> {
+                        if (arrow.isDead || arrow.isCollided || arrow.inGround) {
+                            scheduledTask.cancel();
 
-//                                System.out.println("Arrow is done, added an explosion!");
-                                Vec3 explosionLocation = new Vec3(arrow.posX, arrow.posY, arrow.posZ);
-                                explosiveBowExplosions.put(System.currentTimeMillis(), explosionLocation);
+//                            System.out.println("Arrow is done, added an explosion!");
+                            Vec3 explosionLocation = new Vec3(arrow.posX, arrow.posY, arrow.posZ);
+                            explosiveBowExplosions.put(System.currentTimeMillis(), explosionLocation);
 
-                                recentlyKilledZealots.keySet().removeIf((killedTime) -> System.currentTimeMillis() - killedTime > 150);
-                                Set<Vec3> filteredRecentlyKilledZealots = new HashSet<>();
-                                for (Map.Entry<Long, Set<Vec3>> recentlyKilledZealotEntry : recentlyKilledZealots.entrySet()) {
-                                    filteredRecentlyKilledZealots.addAll(recentlyKilledZealotEntry.getValue());
-                                }
-                                if (filteredRecentlyKilledZealots.isEmpty()) return;
+                            recentlyKilledZealots.keySet().removeIf((killedTime) -> System.currentTimeMillis() - killedTime > 150);
+                            Set<Vec3> filteredRecentlyKilledZealots = new HashSet<>();
+                            for (Map.Entry<Long, Set<Vec3>> recentlyKilledZealotEntry : recentlyKilledZealots.entrySet()) {
+                                filteredRecentlyKilledZealots.addAll(recentlyKilledZealotEntry.getValue());
+                            }
+                            if (filteredRecentlyKilledZealots.isEmpty()) return;
 
-//                                int possibleZealotsKilled = filteredRecentlyKilledZealots.size();
-//                                System.out.println("This means "+possibleZealotsKilled+" may have been killed...");
-//                                int originalPossibleZealotsKilled = possibleZealotsKilled;
+//                            int possibleZealotsKilled = filteredRecentlyKilledZealots.size();
+//                            System.out.println("This means "+possibleZealotsKilled+" may have been killed...");
+//                            int originalPossibleZealotsKilled = possibleZealotsKilled;
 
-                                for (Vec3 zealotDeathLocation : filteredRecentlyKilledZealots) {
-                                    double distance = explosionLocation.distanceTo(zealotDeathLocation);
-//                                    System.out.println("Distance was "+distance+"!");
-                                    if (distance < 4.6) {
+                            for (Vec3 zealotDeathLocation : filteredRecentlyKilledZealots) {
+                                double distance = explosionLocation.distanceTo(zealotDeathLocation);
+//                                System.out.println("Distance was "+distance+"!");
+                                if (distance < 4.6) {
 //                                        possibleZealotsKilled--;
 
-                                        main.getPersistentValuesManager().addKills();
-                                        EndstoneProtectorManager.onKill();
-                                    }
+                                    main.getPersistentValuesManager().addKills();
+                                    EndstoneProtectorManager.onKill();
                                 }
-
-//                                System.out.println((originalPossibleZealotsKilled-possibleZealotsKilled)+" zealots were actually killed...");
                             }
+//                            System.out.println((originalPossibleZealotsKilled-possibleZealotsKilled)+" zealots were actually killed...");
                         }
                     }, 0, 1);
                 }
@@ -1224,10 +1213,6 @@ public class PlayerListener {
         return System.currentTimeMillis() - main.getGuiScreenListener().getLastContainerCloseMs() > 100;
     }
 
-    Float getHealthUpdate() {
-        return actionBarParser.getHealthUpdate();
-    }
-
     /**
      * Checks if the fishing indicator sound should be played. To play the sound, these conditions have to be met:
      * <p>1. Fishing sound indicator feature is enabled</p>
@@ -1239,9 +1224,7 @@ public class PlayerListener {
      * @return {@code true} if the fishing alert sound should be played, {@code false} otherwise
      * @see Feature#FISHING_SOUND_INDICATOR
      */
-    private boolean shouldTriggerFishingIndicator() {
-        Minecraft mc = Minecraft.getMinecraft();
-
+    private boolean shouldTriggerFishingIndicator(Minecraft mc) {
         if (Feature.FISHING_SOUND_INDICATOR.isEnabled() && mc.thePlayer.fishEntity != null && isHoldingRod()) {
             // Highly consistent detection by checking when the hook has been in the water for a while and
             // suddenly moves downward. The client may rarely bug out with the idle bobbing and trigger a false positive.
@@ -1264,7 +1247,7 @@ public class PlayerListener {
 
     /**
      * Check if our Player is holding a Fishing Rod, and filters out the Grapple Hook and Soul Whip and other items
-     * that are {@code Items.fishing_rod}s but aren't used for fishing. This is done by checking for the item type of
+     * that are {@link Items#fishing_rod}s but aren't used for fishing. This is done by checking for the item type of
      * "FISHING ROD" which is displayed beside the item rarity.
      *
      * @return {@code true} if the player is holding a fishing rod that can be used for fishing, {@code false} otherwise

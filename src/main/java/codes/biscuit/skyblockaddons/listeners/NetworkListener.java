@@ -9,7 +9,6 @@ import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.handlers.PacketHandler;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
@@ -53,11 +52,8 @@ public class NetworkListener {
         if (Feature.DISCORD_RPC.isEnabled()) {
             main.getDiscordRPCManager().start();
         }
-        updateHealth = main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
-            @Override
-            public void run() {
-                main.getPlayerListener().updateLastSecondHealth();
-            }
+        updateHealth = main.getScheduler().scheduleTask(scheduledTask -> {
+            main.getPlayerListener().updateLastSecondHealth();
         }, 0, 20);
 
         DataUtils.onSkyblockJoined();

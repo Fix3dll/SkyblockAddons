@@ -1,14 +1,12 @@
 package codes.biscuit.skyblockaddons.mixins;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.utils.TweakerUtils;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
 import java.util.Set;
-
-import static codes.biscuit.skyblockaddons.utils.TweakerUtils.exit;
-import static codes.biscuit.skyblockaddons.utils.TweakerUtils.showMessage;
 
 public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
 
@@ -18,9 +16,9 @@ public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
         if (checkForClass("codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsTransformer")) {
             SkyblockAddons.getLogger().error("Launch failed because old installation of SkyblockAddons was found."
                     + " Please remove it and restart Minecraft!");
-            showMessage("Launch failed because old version of SkyblockAddons was found."
+            TweakerUtils.showMessage("Launch failed because old version of SkyblockAddons was found."
                     + "\nPlease remove it and restart Minecraft!");
-            exit();
+            TweakerUtils.exit();
         }
     }
 

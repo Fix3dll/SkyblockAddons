@@ -2,7 +2,6 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
@@ -22,12 +21,9 @@ public class EntityLivingBaseHook {
             long now = System.currentTimeMillis();
             nightVisionEffectsToRemove.add(now);
 
-            main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
-                @Override
-                public void run() {
-                    if (nightVisionEffectsToRemove.remove(now)) {
-                        entityLivingBase.removePotionEffect(potionID);
-                    }
+            main.getScheduler().scheduleTask(scheduledTask -> {
+                if (nightVisionEffectsToRemove.remove(now)) {
+                    entityLivingBase.removePotionEffect(potionID);
                 }
             }, 2);
 

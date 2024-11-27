@@ -6,9 +6,11 @@ import codes.biscuit.skyblockaddons.core.dungeons.DungeonClass;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonMilestone;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonPlayer;
 import codes.biscuit.skyblockaddons.features.*;
+import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureTrackerQuest;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonType;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonsSince;
+import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.features.healingcircle.HealingCircleManager;
 import codes.biscuit.skyblockaddons.features.deployables.Deployable;
 import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
@@ -22,7 +24,7 @@ import codes.biscuit.skyblockaddons.features.tablist.TabListRenderer;
 import codes.biscuit.skyblockaddons.gui.*;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
 import codes.biscuit.skyblockaddons.misc.Updater;
-import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
+import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
@@ -78,6 +80,8 @@ import static net.minecraft.client.gui.Gui.icons;
 
 public class RenderListener {
 
+    private static final Minecraft MC = Minecraft.getMinecraft();
+
     private static final ItemStack BONE_ITEM = new ItemStack(Items.bone);
     private static final ResourceLocation BARS = new ResourceLocation("skyblockaddons", "barsV2.png");
     private static final ResourceLocation DEFENCE_VANILLA = new ResourceLocation("skyblockaddons", "defence.png");
@@ -96,49 +100,49 @@ public class RenderListener {
 
     private static final ItemStack WATER_BUCKET = new ItemStack(Items.water_bucket);
     private static final ItemStack ROCK_PET = ItemUtils.createSkullItemStack(
-            "§7[Lvl 100] §6Rock"
-            , null
-            , "988354a0-b787-3ca5-b782-d0db5e7b876a"
-            , "7df8aab57136df2296c7c6f969ff25d58116fe2ec59b96a85ba4927e1f6779e6"
+            "§7[Lvl 100] §6Rock",
+            null,
+            "988354a0-b787-3ca5-b782-d0db5e7b876a",
+            "7df8aab57136df2296c7c6f969ff25d58116fe2ec59b96a85ba4927e1f6779e6"
     );
     private static final ItemStack DOLPHIN_PET = ItemUtils.createSkullItemStack(
-            "§7[Lvl 100] §6Dolphin"
-            , null
-            , "9001c25b-f0ff-3748-82c5-7bd117935ce2"
-            , "1415d2c543e34bb88ede94d79b9427691fc9be72daad8831a9ef297180546e18"
+            "§7[Lvl 100] §6Dolphin",
+            null,
+            "9001c25b-f0ff-3748-82c5-7bd117935ce2",
+            "1415d2c543e34bb88ede94d79b9427691fc9be72daad8831a9ef297180546e18"
     );
     private static final ItemStack CHEST = new ItemStack(Item.getItemFromBlock(Blocks.chest));
     private static final ItemStack SKULL = ItemUtils.createSkullItemStack(
-            "Skull"
-            , null
-            , "c659cdd4-e436-4977-a6a7-d5518ebecfbb"
-            , "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081"
+            "Skull",
+            null,
+            "c659cdd4-e436-4977-a6a7-d5518ebecfbb",
+            "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081"
     );
     private static final ItemStack GREEN_CANDY = ItemUtils.createSkullItemStack(
-            "Green Candy"
-            , "GREEN_CANDY"
-            , "e5190c90-5144-3e4e-a545-8499ea3503ca"
-            , "e31c0bd76a655d5d8fea5b06daaf1fb8d8060bf0823ebbc6eb6f99c8ee5a35aa"
+            "Green Candy",
+            "GREEN_CANDY",
+            "e5190c90-5144-3e4e-a545-8499ea3503ca",
+            "e31c0bd76a655d5d8fea5b06daaf1fb8d8060bf0823ebbc6eb6f99c8ee5a35aa"
     );
     private static final ItemStack PURPLE_CANDY = ItemUtils.createSkullItemStack(
-            "Purple Candy"
-            , "PURPLE_CANDY"
-            , "60a5c7bc-a65b-3772-889f-8831d4329fc4"
-            , "91611d874e874e322a1199b3b7b9e934bbb0dbed587ee8fcd6ccc1b07e281651"
+            "Purple Candy",
+            "PURPLE_CANDY",
+            "60a5c7bc-a65b-3772-889f-8831d4329fc4",
+            "91611d874e874e322a1199b3b7b9e934bbb0dbed587ee8fcd6ccc1b07e281651"
     );
     private static final ItemStack THUNDER_IN_A_BOTTLE = ItemUtils.createSkullItemStack(
             "§5Thunder in a Bottle",
             Collections.emptyList(),
             "THUNDER_IN_A_BOTTLE",
-            "5f67bc23-bb55-35e6-8f01-b5534e4ecfca"
-            , "24378b986e358555ee73f09b210d49ec13719de5ea88d75523770d31163f3aef"
+            "5f67bc23-bb55-35e6-8f01-b5534e4ecfca",
+            "24378b986e358555ee73f09b210d49ec13719de5ea88d75523770d31163f3aef"
     );
 
     private static final SlayerArmorProgress[] DUMMY_PROGRESSES = new SlayerArmorProgress[] {
-            new SlayerArmorProgress(new ItemStack(Items.diamond_boots))
-            , new SlayerArmorProgress(new ItemStack(Items.chainmail_leggings))
-            , new SlayerArmorProgress(new ItemStack(Items.diamond_chestplate))
-            , new SlayerArmorProgress(new ItemStack(Items.leather_helmet))
+            new SlayerArmorProgress(new ItemStack(Items.diamond_boots)),
+            new SlayerArmorProgress(new ItemStack(Items.chainmail_leggings)),
+            new SlayerArmorProgress(new ItemStack(Items.diamond_chestplate)),
+            new SlayerArmorProgress(new ItemStack(Items.leather_helmet))
     };
 
     private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?:(?:§[a-f0-9])?✪)+(?:§[a-f0-9]?[➊-➒])?");
@@ -159,9 +163,10 @@ public class RenderListener {
 
     @Setter private boolean updateMessageDisplayed;
 
-    @Setter
     private Feature subtitleFeature;
-    @Getter @Setter private Feature titleFeature;
+    @Getter private Feature titleFeature;
+    @Getter private ScheduledTask subtitleResetTask;
+    @Getter private ScheduledTask titleResetTask;
 
     @Setter private int arrowsLeft;
 
@@ -188,7 +193,7 @@ public class RenderListener {
      */
     @SubscribeEvent()
     public void onRenderRegular(RenderGameOverlayEvent.Post e) {
-        if ((!main.isUsingLabymod() || Minecraft.getMinecraft().ingameGUI instanceof GuiIngameForge)) {
+        if ((!main.isUsingLabymod() || MC.ingameGUI instanceof GuiIngameForge)) {
             if (e.type == RenderGameOverlayEvent.ElementType.EXPERIENCE
                     || e.type == RenderGameOverlayEvent.ElementType.JUMPBAR) {
                 if (main.getUtils().isOnSkyblock()) {
@@ -229,7 +234,7 @@ public class RenderListener {
                     e.setCanceled(true);
                 }
                 if (entity.getCustomNameTag().startsWith("§c/!\\")) {
-                    for (Entity listEntity : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+                    for (Entity listEntity : MC.theWorld.loadedEntityList) {
                         if (listEntity.hasCustomName()
                                 && listEntity.getCustomNameTag().startsWith("§cThis location isn't perfect! :(")
                                 && listEntity.posX == entity.posX
@@ -256,21 +261,20 @@ public class RenderListener {
      * I have an option so you can see dark auction timer and farm event timer in other games so that's why.
      */
     private void renderTimersOnly() {
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!(mc.currentScreen instanceof LocationEditGui) && !(mc.currentScreen instanceof GuiNotification)) {
+        if (!(MC.currentScreen instanceof LocationEditGui) && !(MC.currentScreen instanceof GuiNotification)) {
             GlStateManager.disableBlend();
             if (Feature.areEnabled(Feature.DARK_AUCTION_TIMER, Feature.SHOW_DARK_AUCTION_TIMER_IN_OTHER_GAMES)) {
                 float scale = main.getConfigValues().getGuiScale(Feature.DARK_AUCTION_TIMER);
                 GlStateManager.pushMatrix();
                 GlStateManager.scale(scale, scale, 1);
-                drawText(Feature.DARK_AUCTION_TIMER, scale, mc, null);
+                drawText(Feature.DARK_AUCTION_TIMER, scale,null);
                 GlStateManager.popMatrix();
             }
             if (Feature.areEnabled(Feature.FARM_EVENT_TIMER, Feature.SHOW_FARM_EVENT_TIMER_IN_OTHER_GAMES)) {
                 float scale = main.getConfigValues().getGuiScale(Feature.FARM_EVENT_TIMER);
                 GlStateManager.pushMatrix();
                 GlStateManager.scale(scale, scale, 1);
-                drawText(Feature.FARM_EVENT_TIMER, scale, mc, null);
+                drawText(Feature.FARM_EVENT_TIMER, scale,null);
                 GlStateManager.popMatrix();
             }
         }
@@ -280,8 +284,7 @@ public class RenderListener {
      * This renders all the title/subtitle warnings from features.
      */
     private void renderWarnings(ScaledResolution scaledResolution) {
-        Minecraft mc = Minecraft.getMinecraft();
-        if (mc.theWorld == null || mc.thePlayer == null || !main.getUtils().isOnSkyblock()) {
+        if (MC.theWorld == null || MC.thePlayer == null || !main.getUtils().isOnSkyblock()) {
             return;
         }
 
@@ -318,7 +321,7 @@ public class RenderListener {
             }
             if (translationKey != null) {
                 String text = Translations.getMessage(translationKey);
-                int stringWidth = mc.fontRendererObj.getStringWidth(text);
+                int stringWidth = MC.fontRendererObj.getStringWidth(text);
 
                 float scale = 4; // Scale is normally 4, but if its larger than the screen, scale it down...
                 if (stringWidth * scale > (scaledWidth * 0.9F)) {
@@ -334,10 +337,10 @@ public class RenderListener {
 
                 FontRendererHook.setupFeatureFont(titleFeature);
                 DrawUtils.drawText(
-                        text
-                        , (float) (-mc.fontRendererObj.getStringWidth(text) / 2)
-                        , -20.0F
-                        , main.getConfigValues().getColor(titleFeature)
+                        text,
+                        (float) (-MC.fontRendererObj.getStringWidth(text) / 2),
+                        -20.0F,
+                        main.getConfigValues().getColor(titleFeature)
                 );
                 FontRendererHook.endFeatureFont();
 
@@ -363,7 +366,7 @@ public class RenderListener {
 
             if (text != null) {
 
-                int stringWidth = mc.fontRendererObj.getStringWidth(text);
+                int stringWidth = MC.fontRendererObj.getStringWidth(text);
 
                 float scale = 2; // Scale is normally 2, but if it's larger than the screen, scale it down...
                 if (stringWidth * scale > (scaledWidth * 0.9F)) {
@@ -379,10 +382,10 @@ public class RenderListener {
 
                 FontRendererHook.setupFeatureFont(subtitleFeature);
                 DrawUtils.drawText(
-                        text
-                        , -mc.fontRendererObj.getStringWidth(text) / 2F
-                        , -23.0F
-                        , main.getConfigValues().getColor(subtitleFeature)
+                        text,
+                        -MC.fontRendererObj.getStringWidth(text) / 2F,
+                        -23.0F,
+                        main.getConfigValues().getColor(subtitleFeature)
                 );
                 FontRendererHook.endFeatureFont();
 
@@ -396,24 +399,72 @@ public class RenderListener {
      * This renders all the gui elements (bars, icons, texts, skeleton bar, etc.).
      */
     private void renderOverlays() {
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!(mc.currentScreen instanceof LocationEditGui) && !(mc.currentScreen instanceof GuiNotification)) {
+        if (!(MC.currentScreen instanceof LocationEditGui) && !(MC.currentScreen instanceof GuiNotification)) {
             GlStateManager.disableBlend();
 
             for (Feature feature : Feature.getGuiFeatures()) {
                 if (feature.isEnabled()) {
-                    if (feature == Feature.SKELETON_BAR && !main.getInventoryUtils().isWearingSkeletonHelmet())
+                    if (feature == Feature.SKELETON_BAR && !main.getInventoryUtils().isWearingSkeletonHelmet()) {
                         continue;
-                    if (feature == Feature.HEALTH_UPDATES && main.getPlayerListener().getHealthUpdate() == null)
+                    }
+                    if (feature == Feature.HEALTH_UPDATES && main.getPlayerListener().getActionBarParser().getHealthUpdate() == null) {
                         continue;
+                    }
 
                     float scale = main.getConfigValues().getGuiScale(feature);
-                    GlStateManager.pushMatrix();
-                    GlStateManager.scale(scale, scale, 1);
-                    feature.draw(scale, mc, null);
-                    GlStateManager.popMatrix();
+                    drawFeature(feature, scale, null);
                 }
             }
+        }
+    }
+
+    public void drawFeature(Feature feature, float scale, ButtonLocation buttonLocation) {
+        GuiFeatureData guiFeatureData = feature.getGuiFeatureData();
+        if (guiFeatureData != null) {
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(scale, scale, 1);
+            switch (guiFeatureData.getDrawType()) {
+                case SKELETON_BAR:
+                    drawSkeletonBar(scale, buttonLocation);
+                    break;
+                case BAR:
+                    drawBar(feature, scale,buttonLocation);
+                    break;
+                case TEXT:
+                    drawText(feature, scale,buttonLocation);
+                    break;
+                case PICKUP_LOG:
+                    drawItemPickupLog(scale, buttonLocation);
+                    break;
+                case DEFENCE_ICON:
+                    drawIcon(scale,buttonLocation);
+                    break;
+                case REVENANT_PROGRESS:
+                    drawRevenantIndicator(scale, buttonLocation);
+                    break;
+                case DEPLOYABLE_DISPLAY:
+                    drawDeployableStatus(scale, buttonLocation);
+                    break;
+                case TICKER:
+                    drawScorpionFoilTicker(scale, buttonLocation);
+                    break;
+                case BAIT_LIST_DISPLAY:
+                    drawBaitList(scale, buttonLocation);
+                    break;
+                case DUNGEONS_MAP:
+                    DungeonMapManager.drawDungeonsMap(MC, scale, buttonLocation);
+                    break;
+                case SLAYER_TRACKERS:
+                    drawSlayerTrackers(feature,scale, buttonLocation);
+                    break;
+                case DRAGON_STATS_TRACKER:
+                    drawDragonTrackers(scale, buttonLocation);
+                    break;
+                case PROXIMITY_INDICATOR:
+                    FeatureTrackerQuest.drawTrackerLocationIndicator(scale, buttonLocation);
+                    break;
+            }
+            GlStateManager.popMatrix();
         }
     }
 
@@ -422,10 +473,9 @@ public class RenderListener {
      *
      * @param feature        for which to render the bars
      * @param scale          the scale of the feature
-     * @param mc             link to the minecraft session
      * @param buttonLocation the resizing gui, if present
      */
-    public void drawBar(Feature feature, float scale, Minecraft mc, ButtonLocation buttonLocation) {
+    public void drawBar(Feature feature, float scale, ButtonLocation buttonLocation) {
         // The fill of the bar from 0 to 1
         float fill;
         // Whether the player has absorption hearts
@@ -478,8 +528,8 @@ public class RenderListener {
         }
 
         SkyblockColor color = ColorUtils.getDummySkyblockColor(
-                main.getConfigValues().getColor(feature)
-                , main.getConfigValues().getChromaFeatures().contains(feature)
+                main.getConfigValues().getColor(feature),
+                main.getConfigValues().getChromaFeatures().contains(feature)
         );
 
         switch (feature) {
@@ -495,27 +545,27 @@ public class RenderListener {
 
                     int textAlpha = Math.round(255 - (-remainingTime / 2000F * 255F));
                     color = ColorUtils.getDummySkyblockColor(
-                            main.getConfigValues().getColor(feature, textAlpha)
-                            , main.getConfigValues().getChromaFeatures().contains(feature)
+                            main.getConfigValues().getColor(feature, textAlpha),
+                            main.getConfigValues().getChromaFeatures().contains(feature)
                     ); // so it fades out, 0.016 is the minimum alpha
                 }
                 break;
             case DRILL_FUEL_BAR:
-                if (buttonLocation == null && !ItemUtils.isDrill(mc.thePlayer.getHeldItem())) return;
+                if (buttonLocation == null && !ItemUtils.isDrill(MC.thePlayer.getHeldItem())) return;
                 break;
             case HEALTH_BAR:
-                if (Feature.CHANGE_BAR_COLOR_FOR_POTIONS.isEnabled() && mc.thePlayer != null) {
-                    if (mc.thePlayer.isPotionActive(19/* Poison */)) {
+                if (Feature.CHANGE_BAR_COLOR_FOR_POTIONS.isEnabled() && MC.thePlayer != null) {
+                    if (MC.thePlayer.isPotionActive(19/* Poison */)) {
                         color = ColorUtils.getDummySkyblockColor(
-                                ColorCode.DARK_GREEN.getColor()
-                                , main.getConfigValues().getChromaFeatures().contains(feature)
+                                ColorCode.DARK_GREEN.getColor(),
+                                main.getConfigValues().getChromaFeatures().contains(feature)
                         );
-                    } else if (mc.thePlayer.isPotionActive(20/* Wither */)) {
+                    } else if (MC.thePlayer.isPotionActive(20/* Wither */)) {
                         color = ColorUtils.getDummySkyblockColor(
-                                ColorCode.DARK_GRAY.getColor()
-                                , main.getConfigValues().getChromaFeatures().contains(feature)
+                                ColorCode.DARK_GRAY.getColor(),
+                                main.getConfigValues().getChromaFeatures().contains(feature)
                         );
-                    } else if (mc.thePlayer.isPotionActive(22) /* Absorption */) {
+                    } else if (MC.thePlayer.isPotionActive(22) /* Absorption */) {
                         if (PlayerStats.HEALTH.getValue() > PlayerStats.MAX_HEALTH.getValue()) {
                             fill = PlayerStats.MAX_HEALTH.getValue() / PlayerStats.HEALTH.getValue();
                             hasAbsorption = true;
@@ -527,20 +577,22 @@ public class RenderListener {
                     float maxCurrentHealth = PlayerStats.MAX_RIFT_HEALTH.getValue();
                     fill = PlayerStats.HEALTH.getValue() / maxCurrentHealth;
 
-                    if (maxCurrentHealth > maxRiftHealth)
+                    if (maxCurrentHealth > maxRiftHealth) {
                         maxRiftHealth = maxCurrentHealth;
-                    else
+                    } else {
                         widthScale = maxCurrentHealth / maxRiftHealth;
+                    }
 
-                    if (Float.isNaN(widthScale))
+                    if (Float.isNaN(widthScale)) {
                         widthScale = 1.0F;
+                    }
                 }
                 break;
         }
 
         main.getUtils().enableStandardGLOptions();
         // Draw the actual bar
-        drawMultiLayeredBar(mc, color, x, y, fill, hasAbsorption, widthScale);
+        drawMultiLayeredBar(color, x, y, fill, hasAbsorption, widthScale);
 
         main.getUtils().restoreGLOptions();
     }
@@ -552,18 +604,17 @@ public class RenderListener {
      * Then, overlays the absorption portion of the bar in gold if the player has absorption hearts
      * Then, overlays (and does not color) an additional texture centered on the current progress of the bar.
      * Then, overlays (and does not color) a final style texture over the bar
-     * @param mc link to the current minecraft session
      * @param color the color with which to render the bar
      * @param x the x position of the bar
      * @param y the y position of the bar
      * @param fill the fraction (from 0 to 1) of the bar that's full
      * @param hasAbsorption {@code true} if the player has absorption hearts
      */
-    private void drawMultiLayeredBar(Minecraft mc, SkyblockColor color, float x, float y, float fill, boolean hasAbsorption, float widthScale) {
+    private void drawMultiLayeredBar(SkyblockColor color, float x, float y, float fill, boolean hasAbsorption, float widthScale) {
         int barHeight = 5;
         float barWidth = 71 * widthScale;
         float barFill = barWidth * fill;
-        mc.getTextureManager().bindTexture(BARS);
+        MC.getTextureManager().bindTexture(BARS);
         if (color.getColor() == ColorCode.BLACK.getColor()) { // too dark normally
             GlStateManager.color(0.25F, 0.25F, 0.25F, ColorUtils.getAlpha(color.getColor()) / 255F);
         } else { // A little darker for contrast...
@@ -625,16 +676,15 @@ public class RenderListener {
         String message = updater.getMessageToRender();
 
         if (updater.hasUpdate() && message != null && !updateMessageDisplayed) {
-            Minecraft mc = Minecraft.getMinecraft();
             String[] textList = main.getUtils().wrapSplitText(message, 36);
 
-            int halfWidth = new ScaledResolution(mc).getScaledWidth() / 2;
+            int halfWidth = new ScaledResolution(MC).getScaledWidth() / 2;
             Gui.drawRect(
-                    halfWidth - 110
-                    , 20
-                    , halfWidth + 110
-                    , 53 + textList.length * 10
-                    , main.getUtils().getDefaultBlue(140)
+                    halfWidth - 110,
+                    20,
+                    halfWidth + 110,
+                    53 + textList.length * 10,
+                    main.getUtils().getDefaultBlue(140)
             );
             String title = SkyblockAddons.MOD_NAME;
             GlStateManager.pushMatrix();
@@ -648,7 +698,10 @@ public class RenderListener {
                 y += 10;
             }
 
-            main.getScheduler().schedule(Scheduler.CommandType.ERASE_UPDATE_MESSAGE, 10);
+            main.getScheduler().scheduleTask(
+                    scheduledTask -> main.getRenderListener().setUpdateMessageDisplayed(true),
+                    10 * 20
+            );
 
             if (!main.getUpdater().hasSentUpdateMessage()) {
                 main.getUpdater().sendUpdateMessage();
@@ -659,17 +712,20 @@ public class RenderListener {
     /**
      * This renders a bar for the skeleton hat bones bar.
      */
-    public void drawSkeletonBar(Minecraft mc, float scale, ButtonLocation buttonLocation) {
+    public void drawSkeletonBar(float scale, ButtonLocation buttonLocation) {
         float x = main.getConfigValues().getActualX(Feature.SKELETON_BAR);
         float y = main.getConfigValues().getActualY(Feature.SKELETON_BAR);
         int bones = 0;
-        if (!(mc.currentScreen instanceof LocationEditGui)) {
-            for (Entity listEntity : mc.theWorld.loadedEntityList) {
-                if (listEntity instanceof EntityItem
-                        && listEntity.ridingEntity instanceof EntityArmorStand
-                        && listEntity.ridingEntity.isInvisible()
-                        && listEntity.getDistanceToEntity(mc.thePlayer) <= 8) {
-                    bones++;
+        if (!(MC.currentScreen instanceof LocationEditGui)) {
+            ItemStack helmet = MC.thePlayer.getCurrentArmor(3);
+            if (helmet != null && helmet.getItem() == Items.iron_helmet && helmet.getDisplayName().contains("Skeleton's Helmet")) {
+                for (Entity listEntity : MC.theWorld.loadedEntityList) {
+                    if (listEntity instanceof EntityItem
+                            && listEntity.ridingEntity instanceof EntityArmorStand
+                            && listEntity.ridingEntity.isInvisible()
+                            && listEntity.getDistanceToEntity(MC.thePlayer) <= 8) {
+                        bones++;
+                    }
                 }
             }
         } else {
@@ -700,7 +756,7 @@ public class RenderListener {
     /**
      * This renders the skeleton bar.
      */
-    public void drawScorpionFoilTicker(Minecraft mc, float scale, ButtonLocation buttonLocation) {
+    public void drawScorpionFoilTicker(float scale, ButtonLocation buttonLocation) {
         if (buttonLocation != null || main.getPlayerListener().getTickers() != -1) {
             float x = main.getConfigValues().getActualX(Feature.TICKER_CHARGES_DISPLAY);
             float y = main.getConfigValues().getActualY(Feature.TICKER_CHARGES_DISPLAY);
@@ -719,7 +775,7 @@ public class RenderListener {
 
             int maxTickers = (buttonLocation == null) ? main.getPlayerListener().getMaxTickers() : 4;
             for (int tickers = 0; tickers < maxTickers; tickers++) {
-                mc.getTextureManager().bindTexture(TICKER_SYMBOL);
+                MC.getTextureManager().bindTexture(TICKER_SYMBOL);
                 GlStateManager.enableAlpha();
                 if (tickers < (buttonLocation == null ? main.getPlayerListener().getTickers() : 3)) {
                     DrawUtils.drawModalRectWithCustomSizedTexture(x + tickers * 11, y, 0, 0, 9, 9, 18, 9, false);
@@ -735,15 +791,15 @@ public class RenderListener {
     /**
      * This renders the defence icon.
      */
-    public void drawIcon(float scale, Minecraft mc, ButtonLocation buttonLocation) {
+    public void drawIcon(float scale, ButtonLocation buttonLocation) {
         // There is no defense stat on Rift Dimension
         if (main.getUtils().isOnRift())
             return;
 
         if (Feature.USE_VANILLA_TEXTURE_DEFENCE.isDisabled()) {
-            mc.getTextureManager().bindTexture(icons);
+            MC.getTextureManager().bindTexture(icons);
         } else {
-            mc.getTextureManager().bindTexture(DEFENCE_VANILLA);
+            MC.getTextureManager().bindTexture(DEFENCE_VANILLA);
         }
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         // The height and width of this element (box not included)
@@ -757,7 +813,7 @@ public class RenderListener {
         main.getUtils().enableStandardGLOptions();
 
         if (buttonLocation == null) {
-            mc.ingameGUI.drawTexturedModalRect(x, y, 34, 9, width, height);
+            MC.ingameGUI.drawTexturedModalRect(x, y, 34, 9, width, height);
         } else {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -770,7 +826,7 @@ public class RenderListener {
     /**
      * This renders all the different types gui text elements.
      */
-    public void drawText(Feature feature, float scale, Minecraft mc, ButtonLocation buttonLocation) {
+    public void drawText(Feature feature, float scale, ButtonLocation buttonLocation) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         String text;
         boolean onRift = main.getUtils().isOnRift();
@@ -822,9 +878,13 @@ public class RenderListener {
 
             case OTHER_DEFENCE_STATS:
                 text = main.getPlayerListener().getActionBarParser().getOtherDefense();
-                if (buttonLocation != null && (text == null || text.isEmpty()))
-                    text = "|||  T3!";
-                if (text == null || text.isEmpty()) return;
+                if (text == null || text.isEmpty()) {
+                    if (buttonLocation != null) {
+                        text = "|||  T3!";
+                    } else {
+                        return;
+                    }
+                }
                 break;
 
             case EFFECTIVE_HEALTH_TEXT:
@@ -835,14 +895,15 @@ public class RenderListener {
                 break;
 
             case DRILL_FUEL_TEXT:
-                boolean heldDrill = mc.thePlayer != null && ItemUtils.isDrill(mc.thePlayer.getHeldItem());
+                boolean heldDrill = MC.thePlayer != null && ItemUtils.isDrill(MC.thePlayer.getHeldItem());
 
                 if (heldDrill) {
                     text = TextUtils.formatNumber(PlayerStats.FUEL.getValue()) + "/";
-                    if (Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR.isEnabled())
+                    if (Feature.ABBREVIATE_DRILL_FUEL_DENOMINATOR.isEnabled()) {
                         text += TextUtils.abbreviate((int) PlayerStats.MAX_FUEL.getValue());
-                    else
+                    } else {
                         text += TextUtils.formatNumber(PlayerStats.MAX_FUEL.getValue());
+                    }
                 } else if (buttonLocation != null){
                     text = TextUtils.formatNumber(3000) + "/" + TextUtils.formatNumber(3000);
                 } else {
@@ -859,9 +920,9 @@ public class RenderListener {
                 break;
 
             case SPEED_PERCENTAGE:
-                if (mc.thePlayer != null) {
+                if (MC.thePlayer != null) {
                     // 0.3xyz -> 3xy.z -> 3xy
-                    int walkSpeed = (int) (mc.thePlayer.capabilities.getWalkSpeed() * 1000);
+                    int walkSpeed = (int) (MC.thePlayer.capabilities.getWalkSpeed() * 1000);
                     text = walkSpeed + "%";
                 } else /* Dummy */ {
                     text = "123%";
@@ -871,7 +932,7 @@ public class RenderListener {
             case HEALTH_UPDATES:
                 if (Feature.HIDE_HEALTH_UPDATES_ON_RIFT.isEnabled() && main.getUtils().isOnRift())
                     return;
-                Float healthUpdate = main.getPlayerListener().getHealthUpdate();
+                Float healthUpdate = main.getPlayerListener().getActionBarParser().getHealthUpdate();
                 if (buttonLocation == null) {
                     if (healthUpdate != null) {
                         color = healthUpdate > 0 ? ColorCode.GREEN.getColor() : ColorCode.RED.getColor();
@@ -1121,8 +1182,8 @@ public class RenderListener {
                     break;
                 }
 
-                ItemStack holdingItem = mc.thePlayer.getCurrentEquippedItem();
-                String skyblockItemID = ItemUtils.getSkyblockItemID(mc.thePlayer.getHeldItem());
+                ItemStack holdingItem = MC.thePlayer.getCurrentEquippedItem();
+                String skyblockItemID = ItemUtils.getSkyblockItemID(MC.thePlayer.getHeldItem());
 
                 if (holdingItem == null || skyblockItemID == null) {
                     return;
@@ -1218,19 +1279,19 @@ public class RenderListener {
         float y = main.getConfigValues().getActualY(feature);
 
         int height = 7;
-        int width = mc.fontRendererObj.getStringWidth(text);
+        int width = MC.fontRendererObj.getStringWidth(text);
 
         switch (feature) {
             case ZEALOT_COUNTER:
             case SHOW_AVERAGE_ZEALOTS_PER_EYE:
             case SHOW_TOTAL_ZEALOT_COUNT:
             case SHOW_SUMMONING_EYE_COUNT:
-                width = mc.fontRendererObj.getStringWidth(text) + 18;
+                width = MC.fontRendererObj.getStringWidth(text) + 18;
                 height += 9;
                 break;
 
             case ENDSTONE_PROTECTOR_DISPLAY:
-                width += 18 + 2 + 16 + 2 + mc.fontRendererObj.getStringWidth(
+                width += 18 + 2 + 16 + 2 + MC.fontRendererObj.getStringWidth(
                         String.valueOf(EndstoneProtectorManager.getZealotCount())
                 );
                 height += 9;
@@ -1254,13 +1315,13 @@ public class RenderListener {
                 break;
 
             case DUNGEONS_COLLECTED_ESSENCES_DISPLAY:
-                int maxNumberWidth = mc.fontRendererObj.getStringWidth("99");
+                int maxNumberWidth = MC.fontRendererObj.getStringWidth("99");
                 width = 18 + 2 + maxNumberWidth + 5 + 18 + 2 + maxNumberWidth;
                 height = 18 * (int) Math.ceil(EssenceType.values().length / 2F);
                 break;
 
             case SPIRIT_SCEPTRE_DISPLAY:
-                width += 18 + mc.fontRendererObj.getStringWidth("12345");
+                width += 18 + MC.fontRendererObj.getStringWidth("12345");
                 height += 20;
                 break;
 
@@ -1276,11 +1337,11 @@ public class RenderListener {
                 int green = candyCounts.get(CandyType.GREEN);
                 int purple = candyCounts.get(CandyType.PURPLE);
                 if (buttonLocation != null || green > 0) {
-                    width += 16 + 1 + mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(green));
+                    width += 16 + 1 + MC.fontRendererObj.getStringWidth(TextUtils.formatNumber(green));
                 }
                 if (buttonLocation != null || purple > 0) {
                     if (green > 0) width += 1;
-                    width += 16 + 1 + mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(purple)) + 1;
+                    width += 16 + 1 + MC.fontRendererObj.getStringWidth(TextUtils.formatNumber(purple)) + 1;
                 }
                 height = 16 + 8;
                 break;
@@ -1319,7 +1380,7 @@ public class RenderListener {
 
         switch (feature) {
             case DARK_AUCTION_TIMER:
-                mc.getTextureManager().bindTexture(SIRIUS_ICON);
+                MC.getTextureManager().bindTexture(SIRIUS_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 
                 FontRendererHook.setupFeatureFont(feature);
@@ -1328,7 +1389,7 @@ public class RenderListener {
                 break;
 
             case FARM_EVENT_TIMER:
-                mc.getTextureManager().bindTexture(FARM_ICON);
+                MC.getTextureManager().bindTexture(FARM_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 
                 FontRendererHook.setupFeatureFont(feature);
@@ -1337,7 +1398,7 @@ public class RenderListener {
                 break;
 
             case ZEALOT_COUNTER:
-                mc.getTextureManager().bindTexture(ENDERMAN_ICON);
+                MC.getTextureManager().bindTexture(ENDERMAN_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 
                 FontRendererHook.setupFeatureFont(feature);
@@ -1346,7 +1407,7 @@ public class RenderListener {
                 break;
 
             case SHOW_TOTAL_ZEALOT_COUNT:
-                mc.getTextureManager().bindTexture(ENDERMAN_GROUP_ICON);
+                MC.getTextureManager().bindTexture(ENDERMAN_GROUP_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 
                 FontRendererHook.setupFeatureFont(feature);
@@ -1355,7 +1416,7 @@ public class RenderListener {
                 break;
 
             case SHOW_SUMMONING_EYE_COUNT:
-                mc.getTextureManager().bindTexture(SUMMONING_EYE_ICON);
+                MC.getTextureManager().bindTexture(SUMMONING_EYE_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 
                 FontRendererHook.setupFeatureFont(feature);
@@ -1364,9 +1425,9 @@ public class RenderListener {
                 break;
 
             case SHOW_AVERAGE_ZEALOTS_PER_EYE:
-                mc.getTextureManager().bindTexture(ZEALOTS_PER_EYE_ICON);
+                MC.getTextureManager().bindTexture(ZEALOTS_PER_EYE_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
-                mc.getTextureManager().bindTexture(SLASH_ICON);
+                MC.getTextureManager().bindTexture(SLASH_ICON);
                 ColorUtils.bindColor(color);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16, true);
 
@@ -1393,17 +1454,17 @@ public class RenderListener {
                 break;
 
             case ENDSTONE_PROTECTOR_DISPLAY:
-                mc.getTextureManager().bindTexture(IRON_GOLEM_ICON);
+                MC.getTextureManager().bindTexture(IRON_GOLEM_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 
                 FontRendererHook.setupFeatureFont(feature);
                 DrawUtils.drawText(text, x + 18, y + 4, color);
                 FontRendererHook.endFeatureFont();
 
-                x += 16 + 2 + mc.fontRendererObj.getStringWidth(text) + 2;
+                x += 16 + 2 + MC.fontRendererObj.getStringWidth(text) + 2;
 
                 GlStateManager.color(1, 1, 1, 1);
-                mc.getTextureManager().bindTexture(ENDERMAN_GROUP_ICON);
+                MC.getTextureManager().bindTexture(ENDERMAN_GROUP_ICON);
                 DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 
                 int count = EndstoneProtectorManager.getZealotCount();
@@ -1430,11 +1491,11 @@ public class RenderListener {
                 }
                 String formattedAmount = TextUtils.formatNumber(amount);
                 DrawUtils.drawText(
-                        formattedAmount
-                        , x + 18 + mc.fontRendererObj.getStringWidth(text) / 2F
-                                - mc.fontRendererObj.getStringWidth(formattedAmount) / 2F
-                        , y + 9
-                        , color
+                        formattedAmount,
+                        x + 18 + MC.fontRendererObj.getStringWidth(text) / 2F
+                                - MC.fontRendererObj.getStringWidth(formattedAmount) / 2F,
+                        y + 9,
+                        color
                 );
                 FontRendererHook.endFeatureFont();
                 break;
@@ -1481,11 +1542,11 @@ public class RenderListener {
                     FontRendererHook.setupFeatureFont(feature);
                     String none = Translations.getMessage("messages.none");
                     DrawUtils.drawText(
-                            none
-                            , x + 16 + 2 + mc.fontRendererObj.getStringWidth(text)
-                                    / 2F - mc.fontRendererObj.getStringWidth(none) / 2F
-                            , y + 10
-                            , color
+                            none,
+                            x + 16 + 2 + MC.fontRendererObj.getStringWidth(text) / 2F
+                                    - MC.fontRendererObj.getStringWidth(none) / 2F,
+                            y + 10,
+                            color
                     );
                     FontRendererHook.endFeatureFont();
                 } else {
@@ -1512,34 +1573,32 @@ public class RenderListener {
                     }
                     int secretsColor = new Color(Math.min(1, r), g, 0.33F).getRGB();
 
-                    float secretsWidth = mc.fontRendererObj.getStringWidth(String.valueOf(secrets));
-                    float slashWidth = mc.fontRendererObj.getStringWidth("/");
-                    float maxSecretsWidth = mc.fontRendererObj.getStringWidth(String.valueOf(maxSecrets));
+                    float secretsWidth = MC.fontRendererObj.getStringWidth(String.valueOf(secrets));
+                    float slashWidth = MC.fontRendererObj.getStringWidth("/");
+                    float maxSecretsWidth = MC.fontRendererObj.getStringWidth(String.valueOf(maxSecrets));
 
                     float totalWidth = secretsWidth + slashWidth + maxSecretsWidth;
 
                     FontRendererHook.setupFeatureFont(feature);
                     DrawUtils.drawText(
-                            "/"
-                            , x + 16 + 2 + mc.fontRendererObj.getStringWidth(text)
-                                    / 2F - totalWidth / 2F + secretsWidth
-                            , y + 11
-                            , color
+                            "/",
+                            x + 16 + 2 + MC.fontRendererObj.getStringWidth(text) / 2F - totalWidth / 2F + secretsWidth,
+                            y + 11,
+                            color
                     );
                     FontRendererHook.endFeatureFont();
 
                     DrawUtils.drawText(
-                            String.valueOf(secrets)
-                            , x + 16 + 2 + mc.fontRendererObj.getStringWidth(text) / 2F - totalWidth / 2F
-                            , y + 11
-                            , secretsColor
+                            String.valueOf(secrets),
+                            x + 16 + 2 + MC.fontRendererObj.getStringWidth(text) / 2F - totalWidth / 2F,
+                            y + 11,
+                            secretsColor
                     );
                     DrawUtils.drawText(
-                            String.valueOf(maxSecrets)
-                            , x + 16 + 2 + mc.fontRendererObj.getStringWidth(text)
-                                    / 2F - totalWidth / 2F + secretsWidth + slashWidth
-                            , y + 11
-                            , secretsColor
+                            String.valueOf(maxSecrets),
+                            x + 16 + 2 + MC.fontRendererObj.getStringWidth(text) / 2F - totalWidth / 2F + secretsWidth + slashWidth,
+                            y + 11,
+                            secretsColor
                     );
                 }
 
@@ -1567,7 +1626,7 @@ public class RenderListener {
                     break;
                 }
 
-                ItemStack displayItem = DamageDisplayItem.getByID(ItemUtils.getSkyblockItemID(mc.thePlayer.getHeldItem()));
+                ItemStack displayItem = DamageDisplayItem.getByID(ItemUtils.getSkyblockItemID(MC.thePlayer.getHeldItem()));
                 if (displayItem != null) {
                     renderItem(displayItem, x, y);
                 }
@@ -1597,7 +1656,7 @@ public class RenderListener {
                 }
                 if (buttonLocation != null || purple > 0) {
                     if (buttonLocation != null || green > 0) {
-                        currentX += mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(green)) + 1;
+                        currentX += MC.fontRendererObj.getStringWidth(TextUtils.formatNumber(green)) + 1;
                     }
 
                     renderItem(PURPLE_CANDY, currentX, y);
@@ -1610,15 +1669,14 @@ public class RenderListener {
 
                 FontRendererHook.setupFeatureFont(feature);
                 text = TextUtils.formatNumber(points) + " Points";
-                DrawUtils.drawText(text, x + width / 2F - mc.fontRendererObj.getStringWidth(text) / 2F, y + 16, color);
+                DrawUtils.drawText(text, x + width / 2F - MC.fontRendererObj.getStringWidth(text) / 2F, y + 16, color);
                 FontRendererHook.endFeatureFont();
                 break;
 
             case FETCHUR_TODAY:
                 boolean showDwarven = Feature.SHOW_FETCHUR_ONLY_IN_DWARVENS.isDisabled()
                         || main.getUtils().getMap() == Island.DWARVEN_MINES;
-                boolean showInventory = Feature.SHOW_FETCHUR_INVENTORY_OPEN_ONLY.isDisabled()
-                        || Minecraft.getMinecraft().currentScreen != null;
+                boolean showInventory = Feature.SHOW_FETCHUR_INVENTORY_OPEN_ONLY.isDisabled() || MC.currentScreen != null;
                 FetchurManager.FetchurItem fetchurItem = FetchurManager.getInstance().getCurrentFetchurItem();
 
                 // Show if it's the gui button position, or the player hasn't given Fetchur,
@@ -1630,12 +1688,12 @@ public class RenderListener {
 
                     if (Feature.SHOW_FETCHUR_ITEM_NAME.isDisabled()) {
                         DrawUtils.drawText(text, x + 1, y + 4, color); // Line related to the "Fetchur wants" text
-                        float offsetX = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
+                        float offsetX = MC.fontRendererObj.getStringWidth(text);
                         renderItemAndOverlay(
-                                fetchurItem.getItemStack()
-                                , String.valueOf(fetchurItem.getItemStack().stackSize)
-                                , x + offsetX
-                                , y
+                                fetchurItem.getItemStack(),
+                                String.valueOf(fetchurItem.getItemStack().stackSize),
+                                x + offsetX,
+                                y
                         );
                     } else {
                         DrawUtils.drawText(text, x, y, color); // Line related to the "Fetchur wants" text
@@ -1646,24 +1704,25 @@ public class RenderListener {
 
             case HEALTH_TEXT:
                 // 22 -> Absorption
-                if (mc.thePlayer != null && mc.thePlayer.isPotionActive(22)
+                if (MC.thePlayer != null && MC.thePlayer.isPotionActive(22)
                         && PlayerStats.HEALTH.getValue() > PlayerStats.MAX_HEALTH.getValue()) {
                     String formattedHealth = TextUtils.formatNumber(PlayerStats.HEALTH.getValue());
-                    int formattedHealthWidth = mc.fontRendererObj.getStringWidth(formattedHealth);
+                    int formattedHealthWidth = MC.fontRendererObj.getStringWidth(formattedHealth);
 
                     color = ColorUtils.getDummySkyblockColor(
-                            ColorCode.GOLD.getColor()
-                            , main.getConfigValues().getChromaFeatures().contains(feature)
+                            ColorCode.GOLD.getColor(),
+                            main.getConfigValues().getChromaFeatures().contains(feature)
                     ).getColor();
                     FontRendererHook.setupFeatureFont(feature);
                     DrawUtils.drawText(formattedHealth, x, y, color);
 
                     color = main.getConfigValues().getColor(feature);
                     DrawUtils.drawText(
-                            "/" + TextUtils.formatNumber(PlayerStats.MAX_HEALTH.getValue()) + (Feature.HEALTH_TEXT_ICON.isEnabled() ? "❤" : "")
-                            , x + formattedHealthWidth
-                            , y
-                            , color
+                            "/" + TextUtils.formatNumber(PlayerStats.MAX_HEALTH.getValue())
+                                    + (Feature.HEALTH_TEXT_ICON.isEnabled() ? "❤" : ""),
+                            x + formattedHealthWidth,
+                            y,
+                            color
                     );
                     FontRendererHook.endFeatureFont();
                 } else {
@@ -1724,7 +1783,7 @@ public class RenderListener {
                         }
                         DrawUtils.drawText(displayText, x + 18, y + 16, color);
 
-                        renderItem(petItemStack, x + 18 + mc.fontRendererObj.getStringWidth(displayText), y + 10);
+                        renderItem(petItemStack, x + 18 + MC.fontRendererObj.getStringWidth(displayText), y + 10);
                         line++;
                         break;
                 }
@@ -1745,7 +1804,7 @@ public class RenderListener {
     }
 
     private String getCrimsonArmorAbilityStacks() {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = MC.thePlayer;
         ItemStack[] itemStacks = player.inventory.armorInventory;
 
         StringBuilder builder = new StringBuilder();
@@ -1770,7 +1829,6 @@ public class RenderListener {
     }
 
     public void drawCollectedEssences(float x, float y, boolean usePlaceholders, boolean hideZeroes) {
-        Minecraft mc = Minecraft.getMinecraft();
         InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         float currentX = x;
@@ -1782,9 +1840,9 @@ public class RenderListener {
             if (entrySet.isEmpty()) return;
 
             String highestAmountStr = Collections.max(entrySet, Map.Entry.comparingByValue()).getValue().toString();
-            maxNumberWidth = mc.fontRendererObj.getStringWidth(highestAmountStr);
+            maxNumberWidth = MC.fontRendererObj.getStringWidth(highestAmountStr);
         } else {
-            maxNumberWidth = mc.fontRendererObj.getStringWidth("99");
+            maxNumberWidth = MC.fontRendererObj.getStringWidth("99");
         }
 
         int color = main.getConfigValues().getColor(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
@@ -1816,7 +1874,7 @@ public class RenderListener {
             currentY = y + row * 18;
 
             GlStateManager.color(1, 1, 1, 1);
-            mc.getTextureManager().bindTexture(essenceType.getResourceLocation());
+            MC.getTextureManager().bindTexture(essenceType.getResourceLocation());
             DrawUtils.drawModalRectWithCustomSizedTexture(currentX, currentY, 0, 0, 16, 16, 16, 16);
 
             FontRendererHook.setupFeatureFont(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
@@ -1830,7 +1888,7 @@ public class RenderListener {
     /**
      * Displays the bait list. Only shows bait with count > 0.
      */
-    public void drawBaitList(Minecraft mc, float scale, ButtonLocation buttonLocation) {
+    public void drawBaitList(float scale, ButtonLocation buttonLocation) {
         if (!main.getPlayerListener().isHoldingRod() && buttonLocation == null) return;
 
         Map<BaitManager.BaitType, Integer> baits = BaitManager.getInstance().getBaitsInInventory();
@@ -1842,7 +1900,7 @@ public class RenderListener {
         for (Map.Entry<BaitManager.BaitType, Integer> entry : baits.entrySet()) {
             longestLineWidth = Math.max(
                     longestLineWidth
-                    , mc.fontRendererObj.getStringWidth(TextUtils.formatNumber(entry.getValue()))
+                    , MC.fontRendererObj.getStringWidth(TextUtils.formatNumber(entry.getValue()))
             );
         }
 
@@ -1872,10 +1930,10 @@ public class RenderListener {
             int color = main.getConfigValues().getColor(Feature.BAIT_LIST);
             FontRendererHook.setupFeatureFont(Feature.BAIT_LIST);
             DrawUtils.drawText(
-                    TextUtils.formatNumber(entry.getValue())
-                    , x + iconSize + spacing
-                    , y + (iconSize / 2F) - (8 / 2F)
-                    , color
+                    TextUtils.formatNumber(entry.getValue()),
+                    x + iconSize + spacing,
+                    y + (iconSize / 2F) - (8 / 2F),
+                    color
             );
             FontRendererHook.endFeatureFont();
 
@@ -1885,7 +1943,7 @@ public class RenderListener {
         main.getUtils().restoreGLOptions();
     }
 
-    public void drawSlayerTrackers(Feature feature, Minecraft mc, float scale, ButtonLocation buttonLocation) {
+    public void drawSlayerTrackers(Feature feature, float scale, ButtonLocation buttonLocation) {
         boolean colorByRarity;
         boolean textMode;
         SlayerBoss slayerBoss;
@@ -1973,14 +2031,14 @@ public class RenderListener {
             int lines = 0;
             int spacers = 0;
 
-            int longestLineWidth = mc.fontRendererObj.getStringWidth(slayerBoss.getDisplayName());
+            int longestLineWidth = MC.fontRendererObj.getStringWidth(slayerBoss.getDisplayName());
             lines++;
             spacers++;
 
-            int longestSlayerDropLineWidth = mc.fontRendererObj.getStringWidth(
+            int longestSlayerDropLineWidth = MC.fontRendererObj.getStringWidth(
                     Translations.getMessage("slayerTracker.bossesKilled")
             );
-            int longestCount = mc.fontRendererObj.getStringWidth(
+            int longestCount = MC.fontRendererObj.getStringWidth(
                     String.valueOf(SlayerTracker.getInstance().getSlayerKills(slayerBoss))
             );
             lines++;
@@ -1989,11 +2047,11 @@ public class RenderListener {
             for (SlayerDrop drop : slayerBoss.getDrops()) {
                 longestSlayerDropLineWidth = Math.max(
                         longestSlayerDropLineWidth
-                        , mc.fontRendererObj.getStringWidth(drop.getDisplayName())
+                        , MC.fontRendererObj.getStringWidth(drop.getDisplayName())
                 );
                 longestCount = Math.max(
                         longestCount
-                        , mc.fontRendererObj.getStringWidth(
+                        , MC.fontRendererObj.getStringWidth(
                                 String.valueOf(SlayerTracker.getInstance().getDropCount(drop))
                         )
                 );
@@ -2016,7 +2074,7 @@ public class RenderListener {
             y += lineHeight + spacer;
             DrawUtils.drawText(Translations.getMessage("slayerTracker.bossesKilled"), x, y, color);
             String text = String.valueOf(SlayerTracker.getInstance().getSlayerKills(slayerBoss));
-            DrawUtils.drawText(text, x + width - mc.fontRendererObj.getStringWidth(text), y, color);
+            DrawUtils.drawText(text, x + width - MC.fontRendererObj.getStringWidth(text), y, color);
             y += lineHeight + spacer;
 
             FontRendererHook.endFeatureFont();
@@ -2038,7 +2096,7 @@ public class RenderListener {
 
                 FontRendererHook.setupFeatureFont(feature);
                 text = String.valueOf(SlayerTracker.getInstance().getDropCount(slayerDrop));
-                DrawUtils.drawText(text, x + width - mc.fontRendererObj.getStringWidth(text), y, currentColor);
+                DrawUtils.drawText(text, x + width - MC.fontRendererObj.getStringWidth(text), y, currentColor);
                 FontRendererHook.endFeatureFont();
 
                 y += lineHeight;
@@ -2089,7 +2147,7 @@ public class RenderListener {
             int maxItemsPerRow = (int) Math.ceil(slayerBoss.getDrops().size() / 3.0);
             int[] maxTextWidths = new int[maxItemsPerRow];
             for (SlayerDrop slayerDrop : slayerBoss.getDrops()) {
-                int width = mc.fontRendererObj.getStringWidth(
+                int width = MC.fontRendererObj.getStringWidth(
                         TextUtils.abbreviate(SlayerTracker.getInstance().getDropCount(slayerDrop))
                 );
 
@@ -2128,14 +2186,14 @@ public class RenderListener {
                         revenant.getInventory()[2] = ItemUtils.createItemStack(Items.chainmail_leggings, true);
                         revenant.getInventory()[3] = ItemUtils.createItemStack(Items.diamond_chestplate, true);
                         revenant.getInventory()[4] = ItemUtils.createSkullItemStack(
-                                null
-                                , null
-                                , "45012ee3-29fd-42ed-908b-648c731c7457"
-                                , "1fc0184473fe882d2895ce7cbc8197bd40ff70bf10d3745de97b6c2a9c5fc78f"
+                                null,
+                                null,
+                                "45012ee3-29fd-42ed-908b-648c731c7457",
+                                "1fc0184473fe882d2895ce7cbc8197bd40ff70bf10d3745de97b6c2a9c5fc78f"
                         );
                     }
                     GlStateManager.color(1, 1, 1, 1);
-                    revenant.ticksExisted = (int) main.getNewScheduler().getTotalTicks();
+                    revenant.ticksExisted = (int) main.getScheduler().getTotalTicks();
                     drawEntity(revenant, x + 15, y + 53, -15); // left is 35
                     break;
 
@@ -2167,7 +2225,7 @@ public class RenderListener {
                         enderman.setHeldBlockState(Blocks.beacon.getBlockState().getBaseState());
                     }
                     GlStateManager.color(1, 1, 1, 1);
-                    enderman.ticksExisted = (int) main.getNewScheduler().getTotalTicks();
+                    enderman.ticksExisted = (int) main.getScheduler().getTotalTicks();
                     GlStateManager.scale(.7, .7, 1);
                     drawEntity(enderman, (x + 15) / .7F, (y + 51) / .7F, -30);
                     GlStateManager.scale(1 / .7, 1 / .7, 1);
@@ -2179,7 +2237,7 @@ public class RenderListener {
                         inferno.setOnFire(true);
                     }
                     GlStateManager.color(1, 1, 1, 1);
-                    inferno.ticksExisted = (int) main.getNewScheduler().getTotalTicks();
+                    inferno.ticksExisted = (int) main.getScheduler().getTotalTicks();
                     drawEntity(inferno, x + 15, y + 53, -15);
                     break;
 
@@ -2202,10 +2260,10 @@ public class RenderListener {
             FontRendererHook.setupFeatureFont(feature);
             String text = TextUtils.abbreviate(SlayerTracker.getInstance().getSlayerKills(slayerBoss)) + " Kills";
             DrawUtils.drawText(
-                    text
-                    , x + textCenterX - mc.fontRendererObj.getStringWidth(text) / 2F
-                    , y + entityRenderY
-                    , color
+                    text,
+                    x + textCenterX - MC.fontRendererObj.getStringWidth(text) / 2F,
+                    y + entityRenderY,
+                    color
             );
             FontRendererHook.endFeatureFont();
 
@@ -2232,10 +2290,10 @@ public class RenderListener {
                 }
 
                 DrawUtils.drawText(
-                        TextUtils.abbreviate(SlayerTracker.getInstance().getDropCount(slayerDrop))
-                        , currentX + iconWidth + iconTextOffset
-                        , currentY + 8
-                        , currentColor
+                        TextUtils.abbreviate(SlayerTracker.getInstance().getDropCount(slayerDrop)),
+                        currentX + iconWidth + iconTextOffset,
+                        currentY + 8,
+                        currentColor
                 );
                 if (!colorByRarity) {
                     FontRendererHook.endFeatureFont();
@@ -2252,7 +2310,7 @@ public class RenderListener {
         }
     }
 
-    public void drawDragonTrackers(Minecraft mc, float scale, ButtonLocation buttonLocation) {
+    public void drawDragonTrackers(float scale, ButtonLocation buttonLocation) {
         if (Feature.DRAGON_STATS_TRACKER_NEST_ONLY.isEnabled()
                 && !LocationUtils.isOn("Dragon's Nest") && buttonLocation == null) {
             return;
@@ -2274,7 +2332,7 @@ public class RenderListener {
             int lines = 0;
             int spacers = 0;
 
-            int longestLineWidth = mc.fontRendererObj.getStringWidth(
+            int longestLineWidth = MC.fontRendererObj.getStringWidth(
                     Translations.getMessage("dragonTracker.recentDragons")
             );
             lines++;
@@ -2283,13 +2341,13 @@ public class RenderListener {
             spacers++;
             longestLineWidth = Math.max(
                     longestLineWidth
-                    , mc.fontRendererObj.getStringWidth(Translations.getMessage("dragonTracker.dragonsSince"))
+                    , MC.fontRendererObj.getStringWidth(Translations.getMessage("dragonTracker.dragonsSince"))
             );
             lines++;
             spacers++;
 
             for (DragonType dragon : recentDragons) {
-                longestLineWidth = Math.max(longestLineWidth, mc.fontRendererObj.getStringWidth(dragon.getDisplayName()));
+                longestLineWidth = Math.max(longestLineWidth, MC.fontRendererObj.getStringWidth(dragon.getDisplayName()));
                 lines++;
             }
 
@@ -2297,15 +2355,15 @@ public class RenderListener {
             int longestDragonsSinceLineWidth = 0;
             for (DragonsSince dragonsSince : DragonsSince.values()) {
                 longestDragonsSinceLineWidth = Math.max(
-                        longestDragonsSinceLineWidth
-                        , mc.fontRendererObj.getStringWidth(dragonsSince.getDisplayName()
-                        )
+                        longestDragonsSinceLineWidth,
+                        MC.fontRendererObj.getStringWidth(dragonsSince.getDisplayName())
                 );
                 int dragonsSinceValue = DragonTracker.getInstance().getDragsSince(dragonsSince);
                 longestCount = Math.max(
-                        longestCount
-                        , mc.fontRendererObj.getStringWidth(
-                                dragonsSinceValue == 0 ? never : String.valueOf(dragonsSinceValue)
+                        longestCount,
+                        MC.fontRendererObj.getStringWidth(dragonsSinceValue == 0
+                                ? never
+                                : String.valueOf(dragonsSinceValue)
                         )
                 );
                 lines++;
@@ -2382,14 +2440,14 @@ public class RenderListener {
                 FontRendererHook.setupFeatureFont(Feature.DRAGON_STATS_TRACKER);
                 int dragonsSinceValue = DragonTracker.getInstance().getDragsSince(dragonsSince);
                 String text = dragonsSinceValue == 0 ? never : String.valueOf(dragonsSinceValue);
-                DrawUtils.drawText(text, x + width - mc.fontRendererObj.getStringWidth(text), y, color);
+                DrawUtils.drawText(text, x + width - MC.fontRendererObj.getStringWidth(text), y, color);
                 y += 8;
                 FontRendererHook.endFeatureFont();
             }
         }
     }
 
-    public void drawRevenantIndicator(float scale, Minecraft mc, ButtonLocation buttonLocation) {
+    public void drawRevenantIndicator(float scale, ButtonLocation buttonLocation) {
         float x = main.getConfigValues().getActualX(Feature.SLAYER_INDICATOR);
         float y = main.getConfigValues().getActualY(Feature.SLAYER_INDICATOR);
 
@@ -2399,7 +2457,7 @@ public class RenderListener {
         for (SlayerArmorProgress progress : progresses) {
             if (progress == null) continue;
 
-            int textWidth = mc.fontRendererObj.getStringWidth(progress.getPercent() + "% (" + progress.getDefence() + ")");
+            int textWidth = MC.fontRendererObj.getStringWidth(progress.getPercent() + "% (" + progress.getDefence() + ")");
             if (textWidth > longest) {
                 longest = textWidth;
             }
@@ -2442,10 +2500,10 @@ public class RenderListener {
             DrawUtils.drawText(progress.getPercent() + "% (", currentX, fixedY + 5, color);
             FontRendererHook.endFeatureFont();
 
-            currentX += mc.fontRendererObj.getStringWidth(progress.getPercent() + "% (");
+            currentX += MC.fontRendererObj.getStringWidth(progress.getPercent() + "% (");
             DrawUtils.drawText(progress.getDefence(), currentX, fixedY + 5, 0xFFFFFFFF);
 
-            currentX += mc.fontRendererObj.getStringWidth(progress.getDefence());
+            currentX += MC.fontRendererObj.getStringWidth(progress.getDefence());
             FontRendererHook.setupFeatureFont(Feature.SLAYER_INDICATOR);
             DrawUtils.drawText(")", currentX, fixedY + 5, color);
             FontRendererHook.endFeatureFont();
@@ -2481,7 +2539,7 @@ public class RenderListener {
             );
         }
         GlStateManager.translate(x / scale, y / scale, 0);
-        Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(item, 0, 0);
+        MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
         GlStateManager.popMatrix();
 
         RenderHelper.disableStandardItemLighting();
@@ -2495,9 +2553,9 @@ public class RenderListener {
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, 0);
-        Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(item, 0, 0);
-        Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(
-                Minecraft.getMinecraft().fontRendererObj, item, 0, 0, name
+        MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
+        MC.getRenderItem().renderItemOverlayIntoGUI(
+                MC.fontRendererObj, item, 0, 0, name
         );
         GlStateManager.popMatrix();
 
@@ -2522,7 +2580,7 @@ public class RenderListener {
 
         int lineHeight = 8 + 1; // 1 pixel spacer
         int height = lineHeight * 3 - 1;
-        int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth("+ 1x Forceful Ember Chestplate");
+        int width = MC.fontRendererObj.getStringWidth("+ 1x Forceful Ember Chestplate");
 
         x = transformXY(x, width, scale);
         y = transformXY(y, height, scale);
@@ -2554,7 +2612,7 @@ public class RenderListener {
         main.getUtils().restoreGLOptions();
     }
 
-    public void drawDeployableStatus(Minecraft mc, float scale, ButtonLocation buttonLocation) {
+    public void drawDeployableStatus(float scale, ButtonLocation buttonLocation) {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (buttonLocation != null && activeDeployable == null) {
             activeDeployable = DeployableManager.DUMMY_POWER_ORB_ENTRY;
@@ -2565,9 +2623,9 @@ public class RenderListener {
 
             EnumUtils.DeployableDisplayStyle displayStyle = main.getConfigValues().getDeployableDisplayStyle();
             if (displayStyle == EnumUtils.DeployableDisplayStyle.DETAILED) {
-                drawDetailedDeployableStatus(mc, scale, buttonLocation, deployable, seconds);
+                drawDetailedDeployableStatus(scale, buttonLocation, deployable, seconds);
             } else {
-                drawCompactDeployableStatus(mc, scale, buttonLocation, deployable, seconds);
+                drawCompactDeployableStatus(scale, buttonLocation, deployable, seconds);
             }
         }
     }
@@ -2579,14 +2637,14 @@ public class RenderListener {
      * |  | XXs
      * ----
      */
-    private void drawCompactDeployableStatus(Minecraft mc, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
+    private void drawCompactDeployableStatus(float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
         float x = main.getConfigValues().getActualX(Feature.DEPLOYABLE_STATUS_DISPLAY);
         float y = main.getConfigValues().getActualY(Feature.DEPLOYABLE_STATUS_DISPLAY);
 
         String secondsString = String.format("§e%ss", seconds);
         int spacing = 1;
-        int iconSize = mc.fontRendererObj.FONT_HEIGHT * 3; // 3 because it looked the best
-        int width = iconSize + spacing + mc.fontRendererObj.getStringWidth(secondsString);
+        int iconSize = MC.fontRendererObj.FONT_HEIGHT * 3; // 3 because it looked the best
+        int width = iconSize + spacing + MC.fontRendererObj.getStringWidth(secondsString);
 
         x = transformXY(x, width, scale);
         y = transformXY(y, iconSize, scale);
@@ -2614,7 +2672,7 @@ public class RenderListener {
         if (entity instanceof EntityArmorStand) {
             drawDeployableArmorStand((EntityArmorStand) entity, x + 1, y + 4);
         } else {
-            mc.getTextureManager().bindTexture(deployable.getResourceLocation());
+            MC.getTextureManager().bindTexture(deployable.getResourceLocation());
             DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
@@ -2636,7 +2694,7 @@ public class RenderListener {
      * ---- +X ❁
      * XXs
      */
-    private void drawDetailedDeployableStatus(Minecraft mc, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
+    private void drawDetailedDeployableStatus(float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
         float x = main.getConfigValues().getActualX(Feature.DEPLOYABLE_STATUS_DISPLAY);
         float y = main.getConfigValues().getActualY(Feature.DEPLOYABLE_STATUS_DISPLAY);
 
@@ -2713,12 +2771,12 @@ public class RenderListener {
         Optional<String> longestLine = display.stream().max(Comparator.comparingInt(String::length));
 
         int spacingBetweenLines = 1;
-        int iconSize = mc.fontRendererObj.FONT_HEIGHT * 3; // 3 because it looked the best
-        int iconAndSecondsHeight = iconSize + mc.fontRendererObj.FONT_HEIGHT;
+        int iconSize = MC.fontRendererObj.FONT_HEIGHT * 3; // 3 because it looked the best
+        int iconAndSecondsHeight = iconSize + MC.fontRendererObj.FONT_HEIGHT;
 
-        int effectsHeight = (mc.fontRendererObj.FONT_HEIGHT + spacingBetweenLines) * display.size();
-        int width = iconSize + 2 + longestLine.map(mc.fontRendererObj::getStringWidth).orElseGet(() ->
-                mc.fontRendererObj.getStringWidth(display.get(0))
+        int effectsHeight = (MC.fontRendererObj.FONT_HEIGHT + spacingBetweenLines) * display.size();
+        int width = iconSize + 2 + longestLine.map(MC.fontRendererObj::getStringWidth).orElseGet(() ->
+                MC.fontRendererObj.getStringWidth(display.get(0))
         );
         int height = Math.max(effectsHeight, iconAndSecondsHeight);
 
@@ -2749,22 +2807,24 @@ public class RenderListener {
         if (entity instanceof EntityArmorStand) {
             drawDeployableArmorStand((EntityArmorStand) entity, x + 1, y + 4);
         } else {
-            mc.getTextureManager().bindTexture(deployable.getResourceLocation());
+            MC.getTextureManager().bindTexture(deployable.getResourceLocation());
             DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
         String secondsString = String.format("§e%ss", seconds);
         DrawUtils.drawText(
-                secondsString
-                , Math.round(x + (iconSize / 2F) - (mc.fontRendererObj.getStringWidth(secondsString) / 2F))
-                , y + iconSize, ColorCode.WHITE.getColor(255)
+                secondsString,
+                Math.round(x + (iconSize / 2F) - (MC.fontRendererObj.getStringWidth(secondsString) / 2F)),
+                y + iconSize,
+                ColorCode.WHITE.getColor(255)
         );
 
         for (int i = 0; i < display.size(); i++) {
             DrawUtils.drawText(
-                    display.get(i)
-                    , x + iconSize + 2
-                    , startY + (i * (mc.fontRendererObj.FONT_HEIGHT + spacingBetweenLines)), ColorCode.WHITE.getColor(255)
+                    display.get(i),
+                    x + iconSize + 2,
+                    startY + (i * (MC.fontRendererObj.FONT_HEIGHT + spacingBetweenLines)),
+                    ColorCode.WHITE.getColor(255)
             );
         }
 
@@ -2809,33 +2869,33 @@ public class RenderListener {
     @SubscribeEvent()
     public void onRender(TickEvent.RenderTickEvent e) {
         if (guiToOpen == EnumUtils.GUIType.MAIN) {
-            Minecraft.getMinecraft().displayGuiScreen(new SkyblockAddonsGui(guiPageToOpen, guiTabToOpen));
+            MC.displayGuiScreen(new SkyblockAddonsGui(guiPageToOpen, guiTabToOpen));
         } else if (guiToOpen == EnumUtils.GUIType.EDIT_LOCATIONS) {
-            Minecraft.getMinecraft().displayGuiScreen(new LocationEditGui(guiPageToOpen, guiTabToOpen));
+            MC.displayGuiScreen(new LocationEditGui(guiPageToOpen, guiTabToOpen));
         } else if (guiToOpen == EnumUtils.GUIType.SETTINGS) {
             if (guiFeatureToOpen == Feature.ENCHANTMENT_LORE_PARSING) {
-                Minecraft.getMinecraft().displayGuiScreen(
+                MC.displayGuiScreen(
                         new EnchantmentSettingsGui(
-                                guiFeatureToOpen
-                                , 1
-                                , guiPageToOpen
-                                , guiTabToOpen
-                                , guiFeatureToOpen.getSettings()
+                                guiFeatureToOpen,
+                                1,
+                                guiPageToOpen,
+                                guiTabToOpen,
+                                guiFeatureToOpen.getSettings()
                         )
                 );
             } else {
-                Minecraft.getMinecraft().displayGuiScreen(
+                MC.displayGuiScreen(
                         new SettingsGui(
-                                guiFeatureToOpen
-                                , 1
-                                , guiPageToOpen
-                                , guiTabToOpen
-                                , guiFeatureToOpen.getSettings()
+                                guiFeatureToOpen,
+                                1,
+                                guiPageToOpen,
+                                guiTabToOpen,
+                                guiFeatureToOpen.getSettings()
                         )
                 );
             }
         } else if (guiToOpen == EnumUtils.GUIType.WARP) {
-            Minecraft.getMinecraft().displayGuiScreen(new IslandWarpGui());
+            MC.displayGuiScreen(new IslandWarpGui());
         }
         guiToOpen = null;
     }
@@ -2853,7 +2913,7 @@ public class RenderListener {
     }
 
     public float transformXY(float xy, int widthHeight, float scale) {
-        float minecraftScale = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();
+        float minecraftScale = new ScaledResolution(MC).getScaleFactor();
         xy -= widthHeight / 2F * scale;
         xy = Math.round(xy * minecraftScale) / minecraftScale;
         return xy / scale;
@@ -2861,7 +2921,6 @@ public class RenderListener {
 
     @SubscribeEvent()
     public void onRenderWorld(RenderWorldLastEvent e) {
-        Minecraft mc = Minecraft.getMinecraft();
         float partialTicks = e.partialTicks;
 
         HealingCircleManager.renderHealingCircleOverlays(partialTicks);
@@ -2870,12 +2929,12 @@ public class RenderListener {
                 && (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled()
                 || Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled())
         ) {
-            Entity renderViewEntity = mc.getRenderViewEntity();
+            Entity renderViewEntity = MC.getRenderViewEntity();
             Vector3d viewPosition = Utils.getPlayerViewPosition();
 
             int iconSize = 25;
 
-            for (EntityPlayer entity : mc.theWorld.playerEntities) {
+            for (EntityPlayer entity : MC.theWorld.playerEntities) {
                 if (renderViewEntity == entity) {
                     continue;
                 }
@@ -2915,8 +2974,8 @@ public class RenderListener {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(x, y, z);
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(mc.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(-MC.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(MC.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
                 GlStateManager.scale(-f1, -f1, f1);
 
                 GlStateManager.scale(distanceScale, distanceScale, distanceScale);
@@ -2935,7 +2994,7 @@ public class RenderListener {
                     Tessellator tessellator = Tessellator.getInstance();
                     WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
-                    mc.getTextureManager().bindTexture(CRITICAL);
+                    MC.getTextureManager().bindTexture(CRITICAL);
                     worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
                     worldrenderer.pos(-iconSize / 2F, -iconSize / 2f, 0).tex(0, 0).endVertex();
                     worldrenderer.pos(-iconSize / 2F, iconSize / 2F, 0).tex(0, 1).endVertex();
@@ -2950,12 +3009,12 @@ public class RenderListener {
                         text = "CRITICAL";
                     }
 
-                    mc.fontRendererObj.drawString(
-                            text
-                            , -mc.fontRendererObj.getStringWidth(text) / 2F
-                            , iconSize / 2F + 2
-                            , -1
-                            , true
+                    MC.fontRendererObj.drawString(
+                            text,
+                            -MC.fontRendererObj.getStringWidth(text) / 2F,
+                            iconSize / 2F + 2,
+                            -1,
+                            true
                     );
                 }
 
@@ -2964,12 +3023,12 @@ public class RenderListener {
                         String nameOverlay =
                                 ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] "
                                         + ColorCode.GREEN + entity.getName();
-                        mc.fontRendererObj.drawString(
-                                nameOverlay
-                                , -mc.fontRendererObj.getStringWidth(nameOverlay) / 2F
-                                , iconSize / 2F + 13
-                                , -1
-                                , true
+                        MC.fontRendererObj.drawString(
+                                nameOverlay,
+                                -MC.fontRendererObj.getStringWidth(nameOverlay) / 2F,
+                                iconSize / 2F + 13,
+                                -1,
+                                true
                         );
                     }
                 }
@@ -2990,7 +3049,7 @@ public class RenderListener {
      * @return true if {@link Feature#STOP_NAME_OVERLAY_WHEN_CLOSE} enabled and conditions are met or disabled
      */
     private boolean shouldRenderNameOverlay(EntityPlayer teammate) {
-        EntityPlayerSP thePlayer = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP thePlayer = MC.thePlayer;
         return Feature.STOP_NAME_OVERLAY_WHEN_CLOSE.isDisabled()
                 || teammate.isSneaking()
                 || teammate.getDistanceToEntity(thePlayer) > 10
@@ -3014,7 +3073,7 @@ public class RenderListener {
         GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(22.0F, 1.0F, 0.0F, 0.0F);
 
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = MC.getRenderManager();
         rendermanager.setPlayerViewY(180.0F);
         boolean shadowsEnabled = rendermanager.isRenderShadow();
         rendermanager.setRenderShadow(false);
@@ -3054,7 +3113,7 @@ public class RenderListener {
         entity.rotationYawHead = yaw;
         entity.prevRotationYawHead = yaw;
 
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = MC.getRenderManager();
         rendermanager.setPlayerViewY(180.0f);
         boolean shadowsEnabled = rendermanager.isRenderShadow();
         rendermanager.setRenderShadow(false);
@@ -3077,15 +3136,47 @@ public class RenderListener {
         deployableDummyArmorStand = new EntityArmorStand(Utils.getDummyWorld());
 
         ItemStack deployableItemStack = ItemUtils.createSkullItemStack(
-                null
-                , null
-                , "3ae3572b-2679-40b4-ba50-14dd58cbbbf7"
-                , "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b"
+                null,
+                null,
+                "3ae3572b-2679-40b4-ba50-14dd58cbbbf7",
+                "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b"
         );
 
         deployableDummyArmorStand.setCurrentItemOrArmor(4, deployableItemStack);
 
         return deployableDummyArmorStand;
+    }
+
+    public void setTitleFeature(Feature feature) {
+        titleFeature = feature;
+        if (feature != null) {
+            if (titleResetTask != null) {
+                titleResetTask.cancel();
+            }
+
+            titleResetTask = main.getScheduler().scheduleTask(
+                    scheduledTask -> main.getRenderListener().setTitleFeature(null),
+                    main.getConfigValues().getWarningSeconds() * 20,
+                    0,
+                    true
+            );
+        }
+    }
+
+    public void setSubtitleFeature(Feature feature) {
+        subtitleFeature = feature;
+        if (feature != null) {
+            if (subtitleResetTask != null) {
+                subtitleResetTask.cancel();
+            }
+
+            subtitleResetTask = main.getScheduler().scheduleTask(
+                    scheduledTask -> main.getRenderListener().setTitleFeature(null),
+                    main.getConfigValues().getWarningSeconds() * 20,
+                    0,
+                    true
+            );
+        }
     }
 
     @AllArgsConstructor

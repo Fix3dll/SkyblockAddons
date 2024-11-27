@@ -12,7 +12,6 @@ import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.LocationEditGui;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
-import codes.biscuit.skyblockaddons.misc.scheduler.SkyblockRunnable;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
@@ -290,12 +289,9 @@ public class GuiScreenListener {
         inventoryChangeListener = new InventoryChangeListener(this);
         inventory.addInventoryChangeListener(inventoryChangeListener);
         listenedInventory = inventory;
-        inventoryChangeTimeCheckTask = main.getNewScheduler().scheduleTask(new SkyblockRunnable() {
-            @Override
-            public void run() {
-                checkLastInventoryChangeTime();
-            }
-        }, 20, 5);
+        inventoryChangeTimeCheckTask = main.getScheduler().scheduleTask(
+                scheduledTask -> checkLastInventoryChangeTime(), 20, 5
+        );
     }
 
     /**

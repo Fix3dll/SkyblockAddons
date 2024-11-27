@@ -6,7 +6,6 @@ import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
-import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import lombok.Getter;
@@ -39,11 +38,17 @@ import org.lwjgl.util.vector.Matrix4f;
 
 import javax.vecmath.Vector3d;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -603,7 +608,6 @@ public class Utils {
                     triggeredSlayerWarning = true;
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setTitleFeature(Feature.BOSS_APPROACH_ALERT);
-                    main.getScheduler().schedule(Scheduler.CommandType.RESET_TITLE_FEATURE, main.getConfigValues().getWarningSeconds());
                 }
             } else {
                 triggeredSlayerWarning = false; // Reset warning flag when completion is below 85%, meaning they started a new quest.
@@ -835,7 +839,7 @@ public class Utils {
     }
 
     public static long getCurrentTick() {
-        return SkyblockAddons.getInstance().getNewScheduler().getTotalTicks();
+        return SkyblockAddons.getInstance().getScheduler().getTotalTicks();
     }
 
     private static final Vector3d interpolatedPlayerPosition = new Vector3d();
