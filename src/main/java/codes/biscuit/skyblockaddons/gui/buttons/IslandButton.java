@@ -5,7 +5,6 @@ import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
-import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -37,8 +36,7 @@ public class IslandButton extends GuiButton {
         for (IslandWarpGui.Marker marker : IslandWarpGui.Marker.values()) {
             if (marker.getIsland() == island) {
                 if (marker == IslandWarpGui.Marker.CARNIVAL) {
-                    ElectionData electionData = SkyblockAddons.getInstance().getElectionData();
-                    if (electionData != null && !electionData.isPerkActive("Chivalrous Carnival")) {
+                    if (!SkyblockAddons.getInstance().getElectionData().isPerkActive("Chivalrous Carnival")) {
                         continue;
                     }
                 }

@@ -7,7 +7,7 @@ import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
-import codes.biscuit.skyblockaddons.utils.objects.Pair;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import org.apache.logging.log4j.Logger;
 
@@ -63,13 +63,6 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
             // If initial request or request completed with expected result
             if (newMayorName.isEmpty() || newMayorName.equals(mayorName)) {
                 main.getUtils().setMayor(mayorName == null ? "Fix3dll" : mayorName);
-
-                ElectionData.Mayor.Minister minister = result.getMayor().getMinister();
-                if (minister != null && minister.getPerk() != null) {
-                    main.getUtils().setMinisterAndPerk(
-                            new Pair<>(minister.getName(), minister.getPerk().getName())
-                    );
-                }
             }
 
             // Jerry's Perkpocalypse mayor updater
@@ -108,7 +101,8 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
 
         private ScheduledTask scheduleJerryMayorTask() {
             return main.getScheduler().scheduleAsyncTask(scheduledTask -> {
-                if (System.currentTimeMillis() > main.getUtils().getJerryMayorUpdateTime()) {
+                MayorJerryData mayorJerryData = main.getMayorJerryData();
+                if (mayorJerryData == null || System.currentTimeMillis() > mayorJerryData.getNextSwitch()) {
                     DataUtils.loadOnlineData(new JerryMayorRequest());
                 }
             }, 0, 60 * 20);

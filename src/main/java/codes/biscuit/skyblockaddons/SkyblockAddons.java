@@ -7,6 +7,7 @@ import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
 import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
 import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
@@ -115,12 +116,14 @@ public class SkyblockAddons {
     private final InventoryUtils inventoryUtils;
     private final Utils utils;
     private final Updater updater;
-    @Setter private OnlineData onlineData;
     private final DiscordRPCManager discordRPCManager;
     private final Scheduler scheduler;
     private final DungeonManager dungeonManager;
     private final SkillXpManager skillXpManager;
+
+    @Setter private OnlineData onlineData;
     @Setter private ElectionData electionData;
+    @Setter private MayorJerryData mayorJerryData;
 
     private boolean usingLabymod;
     private boolean usingOofModv1;
@@ -144,6 +147,7 @@ public class SkyblockAddons {
         dungeonManager = new DungeonManager();
         discordRPCManager = new DiscordRPCManager();
         skillXpManager = new SkillXpManager();
+        electionData = new ElectionData();
     }
 
     @Mod.EventHandler

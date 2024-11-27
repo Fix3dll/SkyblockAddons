@@ -6,7 +6,6 @@ import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
-import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
@@ -168,25 +167,6 @@ public class Utils {
      * <i>We don't leave it blank in case the Mayor is not found</i>
      */
     private String mayor = "Fix3dll";
-
-    /**
-     * The current minister name
-     * <br>
-     * <i>We don't leave it blank in case the Minister is not found</i>
-     */
-    private Pair<String, String> ministerAndPerk = new Pair<>("Fix3dll", "Spaghetti code");
-
-    /**
-     * The current Jerry's Perkpocalypse mayor
-     * <br>
-     * <i>We don't leave it blank in case the Mayor is not found</i>
-     */
-    private String jerryMayor = "Fix3dll";
-
-    /**
-     * The current Jerry's Perkpocalypse mayor update timestamp
-     */
-    private long jerryMayorUpdateTime = 0L;
 
     /**
      * Dungeon floor information from the scoreboard
