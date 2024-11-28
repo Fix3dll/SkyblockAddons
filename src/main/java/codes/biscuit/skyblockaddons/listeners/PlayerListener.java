@@ -55,7 +55,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMagmaCube;
-import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFishHook;
@@ -131,8 +130,8 @@ public class PlayerListener {
 
     private long lastWorldJoin = -1;
     private long lastBal = -1;
+    private int lastBalEntityId = -1;
     private long lastBroodmother = -1;
-    private int balTick = 0;
     private int timerTick = 1;
     private long lastMinionSound = -1;
     private long lastFishingAlert = 0;
@@ -620,7 +619,6 @@ public class PlayerListener {
             Minecraft mc = Minecraft.getMinecraft();
             if (mc == null) return;
             timerTick++;
-            balTick++;
 
             ScoreboardManager.tick();
 
@@ -691,7 +689,6 @@ public class PlayerListener {
 
             } else if (timerTick > 20) { // To keep the timer going from 1 to 21 only.
                 timerTick = 1;
-                balTick = 0;
             }
         }
     }
@@ -701,15 +698,35 @@ public class PlayerListener {
         if (!main.getUtils().isOnSkyblock()) return;
         Entity entity = e.entity;
 
-        // Detect Brood Mother spawn
+        // Detect Broodmother spawn
         if (Feature.BROOD_MOTHER_ALERT.isEnabled() && main.getUtils().getMap() == Island.SPIDERS_DEN) {
             if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Broodmother")) {
-                if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) { //Brood Mother
+                if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) {
                     lastBroodmother = System.currentTimeMillis();
                     main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
                 }
-                if (entity.ticksExisted < 13 && entity.ticksExisted % 3 == 0)
+                if (entity.ticksExisted < 13 && entity.ticksExisted % 3 == 0) {
                     main.getUtils().playLoudSound("random.orb", 0.5);
+                }
+            }
+        }
+        if (Feature.BAL_BOSS_ALERT.isEnabled() && main.getUtils().getMap() == Island.CRYSTAL_HOLLOWS) {
+            if (lastBal == -1 || System.currentTimeMillis() - lastBal > 60000) {
+                for (Entity cubes : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+                    if (cubes instanceof EntityMagmaCube) {
+                        EntityMagmaCube magma = (EntityMagmaCube) cubes;
+                        // Find a big bal boss
+                        if (magma.getSlimeSize() > 10 && lastBalEntityId != magma.getEntityId()) {
+                            lastBal = System.currentTimeMillis();
+                            lastBalEntityId = magma.getEntityId();
+                            main.getRenderListener().setTitleFeature(Feature.BAL_BOSS_ALERT);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && timerTick % 4 == 0) {
+                main.getUtils().playLoudSound("random.orb", 0.5);
             }
         }
 
@@ -839,31 +856,11 @@ public class PlayerListener {
     public void onEntitySpawn(EntityEvent.EnteringChunk e) {
         if (!main.getUtils().isOnSkyblock()) return;
         Entity entity = e.entity;
-        Minecraft mc = Minecraft.getMinecraft();
-
-        for (Entity cubes : mc.theWorld.loadedEntityList) {
-            if (Feature.BAL_BOSS_ALERT.isEnabled() && main.getUtils().getMap() == Island.CRYSTAL_HOLLOWS) {
-                if (cubes instanceof EntityMagmaCube) {
-                    EntitySlime magma = (EntitySlime) cubes;
-                    if (magma.getSlimeSize() > 10) { // Find a big bal boss
-                        if ((lastBal == -1 || System.currentTimeMillis() - lastBal > 60000)) {
-                            lastBal = System.currentTimeMillis();
-                            main.getRenderListener().setTitleFeature(Feature.BAL_BOSS_ALERT); // Enable warning and disable again in four seconds.
-                            balTick = 0; // so the sound plays instantly
-                        }
-                        // Play sound every 4 ticks or 1/5 second.
-                        if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && balTick % 4 == 0) {
-                            main.getUtils().playLoudSound("random.orb", 0.5);
-                        }
-                    }
-                }
-            }
-        }
 
         if (Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.isEnabled() && entity instanceof EntityArrow) {
             EntityArrow arrow = (EntityArrow) entity;
 
-            EntityPlayerSP p = mc.thePlayer;
+            EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
             ItemStack heldItem = p.getHeldItem();
             if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
 
