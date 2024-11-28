@@ -322,7 +322,6 @@ public class SkyblockAddonsGui extends GuiScreen {
                             break;
                         case FULL_INVENTORY_WARNING:
                             main.getInventoryUtils().setInventoryWarningShown(false);
-                            main.getRenderListener().getTitleResetTask().cancel();
                             break;
                         case DISCORD_RPC:
                             main.getDiscordRPCManager().stop();

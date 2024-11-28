@@ -252,18 +252,13 @@ public class InventoryUtils {
     }
 
     /**
-     * Checks if the players inventory is full and displays an alarm if so.
-     *
+     * Checks if the players inventory is full and displays an alarm if so. Slot 8 is the Skyblock menu/quiver feather
+     * slot. It's ignored so shooting with a full inventory doesn't spam the full inventory warning.
      * @param mc Minecraft instance
      * @param p Player to check
      */
     public void checkIfInventoryIsFull(Minecraft mc, EntityPlayerSP p) {
         if (main.getUtils().isOnSkyblock() && Feature.FULL_INVENTORY_WARNING.isEnabled()) {
-            /*
-            If the inventory is full, show the full inventory warning.
-            Slot 8 is the Skyblock menu/quiver arrow slot. It's ignored so shooting with a full inventory
-            doesn't spam the full inventory warning.
-             */
             for (int i = 0; i < p.inventory.mainInventory.length; i++) {
                 // If we find an empty slot that isn't slot 8, remove any queued warnings and stop checking.
                 ItemStack idxItem = p.inventory.mainInventory[i];
@@ -273,7 +268,6 @@ public class InventoryUtils {
                             repeatWarningTask.cancel();
                             repeatWarningTask = null;
                         }
-                        main.getRenderListener().getTitleResetTask().cancel();
                     }
                     inventoryWarningShown = false;
                     return;
@@ -285,14 +279,23 @@ public class InventoryUtils {
             inQuiverMode = false;
 
             // If we make it here, the inventory is full. Show the warning.
-            if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld() && !inventoryWarningShown) {
-                showFullInventoryWarning();
-
+            if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld()) {
+                if (!inventoryWarningShown) {
+                    showFullInventoryWarning();
+                    inventoryWarningShown = true;
+                }
                 // Schedule a repeat if needed.
-                if (Feature.REPEAT_FULL_INVENTORY_WARNING.isEnabled()) {
+                if (Feature.REPEAT_FULL_INVENTORY_WARNING.isEnabled() && repeatWarningTask == null) {
                     repeatWarningTask = main.getScheduler().scheduleTask(
                             scheduledTask -> {
-                                if (mc.theWorld == null || mc.thePlayer == null || !main.getUtils().isOnSkyblock() || inQuiverMode) {
+                                // Stop the task if the setting is disabled or the player is not in Skyblock
+                                if (!Feature.areEnabled(Feature.FULL_INVENTORY_WARNING, Feature.REPEAT_FULL_INVENTORY_WARNING)
+                                        || mc.theWorld == null || mc.thePlayer == null || !main.getUtils().isOnSkyblock()) {
+                                    scheduledTask.cancel();
+                                    repeatWarningTask = null;
+                                    return;
+                                }
+                                if (inQuiverMode) {
                                     return;
                                 }
                                 showFullInventoryWarning();
@@ -302,8 +305,6 @@ public class InventoryUtils {
                             true
                     );
                 }
-
-                inventoryWarningShown = true;
             }
         }
     }

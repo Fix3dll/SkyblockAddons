@@ -207,9 +207,6 @@ public class SettingsGui extends GuiScreen {
                     GuiIngameForge.renderArmor = true; // The food gets automatically enabled, no need to include it.
                 } else if (feature == Feature.HIDE_HEALTH_BAR) {
                     GuiIngameForge.renderHealth = true;
-                } else if (feature == Feature.REPEAT_FULL_INVENTORY_WARNING) {
-                    // Remove queued warnings when the repeat setting is turned off.
-                    main.getRenderListener().getTitleResetTask().cancel();
                 }
             }
         } else if (feature == Feature.SHOW_BACKPACK_PREVIEW) {
