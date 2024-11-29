@@ -12,7 +12,7 @@ public class GuiIngameMenuHook {
     public static void addMenuButtons(List<GuiButton> buttonList, int width, int height) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        if (main.getUtils().isOnSkyblock() && Feature.SKYBLOCK_ADDONS_BUTTON_IN_PAUSE_MENU.isEnabled()) {
+        if (main.getUtils().isOnSkyblock() && Feature.SBA_BUTTON_IN_PAUSE_MENU.isEnabled()) {
             buttonList.add(new GuiButton(53, width - 120 - 5, height - 20 - 5, 120, 20, "SkyblockAddons"));
         }
     }

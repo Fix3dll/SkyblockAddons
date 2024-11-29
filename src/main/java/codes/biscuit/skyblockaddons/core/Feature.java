@@ -67,7 +67,7 @@ public enum Feature {
     NO_ARROWS_LEFT_ALERT(69, "settings.noArrowsLeftAlert", null, false),
     CAKE_BAG_PREVIEW(71, null, true),
     REPEAT_FULL_INVENTORY_WARNING(73, null, true),
-    SKYBLOCK_ADDONS_BUTTON_IN_PAUSE_MENU(76, "settings.skyblockAddonsButtonInPauseMenu", null, false),
+    SBA_BUTTON_IN_PAUSE_MENU(76, "settings.skyblockAddonsButtonInPauseMenu", null, false),
     SHOW_TOTAL_ZEALOT_COUNT(77, "settings.showTotalZealotCount", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), true, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     SHOW_SUMMONING_EYE_COUNT(78, "settings.showSummoningEyeCount", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), true, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     SHOW_AVERAGE_ZEALOTS_PER_EYE(79, "settings.showZealotsPerEye", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), true, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
@@ -311,7 +311,7 @@ public enum Feature {
     @Getter
     private static final Set<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE, WARNING_TIME,
             CHROMA_SPEED, CHROMA_MODE, CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION, CHROMA_BRIGHTNESS,
-            NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA));
+            NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA, SBA_BUTTON_IN_PAUSE_MENU));
 
     private static final int ID_AT_PREVIOUS_UPDATE = 221;
 

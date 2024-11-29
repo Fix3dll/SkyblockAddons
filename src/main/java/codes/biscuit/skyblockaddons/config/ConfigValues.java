@@ -255,7 +255,7 @@ public class ConfigValues {
                 lastFeatureID = loadedConfig.get("lastFeatureID").getAsInt();
             } else {
                 // This system was added after this feature.
-                lastFeatureID = Feature.SKYBLOCK_ADDONS_BUTTON_IN_PAUSE_MENU.getId();
+                lastFeatureID = Feature.SBA_BUTTON_IN_PAUSE_MENU.getId();
             }
             // This will go through every feature, and if they are new features that didn't exist before
             // that should be disabled by default, and their coordinates are default, this will disable those features.
