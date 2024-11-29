@@ -6,7 +6,7 @@ import org.apache.commons.lang3.SystemUtils
 plugins {
     idea
     java
-    id("gg.essential.loom") version ("1.6.20")
+    id("gg.essential.loom") version ("1.6.21")
     id("dev.architectury.architectury-pack200") version ("0.1.3")
     id("io.freefair.lombok") version ("8.7.1")
     id("com.gradleup.shadow") version ("8.3.0")
