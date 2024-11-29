@@ -85,7 +85,7 @@ public class ColorSelectionGui extends GuiScreen {
         // Set the current color in the text box after creating it.
         setTextBoxHex(main.getConfigValues().getColor(feature));
 
-        if (feature.getGuiFeatureData().isColorsRestricted()) {
+        if (feature.getGuiFeatureData() != null && feature.getGuiFeatureData().isColorsRestricted()) {
 
             // This creates the 16 buttons for all the color codes.
 

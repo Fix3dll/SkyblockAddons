@@ -168,7 +168,8 @@ public class RenderListener {
     @Getter private ScheduledTask subtitleResetTask;
     @Getter private ScheduledTask titleResetTask;
 
-    @Setter private int arrowsLeft;
+    @Setter private int arrowsLeft = -1;
+    @Setter private String arrowsType;
 
     @Setter private String cannotReachMobName;
 
@@ -291,7 +292,6 @@ public class RenderListener {
         int scaledWidth = scaledResolution.getScaledWidth();
         int scaledHeight = scaledResolution.getScaledHeight();
         if (titleFeature != null) {
-
             String translationKey = null;
             switch (titleFeature) {
                 case FULL_INVENTORY_WARNING:
@@ -358,8 +358,12 @@ public class RenderListener {
                     text = Translations.getMessage("messages.minionIsFull");
                     break;
                 case NO_ARROWS_LEFT_ALERT:
-                    if (arrowsLeft != -1) {
-                        Translations.getMessage("messages.noArrowsLeft", TextUtils.formatNumber(arrowsLeft));
+                    if (arrowsType != null) {
+                        if (arrowsLeft != -1) {
+                            text = Translations.getMessage("messages.onlyFewArrowsLeft", arrowsLeft, arrowsType);
+                        } else {
+                            text = Translations.getMessage("messages.noArrowsLeft", arrowsType);
+                        }
                     }
                     break;
             }
@@ -3171,7 +3175,7 @@ public class RenderListener {
             }
 
             subtitleResetTask = main.getScheduler().scheduleTask(
-                    scheduledTask -> main.getRenderListener().setTitleFeature(null),
+                    scheduledTask -> main.getRenderListener().setSubtitleFeature(null),
                     main.getConfigValues().getWarningSeconds() * 20,
                     0,
                     true

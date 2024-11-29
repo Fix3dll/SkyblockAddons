@@ -64,7 +64,7 @@ public enum Feature {
     DEPLOYABLE_STATUS_DISPLAY(65, "settings.deployableDisplay", new GuiFeatureData(EnumUtils.DrawType.DEPLOYABLE_DISPLAY, null), false, EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE, EnumUtils.FeatureSetting.EXPAND_DEPLOYABLE_STATUS),
     ZEALOT_COUNTER(66, "settings.zealotCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), false, EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY),
     TICKER_CHARGES_DISPLAY(67, "settings.tickerChargesDisplay", new GuiFeatureData(EnumUtils.DrawType.TICKER, null), false),
-    NO_ARROWS_LEFT_ALERT(69, "settings.noArrowsLeftAlert", new GuiFeatureData(ColorCode.RED), false),
+    NO_ARROWS_LEFT_ALERT(69, "settings.noArrowsLeftAlert", null, false),
     CAKE_BAG_PREVIEW(71, null, true),
     REPEAT_FULL_INVENTORY_WARNING(73, null, true),
     SKYBLOCK_ADDONS_BUTTON_IN_PAUSE_MENU(76, "settings.skyblockAddonsButtonInPauseMenu", null, false),

@@ -95,12 +95,12 @@ public class PlayerListener {
 
     private static final Logger logger = SkyblockAddons.getLogger();
 
-    private static final Pattern NO_ARROWS_LEFT_PATTERN = Pattern.compile("(?:§r)?§cYou don't have any more Arrows left in your Quiver!§r");
-    private static final Pattern ONLY_HAVE_ARROWS_LEFT_PATTERN = Pattern.compile("(?:§r)?§cYou only have (?<arrows>[0-9]+) Arrows left in your Quiver!§r");
+    private static final Pattern NO_ARROWS_LEFT_PATTERN = Pattern.compile("§r§c§lQUIVER! §r§cYou have run out of §r(?<type>§.*)§r§c!§r");
+    private static final Pattern ONLY_HAVE_ARROWS_LEFT_PATTERN = Pattern.compile("§r§c§lQUIVER! §r§cYou only have (?<arrows>[0-9]+) §r(?<type>§.*) §r§cleft!§r");
     private static final Pattern ABILITY_CHAT_PATTERN = Pattern.compile("§r§aUsed §r§6[A-Za-z ]+§r§a! §r§b\\([0-9]+ Mana\\)§r");
     private static final Pattern PROFILE_CHAT_PATTERN = Pattern.compile("You are playing on profile: ([A-Za-z]+).*");
     private static final Pattern SWITCH_PROFILE_CHAT_PATTERN = Pattern.compile("Your profile was changed to: ([A-Za-z]+).*");
-    private static final Pattern MINION_CANT_REACH_PATTERN = Pattern.compile("§cI can't reach any (?<mobName>[A-Za-z]*)s");
+    private static final Pattern MINION_CANT_REACH_PATTERN = Pattern.compile("§cI can't reach any (?<mobName>\\w+?)(s?)$");
     private static final Pattern DRAGON_KILLED_PATTERN = Pattern.compile(" *[A-Z]* DRAGON DOWN!");
     private static final Pattern DRAGON_SPAWNED_PATTERN = Pattern.compile("☬ The (?<dragonType>[A-Za-z ]+) Dragon has spawned!");
     private static final Pattern SLAYER_COMPLETED_PATTERN = Pattern.compile(" {3}» Talk to Maddox to claim your (?<slayerType>[A-Za-z]+) Slayer XP!");
@@ -403,12 +403,15 @@ public class PlayerListener {
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
                     main.getRenderListener().setArrowsLeft(-1);
+                    e.setCanceled(true);
 
                 } else if ((matcher = ONLY_HAVE_ARROWS_LEFT_PATTERN.matcher(formattedText)).matches()) {
                     int arrowsLeft = Integer.parseInt(matcher.group("arrows"));
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
                     main.getRenderListener().setArrowsLeft(arrowsLeft);
+                    main.getRenderListener().setArrowsType(matcher.group("type"));
+                    e.setCanceled(true);
                 }
             }
 
@@ -762,9 +765,9 @@ public class PlayerListener {
 
             if (entity.hasCustomName()) {
                 if (main.getUtils().getMap() == Island.PRIVATE_ISLAND && !main.getUtils().isGuest()) {
-                    int cooldown = main.getConfigValues().getWarningSeconds() * 1000 + 5000;
-                    if (Feature.MINION_FULL_WARNING.isEnabled() &&
-                            entity.getCustomNameTag().equals("§cMy storage is full! :(")) {
+                    int cooldown = main.getConfigValues().getWarningSeconds() * 1000 + 10000;
+                    String nameTag = entity.getCustomNameTag();
+                    if (Feature.MINION_FULL_WARNING.isEnabled() && nameTag.equals("§cMy storage is full! :(")) {
                         long now = System.currentTimeMillis();
                         if (now - lastMinionSound > cooldown) {
                             lastMinionSound = now;
@@ -772,7 +775,7 @@ public class PlayerListener {
                             main.getRenderListener().setSubtitleFeature(Feature.MINION_FULL_WARNING);
                         }
                     } else if (Feature.MINION_STOP_WARNING.isEnabled()) {
-                        Matcher matcher = MINION_CANT_REACH_PATTERN.matcher(entity.getCustomNameTag());
+                        Matcher matcher = MINION_CANT_REACH_PATTERN.matcher(nameTag);
                         if (matcher.matches()) {
                             long now = System.currentTimeMillis();
                             if (now - lastMinionSound > cooldown) {
