@@ -8,7 +8,6 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Mouse;
 
 @Getter
@@ -40,15 +39,7 @@ public class ButtonLocation extends ButtonFeature {
             return;
 
         float scale = main.getConfigValues().getGuiScale(feature);
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(scale, scale, 1);
-
-        if (feature == Feature.DEFENCE_ICON) { // this one is just a little different
-            main.getRenderListener().drawIcon(scale, this);
-        } else {
-            main.getRenderListener().drawFeature(feature, scale,this);
-        }
-        GlStateManager.popMatrix();
+        main.getRenderListener().drawFeature(feature, scale,this);
 
         if (hovered) {
             lastHoveredFeature = feature;

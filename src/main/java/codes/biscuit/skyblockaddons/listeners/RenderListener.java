@@ -441,7 +441,7 @@ public class RenderListener {
                     drawItemPickupLog(scale, buttonLocation);
                     break;
                 case DEFENCE_ICON:
-                    drawIcon(scale,buttonLocation);
+                    drawIcon(scale, buttonLocation);
                     break;
                 case REVENANT_PROGRESS:
                     drawRevenantIndicator(scale, buttonLocation);
@@ -459,7 +459,7 @@ public class RenderListener {
                     DungeonMapManager.drawDungeonsMap(MC, scale, buttonLocation);
                     break;
                 case SLAYER_TRACKERS:
-                    drawSlayerTrackers(feature,scale, buttonLocation);
+                    drawSlayerTrackers(feature, scale, buttonLocation);
                     break;
                 case DRAGON_STATS_TRACKER:
                     drawDragonTrackers(scale, buttonLocation);
@@ -721,15 +721,12 @@ public class RenderListener {
         float y = main.getConfigValues().getActualY(Feature.SKELETON_BAR);
         int bones = 0;
         if (!(MC.currentScreen instanceof LocationEditGui)) {
-            ItemStack helmet = MC.thePlayer.getCurrentArmor(3);
-            if (helmet != null && helmet.getItem() == Items.iron_helmet && helmet.getDisplayName().contains("Skeleton's Helmet")) {
-                for (Entity listEntity : MC.theWorld.loadedEntityList) {
-                    if (listEntity instanceof EntityItem
-                            && listEntity.ridingEntity instanceof EntityArmorStand
-                            && listEntity.ridingEntity.isInvisible()
-                            && listEntity.getDistanceToEntity(MC.thePlayer) <= 8) {
-                        bones++;
-                    }
+            for (Entity listEntity : MC.theWorld.loadedEntityList) {
+                if (listEntity instanceof EntityItem
+                        && listEntity.ridingEntity instanceof EntityArmorStand
+                        && listEntity.ridingEntity.isInvisible()
+                        && listEntity.getDistanceToEntity(MC.thePlayer) <= 8) {
+                    bones++;
                 }
             }
         } else {

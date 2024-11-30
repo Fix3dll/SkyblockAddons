@@ -324,7 +324,7 @@ public class InventoryUtils {
      */
     public void checkIfWearingSkeletonHelmet(EntityPlayerSP p) {
         if (Feature.SKELETON_BAR.isEnabled()) {
-            ItemStack item = p.getEquipmentInSlot(4);
+            ItemStack item = p.getCurrentArmor(3);
             if (item != null && "SKELETON_HELMET".equals(ItemUtils.getSkyblockItemID(item))) {
                 wearingSkeletonHelmet = true;
                 return;
