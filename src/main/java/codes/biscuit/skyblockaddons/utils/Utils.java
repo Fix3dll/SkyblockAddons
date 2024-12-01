@@ -42,7 +42,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.text.ParseException;
-import java.util.Calendar;
+import java.time.Month;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -662,13 +663,12 @@ public class Utils {
     }
 
     /**
-     * Checks if it is currently Halloween according to the system calendar.
-     *
+     * Checks if it is currently Halloween according to the Hypixel time zone.
      * @return {@code true} if it is Halloween, {@code false} otherwise
      */
     public boolean isHalloween() {
-        Calendar calendar = Calendar.getInstance();
-        return calendar.get(Calendar.MONTH) == Calendar.OCTOBER && calendar.get(Calendar.DAY_OF_MONTH) == 31;
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(SkyblockAddons.getHypixelZoneId());
+        return zonedDateTime.getMonth() == Month.OCTOBER && zonedDateTime.getDayOfMonth() == 31;
     }
 
     public int getDefaultBlue(int alpha) {

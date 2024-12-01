@@ -52,6 +52,8 @@ import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -81,6 +83,7 @@ public class SkyblockAddons {
 
     @Getter private static SkyblockAddons instance;
     @Getter private boolean fullyInitialized = false;
+    @Getter private static final ZoneId hypixelZoneId = ZoneId.of("America/New_York");
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static final Gson GSON = new GsonBuilder()
@@ -312,6 +315,10 @@ public class SkyblockAddons {
         String simpleClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
 
         return LogManager.getLogger(fullClassName, new SkyblockAddonsMessageFactory(simpleClassName));
+    }
+
+    public static ZonedDateTime getHypixelZonedDateTime() {
+        return ZonedDateTime.now(hypixelZoneId);
     }
 
     public static void runAsync(Runnable runnable) {

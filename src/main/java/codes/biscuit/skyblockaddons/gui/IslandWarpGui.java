@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.Month;
 import java.util.Locale;
 
 import static codes.biscuit.skyblockaddons.core.Translations.*;
@@ -48,7 +49,8 @@ public class IslandWarpGui extends GuiScreen {
 
         for (Island island : Island.values()) {
             if (island == Island.JERRYS_WORKSHOP
-                    && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER) {
+                    && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER
+                    && SkyblockAddons.getHypixelZonedDateTime().getMonth() != Month.DECEMBER) {
                 continue;
             }
             this.buttonList.add(new IslandButton(island));

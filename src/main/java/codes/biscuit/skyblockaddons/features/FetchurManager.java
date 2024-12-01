@@ -10,9 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.time.Instant;
 
 /**
  * Manages the Fetchur Feature, Pointing out which item Fetchur wants next
@@ -24,11 +22,6 @@ public class FetchurManager {
     @Getter
     private static final FetchurManager instance = new FetchurManager();
     private static final long MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
-    // Hypixel timezone
-    // Currently using new york timezone, gotta check november 7th to see if this still works
-    @Getter
-    private static final TimeZone fetchurZone = TimeZone.getTimeZone("America/New_York");
-    private static final Calendar fetchurCalendar = new GregorianCalendar(TimeZone.getTimeZone("America/New_York"));
 
     @Getter
     private final String fetchurTaskCompletedPhrase = "thanks thats probably what i needed";
@@ -85,14 +78,12 @@ public class FetchurManager {
     }
 
     /**
-     * Returns the day of the month in the fetchur calendar (EST time zone)
-     *
-     * @param currTimeMilis Epoch UTC miliseconds (e.g. from {@link System#currentTimeMillis()})
-     * @return the 1-indexed day of the month in the fetchur time zone
+     * Returns the day of the month in the Fetchur calendar (EST time zone)
+     * @param currTimeMillis Epoch UTC milliseconds (e.g. from {@link System#currentTimeMillis()})
+     * @return the 1-indexed day of the month in the Fetchur time zone
      */
-    private int getFetchurDayOfMonth(long currTimeMilis) {
-        fetchurCalendar.setTimeInMillis(currTimeMilis);
-        return fetchurCalendar.get(Calendar.DAY_OF_MONTH);
+    private int getFetchurDayOfMonth(long currTimeMillis) {
+        return Instant.ofEpochMilli(currTimeMillis).atZone(SkyblockAddons.getHypixelZoneId()).getDayOfMonth();
     }
 
     /**
@@ -116,8 +107,7 @@ public class FetchurManager {
      * Triggered if the player has just given the correct item, or has already given the correct item, to Fetchur.
      */
     public void saveLastTimeFetched() {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        main.getPersistentValuesManager().setLastTimeFetchur(System.currentTimeMillis());
+        SkyblockAddons.getInstance().getPersistentValuesManager().setLastTimeFetchur(System.currentTimeMillis());
     }
 
     /**

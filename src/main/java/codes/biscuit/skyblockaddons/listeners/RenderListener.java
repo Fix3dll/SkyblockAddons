@@ -71,6 +71,8 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -949,61 +951,28 @@ public class RenderListener {
 
             case DARK_AUCTION_TIMER:
                 // The timezone of the server, to avoid problems with like timezones that are 30 minutes ahead or whatnot.
-                Calendar nextDarkAuction = Calendar.getInstance(TimeZone.getTimeZone("EST"));
-                if (nextDarkAuction.get(Calendar.MINUTE) >= 55) {
-                    nextDarkAuction.add(Calendar.HOUR_OF_DAY, 1);
+                ZonedDateTime nowDA = SkyblockAddons.getHypixelZonedDateTime();
+                ZonedDateTime nextDarkAuction = nowDA.withMinute(55).withSecond(0);
+                if (nowDA.getMinute() >= 55) {
+                    nextDarkAuction = nextDarkAuction.plusHours(1);
                 }
-                nextDarkAuction.set(Calendar.MINUTE, 55);
-                nextDarkAuction.set(Calendar.SECOND, 0);
-                int differenceDAH = (int) (nextDarkAuction.getTimeInMillis() - System.currentTimeMillis());
-                int minutesDAH = differenceDAH / 60000;
-                int secondsDAH = (int) Math.round((double) (differenceDAH % 60000) / 1000);
-                StringBuilder timestampDAH = new StringBuilder();
-                if (minutesDAH < 10) {
-                    timestampDAH.append("0");
-                }
-                timestampDAH.append(minutesDAH).append(":");
-                if (secondsDAH < 10) {
-                    timestampDAH.append("0");
-                }
-                timestampDAH.append(secondsDAH);
-                text = timestampDAH.toString();
+                Duration diffDA = Duration.between(nowDA, nextDarkAuction);
+                text = String.format("%02d:%02d", diffDA.toMinutes(), diffDA.getSeconds() % 60);
                 break;
 
             case FARM_EVENT_TIMER:
                 // The timezone of the server, to avoid problems with like timezones that are 30 minutes ahead or whatnot.
-                Calendar nextFarmEvent = Calendar.getInstance(TimeZone.getTimeZone("EST"));
-                if (nextFarmEvent.get(Calendar.MINUTE) >= 15) {
-                    nextFarmEvent.add(Calendar.HOUR_OF_DAY, 1);
+                ZonedDateTime nowFE = SkyblockAddons.getHypixelZonedDateTime();
+                ZonedDateTime nextFarmEvent = nowFE.withMinute(15).withSecond(0);
+                if (nowFE.getMinute() >= 15) {
+                    nextFarmEvent = nextFarmEvent.plusHours(1);
                 }
-                nextFarmEvent.set(Calendar.MINUTE, 15);
-                nextFarmEvent.set(Calendar.SECOND, 0);
-                int differenceFE = (int) (nextFarmEvent.getTimeInMillis() - System.currentTimeMillis());
-                int minutesFE = differenceFE / 60000;
-                int secondsFE = (int) Math.round((double) (differenceFE % 60000) / 1000);
+                Duration diffFE = Duration.between(nowFE, nextFarmEvent);
+                long minutesFE = diffFE.toMinutes();
                 if (minutesFE < 40) {
-                    StringBuilder timestampFE = new StringBuilder();
-                    if (minutesFE < 10) {
-                        timestampFE.append("0");
-                    }
-                    timestampFE.append(minutesFE).append(":");
-                    if (secondsFE < 10) {
-                        timestampFE.append("0");
-                    }
-                    timestampFE.append(secondsFE);
-                    text = timestampFE.toString();
+                    text = String.format("%02d:%02d", minutesFE, diffFE.getSeconds() % 60);
                 } else {
-                    StringBuilder timestampActive = new StringBuilder();
-                    timestampActive.append("Active: ");
-                    if (minutesFE - 40 < 10) {
-                        timestampActive.append("0");
-                    }
-                    timestampActive.append(minutesFE - 40).append(":");
-                    if (secondsFE < 10) {
-                        timestampActive.append("0");
-                    }
-                    timestampActive.append(secondsFE);
-                    text = timestampActive.toString();
+                    text = String.format("Active: %02d:%02d", minutesFE - 40, diffFE.getSeconds() % 60);
                 }
                 break;
 
