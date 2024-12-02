@@ -118,104 +118,103 @@ public class InventoryUtils {
     public void calculateInventoryDifference(ItemStack[] currentInventory) {
         List<ItemStack> newInventory = copyInventory(currentInventory);
 
-        if (previousInventory == null) {
-            previousInventory = newInventory;
-            return;
-        }
+        if (previousInventory != null) {
+            DiffHashMap previousInventoryMap = new DiffHashMap();
+            DiffHashMap newInventoryMap = new DiffHashMap();
 
-        DiffHashMap previousInventoryMap = new DiffHashMap();
-        DiffHashMap newInventoryMap = new DiffHashMap();
-
-        for (int i = 0; i < newInventory.size(); i++) {
-            if (i == 8) { // Skip the SkyBlock Menu slot altogether (which includes the Quiver Arrow now)
-                continue;
-            }
-
-            ItemStack previousItem = null;
-            ItemStack newItem = null;
-
-            try {
-                previousItem = previousInventory.get(i);
-                newItem = newInventory.get(i);
-
-                if(previousItem != null) {
-                    previousInventoryMap.updateWithItem(previousItem);
+            for (int i = 0; i < newInventory.size(); i++) {
+                if (i == 8) { // Skip the SkyBlock Menu slot altogether (which includes the Quiver Arrow now)
+                    continue;
                 }
 
-                if (newItem != null) {
-                    if (newItem.getDisplayName().contains(" "+ ColorCode.DARK_GRAY+"x")) {
-                        String newName = newItem.getDisplayName().substring(0, newItem.getDisplayName().lastIndexOf(" "));
-                        newItem.setStackDisplayName(newName); // This is a workaround for merchants, it adds x64 or whatever to the end of the name.
+                ItemStack previousItem = null;
+                ItemStack newItem = null;
+
+                try {
+                    previousItem = previousInventory.get(i);
+                    newItem = newInventory.get(i);
+
+                    if (previousItem != null) {
+                        previousInventoryMap.updateWithItem(previousItem);
                     }
-                    newInventoryMap.updateWithItem(newItem);
+
+                    if (newItem != null) {
+                        if (newItem.getDisplayName().contains(" " + ColorCode.DARK_GRAY + "x")) {
+                            String newName = newItem.getDisplayName().substring(0, newItem.getDisplayName().lastIndexOf(" "));
+                            newItem.setStackDisplayName(newName); // This is a workaround for merchants, it adds x64 or whatever to the end of the name.
+                        }
+                        newInventoryMap.updateWithItem(newItem);
+                    }
+                } catch (RuntimeException exception) {
+                    CrashReport crashReport = CrashReport.makeCrashReport(exception, "Comparing current inventory to previous inventory");
+                    CrashReportCategory inventoryDetails = crashReport.makeCategory("Inventory Details");
+                    inventoryDetails.addCrashSection("Previous", "Size: " + previousInventory.size());
+                    inventoryDetails.addCrashSection("New", "Size: " + newInventory.size());
+                    CrashReportCategory itemDetails = crashReport.makeCategory("Item Details");
+                    itemDetails.addCrashSection("Previous Item", "Item: " + (previousItem != null ? previousItem.toString() : "null") + "\n"
+                            + "Display Name: " + (previousItem != null ? previousItem.getDisplayName() : "null") + "\n"
+                            + "Index: " + i + "\n"
+                            + "Map Value: " + (previousItem != null ? (previousInventoryMap.get(previousItem.getDisplayName()) != null ? previousInventoryMap.get(previousItem.getDisplayName()).toString() : "null") : "null"));
+                    itemDetails.addCrashSection("New Item", "Item: " + (newItem != null ? newItem.toString() : "null") + "\n"
+                            + "Display Name: " + (newItem != null ? newItem.getDisplayName() : "null") + "\n"
+                            + "Index: " + i + "\n"
+                            + "Map Value: " + (newItem != null ? (previousInventoryMap.get(newItem.getDisplayName()) != null ? previousInventoryMap.get(newItem.getDisplayName()).toString() : "null") : "null"));
+                    throw new ReportedException(crashReport);
                 }
-            } catch (RuntimeException exception) {
-                CrashReport crashReport = CrashReport.makeCrashReport(exception, "Comparing current inventory to previous inventory");
-                CrashReportCategory inventoryDetails = crashReport.makeCategory("Inventory Details");
-                inventoryDetails.addCrashSection("Previous", "Size: " + previousInventory.size());
-                inventoryDetails.addCrashSection("New", "Size: " + newInventory.size());
-                CrashReportCategory itemDetails = crashReport.makeCategory("Item Details");
-                itemDetails.addCrashSection("Previous Item", "Item: " + (previousItem != null ? previousItem.toString() : "null") + "\n"
-                    + "Display Name: " + (previousItem != null ? previousItem.getDisplayName() : "null") + "\n"
-                    + "Index: " + i + "\n"
-                    + "Map Value: " + (previousItem != null ? (previousInventoryMap.get(previousItem.getDisplayName()) != null ? previousInventoryMap.get(previousItem.getDisplayName()).toString() : "null") : "null"));
-                itemDetails.addCrashSection("New Item", "Item: " + (newItem != null ? newItem.toString() : "null") + "\n"
-                        + "Display Name: " + (newItem != null ? newItem.getDisplayName() : "null") + "\n"
-                        + "Index: " + i + "\n"
-                        + "Map Value: " + (newItem != null ? (previousInventoryMap.get(newItem.getDisplayName()) != null ? previousInventoryMap.get(newItem.getDisplayName()).toString() : "null") : "null"));
-                throw new ReportedException(crashReport);
-            }
-        }
-
-        List<ItemDiff> inventoryDifference = new LinkedList<>();
-        Set<String> keySet = new HashSet<>(previousInventoryMap.keySet());
-        keySet.addAll(newInventoryMap.keySet());
-
-        keySet.forEach(key -> {
-            int previousAmount = 0;
-            if (previousInventoryMap.containsKey(key)) {
-                previousAmount = previousInventoryMap.get(key).getKey();
             }
 
-            int newAmount = 0;
-            if (newInventoryMap.containsKey(key)) {
-                newAmount = newInventoryMap.get(key).getKey();
+            List<ItemDiff> inventoryDifference = new LinkedList<>();
+            Set<String> keySet = new HashSet<>(previousInventoryMap.keySet());
+            keySet.addAll(newInventoryMap.keySet());
+
+            keySet.forEach(key -> {
+                int previousAmount = 0;
+                if (previousInventoryMap.containsKey(key)) {
+                    previousAmount = previousInventoryMap.get(key).getKey();
+                }
+
+                int newAmount = 0;
+                if (newInventoryMap.containsKey(key)) {
+                    newAmount = newInventoryMap.get(key).getKey();
+                }
+
+                int diff = newAmount - previousAmount;
+                if (diff != 0) { // Get the NBT tag from whichever map the name exists in
+                    inventoryDifference.add(
+                            new ItemDiff(key, diff, newInventoryMap.getOrDefault(key, previousInventoryMap.get(key)).getValue())
+                    );
+                }
+            });
+
+            if (Feature.DRAGON_STATS_TRACKER.isEnabled()) {
+                DragonTracker.getInstance().checkInventoryDifferenceForDrops(inventoryDifference);
             }
 
-            int diff = newAmount - previousAmount;
-            if (diff != 0) { // Get the NBT tag from whichever map the name exists in
-                inventoryDifference.add(
-                        new ItemDiff(key, diff, newInventoryMap.getOrDefault(key, previousInventoryMap.get(key)).getValue())
-                );
-            }
-        });
+            // Add changes to already logged changes of the same item, so it will increase/decrease the amount
+            // instead of displaying the same item twice
+            if (Feature.ITEM_PICKUP_LOG.isEnabled()) {
+                for (ItemDiff diff : inventoryDifference) {
+                    Collection<ItemDiff> itemDiffs = itemPickupLog.get(diff.getDisplayName());
+                    if (itemDiffs.size() <= 0) {
+                        itemPickupLog.put(diff.getDisplayName(), diff);
 
-        if (Feature.DRAGON_STATS_TRACKER.isEnabled()) {
-            DragonTracker.getInstance().checkInventoryDifferenceForDrops(inventoryDifference);
-        }
-
-        // Add changes to already logged changes of the same item, so it will increase/decrease the amount
-        // instead of displaying the same item twice
-        if (Feature.ITEM_PICKUP_LOG.isEnabled()) {
-            for (ItemDiff diff : inventoryDifference) {
-                Collection<ItemDiff> itemDiffs = itemPickupLog.get(diff.getDisplayName());
-                if (itemDiffs.size() <= 0) {
-                    itemPickupLog.put(diff.getDisplayName(), diff);
-
-                } else {
-                    boolean added = false;
-                    for (ItemDiff loopDiff : itemDiffs) {
-                        if ((diff.getAmount() < 0 && loopDiff.getAmount() < 0) || (diff.getAmount() > 0 && loopDiff.getAmount() > 0)) {
-                            loopDiff.add(diff.getAmount());
-                            added = true;
+                    } else {
+                        boolean added = false;
+                        for (ItemDiff loopDiff : itemDiffs) {
+                            if ((diff.getAmount() < 0 && loopDiff.getAmount() < 0) || (diff.getAmount() > 0 && loopDiff.getAmount() > 0)) {
+                                loopDiff.add(diff.getAmount());
+                                added = true;
+                            }
+                        }
+                        if (!added) {
+                            itemPickupLog.put(diff.getDisplayName(), diff);
                         }
                     }
-                    if (!added) {
-                        itemPickupLog.put(diff.getDisplayName(), diff);
-                    }
                 }
             }
         }
+
+        previousInventory = newInventory;
     }
 
     /**
