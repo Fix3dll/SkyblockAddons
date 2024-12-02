@@ -2533,13 +2533,11 @@ public class RenderListener {
         GlStateManager.disableRescaleNormal();
     }
 
-    private static final List<ItemDiff> DUMMY_PICKUP_LOG = new ArrayList<>(
-            Arrays.asList(
-                    new ItemDiff(ColorCode.DARK_PURPLE + "Forceful Ember Chestplate", 1)
-                    , new ItemDiff("Boat", -1)
-                    , new ItemDiff(ColorCode.BLUE + "Aspect of the End", 1)
-            )
-    );
+    private static final List<ItemDiff> DUMMY_PICKUP_LOG = Collections.unmodifiableList(Arrays.asList(
+            new ItemDiff(ColorCode.DARK_PURPLE + "Forceful Ember Chestplate", 1, new ItemStack(Items.chainmail_chestplate)),
+            new ItemDiff("Boat", -1, new ItemStack(Items.boat)),
+            new ItemDiff(ColorCode.BLUE + "Aspect of the End", 1, new ItemStack(Items.diamond_sword))
+    ));
 
     public void drawItemPickupLog(float scale, ButtonLocation buttonLocation) {
         float x = main.getConfigValues().getActualX(Feature.ITEM_PICKUP_LOG);

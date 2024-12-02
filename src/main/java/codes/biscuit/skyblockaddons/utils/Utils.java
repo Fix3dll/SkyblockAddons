@@ -667,7 +667,7 @@ public class Utils {
      * @return {@code true} if it is Halloween, {@code false} otherwise
      */
     public boolean isHalloween() {
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(SkyblockAddons.getHypixelZoneId());
+        ZonedDateTime zonedDateTime = SkyblockAddons.getHypixelZonedDateTime();
         return zonedDateTime.getMonth() == Month.OCTOBER && zonedDateTime.getDayOfMonth() == 31;
     }
 

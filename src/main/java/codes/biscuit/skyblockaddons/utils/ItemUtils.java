@@ -155,13 +155,21 @@ public class ItemUtils {
 
     /**
      * Returns the {@code enchantments} compound tag from the item's NBT data.
-     *
-     * @param item the item to get the tag from
+     * @param extraAttributes the ExtraAttributes to get the tag from
      * @return the item's {@code enchantments} compound tag or {@code null} if the item doesn't have one
      */
-    public static NBTTagCompound getEnchantments(ItemStack item) {
-        NBTTagCompound extraAttributes = getExtraAttributes(item);
+    public static NBTTagCompound getEnchantments(NBTTagCompound extraAttributes) {
         return extraAttributes == null ? null : extraAttributes.getCompoundTag("enchantments");
+    }
+
+    /**
+     * Returns the {@code enchantments} compound tag from the {@link ItemStack}.
+     * @param itemStack the {@link ItemStack} to get the tag from
+     * @return the item's {@code enchantments} compound tag or {@code null} if the item doesn't have one
+     */
+    public static NBTTagCompound getEnchantments(ItemStack itemStack) {
+        NBTTagCompound extraAttributes = getExtraAttributes(itemStack);
+        return getEnchantments(extraAttributes);
     }
 
     /**
@@ -333,8 +341,17 @@ public class ItemUtils {
     }
 
     /**
+     * Returns a {@link PetInfo} from the {@link ItemStack}
+     * @param itemStack the {@link ItemStack} to check
+     * @return A {@link PetInfo} or {@code null} if it isn't a pet
+     */
+    public static PetInfo getPetInfo(ItemStack itemStack) {
+        NBTTagCompound extraAttributes = getExtraAttributes(itemStack);
+        return getPetInfo(extraAttributes);
+    }
+
+    /**
      * Returns a {@link PetInfo} from the ExtraAttributes Skyblock data
-     *
      * @param extraAttributes the Skyblock Data to check
      * @return A {@link PetInfo} or {@code null} if it isn't a pet
      */

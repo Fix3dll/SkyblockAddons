@@ -86,7 +86,17 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -678,10 +688,11 @@ public class PlayerListener {
                         checkPetMilestones(mc);
                     }
 
-                    if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld() &&
-                            (!main.getUtils().isInDungeon() || Minecraft.getSystemTime() - lastDeath > 1000 &&
-                                    Minecraft.getSystemTime() - lastRevive > 1000)) {
-                        main.getInventoryUtils().getInventoryDifference(player.inventory.mainInventory);
+                    if (mc.currentScreen == null && main.getPlayerListener().didntRecentlyJoinWorld()
+                            && (!main.getUtils().isInDungeon()
+                            || Minecraft.getSystemTime() - lastDeath > 1000
+                            && Minecraft.getSystemTime() - lastRevive > 1000)) {
+                        main.getInventoryUtils().calculateInventoryDifference(player.inventory.mainInventory);
                     }
 
                     if (Feature.BAIT_LIST.isEnabled() && isHoldingRod()) {

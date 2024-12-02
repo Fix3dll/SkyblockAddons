@@ -380,7 +380,6 @@ public class TextUtils {
      * Calculates and returns the first formatted substring that matches the unformatted string
      * <p>
      * Used for color/style compatibility mode.
-     *
      * @param unformattedSubstring the uncolored/unstyled substring of which we request a match
      * @param formatted            the colored string, from which we request a substring
      * @return {@code null} if {@param unformattedSubstring} is not found in {@param formatted}, or the colored/styled substring.

@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.LocationData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import codes.biscuit.skyblockaddons.core.Translations;
@@ -199,7 +200,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            EnchantManager.setEnchants(gson.fromJson(inputStreamReader, new TypeToken<EnchantManager.Enchants>() {}.getType()));
+            EnchantManager.setEnchants(gson.fromJson(inputStreamReader, new TypeToken<EnchantmentsData>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }

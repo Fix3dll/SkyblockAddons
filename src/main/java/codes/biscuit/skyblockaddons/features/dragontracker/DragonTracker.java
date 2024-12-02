@@ -21,7 +21,7 @@ public class DragonTracker {
     private transient int eyesToPlace = 0;
 
     // Saves the last second of inventory differences
-    private transient Map<Long, List<ItemDiff>> recentInventoryDifferences = new HashMap<>();
+    private final transient Map<Long, List<ItemDiff>> recentInventoryDifferences = new HashMap<>();
 
     public int getDragsSince(DragonsSince dragonsSince) {
         DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getDragonTracker();
@@ -76,7 +76,6 @@ public class DragonTracker {
             return;
         }
 
-
         for (List<ItemDiff> inventoryDifference : recentInventoryDifferences.values()) {
             for (ItemDiff itemDifference : inventoryDifference) {
                 if (itemDifference.getAmount() < 1) {
@@ -84,7 +83,7 @@ public class DragonTracker {
                 }
 
                 DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getDragonTracker();
-                String skyBlockItemID = ItemUtils.getSkyblockItemID(itemDifference.getExtraAttributes());
+                String skyBlockItemID = ItemUtils.getSkyblockItemID(itemDifference.getItemStack());
                 if (skyBlockItemID == null) continue;
 
                 switch (skyBlockItemID) {
@@ -93,7 +92,7 @@ public class DragonTracker {
                         SkyblockAddons.getInstance().getPersistentValuesManager().saveValues();
                         break;
                     case "PET":
-                        PetInfo petInfo = ItemUtils.getPetInfo(itemDifference.getExtraAttributes());
+                        PetInfo petInfo = ItemUtils.getPetInfo(itemDifference.getItemStack());
                         if (petInfo != null && "ENDER_DRAGON".equals(petInfo.getPetSkyblockId())) {
                             dragonTrackerData.getDragonsSince().put(DragonsSince.ENDER_DRAGON_PET, 0);
                             SkyblockAddons.getInstance().getPersistentValuesManager().saveValues();
