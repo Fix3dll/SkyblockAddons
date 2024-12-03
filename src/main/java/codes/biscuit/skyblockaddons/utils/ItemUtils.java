@@ -609,6 +609,14 @@ public class ItemUtils {
         return null;
     }
 
+    public static boolean isQuiverArrow(ItemStack itemStack) {
+        NBTTagCompound extraAttributes = getExtraAttributes(itemStack);
+        if (extraAttributes != null && extraAttributes.hasKey("quiver_arrow")) {
+            return extraAttributes.getBoolean("quiver_arrow");
+        }
+        return false;
+    }
+
     /**
      * Returns the rarity of a Skyblock item given its lore. This method takes the item's lore as a string list as input.
      * This method is split up from the method that takes the {@code ItemStack} instance for easier unit testing.

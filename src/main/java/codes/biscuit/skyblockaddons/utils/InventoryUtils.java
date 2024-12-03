@@ -31,6 +31,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ReportedException;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
@@ -539,6 +540,12 @@ public class InventoryUtils {
                 if (!lore.isEmpty()) {
                     displayName = lore.get(0);
                 }
+            } else if (main.getUtils().isInDungeon() && itemStack.getItem() == Items.dye && StringUtils.isBlank(displayName)) {
+                // Ignore Archer's ghost abilities cooldown
+                return;
+            } else if (ItemUtils.isQuiverArrow(itemStack)) {
+                // Ignore quiver arrow
+                return;
             }
 
             int amount;
