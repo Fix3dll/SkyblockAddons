@@ -528,8 +528,9 @@ public class InventoryUtils {
             } else if (ItemUtils.isQuiverArrow(itemStack)) {
                 // Ignore quiver arrow
                 return;
-            } else if ("INFINITE_SUPERBOOM_TNT".equals(skyblockId)) {
-                // Ignore Infinityboom TNT
+            } else if ("INFINITE_SUPERBOOM_TNT".equals(skyblockId) || "LESSER_ORB_OF_HEALING".equals(skyblockId)) {
+                // TODO add this to data repository
+                // Ignore Infinityboom TNT and Lesser Orb of Healing
                 return;
             }
 
