@@ -528,6 +528,9 @@ public class InventoryUtils {
             } else if (ItemUtils.isQuiverArrow(itemStack)) {
                 // Ignore quiver arrow
                 return;
+            } else if ("INFINITE_SUPERBOOM_TNT".equals(skyblockId)) {
+                // Ignore Infinityboom TNT
+                return;
             }
 
             int amount;
