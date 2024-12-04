@@ -1,14 +1,8 @@
 {
   "bannerImageURL": null,
   "bannerLink": null,
-
-  "latestVersion": "1.9.1",
-  "latestBeta": "1.9.0-beta.21",
-  "videoLink": "https://github.com/Fix3dll/SkyblockAddons/commits/main",
-  "directDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
-
   "updateInfo": {
-    "latestRelease": "1.9.1",
+    "latestRelease": "1.9.2",
     "releaseDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
     "releaseChangelog": "https://modrinth.com/mod/skyblockaddons-unofficial/changelog",
     "releaseShowcase": "",
@@ -17,13 +11,10 @@
     "betaChangelog": "https://modrinth.com/mod/skyblockaddons-unofficial/changelog",
     "betaShowcase": ""
   },
-
   "languageJSONFormat": "https://raw.githubusercontent.com/Fix3dll/SkyblockAddons/main/src/main/resources/lang/%s.json",
-
   "disabledFeatures": {
     "all": [2, 12, 16, 30, 31, 32, 35, 41, 44, 47, 51, 56, 59, 86, 89, 151, 154, 159]
   },
-
   "dropSettings": {
     "minimumInventoryRarity": "RARE",
     "minimumHotbarRarity": "RARE",
@@ -118,7 +109,6 @@
       "PERFECT_PERIDOT_GEM"
     ]
   },
-
   "hypixelBrands": [
     ".*Hypixel BungeeCord.*"
   ]
