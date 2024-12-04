@@ -2,19 +2,22 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.gui.LocationEditGui;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonText;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 
-import java.awt.*;
+import java.awt.Color;
 
 import static codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui.BUTTON_MAX_WIDTH;
 
 public class ButtonSolid extends ButtonText {
 
     private final Feature feature;
+    private final boolean colorChangeWithFeature;
     /** Used to calculate the transparency when fading in. */
     private final long timeOpened = System.currentTimeMillis();
 
@@ -22,10 +25,18 @@ public class ButtonSolid extends ButtonText {
      * Create a button that has a solid color and text.
      */
     public ButtonSolid( double x, double y, int width, int height, String buttonText, Feature feature) {
+        this(x, y, width, height, buttonText, feature, false);
+    }
+
+    /**
+     * Create a button that has a solid color and text.
+     */
+    public ButtonSolid(double x, double y, int width, int height, String buttonText, Feature feature, boolean colorChangeWithFeature) {
         super(0, (int)x, (int)y, buttonText, feature);
         this.feature = feature;
         this.width = width;
         this.height = height;
+        this.colorChangeWithFeature = colorChangeWithFeature;
     }
 
     @Override
@@ -61,6 +72,9 @@ public class ButtonSolid extends ButtonText {
             case PET_DISPLAY:
                 displayString = main.getConfigValues().getPetItemStyle().getMessage();
                 break;
+            case RESCALE_FEATURES:
+                displayString = LocationEditGui.getEditMode().getMessage();
+                break;
         }
         float alphaMultiplier = getAlphaMultiplier(timeOpened);
         int alpha = alphaMultiplier == 1F ? 255 : (int) (255 * alphaMultiplier);
@@ -79,6 +93,17 @@ public class ButtonSolid extends ButtonText {
         int fontColor = new Color(224, 224, 224, alpha).getRGB();
         if (hovered && feature != Feature.WARNING_TIME) {
             fontColor = new Color(255, 255, 160, alpha).getRGB();
+        }
+        if (colorChangeWithFeature) {
+            if (hovered) {
+                fontColor = feature.isEnabled()
+                        ? ColorCode.GREEN.getColor(alpha)
+                        : ColorCode.RED.getColor(alpha);
+            } else {
+                fontColor = feature.isEnabled()
+                        ? ColorCode.DARK_GREEN.getColor(alpha)
+                        : ColorCode.DARK_RED.getColor(alpha);
+            }
         }
         float scale = 1;
         int stringWidth = mc.fontRendererObj.getStringWidth(displayString);

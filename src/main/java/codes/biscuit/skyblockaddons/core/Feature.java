@@ -239,28 +239,29 @@ public enum Feature {
     ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR(253, null, true),
 
 
-    WARNING_TIME(-1, "settings.warningDuration", null, false),
-    WARP_ADVANCED_MODE(-1, "settings.advancedMode", null, true),
+    WARNING_TIME(-1, "settings.warningDuration", false),
+    WARP_ADVANCED_MODE(-1, "settings.advancedMode", true),
     ADD(-1, null, false),
     SUBTRACT(-1, null, false),
-    LANGUAGE(-1, "language", null, false),
-    EDIT_LOCATIONS(-1, "settings.editLocations", null, false),
-    RESET_LOCATION(-1, "settings.resetLocations", null,false),
-    RESCALE_FEATURES(-1, "messages.rescaleFeatures", null, false),
-    SHOW_COLOR_ICONS(-1, "messages.showColorIcons", null, false),
-    RESIZE_BARS(-1, "messages.resizeBars", null, false),
-    ENABLE_FEATURE_SNAPPING(-1, "messages.enableFeatureSnapping", null, false),
-    SHOW_FEATURE_NAMES_ON_HOVER(-1, "settings.showFeatureNamesOnHover", null, true),
-    GENERAL_SETTINGS(-1, "settings.tab.generalSettings", null, false),
-    TEXT_STYLE(-1, "settings.textStyle", null, false),
-    CHROMA_SPEED(-1, "settings.chromaSpeed", null, false),
-    CHROMA_MODE(-1, "settings.chromaMode", null, false),
-    CHROMA_SIZE(-1, "settings.chromaSize", null, false),
-    CHROMA_SATURATION(-1, "settings.chromaSaturation", null, false),
-    CHROMA_BRIGHTNESS(-1, "settings.chromaBrightness", null, false),
-    TURN_ALL_FEATURES_CHROMA(-1, "settings.turnAllFeaturesChroma", null, false),
-    NUMBER_SEPARATORS(221, "settings.numberSeparators", null, false),
-    TURN_ALL_TEXTS_CHROMA(243, "settings.turnAllTextsChroma", null, true);
+    LANGUAGE(-1, "language", false),
+    EDIT_LOCATIONS(-1, "settings.editLocations", false),
+    RESET_LOCATION(-1, "settings.resetLocations",false),
+    RESCALE_FEATURES(-1, "messages.rescaleFeatures", false),
+//    RESIZE_BARS(-1, "messages.resizeBars", false),
+    GENERAL_SETTINGS(-1, "settings.tab.generalSettings", false),
+    TEXT_STYLE(-1, "settings.textStyle", false),
+    CHROMA_SPEED(-1, "settings.chromaSpeed", false),
+    CHROMA_MODE(-1, "settings.chromaMode", false),
+    CHROMA_SIZE(-1, "settings.chromaSize", false),
+    CHROMA_SATURATION(-1, "settings.chromaSaturation", false),
+    CHROMA_BRIGHTNESS(-1, "settings.chromaBrightness",  false),
+    TURN_ALL_FEATURES_CHROMA(-1, "settings.turnAllFeaturesChroma",  false),
+    NUMBER_SEPARATORS(221, "settings.numberSeparators", false),
+    TURN_ALL_TEXTS_CHROMA(243, "settings.turnAllTextsChroma", true),
+    ENABLE_FEATURE_SNAPPING(254, "messages.enableFeatureSnapping", false),
+    SHOW_FEATURE_NAMES_ON_HOVER(255, "settings.showFeatureNamesOnHover", true),
+    SHOW_COLOR_ICONS(256, "messages.showColorIcons", false),
+    ;
 
 
     /**
@@ -313,6 +314,11 @@ public enum Feature {
     private static final Set<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE, WARNING_TIME,
             CHROMA_SPEED, CHROMA_MODE, CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION, CHROMA_BRIGHTNESS,
             NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA, SBA_BUTTON_IN_PAUSE_MENU));
+
+    @Getter
+    private static final Set<Feature> editGuiFeatures = new LinkedHashSet<>(Arrays.asList(
+            RESET_LOCATION, RESCALE_FEATURES, SHOW_FEATURE_NAMES_ON_HOVER, SHOW_COLOR_ICONS, ENABLE_FEATURE_SNAPPING
+    ));
 
     private static final int ID_AT_PREVIOUS_UPDATE = 221;
 

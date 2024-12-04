@@ -3,6 +3,8 @@ package codes.biscuit.skyblockaddons.gui;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.GuiFeatureData;
+import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonColorWheel;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonResize;
@@ -33,15 +35,8 @@ public class LocationEditGui extends GuiScreen {
     private static final int BOX_HEIGHT = 20;
     private static final int SNAPPING_RADIUS = 120;
     private static final int SNAP_PULL = 1;
-    private final static Feature[] locationEditGuiFeatures = {
-            Feature.RESET_LOCATION, Feature.SHOW_FEATURE_NAMES_ON_HOVER, Feature.RESCALE_FEATURES,
-            Feature.SHOW_COLOR_ICONS, Feature.ENABLE_FEATURE_SNAPPING, Feature.RESIZE_BARS
-    };
 
-    private EditMode editMode = EditMode.RESCALE;
-    private boolean showColorIcons = true;
-    private boolean enableSnapping = true;
-    private boolean showFeatureNameOnHover = true;
+    @Getter private static EditMode editMode = EditMode.RESCALE_FEATURES;
 
     /** The feature that is currently being dragged, or null for nothing. */
     private Feature draggedFeature;
@@ -78,16 +73,11 @@ public class LocationEditGui extends GuiScreen {
             }
         }
 
-        if (this.editMode == EditMode.RESIZE_BARS) {
-            addResizeButtonsToBars();
-        } else if (this.editMode == EditMode.RESCALE) {
-            addResizeButtonsToAllFeatures();
-        }
-
+        addResizeButtons();
         addColorWheelsToAllFeatures();
 
         ScaledResolution scaledResolution = new ScaledResolution(mc);
-        int numButtons = locationEditGuiFeatures.length;
+        int numButtons = Feature.getEditGuiFeatures().size();
         int x;
         int y = scaledResolution.getScaledHeight()/2;
         // List may change later
@@ -98,13 +88,27 @@ public class LocationEditGui extends GuiScreen {
             y -= Math.round(((numButtons-1)/2F) * (BOX_HEIGHT+5)) + 10;
         }
 
-        for (Feature feature : locationEditGuiFeatures) {
+        for (Feature feature : Feature.getEditGuiFeatures()) {
             String featureName = feature.getMessage();
             int boxWidth = mc.fontRendererObj.getStringWidth(featureName) + 10;
             if (boxWidth > BUTTON_MAX_WIDTH) boxWidth = BUTTON_MAX_WIDTH;
             x = scaledResolution.getScaledWidth() / 2 - boxWidth / 2;
             y += BOX_HEIGHT + 5;
-            buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, feature));
+            boolean colorChangeWithFeature = feature != Feature.RESET_LOCATION && feature != Feature.RESCALE_FEATURES;
+            buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, feature, colorChangeWithFeature));
+        }
+    }
+
+    private void addResizeButtons() {
+        switch (editMode) {
+            case RESIZE_BARS:
+                addResizeButtonsToBars();
+                break;
+            case RESCALE_FEATURES:
+                addResizeButtonsToAllFeatures();
+                break;
+            case NONE:
+                break;
         }
     }
 
@@ -130,8 +134,10 @@ public class LocationEditGui extends GuiScreen {
         clearAllResizeButtons();
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
-            if (feature.isEnabled()) { // Don't display features that have been disabled
-                if (feature.getGuiFeatureData() != null && feature.getGuiFeatureData().getDrawType() == EnumUtils.DrawType.BAR) {
+            // Don't display features that have been disabled
+            if (feature.isEnabled()) {
+                GuiFeatureData guiFeatureData = feature.getGuiFeatureData();
+                if (guiFeatureData != null && guiFeatureData.getDrawType() == EnumUtils.DrawType.BAR) {
                     addResizeCorners(feature);
                 }
             }
@@ -275,7 +281,7 @@ public class LocationEditGui extends GuiScreen {
 
         onMouseMove(mouseX, mouseY, snaps);
 
-        if (this.editMode == EditMode.RESCALE) {
+        if (editMode == EditMode.RESCALE_FEATURES) {
             recalculateResizeButtons();
         }
         recalculateColorWheels();
@@ -324,7 +330,7 @@ public class LocationEditGui extends GuiScreen {
             }
         }
 
-        if (showFeatureNameOnHover && draggedFeature == null) {
+        if (Feature.SHOW_FEATURE_NAMES_ON_HOVER.isEnabled() && draggedFeature == null) {
             ButtonLocation hoveredButton = getHoveredFeatureButton();
             if (hoveredButton != null) {
                 drawHoveringText(Collections.singletonList(hoveredButton.getFeature().getMessage()), mouseX, mouseY);
@@ -333,7 +339,7 @@ public class LocationEditGui extends GuiScreen {
     }
 
     public Snap[] checkSnapping() {
-        if (!enableSnapping) return null;
+        if (Feature.ENABLE_FEATURE_SNAPPING.isDisabled()) return null;
 
         if (draggedFeature != null) {
             ButtonLocation thisButton = buttonLocations.get(draggedFeature);
@@ -427,7 +433,8 @@ public class LocationEditGui extends GuiScreen {
      * @param button the button being hovered over
      */
     public void onButtonHoverFrame(ButtonLocation button) {
-        if (showFeatureNameOnHover && (hoveredFeature == null || hoveredFeature.ordinal() != button.feature.ordinal())) {
+        if (Feature.SHOW_FEATURE_NAMES_ON_HOVER.isEnabled()
+                && (hoveredFeature == null || hoveredFeature.ordinal() != button.feature.ordinal())) {
             hoveredFeature = button.getFeature();
         }
     }
@@ -469,22 +476,27 @@ public class LocationEditGui extends GuiScreen {
      * Set the coordinates when the mouse moves.
      */
     protected void onMouseMove(int mouseX, int mouseY, Snap[] snaps) {
+        ButtonLocation buttonLocation = buttonLocations.get(draggedFeature);
+        if (buttonLocation == null) {
+            return;
+        }
+
         ScaledResolution sr = new ScaledResolution(mc);
         float minecraftScale = sr.getScaleFactor();
         float floatMouseX = Mouse.getX() / minecraftScale;
         float floatMouseY = (mc.displayHeight - Mouse.getY()) / minecraftScale;
 
-        if (resizing) {
-            float x = mouseX - xOffset;
-            float y = mouseY - yOffset;
-            if (this.editMode == EditMode.RESIZE_BARS) {
-                ButtonLocation buttonLocation = buttonLocations.get(draggedFeature);
-                if (buttonLocation == null) {
-                    return;
-                }
+        float scale = buttonLocation.getScale();
+        float scaledX1 = buttonLocation.getBoxXOne() * scale * buttonLocation.getScaleX();
+        float scaledY1 = buttonLocation.getBoxYOne() * scale * buttonLocation.getScaleY();
+        float scaledX2 = buttonLocation.getBoxXTwo() * scale * buttonLocation.getScaleX();
+        float scaledY2 = buttonLocation.getBoxYTwo() * scale * buttonLocation.getScaleY();
 
-                float middleX = (buttonLocation.getBoxXTwo() + buttonLocation.getBoxXOne()) / 2;
-                float middleY = (buttonLocation.getBoxYTwo() + buttonLocation.getBoxYOne()) / 2;
+        if (resizing) {
+            float middleX = (scaledX1 + scaledX2) / 2;
+            float middleY = (scaledY1 + scaledY2) / 2;
+
+            if (editMode == EditMode.RESIZE_BARS) {
 
                 float scaleX = (floatMouseX - middleX) / (xOffset - middleX);
                 float scaleY = (floatMouseY - middleY) / (yOffset - middleY);
@@ -496,28 +508,13 @@ public class LocationEditGui extends GuiScreen {
 
                 buttonLocation.drawButton(mc, mouseX, mouseY);
                 recalculateResizeButtons();
-            } else if (this.editMode == EditMode.RESCALE) {
-                ButtonLocation buttonLocation = buttonLocations.get(draggedFeature);
-                if (buttonLocation == null) {
-                    return;
-                }
 
-                float scale = buttonLocation.getScale();
-                float scaledX1 = buttonLocation.getBoxXOne()*buttonLocation.getScale();
-                float scaledY1 = buttonLocation.getBoxYOne()*buttonLocation.getScale();
-                float scaledX2 = buttonLocation.getBoxXTwo()*buttonLocation.getScale();
-                float scaledY2 = buttonLocation.getBoxYTwo()*buttonLocation.getScale();
-                float scaledWidth = scaledX2-scaledX1;
-                float scaledHeight = scaledY2-scaledY1;
-
+            } else if (editMode == EditMode.RESCALE_FEATURES) {
                 float width = (buttonLocation.getBoxXTwo() - buttonLocation.getBoxXOne());
                 float height = (buttonLocation.getBoxYTwo() - buttonLocation.getBoxYOne());
 
-                float middleX = scaledX1+scaledWidth/2F;
-                float middleY = scaledY1+scaledHeight/2F;
-
-                float xOffset = floatMouseX-this.xOffset*scale-middleX;
-                float yOffset = floatMouseY-this.yOffset*scale-middleY;
+                float xOffset = floatMouseX - this.xOffset * scale * buttonLocation.getScaleX() - middleX;
+                float yOffset = floatMouseY - this.yOffset * scale * buttonLocation.getScaleY() - middleY;
 
                 if (resizingCorner == ButtonResize.Corner.TOP_LEFT) {
                     xOffset *= -1;
@@ -542,11 +539,6 @@ public class LocationEditGui extends GuiScreen {
                 recalculateResizeButtons();
             }
         } else if (draggedFeature != null) {
-            ButtonLocation buttonLocation = buttonLocations.get(draggedFeature);
-            if (buttonLocation == null) {
-                return;
-            }
-
             Snap horizontalSnap = null;
             Snap verticalSnap = null;
             if (snaps != null) {
@@ -557,10 +549,6 @@ public class LocationEditGui extends GuiScreen {
             float x = floatMouseX-main.getConfigValues().getAnchorPoint(draggedFeature).getX(sr.getScaledWidth());
             float y = floatMouseY-main.getConfigValues().getAnchorPoint(draggedFeature).getY(sr.getScaledHeight());
 
-            float scaledX1 = buttonLocation.getBoxXOne()*buttonLocation.getScale();
-            float scaledY1 = buttonLocation.getBoxYOne()*buttonLocation.getScale();
-            float scaledX2 = buttonLocation.getBoxXTwo()*buttonLocation.getScale();
-            float scaledY2 = buttonLocation.getBoxYTwo()*buttonLocation.getScale();
             float scaledWidth = scaledX2-scaledX1;
             float scaledHeight = scaledY2-scaledY1;
 
@@ -636,8 +624,14 @@ public class LocationEditGui extends GuiScreen {
 
             main.getConfigValues().setCoords(draggedFeature, x, y);
             main.getConfigValues().setClosestAnchorPoint(draggedFeature);
-            if (draggedFeature == Feature.HEALTH_BAR || draggedFeature == Feature.MANA_BAR || draggedFeature == Feature.DRILL_FUEL_BAR) {
-                addResizeCorners(draggedFeature);
+            switch (draggedFeature) {
+                case HEALTH_BAR:
+                case MANA_BAR:
+                case DRILL_FUEL_BAR:
+                    if (editMode != EditMode.NONE) {
+                        addResizeCorners(draggedFeature);
+                    }
+                    break;
             }
         }
     }
@@ -666,41 +660,35 @@ public class LocationEditGui extends GuiScreen {
                 main.getConfigValues().setAllCoordinatesToDefault();
                 main.getConfigValues().putDefaultBarSizes();
                 for (Feature guiFeature : Feature.getGuiFeatures()) {
-                    if (guiFeature.isEnabled()) { // Don't display features that have been disabled
-                        if (guiFeature == Feature.HEALTH_BAR || guiFeature == Feature.MANA_BAR || guiFeature == Feature.DRILL_FUEL_BAR) {
-                            addResizeCorners(guiFeature);
-                        }
+                    // Don't display features that have been disabled
+                    switch (guiFeature) {
+                        case HEALTH_BAR:
+                        case MANA_BAR:
+                        case DRILL_FUEL_BAR:
+                            if (guiFeature.isEnabled() && editMode != EditMode.NONE) {
+                                addResizeCorners(guiFeature);
+                            }
                     }
                 }
-            } else if (feature == Feature.RESIZE_BARS) {
-                if (editMode != EditMode.RESIZE_BARS) {
-                    editMode = EditMode.RESIZE_BARS;
-                    addResizeButtonsToBars();
-                } else {
-                    editMode = null;
-                    clearAllResizeButtons();
-                }
-
             } else if (feature == Feature.RESCALE_FEATURES) {
-                if (editMode != EditMode.RESCALE) {
-                    editMode = EditMode.RESCALE;
-                    addResizeButtonsToAllFeatures();
-                } else {
-                    editMode = null;
-                    clearAllResizeButtons();
-                }
+                editMode = editMode.getNextType();
+                closing = true;
+                mc.displayGuiScreen(new LocationEditGui(0, null));
+                closing = false;
+                addResizeButtons();
+
             } else if (feature == Feature.SHOW_COLOR_ICONS) {
-                if (showColorIcons) {
-                    showColorIcons = false;
+                boolean enabled = Feature.SHOW_COLOR_ICONS.isEnabled();
+                if (enabled) {
                     clearAllColorWheelButtons();
                 } else {
-                    showColorIcons = true;
                     addColorWheelsToAllFeatures();
                 }
+                Feature.SHOW_COLOR_ICONS.setEnabled(!enabled);
             } else if (feature == Feature.ENABLE_FEATURE_SNAPPING) {
-                enableSnapping = !enableSnapping;
+                Feature.ENABLE_FEATURE_SNAPPING.setEnabled(!Feature.ENABLE_FEATURE_SNAPPING.isEnabled());
             } else if (feature == Feature.SHOW_FEATURE_NAMES_ON_HOVER) {
-                showFeatureNameOnHover = !showFeatureNameOnHover;
+                Feature.SHOW_FEATURE_NAMES_ON_HOVER.setEnabled(!Feature.SHOW_FEATURE_NAMES_ON_HOVER.isEnabled());
             }
         } else if (abstractButton instanceof ButtonResize) {
             ButtonResize buttonResize = (ButtonResize) abstractButton;
@@ -713,7 +701,7 @@ public class LocationEditGui extends GuiScreen {
             float floatMouseY = (mc.displayHeight - Mouse.getY()) / minecraftScale;
 
             float scale = SkyblockAddons.getInstance().getConfigValues().getGuiScale(buttonResize.getFeature());
-            if (editMode == EditMode.RESCALE) {
+            if (editMode == EditMode.RESCALE_FEATURES) {
                 xOffset = (floatMouseX - buttonResize.getX() * scale) / scale;
                 yOffset = (floatMouseY - buttonResize.getY() * scale) / scale;
             } else {
@@ -815,8 +803,28 @@ public class LocationEditGui extends GuiScreen {
         }
     }
 
-    private enum  EditMode {
-        RESCALE,
-        RESIZE_BARS
+     public enum EditMode {
+         RESCALE_FEATURES("messages.rescaleFeatures"),
+         RESIZE_BARS("messages.resizeBars"),
+         NONE("messages.none");
+
+        private final String TRANSLATION_KEY;
+
+        EditMode(String translationKey) {
+            this.TRANSLATION_KEY = translationKey;
+        }
+
+        public String getMessage() {
+            return Translations.getMessage(TRANSLATION_KEY);
+        }
+
+        public EditMode getNextType() {
+            int nextType = ordinal() + 1;
+            if (nextType > values().length - 1) {
+                nextType = 0;
+            }
+            return values()[nextType];
+        }
     }
+
 }

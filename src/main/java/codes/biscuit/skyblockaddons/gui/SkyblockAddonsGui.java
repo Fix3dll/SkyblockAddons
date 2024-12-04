@@ -121,6 +121,10 @@ public class SkyblockAddonsGui extends GuiScreen {
         // Add the buttons for each page.
         TreeSet<Feature> features = new TreeSet<>(Comparator.comparing(Feature::ordinal).reversed());
         for (Feature feature : tab != EnumUtils.GuiTab.GENERAL_SETTINGS ? featureSet : Feature.getGeneralTabFeatures()) {
+            // Ignore Edit GUI features
+            if (Feature.getEditGuiFeatures().contains(feature)) {
+                continue;
+            }
             // Don't add disabled features yet
             if ((feature.isActualFeature() || tab == EnumUtils.GuiTab.GENERAL_SETTINGS) && !main.getConfigValues().isRemoteDisabled(feature)) {
                 if (matchesSearch(feature.getMessage())) { // Matches search.

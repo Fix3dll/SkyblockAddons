@@ -3,6 +3,7 @@
   "language": "English",
   "settings": {
     "settings": "Settings",
+    "none": "None",
     "magmaBossWarning": "Magma Boss Warning",
     "balBossWarning": "Bal Boss Warning",
     "broodMotherWarning": "Broodmother Warning",
@@ -247,7 +248,6 @@
     "petDisplay": "Pet Display",
     "petItemStyle": "Pet Item Style",
     "petItemStyles": {
-      "none": "None",
       "displayName": "Display Name",
       "showItem": "Show Item"
     },

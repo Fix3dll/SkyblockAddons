@@ -25,6 +25,8 @@ public class ButtonLocation extends ButtonFeature {
     private float boxYTwo;
 
     private float scale;
+    private float scaleX;
+    private float scaleY;
 
     /**
      * Create a button that allows you to change the location of a GUI element.
@@ -71,6 +73,8 @@ public class ButtonLocation extends ButtonFeature {
         this.boxYOne = boxYOne;
         this.boxYTwo = boxYTwo;
         this.scale = scale;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
     }
 
 
