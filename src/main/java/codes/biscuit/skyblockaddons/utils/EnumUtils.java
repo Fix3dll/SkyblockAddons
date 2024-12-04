@@ -258,6 +258,7 @@ public class EnumUtils {
         MANA_TEXT_ICON("settings.manaTextIcon", 250),
         DEFENCE_TEXT_ICON("settings.defenceTextIcon", 251),
         EFFECTIVE_HEALTH_TEXT_ICON("settings.effectiveHealthTextIcon", 252),
+        ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR("settings.abbreviateThunderDisplaysDenominator", 253),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

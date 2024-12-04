@@ -212,6 +212,7 @@
     "guiScaleY": "GUI Y Scale: %scale%",
     "abbreviateSkillXpDenominator": "Abbreviate Skill XP Denominator",
     "abbreviateDrillFuelDenominator": "Abbreviate Drill Fuel Denominator",
+    "abbreviateThunderDisplaysDenominator": "Abbreviate Thunder Display's Denominator",
     "otherDefenseStats": "Other Defense Stats (Soul Tether/Cell Alignment)",
     "hideSpawnPointPlayers": "Hide Players at Hub Spawn Point",
     "jacobsContestTimer": "Jacob's Contest Timer",

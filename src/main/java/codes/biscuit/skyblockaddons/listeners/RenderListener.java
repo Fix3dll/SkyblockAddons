@@ -132,12 +132,12 @@ public class RenderListener {
             "60a5c7bc-a65b-3772-889f-8831d4329fc4",
             "91611d874e874e322a1199b3b7b9e934bbb0dbed587ee8fcd6ccc1b07e281651"
     );
-    private static final ItemStack THUNDER_IN_A_BOTTLE = ItemUtils.createSkullItemStack(
-            "§5Thunder in a Bottle",
+    private static final ItemStack DUMMY_THUNDER_BOTTLE = ItemUtils.createSkullItemStack(
+            "§5Empty Thunder Bottle",
             Collections.emptyList(),
-            "THUNDER_IN_A_BOTTLE",
-            "5f67bc23-bb55-35e6-8f01-b5534e4ecfca",
-            "24378b986e358555ee73f09b210d49ec13719de5ea88d75523770d31163f3aef"
+            "THUNDER_IN_A_BOTTLE_EMPTY",
+            "552fdcec-5679-3b0e-a48e-84dc83b6dc6e",
+            "ab3616f523bf5a00bf2b3e9fb8314c47390b90a5ca68c5db3684acd567430cd3"
     );
 
     private static final SlayerArmorProgress[] DUMMY_PROGRESSES = new SlayerArmorProgress[] {
@@ -1211,19 +1211,26 @@ public class RenderListener {
                 break;
 
             case THUNDER_BOTTLE_DISPLAY:
-                ItemStack emptyBottle = main.getInventoryUtils().getEmptyThunderBottle();
-                boolean haveFullThunderBottle = main.getInventoryUtils().isHaveFullThunderBottle();
-                final String thunderBottleCapacity = TextUtils.formatNumber(50000);
+                ThunderBottle displayBottle = ThunderBottle.getDisplayBottle();
 
-                if (buttonLocation == null && emptyBottle == null && !haveFullThunderBottle)
+                if (buttonLocation == null && displayBottle == null) {
                     return;
+                }
 
-                if (emptyBottle != null) {
-                    text = TextUtils.formatNumber(ItemUtils.getThunderCharge(emptyBottle)) + "/" + thunderBottleCapacity;
-                } else if (haveFullThunderBottle) {
-                    text = "§aFull!";
+                if (displayBottle != null) {
+                    if (displayBottle.isFull()) {
+                        text = "§aFull!";
+                    } else {
+                        final String capacity = Feature.ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR.isEnabled()
+                                ? TextUtils.abbreviate(displayBottle.getCapacity())
+                                : TextUtils.formatNumber(displayBottle.getCapacity());
+                        text = TextUtils.formatNumber(displayBottle.getCharge()) + "/" + capacity;
+                    }
                 } else /*buttonLocation != null*/ {
-                    text = TextUtils.formatNumber(49999) + "/" + thunderBottleCapacity;
+                    final String capacity = Feature.ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR.isEnabled()
+                            ? TextUtils.abbreviate(50000)
+                            : TextUtils.formatNumber(50000);
+                    text = TextUtils.formatNumber(42440) + "/" + capacity;
                 }
                 break;
 
@@ -1710,11 +1717,12 @@ public class RenderListener {
                 break;
 
             case THUNDER_BOTTLE_DISPLAY:
-                ItemStack thunderBottle = main.getInventoryUtils().getEmptyThunderBottle();
-                if (thunderBottle != null) {
-                    renderItem(thunderBottle, x, y);
-                } else /*buttonLocation != null || haveFullThunderBottle*/ {
-                    renderItem(THUNDER_IN_A_BOTTLE, x, y);
+                ThunderBottle displayBottle = ThunderBottle.getDisplayBottle();
+
+                if (displayBottle != null) {
+                    renderItem(displayBottle.getItemStack(), x, y);
+                } else /*buttonLocation != null*/ {
+                    renderItem(DUMMY_THUNDER_BOTTLE, x, y);
                 }
                 FontRendererHook.setupFeatureFont(feature);
                 DrawUtils.drawText(text, x + 18, y + 4, color);

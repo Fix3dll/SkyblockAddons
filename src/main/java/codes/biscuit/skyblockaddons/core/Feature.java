@@ -226,7 +226,7 @@ public enum Feature {
     FIRE_FREEZE_SOUND(239, null, false),
     FIRE_FREEZE_WHEN_HOLDING(240, null, false),
     HIDE_HAUNTED_SKULLS(241, "settings.hideHauntedSkulls", null, true),
-    THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_PURPLE), false),
+    THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_PURPLE), false, EnumUtils.FeatureSetting.ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR),
     HEART_INSTEAD_HEALTH_ON_RIFT(244, null, true),
     OUTLINE_SHOWCASE_ITEMS(245, null, false),
     PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
@@ -236,6 +236,7 @@ public enum Feature {
     MANA_TEXT_ICON(250, "settings.manaTextIcon", true),
     DEFENCE_TEXT_ICON(251, "settings.defenceTextIcon", true),
     EFFECTIVE_HEALTH_TEXT_ICON(252, "settings.effectiveHealthTextIcon", true),
+    ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR(253, null, true),
 
 
     WARNING_TIME(-1, "settings.warningDuration", null, false),

@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
+import codes.biscuit.skyblockaddons.core.ThunderBottle;
 import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.features.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
@@ -73,12 +74,6 @@ public class InventoryUtils {
 
     @Getter
     private final SlayerArmorProgress[] slayerArmorProgresses = new SlayerArmorProgress[4];
-
-    @Getter
-    private ItemStack emptyThunderBottle = null;
-
-    @Getter
-    private boolean haveFullThunderBottle;
 
     @Getter @Setter
     private InventoryType inventoryType;
@@ -352,31 +347,18 @@ public class InventoryUtils {
     }
 
     /**
-     * Checks if the player has the Thunder Bottle and updates {@link #emptyThunderBottle} and {@link #haveFullThunderBottle} accordingly
+     * Checks if the player has the Thunder Bottle and updates accordingly
      * @param p EntityPlayerSP
      */
     public void checkIfThunderBottle(EntityPlayerSP p) {
         if (Feature.THUNDER_BOTTLE_DISPLAY.isEnabled()) {
-            if (emptyThunderBottle != null && !ArrayUtils.contains(p.inventory.mainInventory, emptyThunderBottle))
-                emptyThunderBottle = null;
-
-            // If there is multiple empty bottle, Hypixel applies "first-come, first-served" according to inv index
-            boolean foundFullThunderBottle = false;
-            for (ItemStack item : p.inventory.mainInventory) {
-                if (item != null) {
-                    String itemID = ItemUtils.getSkyblockItemID(item);
-                    if ("THUNDER_IN_A_BOTTLE_EMPTY".equals(itemID)) {
-                        emptyThunderBottle = item;
-                        return;
-                    } else if (emptyThunderBottle == null && "THUNDER_IN_A_BOTTLE".equals(itemID)) {
-                        haveFullThunderBottle = true;
-                        foundFullThunderBottle = true;
-                    }
-                }
+            ThunderBottle displayBottle = ThunderBottle.getDisplayBottle();
+            if (displayBottle != null && !ArrayUtils.contains(p.inventory.mainInventory, displayBottle)) {
+                displayBottle.setItemStack(null);
+                displayBottle.setCharge(0);
             }
-            emptyThunderBottle = null;
-            if (!foundFullThunderBottle)
-                haveFullThunderBottle = false;
+
+            ThunderBottle.updateThunderBottles(p.inventory.mainInventory);
         }
     }
 
