@@ -30,42 +30,43 @@ public class CheckBox {
 
     private final float scale;
 
-    private final Minecraft mc;
     private final int x;
     private final int y;
     private final String text;
     private final int textWidth;
     private final int size;
     @Setter @Getter private boolean value;
+    /**
+     * -- SETTER --</br>
+     *  Attaches a listener that gets notified whenever the CheckBox is toggled
+     */
+    @Setter
     private OnToggleListener onToggleListener;
 
     /**
-     * @param mc Minecraft instance
      * @param x x position
      * @param y y position
      * @param size Desired size (height) to scale to
      * @param text Displayed text
      * @param value Default value
      */
-    public CheckBox(Minecraft mc, int x, int y, int size, String text, boolean value) {
-        this(mc, x, y, size, text);
+    public CheckBox(int x, int y, int size, String text, boolean value) {
+        this(x, y, size, text);
         this.value = value;
     }
 
     /**
-     * @param mc Minecraft instance
      * @param x x position
      * @param y y position
      * @param size Desired size (height) to scale to
      * @param text Displayed text
      */
-    CheckBox(Minecraft mc, int x, int y, int size, String text) {
-        this.mc = mc;
+    CheckBox(int x, int y, int size, String text) {
         this.x = x;
         this.y = y;
         this.scale = (float) size / (float) ICON_SIZE;
         this.text = text;
-        this.textWidth = mc.fontRendererObj.getStringWidth(text);
+        this.textWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
         this.size = size;
     }
 
@@ -81,15 +82,9 @@ public class CheckBox {
 
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
-        mc.getTextureManager().bindTexture(ICONS);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(ICONS);
         GlStateManager.color(1, 1, 1, 1F);
-
-        if (value) {
-            DrawUtils.drawModalRectWithCustomSizedTexture(scaledX, scaledY, 16, 0, 16, 16, 32, 16, false);
-        } else {
-            DrawUtils.drawModalRectWithCustomSizedTexture(scaledX, scaledY, 0, 0, 16, 16, 32, 16, false);
-        }
-
+        DrawUtils.drawModalRectWithCustomSizedTexture(scaledX, scaledY, value ? 16 : 0, 0, 16, 16, 32, 16, false);
         GlStateManager.enableDepth();
         GlStateManager.popMatrix();
     }
@@ -108,12 +103,4 @@ public class CheckBox {
         }
     }
 
-    /**
-     * Attaches a listener that gets notified whenever the CheckBox is toggled
-     *
-     * @param listener Listener to attach
-     */
-    public void setOnToggleListener(OnToggleListener listener) {
-        onToggleListener = listener;
-    }
 }

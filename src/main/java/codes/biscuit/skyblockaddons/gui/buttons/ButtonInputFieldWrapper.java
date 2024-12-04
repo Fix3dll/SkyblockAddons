@@ -9,17 +9,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-public class ButtonInputFieldWrapper extends GuiButton {
+public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
 
-    private GuiTextField textField;
-    private String placeholderText;
-    private UpdateCallback<String> textUpdated;
+    private final GuiTextField textField;
+    private final String placeholderText;
+    private final UpdateCallback<String> textUpdated;
 
-    public ButtonInputFieldWrapper(int x, int y, int w, int h, String buttonText, int maxLength, boolean focused, UpdateCallback<String> textUpdated) {
-        this(x, y, w, h, buttonText, null, maxLength, focused, textUpdated);
-    }
-
-    public ButtonInputFieldWrapper(int x, int y, int w, int h, String buttonText, String placeholderText, int maxLength, boolean focused, UpdateCallback<String> textUpdated) {
+    public ButtonInputFieldWrapper(int x, int y, int w, int h, String buttonText, String placeholderText, int maxLength,
+                                   boolean focused, UpdateCallback<String> textUpdated) {
         super(-1, x, y, buttonText);
         this.placeholderText = placeholderText;
         this.textUpdated = textUpdated;

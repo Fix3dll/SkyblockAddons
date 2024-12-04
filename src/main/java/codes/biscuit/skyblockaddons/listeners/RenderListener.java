@@ -426,7 +426,7 @@ public class RenderListener {
 
     public void drawFeature(Feature feature, float scale, ButtonLocation buttonLocation) {
         GuiFeatureData guiFeatureData = feature.getGuiFeatureData();
-        if (guiFeatureData != null) {
+        if (guiFeatureData != null && guiFeatureData.getDrawType() != null) {
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, 1);
             switch (guiFeatureData.getDrawType()) {
@@ -1959,8 +1959,8 @@ public class RenderListener {
                         || !LocationUtils.isOnSlayerLocation(EnumUtils.SlayerQuest.VOIDGLOOM_SERAPH))) {
                     return;
                 }
-                colorByRarity = Feature.ENDERMAN_COLOR_BY_RARITY.isEnabled();
-                textMode = Feature.ENDERMAN_TEXT_MODE.isEnabled();
+                colorByRarity = Feature.VOIDGLOOM_COLOR_BY_RARITY.isEnabled();
+                textMode = Feature.VOIDGLOOM_TEXT_MODE.isEnabled();
                 slayerBoss = SlayerBoss.VOIDGLOOM;
                 break;
 

@@ -1,6 +1,5 @@
-package codes.biscuit.skyblockaddons.gui.buttons;
+package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
@@ -15,10 +14,7 @@ public class ButtonResize extends ButtonFeature {
 
     private static final int SIZE = 2;
 
-    private SkyblockAddons main = SkyblockAddons.getInstance();
-
-    private Corner corner;
-
+    private final Corner corner;
     public float x;
     public float y;
 
@@ -34,15 +30,13 @@ public class ButtonResize extends ButtonFeature {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-
         float scale = main.getConfigValues().getGuiScale(feature);
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale,scale,1);
-
-        hovered = mouseX >= (x- SIZE)*scale && mouseY >= (y- SIZE)*scale && mouseX < (x+ SIZE)*scale && mouseY < (y+ SIZE)* scale;
+        hovered = mouseX >= (x - SIZE) * scale && mouseY >= (y - SIZE) * scale
+                && mouseX < (x + SIZE) * scale && mouseY < (y + SIZE) * scale;
         int color = hovered ? ColorCode.WHITE.getColor() : ColorCode.WHITE.getColor(70);
-        DrawUtils.drawRectAbsolute(x- SIZE,y- SIZE, x+ SIZE, y+ SIZE, color);
-
+        DrawUtils.drawRectAbsolute(x - SIZE,y - SIZE, x + SIZE, y + SIZE, color);
         GlStateManager.popMatrix();
     }
 

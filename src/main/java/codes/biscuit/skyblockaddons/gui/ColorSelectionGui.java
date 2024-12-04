@@ -4,7 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonColorBox;
-import codes.biscuit.skyblockaddons.gui.buttons.NewButtonSlider;
+import codes.biscuit.skyblockaddons.gui.buttons.ButtonSlider;
 import codes.biscuit.skyblockaddons.gui.elements.CheckBox;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class ColorSelectionGui extends GuiScreen {
 
-    private final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     private static final ResourceLocation COLOR_PICKER = new ResourceLocation("skyblockaddons", "gui/colorpicker.png");
     private BufferedImage COLOR_PICKER_IMAGE;
@@ -59,7 +59,9 @@ public class ColorSelectionGui extends GuiScreen {
         this.lastPage = lastPage;
 
         try {
-            COLOR_PICKER_IMAGE = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(COLOR_PICKER).getInputStream());
+            COLOR_PICKER_IMAGE = TextureUtil.readBufferedImage(
+                    Minecraft.getMinecraft().getResourceManager().getResource(COLOR_PICKER).getInputStream()
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,9 +69,8 @@ public class ColorSelectionGui extends GuiScreen {
 
     @Override
     public void initGui() {
-        chromaCheckbox = new CheckBox(mc, width / 2 + 88, 170, 12, Translations.getMessage("messages.chroma"), false);
+        chromaCheckbox = new CheckBox(width / 2 + 88, 170, 12, Translations.getMessage("messages.chroma"), false);
         chromaCheckbox.setValue(main.getConfigValues().getChromaFeatures().contains(feature));
-
         chromaCheckbox.setOnToggleListener(value -> {
             main.getConfigValues().setChroma(feature, value);
             ColorSelectionGui.this.removeChromaButtons();
@@ -85,10 +86,10 @@ public class ColorSelectionGui extends GuiScreen {
         // Set the current color in the text box after creating it.
         setTextBoxHex(main.getConfigValues().getColor(feature));
 
-        if (feature.getGuiFeatureData() != null && feature.getGuiFeatureData().isColorsRestricted()) {
+        boolean restrictedColor = feature.getGuiFeatureData() != null && feature.getGuiFeatureData().isColorsRestricted();
 
-            // This creates the 16 buttons for all the color codes.
-
+        // This creates the 16 buttons for all the color codes.
+        if (restrictedColor) {
             int collumn = 1;
             int x = width / 2 - 160;
             int y = 120;
@@ -109,8 +110,8 @@ public class ColorSelectionGui extends GuiScreen {
             }
         }
 
-        if (main.getConfigValues().getChromaFeatures().contains(feature) && !feature.getGuiFeatureData().isColorsRestricted()) {
-            ColorSelectionGui.this.addChromaButtons();
+        if (main.getConfigValues().getChromaFeatures().contains(feature) && !restrictedColor) {
+            addChromaButtons();
         }
 
         Keyboard.enableRepeatEvents(true);
@@ -175,7 +176,7 @@ public class ColorSelectionGui extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (!feature.getGuiFeatureData().isColorsRestricted() && !main.getConfigValues().getChromaFeatures().contains(feature)) {
+        if (feature.getGuiFeatureData() != null && !feature.getGuiFeatureData().isColorsRestricted() && !main.getConfigValues().getChromaFeatures().contains(feature)) {
             int xPixel = mouseX - imageX;
             int yPixel = mouseY - imageY;
 
@@ -267,14 +268,34 @@ public class ColorSelectionGui extends GuiScreen {
     }
 
     private void removeChromaButtons() {
-        this.buttonList.removeIf(button -> button instanceof NewButtonSlider);
+        this.buttonList.removeIf(button -> button instanceof ButtonSlider);
     }
 
     private void addChromaButtons() {
-        buttonList.add(new NewButtonSlider(width / 2 + 76, 170 + 35, 70, 15, main.getConfigValues().getChromaSpeed().floatValue(),
-                0.5F, 20, 0.5F, updatedValue -> main.getConfigValues().getChromaSpeed().setValue(updatedValue)));
-
-        buttonList.add(new NewButtonSlider(width / 2 + 76, 170 + 35+ 35, 70, 15, main.getConfigValues().getChromaSize().floatValue(),
-                1, 100, 1, updatedValue -> main.getConfigValues().getChromaSize().setValue(updatedValue)));
+        buttonList.add(
+                new ButtonSlider((double) width / 2 + 76,
+                        170 + 35,
+                        70,
+                        15,
+                        main.getConfigValues().getChromaSpeed().floatValue(),
+                        0.5F,
+                        20,
+                        0.5F,
+                        updatedValue -> main.getConfigValues().getChromaSpeed().setValue(updatedValue)
+                )
+        );
+        buttonList.add(
+                new ButtonSlider(
+                        (double) width / 2 + 76,
+                        170 + 35+ 35,
+                        70,
+                        15,
+                        main.getConfigValues().getChromaSize().floatValue(),
+                        1,
+                        100,
+                        1,
+                        updatedValue -> main.getConfigValues().getChromaSize().setValue(updatedValue)
+                )
+        );
     }
 }

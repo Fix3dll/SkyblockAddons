@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;
@@ -50,24 +51,7 @@ public class ButtonLocation extends ButtonFeature {
      * This just updates the hovered status and draws the box around each feature. To avoid repetitive code.
      */
     public void checkHoveredAndDrawBox(float boxXOne, float boxXTwo, float boxYOne, float boxYTwo, float scale) {
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-        float minecraftScale = sr.getScaleFactor();
-        float floatMouseX = Mouse.getX() / minecraftScale;
-        float floatMouseY = (Minecraft.getMinecraft().displayHeight - Mouse.getY()) / minecraftScale;
-
-        hovered = floatMouseX >= boxXOne * scale && floatMouseY >= boxYOne * scale && floatMouseX < boxXTwo * scale && floatMouseY < boxYTwo * scale;
-        int boxAlpha = 70;
-        if (hovered) {
-            boxAlpha = 120;
-        }
-        int boxColor = ColorCode.GRAY.getColor(boxAlpha);
-        DrawUtils.drawRectAbsolute(boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor);
-
-        this.boxXOne = boxXOne;
-        this.boxXTwo = boxXTwo;
-        this.boxYOne = boxYOne;
-        this.boxYTwo = boxYTwo;
-        this.scale = scale;
+        checkHoveredAndDrawBox(boxXOne, boxXTwo, boxYOne, boxYTwo, scale, 1F, 1F);
     }
 
     public void checkHoveredAndDrawBox(float boxXOne, float boxXTwo, float boxYOne, float boxYTwo, float scale, float scaleX, float scaleY) {
@@ -76,11 +60,9 @@ public class ButtonLocation extends ButtonFeature {
         float floatMouseX = Mouse.getX() / minecraftScale;
         float floatMouseY = (Minecraft.getMinecraft().displayHeight - Mouse.getY()) / minecraftScale;
 
-        hovered = floatMouseX >= boxXOne * scale * scaleX && floatMouseY >= boxYOne * scale * scaleY && floatMouseX < boxXTwo * scale * scaleX && floatMouseY < boxYTwo * scale * scaleY;
-        int boxAlpha = 70;
-        if (hovered) {
-            boxAlpha = 120;
-        }
+        hovered = floatMouseX >= boxXOne * scale * scaleX && floatMouseY >= boxYOne * scale * scaleY
+                && floatMouseX < boxXTwo * scale * scaleX && floatMouseY < boxYTwo * scale * scaleY;
+        int boxAlpha = hovered ? 120 : 70;
         int boxColor = ColorCode.GRAY.getColor(boxAlpha);
         DrawUtils.drawRectAbsolute(boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor);
 

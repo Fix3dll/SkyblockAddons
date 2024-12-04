@@ -8,13 +8,12 @@ import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class IslandButton extends GuiButton {
+public class IslandButton extends SkyblockAddonsButton {
 
     @Getter private final List<IslandMarkerButton> markerButtons = new ArrayList<>();
 

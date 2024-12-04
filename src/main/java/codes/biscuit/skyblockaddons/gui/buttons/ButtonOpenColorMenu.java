@@ -2,14 +2,16 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
-import java.awt.*;
-
-import static codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui.BUTTON_MAX_WIDTH;
+import java.awt.Color;
 
 public class ButtonOpenColorMenu extends ButtonText {
+
+    private static final float WIDTH_LIMIT = SkyblockAddonsGui.BUTTON_MAX_WIDTH - 10F;
 
     /**
      * Create a button that displays the color of whatever feature it is assigned to.
@@ -22,22 +24,20 @@ public class ButtonOpenColorMenu extends ButtonText {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-        int fontColor = new Color(224, 224, 224, 255).getRGB();
-        int boxAlpha = 100;
+        hovered = isHovered(mouseX, mouseY);
+        int fontColor, boxAlpha;
         if (hovered) {
             boxAlpha = 170;
             fontColor = new Color(255, 255, 160, 255).getRGB();
+        } else {
+            boxAlpha = 100;
+            fontColor = new Color(224, 224, 224, 255).getRGB();
         }
         int boxColor = SkyblockAddons.getInstance().getConfigValues().getColor(feature, boxAlpha);
         // Regular features are red if disabled, green if enabled or part of the gui feature is enabled.
         GlStateManager.enableBlend();
-        float scale = 1;
         int stringWidth = mc.fontRendererObj.getStringWidth(displayString);
-        float widthLimit = BUTTON_MAX_WIDTH - 10;
-        if (stringWidth > widthLimit) {
-            scale = 1 / (stringWidth / widthLimit);
-        }
+        float scale = stringWidth > WIDTH_LIMIT ? 1 / (stringWidth / WIDTH_LIMIT) : 1;
         drawButtonBoxAndText(boxColor, boxAlpha, scale, fontColor);
     }
 }

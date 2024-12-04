@@ -1,6 +1,5 @@
-package codes.biscuit.skyblockaddons.gui.buttons;
+package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
@@ -9,29 +8,26 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-public class ButtonToggle extends ButtonFeature {
+public class ButtonFeatureToggle extends ButtonFeature {
 
-    private static ResourceLocation TOGGLE_INSIDE_CIRCLE = new ResourceLocation("skyblockaddons", "gui/toggleinsidecircle.png");
-    private static ResourceLocation TOGGLE_BORDER = new ResourceLocation("skyblockaddons", "gui/toggleborder.png");
-    private static ResourceLocation TOGGLE_INSIDE_BACKGROUND = new ResourceLocation("skyblockaddons", "gui/toggleinsidebackground.png");
+    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = new ResourceLocation("skyblockaddons", "gui/toggleinsidecircle.png");
+    private static final ResourceLocation TOGGLE_BORDER = new ResourceLocation("skyblockaddons", "gui/toggleborder.png");
+    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = new ResourceLocation("skyblockaddons", "gui/toggleinsidebackground.png");
 
     private static final int CIRCLE_PADDING_LEFT = 5;
     private static final int ANIMATION_SLIDE_DISTANCE = 12;
     private static final int ANIMATION_SLIDE_TIME = 150;
 
-    private SkyblockAddons main;
-
     // Used to calculate the transparency when fading in.
-    private long timeOpened = System.currentTimeMillis();
+    private final long timeOpened = System.currentTimeMillis();
 
     private long animationButtonClicked = -1;
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
      */
-    public ButtonToggle(double x, double y, SkyblockAddons main, Feature feature) {
+    public ButtonFeatureToggle(double x, double y, Feature feature) {
         super(0, (int)x, (int)y, "", feature);
-        this.main = main;
         this.feature = feature;
         this.width = 31;
         this.height = 15;
@@ -39,22 +35,11 @@ public class ButtonToggle extends ButtonFeature {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        float alphaMultiplier = 1F;
-        if (main.getUtils().isFadingIn()) {
-            long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-            int fadeMilis = 500;
-            if (timeSinceOpen <= fadeMilis) {
-                alphaMultiplier = (float) timeSinceOpen / fadeMilis;
-            }
-        }
-        hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        float alphaMultiplier = getAlphaMultiplier(timeOpened);
+        hovered = isHovered(mouseX, mouseY);
         GlStateManager.enableBlend();
-        GlStateManager.color(1,1,1,alphaMultiplier*0.7F);
-        if (hovered) {
-            GlStateManager.color(1,1,1,1);
-        }
-
-       ColorUtils.bindColor(0xFF1e252e);
+        GlStateManager.color(1,1,1,hovered ? 1 : alphaMultiplier * 0.7F);
+        ColorUtils.bindColor(0xFF1E252E);
         mc.getTextureManager().bindTexture(TOGGLE_BORDER);
         DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
 
@@ -68,7 +53,7 @@ public class ButtonToggle extends ButtonFeature {
         }
 
         mc.getTextureManager().bindTexture(TOGGLE_INSIDE_BACKGROUND);
-        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
+        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0, width, height, width, height, true);
 
         int startingX = getStartingPosition(enabled);
         int slideAnimationOffset = 0;

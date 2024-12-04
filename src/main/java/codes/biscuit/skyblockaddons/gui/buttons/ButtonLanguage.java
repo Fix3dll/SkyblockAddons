@@ -7,20 +7,18 @@ import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 
-public class ButtonLanguage extends GuiButton {
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+public class ButtonLanguage extends SkyblockAddonsButton {
     private static final Logger logger = SkyblockAddons.getLogger();
-    private final Language language;
-    private final String languageName;
 
+    @Getter private final Language language;
+    private final String languageName;
     private boolean flagResourceExceptionTriggered;
 
     /**
@@ -51,18 +49,16 @@ public class ButtonLanguage extends GuiButton {
                     logger.catching(ex);
                 }
             }
-
-            hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-
-            int fontColor = main.getUtils().getDefaultBlue(255);
-            if (hovered) {
-                fontColor = new Color(255, 255, 160, 255).getRGB();
-            }
-            drawString(mc.fontRendererObj, languageName, xPosition + 5, yPosition+10, fontColor);
+            hovered = isHovered(mouseX, mouseY);
+            drawString(
+                    mc.fontRendererObj,
+                    languageName,
+                    xPosition + 5,
+                    yPosition+10,
+                    hovered ? new Color(255, 255, 160, 255).getRGB()
+                            : main.getUtils().getDefaultBlue(255)
+            );
         }
     }
 
-    public Language getLanguage() {
-        return language;
-    }
 }

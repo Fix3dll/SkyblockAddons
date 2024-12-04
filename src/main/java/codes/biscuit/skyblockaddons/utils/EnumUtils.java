@@ -177,9 +177,6 @@ public class EnumUtils {
      */
     public enum FeatureSetting {
         COLOR("settings.changeColor", -1),
-        GUI_SCALE("settings.guiScale", -1),
-        GUI_SCALE_X("settings.guiScaleX", -1),
-        GUI_SCALE_Y("settings.guiScaleY", -1),
         ENABLED_IN_OTHER_GAMES("settings.showInOtherGames", -1),
         REPEATING("settings.repeating", -1),
         TEXT_MODE("settings.textMode", -1),
@@ -190,7 +187,6 @@ public class EnumUtils {
         MAKE_INVENTORY_COLORED("settings.makeBackpackInventoriesColored", 43),
         DEPLOYABLE_DISPLAY_STYLE("settings.deployableDisplayStyle", -1),
         CHANGE_BAR_COLOR_WITH_POTIONS("settings.changeBarColorForPotions", 46),
-        ENABLE_MESSAGE_WHEN_ACTION_PREVENTED("settings.enableMessageWhenActionPrevented", -1),
         CAKE_BAG_PREVIEW("settings.showCakeBagPreview", 71),
         ROTATE_MAP("settings.rotateMap", 100),
         CENTER_ROTATION_ON_PLAYER("settings.centerRotationOnYourPlayer", 101),

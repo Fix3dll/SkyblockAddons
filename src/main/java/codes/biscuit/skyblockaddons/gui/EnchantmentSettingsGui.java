@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.gui;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantListLayout;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -71,8 +72,8 @@ public class EnchantmentSettingsGui extends SettingsGui {
                     break;
             }
         }
-        buttonList.add(new ButtonArrow(width / 2D - 15 - 150, height - 70, main, ButtonArrow.ArrowType.LEFT, page == 0));
-        buttonList.add(new ButtonArrow(width / 2D - 15 + 150, height - 70, main, ButtonArrow.ArrowType.RIGHT, page == maxPage));
+        buttonList.add(new ButtonArrow(width / 2D - 15 - 150, height - 70, ButtonArrow.ArrowType.LEFT, page == 0));
+        buttonList.add(new ButtonArrow(width / 2D - 15 + 150, height - 70, ButtonArrow.ArrowType.RIGHT, page == maxPage));
     }
 
     @Override
@@ -144,11 +145,12 @@ public class EnchantmentSettingsGui extends SettingsGui {
                 mc.displayGuiScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, lastTab, lastPage));
             }
 
-        } else if (abstractButton instanceof ButtonToggleTitle) {
+        } else if (abstractButton instanceof ButtonSettingToggle) {
             ButtonFeature button = (ButtonFeature) abstractButton;
             Feature feature = button.getFeature();
             if (feature == null) return;
             feature.setEnabled(feature.isDisabled());
+            ((ButtonSettingToggle)abstractButton).onClick();
 
         } else if (abstractButton instanceof ButtonArrow) {
             ButtonArrow arrow = (ButtonArrow) abstractButton;
@@ -203,7 +205,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
                 boxWidth = 31; // Default size and stuff.
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
-                buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
+                buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), setting.getFeatureEquivalent()));
                 break;
         }
         row++;

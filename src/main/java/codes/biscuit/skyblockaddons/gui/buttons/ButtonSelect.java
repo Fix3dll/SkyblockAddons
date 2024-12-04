@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * Button that lets the user select one item in a given set of items.
  */
-public class ButtonSelect extends GuiButton {
+public class ButtonSelect extends SkyblockAddonsButton {
 
     private static final ResourceLocation ARROW_LEFT = new ResourceLocation("skyblockaddons", "gui/flatarrowleft.png");
     private static final ResourceLocation ARROW_RIGHT = new ResourceLocation("skyblockaddons", "gui/flatarrowright.png");

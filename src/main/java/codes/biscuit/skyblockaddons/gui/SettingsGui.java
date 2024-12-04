@@ -1,13 +1,13 @@
 package codes.biscuit.skyblockaddons.gui;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.features.discordrpc.DiscordStatus;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeature;
 import codes.biscuit.skyblockaddons.utils.*;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import net.minecraft.client.Minecraft;
@@ -66,9 +66,9 @@ public class SettingsGui extends GuiScreen {
             int skip = (page - 1) * displayCount;
 
             boolean max = page == 1;
-            buttonList.add(new ButtonArrow(width / 2 - 15 - 50, height - 70, main, ButtonArrow.ArrowType.LEFT, max));
+            buttonList.add(new ButtonArrow(width / 2 - 15 - 50, height - 70, ButtonArrow.ArrowType.LEFT, max));
             max = Language.values().length - skip - displayCount <= 0;
-            buttonList.add(new ButtonArrow(width / 2 - 15 + 50, height - 70, main, ButtonArrow.ArrowType.RIGHT, max));
+            buttonList.add(new ButtonArrow(width / 2 - 15 + 50, height - 70, ButtonArrow.ArrowType.RIGHT, max));
 
             for (Language language : Language.values()) {
                 if (skip == 0) {
@@ -195,7 +195,7 @@ public class SettingsGui extends GuiScreen {
             } else {
                 mc.displayGuiScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, lastTab, lastPage));
             }
-        } else if (abstractButton instanceof ButtonToggleTitle) {
+        } else if (abstractButton instanceof ButtonSettingToggle) {
             ButtonFeature button = (ButtonFeature) abstractButton;
             Feature feature = button.getFeature();
             if (feature == null) return;
@@ -209,6 +209,8 @@ public class SettingsGui extends GuiScreen {
                     GuiIngameForge.renderHealth = true;
                 }
             }
+
+            ((ButtonSettingToggle)abstractButton).onClick();
         } else if (feature == Feature.SHOW_BACKPACK_PREVIEW) {
             main.getConfigValues().setBackpackStyle(main.getConfigValues().getBackpackStyle().getNextType());
             closingGui = true;
@@ -269,19 +271,6 @@ public class SettingsGui extends GuiScreen {
         double y = getRowHeightSetting(row);
         if (setting == EnumUtils.FeatureSetting.COLOR) {
             buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, Translations.getMessage("settings.changeColor"), feature));
-        } else if (setting == EnumUtils.FeatureSetting.GUI_SCALE) {
-            try {
-                buttonList.add(new ButtonGuiScale(x, y, 100, 20, main, feature));
-            } catch (NumberFormatException e) {
-                logger.error(e.getMessage());
-                main.getUtils().sendMessage(Translations.getMessage("messages.invalidFeatureConfiguration", feature.getMessage()));
-                main.getConfigValues().setGuiScale(feature, ConfigValues.normalizeValueNoStep(1));
-                buttonList.add(new ButtonGuiScale(x, y, 100, 20, main, feature));
-            }
-        } else if (setting == EnumUtils.FeatureSetting.GUI_SCALE_X) {
-            buttonList.add(new ButtonGuiScale(x, y, 100, 20, main, feature, true));
-        } else if (setting == EnumUtils.FeatureSetting.GUI_SCALE_Y) {
-            buttonList.add(new ButtonGuiScale(x, y, 100, 20, main, feature, false));
         } else if (setting == EnumUtils.FeatureSetting.REPEATING) {
             boxWidth = 31;
             x = halfWidth - (boxWidth / 2);
@@ -294,7 +283,7 @@ public class SettingsGui extends GuiScreen {
                 settingFeature = Feature.REPEAT_SLAYER_BOSS_WARNING;
             }
 
-            buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.repeating"), main, settingFeature));
+            buttonList.add(new ButtonSettingToggle(x, y, Translations.getMessage("settings.repeating"), settingFeature));
         } else if (setting == EnumUtils.FeatureSetting.ENABLED_IN_OTHER_GAMES) {
             boxWidth = 31;
             x = halfWidth - (boxWidth / 2);
@@ -311,24 +300,17 @@ public class SettingsGui extends GuiScreen {
                 settingFeature = Feature.OUTBID_ALERT_SOUND_IN_OTHER_GAMES;
             }
 
-            buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.showInOtherGames"), main, settingFeature));
+            buttonList.add(new ButtonSettingToggle(x, y, Translations.getMessage("settings.showInOtherGames"), settingFeature));
         } else if (setting == EnumUtils.FeatureSetting.BACKPACK_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("settings.backpackStyle"), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
-        } else if (setting == EnumUtils.FeatureSetting.ENABLE_MESSAGE_WHEN_ACTION_PREVENTED) {
-            boxWidth = 31;
-            x = halfWidth - (boxWidth / 2);
-
-            Feature settingFeature = null;
-
-            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, settingFeature));
+            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", feature));
         } else if (setting == EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
+            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", feature));
         } else if (setting == EnumUtils.FeatureSetting.EXPAND_DEPLOYABLE_STATUS) {
             boxWidth = 31;
             x = halfWidth - (boxWidth / 2);
@@ -337,7 +319,7 @@ public class SettingsGui extends GuiScreen {
             Feature settingFeature;
             if (main.getConfigValues().getDeployableDisplayStyle().equals(EnumUtils.DeployableDisplayStyle.DETAILED)) {
                 settingFeature = Feature.EXPAND_DEPLOYABLE_STATUS;
-                buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.expandDeployableStatus"), main, settingFeature));
+                buttonList.add(new ButtonSettingToggle(x, y, Translations.getMessage("settings.expandDeployableStatus"), settingFeature));
             }
         } else if (setting == EnumUtils.FeatureSetting.DISCORD_RP_DETAILS || setting == EnumUtils.FeatureSetting.DISCORD_RP_STATE) {
             boxWidth = 140;
@@ -402,44 +384,48 @@ public class SettingsGui extends GuiScreen {
             boxWidth = 100; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
-            buttonList.add(new ButtonSlider(x, y, 100, 20, DungeonMapManager.getDenormalizedMapZoom(), DungeonMapManager.MIN_ZOOM, DungeonMapManager.MAX_ZOOM, 0.1F, new ButtonSlider.OnSliderChangeCallback() {
-                @Override
-                public void sliderUpdated(float value) {
-                    DungeonMapManager.setMapZoom(value);
-                }
-            }).setPrefix("Map Zoom: "));
-
+            buttonList.add(
+                    new ButtonSlider(x, y, 100, 20,
+                            DungeonMapManager.getDenormalizedMapZoom(),
+                            DungeonMapManager.MIN_ZOOM,
+                            DungeonMapManager.MAX_ZOOM,
+                            0.1F,
+                            DungeonMapManager::setDenormalizedMapZoom
+                    ).setPrefix("Map Zoom: ")
+            );
         } else if (setting == EnumUtils.FeatureSetting.COLOUR_BY_RARITY) {
             boxWidth = 31;
             x = halfWidth - boxWidth / 2;
             y = this.getRowHeightSetting(this.row);
             Feature settingFeature = null;
-            if (this.feature == Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE) {
-                settingFeature = Feature.BASE_STAT_BOOST_COLOR_BY_RARITY;
-
-            } else if (feature == Feature.REVENANT_SLAYER_TRACKER) {
-                settingFeature = Feature.REVENANT_COLOR_BY_RARITY;
-
-            } else if (feature == Feature.TARANTULA_SLAYER_TRACKER) {
-                settingFeature = Feature.TARANTULA_COLOR_BY_RARITY;
-
-            } else if (feature == Feature.SVEN_SLAYER_TRACKER) {
-                settingFeature = Feature.SVEN_COLOR_BY_RARITY;
-
-            } else if (feature == Feature.VOIDGLOOM_SLAYER_TRACKER) {
-                settingFeature = Feature.ENDERMAN_COLOR_BY_RARITY;
-
-            } else if (feature == Feature.INFERNO_SLAYER_TRACKER) {
-                settingFeature = Feature.INFERNO_COLOR_BY_RARITY;
-
-            } else if (feature == Feature.RIFTSTALKER_SLAYER_TRACKER) {
-                settingFeature = Feature.RIFTSTALKER_COLOR_BY_RARITY;
-
-            } else if (feature == Feature.DRAGON_STATS_TRACKER) {
-                settingFeature = Feature.DRAGON_STATS_TRACKER_COLOR_BY_RARITY;
+            switch (feature) {
+                case SHOW_BASE_STAT_BOOST_PERCENTAGE:
+                    settingFeature = Feature.BASE_STAT_BOOST_COLOR_BY_RARITY;
+                    break;
+                case REVENANT_SLAYER_TRACKER:
+                    settingFeature = Feature.REVENANT_COLOR_BY_RARITY;
+                    break;
+                case TARANTULA_SLAYER_TRACKER:
+                    settingFeature = Feature.TARANTULA_COLOR_BY_RARITY;
+                    break;
+                case SVEN_SLAYER_TRACKER:
+                    settingFeature = Feature.SVEN_COLOR_BY_RARITY;
+                    break;
+                case VOIDGLOOM_SLAYER_TRACKER:
+                    settingFeature = Feature.VOIDGLOOM_COLOR_BY_RARITY;
+                    break;
+                case INFERNO_SLAYER_TRACKER:
+                    settingFeature = Feature.INFERNO_COLOR_BY_RARITY;
+                    break;
+                case RIFTSTALKER_SLAYER_TRACKER:
+                    settingFeature = Feature.RIFTSTALKER_COLOR_BY_RARITY;
+                    break;
+                case DRAGON_STATS_TRACKER:
+                    settingFeature = Feature.DRAGON_STATS_TRACKER_COLOR_BY_RARITY;
+                    break;
             }
 
-            buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.colorByRarity"), main, settingFeature));
+            buttonList.add(new ButtonSettingToggle(x, y, Translations.getMessage("settings.colorByRarity"), settingFeature));
 
         } else if (setting == EnumUtils.FeatureSetting.TEXT_MODE) {
             boxWidth = 31;
@@ -457,7 +443,7 @@ public class SettingsGui extends GuiScreen {
                 settingFeature = Feature.SVEN_TEXT_MODE;
 
             } else if (feature == Feature.VOIDGLOOM_SLAYER_TRACKER) {
-                settingFeature = Feature.ENDERMAN_TEXT_MODE;
+                settingFeature = Feature.VOIDGLOOM_TEXT_MODE;
 
             } else if (feature == Feature.INFERNO_SLAYER_TRACKER) {
                 settingFeature = Feature.INFERNO_TEXT_MODE;
@@ -469,7 +455,7 @@ public class SettingsGui extends GuiScreen {
                 settingFeature = Feature.DRAGON_STATS_TRACKER_TEXT_MODE;
             }
 
-            buttonList.add(new ButtonToggleTitle(x, y, Translations.getMessage("settings.textMode"), main, settingFeature));
+            buttonList.add(new ButtonSettingToggle(x, y, Translations.getMessage("settings.textMode"), settingFeature));
 
         } else if (setting == EnumUtils.FeatureSetting.ZEALOT_SPAWN_AREAS_ONLY) {
             boxWidth = 31;
@@ -487,26 +473,26 @@ public class SettingsGui extends GuiScreen {
                 settingFeature = Feature.SHOW_SUMMONING_EYE_COUNT_ZEALOT_SPAWN_AREAS_ONLY;
             }
 
-            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, settingFeature));
+            buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), settingFeature));
 
         } else if (setting == EnumUtils.FeatureSetting.DISABLE_SPIRIT_SCEPTRE_MESSAGES) {
             boxWidth = 31;
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
 
-            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, Feature.DISABLE_SPIRIT_SCEPTRE_MESSAGES));
+            buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), Feature.DISABLE_SPIRIT_SCEPTRE_MESSAGES));
 
         } else if (setting == EnumUtils.FeatureSetting.HEALING_CIRCLE_OPACITY) {
             boxWidth = 150;
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
-            buttonList.add(new NewButtonSlider(x, y, boxWidth, 20, main.getConfigValues().getHealingCircleOpacity().getValue(), 0, 1, 0.01F,
+            buttonList.add(new ButtonSlider(x, y, boxWidth, 20, main.getConfigValues().getHealingCircleOpacity().getValue(), 0, 1, 0.01F,
                     updatedValue -> main.getConfigValues().getHealingCircleOpacity().setValue(updatedValue)).setPrefix("Healing Circle Opacity: "));
         } else if (setting == EnumUtils.FeatureSetting.TREVOR_SHOW_QUEST_COOLDOWN) {
             boxWidth = 31; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
-            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
+            buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), setting.getFeatureEquivalent()));
             row += .1F;
             y = getRowHeightSetting(row);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y + 15, Translations.getMessage("settings.trevorTheTrapper.showQuestCooldownDescription"), true, ColorCode.GRAY.getColor()));
@@ -515,7 +501,7 @@ public class SettingsGui extends GuiScreen {
             boxWidth = 31; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
-            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
+            buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), setting.getFeatureEquivalent()));
             row += .4F;
             y = getRowHeightSetting(row);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y + 15, Translations.getMessage("messages.entityOutlinesRequirement"), true, ColorCode.GRAY.getColor()));
@@ -524,12 +510,12 @@ public class SettingsGui extends GuiScreen {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
             buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", main, feature));
+            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", feature));
         } else {
             boxWidth = 31; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
-            buttonList.add(new ButtonToggleTitle(x, y, setting.getMessage(), main, setting.getFeatureEquivalent()));
+            buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), setting.getFeatureEquivalent()));
         }
         row++;
     }

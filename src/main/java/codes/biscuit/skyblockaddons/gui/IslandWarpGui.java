@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.gui;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonToggleNew;
+import codes.biscuit.skyblockaddons.gui.buttons.ButtonCustomToggle;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandButton;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandMarkerButton;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
@@ -70,10 +70,10 @@ public class IslandWarpGui extends GuiScreen {
         int x = Math.round(screenWidth/ISLAND_SCALE-SHIFT_LEFT-475);
         int y = Math.round(screenHeight/ISLAND_SCALE-SHIFT_TOP);
 
-        this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60 * 2, 50,
+        this.buttonList.add(new ButtonCustomToggle(x, y - 30 - 60 * 2, 50,
                 Feature.FANCY_WARP_MENU::isEnabled,
                 () -> Feature.FANCY_WARP_MENU.setEnabled(Feature.FANCY_WARP_MENU.isDisabled())));
-        this.buttonList.add(new ButtonToggleNew(x, y - 30 - 60, 50,
+        this.buttonList.add(new ButtonCustomToggle(x, y - 30 - 60, 50,
                 Feature.DOUBLE_WARP::isEnabled,
                 () -> Feature.DOUBLE_WARP.setEnabled(Feature.DOUBLE_WARP.isDisabled())));
     }

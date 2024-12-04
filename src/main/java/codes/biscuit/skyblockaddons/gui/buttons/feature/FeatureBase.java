@@ -1,6 +1,5 @@
-package codes.biscuit.skyblockaddons.gui.buttons;
+package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui;
@@ -15,23 +14,20 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
-public class ButtonNormal extends ButtonFeature {
-
-    private SkyblockAddons main;
+public class FeatureBase extends ButtonFeature {
 
     // Used to calculate the transparency when fading in.
-    private long timeOpened = System.currentTimeMillis();
+    private final long timeOpened = System.currentTimeMillis();
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
      */
-    public ButtonNormal(double x, double y, String buttonText, SkyblockAddons main, Feature feature) {
-        this((int)x, (int)y, 140, 50, buttonText, main, feature);
+    public FeatureBase(double x, double y, String buttonText, Feature feature) {
+        this((int)x, (int)y, 140, 50, buttonText, feature);
     }
 
-    public ButtonNormal(double x, double y, int width, int height, String buttonText, SkyblockAddons main, Feature feature) {
+    public FeatureBase(double x, double y, int width, int height, String buttonText, Feature feature) {
         super(0, (int)x, (int)y, buttonText, feature);
-        this.main = main;
         this.feature = feature;
         this.width = width;
         this.height = height;
@@ -40,19 +36,9 @@ public class ButtonNormal extends ButtonFeature {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (visible) {
-            int alpha;
-            float alphaMultiplier = 1F;
-            if (main.getUtils().isFadingIn()) {
-                long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-                int fadeMilis = 500;
-                if (timeSinceOpen <= fadeMilis) {
-                    alphaMultiplier = (float) timeSinceOpen / fadeMilis;
-                }
-                alpha = (int) (255 * alphaMultiplier);
-            } else {
-                alpha = 255;
-            }
-            hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            float alphaMultiplier = getAlphaMultiplier(timeOpened);
+            int alpha = alphaMultiplier == 1F ? 255 : (int) (255 * alphaMultiplier);
+            hovered = isHovered(mouseX, mouseY);
             if (alpha < 4) alpha = 4;
             int fontColor = main.getUtils().getDefaultBlue(alpha);
             if (main.getConfigValues().isRemoteDisabled(feature)) {
@@ -173,7 +159,7 @@ public class ButtonNormal extends ButtonFeature {
             y += 10;
         }
 
-        int x = (int)((xPosition+width/2)/scale) - Minecraft.getMinecraft().fontRendererObj.getStringWidth(credit.getAuthor()) / 2 - 17;
+        int x = (int)((xPosition+width/2F)/scale) - Minecraft.getMinecraft().fontRendererObj.getStringWidth(credit.getAuthor()) / 2 - 17;
         return new IntPair(x, y);
     }
 

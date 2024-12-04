@@ -5,13 +5,12 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.geom.Point2D;
 
-public class IslandMarkerButton extends GuiButton {
+public class IslandMarkerButton extends SkyblockAddonsButton {
 
     public static final int MAX_SELECT_RADIUS = 90;
 

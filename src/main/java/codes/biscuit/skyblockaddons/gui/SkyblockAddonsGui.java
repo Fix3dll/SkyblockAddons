@@ -4,6 +4,11 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonCredit;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeature;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.FeatureBase;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonSettings;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeatureToggle;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -141,14 +146,14 @@ public class SkyblockAddonsGui extends GuiScreen {
         int skip = (page - 1) * displayCount;
 
         boolean max = page == 1;
-        buttonList.add(new ButtonArrow(width / 2D - 15 - 50, height - 70, main, ButtonArrow.ArrowType.LEFT, max));
+        buttonList.add(new ButtonArrow(width / 2D - 15 - 50, height - 70, ButtonArrow.ArrowType.LEFT, max));
         max = features.size() - skip - displayCount <= 0;
-        buttonList.add(new ButtonArrow(width / 2D - 15 + 50, height - 70, main, ButtonArrow.ArrowType.RIGHT, max));
+        buttonList.add(new ButtonArrow(width / 2D - 15 + 50, height - 70, ButtonArrow.ArrowType.RIGHT, max));
 
-        //buttonList.add(new ButtonSocial(width / 2 + 175, 30, main, EnumUtils.Social.DISCORD));
-        buttonList.add(new ButtonSocial(width / 2D + 125, 30, main, EnumUtils.Social.MODRINTH));
-        buttonList.add(new ButtonSocial(width / 2D + 150, 30, main, EnumUtils.Social.GITHUB));
-        buttonList.add(new ButtonSocial(width / 2D + 175, 30, main, EnumUtils.Social.BUYMEACOFFEE));
+        //buttonList.add(new ButtonSocial(width / 2 + 175, 30, EnumUtils.Social.DISCORD));
+        buttonList.add(new ButtonSocial(width / 2D + 125, 30, EnumUtils.Social.MODRINTH));
+        buttonList.add(new ButtonSocial(width / 2D + 150, 30, EnumUtils.Social.GITHUB));
+        buttonList.add(new ButtonSocial(width / 2D + 175, 30, EnumUtils.Social.BUYMEACOFFEE));
 
         for (Feature feature : features) {
             if (skip == 0) {
@@ -292,7 +297,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                     mc.displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.GENERAL_SETTINGS));
                 }
 
-            } else if (abstractButton instanceof ButtonToggle) {
+            } else if (abstractButton instanceof ButtonFeatureToggle) {
                 if (main.getConfigValues().isRemoteDisabled(feature)) return;
                 if (feature.isDisabled()) {
                     feature.setEnabled(true);
@@ -334,7 +339,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                             break;
                     }
                 }
-                ((ButtonToggle)abstractButton).onClick();
+                ((ButtonFeatureToggle)abstractButton).onClick();
 
             } else if (abstractButton instanceof ButtonSolid) {
                 if (feature == Feature.TEXT_STYLE) {
@@ -505,54 +510,54 @@ public class SkyblockAddonsGui extends GuiScreen {
         double y = getRowHeight(row);
 
         if (buttonType == EnumUtils.ButtonType.TOGGLE) {
-            ButtonNormal button = new ButtonNormal(x, y, text, main, feature);
-            buttonList.add(button);
+            FeatureBase featureGui = new FeatureBase(x, y, text, feature);
+            buttonList.add(featureGui);
 
             EnumUtils.FeatureCredit credit = EnumUtils.FeatureCredit.fromFeature(feature);
             if (credit != null) {
-                IntPair coords = button.getCreditsCoords(credit);
-                buttonList.add(new ButtonCredit(coords.getX(), coords.getY(), text, credit, feature, button.isMultilineButton()));
+                IntPair coords = featureGui.getCreditsCoords(credit);
+                buttonList.add(new ButtonCredit(coords.getX(), coords.getY(), text, credit, feature, featureGui.isMultilineButton()));
             }
 
             if (!feature.getSettings().isEmpty()) {
-                buttonList.add(new ButtonSettings(x + boxWidth - 33, y + boxHeight - 20, text, main, feature));
+                buttonList.add(new ButtonSettings(x + boxWidth - 33, y + boxHeight - 20, text, feature));
             }
-            buttonList.add(new ButtonToggle(x+40, y+boxHeight-18, main, feature));
+            buttonList.add(new ButtonFeatureToggle(x+40, y+boxHeight-18, feature));
 
         } else if (buttonType == EnumUtils.ButtonType.SOLID) {
-            buttonList.add(new ButtonNormal(x, y, text, main, feature));
+            buttonList.add(new FeatureBase(x, y, text, feature));
 
             switch (feature) {
                 case TEXT_STYLE:
                 case CHROMA_MODE:
                 case TURN_ALL_FEATURES_CHROMA:
-                    buttonList.add(new ButtonSolid(x+10, y + boxHeight - 23, 120, 15, "", main, feature));
+                    buttonList.add(new ButtonSolid(x+10, y + boxHeight - 23, 120, 15, "", feature));
                     break;
                 case WARNING_TIME:
                     int solidButtonX = x+(boxWidth/2)-17;
                     buttonList.add(new ButtonModify(solidButtonX-20, y + boxHeight - 23, 15, 15, "+",Feature.ADD));
-                    buttonList.add(new ButtonSolid(solidButtonX, y + boxHeight - 23, 35, 15, "", main, feature));
+                    buttonList.add(new ButtonSolid(solidButtonX, y + boxHeight - 23, 35, 15, "", feature));
                     buttonList.add(new ButtonModify(solidButtonX+35+5, y + boxHeight - 23, 15, 15,"-", Feature.SUBTRACT));
                     break;
             }
 
         } else if (buttonType == EnumUtils.ButtonType.CHROMA_SLIDER) {
-            buttonList.add(new ButtonNormal(x, y, text, main, feature));
+            buttonList.add(new FeatureBase(x, y, text, feature));
 
             if (feature == Feature.CHROMA_SPEED) {
-                buttonList.add(new NewButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSpeed().floatValue(),
+                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSpeed().floatValue(),
                         0.5F, 20, 0.5F, value -> main.getConfigValues().getChromaSpeed().setValue(value)));
 
             } else if (feature == Feature.CHROMA_SIZE) {
-                buttonList.add(new NewButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSize().floatValue(),
+                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSize().floatValue(),
                         1, 100, 1, value -> main.getConfigValues().getChromaSize().setValue(value)));
 
             } else if (feature == Feature.CHROMA_BRIGHTNESS) {
-                buttonList.add(new NewButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaBrightness().floatValue(),
+                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaBrightness().floatValue(),
                         0, 1, 0.01F, value -> main.getConfigValues().getChromaBrightness().setValue(value)));
 
             } else if (feature == Feature.CHROMA_SATURATION) {
-                buttonList.add(new NewButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSaturation().floatValue(),
+                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSaturation().floatValue(),
                         0, 1, 0.01F, value -> main.getConfigValues().getChromaSaturation().setValue(value)));
             }
         }
@@ -575,7 +580,7 @@ public class SkyblockAddonsGui extends GuiScreen {
         int boxHeight = 50;
         int x = halfWidth+90;
         double y = getRowHeight(displayCount/3d+1);
-        buttonList.add(new ButtonNormal(x, y, boxWidth, boxHeight, Translations.getMessage("languageText")+Feature.LANGUAGE.getMessage(), main, Feature.LANGUAGE));
+        buttonList.add(new FeatureBase(x, y, boxWidth, boxHeight, Translations.getMessage("languageText")+Feature.LANGUAGE.getMessage(), Feature.LANGUAGE));
     }
 
     private void addEditLocationsButton() {
@@ -584,7 +589,7 @@ public class SkyblockAddonsGui extends GuiScreen {
         int boxHeight = 50;
         int x = halfWidth-90-boxWidth;
         double y = getRowHeight(displayCount/3d+1);
-        buttonList.add(new ButtonNormal(x, y, boxWidth, boxHeight, Feature.EDIT_LOCATIONS.getMessage(), main, Feature.EDIT_LOCATIONS));
+        buttonList.add(new FeatureBase(x, y, boxWidth, boxHeight, Feature.EDIT_LOCATIONS.getMessage(), Feature.EDIT_LOCATIONS));
     }
 
     private void addGeneralSettingsButton() {
@@ -593,7 +598,7 @@ public class SkyblockAddonsGui extends GuiScreen {
         int boxHeight = 15;
         int x = halfWidth+90;
         double y = getRowHeight(1)-25;
-        buttonList.add(new ButtonNormal(x, y, boxWidth, boxHeight, Translations.getMessage("settings.tab.generalSettings"), main, Feature.GENERAL_SETTINGS));
+        buttonList.add(new FeatureBase(x, y, boxWidth, boxHeight, Translations.getMessage("settings.tab.generalSettings"), Feature.GENERAL_SETTINGS));
     }
 
 

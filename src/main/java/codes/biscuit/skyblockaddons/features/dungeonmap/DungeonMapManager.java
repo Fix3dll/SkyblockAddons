@@ -507,34 +507,18 @@ public class DungeonMapManager {
     }
 
     /**
-     * Returns the map zoom factor from {@code codes.biscuit.skyblockaddons.config.ConfigValues#mapZoom}.
-     *
-     * @return the map zoom factor from {@code codes.biscuit.skyblockaddons.config.ConfigValues#mapZoom}
-     */
-    public static float getMapZoom() {
-        return main.getConfigValues().getMapZoom().getValue();
-    }
-
-    /**
      * Returns the denormalized map zoom factor
      * @return he denormalized map zoom factor
      */
-    public static float getDenormalizedMapZoom(){
-        return MathUtils.denormalizeSliderValue(getMapZoom(), MIN_ZOOM, MAX_ZOOM, 0.1F);
+    public static float getDenormalizedMapZoom() {
+        return MathUtils.denormalizeSliderValue(main.getConfigValues().getMapZoom().getValue(), MIN_ZOOM, MAX_ZOOM, 0.1F);
     }
 
-    public static void setDenormalizedMapZoom(float value){
-        setMapZoom(MathUtils.normalizeSliderValue(value, MIN_ZOOM, MAX_ZOOM,0.1F));
-    }
-
-    /**
-     * Sets the map zoom factor in {@code codes.biscuit.skyblockaddons.config.ConfigValues#mapZoom}.
-     * The new value must be between 0.5f and 5f inclusive.
-     *
-     * @param value the new map zoom factor
-     */
-    public static void setMapZoom(float value) {
-        main.getConfigValues().getMapZoom().setValue(value);
+    public static void setDenormalizedMapZoom(float value) {
+        main.getConfigValues().getMapZoom().setValue(
+                MathUtils.normalizeSliderValue(value, MIN_ZOOM, MAX_ZOOM,0.1F)
+        );
         main.getConfigValues().saveConfig();
     }
+
 }

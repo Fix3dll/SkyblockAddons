@@ -1,38 +1,36 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.function.Supplier;
 
-public class ButtonToggleNew extends GuiButton {
+public class ButtonCustomToggle extends SkyblockAddonsButton {
 
-    private static ResourceLocation TOGGLE_INSIDE_CIRCLE = new ResourceLocation("skyblockaddons", "gui/toggleinsidecircle.png");
-    private static ResourceLocation TOGGLE_BORDER = new ResourceLocation("skyblockaddons", "gui/toggleborder.png");
-    private static ResourceLocation TOGGLE_INSIDE_BACKGROUND = new ResourceLocation("skyblockaddons", "gui/toggleinsidebackground.png");
+    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = new ResourceLocation("skyblockaddons", "gui/toggleinsidecircle.png");
+    private static final ResourceLocation TOGGLE_BORDER = new ResourceLocation("skyblockaddons", "gui/toggleborder.png");
+    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = new ResourceLocation("skyblockaddons", "gui/toggleinsidebackground.png");
+    private static final int animationSlideTime = 150;
 
-    private int circlePaddingLeft;
-    private int animationSlideDistance;
-    private int animationSlideTime = 150;
+    private final int circlePaddingLeft;
+    private final int animationSlideDistance;
 
     // Used to calculate the transparency when fading in.
-    private long timeOpened = System.currentTimeMillis();
+    private final long timeOpened = System.currentTimeMillis();
 
     private long animationButtonClicked = -1;
 
-    private Supplier<Boolean> enabledSupplier;
-    private Runnable onClickRunnable;
+    private final Supplier<Boolean> enabledSupplier;
+    private final Runnable onClickRunnable;
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
      */
-    public ButtonToggleNew(double x, double y, int height, Supplier<Boolean> enabledSupplier, Runnable onClickRunnable) {
+    public ButtonCustomToggle(double x, double y, int height, Supplier<Boolean> enabledSupplier, Runnable onClickRunnable) {
         super(0, (int)x, (int)y, "");
         this.width = (int)Math.round(height*2.07);
         this.height = height;
@@ -45,17 +43,8 @@ public class ButtonToggleNew extends GuiButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-
-        float alphaMultiplier = 1F;
-        if (main.getUtils().isFadingIn()) {
-            long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-            int fadeMilis = 500;
-            if (timeSinceOpen <= fadeMilis) {
-                alphaMultiplier = (float) timeSinceOpen / fadeMilis;
-            }
-        }
-        hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        float alphaMultiplier = getAlphaMultiplier(timeOpened);
+        hovered = isHovered(mouseX, mouseY);
         GlStateManager.enableBlend();
         GlStateManager.color(1,1,1,alphaMultiplier*0.7F);
         if (hovered) {
@@ -115,13 +104,11 @@ public class ButtonToggleNew extends GuiButton {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        boolean pressed = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-
+        boolean pressed = isHovered(mouseX, mouseY);
         if (pressed) {
             this.animationButtonClicked = System.currentTimeMillis();
             onClickRunnable.run();
         }
-
         return pressed;
     }
 }

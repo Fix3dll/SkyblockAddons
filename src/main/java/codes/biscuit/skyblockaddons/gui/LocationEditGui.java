@@ -3,9 +3,9 @@ package codes.biscuit.skyblockaddons.gui;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonColorWheel;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonColorWheel;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonResize;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonResize;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonSolid;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
@@ -29,22 +29,27 @@ import static codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui.BUTTON_MAX_WIDT
 
 public class LocationEditGui extends GuiScreen {
 
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final int BOX_HEIGHT = 20;
+    private static final int SNAPPING_RADIUS = 120;
+    private static final int SNAP_PULL = 1;
+    private final static Feature[] locationEditGuiFeatures = {
+            Feature.RESET_LOCATION, Feature.SHOW_FEATURE_NAMES_ON_HOVER, Feature.RESCALE_FEATURES,
+            Feature.SHOW_COLOR_ICONS, Feature.ENABLE_FEATURE_SNAPPING, Feature.RESIZE_BARS
+    };
+
     private EditMode editMode = EditMode.RESCALE;
     private boolean showColorIcons = true;
     private boolean enableSnapping = true;
     private boolean showFeatureNameOnHover = true;
 
-    private final SkyblockAddons main = SkyblockAddons.getInstance();
-    // The feature that is currently being dragged, or null for nothing.
+    /** The feature that is currently being dragged, or null for nothing. */
     private Feature draggedFeature;
-    // The feature the mouse is currently hovering over, null for nothing.
+    /** The feature the mouse is currently hovering over, null for nothing. */
     private Feature hoveredFeature;
 
     private boolean resizing;
     private ButtonResize.Corner resizingCorner;
-
-    private int originalHeight;
-    private int originalWidth;
 
     private float xOffset;
     private float yOffset;
@@ -55,13 +60,6 @@ public class LocationEditGui extends GuiScreen {
     private final Map<Feature, ButtonLocation> buttonLocations = new EnumMap<>(Feature.class);
 
     private boolean closing = false;
-
-    private static final int SNAPPING_RADIUS = 120;
-    private static final int SNAP_PULL = 1;
-
-    private final static Feature[] locationEditGuiFeatures = {Feature.RESET_LOCATION, Feature.SHOW_FEATURE_NAMES_ON_HOVER,
-            Feature.RESIZE_BARS, Feature.SHOW_COLOR_ICONS, Feature.ENABLE_FEATURE_SNAPPING, Feature.RESCALE_FEATURES};
-    private static final int BOX_HEIGHT = 20;
 
     public LocationEditGui(int lastPage, EnumUtils.GuiTab lastTab) {
         this.lastPage = lastPage;
@@ -106,7 +104,7 @@ public class LocationEditGui extends GuiScreen {
             if (boxWidth > BUTTON_MAX_WIDTH) boxWidth = BUTTON_MAX_WIDTH;
             x = scaledResolution.getScaledWidth() / 2 - boxWidth / 2;
             y += BOX_HEIGHT + 5;
-            buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, main, feature));
+            buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, feature));
         }
     }
 
@@ -169,7 +167,9 @@ public class LocationEditGui extends GuiScreen {
     }
 
     private void addResizeCorners(Feature feature) {
-        buttonList.removeIf((button) -> button instanceof ButtonResize && ((ButtonResize)button).getFeature() == feature);
+        buttonList.removeIf(
+                button -> button instanceof ButtonResize && ((ButtonResize)button).getFeature() == feature
+        );
 
         ButtonLocation buttonLocation = buttonLocations.get(feature);
         if (buttonLocation == null) {
@@ -324,9 +324,8 @@ public class LocationEditGui extends GuiScreen {
             }
         }
 
-        if (showFeatureNameOnHover) {
+        if (showFeatureNameOnHover && draggedFeature == null) {
             ButtonLocation hoveredButton = getHoveredFeatureButton();
-
             if (hoveredButton != null) {
                 drawHoveringText(Collections.singletonList(hoveredButton.getFeature().getMessage()), mouseX, mouseY);
             }
@@ -433,7 +432,7 @@ public class LocationEditGui extends GuiScreen {
         }
     }
 
-    enum Edge {
+    public enum Edge {
         LEFT,
         TOP,
         RIGHT,
@@ -732,7 +731,7 @@ public class LocationEditGui extends GuiScreen {
     }
 
     @Getter
-    static class Snap {
+    public static class Snap {
 
         private final Edge thisSnapEdge;
         private final Edge otherSnapEdge;

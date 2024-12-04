@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonText;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
@@ -26,11 +27,14 @@ public class ButtonModify extends ButtonText {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-        int boxColor;
-        int boxAlpha = 100;
+        hovered = isHovered(mouseX, mouseY);
+        int boxColor, fontColor, boxAlpha;
         if (hovered && !hitMaximum()) {
+            fontColor = ColorCode.WHITE.getColor();
             boxAlpha = 170;
+        } else {
+            fontColor = new Color(255, 255, 160, 255).getRGB();
+            boxAlpha = 100;
         }
         if (hitMaximum()) {
             boxColor = ColorCode.GRAY.getColor(boxAlpha);
@@ -42,10 +46,6 @@ public class ButtonModify extends ButtonText {
             }
         }
         GlStateManager.enableBlend();
-        int fontColor = ColorCode.WHITE.getColor();
-        if (hovered && !hitMaximum()) {
-            fontColor = new Color(255, 255, 160, 255).getRGB();
-        }
         drawButtonBoxAndText(boxColor, boxAlpha, 1, fontColor);
     }
 

@@ -4,7 +4,6 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -16,7 +15,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class ButtonBanner extends GuiButton {
+public class ButtonBanner extends SkyblockAddonsButton {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Logger logger = SkyblockAddons.getLogger();
@@ -28,14 +27,13 @@ public class ButtonBanner extends GuiButton {
     private static boolean grabbedBanner;
 
     // Used to calculate the transparency when fading in.
-    private final long timeOpened;
+    private final long timeOpened = System.currentTimeMillis();
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
      */
     public ButtonBanner(double x, double y) {
         super(0, (int)x, (int)y, "");
-        timeOpened = System.currentTimeMillis();
 
         if (!grabbedBanner) {
             grabbedBanner = true;
@@ -76,14 +74,7 @@ public class ButtonBanner extends GuiButton {
         }
 
         if (banner != null) { // Could have not been loaded yet.
-            float alphaMultiplier = 1F;
-            if (main.getUtils().isFadingIn()) {
-                long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-                int fadeMilis = 500;
-                if (timeSinceOpen <= fadeMilis) {
-                    alphaMultiplier = (float) timeSinceOpen / fadeMilis;
-                }
-            }
+            float alphaMultiplier = getAlphaMultiplier(timeOpened);
 
             float scale = (float) WIDTH / bannerImage.getWidth(); // max width
 

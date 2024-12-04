@@ -170,8 +170,8 @@ public enum Feature {
     SHOW_ENDER_CHEST_PREVIEW(185, "settings.showEnderChestPreview", null, false),
     VOIDGLOOM_SLAYER_TRACKER(186, "settings.voidgloomSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_END),
     HIDE_WHEN_NOT_IN_END(187, null, false),
-    ENDERMAN_COLOR_BY_RARITY(188, null, false),
-    ENDERMAN_TEXT_MODE(189, null, true),
+    VOIDGLOOM_COLOR_BY_RARITY(188, null, false),
+    VOIDGLOOM_TEXT_MODE(189, null, true),
     HIDE_PLAYERS_NEAR_NPCS(190, "settings.hidePlayersNearNPCs", null, false),
     OVERFLOW_MANA(191, "settings.showOverflowManaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_AQUA), false),
     DOUBLE_WARP(192, "settings.doubleWarp", null, true),
@@ -275,7 +275,7 @@ public enum Feature {
             SHOW_PLAYER_HEADS_ON_MAP, SHOW_GLOWING_ITEMS_ON_ISLAND, SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL, REVENANT_COLOR_BY_RARITY,
             TARANTULA_COLOR_BY_RARITY, SVEN_COLOR_BY_RARITY, REVENANT_TEXT_MODE, TARANTULA_TEXT_MODE, SVEN_TEXT_MODE,
             DRAGON_STATS_TRACKER_COLOR_BY_RARITY, HIDE_WHEN_NOT_IN_CASTLE, HIDE_WHEN_NOT_IN_SPIDERS_DEN, HIDE_WHEN_NOT_IN_END,
-            ENDERMAN_COLOR_BY_RARITY, ENDERMAN_TEXT_MODE, HIDE_WHEN_NOT_IN_CRIMSON, INFERNO_COLOR_BY_RARITY, INFERNO_TEXT_MODE,
+            VOIDGLOOM_COLOR_BY_RARITY, VOIDGLOOM_TEXT_MODE, HIDE_WHEN_NOT_IN_CRIMSON, INFERNO_COLOR_BY_RARITY, INFERNO_TEXT_MODE,
             HIDE_WHEN_NOT_IN_CRYPTS, HIDE_WHEN_NOT_IN_RIFT, PERSONAL_COMPACTOR_PREVIEW, SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP,
             SHOW_SKILL_XP_GAINED, SHOW_SALVAGE_ESSENCES_COUNTER, HEALING_CIRCLE_OPACITY, ENCHANTMENTS_HIGHLIGHT,
             ENCHANTMENT_COMMA_COLOR, ENCHANTMENT_PERFECT_COLOR, ENCHANTMENT_GREAT_COLOR, ENCHANTMENT_GOOD_COLOR,
@@ -399,18 +399,6 @@ public enum Feature {
 
     public boolean isColorFeature() {
         return guiFeatureData != null && guiFeatureData.getDefaultColor() != null;
-    }
-
-    /**
-     * If the Feature is renderable, it returns GuiFeatureData that holds the data.
-     * @return {@link GuiFeatureData} of renderable feature, if not returns null
-     */
-    public GuiFeatureData getGuiFeatureData() {
-        if (guiFeatureData == null || guiFeatureData.getDrawType() == null) {
-            return null;
-        } else {
-            return guiFeatureData;
-        }
     }
 
     public ColorCode getDefaultColor() {
