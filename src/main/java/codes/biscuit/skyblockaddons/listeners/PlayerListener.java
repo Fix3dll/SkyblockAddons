@@ -1166,8 +1166,12 @@ public class PlayerListener {
 
         SkyblockOre minedOre = SkyblockOre.getByStateOrNull(blockState);
         if (minedOre != null) {
-            if (minedOre.getBlockType() == SkyblockOre.BlockType.ORE) {
-                main.getPersistentValuesManager().addOresMined();
+            switch (minedOre.getBlockType()) {
+                case ORE:
+                case DWARVEN_METAL:
+                case GEMSTONE:
+                    main.getPersistentValuesManager().addOresMined();
+                    break;
             }
 
             if (DevUtils.isLoggingSkyBlockOre()) {
