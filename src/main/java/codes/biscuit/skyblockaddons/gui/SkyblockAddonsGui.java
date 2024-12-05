@@ -142,9 +142,14 @@ public class SkyblockAddonsGui extends GuiScreen {
         }
 
         if (tab != EnumUtils.GuiTab.GENERAL_SETTINGS) {
-            for (Feature feature : Feature.values())
-                if (main.getConfigValues().isRemoteDisabled(feature) && matchesSearch(feature.getMessage()))
+            for (Feature feature : Feature.values()) {
+                if (Feature.getEditGuiFeatures().contains(feature)) {
+                    continue;
+                }
+                if (main.getConfigValues().isRemoteDisabled(feature) && matchesSearch(feature.getMessage())) {
                     features.add(feature); // add disabled features at the end
+                }
+            }
         }
 
         int skip = (page - 1) * displayCount;
