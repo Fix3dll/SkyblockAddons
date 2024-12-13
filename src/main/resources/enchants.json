@@ -49,7 +49,7 @@
       "nbtName": "caster"
     },
     "cayenne": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Cayenne",
       "maxLevel": 5,
       "nbtName": "cayenne"
@@ -385,7 +385,7 @@
       "nbtName": "PROSECUTE"
     },
     "prosperity": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Prosperity",
       "maxLevel": 5,
       "nbtName": "prosperity"
@@ -403,7 +403,7 @@
       "nbtName": "punch"
     },
     "quantum": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Quantum",
       "maxLevel": 5,
       "nbtName": "quantum"
@@ -553,7 +553,7 @@
       "nbtName": "titan_killer"
     },
     "transylvanian": {
-      "goodLevel": 4,
+      "goodLevel": 0,
       "loreName": "Transylvanian",
       "maxLevel": 5,
       "nbtName": "transylvanian"
