@@ -20,8 +20,8 @@ import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureItemOutlines;
 import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureTrackerQuest;
 import codes.biscuit.skyblockaddons.features.SkillXpManager;
 import codes.biscuit.skyblockaddons.features.discordrpc.DiscordRPCManager;
-import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
-import codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui;
+import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
+import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.listeners.*;
 import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.misc.Updater;
@@ -312,6 +312,10 @@ public class SkyblockAddons {
         return LogManager.getLogger(fullClassName, new SkyblockAddonsMessageFactory(simpleClassName));
     }
 
+    /**
+     * Returns the time at which the function was called in the valid time zone of Hypixel Skyblock as immutable.
+     * @return ZonedDateTime
+     */
     public static ZonedDateTime getHypixelZonedDateTime() {
         return ZonedDateTime.now(hypixelZoneId);
     }

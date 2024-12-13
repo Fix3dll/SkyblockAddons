@@ -1,15 +1,14 @@
-package codes.biscuit.skyblockaddons.gui.buttons;
+package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui;
-import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonText;
+import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.Color;
 
-public class ButtonOpenColorMenu extends ButtonText {
+public class ButtonOpenColorMenu extends ButtonFeature {
 
     private static final float WIDTH_LIMIT = SkyblockAddonsGui.BUTTON_MAX_WIDTH - 10F;
 
@@ -20,6 +19,7 @@ public class ButtonOpenColorMenu extends ButtonText {
         super(0, (int)x, (int)y, buttonText, feature);
         this.width = width;
         this.height = height;
+        this.feature = feature;
     }
 
     @Override

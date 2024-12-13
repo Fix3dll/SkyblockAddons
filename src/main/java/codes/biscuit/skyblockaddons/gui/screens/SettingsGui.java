@@ -1,6 +1,5 @@
-package codes.biscuit.skyblockaddons.gui;
+package codes.biscuit.skyblockaddons.gui.screens;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.core.Translations;
@@ -8,31 +7,25 @@ import codes.biscuit.skyblockaddons.features.discordrpc.DiscordStatus;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeature;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonOpenColorMenu;
 import codes.biscuit.skyblockaddons.utils.*;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.GuiIngameForge;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class SettingsGui extends GuiScreen {
-    static final SkyblockAddons main = SkyblockAddons.getInstance();
-    static final Logger logger = SkyblockAddons.getLogger();
+public class SettingsGui extends SkyblockAddonsScreen {
 
     final Feature feature;
     final int lastPage;
     final EnumUtils.GuiTab lastTab;
     final List<EnumUtils.FeatureSetting> settings;
-    final long timeOpened = System.currentTimeMillis();
     int page;
     float row = 1;
     int column = 1;
@@ -89,8 +82,8 @@ public class SettingsGui extends GuiScreen {
                 addButton(setting);
             }
         }
+        addSocials();
     }
-
 
     private int findDisplayCount() {
         int maxX = new ScaledResolution(mc).getScaledHeight() - 70 - 25;
@@ -107,31 +100,20 @@ public class SettingsGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (this.reInit) {
-            this.reInit = false;
-            this.initGui();
+        if (reInit) {
+            reInit = false;
+            initGui();
         }
 
-        long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-        float alphaMultiplier; // This all calculates the alpha for the fade-in effect.
-        alphaMultiplier = 0.5F;
-        if (main.getUtils().isFadingIn()) {
-            int fadeMilis = 500;
-            if (timeSinceOpen <= fadeMilis) {
-                alphaMultiplier = (float) timeSinceOpen / (fadeMilis * 2);
-            }
-        }
-        int alpha = (int) (255 * alphaMultiplier); // Alpha of the text will increase from 0 to 127 over 500ms.
-
-        int startColor = new Color(0, 0, 0, (int) (alpha * 0.5)).getRGB();
-        int endColor = new Color(0, 0, 0, alpha).getRGB();
-        drawGradientRect(0, 0, width, height, startColor, endColor);
+        float alphaMultiplier = calculateAlphaMultiplier();
+        // Alpha of the text will increase from 0 to 127 over 500ms.
+        int alpha = (int) (255 * alphaMultiplier);
         GlStateManager.enableBlend();
+        drawGradientBackground(alpha);
 
         if (alpha < 4) alpha = 4; // Text under 4 alpha appear 100% transparent for some reason o.O
         int defaultBlue = main.getUtils().getDefaultBlue(alpha * 2);
-
-        SkyblockAddonsGui.drawDefaultTitleText(this, alpha * 2);
+        drawDefaultTitleText(this, alpha * 2);
 
         if (feature != Feature.LANGUAGE) {
             int halfWidth = width / 2;
@@ -162,11 +144,11 @@ public class SettingsGui extends GuiScreen {
             }
             int height = (int) (getRowHeightSetting(numSettings) - 50);
             int y = (int) getRowHeight(1);
-            GlStateManager.enableBlend();
             if (!(this instanceof EnchantmentSettingsGui)) {
                 DrawUtils.drawRect(x, y, width, height, ColorUtils.getDummySkyblockColor(28, 29, 41, 230), 4);
             }
             SkyblockAddonsGui.drawScaledString(this, Translations.getMessage("settings.settings"), 110, defaultBlue, 1.5, 0);
+            GlStateManager.disableBlend();
         }
         super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
     }
@@ -181,9 +163,6 @@ public class SettingsGui extends GuiScreen {
             DataUtils.loadLocalizedStrings(language, true);
             main.setKeyBindingDescriptions();
             returnToGui();
-        } else if (abstractButton instanceof ButtonSwitchTab) {
-            ButtonSwitchTab tab = (ButtonSwitchTab) abstractButton;
-            mc.displayGuiScreen(new SkyblockAddonsGui(1, tab.getTab()));
         } else if (abstractButton instanceof ButtonOpenColorMenu) {
             closingGui = true;
             // Temp fix until feature re-write. Open a color selection panel specific to the color setting
@@ -211,16 +190,6 @@ public class SettingsGui extends GuiScreen {
             }
 
             ((ButtonSettingToggle)abstractButton).onClick();
-        } else if (feature == Feature.SHOW_BACKPACK_PREVIEW) {
-            main.getConfigValues().setBackpackStyle(main.getConfigValues().getBackpackStyle().getNextType());
-            closingGui = true;
-            Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(feature, page, lastPage, lastTab, settings));
-            closingGui = false;
-        } else if (feature == Feature.DEPLOYABLE_STATUS_DISPLAY && abstractButton instanceof ButtonSolid) {
-            main.getConfigValues().setDeployableDisplayStyle(main.getConfigValues().getDeployableDisplayStyle().getNextType());
-            closingGui = true;
-            Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(feature, page, lastPage, lastTab, settings));
-            closingGui = false;
         } else if (abstractButton instanceof ButtonArrow) {
             ButtonArrow arrow = (ButtonArrow) abstractButton;
             if (arrow.isNotMax()) {
@@ -233,11 +202,6 @@ public class SettingsGui extends GuiScreen {
                     mc.displayGuiScreen(new SettingsGui(feature, --page, lastPage, lastTab, settings));
                 }
             }
-        } else if (feature == Feature.PET_DISPLAY) {
-            main.getConfigValues().setPetItemStyle(main.getConfigValues().getPetItemStyle().getNextType());
-            closingGui = true;
-            Minecraft.getMinecraft().displayGuiScreen(new SettingsGui(feature, page, lastPage, lastTab, settings));
-            closingGui = false;
         }
     }
 
@@ -304,13 +268,21 @@ public class SettingsGui extends GuiScreen {
         } else if (setting == EnumUtils.FeatureSetting.BACKPACK_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("settings.backpackStyle"), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", feature));
+            buttonList.add(new ButtonText(halfWidth, (int) y - 10, Translations.getMessage("settings.backpackStyle"), true, 0xFFFFFFFF));
+            buttonList.add(new ButtonCycling(x, (int) y, 140, 20,
+                    Arrays.asList(EnumUtils.BackpackStyle.values()),
+                    main.getConfigValues().getBackpackStyle().ordinal(),
+                    index -> main.getConfigValues().setBackpackStyle(EnumUtils.BackpackStyle.values()[index])
+            ));
         } else if (setting == EnumUtils.FeatureSetting.DEPLOYABLE_DISPLAY_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", feature));
+            buttonList.add(new ButtonText(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
+            buttonList.add(new ButtonCycling(x, (int) y, 140, 20,
+                    Arrays.asList(EnumUtils.DeployableDisplayStyle.values()),
+                    main.getConfigValues().getDeployableDisplayStyle().ordinal(),
+                    index -> main.getConfigValues().setDeployableDisplayStyle(EnumUtils.DeployableDisplayStyle.values()[index])
+            ));
         } else if (setting == EnumUtils.FeatureSetting.EXPAND_DEPLOYABLE_STATUS) {
             boxWidth = 31;
             x = halfWidth - (boxWidth / 2);
@@ -331,9 +303,9 @@ public class SettingsGui extends GuiScreen {
                 currentStatus = main.getConfigValues().getDiscordDetails();
             }
 
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, setting == EnumUtils.FeatureSetting.DISCORD_RP_DETAILS ? Translations.getMessage("messages.firstStatus") :
+            buttonList.add(new ButtonText(halfWidth, (int) y - 10, setting == EnumUtils.FeatureSetting.DISCORD_RP_DETAILS ? Translations.getMessage("messages.firstStatus") :
                     Translations.getMessage("messages.secondStatus"), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSelect(x, (int) y, boxWidth, 20, Arrays.asList(DiscordStatus.values()), currentStatus.ordinal(), index -> {
+            buttonList.add(new ButtonCycling(x, (int) y, boxWidth, 20, Arrays.asList(DiscordStatus.values()), currentStatus.ordinal(), index -> {
                 final DiscordStatus selectedStatus = DiscordStatus.values()[index];
                 if (setting == EnumUtils.FeatureSetting.DISCORD_RP_STATE) {
                     main.getDiscordRPCManager().setStateLine(selectedStatus);
@@ -351,9 +323,9 @@ public class SettingsGui extends GuiScreen {
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
 
-                buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, Translations.getMessage("messages.fallbackStatus"), true, 0xFFFFFFFF));
+                buttonList.add(new ButtonText(halfWidth, (int) y - 10, Translations.getMessage("messages.fallbackStatus"), true, 0xFFFFFFFF));
                 currentStatus = main.getConfigValues().getDiscordAutoDefault();
-                buttonList.add(new ButtonSelect(x, (int) y, boxWidth, 20, Arrays.asList(DiscordStatus.values()), currentStatus.ordinal(), index -> {
+                buttonList.add(new ButtonCycling(x, (int) y, boxWidth, 20, Arrays.asList(DiscordStatus.values()), currentStatus.ordinal(), index -> {
                     final DiscordStatus selectedStatus = DiscordStatus.values()[index];
                     main.getConfigValues().setDiscordAutoDefault(selectedStatus);
                     SettingsGui.this.reInit = true;
@@ -495,7 +467,7 @@ public class SettingsGui extends GuiScreen {
             buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), setting.getFeatureEquivalent()));
             row += .1F;
             y = getRowHeightSetting(row);
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y + 15, Translations.getMessage("settings.trevorTheTrapper.showQuestCooldownDescription"), true, ColorCode.GRAY.getColor()));
+            buttonList.add(new ButtonText(halfWidth, (int) y + 15, Translations.getMessage("settings.trevorTheTrapper.showQuestCooldownDescription"), true, ColorCode.GRAY.getColor()));
             row += .4F;
         } else if (setting == EnumUtils.FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY && feature == Feature.ENTITY_OUTLINES) {
             boxWidth = 31; // Default size and stuff.
@@ -504,13 +476,17 @@ public class SettingsGui extends GuiScreen {
             buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), setting.getFeatureEquivalent()));
             row += .4F;
             y = getRowHeightSetting(row);
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y + 15, Translations.getMessage("messages.entityOutlinesRequirement"), true, ColorCode.GRAY.getColor()));
+            buttonList.add(new ButtonText(halfWidth, (int) y + 15, Translations.getMessage("messages.entityOutlinesRequirement"), true, ColorCode.GRAY.getColor()));
             row += .4F;
         } else if (setting == EnumUtils.FeatureSetting.PET_ITEM_STYLE) {
             boxWidth = 140;
             x = halfWidth - (boxWidth / 2);
-            buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
-            buttonList.add(new ButtonSolid(x, y, 140, 20, "%style%", feature));
+            buttonList.add(new ButtonText(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
+            buttonList.add(new ButtonCycling(x, (int) y, 140, 20,
+                    Arrays.asList(EnumUtils.PetItemStyle.values()),
+                    main.getConfigValues().getPetItemStyle().ordinal(),
+                    index -> main.getConfigValues().setPetItemStyle(EnumUtils.PetItemStyle.values()[index])
+            ));
         } else {
             boxWidth = 31; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);

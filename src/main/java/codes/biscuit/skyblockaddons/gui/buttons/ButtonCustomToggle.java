@@ -19,9 +19,6 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
     private final int circlePaddingLeft;
     private final int animationSlideDistance;
 
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
-
     private long animationButtonClicked = -1;
 
     private final Supplier<Boolean> enabledSupplier;
@@ -43,14 +40,9 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        float alphaMultiplier = getAlphaMultiplier(timeOpened);
         hovered = isHovered(mouseX, mouseY);
-        GlStateManager.enableBlend();
-        GlStateManager.color(1,1,1,alphaMultiplier*0.7F);
-        if (hovered) {
-            GlStateManager.color(1,1,1,1);
-        }
 
+        GlStateManager.enableBlend();
         ColorUtils.bindColor(0xFF1e252e);
         mc.getTextureManager().bindTexture(TOGGLE_BORDER);
         DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
@@ -87,6 +79,7 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
         int circleSize = Math.round(height*0.6F); // 60% of the height.
         int y = Math.round(yPosition+(this.height*0.2F)); // 20% OF the height.
         DrawUtils.drawModalRectWithCustomSizedTexture(startingX, y,0,0, circleSize, circleSize, circleSize, circleSize, true);
+        GlStateManager.disableBlend();
     }
 
     /**

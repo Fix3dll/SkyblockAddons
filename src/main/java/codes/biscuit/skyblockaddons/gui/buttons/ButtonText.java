@@ -2,12 +2,12 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import net.minecraft.client.Minecraft;
 
-public class ButtonTextNew extends SkyblockAddonsButton {
+public class ButtonText extends SkyblockAddonsButton {
 
     private final boolean centered;
     private final int color;
 
-    public ButtonTextNew(int x, int y, String text, boolean centered, int color) {
+    public ButtonText(int x, int y, String text, boolean centered, int color) {
         super(0, x, y, text);
         this.centered = centered;
         this.color = color;

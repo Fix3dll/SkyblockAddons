@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerBoss;
+import codes.biscuit.skyblockaddons.gui.buttons.ButtonCycling;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.util.ResourceLocation;
@@ -68,10 +69,12 @@ public class EnumUtils {
     public enum ButtonType {
         TOGGLE,
         SOLID,
-        CHROMA_SLIDER
+        CHROMA_SLIDER,
+        CYCLING,
+        STEPPER
     }
 
-    public enum BackpackStyle {
+    public enum BackpackStyle implements ButtonCycling.SelectItem {
         GUI("settings.backpackStyles.regular"),
         BOX("settings.backpackStyles.compact");
 
@@ -81,20 +84,18 @@ public class EnumUtils {
             this.TRANSLATION_KEY = translationKey;
         }
 
-        public String getMessage() {
+        @Override
+        public String getDisplayName() {
             return Translations.getMessage(TRANSLATION_KEY);
         }
 
-        public BackpackStyle getNextType() {
-            int nextType = ordinal() + 1;
-            if (nextType > values().length - 1) {
-                nextType = 0;
-            }
-            return values()[nextType];
+        @Override
+        public String getDescription() {
+            return null;
         }
     }
 
-    public enum DeployableDisplayStyle {
+    public enum DeployableDisplayStyle implements ButtonCycling.SelectItem {
         DETAILED("settings.deployableStyle.detailed"),
         COMPACT("settings.deployableStyle.compact");
 
@@ -104,20 +105,18 @@ public class EnumUtils {
             this.TRANSLATION_KEY = translationKey;
         }
 
-        public String getMessage() {
+        @Override
+        public String getDisplayName() {
             return Translations.getMessage(TRANSLATION_KEY);
         }
 
-        public DeployableDisplayStyle getNextType() {
-            int nextType = ordinal() + 1;
-            if (nextType > values().length - 1) {
-                nextType = 0;
-            }
-            return values()[nextType];
+        @Override
+        public String getDescription() {
+            return null;
         }
     }
 
-    public enum TextStyle {
+    public enum TextStyle implements ButtonCycling.SelectItem {
         STYLE_ONE("settings.textStyles.one"),
         STYLE_TWO("settings.textStyles.two");
 
@@ -131,12 +130,14 @@ public class EnumUtils {
             return Translations.getMessage(TRANSLATION_KEY);
         }
 
-        public TextStyle getNextType() {
-            int nextType = ordinal() + 1;
-            if (nextType > values().length - 1) {
-                nextType = 0;
-            }
-            return values()[nextType];
+        @Override
+        public String getDisplayName() {
+            return Translations.getMessage(TRANSLATION_KEY);
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
         }
     }
 
@@ -144,7 +145,7 @@ public class EnumUtils {
         MAIN, GENERAL_SETTINGS
     }
 
-    public enum PetItemStyle {
+    public enum PetItemStyle implements ButtonCycling.SelectItem {
         NONE("settings.none"),
         DISPLAY_NAME("settings.petItemStyles.displayName"),
         SHOW_ITEM("settings.petItemStyles.showItem");
@@ -155,16 +156,56 @@ public class EnumUtils {
             this.TRANSLATION_KEY = translationKey;
         }
 
-        public String getMessage() {
+        @Override
+        public String getDisplayName() {
             return Translations.getMessage(TRANSLATION_KEY);
         }
 
-        public PetItemStyle getNextType() {
-            int nextType = ordinal() + 1;
-            if (nextType > values().length - 1) {
-                nextType = 0;
-            }
-            return values()[nextType];
+        @Override
+        public String getDescription() {
+            return null;
+        }
+    }
+
+    public enum ChromaMode implements ButtonCycling.SelectItem {
+        ALL_SAME_COLOR("settings.chromaModes.allTheSame"),
+        FADE("settings.chromaModes.fade");
+
+        private final String TRANSLATION_KEY;
+
+        ChromaMode(String translationKey) {
+            TRANSLATION_KEY = translationKey;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return Translations.getMessage(TRANSLATION_KEY);
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+    }
+
+    public enum AllFeaturesChroma implements ButtonCycling.SelectItem {
+        DISABLED("messages.enableAll"),
+        ENABLED("messages.disableAll");
+
+        private final String TRANSLATION_KEY;
+
+        AllFeaturesChroma(String translationKey) {
+            TRANSLATION_KEY = translationKey;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return Translations.getMessage(TRANSLATION_KEY);
+        }
+
+        @Override
+        public String getDescription() {
+            return "";
         }
     }
 
@@ -416,29 +457,6 @@ public class EnumUtils {
         EDIT_LOCATIONS,
         SETTINGS,
         WARP
-    }
-
-    public enum ChromaMode {
-        ALL_SAME_COLOR("settings.chromaModes.allTheSame"),
-        FADE("settings.chromaModes.fade");
-
-        private final String TRANSLATION_KEY;
-
-        ChromaMode(String translationKey) {
-            TRANSLATION_KEY = translationKey;
-        }
-
-        public String getMessage() {
-            return Translations.getMessage(TRANSLATION_KEY);
-        }
-
-        public ChromaMode getNextType() {
-            int nextType = ordinal() + 1;
-            if (nextType > values().length - 1) {
-                nextType = 0;
-            }
-            return values()[nextType];
-        }
     }
 
     @Getter

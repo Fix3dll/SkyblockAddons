@@ -37,10 +37,11 @@ public class ButtonSlider extends SkyblockAddonsButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        hovered = isHovered(mouseX, mouseY);
+
+        GlStateManager.enableBlend();
         mc.getTextureManager().bindTexture(buttonTextures);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.hovered = isHovered(mouseX, mouseY);
-        GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.blendFunc(770, 771);
         int boxAlpha = hovered ? 170 : 100;

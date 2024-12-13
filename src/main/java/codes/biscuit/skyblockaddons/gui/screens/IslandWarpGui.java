@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.gui;
+package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -25,7 +24,7 @@ import java.util.Locale;
 
 import static codes.biscuit.skyblockaddons.core.Translations.*;
 
-public class IslandWarpGui extends GuiScreen {
+public class IslandWarpGui extends SkyblockAddonsScreen {
 
     @Getter @Setter private static Marker doubleWarpMarker;
 
@@ -45,8 +44,6 @@ public class IslandWarpGui extends GuiScreen {
 
     @Override
     public void initGui() {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-
         for (Island island : Island.values()) {
             if (island == Island.JERRYS_WORKSHOP
                     && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER

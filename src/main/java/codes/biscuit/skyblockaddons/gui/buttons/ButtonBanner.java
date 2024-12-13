@@ -17,7 +17,6 @@ import java.net.URL;
 
 public class ButtonBanner extends SkyblockAddonsButton {
 
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Logger logger = SkyblockAddons.getLogger();
     private static final int WIDTH = 130;
 
@@ -25,9 +24,6 @@ public class ButtonBanner extends SkyblockAddonsButton {
     private static BufferedImage bannerImage;
 
     private static boolean grabbedBanner;
-
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
@@ -74,26 +70,26 @@ public class ButtonBanner extends SkyblockAddonsButton {
         }
 
         if (banner != null) { // Could have not been loaded yet.
-            float alphaMultiplier = getAlphaMultiplier(timeOpened);
+            float alphaMultiplier = calculateAlphaMultiplier();
 
             float scale = (float) WIDTH / bannerImage.getWidth(); // max width
 
-            hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition +
-                    WIDTH && mouseY < yPosition + bannerImage.getHeight() * scale;
+            hovered = mouseX >= xPosition && mouseX < xPosition + WIDTH
+                    && mouseY >= yPosition && mouseY < yPosition + bannerImage.getHeight() * scale;
             GlStateManager.enableBlend();
-
-            if (hovered) {
-                GlStateManager.color(1, 1, 1, alphaMultiplier * 1);
-            } else {
-                GlStateManager.color(1, 1, 1, alphaMultiplier * 0.8F);
-            }
-
+            GlStateManager.color(1F, 1F, 1F, alphaMultiplier * (hovered ? 1F : 0.8F));
             mc.getTextureManager().bindTexture(banner);
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, 1);
-            drawModalRectWithCustomSizedTexture(Math.round(xPosition / scale),
-                    Math.round(yPosition / scale), 0, 0, width, height, width, height);
+            drawModalRectWithCustomSizedTexture(
+                    Math.round(xPosition / scale),
+                    Math.round(yPosition / scale),
+                    0, 0,
+                    width, height,
+                    width, height
+            );
             GlStateManager.popMatrix();
+            GlStateManager.disableBlend();
         }
     }
 

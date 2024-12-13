@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
-import codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui;
+import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -12,12 +12,9 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class FeatureBase extends ButtonFeature {
-
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
@@ -36,10 +33,11 @@ public class FeatureBase extends ButtonFeature {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (visible) {
-            float alphaMultiplier = getAlphaMultiplier(timeOpened);
+            float alphaMultiplier = calculateAlphaMultiplier();
             int alpha = alphaMultiplier == 1F ? 255 : (int) (255 * alphaMultiplier);
-            hovered = isHovered(mouseX, mouseY);
             if (alpha < 4) alpha = 4;
+            hovered = isHovered(mouseX, mouseY);
+
             int fontColor = main.getUtils().getDefaultBlue(alpha);
             if (main.getConfigValues().isRemoteDisabled(feature)) {
                 fontColor = new Color(60,60,60).getRGB();
@@ -113,8 +111,8 @@ public class FeatureBase extends ButtonFeature {
                 GlStateManager.pushMatrix();
                 GlStateManager.scale(scale, scale, 1);
                 DrawUtils.drawCenteredText(creditFeature.getAuthor(), (textX / scale), creditsY, fontColor);
-                GlStateManager.disableBlend();
                 GlStateManager.popMatrix();
+                GlStateManager.disableBlend();
             }
 
             if (feature == Feature.LANGUAGE) {

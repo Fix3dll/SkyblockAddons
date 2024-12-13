@@ -2,16 +2,18 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Button that lets the user select one item in a given set of items.
  */
-public class ButtonSelect extends SkyblockAddonsButton {
+public class ButtonCycling extends SkyblockAddonsButton {
 
     private static final ResourceLocation ARROW_LEFT = new ResourceLocation("skyblockaddons", "gui/flatarrowleft.png");
     private static final ResourceLocation ARROW_RIGHT = new ResourceLocation("skyblockaddons", "gui/flatarrowright.png");
@@ -24,7 +26,7 @@ public class ButtonSelect extends SkyblockAddonsButton {
         /**
          * @return A name displayed inside the button
          */
-        String getName();
+        String getDisplayName();
 
         /**
          * @return A description displayed below the button
@@ -32,21 +34,11 @@ public class ButtonSelect extends SkyblockAddonsButton {
         String getDescription();
     }
 
-    @FunctionalInterface
-    public interface OnItemSelectedCallback {
-        /**
-         * Called whenever the selected item changes by clicking the next or previous button.
-         *
-         * @param index The new selected index
-         */
-        void onItemSelected(int index);
-    }
-
     private final List<SelectItem> itemList;
     private int index;
 
     private final int textWidth;
-    private final OnItemSelectedCallback callback;
+    private final Consumer<Integer> callback;
 
     /*
      * Rough sketch of the button
@@ -70,95 +62,86 @@ public class ButtonSelect extends SkyblockAddonsButton {
      * @param selectedIndex initially selected index in the given list of items
      * @param callback      Nullable callback when a new item is selected
      */
-    public ButtonSelect(int x, int y, int width, int height, List<SelectItem> items, int selectedIndex, OnItemSelectedCallback callback) {
+    public ButtonCycling(int x, int y, int width, int height, List<SelectItem> items, int selectedIndex, Consumer<Integer> callback) {
         super(0, x, y, "");
         if(items == null || items.isEmpty()) {
             throw new IllegalArgumentException("Item list must have at least one element.");
+        } else if (callback == null) {
+            throw new IllegalArgumentException("ButtonCycling's callback cannot be null!");
         }
 
-        textWidth = width - (2 * height) - 6; // 2 * 3 text padding on both sides
+        this.textWidth = width - (2 * height) - 6; // 2 * 3 text padding on both sides
         this.width = width;
         this.height = height;
-        itemList = items;
+        this.itemList = items;
         this.index = selectedIndex > 0 && selectedIndex < itemList.size() ? selectedIndex : 0;
         this.callback = callback;
     }
 
     @Override
-    public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
-        final int endX = xPosition + width;
-
+    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         int color = SkyblockAddons.getInstance().getUtils().getDefaultColor(100);
         int leftColor = SkyblockAddons.getInstance().getUtils().getDefaultColor(isOverLeftButton(mouseX, mouseY) ? 200 : 90);
         int rightColor = SkyblockAddons.getInstance().getUtils().getDefaultColor(isOverRightButton(mouseX, mouseY) ? 200 : 90);
 
-        String name = itemList.get(index).getName();
-        String trimmedName = minecraft.fontRendererObj.trimStringToWidth(name, textWidth);
+        String name = itemList.get(index).getDisplayName();
+        String trimmedName = mc.fontRendererObj.trimStringToWidth(name, textWidth);
         if (!name.equals(trimmedName)) {
             trimmedName = ellipsize(trimmedName);
         }
         String description = itemList.get(index).getDescription();
         // background / text area
-        drawRect(xPosition, yPosition, endX, yPosition + height, color);
+        GlStateManager.enableBlend();
+        drawRect(xPosition, yPosition, xPosition + width, yPosition + height, color);
         // left button
         drawRect(xPosition, yPosition, xPosition + height, yPosition + height, leftColor);
         //right button
-        drawRect(endX - height, yPosition, endX, yPosition + height, rightColor);
+        drawRect(xPosition + width - height, yPosition, xPosition + width, yPosition + height, rightColor);
 
         // inside text
-        drawCenteredString(minecraft.fontRendererObj, trimmedName, xPosition + width / 2, yPosition + height / 4, ColorCode.WHITE.getColor());
+        drawCenteredString(mc.fontRendererObj, trimmedName, xPosition + width / 2, yPosition + height / 4, ColorCode.WHITE.getColor());
         // description
-        drawCenteredString(minecraft.fontRendererObj, description, xPosition + width / 2, yPosition + height + 2, ColorCode.GRAY.getColor());
+        drawCenteredString(mc.fontRendererObj, description, xPosition + width / 2, yPosition + height + 2, ColorCode.GRAY.getColor());
 
         GlStateManager.color(1, 1, 1, 1);
 
         // Arrow buttons are square so width = height
-        minecraft.getTextureManager().bindTexture(ARROW_LEFT);
+        mc.getTextureManager().bindTexture(ARROW_LEFT);
         //noinspection SuspiciousNameCombination
-        drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, height, height, height, height);
+        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, height, height, height, height, true);
 
-        minecraft.getTextureManager().bindTexture(ARROW_RIGHT);
+        mc.getTextureManager().bindTexture(ARROW_RIGHT);
         //noinspection SuspiciousNameCombination
-        drawModalRectWithCustomSizedTexture(endX - height, yPosition, 0, 0, height, height, height, height);
+        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition + width - height, yPosition, 0, 0, height, height, height, height, true);
 
         if (!name.equals(trimmedName)) {
-            if(isOverText(mouseX, mouseY)) {
+            if (isOverText(mouseX, mouseY)) {
                 // draw tooltip next to the cursor showing the full title
-                final int stringWidth = minecraft.fontRendererObj.getStringWidth(name);
+                final int stringWidth = mc.fontRendererObj.getStringWidth(name);
                 int rectLeft = mouseX + 3;
                 int rectTop = mouseY + 3;
                 int rectRight = rectLeft + stringWidth + 8;
                 int rectBottom = rectTop + 12;
                 drawRect(rectLeft, rectTop, rectRight, rectBottom, ColorCode.BLACK.getColor());
-                minecraft.fontRendererObj.drawString(name, rectLeft + 4, rectTop+2, ColorCode.WHITE.getColor());
+                mc.fontRendererObj.drawString(name, rectLeft + 4, rectTop+2, ColorCode.WHITE.getColor());
             }
         }
+        GlStateManager.disableBlend();
     }
 
     @Override
     public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
         if (isOverLeftButton(mouseX, mouseY)) {
             index = index == itemList.size() - 1 ? 0 : index + 1;
-            notifyCallback(index);
+            callback.accept(index);
             return true;
         }
         if (isOverRightButton(mouseX, mouseY)) {
             index = index == 0 ? itemList.size() - 1 : index - 1;
-            notifyCallback(index);
+            callback.accept(index);
             return true;
         }
         return false;
-    }
-
-    /**
-     * Notifies the callback - if it's not null - that the given index was selected.
-     *
-     * @param index Selected index
-     */
-    private void notifyCallback(int index) {
-        if(callback != null) {
-            callback.onItemSelected(index);
-        }
     }
 
     private boolean isOverText(int mouseX, int mouseY) {
@@ -169,7 +152,7 @@ public class ButtonSelect extends SkyblockAddonsButton {
     }
 
     /**
-     * @return Whether the the given mouse position is hovering over the left arrow button
+     * @return Whether the given mouse position is hovering over the left arrow button
      */
     private boolean isOverLeftButton(int mouseX, int mouseY) {
         return mouseX > xPosition
@@ -179,7 +162,7 @@ public class ButtonSelect extends SkyblockAddonsButton {
     }
 
     /**
-     * @return Whether the the given mouse position is hovering over the right arrow button
+     * @return Whether the given mouse position is hovering over the right arrow button
      */
     private boolean isOverRightButton(int mouseX, int mouseY) {
         return mouseX > xPosition + width - height
@@ -190,7 +173,6 @@ public class ButtonSelect extends SkyblockAddonsButton {
 
     /**
      * Replaces the last character in the given string with the ellipses character {@code …}
-     *
      * @param text Text to ellipsize
      * @return Input text with … at the end
      */

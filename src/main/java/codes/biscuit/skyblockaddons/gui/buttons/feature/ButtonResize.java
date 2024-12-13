@@ -31,6 +31,7 @@ public class ButtonResize extends ButtonFeature {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         float scale = main.getConfigValues().getGuiScale(feature);
+        GlStateManager.enableBlend();
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale,scale,1);
         hovered = mouseX >= (x - SIZE) * scale && mouseY >= (y - SIZE) * scale
@@ -38,6 +39,7 @@ public class ButtonResize extends ButtonFeature {
         int color = hovered ? ColorCode.WHITE.getColor() : ColorCode.WHITE.getColor(70);
         DrawUtils.drawRectAbsolute(x - SIZE,y - SIZE, x + SIZE, y + SIZE, color);
         GlStateManager.popMatrix();
+        GlStateManager.disableBlend();
     }
 
     @Override

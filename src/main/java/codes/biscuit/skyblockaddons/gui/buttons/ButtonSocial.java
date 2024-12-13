@@ -7,12 +7,10 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
+@Getter
 public class ButtonSocial extends SkyblockAddonsButton {
 
-    @Getter private final EnumUtils.Social social;
-
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
+    private final EnumUtils.Social social;
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
@@ -26,12 +24,13 @@ public class ButtonSocial extends SkyblockAddonsButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        float alphaMultiplier = getAlphaMultiplier(timeOpened);
+        float alphaMultiplier = calculateAlphaMultiplier();
         hovered = isHovered(mouseX, mouseY);
         GlStateManager.enableBlend();
         GlStateManager.color(1,1,1,alphaMultiplier * (hovered ? 1F : 0.7F));
         mc.getTextureManager().bindTexture(social.getResourceLocation());
         DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, width, height, width, height, true);
+        GlStateManager.disableBlend();
     }
 
 }

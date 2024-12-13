@@ -24,7 +24,7 @@ import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
-import codes.biscuit.skyblockaddons.gui.IslandWarpGui;
+import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 
 import codes.biscuit.skyblockaddons.utils.ActionBarParser;
 import codes.biscuit.skyblockaddons.utils.ColorCode;

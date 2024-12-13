@@ -18,9 +18,6 @@ public class ButtonFeatureToggle extends ButtonFeature {
     private static final int ANIMATION_SLIDE_DISTANCE = 12;
     private static final int ANIMATION_SLIDE_TIME = 150;
 
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
-
     private long animationButtonClicked = -1;
 
     /**
@@ -35,10 +32,9 @@ public class ButtonFeatureToggle extends ButtonFeature {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        float alphaMultiplier = getAlphaMultiplier(timeOpened);
         hovered = isHovered(mouseX, mouseY);
+
         GlStateManager.enableBlend();
-        GlStateManager.color(1,1,1,hovered ? 1 : alphaMultiplier * 0.7F);
         ColorUtils.bindColor(0xFF1E252E);
         mc.getTextureManager().bindTexture(TOGGLE_BORDER);
         DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
@@ -72,9 +68,10 @@ public class ButtonFeatureToggle extends ButtonFeature {
 
         startingX += enabled ? slideAnimationOffset : -slideAnimationOffset;
 
-        GlStateManager.color(1,1,1,1);
+        GlStateManager.color(1, 1, 1, 1);
         mc.getTextureManager().bindTexture(TOGGLE_INSIDE_CIRCLE);
-        DrawUtils.drawModalRectWithCustomSizedTexture(startingX, yPosition+3,0,0,9,9,9,9, true);
+        DrawUtils.drawModalRectWithCustomSizedTexture(startingX, yPosition+3, 0, 0, 9, 9, 9, 9, true);
+        GlStateManager.disableBlend();
     }
 
     private int getStartingPosition(boolean enabled) {

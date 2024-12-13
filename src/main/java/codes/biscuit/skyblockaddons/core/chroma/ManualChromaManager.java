@@ -24,17 +24,16 @@ public class ManualChromaManager {
 
     /**
      * Before rending a string that supports chroma, call this method so it marks the text
-     * to have the color fade applied to it.<br><br>
-     *
+     * to have the color fade applied to it.<br>
      * After calling this & doing the drawString, make sure to call {@link ManualChromaManager#doneRenderingText()}.
-     *
      * @param feature The feature to check if fade chroma is enabled.
      */
     public static void renderingText(Feature feature) {
-        if (SkyblockAddons.getInstance().getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE &&
-                SkyblockAddons.getInstance().getConfigValues().getChromaFeatures().contains(feature)) {
+        SkyblockAddons main = SkyblockAddons.getInstance();
+        if (main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE
+                && main.getConfigValues().getChromaFeatures().contains(feature)) {
             coloringTextChroma = true;
-            featureScale = SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature);
+            featureScale = main.getConfigValues().getGuiScale(feature);
         }
     }
 

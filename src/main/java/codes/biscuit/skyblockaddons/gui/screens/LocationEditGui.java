@@ -1,37 +1,34 @@
-package codes.biscuit.skyblockaddons.gui;
+package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.GuiFeatureData;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.gui.buttons.ButtonCycling;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonColorWheel;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonResize;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonSolid;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonSolid;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
-import static codes.biscuit.skyblockaddons.gui.SkyblockAddonsGui.BUTTON_MAX_WIDTH;
+public class LocationEditGui extends SkyblockAddonsScreen {
 
-public class LocationEditGui extends GuiScreen {
-
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final int BOX_HEIGHT = 20;
     private static final int SNAPPING_RADIUS = 120;
     private static final int SNAP_PULL = 1;
@@ -90,12 +87,26 @@ public class LocationEditGui extends GuiScreen {
 
         for (Feature feature : guiFeatures) {
             String featureName = feature.getMessage();
-            int boxWidth = mc.fontRendererObj.getStringWidth(featureName) + 10;
-            if (boxWidth > BUTTON_MAX_WIDTH) boxWidth = BUTTON_MAX_WIDTH;
+            int boxWidth = feature == Feature.RESCALE_FEATURES
+                    ? SkyblockAddonsGui.BUTTON_MAX_WIDTH
+                    : mc.fontRendererObj.getStringWidth(featureName) + 10;
+            if (boxWidth > SkyblockAddonsGui.BUTTON_MAX_WIDTH) boxWidth = SkyblockAddonsGui.BUTTON_MAX_WIDTH;
             x = scaledResolution.getScaledWidth() / 2 - boxWidth / 2;
             y += BOX_HEIGHT + 5;
-            boolean colorChangeWithFeature = feature != Feature.RESET_LOCATION && feature != Feature.RESCALE_FEATURES;
-            buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, feature, colorChangeWithFeature));
+
+            if (feature == Feature.RESCALE_FEATURES) {
+                buttonList.add(new ButtonCycling(x, y, boxWidth, BOX_HEIGHT, Arrays.asList(EditMode.values()), editMode.ordinal(), index -> {
+                    editMode = EditMode.values()[index];
+                    closing = true;
+                    mc.displayGuiScreen(new LocationEditGui(lastPage, lastTab));
+                    closing = false;
+                    addResizeButtons();
+                }));
+            } else if (feature == Feature.RESET_LOCATION) {
+                buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, feature, 0xFF7878,false));
+            } else {
+                buttonList.add(new ButtonSolid(x, y, boxWidth, BOX_HEIGHT, featureName, feature, true));
+            }
         }
     }
 
@@ -275,10 +286,8 @@ public class LocationEditGui extends GuiScreen {
             recalculateResizeButtons();
         }
         recalculateColorWheels();
+        drawGradientBackground(64, 128);
 
-        int startColor = new Color(0,0, 0, 64).getRGB();
-        int endColor = new Color(0,0, 0, 128).getRGB();
-        drawGradientRect(0, 0, width, height, startColor, endColor);
         for (EnumUtils.AnchorPoint anchorPoint : EnumUtils.AnchorPoint.values()) {
             ScaledResolution sr = new ScaledResolution(mc);
             int x = anchorPoint.getX(sr.getScaledWidth());
@@ -648,13 +657,6 @@ public class LocationEditGui extends GuiScreen {
                             }
                     }
                 }
-            } else if (feature == Feature.RESCALE_FEATURES) {
-                editMode = editMode.getNextType();
-                closing = true;
-                mc.displayGuiScreen(new LocationEditGui(lastPage, lastTab));
-                closing = false;
-                addResizeButtons();
-
             } else if (feature == Feature.SHOW_COLOR_ICONS) {
                 boolean enabled = Feature.SHOW_COLOR_ICONS.isEnabled();
                 if (enabled) {
@@ -779,7 +781,7 @@ public class LocationEditGui extends GuiScreen {
         }
     }
 
-    public enum EditMode {
+    public enum EditMode implements ButtonCycling.SelectItem {
         RESCALE_FEATURES("messages.rescaleFeatures"),
         RESIZE_BARS("messages.resizeBars"),
         NONE("messages.none");
@@ -790,16 +792,14 @@ public class LocationEditGui extends GuiScreen {
             this.TRANSLATION_KEY = translationKey;
         }
 
-        public String getMessage() {
+        @Override
+        public String getDisplayName() {
             return Translations.getMessage(TRANSLATION_KEY);
         }
 
-        public EditMode getNextType() {
-            int nextType = ordinal() + 1;
-            if (nextType > values().length - 1) {
-                nextType = 0;
-            }
-            return values()[nextType];
+        @Override
+        public String getDescription() {
+            return "";
         }
     }
 

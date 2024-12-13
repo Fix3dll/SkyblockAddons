@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.features.discordrpc;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.*;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonSelect;
+import codes.biscuit.skyblockaddons.gui.buttons.ButtonCycling;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  * Statuses that are shown on the Discord RPC feature
  */
 @SuppressWarnings("UnnecessaryUnicodeEscape")
-public enum DiscordStatus implements ButtonSelect.SelectItem {
+public enum DiscordStatus implements ButtonCycling.SelectItem {
 
     NONE("discordStatus.titleNone", "discordStatus.descriptionNone", () -> null),
     LOCATION("discordStatus.titleLocation", "discordStatus.descriptionLocation",
@@ -166,7 +166,7 @@ public enum DiscordStatus implements ButtonSelect.SelectItem {
     }
 
     @Override
-    public String getName() {
+    public String getDisplayName() {
         return Translations.getMessage(title);
     }
 

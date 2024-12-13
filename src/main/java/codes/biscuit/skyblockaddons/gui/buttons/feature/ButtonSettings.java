@@ -10,9 +10,6 @@ public class ButtonSettings extends ButtonFeature {
 
     private static final ResourceLocation GEAR = new ResourceLocation("skyblockaddons", "gui/gear.png");
 
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
-
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
      */
@@ -26,11 +23,10 @@ public class ButtonSettings extends ButtonFeature {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (visible) {
-            float alphaMultiplier = getAlphaMultiplier(timeOpened);
+            float alphaMultiplier = calculateAlphaMultiplier();
             hovered = isHovered(mouseX, mouseY);
             // Alpha multiplier is from 0 to 1, multiplying it creates the fade effect.
             // Regular features are red if disabled, green if enabled or part of the gui feature is enabled.
-            GlStateManager.enableBlend();
             GlStateManager.color(1, 1, 1, hovered ? 1 : alphaMultiplier * 0.7F);
             mc.getTextureManager().bindTexture(GEAR);
             DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, width, height, width, height, true);

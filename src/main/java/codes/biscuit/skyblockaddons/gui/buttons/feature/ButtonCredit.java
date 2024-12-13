@@ -14,9 +14,6 @@ public class ButtonCredit extends ButtonFeature {
     @Getter private final EnumUtils.FeatureCredit credit;
     private final boolean smaller;
 
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
-
     public ButtonCredit(double x, double y, String buttonText, EnumUtils.FeatureCredit credit, Feature feature, boolean smaller) {
         super(0, (int)x, (int)y, buttonText, feature);
         this.feature = feature;
@@ -29,7 +26,7 @@ public class ButtonCredit extends ButtonFeature {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (visible) {
-            float alphaMultiplier = getAlphaMultiplier(timeOpened);
+            float alphaMultiplier = calculateAlphaMultiplier();
 
             float scale = smaller ? 0.6F : 0.8F;
             hovered = isHovered(mouseX, mouseY, scale);
@@ -44,6 +41,7 @@ public class ButtonCredit extends ButtonFeature {
             mc.getTextureManager().bindTexture(WEB);
             drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, 12, 12, 12, 12);
             GlStateManager.popMatrix();
+            GlStateManager.disableBlend();
         }
     }
 

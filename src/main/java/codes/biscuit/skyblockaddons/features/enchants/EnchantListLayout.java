@@ -1,12 +1,12 @@
 package codes.biscuit.skyblockaddons.features.enchants;
 
 import codes.biscuit.skyblockaddons.core.Translations;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonSelect;
+import codes.biscuit.skyblockaddons.gui.buttons.ButtonCycling;
 
 /**
  * Statuses that are shown on the Discord RPC feature
  */
-public enum EnchantListLayout implements ButtonSelect.SelectItem {
+public enum EnchantListLayout implements ButtonCycling.SelectItem {
 
     NORMAL("enchantLayout.titleNormal", "enchantLayout.descriptionNormal"),
     COMPRESS("enchantLayout.titleCompress", "enchantLayout.descriptionCompress"),
@@ -21,7 +21,7 @@ public enum EnchantListLayout implements ButtonSelect.SelectItem {
     }
 
     @Override
-    public String getName() {
+    public String getDisplayName() {
         return Translations.getMessage(title);
     }
 

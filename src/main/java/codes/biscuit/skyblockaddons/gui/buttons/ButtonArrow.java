@@ -12,8 +12,6 @@ public class ButtonArrow extends SkyblockAddonsButton {
     private static final ResourceLocation ARROW_RIGHT = new ResourceLocation("skyblockaddons", "gui/arrowright.png");
     private static final ResourceLocation ARROW_LEFT = new ResourceLocation("skyblockaddons", "gui/arrowleft.png");
 
-    // Used to calculate the transparency when fading in.
-    private final long timeOpened = System.currentTimeMillis();
     @Getter private final ArrowType arrowType;
     private final boolean max;
 
@@ -31,11 +29,11 @@ public class ButtonArrow extends SkyblockAddonsButton {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (visible) {
-            float alphaMultiplier = getAlphaMultiplier(timeOpened);
+            float alphaMultiplier = calculateAlphaMultiplier();
             hovered = isHovered(mouseX, mouseY);
             // Alpha multiplier is from 0 to 1, multiplying it creates the fade effect.
             // Regular features are red if disabled, green if enabled or part of the gui feature is enabled.
-//            GlStateManager.enableBlend();
+            GlStateManager.enableBlend();
             if (arrowType == ArrowType.RIGHT) {
                 mc.getTextureManager().bindTexture(ARROW_RIGHT);
             } else {
@@ -47,6 +45,7 @@ public class ButtonArrow extends SkyblockAddonsButton {
                 GlStateManager.color(1, 1, 1, hovered ? 1F : alphaMultiplier * 0.7F);
             }
             drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height);
+            GlStateManager.disableBlend();
         }
     }
 

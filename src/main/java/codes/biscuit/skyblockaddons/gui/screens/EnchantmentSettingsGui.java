@@ -1,9 +1,10 @@
-package codes.biscuit.skyblockaddons.gui;
+package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantListLayout;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeature;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonOpenColorMenu;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -74,33 +74,25 @@ public class EnchantmentSettingsGui extends SettingsGui {
         }
         buttonList.add(new ButtonArrow(width / 2D - 15 - 150, height - 70, ButtonArrow.ArrowType.LEFT, page == 0));
         buttonList.add(new ButtonArrow(width / 2D - 15 + 150, height - 70, ButtonArrow.ArrowType.RIGHT, page == maxPage));
+        addSocials();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (this.reInit) {
-            this.reInit = false;
-            this.initGui();
+        if (reInit) {
+            reInit = false;
+            initGui();
         }
-        long timeSinceOpen = System.currentTimeMillis() - timeOpened;
-        float alphaMultiplier = 0.5F; // This all calculates the alpha for the fade-in effect.
-        if (main.getUtils().isFadingIn()) {
-            int fadeMilis = 500;
-            if (timeSinceOpen <= fadeMilis) {
-                alphaMultiplier = (float) timeSinceOpen / (fadeMilis * 2);
-            }
-        }
-        int alpha = (int) (255 * alphaMultiplier); // Alpha of the text will increase from 0 to 127 over 500ms.
 
-        int startColor = new Color(0, 0, 0, (int) (alpha * 0.5)).getRGB();
-        int endColor = new Color(0, 0, 0, alpha).getRGB();
-        drawGradientRect(0, 0, width, height, startColor, endColor);
+        float alphaMultiplier = calculateAlphaMultiplier();
+        // Alpha of the text will increase from 0 to 127 over 500ms.
+        int alpha = (int) (255 * alphaMultiplier);
         GlStateManager.enableBlend();
+        drawGradientBackground(alpha);
 
         if (alpha < 4) alpha = 4; // Text under 4 alpha appear 100% transparent for some reason o.O
         int defaultBlue = main.getUtils().getDefaultBlue(alpha * 2);
-
-        SkyblockAddonsGui.drawDefaultTitleText(this, alpha * 2);
+        drawDefaultTitleText(this, alpha * 2);
 
         if (feature != Feature.LANGUAGE) {
             int halfWidth = width / 2;
@@ -118,12 +110,12 @@ public class EnchantmentSettingsGui extends SettingsGui {
             }
             int height = (int) (getRowHeightSetting(numSettings) - 50);
             int y = (int) getRowHeight(1);
-            GlStateManager.enableBlend();
             DrawUtils.drawRect(x, y, width, height, ColorUtils.getDummySkyblockColor(28, 29, 41, 230), 4);
 
             SkyblockAddonsGui.drawScaledString(this, getMessage("settings.settings"), 110, defaultBlue, 1.5, 0);
         }
         super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
+        GlStateManager.disableBlend();
     }
 
     /**
@@ -131,11 +123,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
      */
     @Override
     protected void actionPerformed(GuiButton abstractButton) {
-        if (abstractButton instanceof ButtonSwitchTab) {
-            ButtonSwitchTab tab = (ButtonSwitchTab) abstractButton;
-            mc.displayGuiScreen(new SkyblockAddonsGui(1, tab.getTab()));
-
-        } else if (abstractButton instanceof ButtonOpenColorMenu) {
+        if (abstractButton instanceof ButtonOpenColorMenu) {
             closingGui = true;
             // Temp fix until feature re-write. Open a color selection panel specific to the color setting
             Feature f = ((ButtonOpenColorMenu) abstractButton).feature;
@@ -192,8 +180,8 @@ public class EnchantmentSettingsGui extends SettingsGui {
                 x = halfWidth - (boxWidth / 2);
                 EnchantListLayout currentStatus = main.getConfigValues().getEnchantLayout();
 
-                buttonList.add(new ButtonTextNew(halfWidth, (int) y - 10, getMessage("enchantLayout.title"), true, 0xFFFFFFFF));
-                buttonList.add(new ButtonSelect(x, (int) y, boxWidth, 20, Arrays.asList(EnchantListLayout.values()), currentStatus.ordinal(), index -> {
+                buttonList.add(new ButtonText(halfWidth, (int) y - 10, getMessage("enchantLayout.title"), true, 0xFFFFFFFF));
+                buttonList.add(new ButtonCycling(x, (int) y, boxWidth, 20, Arrays.asList(EnchantListLayout.values()), currentStatus.ordinal(), index -> {
                     final EnchantListLayout enchantLayout = EnchantListLayout.values()[index];
                     main.getConfigValues().setEnchantLayout(enchantLayout);
                     reInit = true;

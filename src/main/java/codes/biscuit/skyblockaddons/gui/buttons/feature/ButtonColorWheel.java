@@ -28,13 +28,14 @@ public class ButtonColorWheel extends ButtonFeature {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         float scale = SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature);
         this.hovered = isHovered(x, y, mouseX, mouseY, scale);
+        GlStateManager.enableBlend();
         GlStateManager.color(1,1,1, hovered ? 1 : 0.5F);
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale,scale,1);
-        GlStateManager.enableBlend();
         mc.getTextureManager().bindTexture(COLOR_WHEEL);
         DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 10, 10, 10, 10, true);
         GlStateManager.popMatrix();
+        GlStateManager.disableBlend();
     }
 
     public static int getSize() {
