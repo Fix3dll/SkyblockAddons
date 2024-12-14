@@ -570,20 +570,16 @@ public class DevUtils {
      * This method reloads all of the mod's settings from the settings file.
      */
     public static void reloadConfig() {
-        logger.info("Reloading settings...");
+        sendMessageOrLog("Reloading settings...");
         main.getConfigValues().loadValues();
-        logger.info("Settings reloaded");
+        sendMessageOrLog("Settings reloaded.");
     }
 
     /**
      * This method reloads all of the mod's resources from the corresponding files.
      */
     public static void reloadResources() {
-        if (mc.thePlayer != null) {
-            main.getUtils().sendMessage(Translations.getMessage("messages.reloadingResources"));
-        } else {
-            logger.info(Translations.getMessage("messages.reloadingResources"));
-        }
+        sendMessageOrLog(Translations.getMessage("messages.reloadingResources"));
         DataUtils.registerNewRemoteRequests();
         DataUtils.readLocalAndFetchOnline();
         main.getPersistentValuesManager().loadValues();
@@ -602,11 +598,7 @@ public class DevUtils {
         SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
             if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
                 DataUtils.onSkyblockJoined();
-                if (mc.thePlayer != null) {
-                    main.getUtils().sendMessage(Translations.getMessage("messages.resourcesReloaded"));
-                } else {
-                    logger.info(Translations.getMessage("messages.resourcesReloaded"));
-                }
+                sendMessageOrLog(Translations.getMessage("messages.resourcesReloaded"));
                 scheduledTask.cancel();
             }
         }, 0, 2);
@@ -644,6 +636,14 @@ public class DevUtils {
                             Keyboard.getKeyName(main.getDeveloperCopyNBTKey().getKeyCode())
                     )
             );
+        }
+    }
+
+    private static void sendMessageOrLog(String message) {
+        if (mc.thePlayer != null) {
+            main.getUtils().sendMessage(message);
+        } else {
+            logger.info(message);
         }
     }
 

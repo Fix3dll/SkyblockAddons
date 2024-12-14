@@ -64,6 +64,12 @@
     "material": "gold_ingot",
     "rarity": "UNCOMMON"
   },
+  "GRANDMAS_KNITTING_NEEDLE": {
+    "displayName": "§9Grandma's Knitting Needle",
+    "enchanted": true,
+    "material": "stick",
+    "rarity": "RARE"
+  },
   "GREEN_BANDANA": {
     "displayName": "§5Green Bandana",
     "material": "skull_item",
