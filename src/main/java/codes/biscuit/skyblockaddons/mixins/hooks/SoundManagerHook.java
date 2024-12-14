@@ -10,8 +10,8 @@ public class SoundManagerHook {
 
     public static float getNormalizedVolume(SoundManager soundManager, ISound sound, SoundPoolEntry entry, SoundCategory category) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main != null && main.getUtils() != null && main.getUtils().isPlayingSound()) {
-            return 1;
+        if (main != null && main.getUtils() != null && main.getUtils().isPlayingLoudSound()) {
+            return 1.0F;
         } else {
             return soundManager.getNormalizedVolume(sound, entry, category);
         }

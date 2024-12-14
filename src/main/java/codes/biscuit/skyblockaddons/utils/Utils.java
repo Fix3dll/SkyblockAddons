@@ -36,7 +36,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 
 import javax.vecmath.Vector3d;
-import java.awt.*;
+import java.awt.Color;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -187,7 +187,7 @@ public class Utils {
     /**
      * Whether a loud sound is being played by the mod.
      */
-    private boolean playingSound;
+    private boolean playingLoudSound;
 
     /**
      * The current serverID that the player is on.
@@ -608,9 +608,9 @@ public class Utils {
      * volume setting, so make sure to only use this for like warnings or stuff like that.
      */
     public void playLoudSound(String sound, double pitch) {
-        playingSound = true;
+        playingLoudSound = true;
         Minecraft.getMinecraft().thePlayer.playSound(sound, 1, (float) pitch);
-        playingSound = false;
+        playingLoudSound = false;
     }
 
     /**
@@ -618,7 +618,7 @@ public class Utils {
      * a sound that bypasses the user's volume settings.
      */
     public void playSound(String sound, double pitch) {
-        Minecraft.getMinecraft().thePlayer.playSound(sound, 1, (float) pitch);
+        playSound(sound, (float) 1, (float) pitch);
     }
 
     public void playSound(String sound, double volume, double pitch) {

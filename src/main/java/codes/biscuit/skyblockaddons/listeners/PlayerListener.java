@@ -720,7 +720,7 @@ public class PlayerListener {
                     main.getRenderListener().setTitleFeature(Feature.BROOD_MOTHER_ALERT);
                 }
                 if (entity.ticksExisted < 13 && entity.ticksExisted % 3 == 0) {
-                    main.getUtils().playLoudSound("random.orb", 0.5);
+                    main.getUtils().playSound("random.orb", 0.5);
                 }
             }
         }
@@ -740,7 +740,7 @@ public class PlayerListener {
                 }
             }
             if (main.getRenderListener().getTitleFeature() == Feature.BAL_BOSS_ALERT && timerTick % 4 == 0) {
-                main.getUtils().playLoudSound("random.orb", 0.5);
+                main.getUtils().playSound("random.orb",0.5);
             }
         }
 
