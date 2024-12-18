@@ -21,7 +21,7 @@ import codes.biscuit.skyblockaddons.features.spookyevent.CandyType;
 import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabListRenderer;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import codes.biscuit.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 import codes.biscuit.skyblockaddons.gui.screens.LocationEditGui;
@@ -438,10 +438,10 @@ public class RenderListener {
                     drawSkeletonBar(scale, buttonLocation);
                     break;
                 case BAR:
-                    drawBar(feature, scale,buttonLocation);
+                    drawBar(feature, scale, buttonLocation);
                     break;
                 case TEXT:
-                    drawText(feature, scale,buttonLocation);
+                    drawText(feature, scale, buttonLocation);
                     break;
                 case PICKUP_LOG:
                     drawItemPickupLog(scale, buttonLocation);
@@ -449,8 +449,8 @@ public class RenderListener {
                 case DEFENCE_ICON:
                     drawIcon(scale, buttonLocation);
                     break;
-                case REVENANT_PROGRESS:
-                    drawRevenantIndicator(scale, buttonLocation);
+                case SLAYER_ARMOR_PROGRESS:
+                    drawSlayerArmorProgress(scale, buttonLocation);
                     break;
                 case DEPLOYABLE_DISPLAY:
                     drawDeployableStatus(scale, buttonLocation);
@@ -529,8 +529,8 @@ public class RenderListener {
         float scaleY = main.getConfigValues().getSizesY(feature);
         GlStateManager.scale(scaleX, scaleY, 1);
 
-        x = transformXY(x, 71, scale * scaleX);
-        y = transformXY(y, 5, scale * scaleY);
+        x = transformX(x, 71, scale * scaleX, false);
+        y = transformY(y, 5, scale * scaleY);
 
         // Render the button resize box if necessary
         if (buttonLocation != null) {
@@ -743,8 +743,8 @@ public class RenderListener {
         int height = 16;
         int width = 3 * 16;
 
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, false);
+        y = transformY(y, height, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -771,8 +771,8 @@ public class RenderListener {
             int height = 9;
             int width = 3 * 11 + 9;
 
-            x = transformXY(x, width, scale);
-            y = transformXY(y, height, scale);
+            x = transformX(x, width, scale, false);
+            y = transformY(y, height, scale);
 
             if (buttonLocation != null) {
                 buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -814,8 +814,8 @@ public class RenderListener {
         int width = 9;
         float x = main.getConfigValues().getActualX(Feature.DEFENCE_ICON);
         float y = main.getConfigValues().getActualY(Feature.DEFENCE_ICON);
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, false);
+        y = transformY(y, height, scale);
 
         main.getUtils().enableStandardGLOptions();
 
@@ -1349,8 +1349,8 @@ public class RenderListener {
                 break;
         }
 
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+        y = transformY(y, height, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -1894,8 +1894,8 @@ public class RenderListener {
         int width = iconSize + spacing + longestLineWidth;
         int height = iconSize * baits.size();
 
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+        y = transformY(y, height, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -2043,8 +2043,8 @@ public class RenderListener {
             int width = Math.max(longestLineWidth, longestSlayerDropLineWidth + 8 + longestCount);
             int height = lines * 8 + spacer * spacers;
 
-            x = transformXY(x, width, scale);
-            y = transformXY(y, height, scale);
+            x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+            y = transformY(y, height, scale);
 
             if (buttonLocation != null) {
                 buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -2151,8 +2151,8 @@ public class RenderListener {
             int width = entityWidth + entityIconSpacingHorizontal + maxItemsPerRow * iconWidth + totalColumnWidth + iconTextOffset;
             int height = (iconWidth + iconSpacingVertical) * 3 - iconSpacingVertical;
 
-            x = transformXY(x, width, scale);
-            y = transformXY(y, height, scale);
+            x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+            y = transformY(y, height, scale);
 
             if (buttonLocation != null) {
                 buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -2360,8 +2360,8 @@ public class RenderListener {
 
         float x = main.getConfigValues().getActualX(Feature.DRAGON_STATS_TRACKER);
         float y = main.getConfigValues().getActualY(Feature.DRAGON_STATS_TRACKER);
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+        y = transformY(y, height, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -2429,9 +2429,9 @@ public class RenderListener {
         }
     }
 
-    public void drawRevenantIndicator(float scale, ButtonLocation buttonLocation) {
-        float x = main.getConfigValues().getActualX(Feature.SLAYER_INDICATOR);
-        float y = main.getConfigValues().getActualY(Feature.SLAYER_INDICATOR);
+    public void drawSlayerArmorProgress(float scale, ButtonLocation buttonLocation) {
+        float x = main.getConfigValues().getActualX(Feature.SLAYER_ARMOR_PROGRESS);
+        float y = main.getConfigValues().getActualY(Feature.SLAYER_ARMOR_PROGRESS);
 
         int longest = -1;
         SlayerArmorProgress[] progresses = main.getInventoryUtils().getSlayerArmorProgresses();
@@ -2449,8 +2449,8 @@ public class RenderListener {
         int height = 15 * 4;
         int width = 16 + 2 + longest;
 
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+        y = transformY(y, height, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -2459,10 +2459,9 @@ public class RenderListener {
 
         main.getUtils().enableStandardGLOptions();
 
-        EnumUtils.AnchorPoint anchorPoint = main.getConfigValues().getAnchorPoint(Feature.SLAYER_INDICATOR);
-        boolean downwards = (anchorPoint == EnumUtils.AnchorPoint.TOP_LEFT || anchorPoint == EnumUtils.AnchorPoint.TOP_RIGHT);
+        boolean downwards = main.getConfigValues().getAnchorPoint(Feature.SLAYER_ARMOR_PROGRESS).isOnTop();
 
-        int color = main.getConfigValues().getColor(Feature.SLAYER_INDICATOR);
+        int color = main.getConfigValues().getColor(Feature.SLAYER_ARMOR_PROGRESS);
 
         int drawnCount = 0;
         for (int armorPiece = 3; armorPiece >= 0; armorPiece--) {
@@ -2478,7 +2477,7 @@ public class RenderListener {
             renderItem(progress.getItemStack(), x, fixedY);
 
             float currentX = x + 19;
-            FontRendererHook.setupFeatureFont(Feature.SLAYER_INDICATOR);
+            FontRendererHook.setupFeatureFont(Feature.SLAYER_ARMOR_PROGRESS);
             DrawUtils.drawText(progress.getPercent() + "% (", currentX, fixedY + 5, color);
             FontRendererHook.endFeatureFont();
 
@@ -2486,7 +2485,7 @@ public class RenderListener {
             DrawUtils.drawText(progress.getDefence(), currentX, fixedY + 5, 0xFFFFFFFF);
 
             currentX += MC.fontRendererObj.getStringWidth(progress.getDefence());
-            FontRendererHook.setupFeatureFont(Feature.SLAYER_INDICATOR);
+            FontRendererHook.setupFeatureFont(Feature.SLAYER_ARMOR_PROGRESS);
             DrawUtils.drawText(")", currentX, fixedY + 5, color);
             FontRendererHook.endFeatureFont();
 
@@ -2555,15 +2554,14 @@ public class RenderListener {
         float x = main.getConfigValues().getActualX(Feature.ITEM_PICKUP_LOG);
         float y = main.getConfigValues().getActualY(Feature.ITEM_PICKUP_LOG);
 
-        EnumUtils.AnchorPoint anchorPoint = main.getConfigValues().getAnchorPoint(Feature.ITEM_PICKUP_LOG);
-        boolean downwards = anchorPoint == EnumUtils.AnchorPoint.TOP_RIGHT || anchorPoint == EnumUtils.AnchorPoint.TOP_LEFT;
+        boolean downwards = main.getConfigValues().getAnchorPoint(Feature.ITEM_PICKUP_LOG).isOnTop();
 
         int lineHeight = 8 + 1; // 1 pixel spacer
         int height = lineHeight * 3 - 1;
         int width = MC.fontRendererObj.getStringWidth("+ 1x Forceful Ember Chestplate");
 
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, false);
+        y = transformY(y, height, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -2578,8 +2576,11 @@ public class RenderListener {
             log = DUMMY_PICKUP_LOG;
         }
         for (ItemDiff itemDiff : log) {
-            String text = String.format("%s %sx §r%s", itemDiff.getAmount() > 0 ? "§a+" : "§c-",
-                    Math.abs(itemDiff.getAmount()), itemDiff.getDisplayName());
+            String text = String.format(
+                    "%s %sx §r%s",
+                    itemDiff.getAmount() > 0 ? "§a+" : "§c-",
+                    Math.abs(itemDiff.getAmount()), itemDiff.getDisplayName()
+            );
             float stringY = y + (i * lineHeight);
             if (!downwards) {
                 stringY = y + height - (i * lineHeight) - 8;
@@ -2626,8 +2627,8 @@ public class RenderListener {
         int iconSize = MC.fontRendererObj.FONT_HEIGHT * 3; // 3 because it looked the best
         int width = iconSize + spacing + MC.fontRendererObj.getStringWidth(secondsString);
 
-        x = transformXY(x, width, scale);
-        y = transformXY(y, iconSize, scale);
+        x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+        y = transformY(y, iconSize, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + iconSize, scale);
@@ -2760,8 +2761,8 @@ public class RenderListener {
         );
         int height = Math.max(effectsHeight, iconAndSecondsHeight);
 
-        x = transformXY(x, width, scale);
-        y = transformXY(y, height, scale);
+        x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+        y = transformY(y, height, scale);
 
         float startY = Math.round(y + (iconAndSecondsHeight / 2f) - (effectsHeight / 2f));
         if (buttonLocation != null) {
@@ -2892,11 +2893,25 @@ public class RenderListener {
         guiFeatureToOpen = feature;
     }
 
-    public float transformXY(float xy, int widthHeight, float scale) {
+    // TODO improve xAllignment
+    public float transformX(float x, int width, float scale, boolean xAllignment) {
         float minecraftScale = new ScaledResolution(MC).getScaleFactor();
-        xy -= widthHeight / 2F * scale;
-        xy = Math.round(xy * minecraftScale) / minecraftScale;
-        return xy / scale;
+        if (!xAllignment) {
+            x -= width / 2F * scale;
+        } else {
+            // TODO x -= dummyWidth / 2 * scale (Feature refactor)
+            // TODO allignment to right edge of screen
+            // x -= width * scale;
+        }
+        x = Math.round(x * minecraftScale) / minecraftScale;
+        return x / scale;
+    }
+
+    public float transformY(float y, int height, float scale) {
+        float minecraftScale = new ScaledResolution(MC).getScaleFactor();
+        y -= height / 2F * scale;
+        y = Math.round(y * minecraftScale) / minecraftScale;
+        return y / scale;
     }
 
     @SubscribeEvent()

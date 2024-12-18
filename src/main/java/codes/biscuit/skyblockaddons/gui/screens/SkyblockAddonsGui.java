@@ -13,7 +13,7 @@ import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeatureToggle;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
-import codes.biscuit.skyblockaddons.utils.objects.IntPair;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -398,8 +398,8 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
             EnumUtils.FeatureCredit credit = EnumUtils.FeatureCredit.fromFeature(feature);
             if (credit != null) {
-                IntPair coords = featureGui.getCreditsCoords(credit);
-                buttonList.add(new ButtonCredit(coords.getX(), coords.getY(), text, credit, feature, featureGui.isMultilineButton()));
+                Pair<Integer, Integer> coords = featureGui.getCreditsCoords(credit);
+                buttonList.add(new ButtonCredit(coords.getRight(), coords.getLeft(), text, credit, feature, featureGui.isMultilineButton()));
             }
 
             if (!feature.getSettings().isEmpty()) {

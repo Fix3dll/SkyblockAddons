@@ -5,9 +5,7 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.input.Mouse;
 
 @Getter
 public class ButtonResize extends ButtonFeature {
@@ -17,9 +15,6 @@ public class ButtonResize extends ButtonFeature {
     private final Corner corner;
     public float x;
     public float y;
-
-    private float cornerOffsetX;
-    private float cornerOffsetY;
 
     public ButtonResize(float x, float y, Feature feature, Corner corner) {
         super(0, 0, 0, "", feature);
@@ -31,12 +26,13 @@ public class ButtonResize extends ButtonFeature {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         float scale = main.getConfigValues().getGuiScale(feature);
-        GlStateManager.enableBlend();
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(scale,scale,1);
         hovered = mouseX >= (x - SIZE) * scale && mouseY >= (y - SIZE) * scale
                 && mouseX < (x + SIZE) * scale && mouseY < (y + SIZE) * scale;
         int color = hovered ? ColorCode.WHITE.getColor() : ColorCode.WHITE.getColor(70);
+
+        GlStateManager.enableBlend();
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, 1);
         DrawUtils.drawRectAbsolute(x - SIZE,y - SIZE, x + SIZE, y + SIZE, color);
         GlStateManager.popMatrix();
         GlStateManager.disableBlend();
@@ -44,14 +40,6 @@ public class ButtonResize extends ButtonFeature {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        ScaledResolution sr = new ScaledResolution(mc);
-        float minecraftScale = sr.getScaleFactor();
-        float floatMouseX = Mouse.getX() / minecraftScale;
-        float floatMouseY = (mc.displayHeight - Mouse.getY()) / minecraftScale;
-
-        cornerOffsetX = floatMouseX;
-        cornerOffsetY = floatMouseY;
-
         return hovered;
     }
 

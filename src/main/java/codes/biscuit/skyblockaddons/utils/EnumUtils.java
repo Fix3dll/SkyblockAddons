@@ -22,7 +22,8 @@ public class EnumUtils {
         TOP_RIGHT(1),
         BOTTOM_LEFT(2),
         BOTTOM_RIGHT(3),
-        BOTTOM_MIDDLE(4);
+        BOTTOM_MIDDLE(4),
+        TOP_MIDDLE(5);
 
         private final int id;
 
@@ -41,28 +42,43 @@ public class EnumUtils {
         }
 
         public int getX(int maxX) {
-            int x = 0;
             switch (this) {
                 case TOP_RIGHT: case BOTTOM_RIGHT:
-                    x = maxX;
-                    break;
-                case BOTTOM_MIDDLE:
-                    x = maxX / 2;
-                    break;
-
+                    return maxX;
+                case TOP_MIDDLE: case BOTTOM_MIDDLE:
+                    return maxX / 2;
+                default:
+                    return 0;
             }
-            return x;
         }
 
         public int getY(int maxY) {
-            int y = 0;
             switch (this) {
                 case BOTTOM_LEFT: case BOTTOM_RIGHT: case BOTTOM_MIDDLE:
-                    y = maxY;
-                    break;
-
+                    return maxY;
+                default:
+                    return 0;
             }
-            return y;
+        }
+
+        public boolean isOnTop() {
+            return this == TOP_LEFT || this == TOP_RIGHT || this == TOP_MIDDLE;
+        }
+
+        public boolean isOnBottom() {
+            return this == BOTTOM_LEFT || this == BOTTOM_RIGHT || this == BOTTOM_MIDDLE;
+        }
+
+        public boolean isOnLeft() {
+            return this == TOP_LEFT || this == BOTTOM_LEFT;
+        }
+
+        public boolean isOnRight() {
+            return this == TOP_RIGHT || this == BOTTOM_RIGHT;
+        }
+
+        public boolean isOnMiddle() {
+            return this == TOP_MIDDLE || this == BOTTOM_MIDDLE;
         }
     }
 
@@ -346,7 +362,7 @@ public class EnumUtils {
         HIGH_CRIT("HighCrit", "github.com/HighCrit", Feature.PREVENT_MOVEMENT_ON_DEATH),
         MOULBERRY("Moulberry", "github.com/Moulberry", Feature.DONT_RESET_CURSOR_INVENTORY),
         TOMOCRAFTER("tomocrafter", "github.com/tomocrafter", Feature.AVOID_BLINKING_NIGHT_VISION,
-                Feature.SLAYER_INDICATOR, Feature.NO_ARROWS_LEFT_ALERT, Feature.BOSS_APPROACH_ALERT),
+                Feature.SLAYER_ARMOR_PROGRESS, Feature.NO_ARROWS_LEFT_ALERT, Feature.BOSS_APPROACH_ALERT),
         DAPIGGUY("DaPigGuy", "github.com/DaPigGuy", Feature.MINION_DISABLE_LOCATION_WARNING),
         KEAGEL("Keagel", "github.com/Keagel", Feature.DISABLE_MAGICAL_SOUP_MESSAGES),
         SUPERHIZE("SuperHiZe", "github.com/superhize", Feature.SPECIAL_ZEALOT_ALERT),
@@ -423,7 +439,7 @@ public class EnumUtils {
         TEXT,
         PICKUP_LOG,
         DEFENCE_ICON,
-        REVENANT_PROGRESS,
+        SLAYER_ARMOR_PROGRESS,
         DEPLOYABLE_DISPLAY,
         TICKER,
         BAIT_LIST_DISPLAY,

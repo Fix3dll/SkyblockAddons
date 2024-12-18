@@ -358,11 +358,11 @@ public class SettingsGui extends SkyblockAddonsScreen {
             y = getRowHeightSetting(row);
             buttonList.add(
                     new ButtonSlider(x, y, 100, 20,
-                            DungeonMapManager.getDenormalizedMapZoom(),
+                            DungeonMapManager.getMapZoom(),
                             DungeonMapManager.MIN_ZOOM,
                             DungeonMapManager.MAX_ZOOM,
-                            0.1F,
-                            DungeonMapManager::setDenormalizedMapZoom
+                            0.05F,
+                            DungeonMapManager::setMapZoom
                     ).setPrefix("Map Zoom: ")
             );
         } else if (setting == EnumUtils.FeatureSetting.COLOUR_BY_RARITY) {
@@ -458,8 +458,13 @@ public class SettingsGui extends SkyblockAddonsScreen {
             boxWidth = 150;
             x = halfWidth - (boxWidth / 2);
             y = getRowHeightSetting(row);
-            buttonList.add(new ButtonSlider(x, y, boxWidth, 20, main.getConfigValues().getHealingCircleOpacity().getValue(), 0, 1, 0.01F,
-                    updatedValue -> main.getConfigValues().getHealingCircleOpacity().setValue(updatedValue)).setPrefix("Healing Circle Opacity: "));
+            buttonList.add(
+                    new ButtonSlider(
+                            x, y, boxWidth, 20,
+                            main.getConfigValues().getHealingCircleOpacity().getValue(), 0, 1, 0.01F,
+                            updatedValue -> main.getConfigValues().getHealingCircleOpacity().setValue(updatedValue)
+                    ).setPrefix("Healing Circle Opacity: ")
+            );
         } else if (setting == EnumUtils.FeatureSetting.TREVOR_SHOW_QUEST_COOLDOWN) {
             boxWidth = 31; // Default size and stuff.
             x = halfWidth - (boxWidth / 2);

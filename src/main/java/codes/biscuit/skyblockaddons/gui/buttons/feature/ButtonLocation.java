@@ -1,8 +1,6 @@
-package codes.biscuit.skyblockaddons.gui.buttons;
+package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;
@@ -16,8 +14,6 @@ public class ButtonLocation extends ButtonFeature {
 
     // So we know the latest hovered feature (used for arrow key movement).
     @Getter private static Feature lastHoveredFeature = null;
-
-    private final SkyblockAddons main = SkyblockAddons.getInstance();
 
     private float boxXOne;
     private float boxXTwo;
@@ -38,8 +34,9 @@ public class ButtonLocation extends ButtonFeature {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         // If the feature is disabled, don't draw in the "Edit GUI Location" section
-        if (feature.isDisabled())
+        if (feature.isDisabled()) {
             return;
+        }
 
         float scale = main.getConfigValues().getGuiScale(feature);
         main.getRenderListener().drawFeature(feature, scale,this);
@@ -64,8 +61,8 @@ public class ButtonLocation extends ButtonFeature {
 
         hovered = floatMouseX >= boxXOne * scale * scaleX && floatMouseY >= boxYOne * scale * scaleY
                 && floatMouseX < boxXTwo * scale * scaleX && floatMouseY < boxYTwo * scale * scaleY;
-        int boxAlpha = hovered ? 120 : 70;
-        int boxColor = ColorCode.GRAY.getColor(boxAlpha);
+
+        int boxColor = ColorCode.GRAY.getColor(hovered ? 120 : 70);
         DrawUtils.drawRectAbsolute(boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor);
 
         this.boxXOne = boxXOne;

@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
@@ -80,9 +79,9 @@ public class ButtonCycling extends SkyblockAddonsButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        int color = SkyblockAddons.getInstance().getUtils().getDefaultColor(100);
-        int leftColor = SkyblockAddons.getInstance().getUtils().getDefaultColor(isOverLeftButton(mouseX, mouseY) ? 200 : 90);
-        int rightColor = SkyblockAddons.getInstance().getUtils().getDefaultColor(isOverRightButton(mouseX, mouseY) ? 200 : 90);
+        int color = main.getUtils().getDefaultColor(100);
+        int leftColor = main.getUtils().getDefaultColor(isOverLeftButton(mouseX, mouseY) ? 200 : 90);
+        int rightColor = main.getUtils().getDefaultColor(isOverRightButton(mouseX, mouseY) ? 200 : 90);
 
         String name = itemList.get(index).getDisplayName();
         String trimmedName = mc.fontRendererObj.trimStringToWidth(name, textWidth);

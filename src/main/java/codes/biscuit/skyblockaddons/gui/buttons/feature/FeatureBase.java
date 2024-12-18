@@ -6,7 +6,7 @@ import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
-import codes.biscuit.skyblockaddons.utils.objects.IntPair;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
@@ -142,7 +142,7 @@ public class FeatureBase extends ButtonFeature {
         }
     }
 
-    public IntPair getCreditsCoords(EnumUtils.FeatureCredit credit) {
+    public Pair<Integer, Integer> getCreditsCoords(EnumUtils.FeatureCredit credit) {
         String[] wrappedString = main.getUtils().wrapSplitText(displayString, 28);
         boolean multiLine = wrappedString.length > 1;
 
@@ -158,7 +158,7 @@ public class FeatureBase extends ButtonFeature {
         }
 
         int x = (int)((xPosition+width/2F)/scale) - Minecraft.getMinecraft().fontRendererObj.getStringWidth(credit.getAuthor()) / 2 - 17;
-        return new IntPair(x, y);
+        return new Pair<>(x, y);
     }
 
     public boolean isMultilineButton() {

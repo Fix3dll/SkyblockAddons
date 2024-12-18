@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenShader;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * This button is for when you are choosing one of the 16 color codes.
  */
+@Getter
 public class ButtonColorBox extends SkyblockAddonsButton {
 
     public static final int WIDTH = 40;
@@ -33,6 +35,7 @@ public class ButtonColorBox extends SkyblockAddonsButton {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         hovered = isHovered(mouseX, mouseY);
+
         if (color == ColorCode.CHROMA && !MulticolorShaderManager.getInstance().shouldUseChromaShaders()) {
             drawChromaRect(xPosition, yPosition, xPosition + width, yPosition + height, hovered ? 255 : 127);
         } else {
@@ -47,11 +50,6 @@ public class ButtonColorBox extends SkyblockAddonsButton {
             }
         }
     }
-
-    public ColorCode getColor() {
-        return color;
-    }
-
 
     public static void drawChromaRect(int left, int top, int right, int bottom, int alpha) {
         if (left < right) {

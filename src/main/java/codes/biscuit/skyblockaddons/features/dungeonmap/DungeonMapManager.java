@@ -4,9 +4,8 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonPlayer;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
-import codes.biscuit.skyblockaddons.utils.MathUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -122,8 +121,8 @@ public class DungeonMapManager {
         GL11.glScissor(Math.round((x - size / 2f * scale) * minecraftScale),
                 mc.displayHeight - Math.round((y + size / 2F * scale) * minecraftScale), Math.round(size * minecraftScale * scale), Math.round(size * minecraftScale * scale));
 
-        x = main.getRenderListener().transformXY(x, size, scale);
-        y = main.getRenderListener().transformXY(y, size, scale);
+        x = transformXY(x, size, scale);
+        y = transformXY(y, size, scale);
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + size, y, y + size, scale);
@@ -142,7 +141,7 @@ public class DungeonMapManager {
 
         GlStateManager.color(1, 1, 1, 1);
 
-        float zoomScaleFactor = MathUtils.denormalizeSliderValue(main.getConfigValues().getMapZoom().getValue(), 0.5F, 5, 0.1F);
+        float zoomScaleFactor = getMapZoom();
         if (isScoreSummary) {
             zoomScaleFactor = 1;
         }
@@ -496,29 +495,38 @@ public class DungeonMapManager {
      * Increases the zoom level of the dungeon map by 0.5.
      */
     public static void increaseZoomByStep() {
-        setDenormalizedMapZoom(getDenormalizedMapZoom() + 0.5F);
+        setMapZoom(getMapZoom() + 0.5F);
     }
 
     /**
      * Decreases the zoom level of the dungeon map by 0.5.
      */
     public static void decreaseZoomByStep() {
-        setDenormalizedMapZoom(getDenormalizedMapZoom() - 0.5F);
+        setMapZoom(getMapZoom() - 0.5F);
     }
 
     /**
-     * Returns the denormalized map zoom factor
-     * @return he denormalized map zoom factor
+     * Returns Dungeon Map Zoom value.
+     * @return Returns Dungeon Map Zoom value.
      */
-    public static float getDenormalizedMapZoom() {
-        return MathUtils.denormalizeSliderValue(main.getConfigValues().getMapZoom().getValue(), MIN_ZOOM, MAX_ZOOM, 0.1F);
+    public static float getMapZoom() {
+        return main.getConfigValues().getMapZoom().getValue();
     }
 
-    public static void setDenormalizedMapZoom(float value) {
-        main.getConfigValues().getMapZoom().setValue(
-                MathUtils.normalizeSliderValue(value, MIN_ZOOM, MAX_ZOOM,0.1F)
-        );
+    /**
+     * Saves Dungeon Map Zoom value.
+     * @param value float value of Dungeon Zoom
+     */
+    public static void setMapZoom(float value) {
+        main.getConfigValues().getMapZoom().setValue(Math.max(Math.min(value, MAX_ZOOM), MIN_ZOOM));
         main.getConfigValues().saveConfig();
+    }
+
+    private static float transformXY(float xy, int widthHeight, float scale) {
+        float minecraftScale = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();
+        xy -= widthHeight / 2F * scale;
+        xy = Math.round(xy * minecraftScale) / minecraftScale;
+        return xy / scale;
     }
 
 }

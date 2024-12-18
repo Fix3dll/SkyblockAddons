@@ -71,11 +71,10 @@ public class ButtonBanner extends SkyblockAddonsButton {
 
         if (banner != null) { // Could have not been loaded yet.
             float alphaMultiplier = calculateAlphaMultiplier();
-
             float scale = (float) WIDTH / bannerImage.getWidth(); // max width
-
             hovered = mouseX >= xPosition && mouseX < xPosition + WIDTH
                     && mouseY >= yPosition && mouseY < yPosition + bannerImage.getHeight() * scale;
+
             GlStateManager.enableBlend();
             GlStateManager.color(1F, 1F, 1F, alphaMultiplier * (hovered ? 1F : 0.8F));
             mc.getTextureManager().bindTexture(banner);

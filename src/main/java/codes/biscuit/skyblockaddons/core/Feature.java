@@ -26,8 +26,8 @@ public enum Feature {
     MINION_FULL_WARNING(15, "settings.fullMinionWarning", new GuiFeatureData(ColorCode.RED), false),
     USE_VANILLA_TEXTURE_DEFENCE(17, "settings.useVanillaTexture", null, true),
     SHOW_BACKPACK_HOLDING_SHIFT(18, "settings.showOnlyWhenHoldingShift", null, true),
-    MANA_BAR(19, "settings.manaBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.BLUE), false),
-    MANA_TEXT(20, "settings.manaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.BLUE), false, EnumUtils.FeatureSetting.MANA_TEXT_ICON),
+    MANA_BAR(19, "settings.manaBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.AQUA), false),
+    MANA_TEXT(20, "settings.manaNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.AQUA), false, EnumUtils.FeatureSetting.MANA_TEXT_ICON),
     HEALTH_BAR(21, "settings.healthBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.RED), true, EnumUtils.FeatureSetting.CHANGE_BAR_COLOR_WITH_POTIONS, EnumUtils.FeatureSetting.HEALTH_PREDICTION, EnumUtils.FeatureSetting.HIDE_HEALTH_BAR_ON_RIFT),
     HEALTH_TEXT(22, "settings.healthNumber", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false, EnumUtils.FeatureSetting.HIDE_HEALTH_TEXT_ON_RIFT, EnumUtils.FeatureSetting.HEART_INSTEAD_HEALTH_ON_RIFT, EnumUtils.FeatureSetting.HEALTH_TEXT_ICON),
     DEFENCE_ICON(23, "settings.defenseIcon", new GuiFeatureData(EnumUtils.DrawType.DEFENCE_ICON), false, EnumUtils.FeatureSetting.USE_VANILLA_TEXTURE),
@@ -53,7 +53,7 @@ public enum Feature {
     SHOW_ITEM_COOLDOWNS(53, "settings.showItemCooldowns", null, false),
     SKILL_DISPLAY(54, "settings.collectionDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.AQUA), false, EnumUtils.FeatureSetting.SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL, EnumUtils.FeatureSetting.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP, EnumUtils.FeatureSetting.SHOW_SKILL_XP_GAINED, EnumUtils.FeatureSetting.ABBREVIATE_SKILL_XP_DENOMINATOR),
     SPEED_PERCENTAGE(55, "settings.speedPercentage", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.WHITE), false),
-    SLAYER_INDICATOR(57, "settings.revenantIndicator", new GuiFeatureData(EnumUtils.DrawType.REVENANT_PROGRESS, ColorCode.AQUA), true),
+    SLAYER_ARMOR_PROGRESS(57, "settings.revenantIndicator", new GuiFeatureData(EnumUtils.DrawType.SLAYER_ARMOR_PROGRESS, ColorCode.AQUA), true),
     SPECIAL_ZEALOT_ALERT(58, "settings.specialZealotAlert", new GuiFeatureData(ColorCode.RED), false),
     ENABLE_MESSAGE_WHEN_MINING_DEEP_CAVERNS(60, null, false),
     ENABLE_MESSAGE_WHEN_BREAKING_STEMS(61, null, false),
@@ -210,7 +210,7 @@ public enum Feature {
     INFERNO_SLAYER_TRACKER(223, "settings.infernoSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_CRIMSON),
     INFERNO_COLOR_BY_RARITY(224, null, false),
     INFERNO_TEXT_MODE(225, null, true),
-    EXPAND_DEPLOYABLE_STATUS(226, null, false),
+    EXPAND_DEPLOYABLE_STATUS(226, null, true),
     TREVOR_BETTER_NAMETAG(227, null, false),
     RIFTSTALKER_SLAYER_TRACKER(228, "settings.riftstalkerSlayerTracker", new GuiFeatureData(EnumUtils.DrawType.SLAYER_TRACKERS, ColorCode.WHITE), false, EnumUtils.FeatureSetting.COLOUR_BY_RARITY, EnumUtils.FeatureSetting.TEXT_MODE, EnumUtils.FeatureSetting.HIDE_WHEN_NOT_IN_RIFT),
     RIFTSTALKER_COLOR_BY_RARITY(229, null, false),
@@ -240,14 +240,10 @@ public enum Feature {
 
 
     WARNING_TIME(-1, "settings.warningDuration", false),
-    WARP_ADVANCED_MODE(-1, "settings.advancedMode", true),
-    ADD(-1, null, false),
-    SUBTRACT(-1, null, false),
     LANGUAGE(-1, "language", false),
     EDIT_LOCATIONS(-1, "settings.editLocations", false),
     RESET_LOCATION(-1, "settings.resetLocations",false),
     RESCALE_FEATURES(-1, "messages.rescaleFeatures", false),
-//    RESIZE_BARS(-1, "messages.resizeBars", false),
     GENERAL_SETTINGS(-1, "settings.tab.generalSettings", false),
     TEXT_STYLE(-1, "settings.textStyle", false),
     CHROMA_SPEED(-1, "settings.chromaSpeed", false),
@@ -259,8 +255,8 @@ public enum Feature {
     NUMBER_SEPARATORS(221, "settings.numberSeparators", false),
     TURN_ALL_TEXTS_CHROMA(243, "settings.turnAllTextsChroma", true),
     ENABLE_FEATURE_SNAPPING(254, "messages.enableFeatureSnapping", false),
-    SHOW_FEATURE_NAMES_ON_HOVER(255, "settings.showFeatureNamesOnHover", true),
     SHOW_COLOR_ICONS(256, "messages.showColorIcons", false),
+    X_ALLIGNMENT(257, "settings.xAllignment", true),
     ;
 
 
@@ -300,7 +296,7 @@ public enum Feature {
     private static final Set<Feature> guiFeatures = new LinkedHashSet<>(Arrays.asList(DRILL_FUEL_BAR, SKILL_PROGRESS_BAR, MANA_BAR, HEALTH_BAR,
             MANA_TEXT, OVERFLOW_MANA, DEFENCE_ICON, DEFENCE_TEXT, EFFECTIVE_HEALTH_TEXT, PET_DISPLAY,
             DEFENCE_PERCENTAGE, HEALTH_TEXT, SKELETON_BAR, HEALTH_UPDATES, ITEM_PICKUP_LOG, DARK_AUCTION_TIMER, SKILL_DISPLAY, SPEED_PERCENTAGE,
-            SLAYER_INDICATOR, DEPLOYABLE_STATUS_DISPLAY, ZEALOT_COUNTER, TICKER_CHARGES_DISPLAY, SHOW_TOTAL_ZEALOT_COUNT, SHOW_SUMMONING_EYE_COUNT,
+            SLAYER_ARMOR_PROGRESS, DEPLOYABLE_STATUS_DISPLAY, ZEALOT_COUNTER, TICKER_CHARGES_DISPLAY, SHOW_TOTAL_ZEALOT_COUNT, SHOW_SUMMONING_EYE_COUNT,
             SHOW_AVERAGE_ZEALOTS_PER_EYE, BIRCH_PARK_RAINMAKER_TIMER, ENDSTONE_PROTECTOR_DISPLAY, BAIT_LIST, DUNGEONS_MAP_DISPLAY, SHOW_DUNGEON_MILESTONE,
             DUNGEONS_COLLECTED_ESSENCES_DISPLAY, REVENANT_SLAYER_TRACKER, TARANTULA_SLAYER_TRACKER, SVEN_SLAYER_TRACKER, DRAGON_STATS_TRACKER, DUNGEON_DEATH_COUNTER,
             ROCK_PET_TRACKER, DOLPHIN_PET_TRACKER, DUNGEONS_SECRETS_DISPLAY, CANDY_POINTS_COUNTER, DRILL_FUEL_TEXT, INFERNO_SLAYER_TRACKER,
@@ -313,11 +309,11 @@ public enum Feature {
     @Getter
     private static final Set<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE, WARNING_TIME,
             CHROMA_SPEED, CHROMA_MODE, CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION, CHROMA_BRIGHTNESS,
-            NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA, SBA_BUTTON_IN_PAUSE_MENU));
+            NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA, SBA_BUTTON_IN_PAUSE_MENU, X_ALLIGNMENT));
 
     @Getter
     private static final Set<Feature> editGuiFeatures = new LinkedHashSet<>(Arrays.asList(
-            RESET_LOCATION, RESCALE_FEATURES, SHOW_FEATURE_NAMES_ON_HOVER, SHOW_COLOR_ICONS, ENABLE_FEATURE_SNAPPING
+            RESET_LOCATION, RESCALE_FEATURES, SHOW_COLOR_ICONS, ENABLE_FEATURE_SNAPPING, X_ALLIGNMENT
     ));
 
     private static final int ID_AT_PREVIOUS_UPDATE = 221;

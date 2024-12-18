@@ -8,7 +8,7 @@ import codes.biscuit.skyblockaddons.features.discordrpc.DiscordStatus;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantListLayout;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
 import codes.biscuit.skyblockaddons.utils.*;
-import codes.biscuit.skyblockaddons.utils.objects.FloatPair;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.gson.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,11 +21,9 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableFloat;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.geom.Point2D;
-import java.beans.Introspector;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -34,9 +32,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConfigValues {
 
-    private static final int CONFIG_VERSION = 9;
+    private static final int CONFIG_VERSION = 10;
 
-    private final static float DEFAULT_GUI_SCALE = normalizeValueNoStep(1);
+    private final static float DEFAULT_GUI_SCALE = 1F;
     private final static float GUI_SCALE_MINIMUM = 0.5F;
     private final static float GUI_SCALE_MAXIMUM = 5;
 
@@ -45,10 +43,10 @@ public class ConfigValues {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Logger logger = SkyblockAddons.getLogger();
 
-    private final Map<Feature, FloatPair> defaultCoordinates = new EnumMap<>(Feature.class);
+    private final Map<Feature, Pair<Float, Float>> defaultCoordinates = new EnumMap<>(Feature.class);
     private final Map<Feature, EnumUtils.AnchorPoint> defaultAnchorPoints = new EnumMap<>(Feature.class);
     private final Map<Feature, Float> defaultGuiScales = new EnumMap<>(Feature.class);
-    private final Map<Feature, FloatPair> defaultBarSizes = new EnumMap<>(Feature.class);
+    private final Map<Feature, Pair<Float, Float>> defaultBarSizes = new EnumMap<>(Feature.class);
 
     private final File settingsConfigFile;
     private JsonObject loadedConfig = new JsonObject();
@@ -60,9 +58,9 @@ public class ConfigValues {
     private final Set<Feature> disabledFeatures = EnumSet.noneOf(Feature.class);
     private final Map<Feature, Integer> colors = new HashMap<>();
     private Map<Feature, Float> guiScales = new EnumMap<>(Feature.class);
-    private final Map<Feature, FloatPair> barSizes = new EnumMap<>(Feature.class);
+    private final Map<Feature, Pair<Float, Float>> barSizes = new EnumMap<>(Feature.class);
     private final MutableInt warningSeconds = new MutableInt(4);
-    private final Map<Feature, FloatPair> coordinates = new EnumMap<>(Feature.class);
+    private final Map<Feature, Pair<Float, Float>> coordinates = new EnumMap<>(Feature.class);
     private Map<Feature, EnumUtils.AnchorPoint> anchorPoints = new EnumMap<>(Feature.class);
     private final MutableObject<Language> language = new MutableObject<>(Language.ENGLISH);
     private final MutableObject<EnumUtils.BackpackStyle> backpackStyle = new MutableObject<>(EnumUtils.BackpackStyle.GUI);
@@ -72,8 +70,6 @@ public class ConfigValues {
     private final Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
     @Getter
     private final Set<Feature> chromaFeatures = EnumSet.noneOf(Feature.class);
-    @Deprecated
-    private final MutableFloat oldChromaSpeed = new MutableFloat(0.19354838F); // 2.0
     private final MutableObject<EnumUtils.ChromaMode> chromaMode = new MutableObject<>(EnumUtils.ChromaMode.FADE);
     private final MutableObject<DiscordStatus> discordDetails = new MutableObject<>(DiscordStatus.LOCATION);
     private final MutableObject<DiscordStatus> discordStatus = new MutableObject<>(DiscordStatus.AUTO_STATUS);
@@ -81,7 +77,7 @@ public class ConfigValues {
     @Getter
     private final List<String> discordCustomStatuses = new ArrayList<>();
     @Getter
-    private final MutableFloat mapZoom = new MutableFloat(0.18478261F); // 1.3
+    private final MutableFloat mapZoom = new MutableFloat(1.1F);
     @Getter
     private final MutableFloat healingCircleOpacity = new MutableFloat(0.4);
     @Setter
@@ -157,56 +153,12 @@ public class ConfigValues {
             deserializeEnumValueFromOrdinal(deployableDisplayStyle, "deployableStyle");
             deserializeEnumValueFromOrdinal(petItemStyle, "petItemStyle");
             deserializeEnumEnumMapFromIDS(anchorPoints, "anchorPoints", Feature.class, EnumUtils.AnchorPoint.class);
-            deserializeEnumNumberMapFromID(guiScales, "guiScales", Feature.class, float.class);
-
-            try {
-                for (Feature feature : Feature.getGuiFeatures()) { // TODO Legacy format from 1.3.4, remove in the future.
-                    String property = Introspector.decapitalize(WordUtils.capitalizeFully(feature.toString().replace("_", " "))).replace(" ", "");
-                    String x = property+"X";
-                    String y = property+"Y";
-                    if (loadedConfig.has(x)) {
-                        coordinates.put(feature, new FloatPair(loadedConfig.get(x).getAsFloat(), loadedConfig.get(y).getAsFloat()));
-                    }
-                }
-            } catch (Exception ex) {
-                logger.error("Failed to deserialize path: coordinates (legacy)");
-                logger.catching(ex);
-            }
-
-            if (loadedConfig.has("coordinates")) {
-                deserializeFeatureFloatCoordsMapFromID(coordinates, "coordinates");
-            } else {
-                deserializeFeatureFloatCoordsMapFromID(coordinates, "guiPositions"); // TODO Legacy format from 1.4.2/1.5-betas, remove in the future.
-            }
+            deserializeFeatureFloatCoordsMapFromID(coordinates, "coordinates");
             deserializeFeatureIntCoordsMapFromID(barSizes, "barSizes");
-
-            if (loadedConfig.has("featureColors")) { // TODO Legacy format from 1.3.4, remove in the future.
-                try {
-                    for (Map.Entry<String, JsonElement> element : loadedConfig.getAsJsonObject("featureColors").entrySet()) {
-                        Feature feature = Feature.fromId(Integer.parseInt(element.getKey()));
-                        if (feature != null) {
-                            ColorCode colorCode = ColorCode.values()[element.getValue().getAsInt()];
-                            if (colorCode.isColor() && colorCode != ColorCode.RED) { // Red is default, no need to set it.
-                                colors.put(feature, colorCode.getColor());
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    logger.error("Failed to deserialize path: featureColors");
-                    logger.catching(ex);
-                }
-            } else {
-                deserializeEnumNumberMapFromID(colors, "colors", Feature.class, int.class);
-            }
-
+            deserializeEnumNumberMapFromID(colors, "colors", Feature.class, int.class);
             deserializeEnumValueFromOrdinal(textStyle, "textStyle");
             deserializeFeatureSetFromID(chromaFeatures, "chromaFeatures");
-            if (configVersion <= 8) {
-                deserializeNumber(oldChromaSpeed, "chromaSpeed", float.class);
-                chromaSpeed.setValue(MathUtils.denormalizeSliderValue(oldChromaSpeed.floatValue(), 0.1F, 10, 0.5F));
-            } else {
-                deserializeNumber(chromaSpeed, "chromaSpeed", float.class);
-            }
+            deserializeNumber(chromaSpeed, "chromaSpeed", float.class);
             deserializeNumber(healingCircleOpacity, "healingCircleOpacity", float.class);
             deserializeNumber(chromaSize, "chromaSize", float.class);
             deserializeEnumValueFromOrdinal(chromaMode, "chromaMode");
@@ -220,34 +172,18 @@ public class ConfigValues {
             deserializeNumber(chromaSaturation, "chromaSaturation", float.class);
             deserializeNumber(chromaBrightness, "chromaBrightness", float.class);
 
-            if (configVersion <= 5) {
-                disabledFeatures.add(Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS);
-            } else if (configVersion <= 6) {
-                putDefaultBarSizes();
-                for (Map.Entry<Feature, FloatPair> entry : coordinates.entrySet()) {
-                    if (getAnchorPoint(entry.getKey()) == EnumUtils.AnchorPoint.BOTTOM_MIDDLE) {
-                        FloatPair coords = entry.getValue();
-                        coords.setX(coords.getX()-91);
-                        coords.setY(coords.getY()-39);
+            if (configVersion <= 9) { // TODO Legacy format before 1.9.3. Remove in the future.
+                deserializeEnumNumberMapFromID(guiScales, "guiScales", Feature.class, float.class);
+                for (Map.Entry<Feature, Float> entry : guiScales.entrySet()) {
+                    float denormalizedValue = getGuiScale(entry.getKey(), true);
+                    if (denormalizedValue == 1F) {
+                        guiScales.remove(entry.getKey());
+                    } else {
+                        entry.setValue(denormalizedValue);
                     }
                 }
-            } else if (configVersion <= 7) {
-                for (Map.Entry<Feature, FloatPair> entry : coordinates.entrySet()) {
-                    Feature feature = entry.getKey();
-                    FloatPair coords = entry.getValue();
-
-                    if (feature == Feature.DARK_AUCTION_TIMER || feature == Feature.FARM_EVENT_TIMER ||feature == Feature.ZEALOT_COUNTER || feature == Feature.SKILL_DISPLAY
-                            || feature == Feature.SHOW_TOTAL_ZEALOT_COUNT || feature == Feature.SHOW_SUMMONING_EYE_COUNT || feature == Feature.SHOW_AVERAGE_ZEALOTS_PER_EYE ||
-                            feature == Feature.BIRCH_PARK_RAINMAKER_TIMER || feature == Feature.ENDSTONE_PROTECTOR_DISPLAY) {
-                        coords.setY(coords.getY() + 2/2F);
-                        coords.setX(coords.getX() - 18/2F);
-                        coords.setY(coords.getY() - 9/2F);
-                    }
-
-                    if (feature.getGuiFeatureData() != null && feature.getGuiFeatureData().getDrawType() == EnumUtils.DrawType.BAR) {
-                        coords.setY(coords.getY() + 1);
-                    }
-                }
+            } else {
+                deserializeEnumNumberMapFromID(guiScales, "guiScales", Feature.class, float.class);
             }
 
             int lastFeatureID;
@@ -358,21 +294,11 @@ public class ConfigValues {
                 }
                 saveConfig.add("colors", colorsObject);
 
-                // Old gui coordinates, for backwards compatibility...
                 JsonObject coordinatesObject = new JsonObject();
                 for (Feature feature : coordinates.keySet()) {
                     JsonArray coordinatesArray = new JsonArray();
-                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(Math.round(coordinates.get(feature).getX())));
-                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(Math.round(coordinates.get(feature).getY())));
-                    coordinatesObject.add(String.valueOf(feature.getId()), coordinatesArray);
-                }
-                saveConfig.add("guiPositions", coordinatesObject);
-                // New gui coordinates
-                coordinatesObject = new JsonObject();
-                for (Feature feature : coordinates.keySet()) {
-                    JsonArray coordinatesArray = new JsonArray();
-                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(coordinates.get(feature).getX()));
-                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(coordinates.get(feature).getY()));
+                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(coordinates.get(feature).getRight()));
+                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(coordinates.get(feature).getLeft()));
                     coordinatesObject.add(String.valueOf(feature.getId()), coordinatesArray);
                 }
                 saveConfig.add("coordinates", coordinatesObject);
@@ -380,8 +306,8 @@ public class ConfigValues {
                 JsonObject barSizesObject = new JsonObject();
                 for (Feature feature : barSizes.keySet()) {
                     JsonArray sizesArray = new JsonArray();
-                    sizesArray.add(new GsonBuilder().create().toJsonTree(barSizes.get(feature).getX()));
-                    sizesArray.add(new GsonBuilder().create().toJsonTree(barSizes.get(feature).getY()));
+                    sizesArray.add(new GsonBuilder().create().toJsonTree(barSizes.get(feature).getRight()));
+                    sizesArray.add(new GsonBuilder().create().toJsonTree(barSizes.get(feature).getLeft()));
                     barSizesObject.add(String.valueOf(feature.getId()), sizesArray);
                 }
                 saveConfig.add("barSizes", barSizesObject);
@@ -590,18 +516,18 @@ public class ConfigValues {
         }
     }
 
-    private void deserializeFeatureFloatCoordsMapFromID(Map<Feature, FloatPair> map, String path) {
+    private void deserializeFeatureFloatCoordsMapFromID(Map<Feature, Pair<Float, Float>> map, String path) {
         deserializeFeatureFloatCoordsMapFromID(loadedConfig, map, path);
     }
 
-    private void deserializeFeatureFloatCoordsMapFromID(JsonObject jsonObject, Map<Feature, FloatPair> map, String path) {
+    private void deserializeFeatureFloatCoordsMapFromID(JsonObject jsonObject, Map<Feature, Pair<Float, Float>> map, String path) {
         try {
             if (jsonObject.has(path)) {
                 for (Map.Entry<String, JsonElement> element : jsonObject.getAsJsonObject(path).entrySet()) {
                     Feature feature = Feature.fromId(Integer.parseInt(element.getKey()));
                     if (feature != null) {
                         JsonArray coords = element.getValue().getAsJsonArray();
-                        map.put(feature, new FloatPair(coords.get(0).getAsFloat(), coords.get(1).getAsFloat()));
+                        map.put(feature, new Pair<>(coords.get(0).getAsFloat(), coords.get(1).getAsFloat()));
                     }
                 }
             }
@@ -611,18 +537,18 @@ public class ConfigValues {
         }
     }
 
-    private void deserializeFeatureIntCoordsMapFromID(Map<Feature, FloatPair> map, String path) {
+    private void deserializeFeatureIntCoordsMapFromID(Map<Feature, Pair<Float, Float>> map, String path) {
         deserializeFeatureIntCoordsMapFromID(loadedConfig, map, path);
     }
 
-    private void deserializeFeatureIntCoordsMapFromID(JsonObject jsonObject, Map<Feature, FloatPair> map, String path) {
+    private void deserializeFeatureIntCoordsMapFromID(JsonObject jsonObject, Map<Feature, Pair<Float, Float>> map, String path) {
         try {
             if (jsonObject.has(path)) {
                 for (Map.Entry<String, JsonElement> element : jsonObject.getAsJsonObject(path).entrySet()) {
                     Feature feature = Feature.fromId(Integer.parseInt(element.getKey()));
                     if (feature != null) {
                         JsonArray coords = element.getValue().getAsJsonArray();
-                        map.put(feature, new FloatPair(coords.get(0).getAsFloat(), coords.get(1).getAsFloat()));
+                        map.put(feature, new Pair<>(coords.get(0).getAsFloat(), coords.get(1).getAsFloat()));
                     }
                 }
             }
@@ -634,17 +560,15 @@ public class ConfigValues {
 
     public void setAllCoordinatesToDefault() {
         coordinates.clear();
-        for (Map.Entry<Feature, FloatPair> entry : defaultCoordinates.entrySet()) {
-            coordinates.put(entry.getKey(), entry.getValue().cloneCoords());
+        for (Map.Entry<Feature, Pair<Float, Float>> entry : defaultCoordinates.entrySet()) {
+            coordinates.put(entry.getKey(), entry.getValue().clonePair());
         }
-
         anchorPoints = new HashMap<>(defaultAnchorPoints);
-
         guiScales = new HashMap<>(defaultGuiScales);
     }
 
     private void putDefaultCoordinates(Feature feature) {
-        FloatPair coords = defaultCoordinates.get(feature);
+        Pair<Float, Float> coords = defaultCoordinates.get(feature);
         if (coords != null) {
             coordinates.put(feature, coords);
         }
@@ -652,27 +576,14 @@ public class ConfigValues {
 
     public void putDefaultBarSizes() {
         barSizes.clear();
-        for (Map.Entry<Feature, FloatPair> entry : defaultBarSizes.entrySet()) {
-            barSizes.put(entry.getKey(), entry.getValue().cloneCoords());
+        for (Map.Entry<Feature, Pair<Float, Float>> entry : defaultBarSizes.entrySet()) {
+            barSizes.put(entry.getKey(), entry.getValue().clonePair());
         }
     }
 
-    public static float normalizeValueNoStep(float value) {
-        return MathHelper.clamp_float((snapNearDefaultValue(value) - ConfigValues.GUI_SCALE_MINIMUM) /
-                (ConfigValues.GUI_SCALE_MAXIMUM - ConfigValues.GUI_SCALE_MINIMUM), 0.0F, 1.0F);
-    }
-
-    /** These two are taken from GuiOptionSlider. */
-    public static float denormalizeScale(float value) {
-        return snapNearDefaultValue(ConfigValues.GUI_SCALE_MINIMUM + (ConfigValues.GUI_SCALE_MAXIMUM - ConfigValues.GUI_SCALE_MINIMUM) *
-                MathHelper.clamp_float(value, 0.0F, 1.0F));
-    }
-    public static float snapNearDefaultValue(float value) {
-        if (value != 1 && value > 1-0.05 && value < 1+0.05) {
-            return 1;
-        }
-
-        return value;
+    public void putDefaultGuiScale(Feature feature) {
+        float defaultScale = defaultGuiScales.getOrDefault(feature, DEFAULT_GUI_SCALE);
+        guiScales.put(feature, defaultScale);
     }
 
     /**
@@ -810,37 +721,37 @@ public class ConfigValues {
 
     public float getActualX(Feature feature) {
         int maxX = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
-        return getAnchorPoint(feature).getX(maxX) + getRelativeCoords(feature).getX();
+        return getAnchorPoint(feature).getX(maxX) + getRelativeCoords(feature).getRight();
     }
 
     public float getActualY(Feature feature) {
         int maxY = new ScaledResolution(Minecraft.getMinecraft()).getScaledHeight();
-        return getAnchorPoint(feature).getY(maxY) + getRelativeCoords(feature).getY();
+        return getAnchorPoint(feature).getY(maxY) + getRelativeCoords(feature).getLeft();
     }
 
-    public FloatPair getSizes(Feature feature) {
-        return barSizes.getOrDefault(feature, defaultBarSizes.containsKey(feature) ? defaultBarSizes.get(feature).cloneCoords() : new FloatPair(1, 1));
+    public Pair<Float, Float> getSizes(Feature feature) {
+        return barSizes.getOrDefault(feature, defaultBarSizes.containsKey(feature) ? defaultBarSizes.get(feature).clonePair() : new Pair<>(1F, 1F));
     }
 
     public float getSizesX(Feature feature) {
-        return Math.min(Math.max(getSizes(feature).getX(), .25F), 1);
+        return Math.min(Math.max(getSizes(feature).getRight(), .25F), 1);
     }
 
     public float getSizesY(Feature feature) {
-        return Math.min(Math.max(getSizes(feature).getY(), .25F), 1);
+        return Math.min(Math.max(getSizes(feature).getLeft(), .25F), 1);
     }
 
     public void setScaleX(Feature feature, float x) {
-        FloatPair coords = getSizes(feature);
-        coords.setX(x);
+        Pair<Float, Float> coords = getSizes(feature);
+        coords.setLeft(x);
     }
 
     public void setScaleY(Feature feature, float y) {
-        FloatPair coords = getSizes(feature);
-        coords.setY(y);
+        Pair<Float, Float> coords = getSizes(feature);
+        coords.setRight(y);
     }
 
-    public FloatPair getRelativeCoords(Feature feature) {
+    public Pair<Float, Float> getRelativeCoords(Feature feature) {
         if (coordinates.containsKey(feature)) {
             return coordinates.get(feature);
         } else {
@@ -848,17 +759,17 @@ public class ConfigValues {
             if (coordinates.containsKey(feature)) {
                 return coordinates.get(feature);
             } else {
-                return new FloatPair(0,0);
+                return new Pair<>(0F, 0F);
             }
         }
     }
 
     public void setCoords(Feature feature, float x, float y) {
         if (coordinates.containsKey(feature)) {
-            coordinates.get(feature).setX(x);
-            coordinates.get(feature).setY(y);
+            coordinates.get(feature).setLeft(x);
+            coordinates.get(feature).setRight(y);
         } else {
-            coordinates.put(feature, new FloatPair(x, y));
+            coordinates.put(feature, new Pair<>(x, y));
         }
     }
 
@@ -918,13 +829,14 @@ public class ConfigValues {
     }
 
     public void setGuiScale(Feature feature, float scale) {
-        guiScales.put(feature, scale);
+        guiScales.put(feature, Math.max(Math.min(scale, GUI_SCALE_MAXIMUM), GUI_SCALE_MINIMUM));
     }
 
     public float getGuiScale(Feature feature) {
-        return getGuiScale(feature, true);
+        return guiScales.getOrDefault(feature, DEFAULT_GUI_SCALE);
     }
 
+    @Deprecated
     public float getGuiScale(Feature feature, boolean denormalized) {
         float value = ConfigValues.DEFAULT_GUI_SCALE;
         if (guiScales.containsKey(feature)) {
@@ -932,6 +844,22 @@ public class ConfigValues {
         }
         if (denormalized) {
             value = denormalizeScale(value);
+        }
+        return value;
+    }
+    /** These two are taken from GuiOptionSlider. */
+    @Deprecated
+    public static float denormalizeScale(float value) {
+        return snapNearDefaultValue(
+                ConfigValues.GUI_SCALE_MINIMUM
+                        + (ConfigValues.GUI_SCALE_MAXIMUM - ConfigValues.GUI_SCALE_MINIMUM)
+                        * MathHelper.clamp_float(value, 0.0F, 1.0F)
+        );
+    }
+    @Deprecated
+    public static float snapNearDefaultValue(float value) {
+        if (value != 1F && value > 1F - 0.05F && value < 1F + 0.05F) {
+            return 1;
         }
         return value;
     }

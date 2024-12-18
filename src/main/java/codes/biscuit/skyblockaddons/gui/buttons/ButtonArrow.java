@@ -9,9 +9,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class ButtonArrow extends SkyblockAddonsButton {
 
-    private static final ResourceLocation ARROW_RIGHT = new ResourceLocation("skyblockaddons", "gui/arrowright.png");
-    private static final ResourceLocation ARROW_LEFT = new ResourceLocation("skyblockaddons", "gui/arrowleft.png");
-
     @Getter private final ArrowType arrowType;
     private final boolean max;
 
@@ -34,15 +31,11 @@ public class ButtonArrow extends SkyblockAddonsButton {
             // Alpha multiplier is from 0 to 1, multiplying it creates the fade effect.
             // Regular features are red if disabled, green if enabled or part of the gui feature is enabled.
             GlStateManager.enableBlend();
-            if (arrowType == ArrowType.RIGHT) {
-                mc.getTextureManager().bindTexture(ARROW_RIGHT);
-            } else {
-                mc.getTextureManager().bindTexture(ARROW_LEFT);
-            }
+            mc.getTextureManager().bindTexture(arrowType.resourceLocation);
             if (max) {
                 GlStateManager.color(0.5F, 0.5F, 0.5F, alphaMultiplier * 0.5F);
             } else {
-                GlStateManager.color(1, 1, 1, hovered ? 1F : alphaMultiplier * 0.7F);
+                GlStateManager.color(1F, 1F, 1F, hovered ? 1F : alphaMultiplier * 0.7F);
             }
             drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height);
             GlStateManager.disableBlend();
@@ -61,7 +54,13 @@ public class ButtonArrow extends SkyblockAddonsButton {
     }
 
     public enum ArrowType {
-        LEFT,
-        RIGHT
+        LEFT("gui/arrowleft.png"),
+        RIGHT("gui/arrowright.png");
+
+        final ResourceLocation resourceLocation;
+
+        ArrowType(String path) {
+            this.resourceLocation = new ResourceLocation("skyblockaddons", path);
+        }
     }
 }

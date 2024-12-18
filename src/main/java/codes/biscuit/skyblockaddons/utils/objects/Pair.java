@@ -9,20 +9,24 @@ public class Pair<K, V> {
         this.value = value;
     }
 
-    public K getKey() {
+    public K getRight() {
         return key;
     }
 
-    public void setKey(K key) {
+    public void setLeft(K key) {
         this.key = key;
     }
 
-    public V getValue() {
+    public V getLeft() {
         return value;
     }
 
-    public void setValue(V value) {
+    public void setRight(V value) {
         this.value = value;
+    }
+
+    public Pair<K, V> clonePair() {
+        return new Pair<>(getRight(), getLeft());
     }
 
     @Override

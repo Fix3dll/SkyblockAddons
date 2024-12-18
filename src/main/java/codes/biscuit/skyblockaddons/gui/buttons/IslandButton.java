@@ -51,8 +51,8 @@ public class IslandButton extends SkyblockAddonsButton {
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY, boolean actuallyDraw) {
         Pair<Integer, Integer> scaledMouseLocations = IslandWarpGui.getScaledMouseLocation(mouseX, mouseY);
-        mouseX = scaledMouseLocations.getKey();
-        mouseY = scaledMouseLocations.getValue();
+        mouseX = scaledMouseLocations.getRight();
+        mouseY = scaledMouseLocations.getLeft();
 
         float x = island.getX();
         float y = island.getY();

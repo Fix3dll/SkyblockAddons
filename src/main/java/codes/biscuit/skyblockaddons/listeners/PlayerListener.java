@@ -1225,7 +1225,7 @@ public class PlayerListener {
     }
 
     public boolean shouldResetMouse() {
-        return System.currentTimeMillis() - main.getGuiScreenListener().getLastContainerCloseMs() > 100;
+        return System.currentTimeMillis() - main.getGuiScreenListener().getLastContainerCloseMs() > 150L;
     }
 
     /**

@@ -6,8 +6,7 @@ import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
-import codes.biscuit.skyblockaddons.gui.buttons.ButtonLocation;
-import codes.biscuit.skyblockaddons.listeners.RenderListener;
+import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.MathUtils;
@@ -65,15 +64,14 @@ public class FeatureTrackerQuest {
     public static void drawTrackerLocationIndicator(float scale, ButtonLocation buttonLocation) {
         if ((Feature.areEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES,Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
                 && main.getUtils().isTrackingAnimal()) || buttonLocation != null) {
-            RenderListener listener = main.getRenderListener();
             float x = main.getConfigValues().getActualX(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR);
             float y = main.getConfigValues().getActualY(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR);
 
             int height = 9;
             int width = 3 * 11 + 9;
 
-            x = listener.transformXY(x, width, scale);
-            y = listener.transformXY(y, height, scale);
+            x = main.getRenderListener().transformX(x, width, scale, false);
+            y = main.getRenderListener().transformY(y, height, scale);
 
             if (buttonLocation != null) {
                 buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);

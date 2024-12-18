@@ -166,18 +166,18 @@ public class InventoryUtils {
             keySet.forEach(key -> {
                 int previousAmount = 0;
                 if (previousInventoryMap.containsKey(key)) {
-                    previousAmount = previousInventoryMap.get(key).getKey();
+                    previousAmount = previousInventoryMap.get(key).getRight();
                 }
 
                 int newAmount = 0;
                 if (newInventoryMap.containsKey(key)) {
-                    newAmount = newInventoryMap.get(key).getKey();
+                    newAmount = newInventoryMap.get(key).getRight();
                 }
 
                 int diff = newAmount - previousAmount;
                 if (diff != 0) { // Get the NBT tag from whichever map the name exists in
                     inventoryDifference.add(
-                            new ItemDiff(key, diff, newInventoryMap.getOrDefault(key, previousInventoryMap.get(key)).getValue())
+                            new ItemDiff(key, diff, newInventoryMap.getOrDefault(key, previousInventoryMap.get(key)).getLeft())
                     );
                 }
             });
@@ -369,7 +369,7 @@ public class InventoryUtils {
      * @param p the player to check
      */
     public void checkIfWearingSlayerArmor(EntityPlayerSP p) {
-        if (Feature.SLAYER_INDICATOR.isDisabled()) return;
+        if (Feature.SLAYER_ARMOR_PROGRESS.isDisabled()) return;
 
         for (int i = 3; i >= 0; i--) {
             ItemStack itemStack = p.inventory.armorInventory[i];
@@ -536,7 +536,7 @@ public class InventoryUtils {
 
             int amount;
             if (this.containsKey(displayName)) {
-                amount = this.get(displayName).getKey() + itemStack.stackSize;
+                amount = this.get(displayName).getRight() + itemStack.stackSize;
             } else {
                 amount = itemStack.stackSize;
             }

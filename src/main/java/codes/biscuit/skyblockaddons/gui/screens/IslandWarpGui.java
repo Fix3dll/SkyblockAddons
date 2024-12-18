@@ -171,7 +171,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         }
 
         Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation(mouseX, mouseY);
-        super.mouseClicked(scaledMouseLocations.getKey(), scaledMouseLocations.getValue(), mouseButton);
+        super.mouseClicked(scaledMouseLocations.getRight(), scaledMouseLocations.getLeft(), mouseButton);
     }
 
 
@@ -187,8 +187,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
                 for (IslandMarkerButton marker : islandButton.getMarkerButtons()) {
                     double distance = marker.getDistance(
-                            scaledMouseLocations.getKey(), // x
-                            scaledMouseLocations.getValue() // y
+                            scaledMouseLocations.getRight(), // x
+                            scaledMouseLocations.getLeft() // y
                     );
 
                     if (distance != -1 && distance < markerDistance) {
