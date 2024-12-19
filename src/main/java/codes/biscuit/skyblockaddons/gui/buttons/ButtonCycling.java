@@ -63,7 +63,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
      */
     public ButtonCycling(int x, int y, int width, int height, List<SelectItem> items, int selectedIndex, Consumer<Integer> callback) {
         super(0, x, y, "");
-        if(items == null || items.isEmpty()) {
+        if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException("Item list must have at least one element.");
         } else if (callback == null) {
             throw new IllegalArgumentException("ButtonCycling's callback cannot be null!");

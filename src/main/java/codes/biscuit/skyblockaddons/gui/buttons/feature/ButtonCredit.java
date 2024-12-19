@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.core.Feature;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,7 +34,7 @@ public class ButtonCredit extends ButtonFeature {
             GlStateManager.enableBlend();
 
             GlStateManager.color(1,1,1,alphaMultiplier * (hovered ? 1F : 0.7F));
-            if (main.getConfigValues().isRemoteDisabled(feature)) {
+            if (feature.isRemoteDisabled()) {
                 GlStateManager.color(0.3F,0.3F,0.3F,0.7F);
             }
             GlStateManager.pushMatrix();
@@ -48,5 +49,12 @@ public class ButtonCredit extends ButtonFeature {
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         return hovered;
+    }
+
+    @Override
+    public void playPressSound(SoundHandler soundHandler) {
+        if (!feature.isRemoteDisabled()) {
+            super.playPressSound(soundHandler);
+        }
     }
 }

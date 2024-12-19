@@ -15,6 +15,9 @@ public class ButtonFeature extends SkyblockAddonsButton {
      */
     public ButtonFeature(int buttonId, int x, int y, String buttonText, Feature feature) {
         super(buttonId, x, y, buttonText);
+        if (feature == null) {
+            throw new IllegalArgumentException("ButtonFeature's feature cannot be null!");
+        }
         this.feature = feature;
     }
 

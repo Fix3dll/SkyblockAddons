@@ -7,6 +7,7 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import com.google.common.collect.Sets;
 import lombok.Getter;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -316,6 +317,7 @@ public enum Feature {
             RESET_LOCATION, RESCALE_FEATURES, SHOW_COLOR_ICONS, ENABLE_FEATURE_SNAPPING, X_ALLIGNMENT
     ));
 
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final int ID_AT_PREVIOUS_UPDATE = 221;
 
     private final int id;
@@ -421,7 +423,7 @@ public enum Feature {
 
     public boolean isDisabled() {
         ConfigValues values = SkyblockAddons.getInstance().getConfigValues();
-        return values != null && (values.getDisabledFeatures().contains(this) || values.isRemoteDisabled(this));
+        return values != null && (values.getDisabledFeatures().contains(this) || this.isRemoteDisabled());
     }
 
     /**
@@ -441,4 +443,44 @@ public enum Feature {
         }
         return true;
     }
+
+    /**
+     * Checks the received {@code OnlineData} to determine if the given feature should be disabled.This method checks
+     * the list of features to be disabled for all versions first and then checks the list of features that should be
+     * disabled for this specific version.
+     * @return {@code true} if the feature should be disabled, {@code false} otherwise
+     */
+    public boolean isRemoteDisabled() {
+        HashMap<String, List<Integer>> disabledFeatures = SkyblockAddons.getInstance().getOnlineData().getDisabledFeatures();
+
+        if (disabledFeatures.containsKey("all")) {
+            if (disabledFeatures.get("all") != null) {
+                if (disabledFeatures.get("all").contains(this.getId())) {
+                    return true;
+                }
+            } else {
+                LOGGER.error("\"all\" key in disabled features map has value of null. Please fix online data.");
+            }
+        }
+
+        /*
+        Check for disabled features for this mod version. Pre-release versions will follow the disabled features
+        list for their release version. For example, the version {@code 1.6.0-beta.10} will adhere to the list
+        for version {@code 1.6.0}
+         */
+        String version = SkyblockAddons.VERSION;
+        if (version.contains("-")) {
+            version = version.split("-")[0];
+        }
+        if (disabledFeatures.containsKey(version)) {
+            if (disabledFeatures.get(version) != null) {
+                return disabledFeatures.get(version).contains(this.getId());
+            } else {
+                LOGGER.error("\"{}\" key in disabled features map has value of null. Please fix online data.", version);
+            }
+        }
+
+        return false;
+    }
+
 }

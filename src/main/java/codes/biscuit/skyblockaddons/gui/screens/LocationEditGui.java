@@ -75,7 +75,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
         ScaledResolution scaledResolution = new ScaledResolution(mc);
         Set<Feature> guiFeatures = Feature.getEditGuiFeatures();
-        guiFeatures.removeIf(feature -> main.getConfigValues().isRemoteDisabled(feature));
+        guiFeatures.removeIf(Feature::isRemoteDisabled);
         int numButtons = guiFeatures.size();
         int x;
         int y = scaledResolution.getScaledHeight()/2;

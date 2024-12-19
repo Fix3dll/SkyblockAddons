@@ -117,7 +117,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 continue;
             }
             // Don't add disabled features yet
-            if ((feature.isActualFeature() || tab == EnumUtils.GuiTab.GENERAL_SETTINGS) && !main.getConfigValues().isRemoteDisabled(feature)) {
+            if ((feature.isActualFeature() || tab == EnumUtils.GuiTab.GENERAL_SETTINGS) && !feature.isRemoteDisabled()) {
                 if (matchesSearch(feature.getMessage())) { // Matches search.
                     features.add(feature);
                 } else { // If a sub-setting matches the search show it up in the results as well.
@@ -137,7 +137,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 if (Feature.getEditGuiFeatures().contains(feature)) {
                     continue;
                 }
-                if (main.getConfigValues().isRemoteDisabled(feature) && matchesSearch(feature.getMessage())) {
+                if (feature.isRemoteDisabled() && matchesSearch(feature.getMessage())) {
                     features.add(feature); // add disabled features at the end
                 }
             }
@@ -295,7 +295,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 }
 
             } else if (abstractButton instanceof ButtonFeatureToggle) {
-                if (main.getConfigValues().isRemoteDisabled(feature)) return;
+                if (feature.isRemoteDisabled()) return;
                 if (feature.isDisabled()) {
                     feature.setEnabled(true);
                     switch (feature) {
@@ -339,7 +339,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 ((ButtonFeatureToggle)abstractButton).onClick();
 
             } else if (abstractButton instanceof ButtonCredit) {
-                if (main.getConfigValues().isRemoteDisabled(feature)) return;
+                if (feature.isRemoteDisabled()) return;
                 EnumUtils.FeatureCredit credit = ((ButtonCredit)abstractButton).getCredit();
                 try {
                     Desktop.getDesktop().browse(new URI(credit.getUrl()));

@@ -40,7 +40,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
         DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
 
         boolean enabled = feature.isEnabled();
-        boolean remoteDisabled = main.getConfigValues().isRemoteDisabled(feature);
+        boolean remoteDisabled = feature.isRemoteDisabled();
 
         if (enabled) {
             ColorUtils.bindColor(36, 255, 98, remoteDisabled ? 25 : 255); // Green
@@ -88,7 +88,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
 
     @Override
     public void playPressSound(SoundHandler soundHandler) {
-        if (!main.getConfigValues().isRemoteDisabled(feature)) {
+        if (!feature.isRemoteDisabled()) {
             super.playPressSound(soundHandler);
         }
     }

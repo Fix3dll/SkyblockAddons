@@ -39,12 +39,12 @@ public class FeatureBase extends ButtonFeature {
             hovered = isHovered(mouseX, mouseY);
 
             int fontColor = main.getUtils().getDefaultBlue(alpha);
-            if (main.getConfigValues().isRemoteDisabled(feature)) {
+            if (feature.isRemoteDisabled()) {
                 fontColor = new Color(60,60,60).getRGB();
             }
             GlStateManager.enableBlend();
             GlStateManager.color(1,1,1,0.7F);
-            if (main.getConfigValues().isRemoteDisabled(feature)) {
+            if (feature.isRemoteDisabled()) {
                 GlStateManager.color(0.3F,0.3F,0.3F,0.7F);
             }
             DrawUtils.drawRect(xPosition, yPosition, width, height, ColorUtils.getDummySkyblockColor(27, 29, 41, 230), 4);
@@ -136,7 +136,7 @@ public class FeatureBase extends ButtonFeature {
                 }
             }
 
-            if (main.getConfigValues().isRemoteDisabled(feature)) {
+            if (feature.isRemoteDisabled()) {
                 drawCenteredString(mc.fontRendererObj, Translations.getMessage("messages.featureDisabled"), textX, textY + 6 , main.getUtils().getDefaultBlue(alpha));
             }
         }
@@ -146,10 +146,8 @@ public class FeatureBase extends ButtonFeature {
         String[] wrappedString = main.getUtils().wrapSplitText(displayString, 28);
         boolean multiLine = wrappedString.length > 1;
 
-        float scale = 0.8F;
-        if (multiLine) { // If its 2 lines the credits have to be smaller.
-            scale = 0.6F;
-        }
+        // If its 2 lines the credits have to be smaller.
+        float scale = multiLine ? 0.6F : 0.8F;
 
         int y = (int)((yPosition/scale) + (multiLine ? 30 : 21)); // If its a smaller scale, you gotta move it down more.
 
