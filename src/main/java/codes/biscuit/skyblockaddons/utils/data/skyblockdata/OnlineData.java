@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
 import codes.biscuit.skyblockaddons.core.Rarity;
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -11,9 +12,13 @@ import java.util.regex.Pattern;
 @Getter
 public class OnlineData {
 
+    @SerializedName("bannerImageURL")
     private String bannerImageURL;
+    @SerializedName("bannerLink")
     private String bannerLink;
+    @SerializedName("updateInfo")
     private UpdateInfo updateInfo;
+    @SerializedName("languageJSONFormat")
     private String languageJSONFormat;
 
     /**
@@ -29,27 +34,42 @@ public class OnlineData {
      * {@code 1.6.0-beta.10} will adhere to the list with the key {@code 1.6.0}. Disabling features for unique pre-release
      * versions is not supported.
      */
+    @SerializedName("disabledFeatures")
     private HashMap<String, List<Integer>> disabledFeatures;
+    @SerializedName("dropSettings")
     private DropSettings dropSettings;
+    @SerializedName("hypixelBrands")
     private HashSet<Pattern> hypixelBrands;
 
     @Getter
     public static class UpdateInfo {
+        @SerializedName("latestRelease")
         private String latestRelease;
+        @SerializedName("releaseDownload")
         private String releaseDownload;
+        @SerializedName("releaseChangelog")
         private String releaseChangelog;
-        private String releaseShowcase;
+        @SerializedName("releaseNote")
+        private String releaseNote;
+        @SerializedName("latestBeta")
         private String latestBeta;
+        @SerializedName("betaDownload")
         private String betaDownload;
+        @SerializedName("betaChangelog")
         private String betaChangelog;
-        private String betaShowcase;
+        @SerializedName("betaNote")
+        private String betaNote;
     }
 
     @Getter
     public static class DropSettings {
+        @SerializedName("minimumInventoryRarity")
         private Rarity minimumInventoryRarity;
+        @SerializedName("minimumHotbarRarity")
         private Rarity minimumHotbarRarity;
+        @SerializedName("dontDropTheseItems")
         private List<String> dontDropTheseItems;
+        @SerializedName("allowDroppingTheseItems")
         private List<String> allowDroppingTheseItems;
     }
 }

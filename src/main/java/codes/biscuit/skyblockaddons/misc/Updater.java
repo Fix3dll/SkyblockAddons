@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.misc;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import lombok.Getter;
 import net.minecraft.event.ClickEvent;
@@ -33,7 +34,7 @@ public class Updater {
     private String messageToRender;
     private String downloadLink;
     private String changelogLink;
-    private String showcaseLink;
+    private String note;
 
     private boolean hasUpdate = false;
     private boolean isPatch = false;
@@ -163,12 +164,12 @@ public class Updater {
                 targetVersion = updateInfo.getLatestRelease();
                 downloadLink = updateInfo.getReleaseDownload();
                 changelogLink = updateInfo.getReleaseChangelog();
-                showcaseLink = updateInfo.getReleaseShowcase();
+                note = updateInfo.getReleaseNote();
             } else {
                 targetVersion = updateInfo.getLatestBeta();
                 downloadLink = updateInfo.getBetaDownload();
                 changelogLink = updateInfo.getBetaChangelog();
-                showcaseLink = updateInfo.getBetaShowcase();
+                note = updateInfo.getBetaNote();
             }
 
             try {
@@ -220,6 +221,12 @@ public class Updater {
         ChatComponentText newUpdate = new ChatComponentText(
                 String.format("§b%s\n", getMessage("messages.updateChecker.newUpdateAvailable", targetVersion))
         );
+
+        if (note != null && !note.isEmpty()) {
+            ChatComponentText versionNote = new ChatComponentText("\n" + ColorCode.RED + note + "\n");
+            newUpdate.appendSibling(versionNote);
+        }
+
         /*
         ChatComponentText viewChangelog = new ChatComponentText(
                 String.format("§b%s\n", getMessage("messages.updateChecker.wantToViewPatchNotes", targetVersion)));
@@ -230,27 +237,9 @@ public class Updater {
         */
         main.getUtils().sendMessage(newUpdate, false);
 
-        ChatComponentText showcaseButton = null;
         ChatComponentText downloadButton;
         ChatComponentText openModsFolderButton;
         ChatComponentText changelogButton;
-
-        if (showcaseLink != null && !showcaseLink.isEmpty()) {
-            showcaseButton = new ChatComponentText(
-                    String.format("§b§l[%s]", getMessage("messages.updateChecker.watchShowcase", targetVersion))
-            );
-            showcaseButton.setChatStyle(
-                    showcaseButton.getChatStyle().setChatClickEvent(
-                            new ClickEvent(ClickEvent.Action.OPEN_URL, showcaseLink)
-                    ).setChatHoverEvent(
-                            new HoverEvent(
-                                    HoverEvent.Action.SHOW_TEXT,
-                                    new ChatComponentText("§7" + getMessage("messages.clickToOpenLink"))
-                            )
-                    )
-            );
-            showcaseButton.appendSibling(new ChatComponentText(" "));
-        }
 
         downloadButton = new ChatComponentText(
                 String.format("§b§l[%s]", getMessage("messages.updateChecker.downloadButton", targetVersion))
@@ -277,11 +266,7 @@ public class Updater {
                     )
             );
         }
-        downloadButton.appendSibling(new ChatComponentText(" "));
-
-        if (showcaseButton != null) {
-            showcaseButton.appendSibling(downloadButton);
-        }
+        downloadButton.appendText(" ");
 
         openModsFolderButton = new ChatComponentText(
                 String.format("§e§l[%s]", getMessage("messages.updateChecker.openModFolderButton"))
@@ -315,12 +300,7 @@ public class Updater {
             downloadButton.appendSibling(changelogButton);
         }
 
-        if (showcaseButton != null) {
-            main.getUtils().sendMessage(showcaseButton, false);
-        } else {
-            main.getUtils().sendMessage(downloadButton, false);
-        }
-
+        main.getUtils().sendMessage(downloadButton, false);
         main.getUtils().sendMessage("§7§m--------------------------------------------------", false);
 
         sentUpdateMessage = true;
