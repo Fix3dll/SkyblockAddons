@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.misc;
+package codes.biscuit.skyblockaddons.core;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;

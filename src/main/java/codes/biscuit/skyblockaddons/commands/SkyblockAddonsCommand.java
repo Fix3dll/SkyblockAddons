@@ -5,7 +5,7 @@ import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerBoss;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerDrop;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
-import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;

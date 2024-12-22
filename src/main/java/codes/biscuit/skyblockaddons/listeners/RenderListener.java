@@ -27,8 +27,8 @@ import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 import codes.biscuit.skyblockaddons.gui.screens.LocationEditGui;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
-import codes.biscuit.skyblockaddons.misc.Updater;
-import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
+import codes.biscuit.skyblockaddons.core.Updater;
+import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
@@ -1756,7 +1756,7 @@ public class RenderListener {
                         String petHeldItemId = pet.getPetInfo().getHeldItemId();
 
                         ItemStack petItemStack = petManager.getPetItemFromId(petHeldItemId);
-                        Rarity petItemRarity = petManager.getPetItemRarityFromId(petHeldItemId);
+                        SkyblockRarity petItemRarity = petManager.getPetItemRarityFromId(petHeldItemId);
 
                         String displayText = "Held Item:";
                         if (petHeldItemId.endsWith(petItemRarity.getLoreName())) {

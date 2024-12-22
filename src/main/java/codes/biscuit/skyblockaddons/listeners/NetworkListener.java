@@ -8,7 +8,7 @@ import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.handlers.PacketHandler;
-import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
+import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;

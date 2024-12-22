@@ -26,7 +26,7 @@ import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
 import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 
-import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.ActionBarParser;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
@@ -954,9 +954,9 @@ public class PlayerListener {
                 if (Feature.BASE_STAT_BOOST_COLOR_BY_RARITY.isEnabled()) {
                     int rarityIndex = baseStatBoost / 10;
                     if (rarityIndex < 0) rarityIndex = 0;
-                    if (rarityIndex >= Rarity.values().length) rarityIndex = Rarity.values().length - 1;
+                    if (rarityIndex >= SkyblockRarity.values().length) rarityIndex = SkyblockRarity.values().length - 1;
 
-                    colorCode = Rarity.values()[rarityIndex].getColorCode();
+                    colorCode = SkyblockRarity.values()[rarityIndex].getColorCode();
                 }
                 e.toolTip.add(insertAt++, "§7Base Stat Boost: " + colorCode + "+" + baseStatBoost + "%");
             }
@@ -1190,7 +1190,7 @@ public class PlayerListener {
                 // already marked for block removal by treecap/jungle axe ability
                 PetManager.Pet pet = main.getPetCacheManager().getCurrentPet();
                 if (pet != null
-                        && pet.getPetInfo().getPetRarity() == Rarity.LEGENDARY
+                        && pet.getPetInfo().getPetRarity() == SkyblockRarity.LEGENDARY
                         && pet.getPetInfo().getPetSkyblockId().equalsIgnoreCase("monkey")) {
                     cooldownTime -=  (int) (2000 * (0.005 * pet.getPetLevel()));
                 }

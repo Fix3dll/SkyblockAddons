@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.misc.scheduler;
+package codes.biscuit.skyblockaddons.core.scheduler;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import lombok.Getter;

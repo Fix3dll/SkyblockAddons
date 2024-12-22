@@ -1,19 +1,21 @@
 package codes.biscuit.skyblockaddons.features.dragontracker;
 
-import codes.biscuit.skyblockaddons.core.Rarity;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.core.Translations;
 import com.google.common.base.CaseFormat;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@Getter
 public enum DragonsSince {
+    SUPERIOR(SkyblockRarity.LEGENDARY),
+    ASPECT_OF_THE_DRAGONS(SkyblockRarity.LEGENDARY),
+    ENDER_DRAGON_PET(SkyblockRarity.LEGENDARY);
 
-    SUPERIOR(Rarity.LEGENDARY),
-    ASPECT_OF_THE_DRAGONS(Rarity.LEGENDARY),
-    ENDER_DRAGON_PET(Rarity.LEGENDARY);
+    private final SkyblockRarity itemRarity;
 
-    @Getter private Rarity itemRarity;
+    DragonsSince(SkyblockRarity itemRarity) {
+        this.itemRarity = itemRarity;
+    }
 
     public String getDisplayName() {
         return Translations.getMessage("dragonTracker." +  CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, this.name()));

@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Rarity;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.gson.GsonInitializable;
 import com.google.gson.annotations.SerializedName;
@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagList;
 import org.apache.logging.log4j.Logger;
 
 public class PetItem implements GsonInitializable {
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     @SerializedName("displayName")
     @Getter private String displayName;
@@ -23,7 +23,7 @@ public class PetItem implements GsonInitializable {
     @SerializedName("material")
     private String material;
     @SerializedName("rarity")
-    @Getter private Rarity rarity;
+    @Getter private SkyblockRarity rarity;
     @SerializedName("texture")
     private String texture;
     @SerializedName("skullId")
@@ -70,7 +70,7 @@ public class PetItem implements GsonInitializable {
             }
         } catch (Exception ex) {
             itemStack = new ItemStack(Item.getItemFromBlock(Blocks.stone));
-            logger.error(
+            LOGGER.error(
                     "An error occurred while making an item stack with ID {} and name {}.", material, displayName, ex
             );
         }

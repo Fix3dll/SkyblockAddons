@@ -1,10 +1,10 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Rarity;
+import codes.biscuit.skyblockaddons.core.PetInfo;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.core.ItemType;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
-import codes.biscuit.skyblockaddons.core.PetInfo;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import codes.biscuit.skyblockaddons.core.Rune;
@@ -56,7 +56,7 @@ public class ItemUtils {
      * @param item the Skyblock item to check, can't be {@code null}
      * @return the rarity of the item if a valid rarity is found, or {@code null} if item is {@code null} or no valid rarity is found
      */
-    public static Rarity getRarity(ItemStack item) {
+    public static SkyblockRarity getRarity(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
         }
@@ -624,7 +624,7 @@ public class ItemUtils {
      * @param lore the {@code List<String>} containing the item's lore
      * @return the rarity of the item if a valid rarity is found, or {@code null} if item is {@code null} or no valid rarity is found
      */
-    private static Rarity getRarity(List<String> lore) {
+    private static SkyblockRarity getRarity(List<String> lore) {
         // Start from the end since the rarity is usually the last line or one of the last.
         for (int i = lore.size() - 1; i >= 0 ; i--) {
             String currentLine = lore.get(i);
@@ -633,7 +633,7 @@ public class ItemUtils {
             if (rarityMatcher.find()) {
                 String rarity = rarityMatcher.group("rarity");
 
-                for (Rarity itemRarity : Rarity.values()) {
+                for (SkyblockRarity itemRarity : SkyblockRarity.values()) {
                     // Use a "startsWith" check here because "VERY SPECIAL" has two words and only "VERY" is matched.
                     if (itemRarity.getLoreName().startsWith(rarity)) {
                         return itemRarity;

@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
  */
 @Getter
 public class SkyblockDate {
+
     public static SkyblockDate parse(Matcher dateMatcher) {
         if(dateMatcher == null) {
             return null;

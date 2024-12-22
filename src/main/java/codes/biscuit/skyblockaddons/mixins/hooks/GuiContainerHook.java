@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
-import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;

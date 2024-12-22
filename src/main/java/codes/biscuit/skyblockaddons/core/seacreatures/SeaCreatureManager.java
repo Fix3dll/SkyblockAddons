@@ -6,16 +6,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static codes.biscuit.skyblockaddons.core.Rarity.LEGENDARY;
+import static codes.biscuit.skyblockaddons.core.SkyblockRarity.LEGENDARY;
 
-
+@Getter
 public class SeaCreatureManager {
 
-    private static final SeaCreatureManager INSTANCE = new SeaCreatureManager();
+    @Getter private static final SeaCreatureManager instance = new SeaCreatureManager();
 
-    @Getter
     private final Set<String> allSeaCreatureSpawnMessages = new HashSet<>();
-    @Getter
     private final Set<String> legendarySeaCreatureSpawnMessages = new HashSet<>();
 
     /**
@@ -33,7 +31,4 @@ public class SeaCreatureManager {
         }
     }
 
-    public static SeaCreatureManager getInstance() {
-        return INSTANCE;
-    }
 }

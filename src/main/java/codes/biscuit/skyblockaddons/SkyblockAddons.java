@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons;
 
 import codes.biscuit.skyblockaddons.config.PetCacheManager;
-import codes.biscuit.skyblockaddons.core.Rarity;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
 import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
@@ -22,9 +22,9 @@ import codes.biscuit.skyblockaddons.features.discordrpc.DiscordRPCManager;
 import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.listeners.*;
-import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
-import codes.biscuit.skyblockaddons.misc.Updater;
-import codes.biscuit.skyblockaddons.misc.scheduler.Scheduler;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.core.Updater;
+import codes.biscuit.skyblockaddons.core.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.*;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.gson.GsonInitializableTypeAdapter;
@@ -91,7 +91,7 @@ public class SkyblockAddons {
             })
             .registerTypeAdapterFactory(new GsonInitializableTypeAdapter())
             .registerTypeAdapter(Pattern.class, new PatternAdapter())
-            .registerTypeAdapter(Rarity.class, new RarityAdapter())
+            .registerTypeAdapter(SkyblockRarity.class, new RarityAdapter())
             .registerTypeAdapter(UUID.class, new UuidAdapter())
             .create();
 

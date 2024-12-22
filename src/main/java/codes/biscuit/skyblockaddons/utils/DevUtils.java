@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Translations;
-import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import lombok.Setter;

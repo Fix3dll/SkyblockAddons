@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.features;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.PetInfo;
-import codes.biscuit.skyblockaddons.core.Rarity;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
@@ -102,7 +102,7 @@ public class PetManager {
     public void findCurrentPetFromAutopet(String levelString, String rarityColor, String petName) {
         int level = Integer.parseInt(levelString);
         ColorCode color = ColorCode.getByChar(rarityColor.charAt(0));
-        Rarity rarity = Rarity.getByColorCode(color);
+        SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
 
         for (Pet pet : main.getPetCacheManager().getPetCache().getPetMap().values()) {
             if (pet.displayName.contains(petName) && pet.petLevel == level && pet.petInfo.getPetRarity() == rarity) {
@@ -122,7 +122,7 @@ public class PetManager {
     public void updateAndSetCurrentLevelledPet(String newLevelString, String rarityColor, String petName) {
         int newLevel = Integer.parseInt(newLevelString);
         ColorCode color = ColorCode.getByChar(rarityColor.charAt(0));
-        Rarity rarity = Rarity.getByColorCode(color);
+        SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
 
         for (Map.Entry<Integer, Pet> petEntry : main.getPetCacheManager().getPetCache().getPetMap().entrySet()) {
@@ -230,12 +230,12 @@ public class PetManager {
         }
     }
 
-    public Rarity getPetItemRarityFromId(String petItemId) {
+    public SkyblockRarity getPetItemRarityFromId(String petItemId) {
         PetItem petItem = petItems.get(petItemId);
         if (petItem != null) {
             return petItem.getRarity();
         } else {
-            return Rarity.ADMIN;
+            return SkyblockRarity.ADMIN;
         }
     }
 

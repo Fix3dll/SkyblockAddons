@@ -7,7 +7,7 @@ import codes.biscuit.skyblockaddons.core.ThunderBottle;
 import codes.biscuit.skyblockaddons.features.ItemDiff;
 import codes.biscuit.skyblockaddons.features.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
-import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
+import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;

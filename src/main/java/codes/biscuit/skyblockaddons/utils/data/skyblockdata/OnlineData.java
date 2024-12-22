@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
-import codes.biscuit.skyblockaddons.core.Rarity;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
@@ -64,9 +64,9 @@ public class OnlineData {
     @Getter
     public static class DropSettings {
         @SerializedName("minimumInventoryRarity")
-        private Rarity minimumInventoryRarity;
+        private SkyblockRarity minimumInventoryRarity;
         @SerializedName("minimumHotbarRarity")
-        private Rarity minimumHotbarRarity;
+        private SkyblockRarity minimumHotbarRarity;
         @SerializedName("dontDropTheseItems")
         private List<String> dontDropTheseItems;
         @SerializedName("allowDroppingTheseItems")

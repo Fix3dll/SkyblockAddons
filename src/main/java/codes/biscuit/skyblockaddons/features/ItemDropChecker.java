@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
-import codes.biscuit.skyblockaddons.core.Rarity;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
@@ -82,7 +82,7 @@ public class ItemDropChecker {
     public static boolean canDropItem(ItemStack item, boolean itemIsInHotbar, boolean playAlert) {
         if (main.getUtils().isOnSkyblock()) {
             String itemID = ItemUtils.getSkyblockItemID(item);
-            Rarity itemRarity = ItemUtils.getRarity(item);
+            SkyblockRarity itemRarity = ItemUtils.getRarity(item);
 
             if (itemID == null) {
                 // Allow dropping of Skyblock items without IDs

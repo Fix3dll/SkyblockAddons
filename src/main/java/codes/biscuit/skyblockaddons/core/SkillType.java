@@ -21,10 +21,8 @@ public enum SkillType {
     SOCIAL("Social", Items.cake, true);
 
     private final String skillName;
-    @Getter
-    private final ItemStack item;
-    @Getter
-    private final boolean cosmetic;
+    @Getter private final ItemStack item;
+    @Getter private final boolean cosmetic;
 
     SkillType(String skillName, Item item, boolean isCosmetic) {
         this.skillName = skillName;

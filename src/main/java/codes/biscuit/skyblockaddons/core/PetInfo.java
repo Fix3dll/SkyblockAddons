@@ -16,7 +16,7 @@ public class PetInfo {
     @SerializedName("exp")
     private double exp;
     @SerializedName("tier")
-    private Rarity petRarity;
+    private SkyblockRarity petRarity;
     @SerializedName("hideInfo")
     private boolean hideInfo;
     @SerializedName("heldItem")
