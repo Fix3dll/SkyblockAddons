@@ -37,7 +37,7 @@ public enum ColorCode {
 	public static final char COLOR_CHAR = '§';
 	@Getter private final char code;
 	private final boolean isFormat;
-	private final String jsonName;
+	@Getter private final String jsonName;
 	private final String toString;
 	@Getter private final int color;
 
@@ -64,7 +64,7 @@ public enum ColorCode {
 	ColorCode(char code, boolean isFormat, String jsonName, int rgb) {
 		this.code = code;
 		this.isFormat = isFormat;
-		this.jsonName = jsonName;
+		this.jsonName = StringUtils.isEmpty(jsonName) ? this.name().toLowerCase() : jsonName;
 		this.toString = new String(new char[] { COLOR_CHAR, code });
 		this.color = (255 << 24) | (rgb & 0x00FFFFFF);
 	}
@@ -92,34 +92,8 @@ public enum ColorCode {
 		return ColorUtils.setColorAlpha(color, alpha);
 	}
 
-	public String getJsonName() {
-		return StringUtils.isEmpty(this.jsonName) ? this.name().toLowerCase() : this.jsonName;
-	}
-
     public boolean isColor() {
-		return !this.isFormat() && this != RESET;
-	}
-
-	public boolean isFormat() {
-		return this.isFormat;
-	}
-
-	public ColorCode getNextFormat() {
-		return this.getNextFormat(ordinal());
-	}
-
-	private ColorCode getNextFormat(int ordinal) {
-		ColorCode[] values = values();
-		int nextColor = ordinal + 1;
-
-		if (nextColor > values.length - 1) {
-			return values[0];
-
-		} else if (!values[nextColor].isColor()) {
-			return getNextFormat(nextColor);
-		}
-
-		return values[nextColor];
+		return !this.isFormat && this != RESET;
 	}
 
 	@Override

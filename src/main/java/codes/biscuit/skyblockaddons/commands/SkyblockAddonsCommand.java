@@ -165,7 +165,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                     try {
                         main.getUtils().sendMessage(getSubCommandUsage(args[1]), false);
                     } catch (IllegalArgumentException e) {
-                        throw new CommandException(getMessage("commands.errors.wrongUsage.subCommandNotFound", args[1]));
+                        main.getUtils().sendErrorMessage(getMessage("commands.errors.wrongUsage.subCommandNotFound", args[1]));
                     }
                 } else {
                     main.getUtils().sendMessage(getCommandUsage(sender), false);
@@ -175,12 +175,11 @@ public class SkyblockAddonsCommand extends CommandBase {
                 main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.EDIT_LOCATIONS, 0, null);
 
             } else if (args[0].equalsIgnoreCase("dev") || args[0].equalsIgnoreCase("nbt")) {
-                SkyblockKeyBinding devModeKeyBinding = main.getDeveloperCopyNBTKey();
                 Feature.DEVELOPER_MODE.setEnabled(!Feature.DEVELOPER_MODE.isEnabled());
 
                 if (Feature.DEVELOPER_MODE.isEnabled()) {
                     main.getUtils().sendMessage(ColorCode.GREEN + getMessage("commands.responses.sba.dev.enabled",
-                            GameSettings.getKeyDisplayString(devModeKeyBinding.getKeyCode())));
+                            GameSettings.getKeyDisplayString(SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode())));
                 } else {
                     main.getUtils().sendMessage(ColorCode.RED + getMessage("commands.responses.sba.dev.disabled"));
                 }

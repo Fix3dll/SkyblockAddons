@@ -26,6 +26,7 @@ import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
 import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 
+import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.ActionBarParser;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
@@ -1026,23 +1027,23 @@ public class PlayerListener {
      */
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
-        if (main.getOpenSettingsKey().isPressed()) {
+        if (SkyblockKeyBinding.OPEN_SETTINGS.isPressed()) {
             main.getUtils().setFadingIn(true);
             main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, 1, EnumUtils.GuiTab.MAIN);
 
-        } else if (main.getOpenEditLocationsKey().isPressed()) {
+        } else if (SkyblockKeyBinding.OPEN_EDIT_GUI.isPressed()) {
             main.getUtils().setFadingIn(false);
             main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.EDIT_LOCATIONS, 0, null);
 
-        } else if (Feature.DEVELOPER_MODE.isEnabled() && main.getDeveloperCopyNBTKey().isPressed()) {
+        } else if (Feature.DEVELOPER_MODE.isEnabled() && SkyblockKeyBinding.DEVELOPER_COPY_NBT.isPressed()) {
             DevUtils.copyData();
         }
 
         if (Feature.areEnabled(Feature.DUNGEONS_MAP_DISPLAY, Feature.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)
                 && main.getUtils().isInDungeon()) {
-            if (Keyboard.isKeyDown(main.getKeyBindings().get(5).getKeyCode()) && Keyboard.getEventKeyState()) {
+            if (SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.isPressed() && Keyboard.getEventKeyState()) {
                 DungeonMapManager.decreaseZoomByStep();
-            } else if (Keyboard.isKeyDown(main.getKeyBindings().get(4).getKeyCode()) && Keyboard.getEventKeyState()) {
+            } else if (SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.isPressed() && Keyboard.getEventKeyState()) {
                 DungeonMapManager.increaseZoomByStep();
             }
         }

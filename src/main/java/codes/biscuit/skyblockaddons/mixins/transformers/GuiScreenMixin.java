@@ -11,17 +11,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GuiScreen.class)
-public class GuiScreenTransformer {
+public class GuiScreenMixin {
 
     @Inject(method = "renderToolTip", at = @At("HEAD"), cancellable = true)
-    private void renderToolTip(ItemStack stack, int x, int y, CallbackInfo ci) {
+    private void sba$renderToolTip(ItemStack stack, int x, int y, CallbackInfo ci) {
         if (GuiScreenHook.onRenderTooltip(stack, x, y)) {
             ci.cancel();
         }
     }
 
     @Inject(method = "handleComponentClick", at = @At("HEAD"))
-    private void handleComponentClick(IChatComponent component, CallbackInfoReturnable<Boolean> cir) {
+    private void sba$handleComponentClick(IChatComponent component, CallbackInfoReturnable<Boolean> cir) {
         GuiScreenHook.handleComponentClick(component);
     }
 }

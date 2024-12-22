@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = MouseHelper.class, remap = false)
-public class MouseHelperTransformer {
+public class MouseHelperMixin {
 
     @Redirect(method = "ungrabMouseCursor", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;setCursorPosition(II)V"))
-    private void ungrabMouseCursor(int new_x, int new_y) {
+    private void sba$ungrabMouseCursor(int new_x, int new_y) {
         MouseHelperHook.ungrabMouseCursor(Display.getWidth() / 2, Display.getHeight() / 2);
     }
 }

@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InventoryPlayer.class)
-public class InventoryPlayerTransformer {
+public class InventoryPlayerMixin {
 
     @Inject(method = "changeCurrentItem", at = @At("HEAD"))
-    private void changeCurrentItem(int direction, CallbackInfo ci) {
+    private void sba$changeCurrentItem(int direction, CallbackInfo ci) {
         MinecraftHook.updatedCurrentItem();
     }
 }

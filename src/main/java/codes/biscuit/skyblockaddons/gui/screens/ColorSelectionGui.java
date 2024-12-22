@@ -90,7 +90,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
             int y = 120;
 
             for (ColorCode colorCode : ColorCode.values()) {
-                if (colorCode.isFormat() || colorCode == ColorCode.RESET) continue;
+                if (!colorCode.isColor()) continue;
 
                 buttonList.add(new ButtonColorBox(x, y, colorCode));
 

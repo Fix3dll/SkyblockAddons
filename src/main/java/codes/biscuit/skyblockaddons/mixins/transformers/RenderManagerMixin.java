@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RenderManager.class)
-public class RenderManagerTransformer {
+public class RenderManagerMixin {
 
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
-    private void shouldRender(Entity entityIn, ICamera camera, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
+    private void sba$shouldRender(Entity entityIn, ICamera camera, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
         ReturnValue<Boolean> returnValue = new ReturnValue<>();
         RenderManagerHook.shouldRender(entityIn, returnValue);
         if (returnValue.isCancelled()) {

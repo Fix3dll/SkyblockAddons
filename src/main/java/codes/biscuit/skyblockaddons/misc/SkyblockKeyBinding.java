@@ -9,37 +9,40 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-import static codes.biscuit.skyblockaddons.SkyblockAddons.MOD_NAME;
+import java.util.Locale;
 
 @Getter
-public class SkyblockKeyBinding {
+public enum SkyblockKeyBinding {
+    OPEN_SETTINGS(Keyboard.KEY_NONE, "settings.settings"),
+    OPEN_EDIT_GUI(Keyboard.KEY_NONE, "settings.editLocations"),
+    LOCK_SLOT(Keyboard.KEY_L, "settings.lockSlot"),
+    FREEZE_BACKPACK(Keyboard.KEY_F, "settings.freezeBackpackPreview"),
+    INCREASE_DUNGEON_MAP_ZOOM(Keyboard.KEY_ADD, "keyBindings.increaseDungeonMapZoom"),
+    DECREASE_DUNGEON_MAP_ZOOM(Keyboard.KEY_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
+    DEVELOPER_COPY_NBT(Minecraft.isRunningOnMac ? Keyboard.KEY_LMENU : Keyboard.KEY_RCONTROL, "keyBindings.developerCopyNBT");
 
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
-    private final KeyBinding keyBinding;
-    private final String name;
     private final int defaultKeyCode;
     private final String translationKey;
+    private final KeyBinding keyBinding;
+
     private boolean registered = false;
     private boolean isFirstRegistration = true;
-    /*
-    This is the key code stored before the key binding is de-registered
-    It's set to a number larger than Keyboard.KEYBOARD_SIZE by default to indicate no previous key code is stored.
+    /**
+     * This is the key code stored before the key binding is de-registered
+     * It's set to a number larger than Keyboard.KEYBOARD_SIZE by default to indicate no previous key code is stored.
      */
     private int previousKeyCode = 999;
 
-    public SkyblockKeyBinding(String name, int defaultKey, String translationKey) {
-        this.name = name;
+    SkyblockKeyBinding(int defaultKey, String translationKey) {
         this.defaultKeyCode = defaultKey;
         this.translationKey = translationKey;
-        keyBinding = new KeyBinding("key.skyblockaddons."+ this.getName(), this.getDefaultKeyCode(), MOD_NAME);
+        this.keyBinding = new KeyBinding("key.skyblockaddons." + this.name().toLowerCase(Locale.US), defaultKey, SkyblockAddons.MOD_NAME);
     }
-
-    // TODO localize errors?
 
     /**
      * Returns the current key code for this key binding.
-     *
      * @return the current key code for this key binding
      */
     public int getKeyCode() {
@@ -48,31 +51,25 @@ public class SkyblockKeyBinding {
 
     /**
      * Returns true if the key is pressed (used for continuous querying). Should be used in tickers.
-     * JavaDoc is from linked method.
-     *
      * @see KeyBinding#isKeyDown()
      */
     public boolean isKeyDown() {
         if (registered) {
             return keyBinding.isKeyDown();
-        }
-        else {
+        } else {
             return false;
         }
     }
 
     /**
-     * Returns true on the initial key press. For continuous querying use {@link this#isKeyDown()}. Should be used in key
+     * Returns true on the initial key press. For continuous querying use {@link SkyblockKeyBinding#isKeyDown()}. Should be used in key
      * events.
-     * JavaDoc is from linked method.
-     *
      * @see KeyBinding#isPressed()
      */
     public boolean isPressed() {
         if (registered) {
             return keyBinding.isPressed();
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -83,7 +80,7 @@ public class SkyblockKeyBinding {
      */
     public void register() {
         if (registered) {
-            logger.error("Tried to register a key binding with the name \"" + name + "\" which is already registered.");
+            LOGGER.error("Tried to register a key binding with the name \"{}\" which is already registered.", this.name().toLowerCase(Locale.US));
             return;
         }
 
@@ -95,6 +92,7 @@ public class SkyblockKeyBinding {
             keyBinding.setKeyCode(defaultKeyCode);
             KeyBinding.resetKeyBindingArrayAndHash();
         }
+
         registered = true;
     }
 
@@ -106,8 +104,9 @@ public class SkyblockKeyBinding {
             int index = ArrayUtils.indexOf(Minecraft.getMinecraft().gameSettings.keyBindings, keyBinding);
 
             if (index == ArrayUtils.INDEX_NOT_FOUND) {
-                logger.error("Keybinding was registered but no longer exists in the registry. Something else must have removed it." +
-                        " This shouldn't happen; please inform an SBA developer.");
+                LOGGER.error("Keybinding was registered but no longer exists in the registry. "
+                        + "Something else must have removed it. "
+                        + "This shouldn't happen; please inform an SBA developer.");
                 registered = false;
                 return;
             }
@@ -123,7 +122,17 @@ public class SkyblockKeyBinding {
             KeyBinding.resetKeyBindingArrayAndHash();
             registered = false;
         } else {
-            logger.error("Tried to de-register a key binding with the name \"" + name + "\" which wasn't registered.");
+            LOGGER.error("Tried to de-register a key binding with the name \"{}\" which wasn't registered.", this.name().toLowerCase(Locale.US));
         }
     }
+
+    /**
+     * Registers the given keybindings to the {@link net.minecraftforge.fml.client.registry.ClientRegistry}.
+     */
+    public static void registerAllKeyBindings() {
+        for (SkyblockKeyBinding keybinding: SkyblockKeyBinding.values()) {
+            keybinding.register();
+        }
+    }
+
 }

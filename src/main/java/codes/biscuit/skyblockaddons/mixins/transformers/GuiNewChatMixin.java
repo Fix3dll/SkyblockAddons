@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GuiNewChat.class)
-public class GuiNewChatTransformer {
+public class GuiNewChatMixin {
 
     @Redirect(method = "printChatMessageWithOptionalDeletion", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/IChatComponent;getUnformattedText()Ljava/lang/String;"))
-    private String printChatMessageWithOptionalDeletion(IChatComponent chatComponent) {
+    private String sba$printChatMessageWithOptionalDeletion(IChatComponent chatComponent) {
         return GuiNewChatHook.getUnformattedText(chatComponent);
     }
 }

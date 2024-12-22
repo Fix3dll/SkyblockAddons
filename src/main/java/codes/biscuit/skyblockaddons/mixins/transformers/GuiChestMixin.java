@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.util.List;
 
 @Mixin(value = GuiChest.class, priority = 100)
-public abstract class GuiChestTransformer extends GuiContainer {
+public abstract class GuiChestMixin extends GuiContainer {
     @Shadow public IInventory lowerChestInventory;
     @Shadow private IInventory upperChestInventory;
 
-    public GuiChestTransformer(Container inventorySlotsIn) {
+    public GuiChestMixin(Container inventorySlotsIn) {
         super(inventorySlotsIn);
     }
 

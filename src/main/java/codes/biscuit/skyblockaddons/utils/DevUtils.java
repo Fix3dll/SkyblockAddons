@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -633,7 +634,7 @@ public class DevUtils {
                     ColorCode.YELLOW + Translations.getMessage(
                             "messages.copyModeSet",
                             copyMode,
-                            Keyboard.getKeyName(main.getDeveloperCopyNBTKey().getKeyCode())
+                            Keyboard.getKeyName(SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode())
                     )
             );
         }

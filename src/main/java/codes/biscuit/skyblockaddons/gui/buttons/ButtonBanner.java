@@ -10,9 +10,11 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 public class ButtonBanner extends SkyblockAddonsButton {
@@ -94,6 +96,12 @@ public class ButtonBanner extends SkyblockAddonsButton {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        return hovered;
+        if (hovered) {
+            try {
+                Desktop.getDesktop().browse(new URI(main.getOnlineData().getBannerLink()));
+                return true;
+            } catch (Exception ignored) {}
+        }
+        return false;
     }
 }

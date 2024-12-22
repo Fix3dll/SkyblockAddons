@@ -12,7 +12,6 @@ import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
 import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
-import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonManager;
 import codes.biscuit.skyblockaddons.features.EntityOutlines.EntityOutlineRenderer;
 import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureDungeonTeammateOutlines;
@@ -38,7 +37,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -48,7 +46,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -131,7 +128,6 @@ public class SkyblockAddons {
     private boolean usingLabymod;
     private boolean usingOofModv1;
     private boolean usingPatcher;
-    private final List<SkyblockKeyBinding> keyBindings = new LinkedList<>();
 
     @Getter
     private final Set<Integer> registeredFeatureIDs = new HashSet<>();
@@ -179,19 +175,7 @@ public class SkyblockAddons {
 
         ClientCommandHandler.instance.registerCommand(new SkyblockAddonsCommand());
 
-        // Macs do not have a right control key.
-        int developerModeKey = Minecraft.isRunningOnMac ? Keyboard.KEY_LMENU : Keyboard.KEY_RCONTROL;
-
-        Collections.addAll(keyBindings,
-                new SkyblockKeyBinding("open_settings", Keyboard.KEY_NONE, "settings.settings"),
-                new SkyblockKeyBinding("edit_gui", Keyboard.KEY_NONE, "settings.editLocations"),
-                new SkyblockKeyBinding("lock_slot", Keyboard.KEY_L, "settings.lockSlot"),
-                new SkyblockKeyBinding("freeze_backpack", Keyboard.KEY_F, "settings.freezeBackpackPreview"),
-                new SkyblockKeyBinding("increase_dungeon_map_zoom", Keyboard.KEY_ADD, "keyBindings.increaseDungeonMapZoom"),
-                new SkyblockKeyBinding("decrease_dungeon_map_zoom", Keyboard.KEY_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
-                new SkyblockKeyBinding("copy_NBT", developerModeKey, "keyBindings.developerCopyNBT"));
-        registerKeyBindings(keyBindings);
-        setKeyBindingDescriptions();
+        SkyblockKeyBinding.registerAllKeyBindings();
 
         /*
          TODO: De-registering keys isn't standard practice. Should this be changed to have the player manually set it to
@@ -202,7 +186,7 @@ public class SkyblockAddons {
          de-register it so its default key doesn't conflict with other key bindings with the same key.
          */
         if (Feature.DEVELOPER_MODE.isDisabled()) {
-            getDeveloperCopyNBTKey().deRegister();
+            SkyblockKeyBinding.DEVELOPER_COPY_NBT.deRegister();
         }
 
         usingLabymod = utils.isModLoaded("labymod");
@@ -251,48 +235,6 @@ public class SkyblockAddons {
         discordRPCManager.stop();
     }
 
-    public KeyBinding getOpenSettingsKey() {
-        return keyBindings.get(0).getKeyBinding();
-    }
-
-    public KeyBinding getOpenEditLocationsKey() {
-        return keyBindings.get(1).getKeyBinding();
-    }
-
-    public KeyBinding getLockSlotKey() {
-        return keyBindings.get(2).getKeyBinding();
-    }
-
-    public KeyBinding getFreezeBackpackKey() {
-        return keyBindings.get(3).getKeyBinding();
-    }
-
-    public SkyblockKeyBinding getDeveloperCopyNBTKey() {
-        return keyBindings.get(6);
-    }
-
-    /**
-     * Registers the given keybindings to the {@link net.minecraftforge.fml.client.registry.ClientRegistry}.
-     *
-     * @param keyBindings the keybindings to register
-     */
-    public void registerKeyBindings(List<SkyblockKeyBinding> keyBindings) {
-        for (SkyblockKeyBinding keybinding: keyBindings) {
-            keybinding.register();
-        }
-    }
-
-    /**
-     * This method updates keybinding descriptions to their localized name after registering them with a Minecraft-style
-     * id, which is required for the set key to be saved properly in Minecraft settings.
-     */
-    public void setKeyBindingDescriptions() {
-        for (SkyblockKeyBinding skyblockKeyBinding : keyBindings) {
-            skyblockKeyBinding.getKeyBinding().keyDescription =
-                    Translations.getMessage(skyblockKeyBinding.getTranslationKey());
-        }
-    }
-
     public static Gson getGson() {
         return GSON;
     }
@@ -324,10 +266,4 @@ public class SkyblockAddons {
         THREAD_EXECUTOR.execute(runnable);
     }
 
-    // This replaces the version placeholder if the mod is built using IntelliJ instead of Gradle.
-    static {
-        if (VERSION.contains("@")) { // Debug environment...
-            VERSION = "1.6.0";
-        }
-    }
 }

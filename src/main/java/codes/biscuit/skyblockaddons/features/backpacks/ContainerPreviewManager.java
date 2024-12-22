@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
+import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -36,7 +37,12 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -411,22 +417,6 @@ public class ContainerPreviewManager {
     }
 
     /**
-     * Returns whether the backpack freeze key is down
-     *
-     * @return {@code true} if the backpack freeze key is down, {@code false} otherwise
-     */
-    private static boolean isFreezeKeyDown() {
-        if (main.getFreezeBackpackKey().isKeyDown()) return true;
-
-        try {
-            if (Keyboard.isKeyDown(main.getFreezeBackpackKey().getKeyCode())) return true;
-        } catch (Exception ignored) {
-        }
-
-        return false;
-    }
-
-    /**
      * Called when a key is typed in a {@link GuiContainer}. Used to control backpack preview freezing.
      *
      * @param keyCode the key code of the key that was typed
@@ -438,7 +428,7 @@ public class ContainerPreviewManager {
                 frozen = false;
                 currentContainerPreview = null;
             }
-            if (keyCode == main.getFreezeBackpackKey().getKeyCode() && frozen && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
+            if (keyCode == SkyblockKeyBinding.FREEZE_BACKPACK.getKeyCode() && frozen && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
                 lastToggleFreezeTime = System.currentTimeMillis();
                 frozen = false;
             }
@@ -556,7 +546,7 @@ public class ContainerPreviewManager {
             cachedContainerPreview.setY(y);
 
             // Handle the freeze container toggle
-            if (isFreezeKeyDown() && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
+            if (Keyboard.isKeyDown(SkyblockKeyBinding.FREEZE_BACKPACK.getKeyCode()) && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
                 lastToggleFreezeTime = System.currentTimeMillis();
                 frozen = !frozen;
                 currentContainerPreview = cachedContainerPreview;

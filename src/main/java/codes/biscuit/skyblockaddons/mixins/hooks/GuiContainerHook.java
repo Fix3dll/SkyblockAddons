@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
+import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
@@ -109,7 +110,7 @@ public class GuiContainerHook {
                 }
                 if (slot >= 9 || mc.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5) {
                     if (main.getConfigValues().getLockedSlots().contains(slot)) {
-                        if (main.getLockSlotKey().getKeyCode() == keyCode) {
+                        if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
                             main.getUtils().playLoudSound("random.orb", 1);
                             main.getConfigValues().getLockedSlots().remove(slot);
                             main.getConfigValues().saveConfig();
@@ -120,7 +121,7 @@ public class GuiContainerHook {
                             return;
                         }
                     } else {
-                        if (main.getLockSlotKey().getKeyCode() == keyCode) {
+                        if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
                             main.getUtils().playLoudSound("random.orb", 0.1);
                             main.getConfigValues().getLockedSlots().add(slot);
                             main.getConfigValues().saveConfig();

@@ -25,9 +25,7 @@ import net.minecraftforge.client.GuiIngameForge;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.Desktop;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -337,13 +335,6 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                     }
                 }
                 ((ButtonFeatureToggle)abstractButton).onClick();
-
-            } else if (abstractButton instanceof ButtonCredit) {
-                if (feature.isRemoteDisabled()) return;
-                EnumUtils.FeatureCredit credit = ((ButtonCredit)abstractButton).getCredit();
-                try {
-                    Desktop.getDesktop().browse(new URI(credit.getUrl()));
-                } catch (Exception ignored) {}
             }
 
         } else if (abstractButton instanceof ButtonArrow) {
@@ -359,16 +350,6 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) cancelClose = false;
             }
 
-        } else if (abstractButton instanceof ButtonSocial) {
-            EnumUtils.Social social = ((ButtonSocial)abstractButton).getSocial();
-            try {
-                Desktop.getDesktop().browse(social.getUrl());
-            } catch (Exception ignored) {}
-
-        } else if (abstractButton instanceof ButtonBanner) {
-            try {
-                Desktop.getDesktop().browse(new URI(main.getOnlineData().getBannerLink()));
-            } catch (Exception ignored) {}
         }
     }
 
@@ -403,7 +384,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             }
 
             if (!feature.getSettings().isEmpty()) {
-                buttonList.add(new ButtonSettings(x + boxWidth - 33, y + boxHeight - 20, text, feature));
+                buttonList.add(new ButtonSettings(x + boxWidth - 33, y + boxHeight - 20, feature));
             }
             buttonList.add(new ButtonFeatureToggle(x + (boxWidth / 2F) - (31 / 2F), y+boxHeight-18, feature));
 

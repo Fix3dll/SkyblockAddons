@@ -495,14 +495,14 @@ public class DungeonMapManager {
      * Increases the zoom level of the dungeon map by 0.5.
      */
     public static void increaseZoomByStep() {
-        setMapZoom(getMapZoom() + 0.5F);
+        setMapZoom(getMapZoom() + 0.05F);
     }
 
     /**
      * Decreases the zoom level of the dungeon map by 0.5.
      */
     public static void decreaseZoomByStep() {
-        setMapZoom(getMapZoom() - 0.5F);
+        setMapZoom(getMapZoom() - 0.05F);
     }
 
     /**

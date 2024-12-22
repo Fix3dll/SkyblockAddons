@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityLivingBase.class)
-public class EntityLivingBaseTransformer {
+public class EntityLivingBaseMixin {
 
     // Objective: (not implemented because of removed feature)
     // Find: this.hurtTime =
@@ -18,14 +18,14 @@ public class EntityLivingBaseTransformer {
 
     @SuppressWarnings("UnreachableCode")
     @Inject(method = "removePotionEffectClient", at = @At("HEAD"), cancellable = true)
-    private void removePotionEffectClient(int potionId, CallbackInfo ci) {
+    private void sba$removePotionEffectClient(int potionId, CallbackInfo ci) {
         if (EntityLivingBaseHook.onRemovePotionEffect((EntityLivingBase) (Object) this, potionId)) {
             ci.cancel();
         }
     }
 
     @Inject(method = "addPotionEffect", at = @At("HEAD"))
-    private void addPotionEffect(PotionEffect potioneffectIn, CallbackInfo ci) {
+    private void sba$addPotionEffect(PotionEffect potioneffectIn, CallbackInfo ci) {
         EntityLivingBaseHook.onAddPotionEffect((EntityLivingBase) (Object) this, potioneffectIn);
     }
 }

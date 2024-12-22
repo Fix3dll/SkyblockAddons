@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
-public class MinecraftTransformer {
+public class MinecraftMixin {
 
     @Inject(method = "rightClickMouse", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;rightClickDelayTimer:I"), cancellable = true)
-    private void rightClickMouse(CallbackInfo ci) {
+    private void sba$rightClickMouse(CallbackInfo ci) {
         ReturnValue<?> returnValue = new ReturnValue<>();
         MinecraftHook.rightClickMouse(returnValue);
         if (returnValue.isCancelled()) {
@@ -21,12 +21,12 @@ public class MinecraftTransformer {
     }
 
     @Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/InventoryPlayer;currentItem:I"))
-    private void runTick(CallbackInfo ci) {
+    private void sba$runTick(CallbackInfo ci) {
         MinecraftHook.updatedCurrentItem();
     }
 
     @Inject(method = "clickMouse", at = @At("HEAD"), cancellable = true)
-    private void clickMouse(CallbackInfo ci) {
+    private void sba$clickMouse(CallbackInfo ci) {
         ReturnValue<?> returnValue = new ReturnValue<>();
         MinecraftHook.onClickMouse(returnValue);
         if (returnValue.isCancelled()) {
@@ -35,7 +35,7 @@ public class MinecraftTransformer {
     }
 
     @Inject(method = "sendClickBlockToController", at = @At("HEAD"), cancellable = true)
-    private void sendClickBlockToController(boolean leftClick, CallbackInfo ci) {
+    private void sba$sendClickBlockToController(boolean leftClick, CallbackInfo ci) {
         ReturnValue<?> returnValue = new ReturnValue<>();
         MinecraftHook.onSendClickBlockToController(leftClick, returnValue);
         if (returnValue.isCancelled()) {

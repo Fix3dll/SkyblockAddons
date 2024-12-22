@@ -161,7 +161,6 @@ public class SettingsGui extends SkyblockAddonsScreen {
         if (abstractButton instanceof ButtonLanguage) {
             Language language = ((ButtonLanguage) abstractButton).getLanguage();
             DataUtils.loadLocalizedStrings(language, true);
-            main.setKeyBindingDescriptions();
             returnToGui();
         } else if (abstractButton instanceof ButtonOpenColorMenu) {
             closingGui = true;

@@ -12,15 +12,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WorldClient.class)
-public class WorldClientTransformer {
+public class WorldClientMixin {
 
     @Inject(method = "onEntityRemoved", at = @At("HEAD"))
-    private void onEntityRemoved(Entity entityIn, CallbackInfo ci) {
+    private void sba$onEntityRemoved(Entity entityIn, CallbackInfo ci) {
         WorldClientHook.onEntityRemoved(entityIn);
     }
 
     @Inject(method = "invalidateRegionAndSetBlock", at = @At("HEAD"))
-    private void invalidateRegionAndSetBlock(BlockPos pos, IBlockState state, CallbackInfoReturnable<Boolean> cir) {
+    private void sba$invalidateRegionAndSetBlock(BlockPos pos, IBlockState state, CallbackInfoReturnable<Boolean> cir) {
         WorldClientHook.blockUpdated(pos, state);
     }
 }

@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldVertexBufferUploader.class)
-public class WorldVertexBufferUploaderTransformer {
+public class WorldVertexBufferUploaderMixin {
 
     @Inject(method = "draw", at = @At("HEAD"), cancellable = true)
-    private void draw(WorldRenderer p_181679_1_, CallbackInfo ci) {
+    private void sba$draw(WorldRenderer p_181679_1_, CallbackInfo ci) {
         if (WorldVertexBufferUploaderHook.onRenderWorldRendererBuffer()) {
             ci.cancel();
         }

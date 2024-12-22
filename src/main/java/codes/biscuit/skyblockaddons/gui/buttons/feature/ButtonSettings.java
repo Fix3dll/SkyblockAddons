@@ -13,8 +13,8 @@ public class ButtonSettings extends ButtonFeature {
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
      */
-    public ButtonSettings(double x, double y, String buttonText, Feature feature) {
-        super(0, (int)x, (int)y, buttonText, feature);
+    public ButtonSettings(double x, double y, Feature feature) {
+        super(0, (int)x, (int)y, "", feature);
         this.feature = feature;
         this.width = 15;
         this.height = 15;

@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityRenderer.class)
-public class EntityRendererTransformer {
+public class EntityRendererMixin {
 
     @Inject(method = "getNightVisionBrightness", at = @At("HEAD"), cancellable = true)
-    private void getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks, CallbackInfoReturnable<Float> cir) {
+    private void sba$getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks, CallbackInfoReturnable<Float> cir) {
         ReturnValue<Float> returnValue = new ReturnValue<>();
         EntityRendererHook.onGetNightVisionBrightness(returnValue);
         if (returnValue.isCancelled()) {

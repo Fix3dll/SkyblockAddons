@@ -16,22 +16,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * For Lnet/minecraft/client/renderer/RenderGlobal;isRenderEntityOutlines()Z see {@link codes.biscuit.skyblockaddons.asm.transformer.RenderGlobalTransformer}
  */
 @Mixin(RenderGlobal.class)
-public class RenderGlobalTransformer {
+public class RenderGlobalMixin {
 
     @Inject(method = "isRenderEntityOutlines", at = @At("HEAD"), cancellable = true)
-    private void isRenderEntityOutlines(CallbackInfoReturnable<Boolean> cir) {
+    private void sba$isRenderEntityOutlines(CallbackInfoReturnable<Boolean> cir) {
         if (RenderGlobalHook.shouldRenderSkyblockItemOutlines()) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "renderEntityOutlineFramebuffer", at = @At("RETURN"))
-    private void renderEntityOutlineFramebuffer(CallbackInfo ci) {
+    private void sba$renderEntityOutlineFramebuffer(CallbackInfo ci) {
         RenderGlobalHook.afterFramebufferDraw();
     }
 
     @Inject(method = "sendBlockBreakProgress", at = @At("HEAD"))
-    private void sendBlockBreakProgress(int breakerId, BlockPos pos, int progress, CallbackInfo ci) {
+    private void sba$sendBlockBreakProgress(int breakerId, BlockPos pos, int progress, CallbackInfo ci) {
         RenderGlobalHook.onAddBlockBreakParticle(breakerId, pos, progress);
     }
 }

@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityPlayerSP.class)
-public class EntityPlayerSPTransformer {
+public class EntityPlayerSPMixin {
 
     @Inject(method = "dropOneItem", at = @At("HEAD"), cancellable = true)
-    public void dropOneItem(boolean dropAll, CallbackInfoReturnable<EntityItem> cir) {
+    public void sba$dropOneItem(boolean dropAll, CallbackInfoReturnable<EntityItem> cir) {
         ReturnValue<EntityItem> returnValue = new ReturnValue<>();
         EntityPlayerSPHook.dropOneItemConfirmation(returnValue);
 

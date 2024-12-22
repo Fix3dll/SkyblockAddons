@@ -8,6 +8,9 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
+import java.awt.Desktop;
+import java.net.URI;
+
 public class ButtonCredit extends ButtonFeature {
 
     private static final ResourceLocation WEB = new ResourceLocation("skyblockaddons", "gui/web.png");
@@ -48,7 +51,13 @@ public class ButtonCredit extends ButtonFeature {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        return hovered;
+        if (hovered && !feature.isRemoteDisabled()) {
+            try {
+                Desktop.getDesktop().browse(new URI(credit.getUrl()));
+                return true;
+            } catch (Exception ignored) {}
+        }
+        return false;
     }
 
     @Override

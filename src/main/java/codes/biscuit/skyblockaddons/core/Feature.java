@@ -350,13 +350,10 @@ public enum Feature {
      */
     public void onToggle() {
         if (this.id == DEVELOPER_MODE.id) {
-            SkyblockAddons main = SkyblockAddons.getInstance();
-            SkyblockKeyBinding devModeKeyBinding = main.getDeveloperCopyNBTKey();
-
             if (DEVELOPER_MODE.isEnabled()) {
-                devModeKeyBinding.register();
-            } else if (devModeKeyBinding.isRegistered()) {
-                devModeKeyBinding.deRegister();
+                SkyblockKeyBinding.DEVELOPER_COPY_NBT.register();
+            } else if (SkyblockKeyBinding.DEVELOPER_COPY_NBT.isRegistered()) {
+                SkyblockKeyBinding.DEVELOPER_COPY_NBT.deRegister();
             }
         }
     }

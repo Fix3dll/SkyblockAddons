@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Pseudo
 @Mixin(targets = "club.sk1er.patcher.hooks.FontRendererHook")
-public class PatcherFontRendererTransformer {
+public class PatcherFontRendererMixin {
 
     @Inject(method = "renderStringAtPos(Ljava/lang/String;Z)Z", at = @At("HEAD"), cancellable = true)
-    public void overridePatcherFontRenderer(String string, boolean shadow, CallbackInfoReturnable<Boolean> cir) {
+    public void sba$overridePatcherFontRenderer(String string, boolean shadow, CallbackInfoReturnable<Boolean> cir) {
         if (FontRendererHook.shouldRenderChroma() || string.contains("§z") || string.contains("§Z")) {
             cir.cancel();
             cir.setReturnValue(false);

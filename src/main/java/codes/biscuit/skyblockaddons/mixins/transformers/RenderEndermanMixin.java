@@ -12,14 +12,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RenderEnderman.class)
-public class RenderEndermanTransformer {
+public class RenderEndermanMixin {
 
     @Final
     @Shadow
     private static ResourceLocation endermanTextures;
 
     @Inject(method = "getEntityTexture", at = @At("RETURN"), cancellable = true)
-    private void getEntityTexture_RenderEnderman(EntityEnderman entityEnderman, CallbackInfoReturnable<ResourceLocation> cir) {
+    private void sba$getEntityTexture_RenderEnderman(EntityEnderman entityEnderman, CallbackInfoReturnable<ResourceLocation> cir) {
         cir.setReturnValue(RenderEndermanHook.getEndermanTexture(endermanTextures));
     }
 }

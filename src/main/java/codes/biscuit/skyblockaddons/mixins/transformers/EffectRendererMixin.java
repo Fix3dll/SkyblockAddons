@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EffectRenderer.class)
-public class EffectRendererTransformer {
+public class EffectRendererMixin {
 
     @Inject(method = "addEffect", at = @At("HEAD"))
-    private void addEffect(EntityFX effect, CallbackInfo ci) {
+    private void sba$addEffect(EntityFX effect, CallbackInfo ci) {
         EffectRendererHook.onAddParticle(effect);
     }
 
@@ -21,7 +21,7 @@ public class EffectRendererTransformer {
      * Insert {@link codes.biscuit.skyblockaddons.asm.hooks.EffectRendererHook#renderParticleOverlays(float)} right before the last call to depthMask(true).
      */
     @Inject(method = "renderParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;depthMask(Z)V", ordinal = 2))
-    private void renderParticles(Entity entityIn, float partialTicks, CallbackInfo ci) {
+    private void sba$renderParticles(Entity entityIn, float partialTicks, CallbackInfo ci) {
         EffectRendererHook.renderParticleOverlays(partialTicks);
     }
 }

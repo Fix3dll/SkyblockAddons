@@ -7,6 +7,8 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
+import java.awt.Desktop;
+
 @Getter
 public class ButtonSocial extends SkyblockAddonsButton {
 
@@ -33,4 +35,14 @@ public class ButtonSocial extends SkyblockAddonsButton {
         GlStateManager.disableBlend();
     }
 
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (hovered) {
+            try {
+                Desktop.getDesktop().browse(social.getUrl());
+                return true;
+            } catch (Exception ignored) {}
+        }
+        return false;
+    }
 }

@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiDisconnected.class)
-public class GuiDisconnectedTransformer {
+public class GuiDisconnectedMixin {
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onDisconnected(GuiScreen guiScreen, String string, IChatComponent iChatComponent, CallbackInfo ci) {
+    private void sba$onDisconnected(GuiScreen guiScreen, String string, IChatComponent iChatComponent, CallbackInfo ci) {
         GuiDisconnectedHook.onDisconnect();
     }
 }

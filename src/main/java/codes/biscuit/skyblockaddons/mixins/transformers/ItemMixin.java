@@ -10,15 +10,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Item.class)
-public class ItemTransformer {
+public class ItemMixin {
 
     @Inject(method = "showDurabilityBar", at = @At("HEAD"), cancellable = true, remap = false)
-    private void showDurabilityBar(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+    private void sba$showDurabilityBar(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(ItemHook.isItemDamaged(stack));
     }
 
     @Inject(method = "getDurabilityForDisplay", at = @At("HEAD"), cancellable = true, remap = false)
-    private void getDurabilityForDisplay(ItemStack stack, CallbackInfoReturnable<Double> cir) {
+    private void sba$getDurabilityForDisplay(ItemStack stack, CallbackInfoReturnable<Double> cir) {
         ReturnValue<Double> returnValue = new ReturnValue<>();
         ItemHook.getDurabilityForDisplay(stack, returnValue);
         if (returnValue.isCancelled()) {

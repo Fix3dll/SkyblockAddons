@@ -14,15 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerControllerMP.class)
-public class PlayerControllerMPTransformer {
+public class PlayerControllerMPMixin {
 
     @Inject(method = "onPlayerDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playAuxSFX(ILnet/minecraft/util/BlockPos;I)V"))
-    private void onPlayerDestroyBlock(BlockPos pos, EnumFacing side, CallbackInfoReturnable<Boolean> cir) {
+    private void sba$onPlayerDestroyBlock(BlockPos pos, EnumFacing side, CallbackInfoReturnable<Boolean> cir) {
         PlayerControllerMPHook.onPlayerDestroyBlock(pos);
     }
 
     @Inject(method = "windowClick", at = @At("HEAD"), cancellable = true)
-    private void windowClick(int windowId, int slotId, int mouseButtonClicked, int mode, EntityPlayer playerIn, CallbackInfoReturnable<ItemStack> cir) {
+    private void sba$windowClick(int windowId, int slotId, int mouseButtonClicked, int mode, EntityPlayer playerIn, CallbackInfoReturnable<ItemStack> cir) {
         ReturnValue<ItemStack> returnValue = new ReturnValue<>();
         PlayerControllerMPHook.onWindowClick(slotId, mouseButtonClicked, mode, playerIn, returnValue);
         if (returnValue.isCancelled()) {
@@ -31,7 +31,7 @@ public class PlayerControllerMPTransformer {
     }
 
     @Inject(method = "resetBlockRemoving", at = @At("HEAD"))
-    private void resetBlockRemoving(CallbackInfo ci) {
+    private void sba$resetBlockRemoving(CallbackInfo ci) {
         PlayerControllerMPHook.onResetBlockRemoving();
     }
 }

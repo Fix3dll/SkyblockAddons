@@ -11,6 +11,7 @@ import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.screens.LocationEditGui;
+import codes.biscuit.skyblockaddons.misc.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.misc.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
@@ -135,7 +136,7 @@ public class GuiScreenListener {
     public void onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre event) {
         int eventKey = Keyboard.getEventKey();
 
-        if (Feature.DEVELOPER_MODE.isEnabled() && eventKey == main.getDeveloperCopyNBTKey().getKeyCode() && Keyboard.getEventKeyState()) {
+        if (Feature.DEVELOPER_MODE.isEnabled() && eventKey == SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode() && Keyboard.getEventKeyState()) {
             // Copy Item NBT
             GuiScreen currentScreen = event.gui;
 
@@ -155,9 +156,9 @@ public class GuiScreenListener {
 
         if (Feature.areEnabled(Feature.DUNGEONS_MAP_DISPLAY, Feature.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)
                 && Minecraft.getMinecraft().currentScreen instanceof LocationEditGui) {
-            if (Keyboard.isKeyDown(main.getKeyBindings().get(5).getKeyCode()) && Keyboard.getEventKeyState()) {
+            if (eventKey == SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.getKeyCode() && Keyboard.getEventKeyState()) {
                 DungeonMapManager.decreaseZoomByStep();
-            } else if (Keyboard.isKeyDown(main.getKeyBindings().get(4).getKeyCode()) && Keyboard.getEventKeyState()) {
+            } else if (eventKey == SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.getKeyCode() && Keyboard.getEventKeyState()) {
                 DungeonMapManager.increaseZoomByStep();
             }
         }
