@@ -89,7 +89,7 @@ public enum SkyblockKeyBinding {
         if (isFirstRegistration) {
             isFirstRegistration = false;
         } else if (previousKeyCode < Keyboard.KEYBOARD_SIZE) {
-            keyBinding.setKeyCode(defaultKeyCode);
+            keyBinding.setKeyCode(previousKeyCode);
             KeyBinding.resetKeyBindingArrayAndHash();
         }
 
