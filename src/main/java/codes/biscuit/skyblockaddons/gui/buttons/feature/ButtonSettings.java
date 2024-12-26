@@ -1,6 +1,9 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.gui.screens.EnchantmentSettingsGui;
+import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
+import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,4 +36,18 @@ public class ButtonSettings extends ButtonFeature {
         }
     }
 
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (this.hovered && Minecraft.getMinecraft().currentScreen instanceof SkyblockAddonsGui) {
+            SkyblockAddonsGui gui = (SkyblockAddonsGui) Minecraft.getMinecraft().currentScreen;
+            main.getUtils().setFadingIn(false);
+            if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {
+                mc.displayGuiScreen(new EnchantmentSettingsGui(feature, 0, gui.getPage(), gui.getTab()));
+            } else {
+                mc.displayGuiScreen(new SettingsGui(feature, 1, gui.getPage(), gui.getTab()));
+            }
+            return true;
+        }
+        return false;
+    }
 }

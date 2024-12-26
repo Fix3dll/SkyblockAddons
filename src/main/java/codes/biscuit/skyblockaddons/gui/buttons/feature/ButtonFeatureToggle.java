@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.GuiIngameForge;
 
 public class ButtonFeatureToggle extends ButtonFeature {
 
@@ -25,7 +26,6 @@ public class ButtonFeatureToggle extends ButtonFeature {
      */
     public ButtonFeatureToggle(double x, double y, Feature feature) {
         super(0, (int)x, (int)y, "", feature);
-        this.feature = feature;
         this.width = 31;
         this.height = 15;
     }
@@ -84,6 +84,55 @@ public class ButtonFeatureToggle extends ButtonFeature {
 
     public void onClick() {
         this.animationButtonClicked = System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (this.hovered && this.feature != null && !this.feature.isRemoteDisabled()) {
+            if (feature.isDisabled()) {
+                feature.setEnabled(true);
+                switch (feature) {
+                    case DISCORD_RPC:
+                        if (main.getUtils().isOnSkyblock()) {
+                            main.getDiscordRPCManager().start();
+                        }
+                        break;
+                    case ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT:
+                        Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
+                        break;
+                    case TURN_ALL_TEXTS_CHROMA:
+                        main.getConfigValues().getChromaFeatures().add(feature);
+                        break;
+                }
+            } else {
+                feature.setEnabled(false);
+                switch (feature) {
+                    // Reset the vanilla bars when disabling these two features.
+                    case HIDE_FOOD_ARMOR_BAR:
+                        // The food gets automatically enabled, no need to include it.
+                        GuiIngameForge.renderArmor = true;
+                        break;
+                    case HIDE_HEALTH_BAR:
+                        GuiIngameForge.renderHealth = true;
+                        break;
+                    case FULL_INVENTORY_WARNING:
+                        main.getInventoryUtils().setInventoryWarningShown(false);
+                        break;
+                    case DISCORD_RPC:
+                        main.getDiscordRPCManager().stop();
+                        break;
+                    case DISABLE_ENDERMAN_TELEPORTATION_EFFECT:
+                        Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.setEnabled(true);
+                        break;
+                    case TURN_ALL_TEXTS_CHROMA:
+                        main.getConfigValues().getChromaFeatures().remove(feature);
+                        break;
+                }
+            }
+            onClick();
+            return true;
+        }
+        return false;
     }
 
     @Override

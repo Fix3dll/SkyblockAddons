@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.screens;
 
+import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonColorBox;
@@ -23,7 +24,7 @@ import java.io.IOException;
 public class ColorSelectionGui extends SkyblockAddonsScreen {
 
     private static final ResourceLocation COLOR_PICKER = new ResourceLocation("skyblockaddons", "gui/colorpicker.png");
-    private BufferedImage COLOR_PICKER_IMAGE;
+    private static BufferedImage COLOR_PICKER_IMAGE;
 
     // The feature that this color is for.
     private final Feature feature;
@@ -40,6 +41,16 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
 
     private CheckBox chromaCheckbox;
 
+    static {
+        try {
+            COLOR_PICKER_IMAGE = TextureUtil.readBufferedImage(
+                    Minecraft.getMinecraft().getResourceManager().getResource(COLOR_PICKER).getInputStream()
+            );
+        } catch (IOException e) {
+            SkyblockAddons.getLogger().catching(e);
+        }
+    }
+
     /**
      * Creates a gui to allow you to select a color for a specific feature.
      *
@@ -47,19 +58,11 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
      * @param lastTab The previous tab that you came from.
      * @param lastPage The previous page.
      */
-    ColorSelectionGui(Feature feature, EnumUtils.GUIType lastGUI, EnumUtils.GuiTab lastTab, int lastPage) {
+    public ColorSelectionGui(Feature feature, EnumUtils.GUIType lastGUI, EnumUtils.GuiTab lastTab, int lastPage) {
         this.feature = feature;
         this.lastTab = lastTab;
         this.lastGUI = lastGUI;
         this.lastPage = lastPage;
-
-        try {
-            COLOR_PICKER_IMAGE = TextureUtil.readBufferedImage(
-                    Minecraft.getMinecraft().getResourceManager().getResource(COLOR_PICKER).getInputStream()
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -124,7 +127,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         drawGradientBackground(128, 192);
         drawDefaultTitleText(this, 255);
 
-        int defaultBlue = main.getUtils().getDefaultBlue(1);
+        int defaultBlue = ColorUtils.getDefaultBlue(1);
 
         if (feature.getGuiFeatureData() != null) {
             if (feature.getGuiFeatureData().isColorsRestricted()) {

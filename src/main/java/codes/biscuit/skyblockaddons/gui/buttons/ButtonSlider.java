@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.MathUtils;
-import codes.biscuit.skyblockaddons.utils.Utils;
+import codes.biscuit.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,7 +24,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
     private float normalizedValue;
 
     public ButtonSlider(double x, double y, int width, int height, float value, float min, float max, float step, UpdateCallback<Float> sliderCallback) {
-        super(0, (int) x, (int) y, "");
+        super(0, (int) x, (int) y, TextUtils.roundForString(value, 2));
         this.width = width;
         this.height = height;
         this.sliderCallback = sliderCallback;
@@ -32,7 +32,6 @@ public class ButtonSlider extends SkyblockAddonsButton {
         this.max = max;
         this.step = step;
         this.normalizedValue = MathUtils.normalizeSliderValue(value, min, max, step);
-        this.displayString = Utils.roundForString(value, 2);
     }
 
     @Override
@@ -59,10 +58,12 @@ public class ButtonSlider extends SkyblockAddonsButton {
         GlStateManager.disableBlend();
     }
 
+    @Override
     protected int getHoverState(boolean mouseOver) {
         return 0;
     }
 
+    @Override
     protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             ScaledResolution sr = new ScaledResolution(mc);
@@ -81,18 +82,19 @@ public class ButtonSlider extends SkyblockAddonsButton {
         }
     }
 
+    @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (super.mousePressed(mc, mouseX, mouseY)) {
+        if (this.hovered) {
             this.normalizedValue = (float) (mouseX - (this.xPosition + 4)) / (float) (this.width - 8);
             this.normalizedValue = MathHelper.clamp_float(this.normalizedValue, 0.0F, 1.0F);
             onUpdate();
             this.dragging = true;
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
+    @Override
     public void mouseReleased(int mouseX, int mouseY) {
         this.dragging = false;
     }
@@ -109,7 +111,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
     }
 
     private void updateDisplayString() {
-        this.displayString = prefix + Utils.roundForString(denormalize(), 2);
+        this.displayString = prefix + TextUtils.roundForString(denormalize(), 2);
     }
 
     public float denormalize() {

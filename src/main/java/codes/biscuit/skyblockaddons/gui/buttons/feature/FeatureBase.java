@@ -38,7 +38,7 @@ public class FeatureBase extends ButtonFeature {
             if (alpha < 4) alpha = 4;
             hovered = isHovered(mouseX, mouseY);
 
-            int fontColor = main.getUtils().getDefaultBlue(alpha);
+            int fontColor = ColorUtils.getDefaultBlue(alpha);
             if (feature.isRemoteDisabled()) {
                 fontColor = new Color(60,60,60).getRGB();
             }
@@ -137,7 +137,7 @@ public class FeatureBase extends ButtonFeature {
             }
 
             if (feature.isRemoteDisabled()) {
-                drawCenteredString(mc.fontRendererObj, Translations.getMessage("messages.featureDisabled"), textX, textY + 6 , main.getUtils().getDefaultBlue(alpha));
+                drawCenteredString(mc.fontRendererObj, Translations.getMessage("messages.featureDisabled"), textX, textY + 6 , ColorUtils.getDefaultBlue(alpha));
             }
         }
     }

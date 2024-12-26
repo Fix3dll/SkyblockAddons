@@ -207,20 +207,18 @@ public class ConfigValues {
 
     private void addDefaultsAndSave() {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc != null) {
-            if (mc.getLanguageManager() != null && mc.getLanguageManager().getCurrentLanguage().getLanguageCode() != null) {
-                String minecraftLanguage = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().toLowerCase(Locale.US);
-                Language configLanguage = Language.getFromPath(minecraftLanguage);
-                if (configLanguage != null) { // Check if we have the exact locale they are using for Minecraft
-                    language.setValue(configLanguage);
-                } else { // Check if we at least have the same language (different locale)
-                    String languageCode = minecraftLanguage.split("_")[0];
-                    for (Language loopLanguage : Language.values()) {
-                        String loopLanguageCode = loopLanguage.getPath().split("_")[0];
-                        if (loopLanguageCode.equals(languageCode)) {
-                            language.setValue(loopLanguage);
-                            break;
-                        }
+        if (mc != null && mc.getLanguageManager() != null && mc.getLanguageManager().getCurrentLanguage().getLanguageCode() != null) {
+            String minecraftLanguage = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().toLowerCase(Locale.US);
+            Language configLanguage = Language.getFromPath(minecraftLanguage);
+            if (configLanguage != null) { // Check if we have the exact locale they are using for Minecraft
+                language.setValue(configLanguage);
+            } else { // Check if we at least have the same language (different locale)
+                String languageCode = minecraftLanguage.split("_")[0];
+                for (Language loopLanguage : Language.values()) {
+                    String loopLanguageCode = loopLanguage.getPath().split("_")[0];
+                    if (loopLanguageCode.equals(languageCode)) {
+                        language.setValue(loopLanguage);
+                        break;
                     }
                 }
             }
@@ -297,8 +295,8 @@ public class ConfigValues {
                 JsonObject coordinatesObject = new JsonObject();
                 for (Feature feature : coordinates.keySet()) {
                     JsonArray coordinatesArray = new JsonArray();
-                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(coordinates.get(feature).getRight()));
                     coordinatesArray.add(new GsonBuilder().create().toJsonTree(coordinates.get(feature).getLeft()));
+                    coordinatesArray.add(new GsonBuilder().create().toJsonTree(coordinates.get(feature).getRight()));
                     coordinatesObject.add(String.valueOf(feature.getId()), coordinatesArray);
                 }
                 saveConfig.add("coordinates", coordinatesObject);
@@ -306,8 +304,8 @@ public class ConfigValues {
                 JsonObject barSizesObject = new JsonObject();
                 for (Feature feature : barSizes.keySet()) {
                     JsonArray sizesArray = new JsonArray();
-                    sizesArray.add(new GsonBuilder().create().toJsonTree(barSizes.get(feature).getRight()));
                     sizesArray.add(new GsonBuilder().create().toJsonTree(barSizes.get(feature).getLeft()));
+                    sizesArray.add(new GsonBuilder().create().toJsonTree(barSizes.get(feature).getRight()));
                     barSizesObject.add(String.valueOf(feature.getId()), sizesArray);
                 }
                 saveConfig.add("barSizes", barSizesObject);
@@ -678,12 +676,12 @@ public class ConfigValues {
 
     public float getActualX(Feature feature) {
         int maxX = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
-        return getAnchorPoint(feature).getX(maxX) + getRelativeCoords(feature).getRight();
+        return getAnchorPoint(feature).getX(maxX) + getRelativeCoords(feature).getLeft();
     }
 
     public float getActualY(Feature feature) {
         int maxY = new ScaledResolution(Minecraft.getMinecraft()).getScaledHeight();
-        return getAnchorPoint(feature).getY(maxY) + getRelativeCoords(feature).getLeft();
+        return getAnchorPoint(feature).getY(maxY) + getRelativeCoords(feature).getRight();
     }
 
     public Pair<Float, Float> getSizes(Feature feature) {
@@ -691,11 +689,11 @@ public class ConfigValues {
     }
 
     public float getSizesX(Feature feature) {
-        return Math.min(Math.max(getSizes(feature).getRight(), .25F), 1);
+        return Math.min(Math.max(getSizes(feature).getLeft(), .25F), 1);
     }
 
     public float getSizesY(Feature feature) {
-        return Math.min(Math.max(getSizes(feature).getLeft(), .25F), 1);
+        return Math.min(Math.max(getSizes(feature).getRight(), .25F), 1);
     }
 
     public void setScaleX(Feature feature, float x) {

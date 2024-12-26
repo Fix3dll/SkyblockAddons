@@ -34,7 +34,6 @@ import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
 import codes.biscuit.skyblockaddons.utils.*;
 import com.mojang.authlib.GameProfile;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -100,7 +99,6 @@ public class RenderListener {
     private static final ResourceLocation SLASH_ICON = new ResourceLocation("skyblockaddons", "icons/slash.png");
     private static final ResourceLocation IRON_GOLEM_ICON = new ResourceLocation("skyblockaddons", "icons/irongolem.png");
     private static final ResourceLocation FARM_ICON = new ResourceLocation("skyblockaddons", "icons/farm.png");
-
     private static final ResourceLocation CRITICAL = new ResourceLocation("skyblockaddons", "critical.png");
     private static final ResourceLocation RIFTSTALKER_BLOODFIEND = new ResourceLocation("skyblockaddons", "vampire.png");
 
@@ -694,7 +692,7 @@ public class RenderListener {
                     20,
                     halfWidth + 110,
                     53 + textList.length * 10,
-                    main.getUtils().getDefaultBlue(140)
+                    ColorUtils.getDefaultBlue(140)
             );
             String title = SkyblockAddons.MOD_NAME;
             GlStateManager.pushMatrix();
@@ -2855,32 +2853,15 @@ public class RenderListener {
             MC.displayGuiScreen(new LocationEditGui(guiPageToOpen, guiTabToOpen));
         } else if (guiToOpen == EnumUtils.GUIType.SETTINGS) {
             if (guiFeatureToOpen == Feature.ENCHANTMENT_LORE_PARSING) {
-                MC.displayGuiScreen(
-                        new EnchantmentSettingsGui(
-                                guiFeatureToOpen,
-                                1,
-                                guiPageToOpen,
-                                guiTabToOpen,
-                                guiFeatureToOpen.getSettings()
-                        )
-                );
+                MC.displayGuiScreen(new EnchantmentSettingsGui(guiFeatureToOpen, 1, guiPageToOpen, guiTabToOpen));
             } else {
-                MC.displayGuiScreen(
-                        new SettingsGui(
-                                guiFeatureToOpen,
-                                1,
-                                guiPageToOpen,
-                                guiTabToOpen,
-                                guiFeatureToOpen.getSettings()
-                        )
-                );
+                MC.displayGuiScreen(new SettingsGui(guiFeatureToOpen, 1, guiPageToOpen, guiTabToOpen));
             }
         } else if (guiToOpen == EnumUtils.GUIType.WARP) {
             MC.displayGuiScreen(new IslandWarpGui());
         }
         guiToOpen = null;
     }
-
 
     public void setGuiToOpen(EnumUtils.GUIType guiToOpen, int page, EnumUtils.GuiTab tab) {
         this.guiToOpen = guiToOpen;
@@ -3174,7 +3155,6 @@ public class RenderListener {
         }
     }
 
-    @AllArgsConstructor
     private enum DamageDisplayItem {
         HYPERION(ItemUtils.createItemStack(Items.iron_sword, "§6Hyperion", "HYPERION", false)),
         VALKYRIE(ItemUtils.createItemStack(Items.iron_sword, "§6Valkyrie", "VALKYRIE", false)),
@@ -3185,6 +3165,10 @@ public class RenderListener {
         MIDAS_STAFF(ItemUtils.createItemStack(Items.golden_shovel, "§6Midas Staff", "MIDAS_STAFF", false));
 
         private final ItemStack itemStack;
+
+        DamageDisplayItem(ItemStack itemStack) {
+            this.itemStack = itemStack;
+        }
 
         public static ItemStack getByID(String id) {
             for (DamageDisplayItem displayItem : DamageDisplayItem.values()) {

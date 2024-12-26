@@ -243,6 +243,7 @@ public class EnumUtils {
         MAP_ZOOM("settings.mapZoom", -1),
         COLOUR_BY_RARITY("settings.colorByRarity", -1),
         PET_ITEM_STYLE("settings.petItemStyle", -1),
+
         DRAGONS_NEST_ONLY("settings.dragonsNestOnly", 128),
         USE_VANILLA_TEXTURE("settings.useVanillaTexture", 17),
         SHOW_ONLY_WHEN_HOLDING_SHIFT("settings.showOnlyWhenHoldingShift", 18),
@@ -272,7 +273,7 @@ public class EnumUtils {
         HIGHLIGHT_ENCHANTMENTS("settings.highlightSpecialEnchantments", 153),
         HIDE_ENCHANTMENT_LORE("settings.hideEnchantDescription", 176),
         HIDE_GREY_ENCHANTS("settings.hideGreyEnchants", 87),
-        ENCHANT_LAYOUT("enchantLayout.title", 0),
+        ENCHANT_LAYOUT("enchantLayout.title", -1),
         TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR("settings.trevorTheTrapper.trackedEntityProximityIndicator", 173),
         TREVOR_HIGHLIGHT_TRACKED_ENTITY("settings.trevorTheTrapper.highlightTrackedEntity", 174),
         TREVOR_SHOW_QUEST_COOLDOWN("settings.trevorTheTrapper.showQuestCooldown", 175),

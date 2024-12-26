@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.Set;
 
@@ -24,6 +25,10 @@ public class ColorUtils {
             }
         }
         return true;
+    }
+
+    public static int getDefaultBlue(int alpha) {
+        return new Color(160, 225, 229, alpha).getRGB();
     }
 
     /**

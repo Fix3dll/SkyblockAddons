@@ -547,4 +547,16 @@ public class TextUtils {
         }
         return -1;
     }
+
+    /**
+     * Rounds a float value for when it is being displayed as a string.
+     * <p>
+     * For example, if the given value is 123.456789 and the decimal places is 2, this will round to 1.23.
+     * @param value         The value to round
+     * @param decimalPlaces The decimal places to round to
+     * @return A string representation of the value rounded
+     */
+    public static String roundForString(float value, int decimalPlaces) {
+        return String.format("%." + decimalPlaces + "f", value);
+    }
 }

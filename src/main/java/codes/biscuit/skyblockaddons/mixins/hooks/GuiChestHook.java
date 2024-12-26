@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
+import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
@@ -149,7 +150,7 @@ public class GuiChestHook {
                 && (inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING)
                 && textFieldMatches != null) {
 
-            int defaultBlue = main.getUtils().getDefaultBlue(255);
+            int defaultBlue = ColorUtils.getDefaultBlue(255);
             int x = guiLeft - 160;
             if (x < 0) {
                 x = 20;

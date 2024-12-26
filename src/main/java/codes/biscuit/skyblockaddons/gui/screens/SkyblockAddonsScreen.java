@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonSocial;
+import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.Minecraft;
@@ -53,14 +54,14 @@ public class SkyblockAddonsScreen extends GuiScreen {
      * @param gui The gui to draw the text on.
      */
     protected void drawDefaultTitleText(GuiScreen gui, int alpha) {
-        int defaultBlue = SkyblockAddons.getInstance().getUtils().getDefaultBlue(alpha);
+        int defaultBlue = ColorUtils.getDefaultBlue(alpha);
 
         int height = 85;
         int width = height*2;
         ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
-        SkyblockAddons.getInstance().getUtils().enableStandardGLOptions();
+        main.getUtils().enableStandardGLOptions();
         textureManager.bindTexture(LOGO);
         DrawUtils.drawModalRectWithCustomSizedTexture(scaledResolution.getScaledWidth()/2F-width/2F, 5, 0, 0, width, height, width, height, true);
 
@@ -79,7 +80,7 @@ public class SkyblockAddonsScreen extends GuiScreen {
         GlStateManager.color(1,1,1, 1);
         drawScaledString(gui, FORMATTED_VERSION, 55, defaultBlue, 1.3, 170 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(FORMATTED_VERSION), false);
 
-        SkyblockAddons.getInstance().getUtils().restoreGLOptions();
+        main.getUtils().restoreGLOptions();
     }
 
     static void drawScaledString(GuiScreen guiScreen, String text, int y, int color, double scale, int xOffset) {

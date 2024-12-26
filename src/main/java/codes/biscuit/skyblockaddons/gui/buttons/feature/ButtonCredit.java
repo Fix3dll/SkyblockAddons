@@ -20,7 +20,6 @@ public class ButtonCredit extends ButtonFeature {
 
     public ButtonCredit(double x, double y, String buttonText, EnumUtils.FeatureCredit credit, Feature feature, boolean smaller) {
         super(0, (int)x, (int)y, buttonText, feature);
-        this.feature = feature;
         this.width = 12;
         this.height = 12;
         this.credit = credit;

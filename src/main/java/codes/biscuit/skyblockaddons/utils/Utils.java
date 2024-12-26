@@ -20,7 +20,6 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -618,7 +617,7 @@ public class Utils {
      * a sound that bypasses the user's volume settings.
      */
     public void playSound(String sound, double pitch) {
-        playSound(sound, (float) 1, (float) pitch);
+        playSound(sound, 1F, (float) pitch);
     }
 
     public void playSound(String sound, double volume, double pitch) {
@@ -669,42 +668,6 @@ public class Utils {
     public boolean isHalloween() {
         ZonedDateTime zonedDateTime = SkyblockAddons.getHypixelZonedDateTime();
         return zonedDateTime.getMonth() == Month.OCTOBER && zonedDateTime.getDayOfMonth() == 31;
-    }
-
-    public int getDefaultBlue(int alpha) {
-        return new Color(160, 225, 229, alpha).getRGB();
-    }
-
-    public float normalizeValueNoStep(float value, float min, float max) {
-        return MathHelper.clamp_float((snapNearDefaultValue(value) - min) / (max - min), 0.0F, 1.0F);
-    }
-
-    /**
-     * Rounds the given value to 1f if it is between 0.95f and 1.05f exclusive.
-     *
-     * @param value the value to round
-     * @return 1f if 0.95f > {@code value} > 1.05f or {@code value} otherwise
-     */
-    public float snapNearDefaultValue(float value) {
-        if (value != 1 && value > 1 - 0.05 && value < 1 + 0.05) {
-            return 1;
-        }
-
-        return value;
-    }
-
-    /**
-     * Rounds a float value for when it is being displayed as a string.
-     * <p>
-     * For example, if the given value is 123.456789 and the decimal places is 2, this will round
-     * to 1.23.
-     *
-     * @param value         The value to round
-     * @param decimalPlaces The decimal places to round to
-     * @return A string representation of the value rounded
-     */
-    public static String roundForString(float value, int decimalPlaces) {
-        return String.format("%." + decimalPlaces + "f", value);
     }
 
     public String[] wrapSplitText(String text, int wrapLength) {

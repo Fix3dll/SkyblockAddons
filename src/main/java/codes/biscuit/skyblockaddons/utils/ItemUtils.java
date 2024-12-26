@@ -173,6 +173,25 @@ public class ItemUtils {
     }
 
     /**
+     * Returns the {@code attributes} compound tag from the item's NBT data.
+     * @param extraAttributes the ExtraAttributes to get the tag from
+     * @return the item's {@code attributes} compound tag or {@code null} if the item doesn't have one
+     */
+    public static NBTTagCompound getAttributes(NBTTagCompound extraAttributes) {
+        return extraAttributes == null ? null : extraAttributes.getCompoundTag("attributes");
+    }
+
+    /**
+     * Returns the {@code attributes} compound tag from the {@link ItemStack}.
+     * @param itemStack the {@link ItemStack} to get the tag from
+     * @return the item's {@code attributes} compound tag or {@code null} if the item doesn't have one
+     */
+    public static NBTTagCompound getAttributes(ItemStack itemStack) {
+        NBTTagCompound extraAttributes = getExtraAttributes(itemStack);
+        return getAttributes(extraAttributes);
+    }
+
+    /**
      * Returns the Skyblock Reforge of a given {@link ItemStack}
      * @param itemStack the itemStack to check
      * @return the Reforge (in lowercase) of this itemStack or {@code null} if this isn't a valid item or reforge
@@ -181,7 +200,7 @@ public class ItemUtils {
         if (itemStack.hasTagCompound()) {
             NBTTagCompound extraAttributes = itemStack.getTagCompound();
             if (extraAttributes.hasKey("ExtraAttributes")) {
-                return  getReforge(extraAttributes.getCompoundTag("ExtraAttributes"));
+                return getReforge(extraAttributes.getCompoundTag("ExtraAttributes"));
             }
         }
 

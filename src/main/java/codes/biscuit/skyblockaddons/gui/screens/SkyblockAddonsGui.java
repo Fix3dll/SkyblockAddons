@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.gui.screens;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.SBAModGuiFactory;
@@ -15,13 +14,14 @@ import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.client.GuiIngameForge;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
@@ -40,15 +40,14 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     private static String searchString;
 
     private GuiTextField featureSearchBar;
-    private final EnumUtils.GuiTab tab;
-    private final SkyblockAddons main = SkyblockAddons.getInstance();
-    private int page;
+    @Getter private final EnumUtils.GuiTab tab;
+    @Getter private int page;
     private int row = 1;
     private int collumn = 1;
     private int displayCount;
     boolean reInit = false;
 
-    private boolean cancelClose;
+    @Setter private boolean cancelClose;
     private GuiScreen parent = null;
 
     /** Boolean to draw the warning */
@@ -256,19 +255,9 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         if (abstractButton instanceof ButtonFeature) {
             Feature feature = ((ButtonFeature)abstractButton).getFeature();
 
-            if (abstractButton instanceof ButtonSettings) {
-                main.getUtils().setFadingIn(false);
-                if (((ButtonSettings) abstractButton).feature == Feature.ENCHANTMENT_LORE_PARSING) {
-                    mc.displayGuiScreen(new EnchantmentSettingsGui(feature, 0, page, tab, feature.getSettings()));
-                } else {
-                    mc.displayGuiScreen(new SettingsGui(feature, 1, page, tab, feature.getSettings()));
-                }
-                return;
-            }
-
             if (feature == Feature.LANGUAGE) {
                 main.getUtils().setFadingIn(false);
-                mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE,1, page,tab, null));
+                mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE,1, page,tab));
 
             } else if (feature == Feature.EDIT_LOCATIONS) {
                 // If player tries to open "Edit GUI Locations" from outside
@@ -292,65 +281,9 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                     mc.displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.GENERAL_SETTINGS));
                 }
 
-            } else if (abstractButton instanceof ButtonFeatureToggle) {
-                if (feature.isRemoteDisabled()) return;
-                if (feature.isDisabled()) {
-                    feature.setEnabled(true);
-                    switch (feature) {
-                        case DISCORD_RPC:
-                            if (main.getUtils().isOnSkyblock()) {
-                                main.getDiscordRPCManager().start();
-                            }
-                            break;
-                        case ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT:
-                            Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
-                            break;
-                        case TURN_ALL_TEXTS_CHROMA:
-                            main.getConfigValues().getChromaFeatures().add(feature);
-                            break;
-                    }
-                } else {
-                    feature.setEnabled(false);
-                    switch (feature) {
-                        // Reset the vanilla bars when disabling these two features.
-                        case HIDE_FOOD_ARMOR_BAR:
-                            // The food gets automatically enabled, no need to include it.
-                            GuiIngameForge.renderArmor = true;
-                            break;
-                        case HIDE_HEALTH_BAR:
-                            GuiIngameForge.renderHealth = true;
-                            break;
-                        case FULL_INVENTORY_WARNING:
-                            main.getInventoryUtils().setInventoryWarningShown(false);
-                            break;
-                        case DISCORD_RPC:
-                            main.getDiscordRPCManager().stop();
-                            break;
-                        case DISABLE_ENDERMAN_TELEPORTATION_EFFECT:
-                            Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.setEnabled(true);
-                            break;
-                        case TURN_ALL_TEXTS_CHROMA:
-                            main.getConfigValues().getChromaFeatures().remove(feature);
-                            break;
-                    }
-                }
-                ((ButtonFeatureToggle)abstractButton).onClick();
             }
-
-        } else if (abstractButton instanceof ButtonArrow) {
-            ButtonArrow arrow = (ButtonArrow)abstractButton;
-            if (arrow.isNotMax()) {
-                main.getUtils().setFadingIn(false);
-                if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) cancelClose = true;
-                if (arrow.getArrowType() == ButtonArrow.ArrowType.RIGHT) {
-                    mc.displayGuiScreen(new SkyblockAddonsGui(++page, tab));
-                } else {
-                    mc.displayGuiScreen(new SkyblockAddonsGui(--page, tab));
-                }
-                if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) cancelClose = false;
-            }
-
         }
+
     }
 
     /**
@@ -380,7 +313,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             EnumUtils.FeatureCredit credit = EnumUtils.FeatureCredit.fromFeature(feature);
             if (credit != null) {
                 Pair<Integer, Integer> coords = featureGui.getCreditsCoords(credit);
-                buttonList.add(new ButtonCredit(coords.getRight(), coords.getLeft(), text, credit, feature, featureGui.isMultilineButton()));
+                buttonList.add(new ButtonCredit(coords.getLeft(), coords.getRight(), text, credit, feature, featureGui.isMultilineButton()));
             }
 
             if (!feature.getSettings().isEmpty()) {

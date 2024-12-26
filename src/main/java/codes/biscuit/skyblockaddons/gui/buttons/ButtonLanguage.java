@@ -4,8 +4,10 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -49,16 +51,29 @@ public class ButtonLanguage extends SkyblockAddonsButton {
                     logger.catching(ex);
                 }
             }
-            hovered = isHovered(mouseX, mouseY);
+            this.hovered = isHovered(mouseX, mouseY);
             drawString(
                     mc.fontRendererObj,
                     languageName,
                     xPosition + 5,
                     yPosition+10,
-                    hovered ? new Color(255, 255, 160, 255).getRGB()
-                            : main.getUtils().getDefaultBlue(255)
+                    this.hovered ? new Color(255, 255, 160, 255).getRGB() : ColorUtils.getDefaultBlue(255)
             );
         }
+    }
+
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (this.hovered) {
+            if (mc.currentScreen instanceof SettingsGui) {
+                DataUtils.loadLocalizedStrings(this.language, true);
+                SettingsGui gui = (SettingsGui) mc.currentScreen;
+                gui.setClosingGui(true);
+                main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, gui.getLastPage(), gui.getLastTab());
+                return true;
+            }
+        }
+        return false;
     }
 
 }

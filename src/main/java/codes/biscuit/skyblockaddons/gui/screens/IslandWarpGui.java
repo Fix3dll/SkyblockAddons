@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.Month;
@@ -56,16 +55,15 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         int screenWidth = mc.displayWidth;
         int screenHeight = mc.displayHeight;
 
-        ISLAND_SCALE = 0.7F/1080*screenHeight;
+        ISLAND_SCALE = 0.7F / 1080 * screenHeight;
 
-        float scale = ISLAND_SCALE;
-        float totalWidth = TOTAL_WIDTH*scale;
-        float totalHeight = TOTAL_HEIGHT*scale;
-        SHIFT_LEFT = (screenWidth/2F-totalWidth/2F)/scale;
-        SHIFT_TOP = (screenHeight/2F-totalHeight/2F)/scale;
+        float totalWidth = TOTAL_WIDTH * ISLAND_SCALE;
+        float totalHeight = TOTAL_HEIGHT * ISLAND_SCALE;
+        SHIFT_LEFT = (screenWidth / 2F - totalWidth / 2F) / ISLAND_SCALE;
+        SHIFT_TOP = (screenHeight / 2F - totalHeight / 2F) / ISLAND_SCALE;
 
-        int x = Math.round(screenWidth/ISLAND_SCALE-SHIFT_LEFT-475);
-        int y = Math.round(screenHeight/ISLAND_SCALE-SHIFT_TOP);
+        int x = Math.round(screenWidth / ISLAND_SCALE - SHIFT_LEFT - 475);
+        int y = Math.round(screenHeight / ISLAND_SCALE - SHIFT_TOP);
 
         this.buttonList.add(new ButtonCustomToggle(x, y - 30 - 60 * 2, 50,
                 Feature.FANCY_WARP_MENU::isEnabled,
@@ -80,24 +78,21 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         ScaledResolution sr = new ScaledResolution(mc);
         int guiScale = sr.getScaleFactor();
 
-        int startColor = new Color(0,0, 0, Math.round(255/3F)).getRGB();
-        int endColor = new Color(0,0, 0, Math.round(255/2F)).getRGB();
-        drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), startColor, endColor);
+        drawGradientBackground(Math.round(255 / 3F), Math.round(255 / 2F));
 
-        drawCenteredString(mc.fontRendererObj, getMessage("warpMenu.click"), sr.getScaledWidth()/2, 10, 0xFFFFFFFF);
-        drawCenteredString(mc.fontRendererObj, getMessage("warpMenu.mustUnlock"), sr.getScaledWidth()/2, 20, 0xFFFFFFFF);
+        drawCenteredString(mc.fontRendererObj, getMessage("warpMenu.click"), sr.getScaledWidth() / 2, 10, 0xFFFFFFFF);
+        drawCenteredString(mc.fontRendererObj, getMessage("warpMenu.mustUnlock"), sr.getScaledWidth() / 2, 20, 0xFFFFFFFF);
 
         GlStateManager.pushMatrix();
-        ISLAND_SCALE = 0.7F/1080*mc.displayHeight;
-        float scale = ISLAND_SCALE;
-        GlStateManager.scale(1F/guiScale, 1F/guiScale, 1);
-        GlStateManager.scale(scale, scale, 1);
+        ISLAND_SCALE = 0.7F / 1080 * mc.displayHeight;
+        GlStateManager.scale(1F / guiScale, 1F / guiScale, 1);
+        GlStateManager.scale(ISLAND_SCALE, ISLAND_SCALE, 1);
 
-        float totalWidth = TOTAL_WIDTH*scale;
-        float totalHeight = TOTAL_HEIGHT*scale;
+        float totalWidth = TOTAL_WIDTH * ISLAND_SCALE;
+        float totalHeight = TOTAL_HEIGHT * ISLAND_SCALE;
 
-        SHIFT_LEFT = (mc.displayWidth/2F-totalWidth/2F)/scale;
-        SHIFT_TOP = (mc.displayHeight/2F-totalHeight/2F)/scale;
+        SHIFT_LEFT = (mc.displayWidth / 2F - totalWidth / 2F) / ISLAND_SCALE;
+        SHIFT_TOP = (mc.displayHeight / 2F - totalHeight / 2F) / ISLAND_SCALE;
         GlStateManager.translate(SHIFT_LEFT, SHIFT_TOP, 0);
 
         GlStateManager.enableAlpha();
@@ -107,7 +102,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         for (GuiButton button : buttonList) {
             if (button instanceof IslandButton) {
-                IslandButton islandButton = (IslandButton)button;
+                IslandButton islandButton = (IslandButton) button;
 
                 // Call this just so it calculates the hover, don't actually draw.
                 islandButton.drawButton(mc, mouseX, mouseY, false);
@@ -125,19 +120,18 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             guiButton.drawButton(this.mc, mouseX, mouseY);
         }
 
-
-        int x = Math.round(mc.displayWidth/ISLAND_SCALE-SHIFT_LEFT-500);
-        int y = Math.round(mc.displayHeight/ISLAND_SCALE-SHIFT_TOP);
+        int x = Math.round(mc.displayWidth / ISLAND_SCALE - SHIFT_LEFT - 500);
+        int y = Math.round(mc.displayHeight / ISLAND_SCALE - SHIFT_TOP);
         GlStateManager.pushMatrix();
         float textScale = 3F;
         GlStateManager.scale(textScale, textScale, 1);
         mc.fontRendererObj.drawStringWithShadow(
-                Feature.FANCY_WARP_MENU.getMessage()
-                , x / textScale + 50, (y - 30 - 60 * 2) / textScale + 5, 0xFFFFFFFF
+                Feature.FANCY_WARP_MENU.getMessage(),
+                x / textScale + 50, (y - 30 - 60 * 2) / textScale + 5, 0xFFFFFFFF
         );
         mc.fontRendererObj.drawStringWithShadow(
-                Feature.DOUBLE_WARP.getMessage()
-                , x / textScale + 50, (y - 30 - 60) / textScale + 5, 0xFFFFFFFF
+                Feature.DOUBLE_WARP.getMessage(),
+                x / textScale + 50, (y - 30 - 60) / textScale + 5, 0xFFFFFFFF
         );
         GlStateManager.popMatrix();
 
@@ -171,9 +165,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         }
 
         Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation(mouseX, mouseY);
-        super.mouseClicked(scaledMouseLocations.getRight(), scaledMouseLocations.getLeft(), mouseButton);
+        super.mouseClicked(scaledMouseLocations.getLeft(), scaledMouseLocations.getRight(), mouseButton);
     }
-
 
     public void detectClosestMarker(int mouseX, int mouseY) {
         Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation(mouseX, mouseY);
@@ -187,8 +180,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
                 for (IslandMarkerButton marker : islandButton.getMarkerButtons()) {
                     double distance = marker.getDistance(
-                            scaledMouseLocations.getRight(), // x
-                            scaledMouseLocations.getLeft() // y
+                            scaledMouseLocations.getLeft(), // x
+                            scaledMouseLocations.getRight() // y
                     );
 
                     if (distance != -1 && distance < markerDistance) {
@@ -242,8 +235,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         PRIVATE_ISLAND("Private Island", 275, 1172),
         GARDEN("Garden", 50, 1050),
         DUNGEON_HUB("Dungeon Hub", 1500, 1100),
-        JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150)
-        ;
+        JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150);
 
         private final String label;
         private final int x;
@@ -261,8 +253,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             this.y = y;
 
             this.resourceLocation = new ResourceLocation(
-                    "skyblockaddons"
-                    , "islands/" + this.name().toLowerCase(Locale.US).replace("_", "") + ".png"
+                    "skyblockaddons",
+                    "islands/" + this.name().toLowerCase(Locale.US).replace("_", "") + ".png"
             );
             try {
                 bufferedImage = TextureUtil.readBufferedImage(
@@ -272,11 +264,10 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
                 this.h = bufferedImage.getHeight();
 
                 if (label.equals("The End")) {
-                    IslandWarpGui.IMAGE_SCALED_DOWN_FACTOR = this.w/573F; // The original end HD texture is 573 pixels wide.
-
+                    IslandWarpGui.IMAGE_SCALED_DOWN_FACTOR = this.w / 573F; // The original end HD texture is 573 pixels wide.
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                SkyblockAddons.getLogger().catching(ex);
             }
 
             this.w /= IMAGE_SCALED_DOWN_FACTOR;
@@ -312,7 +303,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         SPIDERS_DEN("spider", getMessage("warpMenu.spawn"), Island.SPIDERS_DEN, true, 345, 240),
         SPIDERS_DEN_NEST("nest", "Top of Nest", Island.SPIDERS_DEN, 450, 30),
-        ARACHNES_SANCTUARY("arachne", "Arachne's Sanctuary", Island.SPIDERS_DEN, 240,135),
+        ARACHNES_SANCTUARY("arachne", "Arachne's Sanctuary", Island.SPIDERS_DEN, 240, 135),
 
         THE_PARK("park", getMessage("warpMenu.spawn"), Island.THE_PARK, true, 263, 308),
         HOWLING_CAVE("howl", "Howling Cave", Island.THE_PARK, 254, 202),

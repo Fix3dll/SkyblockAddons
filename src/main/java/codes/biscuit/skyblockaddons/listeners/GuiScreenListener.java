@@ -353,13 +353,13 @@ public class GuiScreenListener {
 
         int pageNum = main.getInventoryUtils().getInventoryPageNum();
         // If pageNum == 0, there is no page indicator in the title, there is only 1 pet page.
-        int index = clickedButton.getRight() + 45 * (pageNum == 0 ? 0 : pageNum -1);
+        int index = clickedButton.getLeft() + 45 * (pageNum == 0 ? 0 : pageNum -1);
 
         if (petMap.containsKey(index)) {
             PetManager.Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
                 main.getPetCacheManager().setCurrentPet(null);
-            } else if (clickedButton.getLeft() != 1 /*right click*/) {
+            } else if (clickedButton.getRight() != 1 /*right click*/) {
                 main.getPetCacheManager().setCurrentPet(pet);
             }
             // lastClickedButton has completed its task, time to clean up

@@ -42,23 +42,15 @@ public class CooldownManager {
 
     /**
      * Put an item on cooldown by reading the cooldown value from the json.
-     *
      * @param item ItemStack to put on cooldown
      */
     public static void put(ItemStack item) {
         String itemId = ItemUtils.getSkyblockItemID(item);
-        if (itemId == null) {
-            return;
-        }
-        int cooldown = itemCooldowns.getOrDefault(itemId, 0);
-        if (cooldown > 0) {
-            put(itemId, cooldown);
-        }
+        put(itemId);
     }
 
     /**
      * Put an item on cooldown by reading the cooldown value from the json.
-     *
      * @param itemId ItemStack to put on cooldown
      */
     public static void put(String itemId) {
@@ -71,11 +63,9 @@ public class CooldownManager {
         }
     }
 
-
     /**
      * Put an item on cooldown with provided cooldown, for items that do not show their cooldown
      * in their lore.
-     *
      * @param item Item to put on cooldown
      * @param cooldown Cooldown in milliseconds
      */
@@ -88,7 +78,6 @@ public class CooldownManager {
 
     /**
      * Put an item on cooldown by item ID and provided cooldown.
-     *
      * @param itemId Skyblock ID of the item to put on cooldown
      * @param cooldown Cooldown in milliseconds
      */
@@ -105,7 +94,6 @@ public class CooldownManager {
 
     /**
      * Remove the cooldown from the specified itemId
-     *
      * @param itemId the item id from which to remove the cooldown
      */
     public static void remove(String itemId) {
@@ -115,7 +103,6 @@ public class CooldownManager {
 
     /**
      * Check if an item is on cooldown.
-     *
      * @param item Item to check
      * @return Whether that item is on cooldown. {@code true} if it is, {@code false} if it's not, it's not registered,
      * is null or doesn't have a skyblock ID
@@ -126,7 +113,6 @@ public class CooldownManager {
 
     /**
      * Check if an item is on cooldown by item ID.
-     *
      * @param itemId skyblock ID of the item to check
      * @return Whether that item is on cooldown. {@code true} if it is, {@code false} if it's not or it's not registered
      */
@@ -136,7 +122,6 @@ public class CooldownManager {
 
     /**
      * Get the remaining cooldown of an item in milliseconds
-     *
      * @param item Item to get the cooldown of
      * @return Remaining time until its cooldown runs out or {@code 0} if it's not on cooldown
      */
@@ -146,7 +131,6 @@ public class CooldownManager {
 
     /**
      * Get the remaining cooldown of an item in milliseconds by its item ID
-     *
      * @param itemId Skyblock ID of the item to get the cooldown of
      * @return Remaining time until its cooldown runs out or {@code 0} if it's not on cooldown
      */
@@ -156,7 +140,6 @@ public class CooldownManager {
 
     /**
      * Get the remaining cooldown of an item in percent between {@code 0 to 1}
-     *
      * @param item Item to get the cooldown of
      * @return Remaining cooldown in percent or {@code 0} if the item is not on cooldown
      */
@@ -166,7 +149,6 @@ public class CooldownManager {
 
     /**
      * Get the remaining cooldown of an item in percent between {@code 0 to 1} by its ID
-     *
      * @param itemId Skyblock ID of the item to get the cooldown of
      * @return Remaining cooldown in percent or {@code 0} if the item is not on cooldown
      */
@@ -176,9 +158,8 @@ public class CooldownManager {
 
     /**
      * Read the cooldown value of an item from it's lore.
-     * This requires that the lore shows the cooldown either like {@code X Second Cooldown} or
-     * {@code Cooldown: Xs}. Cooldown is returned in seconds.
-     *
+     * This requires that the lore shows the cooldown either like {@code X Second Cooldown} or {@code Cooldown: Xs}.
+     * Cooldown is returned in seconds.
      * @param itemStack Item to read cooldown from
      * @return Read cooldown in seconds or {@code -1} if no cooldown was found
      * @see #ITEM_COOLDOWN_PATTERN

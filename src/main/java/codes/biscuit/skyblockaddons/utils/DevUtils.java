@@ -329,7 +329,6 @@ public class DevUtils {
 
     /**
      * Copies the header and footer of the tab player list to the clipboard
-     *
      * @see net.minecraft.client.gui.GuiPlayerTabOverlay
      */
     public static void copyTabListHeaderAndFooter() {
@@ -349,7 +348,7 @@ public class DevUtils {
             output.append("\n\n");
         }
 
-        if (tabHeader != null) {
+        if (tabFooter != null) {
             output.append("Footer:").append("\n");
             output.append(tabFooter.getFormattedText());
         }

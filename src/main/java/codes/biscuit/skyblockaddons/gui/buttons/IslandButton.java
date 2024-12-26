@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
@@ -35,7 +34,7 @@ public class IslandButton extends SkyblockAddonsButton {
         for (IslandWarpGui.Marker marker : IslandWarpGui.Marker.values()) {
             if (marker.getIsland() == island) {
                 if (marker == IslandWarpGui.Marker.CARNIVAL) {
-                    if (!SkyblockAddons.getInstance().getElectionData().isPerkActive("Chivalrous Carnival")) {
+                    if (!main.getElectionData().isPerkActive("Chivalrous Carnival")) {
                         continue;
                     }
                 }
@@ -51,8 +50,8 @@ public class IslandButton extends SkyblockAddonsButton {
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY, boolean actuallyDraw) {
         Pair<Integer, Integer> scaledMouseLocations = IslandWarpGui.getScaledMouseLocation(mouseX, mouseY);
-        mouseX = scaledMouseLocations.getRight();
-        mouseY = scaledMouseLocations.getLeft();
+        mouseX = scaledMouseLocations.getLeft();
+        mouseY = scaledMouseLocations.getRight();
 
         float x = island.getX();
         float y = island.getY();
@@ -99,9 +98,8 @@ public class IslandButton extends SkyblockAddonsButton {
                     if (alpha != 0) {
                         hovered = true;
                     }
-                } catch (IndexOutOfBoundsException ex) {
-                    // Can't find pixel, its okay just leave it grey.
-                }
+                } catch (IndexOutOfBoundsException ignored) {} // Can't find pixel, it's okay just leave it grey.
+
             } else {
                 hovered = true;
             }
@@ -109,7 +107,6 @@ public class IslandButton extends SkyblockAddonsButton {
 
         if (disableHover) {
             disableHover = false;
-
             hovered = false;
         }
 

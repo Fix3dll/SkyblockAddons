@@ -612,8 +612,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             }
 
             if (xSnapped || ySnapped) {
-                float xChange = Math.abs(main.getConfigValues().getRelativeCoords(draggedFeature).getRight() - x);
-                float yChange = Math.abs(main.getConfigValues().getRelativeCoords(draggedFeature).getLeft() - y);
+                float xChange = Math.abs(main.getConfigValues().getRelativeCoords(draggedFeature).getLeft() - x);
+                float yChange = Math.abs(main.getConfigValues().getRelativeCoords(draggedFeature).getRight() - y);
                 if (xChange < 0.001 && yChange < 0.001) {
                     return;
                 }
@@ -856,8 +856,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             }
             main.getConfigValues().setCoords(
                     hoveredFeature,
-                    main.getConfigValues().getRelativeCoords(hoveredFeature).getRight() + xOffset,
-                    main.getConfigValues().getRelativeCoords(hoveredFeature).getLeft() + yOffset
+                    main.getConfigValues().getRelativeCoords(hoveredFeature).getLeft() + xOffset,
+                    main.getConfigValues().getRelativeCoords(hoveredFeature).getRight() + yOffset
             );
         }
     }

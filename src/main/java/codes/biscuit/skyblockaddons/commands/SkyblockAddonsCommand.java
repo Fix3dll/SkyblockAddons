@@ -264,17 +264,16 @@ public class SkyblockAddonsCommand extends CommandBase {
                         );
                 versionChatComponent.setChatStyle(versionChatStyle);
 
-                /*
-                 Include MAJOR.MINOR.PATCH-pre-release in the chat message and add build number if it's defined when
-                 the user chooses to copy for diagnostic purposes.
-                 */
+                 // Include MAJOR.MINOR.PATCH-pre-release in the chat message and add build number if it's defined when
+                 // the user chooses to copy for diagnostic purposes.
                 main.getUtils().sendMessage(versionChatComponent, true);
             } else if (args[0].equalsIgnoreCase("internal")) {
                 if (args.length > 2) {
                     if (args[1].equalsIgnoreCase("copy")) {
                         DevUtils.copyStringToClipboard(
                                 Arrays.stream(args).skip(2).collect(Collectors.joining(" ")),
-                                getMessage("messages.copied"));
+                                getMessage("messages.copied")
+                        );
                     }
                 }
             } else if (args[0].equalsIgnoreCase("reload")) {

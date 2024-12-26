@@ -1,6 +1,10 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.gui.screens.EnchantmentSettingsGui;
+import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
+import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
@@ -43,14 +47,45 @@ public class ButtonArrow extends SkyblockAddonsButton {
     }
 
     @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (this.hovered && !this.max) {
+            main.getUtils().setFadingIn(false);
+
+            if (mc.currentScreen instanceof SkyblockAddonsGui) {
+                SkyblockAddonsGui gui = (SkyblockAddonsGui) mc.currentScreen;
+                if (gui.getTab() == EnumUtils.GuiTab.GENERAL_SETTINGS) gui.setCancelClose(true);
+
+                int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
+                mc.displayGuiScreen(new SkyblockAddonsGui(page, gui.getTab()));
+
+                if (gui.getTab() == EnumUtils.GuiTab.GENERAL_SETTINGS) gui.setCancelClose(false);
+                return true;
+
+            } else if (mc.currentScreen instanceof EnchantmentSettingsGui) {
+                EnchantmentSettingsGui gui = (EnchantmentSettingsGui) mc.currentScreen;
+                gui.setClosingGui(true);
+
+                int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
+                mc.displayGuiScreen(new EnchantmentSettingsGui(gui.getFeature(), page, gui.getLastPage(), gui.getLastTab()));
+                return true;
+            } else if (mc.currentScreen instanceof SettingsGui) {
+                SettingsGui gui = (SettingsGui) mc.currentScreen;
+                gui.setClosingGui(true);
+
+                int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
+                mc.displayGuiScreen(new SettingsGui(gui.getFeature(), page, gui.getLastPage(), gui.getLastTab()));
+                return true;
+
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void playPressSound(SoundHandler soundHandlerIn) {
         if (!max) {
             super.playPressSound(soundHandlerIn);
         }
-    }
-
-    public boolean isNotMax() {
-        return !max;
     }
 
     public enum ArrowType {

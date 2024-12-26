@@ -166,18 +166,18 @@ public class InventoryUtils {
             keySet.forEach(key -> {
                 int previousAmount = 0;
                 if (previousInventoryMap.containsKey(key)) {
-                    previousAmount = previousInventoryMap.get(key).getRight();
+                    previousAmount = previousInventoryMap.get(key).getLeft();
                 }
 
                 int newAmount = 0;
                 if (newInventoryMap.containsKey(key)) {
-                    newAmount = newInventoryMap.get(key).getRight();
+                    newAmount = newInventoryMap.get(key).getLeft();
                 }
 
                 int diff = newAmount - previousAmount;
                 if (diff != 0) { // Get the NBT tag from whichever map the name exists in
                     inventoryDifference.add(
-                            new ItemDiff(key, diff, newInventoryMap.getOrDefault(key, previousInventoryMap.get(key)).getLeft())
+                            new ItemDiff(key, diff, newInventoryMap.getOrDefault(key, previousInventoryMap.get(key)).getRight())
                     );
                 }
             });
@@ -536,7 +536,7 @@ public class InventoryUtils {
 
             int amount;
             if (this.containsKey(displayName)) {
-                amount = this.get(displayName).getRight() + itemStack.stackSize;
+                amount = this.get(displayName).getLeft() + itemStack.stackSize;
             } else {
                 amount = itemStack.stackSize;
             }

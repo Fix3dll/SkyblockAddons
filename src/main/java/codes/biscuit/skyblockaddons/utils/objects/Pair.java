@@ -9,7 +9,7 @@ public class Pair<K, V> {
         this.value = value;
     }
 
-    public K getRight() {
+    public K getLeft() {
         return key;
     }
 
@@ -17,7 +17,7 @@ public class Pair<K, V> {
         this.key = key;
     }
 
-    public V getLeft() {
+    public V getRight() {
         return value;
     }
 
@@ -26,7 +26,7 @@ public class Pair<K, V> {
     }
 
     public Pair<K, V> clonePair() {
-        return new Pair<>(getRight(), getLeft());
+        return new Pair<>(getLeft(), getRight());
     }
 
     @Override

@@ -41,8 +41,7 @@ public class EnchantManager {
      * @param item
      */
     public static void parseEnchants(List<String> loreList, ItemStack item) {
-        NBTTagCompound extraAttributes = ItemUtils.getExtraAttributes(item);
-        NBTTagCompound enchantNBT = extraAttributes == null ? null : extraAttributes.getCompoundTag("enchantments");
+        NBTTagCompound enchantNBT = ItemUtils.getEnchantments(item);
         if (enchantNBT == null && SkyblockAddons.getInstance().getInventoryUtils().getInventoryType() != InventoryType.SUPERPAIRS) {
             return;
         }
@@ -59,15 +58,15 @@ public class EnchantManager {
         int startEnchant = -1, endEnchant = -1, maxTooltipWidth = 0;
         int indexOfLastGreyEnchant = accountForAndRemoveGreyEnchants(loreList, item);
         for (int i = indexOfLastGreyEnchant == -1 ? 0 : indexOfLastGreyEnchant + 1; i < loreList.size(); i++) {
-            String u = loreList.get(i);
-            String s = TextUtils.stripColor(u);
+            String line = loreList.get(i);
+            String stripedLine = TextUtils.stripColor(line);
             if (startEnchant == -1) {
-                if (containsEnchantment(extraAttributes, s)) {
+                if (containsEnchantment(item, stripedLine)) {
                     startEnchant = i;
                 }
             }
             // Assume enchants end with an empty line "break"
-            else if (s.trim().isEmpty() && endEnchant == -1) {
+            else if (stripedLine.trim().isEmpty() && endEnchant == -1) {
                 endEnchant = i - 1;
             }
             // Get max tooltip size, disregarding the enchants section
@@ -128,7 +127,6 @@ public class EnchantManager {
 
             maxTooltipWidth = Math.max(enchant.getRenderLength(), maxTooltipWidth);
         }
-
 
         if (orderedEnchants.isEmpty()) {
             loreCache.updateAfter(loreList);
@@ -265,20 +263,21 @@ public class EnchantManager {
     /**
      * Helper method to determine whether we should skip this line in parsing the lore.
      * E.g. we want to skip "Breaking Power X" seen on pickaxes.
-     *
-     * @param eaNBT the extraAttributes NBT of the item
-     * @param s          the line of lore we are parsing
+     * @param itemStack ItemStack
+     * @param stripedLine the line of lore we are parsing
      * @return {@code true} if no enchants on the line are in the enchants table, {@code false} otherwise.
      */
-    public static boolean containsEnchantment(NBTTagCompound eaNBT, String s) {
-        NBTTagCompound enchantNBT = eaNBT == null ? null : eaNBT.getCompoundTag("enchantments");
-        Matcher m = ENCHANTMENT_PATTERN.matcher(s);
+    public static boolean containsEnchantment(ItemStack itemStack, String stripedLine) {
+        NBTTagCompound enchantNBT = ItemUtils.getEnchantments(itemStack);
+        NBTTagCompound attributesNBT = ItemUtils.getAttributes(itemStack);
+
+        Matcher m = ENCHANTMENT_PATTERN.matcher(stripedLine);
         while (m.find()) {
             EnchantmentsData.Enchant enchant = enchants.getFromLore(m.group("enchant"));
             if (enchantNBT == null || enchantNBT.hasKey(enchant.getNbtName())) {
-                NBTTagCompound attributesNBT = eaNBT == null ? null : eaNBT.getCompoundTag("attributes");
-                if (attributesNBT == null || !attributesNBT.hasKey(enchant.getNbtName()))
+                if (attributesNBT == null || !attributesNBT.hasKey(enchant.getNbtName())) {
                     return true;
+                }
             }
         }
         return false;
@@ -317,7 +316,6 @@ public class EnchantManager {
         return removeGreyEnchants ? -1 : lastGreyEnchant;
     }
 
-
     private static int correctTooltipWidth(int maxTooltipWidth) {
         // Figure out whether the item tooltip is gonna wrap, and if so, try to make our enchantments wrap
         final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
@@ -339,7 +337,6 @@ public class EnchantManager {
         }
         return maxTooltipWidth;
     }
-
 
     public static void markCacheDirty() {
         loreCache.configChanged = true;
