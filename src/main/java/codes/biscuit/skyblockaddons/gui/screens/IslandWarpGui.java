@@ -145,7 +145,6 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (mouseButton == 0 && selectedMarker != null) {
-            SkyblockAddons main = SkyblockAddons.getInstance();
             mc.displayGuiScreen(null);
 
             if (Feature.DOUBLE_WARP.isEnabled()) {

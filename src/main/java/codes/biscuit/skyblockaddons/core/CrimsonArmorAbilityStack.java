@@ -8,7 +8,7 @@ public enum CrimsonArmorAbilityStack {
 
     CRIMSON("Crimson", "Dominus", "ᝐ"),
     TERROR("Terror", "Hydra Strike", "⁑"),
-    AURORA("Aurora", "Arcane Vision", "Ѫ"),
+    AURORA("Aurora", "Arcane Energy", "Ѫ"),
     FERVOR("Fervor", "Fervor", "҉"),
     HOLLOW("Hollow", "Spirit", "⚶");
 
