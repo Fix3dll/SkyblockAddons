@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * This class handles the item checking for the Stop Dropping/Selling Rare Items feature.
- * When the player tries to drop or sell an item, {@link this#canDropItem(ItemStack, boolean)} is called to check
+ * When the player tries to drop or sell an item, {@link #canDropItem(ItemStack, boolean)} is called to check
  * the item against the rarity requirements, the blacklist, and the whitelist.
  * These requirements determine if the item is allowed to be dropped/sold.
  *
@@ -54,8 +54,7 @@ public class ItemDropChecker {
     public static boolean canDropItem(Slot slot) {
         if (slot != null && slot.getHasStack()) {
             return canDropItem(slot.getStack());
-        }
-        else {
+        } else {
             return true;
         }
     }

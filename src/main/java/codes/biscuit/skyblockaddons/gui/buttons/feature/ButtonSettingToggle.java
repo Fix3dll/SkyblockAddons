@@ -38,7 +38,7 @@ public class ButtonSettingToggle extends ButtonFeatureToggle {
                     GuiIngameForge.renderHealth = true;
                 }
             }
-            onClick();
+            this.animationButtonClicked = System.currentTimeMillis();
             return true;
         }
         return false;

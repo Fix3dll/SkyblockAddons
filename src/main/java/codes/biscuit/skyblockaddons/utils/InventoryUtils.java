@@ -3,9 +3,9 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
+import codes.biscuit.skyblockaddons.core.ItemDiff;
+import codes.biscuit.skyblockaddons.core.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.core.ThunderBottle;
-import codes.biscuit.skyblockaddons.features.ItemDiff;
-import codes.biscuit.skyblockaddons.features.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
@@ -31,7 +31,6 @@ import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ReportedException;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
@@ -89,18 +88,13 @@ public class InventoryUtils {
 
     /**
      * Copies an inventory into a List of copied ItemStacks
-     *
      * @param inventory Inventory to copy
      * @return List of copied ItemStacks
      */
     private List<ItemStack> copyInventory(ItemStack[] inventory) {
         List<ItemStack> copy = new ArrayList<>(inventory.length);
         for (ItemStack item : inventory) {
-            if (item != null) {
-                copy.add(ItemStack.copyItemStack(item));
-            } else {
-                copy.add(null);
-            }
+            copy.add(ItemStack.copyItemStack(item));
         }
         return copy;
     }
@@ -108,7 +102,6 @@ public class InventoryUtils {
     /**
      * Compares previously recorded Inventory state with current Inventory state to determine changes and
      * stores them in {@link #itemPickupLog}
-     *
      * @param currentInventory Current Inventory state
      */
     public void calculateInventoryDifference(ItemStack[] currentInventory) {
@@ -353,8 +346,11 @@ public class InventoryUtils {
     public void checkIfThunderBottle(EntityPlayerSP p) {
         if (Feature.THUNDER_BOTTLE_DISPLAY.isEnabled()) {
             ThunderBottle displayBottle = ThunderBottle.getDisplayBottle();
-            if (displayBottle != null && !ArrayUtils.contains(p.inventory.mainInventory, displayBottle)) {
+
+            // Check if display bottle still exist in inventory, if not clear current ThunderBottle
+            if (displayBottle != null && p.inventory.mainInventory[displayBottle.getSlot()] == null) {
                 displayBottle.setItemStack(null);
+                displayBottle.setSlot(-1);
                 displayBottle.setCharge(0);
             }
 
@@ -543,7 +539,6 @@ public class InventoryUtils {
 
             this.put(displayName, new Pair<>(amount, itemStack));
         }
-
     }
 
 }

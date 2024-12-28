@@ -19,7 +19,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
     private static final int ANIMATION_SLIDE_DISTANCE = 12;
     private static final int ANIMATION_SLIDE_TIME = 150;
 
-    private long animationButtonClicked = -1;
+    protected long animationButtonClicked = -1;
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
@@ -82,10 +82,6 @@ public class ButtonFeatureToggle extends ButtonFeature {
         }
     }
 
-    public void onClick() {
-        this.animationButtonClicked = System.currentTimeMillis();
-    }
-
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         if (this.hovered && this.feature != null && !this.feature.isRemoteDisabled()) {
@@ -129,7 +125,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
                         break;
                 }
             }
-            onClick();
+            this.animationButtonClicked = System.currentTimeMillis();
             return true;
         }
         return false;

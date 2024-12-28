@@ -22,11 +22,14 @@ public enum ThunderBottle {
     @Setter private ItemStack itemStack;
     @Setter private int charge;
     private final int capacity;
+    @Setter private int slot;
 
+    /** Full bottle constructor */
     ThunderBottle(ItemStack itemStack) {
         this(itemStack, 0, 0);
     }
 
+    /** Empty bottle constructor */
     ThunderBottle(ItemStack itemStack, int charge, int capacity) {
         this.itemStack = itemStack;
         this.charge = charge;
@@ -39,14 +42,17 @@ public enum ThunderBottle {
         boolean foundFullThunderBottle = false;
         int displayOrder = Integer.MAX_VALUE;
 
-        for (ItemStack itemStack : inventory) {
+        for (int slot = 0; slot < inventory.length; slot++) {
+            ItemStack itemStack = inventory[slot];
             if (itemStack == null || itemStack.getItem() != Items.skull) continue;
 
             String itemID = ItemUtils.getSkyblockItemID(itemStack);
             for (ThunderBottle bottle : values()) {
                 // If there is multiple empty bottle, Hypixel applies "first-come, first-served" according to inv index
-                if (bottle.name().equals(itemID) && bottle.itemStack == null) {
+                if (bottle.name().equals(itemID) && bottle.ordinal() < displayOrder) {
                     bottle.itemStack = itemStack;
+                    bottle.slot = slot;
+                    displayOrder = bottle.ordinal();
 
                     if (bottle.isFull()) {
                         // Full bottles
@@ -55,11 +61,6 @@ public enum ThunderBottle {
                         // Empty bottles
                         bottle.charge = ItemUtils.getThunderCharge(itemStack);
                     }
-
-                    // Display order
-                    if (bottle.ordinal() < displayOrder) {
-                        displayOrder = bottle.ordinal();
-                    }
                 }
             }
         }
@@ -67,12 +68,13 @@ public enum ThunderBottle {
         for (ThunderBottle bottle : values()) {
             if (bottle.ordinal() > displayOrder || displayOrder == Integer.MAX_VALUE) {
                 bottle.itemStack = null;
+                bottle.slot = -1;
                 bottle.charge = 0;
             } else if (!foundFullThunderBottle && bottle.isFull()) {
                 bottle.itemStack = null;
+                bottle.slot = -1;
             }
         }
-
     }
 
     /**

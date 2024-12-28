@@ -747,13 +747,7 @@ public class PlayerListener {
 
         if (entity.ticksExisted < 5) {
             if (Feature.HIDE_OTHER_PLAYERS_PRESENTS.isEnabled()) {
-                if (!JerryPresent.getJerryPresents().containsKey(entity.getUniqueID())) {
-                    JerryPresent present = JerryPresent.getJerryPresent(entity);
-                    if (present != null) {
-                        JerryPresent.getJerryPresents().put(entity.getUniqueID(), present);
-                        return;
-                    }
-                }
+                JerryPresent.detectJerryPresent(entity);
             }
 
             if (entity instanceof EntityOtherPlayerMP && Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled()

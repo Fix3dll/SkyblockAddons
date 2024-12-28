@@ -134,8 +134,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
             index = index == itemList.size() - 1 ? 0 : index + 1;
             callback.accept(index);
             return true;
-        }
-        if (isOverRightButton(mouseX, mouseY)) {
+        } else if (isOverRightButton(mouseX, mouseY)) {
             index = index == 0 ? itemList.size() - 1 : index - 1;
             callback.accept(index);
             return true;

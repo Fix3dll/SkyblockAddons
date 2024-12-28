@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.features.dragontracker;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.features.ItemDiff;
+import codes.biscuit.skyblockaddons.core.ItemDiff;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.core.PetInfo;
 import com.google.common.collect.Lists;

@@ -114,29 +114,6 @@ public class ItemUtils {
     }
 
     /**
-     * Returns the Skyblock Item ID of a given Skyblock item
-     *
-     * @param item the Skyblock item to check
-     * @return the Skyblock Item ID of this item or {@code null} if this isn't a valid Skyblock item
-     */
-    public static String getSkyblockItemID(ItemStack item) {
-        if (item == null) {
-            return null;
-        }
-
-        NBTTagCompound extraAttributes = getExtraAttributes(item);
-        if (extraAttributes == null) {
-            return null;
-        }
-
-        if (!extraAttributes.hasKey("id", ItemUtils.NBT_STRING)) {
-            return null;
-        }
-
-        return extraAttributes.getString("id");
-    }
-
-    /**
      * Returns the {@code ExtraAttributes} compound tag from the item's NBT data. The item must not be {@code null}.
      *
      * @param item the item to get the tag from
@@ -254,7 +231,6 @@ public class ItemUtils {
         return itemStack.getItem() instanceof ItemPickaxe || isDrill(itemStack);
     }
 
-
     /**
      * Checks if the given {@code ItemStack} is a drill. It works by checking for the presence of the {@code drill_fuel} NBT tag,
      * which only drills have.
@@ -269,16 +245,24 @@ public class ItemUtils {
 
         NBTTagCompound extraAttributes = getExtraAttributes(itemStack);
 
-        if (extraAttributes != null) {
-            return extraAttributes.hasKey("drill_fuel", TAG_INT);
-        } else {
-            return false;
+        return extraAttributes != null && extraAttributes.hasKey("drill_fuel", TAG_INT);
+    }
+
+    /**
+     * Returns the Skyblock Item ID of a given Skyblock item
+     * @param item the Skyblock item to check
+     * @return the Skyblock Item ID of this item or {@code null} if this isn't a valid Skyblock item
+     */
+    public static String getSkyblockItemID(ItemStack item) {
+        if (item == null) {
+            return null;
         }
+
+        return getSkyblockItemID(getExtraAttributes(item));
     }
 
     /**
      * Returns the Skyblock Item ID of a given Skyblock Extra Attributes NBT Compound
-     *
      * @param extraAttributes the NBT to check
      * @return the Skyblock Item ID of this item or {@code null} if this isn't a valid Skyblock NBT
      */
@@ -287,12 +271,11 @@ public class ItemUtils {
             return null;
         }
 
-        String itemId = extraAttributes.getString("id");
-        if (itemId.isEmpty()) {
+        if (!extraAttributes.hasKey("id", ItemUtils.NBT_STRING)) {
             return null;
         }
 
-        return itemId;
+        return extraAttributes.getString("id");
     }
 
     /**

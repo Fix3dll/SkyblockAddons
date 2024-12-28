@@ -370,9 +370,9 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             //noinspection SwitchStatementWithTooFewBranches
             switch (feature) {
                 case WARNING_TIME:
-                    int solidButtonX = x + (boxWidth / 2) - (ButtonStepper.SPACER + 25 + 15);
+                    int solidButtonX = x + (boxWidth / 2) - 45;
                     final int warningSeconds = main.getConfigValues().getWarningSeconds();
-                    buttonList.add(new ButtonStepper(solidButtonX, y + boxHeight - 23, 50, 15,
+                    buttonList.add(new ButtonStepper(solidButtonX, y + boxHeight - 23, 90, 15,
                             warningSeconds+"s",
                             modifier -> {
                                 switch (modifier) {

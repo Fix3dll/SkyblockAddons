@@ -816,17 +816,15 @@ public class Utils {
         return bytes;
     }
 
-    public static Entity getEntityByUUID(UUID uuid) {
-        if (uuid == null) {
-            return null;
-        }
+    public static Entity getEntityFromUUID(UUID uuid) {
+        WorldClient world = Minecraft.getMinecraft().theWorld;
+        if (uuid == null || world == null) return null;
 
-        for (Entity entity : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+        for (Entity entity : world.getLoadedEntityList()) {
             if (entity.getUniqueID().equals(uuid)) {
                 return entity;
             }
         }
-
         return null;
     }
 

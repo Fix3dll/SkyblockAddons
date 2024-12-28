@@ -444,8 +444,6 @@ public class DevUtils {
         writeToClipboard(prettyPrintNBT(nbt), ColorCode.GREEN + "Successfully copied the block data!");
     }
 
-
-    // FIXME add support for TAG_LONG_ARRAY when updating to 1.12
     /**
      * <p>Converts an NBT tag into a pretty-printed string.</p>
      * <p>For constant definitions, see {@link Constants.NBT}</p>

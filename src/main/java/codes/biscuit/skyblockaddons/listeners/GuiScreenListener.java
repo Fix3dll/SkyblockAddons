@@ -9,8 +9,6 @@ import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
-import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
-import codes.biscuit.skyblockaddons.gui.screens.LocationEditGui;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
@@ -75,7 +73,7 @@ public class GuiScreenListener {
 
         if (guiScreen instanceof GuiChest) {
             GuiChest guiChest = (GuiChest) guiScreen;
-            InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().updateInventoryType(guiChest);
+            InventoryType inventoryType = main.getInventoryUtils().updateInventoryType(guiChest);
             InventoryBasic chestInventory = (InventoryBasic) guiChest.lowerChestInventory;
             addInventoryChangeListener(chestInventory);
 
@@ -129,7 +127,6 @@ public class GuiScreenListener {
 
     /**
      * Listens for key presses while a GUI is open
-     *
      * @param event the {@code GuiScreenEvent.KeyboardInputEvent} to listen for
      */
     @SubscribeEvent
@@ -141,7 +138,7 @@ public class GuiScreenListener {
             GuiScreen currentScreen = event.gui;
 
             // Check if the player is in an inventory.
-            if (GuiContainer.class.isAssignableFrom(currentScreen.getClass())) {
+            if (currentScreen instanceof GuiContainer) {
                 Slot currentSlot = ((GuiContainer) currentScreen).getSlotUnderMouse();
 
                 if (currentSlot != null && currentSlot.getHasStack()) {
@@ -151,15 +148,6 @@ public class GuiScreenListener {
                             ColorCode.GREEN + "Item data was copied to clipboard!"
                     );
                 }
-            }
-        }
-
-        if (Feature.areEnabled(Feature.DUNGEONS_MAP_DISPLAY, Feature.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)
-                && Minecraft.getMinecraft().currentScreen instanceof LocationEditGui) {
-            if (eventKey == SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.getKeyCode() && Keyboard.getEventKeyState()) {
-                DungeonMapManager.decreaseZoomByStep();
-            } else if (eventKey == SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.getKeyCode() && Keyboard.getEventKeyState()) {
-                DungeonMapManager.increaseZoomByStep();
             }
         }
     }

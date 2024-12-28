@@ -1,7 +1,8 @@
-package codes.biscuit.skyblockaddons.features;
+package codes.biscuit.skyblockaddons.core;
 
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -13,10 +14,12 @@ public class SlayerArmorProgress {
     private final ItemStack itemStack;
 
     /** The current slayer progress % of the item. */
-    @Getter private String percent;
+    @Getter @Setter
+    private String percent;
 
     /** The current slayer defence reward of the item. */
-    @Getter private String defence;
+    @Getter @Setter
+    private String defence;
 
     public SlayerArmorProgress(ItemStack itemStack) {
         this.itemStack = new ItemStack(itemStack.getItem()); // Cloned because we change the helmet color later.
@@ -36,13 +39,5 @@ public class SlayerArmorProgress {
         if (itemStack.getItem().equals(Items.leather_helmet)) {
             ((ItemArmor)itemStack.getItem()).setColor(itemStack, ColorCode.BLACK.getColor());
         }
-    }
-
-    public void setDefence(String defence) {
-        this.defence = defence;
-    }
-
-    public void setPercent(String percent) {
-        this.percent = percent;
     }
 }

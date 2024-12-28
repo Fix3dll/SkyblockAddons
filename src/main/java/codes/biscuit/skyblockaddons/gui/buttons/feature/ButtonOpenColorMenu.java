@@ -50,8 +50,8 @@ public class ButtonOpenColorMenu extends ButtonFeature {
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         if (this.hovered && this.feature != null) {
-            if (Minecraft.getMinecraft().currentScreen instanceof SettingsGui) {
-                SettingsGui gui = (SettingsGui) Minecraft.getMinecraft().currentScreen;
+            if (mc.currentScreen instanceof SettingsGui) {
+                SettingsGui gui = (SettingsGui) mc.currentScreen;
                 gui.setClosingGui(true);
                 // Temp fix until feature re-write. Open a color selection panel specific to the color setting
                 Feature toOpen = ENCHANT_COLOR_FEATURES.contains(this.feature) ? this.feature : gui.getFeature();

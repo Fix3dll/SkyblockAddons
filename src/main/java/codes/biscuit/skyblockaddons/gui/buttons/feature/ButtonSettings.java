@@ -38,8 +38,8 @@ public class ButtonSettings extends ButtonFeature {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (this.hovered && Minecraft.getMinecraft().currentScreen instanceof SkyblockAddonsGui) {
-            SkyblockAddonsGui gui = (SkyblockAddonsGui) Minecraft.getMinecraft().currentScreen;
+        if (this.hovered && mc.currentScreen instanceof SkyblockAddonsGui) {
+            SkyblockAddonsGui gui = (SkyblockAddonsGui) mc.currentScreen;
             main.getUtils().setFadingIn(false);
             if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {
                 mc.displayGuiScreen(new EnchantmentSettingsGui(feature, 0, gui.getPage(), gui.getTab()));

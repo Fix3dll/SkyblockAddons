@@ -2638,7 +2638,7 @@ public class RenderListener {
         if (activeDeployable != null) {
             UUID uuidOfActiveDep = activeDeployable.getUuid();
             if (uuidOfActiveDep != null) {
-                entity = Utils.getEntityByUUID(uuidOfActiveDep);
+                entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
         }
 
@@ -2773,7 +2773,7 @@ public class RenderListener {
         if (activeDeployable != null) {
             UUID uuidOfActiveDep = activeDeployable.getUuid();
             if (uuidOfActiveDep != null) {
-                entity = Utils.getEntityByUUID(uuidOfActiveDep);
+                entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
         }
 

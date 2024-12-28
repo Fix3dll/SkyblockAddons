@@ -2,7 +2,9 @@ package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.GuiFeatureData;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonCycling;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonColorWheel;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
@@ -13,6 +15,7 @@ import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import com.google.common.collect.Sets;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Keyboard;
@@ -40,12 +43,12 @@ public class LocationEditGui extends SkyblockAddonsScreen {
     private float xOffset;
     private float yOffset;
 
-    private final int lastPage;
-    private final EnumUtils.GuiTab lastTab;
+    @Getter private final int lastPage;
+    @Getter private final EnumUtils.GuiTab lastTab;
 
     private final Map<Feature, ButtonLocation> buttonLocations = new EnumMap<>(Feature.class);
 
-    private boolean closing = false;
+    @Setter private boolean closing = false;
     private boolean rightClickReleased = true;
     private static boolean tipShown = false;
 
@@ -859,6 +862,14 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     main.getConfigValues().getRelativeCoords(hoveredFeature).getLeft() + xOffset,
                     main.getConfigValues().getRelativeCoords(hoveredFeature).getRight() + yOffset
             );
+        }
+
+        if (Feature.areEnabled(Feature.DUNGEONS_MAP_DISPLAY, Feature.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
+            if (keyCode == SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {
+                DungeonMapManager.decreaseZoomByStep();
+            } else if (keyCode == SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {
+                DungeonMapManager.increaseZoomByStep();
+            }
         }
     }
 

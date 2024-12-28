@@ -2,7 +2,10 @@ package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.gui.screens.ColorSelectionGui;
+import codes.biscuit.skyblockaddons.gui.screens.LocationEditGui;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -44,6 +47,14 @@ public class ButtonColorWheel extends ButtonFeature {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        return hovered;
+        if (this.hovered) {
+            if (mc.currentScreen instanceof LocationEditGui) {
+                LocationEditGui gui = (LocationEditGui) mc.currentScreen;
+                gui.setClosing(true);
+                mc.displayGuiScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));
+                return true;
+            }
+        }
+        return false;
     }
 }

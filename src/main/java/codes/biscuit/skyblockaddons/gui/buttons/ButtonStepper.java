@@ -23,8 +23,6 @@ public class ButtonStepper extends SkyblockAddonsButton {
      * Create a button for adding or subtracting a number. The width of the modifier is the same as the height and
      * the spacing is 5 pixels. </br>
      * When creating a ButtonStepper, remember that the starting X of the text box will be x + (height + SPACER)
-     * @param width is text box width, modifier buttons not included. The width of the modifier buttons varies according
-     *              to the height.
      */
     public ButtonStepper(double x, double y, int width, int height, String displayString, Consumer<Modifier> callback) {
         super(0, (int)x, (int)y, displayString);
@@ -75,8 +73,9 @@ public class ButtonStepper extends SkyblockAddonsButton {
 
         boxColor = main.getUtils().getDefaultColor(100);
         int stringWidth = mc.fontRendererObj.getStringWidth(displayString);
+        int textBoxWidth = width - 2 * (SPACER + height);
         float scale = stringWidth > WIDTH_LIMIT ? 1F / (stringWidth / WIDTH_LIMIT) : 1F;
-        drawButtonBoxAndText(displayString, xPosition + height + SPACER, yPosition, width, height, boxColor, 100, scale, ColorCode.WHITE.getColor());
+        drawButtonBoxAndText(displayString, xPosition + height + SPACER, yPosition, textBoxWidth, height, boxColor, 100, scale, ColorCode.WHITE.getColor());
         GlStateManager.disableBlend();
     }
 
@@ -85,8 +84,7 @@ public class ButtonStepper extends SkyblockAddonsButton {
         if (isOverSubtractButton(mouseX, mouseY)) {
             callback.accept(Modifier.SUBTRACT);
             return true;
-        }
-        if (isOverAddButton(mouseX, mouseY)) {
+        } else if (isOverAddButton(mouseX, mouseY)) {
             callback.accept(Modifier.ADD);
             return true;
         }
@@ -126,8 +124,8 @@ public class ButtonStepper extends SkyblockAddonsButton {
      * @return Whether the given mouse position is hovering over the right arrow button
      */
     private boolean isOverAddButton(int mouseX, int mouseY) {
-        return mouseX >= xPosition + height + width + 2 * SPACER
-                && mouseX < xPosition + height + height + width + 2 * SPACER
+        return mouseX >= xPosition + width - height
+                && mouseX < xPosition + width
                 && mouseY >= yPosition
                 && mouseY < yPosition + height;
     }
