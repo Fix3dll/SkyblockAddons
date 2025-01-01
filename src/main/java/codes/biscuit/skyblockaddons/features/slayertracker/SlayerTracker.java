@@ -18,8 +18,6 @@ public class SlayerTracker {
     @Getter private static final SlayerTracker instance = new SlayerTracker();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    @Deprecated private transient long lastSlayerCompleted = -1;
-
     public int getSlayerKills(SlayerBoss slayerBoss) {
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
         return slayerTrackerData.getSlayerKills().getOrDefault(slayerBoss, 0);
@@ -53,7 +51,6 @@ public class SlayerTracker {
             SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
             slayerTrackerData.getSlayerKills().put(slayerBoss, slayerTrackerData.getSlayerKills().getOrDefault(slayerBoss, 0) + 1);
             slayerTrackerData.setLastKilledBoss(slayerBoss);
-            lastSlayerCompleted = System.currentTimeMillis();
 
             main.getPersistentValuesManager().saveValues();
         }

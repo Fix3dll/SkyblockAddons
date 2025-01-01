@@ -6,7 +6,10 @@ import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import com.google.gson.JsonObject;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
+import com.jagrosh.discordipc.entities.ActivityType;
+import com.jagrosh.discordipc.entities.Packet;
 import com.jagrosh.discordipc.entities.RichPresence;
+import com.jagrosh.discordipc.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.Logger;
@@ -86,6 +89,7 @@ public class DiscordRPCManager implements IPCListener {
                 .setStartTimestamp(startTimestamp)
                 .setLargeImage(location.toLowerCase(Locale.ENGLISH).replaceAll(" ", "-"), largeImageDescription)
                 .setSmallImage("skyblockicon", smallImageDescription)
+                .setActivityType(ActivityType.Playing)
                 .build();
         client.sendRichPresence(presence);
     }
@@ -101,6 +105,13 @@ public class DiscordRPCManager implements IPCListener {
         this.detailsLine = status;
         if (isActive()) {
             updatePresence();
+        }
+    }
+
+    private void cancelTimer() {
+        if(updateTimer != null) {
+            updateTimer.cancel();
+            updateTimer = null;
         }
     }
 
@@ -133,10 +144,28 @@ public class DiscordRPCManager implements IPCListener {
         cancelTimer();
     }
 
-    private void cancelTimer() {
-        if(updateTimer != null) {
-            updateTimer.cancel();
-            updateTimer = null;
-        }
+    @Override
+    public void onPacketSent(IPCClient client, Packet packet) {
+
+    }
+
+    @Override
+    public void onPacketReceived(IPCClient client, Packet packet) {
+
+    }
+
+    @Override
+    public void onActivityJoin(IPCClient client, String secret) {
+
+    }
+
+    @Override
+    public void onActivitySpectate(IPCClient client, String secret) {
+
+    }
+
+    @Override
+    public void onActivityJoinRequest(IPCClient client, String secret, User user) {
+
     }
 }

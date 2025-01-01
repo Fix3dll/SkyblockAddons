@@ -28,24 +28,22 @@ public class ButtonCredit extends ButtonFeature {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if (visible) {
-            float alphaMultiplier = calculateAlphaMultiplier();
+        float alphaMultiplier = calculateAlphaMultiplier();
 
-            float scale = smaller ? 0.6F : 0.8F;
-            hovered = isHovered(mouseX, mouseY, scale);
-            GlStateManager.enableBlend();
+        float scale = smaller ? 0.6F : 0.8F;
+        hovered = isHovered(mouseX, mouseY, scale);
+        GlStateManager.enableBlend();
 
-            GlStateManager.color(1,1,1,alphaMultiplier * (hovered ? 1F : 0.7F));
-            if (feature.isRemoteDisabled()) {
-                GlStateManager.color(0.3F,0.3F,0.3F,0.7F);
-            }
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, 1);
-            mc.getTextureManager().bindTexture(WEB);
-            drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, 12, 12, 12, 12);
-            GlStateManager.popMatrix();
-            GlStateManager.disableBlend();
+        GlStateManager.color(1,1,1,alphaMultiplier * (hovered ? 1F : 0.7F));
+        if (feature.isRemoteDisabled()) {
+            GlStateManager.color(0.3F,0.3F,0.3F,0.7F);
         }
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, 1);
+        mc.getTextureManager().bindTexture(WEB);
+        drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, 12, 12, 12, 12);
+        GlStateManager.popMatrix();
+        GlStateManager.disableBlend();
     }
 
     @Override

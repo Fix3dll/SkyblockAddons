@@ -8,7 +8,7 @@ plugins {
     java
     id("gg.essential.loom") version ("1.6.21")
     id("dev.architectury.architectury-pack200") version ("0.1.3")
-    id("io.freefair.lombok") version ("8.7.1")
+    id("io.freefair.lombok") version ("8.11")
     id("com.gradleup.shadow") version ("8.3.0")
     id("net.kyori.blossom") version ("1.3.1")
 }
@@ -117,7 +117,7 @@ dependencies {
     bundle("net.hypixel:mod-api-forge-tweaker:1.0.1.1")
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
-    bundle("com.github.NetheriteMiner:DiscordIPC:c75dbc9") {
+    bundle("io.github.CDAGaming:DiscordIPC:0.10.2") {
         exclude(module = "log4j")
         because("Different version conflicts with Minecraft's Log4J")
         exclude(module = "gson")

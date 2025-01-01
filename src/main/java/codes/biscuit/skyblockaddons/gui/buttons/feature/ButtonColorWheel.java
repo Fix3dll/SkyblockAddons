@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 public class ButtonColorWheel extends ButtonFeature {
 
     private static final ResourceLocation COLOR_WHEEL = new ResourceLocation("skyblockaddons", "gui/colorwheel.png");
-    private static final int SIZE = 10;
+    public static final int SIZE = 10;
 
     public float x;
     public float y;
@@ -39,10 +39,6 @@ public class ButtonColorWheel extends ButtonFeature {
         DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 10, 10, 10, 10, true);
         GlStateManager.popMatrix();
         GlStateManager.disableBlend();
-    }
-
-    public static int getSize() {
-        return SIZE;
     }
 
     @Override

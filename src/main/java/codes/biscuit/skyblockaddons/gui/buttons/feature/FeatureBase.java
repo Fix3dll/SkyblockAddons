@@ -99,10 +99,8 @@ public class FeatureBase extends ButtonFeature {
             }
 
             if (creditFeature != null) {
-                float scale = 0.8F;
-                if (multiline) { // If its 2 lines the credits have to be smaller.
-                    scale = 0.6F;
-                }
+                // If its 2 lines the credits have to be smaller.
+                float scale = multiline ? 0.6F : 0.8F;
                 float creditsY = (textY / scale) + 23;
                 if (multiline) {
                     creditsY += 3; // Since its smaller the scale is wierd to move it down a tiny bit.

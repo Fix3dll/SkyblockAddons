@@ -171,13 +171,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             float boxXTwo = buttonLocation.getBoxXTwo() * scaleX;
             float boxYOne = buttonLocation.getBoxYOne() * scaleY;
             float boxYTwo = buttonLocation.getBoxYTwo() * scaleY;
-            float y = boxYOne + (boxYTwo - boxYOne) / 2F - ButtonColorWheel.getSize() / 2F;
+            float y = boxYOne + (boxYTwo - boxYOne) / 2F - ButtonColorWheel.SIZE / 2F;
             float x;
 
             if (main.getConfigValues().getAnchorPoint(feature).isOnLeft()) {
                 x = boxXTwo + 2;
             } else {
-                x = boxXOne - ButtonColorWheel.getSize() - 2;
+                x = boxXOne - ButtonColorWheel.SIZE - 2;
             }
 
             buttonList.add(new ButtonColorWheel(Math.round(x), Math.round(y), feature));
@@ -270,13 +270,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                 float boxXTwo = buttonLocation.getBoxXTwo() * scaleX;
                 float boxYOne = buttonLocation.getBoxYOne() * scaleY;
                 float boxYTwo = buttonLocation.getBoxYTwo() * scaleY;
-                float y = boxYOne + (boxYTwo - boxYOne) / 2F - ButtonColorWheel.getSize() / 2F;
+                float y = boxYOne + (boxYTwo - boxYOne) / 2F - ButtonColorWheel.SIZE / 2F;
                 float x;
 
                 if (main.getConfigValues().getAnchorPoint(feature).isOnLeft()) {
                     x = boxXTwo + 2;
                 } else {
-                    x = boxXOne - ButtonColorWheel.getSize() - 2;
+                    x = boxXOne - ButtonColorWheel.SIZE - 2;
                 }
 
                 buttonColorWheel.x = x;

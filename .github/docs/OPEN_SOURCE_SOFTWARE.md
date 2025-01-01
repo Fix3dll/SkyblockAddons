@@ -22,4 +22,4 @@ SkyblockAddons uses the following open source software:
 
 [Attribution Notices](NOTICES.md)
 
-** *SBA uses a [fork of NetheriteMiner](https://github.com/NetheriteMiner/DiscordIPC/)*
+** *SBA uses a [fork of CDAGaming](https://github.com/CDAGaming/DiscordIPC)*

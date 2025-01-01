@@ -38,9 +38,10 @@ public class ButtonStepper extends SkyblockAddonsButton {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         GlStateManager.enableBlend();
         int boxColor, fontColor, boxAlpha;
+        this.hovered = isHovered(mouseX, mouseY);
         for (Modifier modifier : Modifier.values()) {
             hitMaximum = hitMaximum(modifier, mouseX, mouseY);
-            hovered = modifier == Modifier.SUBTRACT ? isOverSubtractButton(mouseX, mouseY) : isOverAddButton(mouseX, mouseY);
+            boolean hovered = modifier == Modifier.SUBTRACT ? isOverSubtractButton(mouseX, mouseY) : isOverAddButton(mouseX, mouseY);
 
             if (hovered && !hitMaximum) {
                 fontColor = ColorCode.WHITE.getColor();
@@ -65,7 +66,7 @@ public class ButtonStepper extends SkyblockAddonsButton {
             if (modifier == Modifier.SUBTRACT) {
                 startX = xPosition;
             } else {
-                startX = xPosition + height + width + 2 * SPACER;
+                startX = xPosition + width - height;
             }
             //noinspection SuspiciousNameCombination
             drawButtonBoxAndText(modifier.displayString, startX, yPosition, height, height, boxColor, boxAlpha, 1F, fontColor);

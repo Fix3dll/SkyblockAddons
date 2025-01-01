@@ -71,7 +71,8 @@ public class PetItem implements GsonInitializable {
         } catch (Exception ex) {
             itemStack = new ItemStack(Item.getItemFromBlock(Blocks.stone));
             LOGGER.error(
-                    "An error occurred while making an item stack with ID {} and name {}.", material, displayName, ex
+                    "An error occurred while making an item stack with ID {} and name {}.\n{}",
+                    material, displayName, ex
             );
         }
     }

@@ -104,7 +104,10 @@ import java.util.regex.Pattern;
 //TODO Fix for Hypixel localization
 public class PlayerListener {
 
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Minecraft MC = Minecraft.getMinecraft();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    @Getter private final ActionBarParser actionBarParser = new ActionBarParser();
 
     private static final Pattern NO_ARROWS_LEFT_PATTERN = Pattern.compile("§r§c§lQUIVER! §r§cYou have run out of §r(?<type>§.*)§r§c!§r");
     private static final Pattern ONLY_HAVE_ARROWS_LEFT_PATTERN = Pattern.compile("§r§c§lQUIVER! §r§cYou only have (?<arrows>[0-9]+) §r(?<type>§.*) §r§cleft!§r");
@@ -166,9 +169,6 @@ public class PlayerListener {
 
     @Getter private final TreeMap<Long, Vec3> explosiveBowExplosions = new TreeMap<>();
 
-    private final SkyblockAddons main = SkyblockAddons.getInstance();
-    @Getter private final ActionBarParser actionBarParser = new ActionBarParser();
-
     // For caching for the PROFILE_TYPE_IN_CHAT feature, saves the last MAX_SIZE names.
     private final LinkedHashMap<String, String> namesWithSymbols = new LinkedHashMap<String, String>(){
         protected boolean removeEldestEntry(Map.Entry<String, String> eldest)
@@ -187,7 +187,7 @@ public class PlayerListener {
     public void onWorldJoin(EntityJoinWorldEvent e) {
         Entity entity = e.entity;
 
-        if (entity == Minecraft.getMinecraft().thePlayer) {
+        if (entity == MC.thePlayer) {
             lastWorldJoin = Minecraft.getSystemTime();
             timerTick = 1;
             main.getInventoryUtils().resetPreviousInventory();
@@ -197,7 +197,7 @@ public class PlayerListener {
             IslandWarpGui.Marker doubleWarpMarker = IslandWarpGui.getDoubleWarpMarker();
             if (doubleWarpMarker != null) {
                 IslandWarpGui.setDoubleWarpMarker(null);
-                Minecraft.getMinecraft().thePlayer.sendChatMessage("/warp " + doubleWarpMarker.getWarpName());
+                MC.thePlayer.sendChatMessage("/warp " + doubleWarpMarker.getWarpName());
             }
 
             NPCUtils.getNpcLocations().clear();
@@ -237,7 +237,7 @@ public class PlayerListener {
         if (e.type == 2) {
             // Log the message to the game log if action bar message logging is enabled.
             if (Feature.DEVELOPER_MODE.isEnabled() && DevUtils.isLoggingActionBarMessages()) {
-                logger.info("[ACTION BAR] {}", unformattedText);
+                LOGGER.info("[ACTION BAR] {}", unformattedText);
             }
 
             // Parse using ActionBarParser and display the rest message instead
@@ -286,9 +286,9 @@ public class PlayerListener {
 
                     EntityPlayer deadPlayer;
                     if (username.equals("You")) {
-                        deadPlayer = Minecraft.getMinecraft().thePlayer;
+                        deadPlayer = MC.thePlayer;
                     } else {
-                        deadPlayer = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(username);
+                        deadPlayer = MC.theWorld.getPlayerEntityByName(username);
                     }
 
                     MinecraftForge.EVENT_BUS.post(new SkyblockPlayerDeathEvent(deadPlayer, username, causeOfDeath));
@@ -434,7 +434,7 @@ public class PlayerListener {
                 Matcher reviveMessageMatcher = REVIVE_MESSAGE_PATTERN.matcher(unformattedText);
 
                 if (reviveMessageMatcher.matches()) {
-                    List<EntityPlayer> players = Minecraft.getMinecraft().theWorld.playerEntities;
+                    List<EntityPlayer> players = MC.theWorld.playerEntities;
 
                     String revivedPlayerName = reviveMessageMatcher.group("revivedPlayer");
                     String reviverName = reviveMessageMatcher.group("reviver");
@@ -473,7 +473,7 @@ public class PlayerListener {
 
 
             if (ABILITY_CHAT_PATTERN.matcher(formattedText).matches()) {
-                CooldownManager.put(Minecraft.getMinecraft().thePlayer.getHeldItem());
+                CooldownManager.put(MC.thePlayer.getHeldItem());
 
             } else if ((matcher = PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
                 String profile = matcher.group(1);
@@ -489,8 +489,9 @@ public class PlayerListener {
         if (unformattedText.contains("§eis elected Mayor for the year, §6gg§e!")) {
             if (!main.getUtils().isAlpha()) {
                 HoverEvent hoverEvent = e.message.getChatStyle().getChatHoverEvent();
-                if (hoverEvent.getValue() == null || (hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT))
+                if (hoverEvent.getValue() == null || hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT) {
                     return;
+                }
 
                 String[] lines = hoverEvent.getValue().getFormattedText().split("\n");
                 String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
@@ -499,7 +500,7 @@ public class PlayerListener {
                 DataUtils.loadOnlineData(new MayorRequest(mayorName));
 
                 main.getUtils().setMayor(mayorName);
-                logger.info("Mayor changed to " + mayorName);
+                LOGGER.info("Mayor changed to {}", mayorName);
             }
         }
     }
@@ -515,14 +516,14 @@ public class PlayerListener {
         if (TextUtils.isUsername(username) || username.equals("**MINECRAFTUSERNAME**")) {
             // Remove rank prefix and guild rank suffix if exists
             username = TextUtils.stripUsername(username);
-            EntityPlayer chattingPlayer = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(username);
+            EntityPlayer chattingPlayer = MC.theWorld.getPlayerEntityByName(username);
             // Put player in cache if found nearby
             if(chattingPlayer != null) {
                 namesWithSymbols.put(username, chattingPlayer.getDisplayName().getSiblings().get(0).getUnformattedText());
             }
             // Otherwise search in tablist
             else {
-                Collection<NetworkPlayerInfo> networkPlayerInfos = Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap();
+                Collection<NetworkPlayerInfo> networkPlayerInfos = MC.thePlayer.sendQueue.getPlayerInfoMap();
                 String finalUsername = username;
                 Optional<NetworkPlayerInfo> result = networkPlayerInfos.stream()
                         .filter(npi -> npi.getDisplayName() != null)
@@ -727,7 +728,7 @@ public class PlayerListener {
         }
         if (Feature.BAL_BOSS_ALERT.isEnabled() && main.getUtils().getMap() == Island.CRYSTAL_HOLLOWS) {
             if (lastBal == -1 || System.currentTimeMillis() - lastBal > 60000) {
-                for (Entity cubes : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+                for (Entity cubes : MC.theWorld.loadedEntityList) {
                     if (cubes instanceof EntityMagmaCube) {
                         EntityMagmaCube magma = (EntityMagmaCube) cubes;
                         // Find a big bal boss
@@ -853,7 +854,7 @@ public class PlayerListener {
     }
 
     public boolean isZealot(Entity enderman) {
-        List<EntityArmorStand> stands = Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(EntityArmorStand.class,
+        List<EntityArmorStand> stands = MC.theWorld.getEntitiesWithinAABB(EntityArmorStand.class,
                 new AxisAlignedBB(enderman.posX - 1, enderman.posY, enderman.posZ - 1, enderman.posX + 1, enderman.posY + 5, enderman.posZ + 1));
         if (stands.isEmpty()) return false;
 
@@ -869,7 +870,7 @@ public class PlayerListener {
         if (Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.isEnabled() && entity instanceof EntityArrow) {
             EntityArrow arrow = (EntityArrow) entity;
 
-            EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
+            EntityPlayerSP p = MC.thePlayer;
             ItemStack heldItem = p.getHeldItem();
             if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
 
@@ -997,7 +998,7 @@ public class PlayerListener {
             String tooltipLine = EnumChatFormatting.DARK_GRAY + "skyblock:" + itemId;
 
             if (itemId != null) {
-                if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
+                if (MC.gameSettings.advancedItemTooltips) {
                     for (int i = e.toolTip.size(); i-- > 0; ) {
                         if (e.toolTip.get(i).startsWith(EnumChatFormatting.DARK_GRAY + "minecraft:")) {
                             e.toolTip.add(i + 1, tooltipLine);
@@ -1073,7 +1074,7 @@ public class PlayerListener {
             if (Feature.BACKPACK_OPENING_SOUND.isEnabled() &&
                     System.currentTimeMillis() - main.getGuiScreenListener().getLastBackpackOpenMs() < 500) {
                 if (event.name.equals("random.chestopen")) {
-                    EntityPlayerSP thePlayer = Minecraft.getMinecraft().thePlayer;
+                    EntityPlayerSP thePlayer = MC.thePlayer;
 
                     // When a player opens a backpack, a chest open sound is played at the player's location.
                     if (DoubleMath.roundToInt(event.sound.getXPosF(), RoundingMode.HALF_UP) == thePlayer.getPosition().getX() &&
@@ -1097,7 +1098,7 @@ public class PlayerListener {
      */
     @SubscribeEvent
     public void onPlayerDeath(SkyblockPlayerDeathEvent e) {
-        EntityPlayerSP thisPlayer = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP thisPlayer = MC.thePlayer;
 
         //  Resets all user input on death as to not walk backwards or strafe into the portal
         if (Feature.PREVENT_MOVEMENT_ON_DEATH.isEnabled() && e.entityPlayer == thisPlayer) {
@@ -1132,7 +1133,7 @@ public class PlayerListener {
                 main.getDungeonManager().addDeath();
 
             } else {
-                logger.warn("Could not record death for {}. This dungeon player isn't in the registry.", e.username);
+                LOGGER.warn("Could not record death for {}. This dungeon player isn't in the registry.", e.username);
             }
         }
     }
@@ -1144,7 +1145,7 @@ public class PlayerListener {
      */
     @SubscribeEvent
     public void onDungeonPlayerRevive(DungeonPlayerReviveEvent e) {
-        if (e.revivedPlayer == Minecraft.getMinecraft().thePlayer) {
+        if (e.revivedPlayer == MC.thePlayer) {
             lastRevive = Minecraft.getSystemTime();
         }
 
@@ -1263,7 +1264,7 @@ public class PlayerListener {
      * @return {@code true} if the player is holding a fishing rod that can be used for fishing, {@code false} otherwise
      */
     public boolean isHoldingRod() {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = MC.thePlayer;
 
         if (player != null) {
             ItemStack item = player.getHeldItem();
@@ -1275,7 +1276,7 @@ public class PlayerListener {
     }
 
     public boolean isHoldingFireFreeze() {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = MC.thePlayer;
 
         if (player != null) {
             ItemStack item = player.getHeldItem();

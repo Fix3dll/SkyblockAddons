@@ -9,7 +9,8 @@ import java.util.Map;
 @Getter
 public class SlayerTrackerData {
 
-    private Map<SlayerBoss, Integer> slayerKills = new EnumMap<>(SlayerBoss.class);
-    private Map<SlayerDrop, Integer> slayerDropCounts = new EnumMap<>(SlayerDrop.class);
+    private final Map<SlayerBoss, Integer> slayerKills = new EnumMap<>(SlayerBoss.class);
+    private final Map<SlayerDrop, Integer> slayerDropCounts = new EnumMap<>(SlayerDrop.class);
     @Setter private SlayerBoss lastKilledBoss;
+
 }

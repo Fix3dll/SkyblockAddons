@@ -35,12 +35,11 @@ import java.util.concurrent.TimeUnit;
 public class NetworkListener {
 
     private static final Logger logger = SkyblockAddons.getLogger();
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    private final SkyblockAddons main;
     private ScheduledTask updateHealth;
 
     public NetworkListener() {
-        main = SkyblockAddons.getInstance();
     }
 
     private final Cache<Integer, Integer> collectedCache = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.SECONDS).build();

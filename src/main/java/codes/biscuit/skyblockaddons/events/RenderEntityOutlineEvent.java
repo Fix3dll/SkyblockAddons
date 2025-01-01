@@ -19,22 +19,20 @@ import java.util.function.Function;
  * Event handlers can add entities/colors to be outlined for either phase using the {@link #queueEntitiesToOutline(Function)} event function
  * The resulting list of entities/associated colors is outlined after both events have been handled
  */
+@Getter
 public class RenderEntityOutlineEvent extends Event {
 
     /**
      * The phase of the event (see {@link Type}
      */
-    @Getter
     private final Type type;
     /**
      * The entities to outline. This is progressively cumulated from {@link #entitiesToChooseFrom}
      */
-    @Getter
     private HashMap<Entity, Integer> entitiesToOutline = null;
     /**
      * The entities we can outline. Note that this set and {@link #entitiesToOutline} are disjoint at all times.
      */
-    @Getter
     private HashSet<Entity> entitiesToChooseFrom;
 
     /**
@@ -124,23 +122,5 @@ public class RenderEntityOutlineEvent extends Event {
     public enum Type {
         XRAY,
         NO_XRAY
-    }
-
-
-    public static class EntityAndOutlineColor {
-        @Getter
-        private final Entity entity;
-        @Getter
-        private final int color;
-
-        public EntityAndOutlineColor(Entity theEntity, int theColor) {
-            entity = theEntity;
-            color = theColor;
-        }
-
-        @Override
-        public int hashCode() {
-            return entity.hashCode();
-        }
     }
 }
