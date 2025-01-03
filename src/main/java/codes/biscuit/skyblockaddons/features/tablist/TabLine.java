@@ -15,9 +15,7 @@ public class TabLine {
     }
 
     public int getWidth() {
-        Minecraft mc = Minecraft.getMinecraft();
-
-        int width = mc.fontRendererObj.getStringWidth(text);
+        int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
 
         if (type == TabStringType.PLAYER) {
             width += 8 + 2; // Player head

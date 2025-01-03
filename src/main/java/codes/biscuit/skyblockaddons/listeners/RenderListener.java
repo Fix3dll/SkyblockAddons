@@ -17,8 +17,8 @@ import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerBoss;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerDrop;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
-import codes.biscuit.skyblockaddons.features.spookyevent.CandyType;
-import codes.biscuit.skyblockaddons.features.spookyevent.SpookyEventManager;
+import codes.biscuit.skyblockaddons.features.spooky.CandyType;
+import codes.biscuit.skyblockaddons.features.spooky.SpookyEventManager;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabListRenderer;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
@@ -80,7 +80,6 @@ import java.util.List;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static codes.biscuit.skyblockaddons.utils.TextUtils.NUMBER_FORMAT;
 import static net.minecraft.client.gui.Gui.icons;
 
 public class RenderListener {
@@ -1160,7 +1159,7 @@ public class RenderListener {
                 }
 
                 ItemStack holdingItem = MC.thePlayer.getCurrentEquippedItem();
-                String skyblockItemID = ItemUtils.getSkyblockItemID(MC.thePlayer.getHeldItem());
+                String skyblockItemID = ItemUtils.getSkyblockItemID(holdingItem);
 
                 if (holdingItem == null || skyblockItemID == null) {
                     return;
@@ -1447,7 +1446,7 @@ public class RenderListener {
                 DrawUtils.drawText(text, x + 18, y, color);
                 Number amount;
                 try {
-                    amount = NUMBER_FORMAT.parse(dungeonMilestone.getValue());
+                    amount = TextUtils.NUMBER_FORMAT.parse(dungeonMilestone.getValue());
                 } catch (ParseException e) {
                     amount = -1;
                 }

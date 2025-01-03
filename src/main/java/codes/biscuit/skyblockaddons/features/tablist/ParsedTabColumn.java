@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 public class ParsedTabColumn {
 
-    private String title;
-    private List<String> lines = new LinkedList<>();
+    private final String title;
+    private final List<String> lines = new LinkedList<>();
     @Setter private List<ParsedTabSection> sections = new LinkedList<>();
 
     public ParsedTabColumn(String title) {

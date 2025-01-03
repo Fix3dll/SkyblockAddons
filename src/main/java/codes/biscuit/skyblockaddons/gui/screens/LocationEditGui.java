@@ -683,10 +683,15 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
             if (lastHoveredButton == null) return;
             Feature lastHoveredButtonFeature = lastHoveredButton.getFeature();
+            String featureName = lastHoveredButtonFeature.getMessage();
+
+            if (Feature.DEVELOPER_MODE.isEnabled()) {
+                featureName += " (" + lastHoveredButtonFeature.getId() + ")";
+            }
 
             mc.fontRendererObj.drawStringWithShadow(
-                    lastHoveredButtonFeature.getMessage(),
-                    (float) x - mc.fontRendererObj.getStringWidth(lastHoveredButtonFeature.getMessage()) / 2F,
+                    featureName,
+                    (float) x - mc.fontRendererObj.getStringWidth(featureName) / 2F,
                     (float) y - boxCount * BOX_HEIGHT - 25,
                     ColorCode.AQUA.getColor()
             );

@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 public enum CrimsonArmorAbilityStack {
-
     CRIMSON("Crimson", "Dominus", "ᝐ"),
     TERROR("Terror", "Hydra Strike", "⁑"),
     AURORA("Aurora", "Arcane Energy", "Ѫ"),

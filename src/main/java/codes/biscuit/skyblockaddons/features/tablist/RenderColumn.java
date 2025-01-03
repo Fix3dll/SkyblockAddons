@@ -5,9 +5,10 @@ import lombok.Getter;
 import java.util.LinkedList;
 import java.util.List;
 
+@Getter
 public class RenderColumn {
 
-    @Getter private List<TabLine> lines = new LinkedList<>();
+    private final List<TabLine> lines = new LinkedList<>();
 
     public int size() {
         return lines.size();

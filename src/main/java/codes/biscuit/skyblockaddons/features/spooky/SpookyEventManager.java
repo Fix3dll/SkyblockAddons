@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.features.spookyevent;
+package codes.biscuit.skyblockaddons.features.spooky;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
@@ -13,19 +13,14 @@ import java.util.regex.Pattern;
 public class SpookyEventManager {
 
     private static final Logger logger = SkyblockAddons.getLogger();
-
     private static final Pattern CANDY_PATTERN = Pattern.compile("Your Candy: (?<greenCandy>\\d+) Green, (?<purpleCandy>\\d+) Purple \\((?<points>\\d+) pts\\.\\)");
     @Getter private static final Map<CandyType, Integer> dummyCandyCounts = new HashMap<>();
+    @Getter private static final Map<CandyType, Integer> candyCounts = new HashMap<>();
+    @Getter private static int points;
+
     static {
         dummyCandyCounts.put(CandyType.GREEN, 12);
         dummyCandyCounts.put(CandyType.PURPLE, 34);
-    }
-
-    @Getter
-    private static final Map<CandyType, Integer> candyCounts = new HashMap<>();
-    @Getter
-    private static int points;
-    static {
         reset();
     }
 
