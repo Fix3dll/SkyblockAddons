@@ -71,7 +71,7 @@ public class HealingCircleManager {
                     GlStateManager.enableAlpha();
                     GlStateManager.disableTexture2D();
 
-                    boolean chroma = main.getConfigValues().getChromaFeatures().contains(Feature.SHOW_HEALING_CIRCLE_WALL);
+                    boolean chroma = Feature.SHOW_HEALING_CIRCLE_WALL.isInChromaFeatures();
                     int color = main.getConfigValues().getColor(
                             Feature.SHOW_HEALING_CIRCLE_WALL,
                             ColorUtils.getAlphaIntFromFloat(

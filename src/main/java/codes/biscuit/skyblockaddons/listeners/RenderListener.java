@@ -430,6 +430,7 @@ public class RenderListener {
         GuiFeatureData guiFeatureData = feature.getGuiFeatureData();
         if (guiFeatureData != null && guiFeatureData.getDrawType() != null) {
             GlStateManager.pushMatrix();
+            main.getUtils().enableStandardGLOptions();
             GlStateManager.scale(scale, scale, 1);
             switch (guiFeatureData.getDrawType()) {
                 case SKELETON_BAR:
@@ -471,7 +472,11 @@ public class RenderListener {
                 case PROXIMITY_INDICATOR:
                     FeatureTrackerQuest.drawTrackerLocationIndicator(scale, buttonLocation);
                     break;
+                case PET_DISPLAY:
+                    drawPetDisplay(scale, buttonLocation);
+                    break;
             }
+            main.getUtils().restoreGLOptions();
             GlStateManager.popMatrix();
         }
     }
@@ -537,7 +542,7 @@ public class RenderListener {
 
         SkyblockColor color = ColorUtils.getDummySkyblockColor(
                 main.getConfigValues().getColor(feature),
-                main.getConfigValues().getChromaFeatures().contains(feature)
+                feature.isInChromaFeatures()
         );
 
         switch (feature) {
@@ -554,7 +559,7 @@ public class RenderListener {
                     int textAlpha = Math.round(255 - (-remainingTime / 2000F * 255F));
                     color = ColorUtils.getDummySkyblockColor(
                             main.getConfigValues().getColor(feature, textAlpha),
-                            main.getConfigValues().getChromaFeatures().contains(feature)
+                            feature.isInChromaFeatures()
                     ); // so it fades out, 0.016 is the minimum alpha
                 }
                 break;
@@ -566,12 +571,12 @@ public class RenderListener {
                     if (MC.thePlayer.isPotionActive(19/* Poison */)) {
                         color = ColorUtils.getDummySkyblockColor(
                                 ColorCode.DARK_GREEN.getColor(),
-                                main.getConfigValues().getChromaFeatures().contains(feature)
+                                feature.isInChromaFeatures()
                         );
                     } else if (MC.thePlayer.isPotionActive(20/* Wither */)) {
                         color = ColorUtils.getDummySkyblockColor(
                                 ColorCode.DARK_GRAY.getColor(),
-                                main.getConfigValues().getChromaFeatures().contains(feature)
+                                feature.isInChromaFeatures()
                         );
                     } else if (MC.thePlayer.isPotionActive(22) /* Absorption */) {
                         if (PlayerStats.HEALTH.getValue() > PlayerStats.MAX_HEALTH.getValue()) {
@@ -1236,20 +1241,6 @@ public class RenderListener {
                 }
                 break;
 
-            case PET_DISPLAY:
-                if (main.getUtils().isOnRift()) return;
-
-                PetManager.Pet newPet = main.getPetCacheManager().getCurrentPet();
-                if (newPet == null) {
-                    return;
-                } else if (pet != newPet) {
-                    pet = newPet;
-                    petSkull = ItemUtils.createSkullItemStack(null, null, newPet.getSkullId(), newPet.getTextureURL());
-                }
-
-                text = pet.getDisplayName();
-                break;
-
             default:
                 return;
         }
@@ -1323,14 +1314,6 @@ public class RenderListener {
                     width += 16 + 1 + MC.fontRendererObj.getStringWidth(TextUtils.formatNumber(purple)) + 1;
                 }
                 height = 16 + 8;
-                break;
-
-            case PET_DISPLAY:
-                width += 18;
-                height += 9;
-                if (main.getConfigValues().getPetItemStyle() != EnumUtils.PetItemStyle.NONE) {
-                    height += 9;
-                }
                 break;
 
             case DARK_AUCTION_TIMER:
@@ -1690,7 +1673,7 @@ public class RenderListener {
 
                     color = ColorUtils.getDummySkyblockColor(
                             ColorCode.GOLD.getColor(),
-                            main.getConfigValues().getChromaFeatures().contains(feature)
+                            feature.isInChromaFeatures()
                     ).getColor();
                     FontRendererHook.setupFeatureFont(feature);
                     DrawUtils.drawText(formattedHealth, x, y, color);
@@ -1729,48 +1712,6 @@ public class RenderListener {
                 FontRendererHook.setupFeatureFont(feature);
                 DrawUtils.drawText(text, x + 18, y + 4, color);
                 FontRendererHook.endFeatureFont();
-                break;
-
-            case PET_DISPLAY:
-                FontRendererHook.setupFeatureFont(feature);
-                DrawUtils.drawText(text, x + 18, y + 4, color);
-
-                int line = 1; // maybe new lines can be added in the future?
-                switch (main.getConfigValues().getPetItemStyle()) {
-                    case DISPLAY_NAME:
-                        if (pet.getPetInfo().getHeldItemId() == null) break;
-
-                        String petDisplayName = PetManager.getInstance().getPetItemDisplayNameFromId(
-                                pet.getPetInfo().getHeldItemId()
-                        );
-                        DrawUtils.drawText("Held Item: " + petDisplayName, x + 18, y + 16, color);
-                        line++;
-                        break;
-
-                    case SHOW_ITEM:
-                        if (pet.getPetInfo().getHeldItemId() == null) break;
-
-                        PetManager petManager = PetManager.getInstance();
-                        String petHeldItemId = pet.getPetInfo().getHeldItemId();
-
-                        ItemStack petItemStack = petManager.getPetItemFromId(petHeldItemId);
-                        SkyblockRarity petItemRarity = petManager.getPetItemRarityFromId(petHeldItemId);
-
-                        String displayText = "Held Item:";
-                        if (petHeldItemId.endsWith(petItemRarity.getLoreName())) {
-                            // To recognize those with the same Item but different Rarity
-                            displayText += " " + petItemRarity.getColorCode().toString() + petItemRarity.getLoreName();
-                        }
-                        DrawUtils.drawText(displayText, x + 18, y + 16, color);
-
-                        renderItem(petItemStack, x + 18 + MC.fontRendererObj.getStringWidth(displayText), y + 10);
-                        line++;
-                        break;
-                }
-                FontRendererHook.endFeatureFont();
-
-                // render pet
-                renderItem(petSkull, x, y, line);
                 break;
 
             default:
@@ -2493,13 +2434,90 @@ public class RenderListener {
         main.getUtils().restoreGLOptions();
     }
 
+    private void drawPetDisplay(float scale, ButtonLocation buttonLocation) {
+        if (main.getUtils().isOnRift()) return;
+
+        PetManager.Pet newPet = main.getPetCacheManager().getCurrentPet();
+        if (newPet == null) {
+            return;
+        } else if (pet != newPet) {
+            pet = newPet;
+            petSkull = ItemUtils.createSkullItemStack(null, null, newPet.getSkullId(), newPet.getTextureURL());
+        }
+
+        String text = pet.getDisplayName();
+
+        float x = main.getConfigValues().getActualX(Feature.PET_DISPLAY);
+        float y = main.getConfigValues().getActualY(Feature.PET_DISPLAY);
+
+        int height = 7 + MC.fontRendererObj.FONT_HEIGHT;
+        int width = MC.fontRendererObj.getStringWidth(text) + 18; // + ItemStack
+
+        int line = 1; // maybe new lines can be added in the future?
+        // Second line
+        if (main.getConfigValues().getPetItemStyle() != EnumUtils.PetItemStyle.NONE) {
+            height *= 2;
+            width += 18;
+            line++;
+        }
+
+        x = transformX(x, width, scale, Feature.X_ALLIGNMENT.isEnabled());
+        y = transformY(y, height, scale);
+
+        if (buttonLocation != null) {
+            buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+
+        main.getUtils().enableStandardGLOptions();
+
+        FontRendererHook.setupFeatureFont(Feature.PET_DISPLAY);
+        int color = main.getConfigValues().getColor(Feature.PET_DISPLAY);
+        DrawUtils.drawText(text, x + (18 * line), y + 4, color);
+
+        switch (main.getConfigValues().getPetItemStyle()) {
+            case DISPLAY_NAME:
+                if (pet.getPetInfo().getHeldItemId() == null) break;
+
+                String petDisplayName = PetManager.getInstance().getPetItemDisplayNameFromId(
+                        pet.getPetInfo().getHeldItemId()
+                );
+                DrawUtils.drawText("Held Item: " + petDisplayName, x + (18 * line), y + 16, color);
+                break;
+
+            case SHOW_ITEM:
+                if (pet.getPetInfo().getHeldItemId() == null) break;
+
+                PetManager petManager = PetManager.getInstance();
+                String petHeldItemId = pet.getPetInfo().getHeldItemId();
+
+                ItemStack petItemStack = petManager.getPetItemFromId(petHeldItemId);
+                SkyblockRarity petItemRarity = petManager.getPetItemRarityFromId(petHeldItemId);
+
+                String displayText = "Held Item:";
+                if (petHeldItemId.endsWith(petItemRarity.getLoreName())) {
+                    // To recognize those with the same Item but different Rarity
+                    displayText += " " + petItemRarity.getColorCode().toString() + petItemRarity.getLoreName();
+                }
+                DrawUtils.drawText(displayText, x + (18 * line), y + 16, color);
+
+                renderItem(petItemStack, x + (18 * line) + MC.fontRendererObj.getStringWidth(displayText), y + 10);
+                break;
+        }
+        FontRendererHook.endFeatureFont();
+
+        // render pet
+        renderItem(petSkull, x, y, line);
+
+        main.getUtils().restoreGLOptions();
+    }
+
     private void renderItem(ItemStack item, float x, float y) {
         renderItem(item, x, y, 1);
     }
 
     /**
      * The main purpose is scale the item for make it compatible for add new lines e.g. scale with two for add 2nd line
-     * <br>FIXME may not be accurate, negative scales not tested, fix this mess
      */
     private void renderItem(ItemStack item, float x, float y, float scale) {
         GlStateManager.enableRescaleNormal();
@@ -2508,19 +2526,13 @@ public class RenderListener {
 
         GlStateManager.pushMatrix();
         if (scale > 1) {
-            GlStateManager.scale(scale, scale, 1f);
-            // For save space between rendered skull and text
-            // 16 = texture width, 10 = texture width without space (?)
-            GlStateManager.translate(
-                    -8 - Math.log(scale),// 16 / 2 = padding TODO add it as parameter
-                    0, // TODO add it as parameter
-                    0
-            );
+            GlStateManager.scale(scale, scale, 1F);
         }
         GlStateManager.translate(x / scale, y / scale, 0);
         MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
         GlStateManager.popMatrix();
 
+        GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
     }

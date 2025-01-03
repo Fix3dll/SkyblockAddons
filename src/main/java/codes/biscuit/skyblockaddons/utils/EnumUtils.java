@@ -447,7 +447,8 @@ public class EnumUtils {
         DUNGEONS_MAP,
         SLAYER_TRACKERS,
         DRAGON_STATS_TRACKER,
-        PROXIMITY_INDICATOR
+        PROXIMITY_INDICATOR,
+        PET_DISPLAY
     }
 
     @Getter

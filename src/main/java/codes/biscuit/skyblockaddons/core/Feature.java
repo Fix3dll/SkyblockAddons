@@ -229,7 +229,7 @@ public enum Feature {
     THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.DARK_PURPLE), false, EnumUtils.FeatureSetting.ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR),
     HEART_INSTEAD_HEALTH_ON_RIFT(244, null, true),
     OUTLINE_SHOWCASE_ITEMS(245, null, false),
-    PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
+    PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.PET_DISPLAY, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
     STOP_NAME_OVERLAY_WHEN_CLOSE(247, null, true),
     BUILDERS_TOOL_PREVIEW(248, null, false),
     HEALTH_TEXT_ICON(249, "settings.healthTextIcon", true),
@@ -477,6 +477,10 @@ public enum Feature {
         }
 
         return false;
+    }
+
+    public boolean isInChromaFeatures() {
+        return SkyblockAddons.getInstance().getConfigValues().getChromaFeatures().contains(this);
     }
 
 }

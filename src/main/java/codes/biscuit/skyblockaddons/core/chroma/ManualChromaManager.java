@@ -30,8 +30,7 @@ public class ManualChromaManager {
      */
     public static void renderingText(Feature feature) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE
-                && main.getConfigValues().getChromaFeatures().contains(feature)) {
+        if (main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE && feature.isInChromaFeatures()) {
             coloringTextChroma = true;
             featureScale = main.getConfigValues().getGuiScale(feature);
         }

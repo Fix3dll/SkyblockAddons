@@ -132,7 +132,7 @@ public class DungeonMapManager {
         int color = main.getConfigValues().getColor(Feature.DUNGEONS_MAP_DISPLAY);
         DrawUtils.drawRectAbsolute(x, y, x + size, y + size, 0x55000000);
         ManualChromaManager.renderingText(Feature.DUNGEONS_MAP_DISPLAY);
-        DrawUtils.drawRectOutline(x, y, size, size, 1, color, main.getConfigValues().getChromaFeatures().contains(Feature.DUNGEONS_MAP_DISPLAY));
+        DrawUtils.drawRectOutline(x, y, size, size, 1, color, Feature.DUNGEONS_MAP_DISPLAY.isInChromaFeatures());
         ManualChromaManager.doneRenderingText();
         GlStateManager.color(1, 1, 1, 1);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);

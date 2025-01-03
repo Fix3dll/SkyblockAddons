@@ -68,7 +68,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     @Override
     public void initGui() {
         chromaCheckbox = new CheckBox(width / 2 + 88, 170, 12, Translations.getMessage("messages.chroma"), false);
-        chromaCheckbox.setValue(main.getConfigValues().getChromaFeatures().contains(feature));
+        chromaCheckbox.setValue(feature.isInChromaFeatures());
         chromaCheckbox.setOnToggleListener(value -> {
             main.getConfigValues().setChroma(feature, value);
             ColorSelectionGui.this.removeChromaSliders();
@@ -108,7 +108,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
             }
         }
 
-        if (main.getConfigValues().getChromaFeatures().contains(feature) && !restrictedColor) {
+        if (feature.isInChromaFeatures() && !restrictedColor) {
             addChromaSliders();
         }
 
@@ -147,7 +147,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                 imageY = 90;
 
                 // Fade out color picker if chroma enabled
-                if (main.getConfigValues().getChromaFeatures().contains(feature)) {
+                if (feature.isInChromaFeatures()) {
                     GlStateManager.color(0.5F, 0.5F, 0.5F, 0.7F);
                     GlStateManager.enableBlend();
                 } else {
@@ -163,14 +163,13 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
 
                 if (chromaCheckbox != null) chromaCheckbox.draw();
 
-                if (!main.getConfigValues().getChromaFeatures().contains(feature)) { // Disabled cause chroma is enabled
+                if (!feature.isInChromaFeatures()) { // Disabled cause chroma is enabled
                     SkyblockAddonsGui.drawScaledString(this, Translations.getMessage("messages.setHexColor"), 200, defaultBlue, 1.5, 75);
                     hexColorField.drawTextBox();
                 }
 
-                if (main.getConfigValues().getChromaFeatures().contains(feature)) {
+                if (feature.isInChromaFeatures()) {
                     SkyblockAddonsGui.drawScaledString(this, Translations.getMessage("settings.chromaSpeed"), 170 + 25, defaultBlue, 1, 110);
-
                     SkyblockAddonsGui.drawScaledString(this, Translations.getMessage("settings.chromaFadeWidth"), 170 + 35 + 25, defaultBlue, 1, 110);
                 }
             }
@@ -182,7 +181,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (feature.getGuiFeatureData() != null && !feature.getGuiFeatureData().isColorsRestricted() && !main.getConfigValues().getChromaFeatures().contains(feature)) {
+        if (feature.getGuiFeatureData() != null && !feature.getGuiFeatureData().isColorsRestricted() && !feature.isInChromaFeatures()) {
             int xPixel = mouseX - imageX;
             int yPixel = mouseY - imageY;
 

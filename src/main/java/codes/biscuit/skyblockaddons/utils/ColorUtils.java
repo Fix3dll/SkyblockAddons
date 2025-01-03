@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.utils;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -8,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
-import java.util.Set;
 
 public class ColorUtils {
 
@@ -16,10 +14,9 @@ public class ColorUtils {
     private static final FloatBuffer colourBuffer = GLAllocation.createDirectFloatBuffer(16);
 
     public static boolean areAllFeaturesChroma() {
-        Set<Feature> chromaFeatures = SkyblockAddons.getInstance().getConfigValues().getChromaFeatures();
         for (Feature loopFeature : Feature.values()) {
             if (loopFeature.getGuiFeatureData() != null && loopFeature.getGuiFeatureData().getDefaultColor() != null) {
-                if (!chromaFeatures.contains(loopFeature)) {
+                if (!loopFeature.isInChromaFeatures()) {
                     return false;
                 }
             }
