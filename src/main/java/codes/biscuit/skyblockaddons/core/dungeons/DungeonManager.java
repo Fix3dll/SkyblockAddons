@@ -2,14 +2,21 @@ package codes.biscuit.skyblockaddons.core.dungeons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
+import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 
 import java.text.ParseException;
 import java.util.EnumMap;
@@ -23,7 +30,11 @@ import java.util.stream.Collectors;
  * This class contains a set of utility methods for Skyblock Dungeons.
  */
 public class DungeonManager {
-    private static final Logger logger = SkyblockAddons.getLogger();
+
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Minecraft MC = Minecraft.getMinecraft();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
+
     private static final Pattern PATTERN_MILESTONE = Pattern.compile("^.+?(Healer|Tank|Mage|Archer|Berserk) Milestone .+?([❶-❿]).+?§r§.([\\d,]+)");
     private static final Pattern PATTERN_COLLECTED_ESSENCES = Pattern.compile("§.+?(\\d+) (Wither|Spider|Undead|Dragon|Gold|Diamond|Ice|Crimson) Essence");
     private static final Pattern PATTERN_BONUS_ESSENCE = Pattern.compile("^§.+?[^You] .+?found a .+?(Wither|Spider|Undead|Dragon|Gold|Diamond|Ice|Crimson) Essence.+?");
@@ -31,6 +42,8 @@ public class DungeonManager {
     private static final Pattern PATTERN_SECRETS = Pattern.compile("§7([0-9]+)/([0-9]+) Secrets");
     private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("§.\\[(?<classLetter>.)] (?<name>[\\w§]+) §(?<healthColor>.)(?:§l)?(?<health>[\\d,]+|[\\w§]+)(?:[§c❤]{0,3})?");
     private static final Pattern PLAYER_LIST_INFO_DEATHS_PATTERN = Pattern.compile("Team Deaths: (?<deaths>\\d+)");
+    private static final ResourceLocation CRITICAL = new ResourceLocation("skyblockaddons", "critical.png");
+    private static final int CRITICAL_ICON_SIZE = 25;
 
     /** The last dungeon server the player played on */
     @Getter @Setter private String lastServerId;
@@ -206,7 +219,7 @@ public class DungeonManager {
         try {
             amount = TextUtils.NUMBER_FORMAT.parse(number).intValue();
         } catch (ParseException ex) {
-            logger.error("Failed to parse " + type.getNiceName() + " essence amount: ", ex);
+            LOGGER.error("Failed to parse " + type.getNiceName() + " essence amount: ", ex);
         }
         salvagedEssences.put(type, amount);
     }
@@ -225,7 +238,7 @@ public class DungeonManager {
             String name = TextUtils.stripColor(matcher.group("name"));
 
             // This is inconsistent, don't add the player themselves...
-            if (name.equals(Minecraft.getMinecraft().thePlayer.getName())) {
+            if (name.equals(MC.thePlayer.getName())) {
                 return;
             }
 
@@ -240,7 +253,7 @@ public class DungeonManager {
                 try {
                     health = TextUtils.NUMBER_FORMAT.parse(healthText).intValue();
                 } catch (ParseException ex) {
-                    logger.error("Failed to parse player "+ name + " health: " + healthText, ex);
+                    LOGGER.error("Failed to parse player "+ name + " health: " + healthText, ex);
                     return;
                 }
             }
@@ -258,7 +271,7 @@ public class DungeonManager {
                 }
             }
 
-            for (NetworkPlayerInfo networkPlayerInfo: Minecraft.getMinecraft().getNetHandler().getPlayerInfoMap()) {
+            for (NetworkPlayerInfo networkPlayerInfo: MC.getNetHandler().getPlayerInfoMap()) {
                 String profileName = networkPlayerInfo.getGameProfile().getName();
 
                 if (profileName.startsWith(name)) {
@@ -302,7 +315,7 @@ public class DungeonManager {
      * If the death counter isn't being shown in the Player List Info display, nothing will be changed.
      */
     public void updateDeathsFromPlayerListInfo() {
-        NetHandlerPlayClient netHandlerPlayClient = Minecraft.getMinecraft().getNetHandler();
+        NetHandlerPlayClient netHandlerPlayClient = MC.getNetHandler();
         NetworkPlayerInfo deathDisplayPlayerInfo = netHandlerPlayClient.getPlayerInfo("!B-f");
 
         if (deathDisplayPlayerInfo != null) {
@@ -316,7 +329,7 @@ public class DungeonManager {
     }
 
     public boolean isPlayerListInfoEnabled() {
-        NetHandlerPlayClient netHandlerPlayClient = Minecraft.getMinecraft().getNetHandler();
+        NetHandlerPlayClient netHandlerPlayClient = MC.getNetHandler();
         if (netHandlerPlayClient == null) {
             return false;
         }
@@ -330,5 +343,111 @@ public class DungeonManager {
         }
 
         return false;
+    }
+
+    /**
+     * Method for rendering {@link Feature#SHOW_CRITICAL_DUNGEONS_TEAMMATES}
+     * and {@link Feature#SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY}
+     * @return true if one of the specified feature rendered
+     */
+    public static boolean onRenderEntityLabel(AbstractClientPlayer player, double x, double y, double z) {
+        boolean rendered = false;
+
+        if (main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon()
+                && (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() || Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled())
+        ) {
+            final Entity renderViewEntity = MC.getRenderViewEntity();
+            String profileName = player.getName();
+            DungeonPlayer dungeonPlayer = main.getDungeonManager().getTeammates().getOrDefault(profileName, null);
+
+            if (renderViewEntity != player && dungeonPlayer != null) {
+                double newY = y + player.height;
+
+                if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
+                    newY += 0.35F;
+                }
+
+                double distanceScale = Math.max(1.5, renderViewEntity.getPositionVector().distanceTo(player.getPositionVector()) / 8);
+
+                if (Feature.areEnabled(Feature.ENTITY_OUTLINES, Feature.OUTLINE_DUNGEON_TEAMMATES)) {
+                    newY += distanceScale * 0.85F;
+                }
+
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(x, newY, z);
+                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(-MC.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(MC.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+                GlStateManager.scale(-0.025, -0.025, 0.025);
+
+                GlStateManager.scale(distanceScale, distanceScale, distanceScale);
+
+                GlStateManager.disableLighting();
+                GlStateManager.depthMask(false);
+                GlStateManager.disableDepth();
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+                GlStateManager.enableTexture2D();
+                GlStateManager.color(1, 1, 1, 1);
+
+                if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() && !dungeonPlayer.isGhost()
+                        && (dungeonPlayer.isCritical() || dungeonPlayer.isLow())) {
+                    MC.getTextureManager().bindTexture(CRITICAL);
+                    DrawUtils.drawModalRectWithCustomSizedTexture(-CRITICAL_ICON_SIZE / 2F, -CRITICAL_ICON_SIZE, 0, 0, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE);
+
+                    String text;
+                    if (dungeonPlayer.isLow()) {
+                        text = ColorCode.YELLOW + "LOW";
+                    } else if (dungeonPlayer.isCritical()) {
+                        text = ColorCode.RED + "CRITICAL";
+                    } else {
+                        text = null;
+                    }
+
+                    if (text != null) {
+                        MC.fontRendererObj.drawString(
+                                text,
+                                -MC.fontRendererObj.getStringWidth(text) / 2F,
+                                CRITICAL_ICON_SIZE / 2F - 9,
+                                -1,
+                                true
+                        );
+                    }
+                    rendered = true;
+                }
+
+                if (!dungeonPlayer.isGhost() && Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
+                    String nameOverlay =
+                            ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] "
+                                    + ColorCode.GREEN + profileName;
+                    MC.fontRendererObj.drawString(
+                            nameOverlay,
+                            -MC.fontRendererObj.getStringWidth(nameOverlay) / 2F,
+                            CRITICAL_ICON_SIZE / 2F + 2,
+                            -1,
+                            true
+                    );
+
+                    String health = dungeonPlayer.getHealth() + (ColorCode.RED + "❤");
+                    MC.fontRendererObj.drawString(
+                            health,
+                            -MC.fontRendererObj.getStringWidth(health) / 2F,
+                            CRITICAL_ICON_SIZE / 2F + 13,
+                            -1,
+                            true
+                    );
+                    rendered = true;
+                }
+
+                GlStateManager.enableDepth();
+                GlStateManager.depthMask(true);
+                GlStateManager.enableLighting();
+                GlStateManager.disableBlend();
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.popMatrix();
+            }
+        }
+
+        return rendered;
     }
 }

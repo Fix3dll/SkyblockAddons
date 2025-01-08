@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.listeners;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.*;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonClass;
+import codes.biscuit.skyblockaddons.core.dungeons.DungeonManager;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonMilestone;
 import codes.biscuit.skyblockaddons.features.*;
 import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureTrackerQuest;
@@ -36,6 +37,7 @@ import com.mojang.authlib.GameProfile;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -64,6 +66,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.GuiNotification;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.math.BigDecimal;
@@ -223,7 +226,7 @@ public class RenderListener {
     }
 
     @SubscribeEvent()
-    public void onRenderLiving(RenderLivingEvent.Specials.Pre<EntityLivingBase> e) {
+    public void onRenderLivingName(RenderLivingEvent.Specials.Pre<EntityLivingBase> e) {
         Entity entity = e.entity;
         if (entity.hasCustomName()) {
             if (Feature.MINION_DISABLE_LOCATION_WARNING.isEnabled()) {
@@ -250,6 +253,12 @@ public class RenderListener {
                         && entity.getCustomNameTag().contains("Sven Pup")) {
                     e.setCanceled(true);
                 }
+            }
+        }
+
+        if (entity instanceof AbstractClientPlayer) {
+            if (DungeonManager.onRenderEntityLabel((AbstractClientPlayer) entity, e.x, e.y, e.z)) {
+                e.setCanceled(true);
             }
         }
     }
@@ -422,7 +431,6 @@ public class RenderListener {
         GuiFeatureData guiFeatureData = feature.getGuiFeatureData();
         if (guiFeatureData != null && guiFeatureData.getDrawType() != null) {
             GlStateManager.pushMatrix();
-            main.getUtils().enableStandardGLOptions();
             GlStateManager.scale(scale, scale, 1);
             switch (guiFeatureData.getDrawType()) {
                 case SKELETON_BAR:
@@ -468,7 +476,6 @@ public class RenderListener {
                     drawPetDisplay(scale, buttonLocation);
                     break;
             }
-            main.getUtils().restoreGLOptions();
             GlStateManager.popMatrix();
         }
     }
@@ -1172,8 +1179,8 @@ public class RenderListener {
                 if (!FetchurManager.getInstance().hasFetchedToday() || buttonLocation != null) {
                     if (Feature.SHOW_FETCHUR_ITEM_NAME.isEnabled()) {
                         text = Translations.getMessage(
-                                "messages.fetchurItem"
-                                , fetchurItem.getItemStack().stackSize + "x " + fetchurItem.getItemText()
+                                "messages.fetchurItem",
+                                fetchurItem.getItemStack().stackSize + "x " + fetchurItem.getItemText()
                         );
                     } else {
                         text = Translations.getMessage("messages.fetchurItem", "");
@@ -1812,8 +1819,8 @@ public class RenderListener {
         int longestLineWidth = 0;
         for (Map.Entry<BaitManager.BaitType, Integer> entry : baits.entrySet()) {
             longestLineWidth = Math.max(
-                    longestLineWidth
-                    , MC.fontRendererObj.getStringWidth(TextUtils.formatNumber(entry.getValue()))
+                    longestLineWidth,
+                    MC.fontRendererObj.getStringWidth(TextUtils.formatNumber(entry.getValue()))
             );
         }
 
@@ -1959,12 +1966,12 @@ public class RenderListener {
 
             for (SlayerDrop drop : slayerBoss.getDrops()) {
                 longestSlayerDropLineWidth = Math.max(
-                        longestSlayerDropLineWidth
-                        , MC.fontRendererObj.getStringWidth(drop.getDisplayName())
+                        longestSlayerDropLineWidth,
+                        MC.fontRendererObj.getStringWidth(drop.getDisplayName())
                 );
                 longestCount = Math.max(
-                        longestCount
-                        , MC.fontRendererObj.getStringWidth(
+                        longestCount,
+                        MC.fontRendererObj.getStringWidth(
                                 String.valueOf(SlayerTracker.getInstance().getDropCount(drop))
                         )
                 );
@@ -2253,8 +2260,8 @@ public class RenderListener {
 
             spacers++;
             longestLineWidth = Math.max(
-                    longestLineWidth
-                    , MC.fontRendererObj.getStringWidth(Translations.getMessage("dragonTracker.dragonsSince"))
+                    longestLineWidth,
+                    MC.fontRendererObj.getStringWidth(Translations.getMessage("dragonTracker.dragonsSince"))
             );
             lines++;
             spacers++;
@@ -2509,40 +2516,43 @@ public class RenderListener {
     }
 
     public static void renderItem(ItemStack item, float x, float y, float scale) {
+        GlStateManager.pushMatrix();
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
-        GlStateManager.pushMatrix();
         if (scale > 1) {
             GlStateManager.scale(scale, scale, 1F);
         }
-        GlStateManager.translate(x / scale, y / scale, 0);
+        GlStateManager.translate(x / scale, y / scale, 50);
         MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
-        GlStateManager.popMatrix();
 
         GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
+        GlStateManager.popMatrix();
     }
 
     public static void renderItemAndOverlay(ItemStack item, String name, float x, float y) {
-        renderItemAndOverlay(item, name, x, y, 0);
+        renderItemAndOverlay(item, name, x, y, 50);
     }
 
     public static void renderItemAndOverlay(ItemStack item, String name, float x, float y, float z) {
+        GlStateManager.pushMatrix();
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
-
-        GlStateManager.pushMatrix();
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         GlStateManager.translate(x, y, z);
+
         MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
         MC.getRenderItem().renderItemOverlayIntoGUI(MC.fontRendererObj, item, 0, 0, name);
-        GlStateManager.popMatrix();
 
+        GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
+        GlStateManager.popMatrix();
     }
 
     private static final List<ItemDiff> DUMMY_PICKUP_LOG = Collections.unmodifiableList(Arrays.asList(
@@ -2657,10 +2667,10 @@ public class RenderListener {
         }
 
         DrawUtils.drawText(
-                secondsString
-                , x + spacing + iconSize
-                , y + (iconSize / 2F) - (8 / 2F)
-                , ColorCode.WHITE.getColor(255)
+                secondsString,
+                x + spacing + iconSize,
+                y + (iconSize / 2F) - (8 / 2F),
+                ColorCode.WHITE.getColor(255)
         );
 
         main.getUtils().restoreGLOptions();

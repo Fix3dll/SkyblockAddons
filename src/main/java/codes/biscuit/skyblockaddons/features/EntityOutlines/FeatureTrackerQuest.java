@@ -22,12 +22,14 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderLivingEvent.Specials.Pre;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +49,7 @@ public class FeatureTrackerQuest {
 
     private static TrackerRarity trackingAnimalRarity = null;
     private static TrackedEntity entityToOutline = null;
-    @Getter private static int entityNameTagId = -1;
+    private static int entityNameTagId = -1;
 
     public FeatureTrackerQuest() {
     }
@@ -224,17 +226,83 @@ public class FeatureTrackerQuest {
         }
     }
 
+    @SubscribeEvent
+    public void onRenderNameTag(RenderLivingEvent.Specials.Pre<EntityLivingBase> e) {
+        if (Feature.TREVOR_BETTER_NAMETAG.isDisabled() || !isTrackerConditionsMet()) return;
+
+        Entity entityNameTag = MC.theWorld.getEntityByID(entityNameTagId);
+
+        // see SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY
+        if (entityNameTag != null && entityNameTag.hasCustomName() && entityNameTag == e.entity) {
+            Entity renderViewEntity = MC.getRenderViewEntity();
+
+            double distanceScale = Math.max(1, renderViewEntity.getPositionVector().distanceTo(entityNameTag.getPositionVector()) / 5F);
+
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(e.x, e.y + 0.5F + getMobHeight(entityNameTag), e.z);
+            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-MC.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(MC.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+            GlStateManager.scale(-0.025, -0.025, 0.025);
+
+            GlStateManager.scale(distanceScale, distanceScale, distanceScale);
+
+            GlStateManager.disableLighting();
+            GlStateManager.depthMask(false);
+            GlStateManager.disableDepth();
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+            GlStateManager.enableTexture2D();
+            GlStateManager.color(1, 1, 1, 1);
+            GlStateManager.enableAlpha();
+
+            MC.fontRendererObj.drawString(
+                    entityNameTag.getCustomNameTag(),
+                    -MC.fontRendererObj.getStringWidth(entityNameTag.getCustomNameTag()) / 2F,
+                    0,
+                    -1,
+                    true
+            );
+            e.setCanceled(true);
+
+            GlStateManager.enableDepth();
+            GlStateManager.depthMask(true);
+            GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.popMatrix();
+        }
+    }
+
+    private static double getMobHeight(Entity entityNameTag) {
+        List<Entity> surroundingMobs = MC.theWorld.getEntitiesWithinAABB(
+                EntityArmorStand.class,
+                new AxisAlignedBB(
+                        entityNameTag.posX - 0.1,
+                        entityNameTag.posY - 3,
+                        entityNameTag.posZ - 0.1,
+                        entityNameTag.posX + 0.1,
+                        entityNameTag.posY,
+                        entityNameTag.posZ + 0.1
+                )
+        );
+        if (!surroundingMobs.isEmpty()) {
+            return surroundingMobs.get(0).height;
+        } else {
+            return 1.0F; // default
+        }
+    }
+
     private void onQuestEnded() {
         entityToOutline = null;
         trackingAnimalRarity = null;
         entityNameTagId = -1;
     }
 
-    public static boolean isTrackerConditionsMet() {
+    private boolean isTrackerConditionsMet() {
         return main.getUtils().isOnSkyblock() && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled()
                 && main.getUtils().getMap() == Island.THE_FARMING_ISLANDS;
     }
-
 
     @Getter
     private enum TrackerType {

@@ -27,4 +27,5 @@ public class RendererLivingEntityMixin<T extends EntityLivingBase> {
     private int sba$setScoreTeamColor(FontRenderer instance, char character, T entityLivingBaseIn) {
         return RendererLivingEntityHook.setOutlineColor(entityLivingBaseIn, 16777215);
     }
+
 }

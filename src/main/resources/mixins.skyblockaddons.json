@@ -28,8 +28,6 @@
     "RenderGlobalMixin",
     "RenderItemMixin",
     "RenderManagerMixin",
-    "RenderMixin",
-    "RenderPlayerMixin",
     "SoundManagerMixin",
     "TileEntityEnderChestRendererMixin",
     "WorldClientMixin",
