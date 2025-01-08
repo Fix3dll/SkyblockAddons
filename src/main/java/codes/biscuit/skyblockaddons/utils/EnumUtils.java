@@ -310,7 +310,6 @@ public class EnumUtils {
         FIRE_FREEZE_WHEN_HOLDING("settings.fireFreezeWhenHolding", 240),
         HEART_INSTEAD_HEALTH_ON_RIFT("settings.heartInsteadHealthOnRift", 244),
         OUTLINE_SHOWCASE_ITEMS("settings.outlineShowcaseItems", 245),
-        STOP_NAME_OVERLAY_WHEN_CLOSE("settings.stopNameOverlayWhenClose", 247),
         BUILDERS_TOOL_PREVIEW("settings.showBuildersToolPreview", 248),
         HEALTH_TEXT_ICON("settings.healthTextIcon", 249),
         MANA_TEXT_ICON("settings.manaTextIcon", 250),

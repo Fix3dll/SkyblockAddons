@@ -81,7 +81,7 @@ public enum Feature {
     ENABLE_MESSAGE_WHEN_BREAKING_PARK(90, null, false),
     BOSS_APPROACH_ALERT(91, "settings.bossApproachAlert", null, false, EnumUtils.FeatureSetting.REPEATING),
     DISABLE_TELEPORT_PAD_MESSAGES(92, "settings.disableTeleportPadMessages", null, false),
-    BAIT_LIST(93, "settings.baitListDisplay", new GuiFeatureData(EnumUtils.DrawType.BAIT_LIST_DISPLAY, ColorCode.AQUA), true),
+    BAIT_LIST(93, "settings.baitListDisplay", new GuiFeatureData(EnumUtils.DrawType.BAIT_LIST_DISPLAY, ColorCode.AQUA), false),
     ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT(94, "settings.zealotCounterExplosiveBow", null, true),
     DISABLE_ENDERMAN_TELEPORTATION_EFFECT(95, "settings.disableEndermanTeleportation", null, true),
     CHANGE_ZEALOT_COLOR(96, "settings.changeZealotColor", new GuiFeatureData(ColorCode.LIGHT_PURPLE), true),
@@ -125,11 +125,11 @@ public enum Feature {
     HIDE_WHEN_NOT_IN_CRYPTS(133, null, false),
     HIDE_WHEN_NOT_IN_SPIDERS_DEN(134, null, false),
     HIDE_WHEN_NOT_IN_CASTLE(135, null, false),
-    DUNGEON_DEATH_COUNTER(136, "settings.dungeonDeathCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), true),
+    DUNGEON_DEATH_COUNTER(136, "settings.dungeonDeathCounter", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.RED), false),
     PERSONAL_COMPACTOR_PREVIEW(137, null, false),
     ROCK_PET_TRACKER(138, "settings.rockPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GRAY), true),
     DOLPHIN_PET_TRACKER(139, "settings.dolphinPetTracker", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.AQUA), true, EnumUtils.FeatureSetting.SHOW_ONLY_HOLDING_FISHING_ROD),
-    SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY(140, "settings.dungeonsTeammateNameOverlay", null, false, EnumUtils.FeatureSetting.STOP_NAME_OVERLAY_WHEN_CLOSE),
+    SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY(140, "settings.dungeonsTeammateNameOverlay", null, false),
     SHOW_STACKING_ENCHANT_PROGRESS(141, "settings.stackingEnchantProgress", new GuiFeatureData(ColorCode.RED, true), false),
     DUNGEONS_SECRETS_DISPLAY(142, "settings.dungeonsSecretsDisplay", new GuiFeatureData(EnumUtils.DrawType.TEXT, ColorCode.GRAY), false),
     SKILL_PROGRESS_BAR(143, "settings.skillProgressBar", new GuiFeatureData(EnumUtils.DrawType.BAR, ColorCode.GREEN), true),
@@ -230,7 +230,6 @@ public enum Feature {
     HEART_INSTEAD_HEALTH_ON_RIFT(244, null, true),
     OUTLINE_SHOWCASE_ITEMS(245, null, false),
     PET_DISPLAY(246, "settings.petDisplay", new GuiFeatureData(EnumUtils.DrawType.PET_DISPLAY, ColorCode.GOLD), false, EnumUtils.FeatureSetting.PET_ITEM_STYLE),
-    STOP_NAME_OVERLAY_WHEN_CLOSE(247, null, true),
     BUILDERS_TOOL_PREVIEW(248, null, false),
     HEALTH_TEXT_ICON(249, "settings.healthTextIcon", true),
     MANA_TEXT_ICON(250, "settings.manaTextIcon", true),
@@ -286,7 +285,7 @@ public enum Feature {
             SHOW_ONLY_HOLDING_FISHING_ROD, HIDE_HEALTH_BAR_ON_RIFT, HIDE_HEALTH_TEXT_ON_RIFT, HIDE_HEALTH_UPDATES_ON_RIFT,
             HIDE_ONLY_OUTSIDE_RIFT, FIRE_FREEZE_SOUND, FIRE_FREEZE_WHEN_HOLDING, HEART_INSTEAD_HEALTH_ON_RIFT,
             OUTLINE_SHOWCASE_ITEMS, CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD, DRAGON_STATS_TRACKER_NEST_ONLY,
-            STOP_NAME_OVERLAY_WHEN_CLOSE, HEALTH_TEXT_ICON, MANA_TEXT_ICON, DEFENCE_TEXT_ICON, EFFECTIVE_HEALTH_TEXT_ICON);
+            HEALTH_TEXT_ICON, MANA_TEXT_ICON, DEFENCE_TEXT_ICON, EFFECTIVE_HEALTH_TEXT_ICON);
 
     /**
      * Features that are considered gui ones. This is used for examnple when saving the config to ensure that these features'

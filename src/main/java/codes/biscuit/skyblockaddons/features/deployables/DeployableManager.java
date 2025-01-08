@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.features.deployables;
 
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -27,11 +28,27 @@ public class DeployableManager {
     @Getter private static final DeployableManager instance = new DeployableManager();
 
     /**
-     * Entry displaying {@link Deployable#RADIANT} at 20 seconds for the edit screen
+     * Entry displaying {@link Deployable#SOS_FLARE} at 90 seconds for the edit screen
      */
-    public static final DeployableEntry DUMMY_POWER_ORB_ENTRY = new DeployableEntry(Deployable.SOS_FLARE, 90, null);
+    public static final EntityArmorStand DUMMY_ARMOR_STAND;
+    public static final DeployableEntry DUMMY_DEPLOYABLE_ENTRY;
 
     private final Map<Deployable, DeployableEntry> deployableEntryMap = new HashMap<>();
+
+    static {
+        DUMMY_ARMOR_STAND = new EntityArmorStand(Utils.getDummyWorld());
+        DUMMY_ARMOR_STAND.setCurrentItemOrArmor(
+                4,
+                ItemUtils.createSkullItemStack(
+                        null,
+                        null,
+                        "3ae3572b-2679-40b4-ba50-14dd58cbbbf7",
+                        "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b"
+                )
+        );
+        DUMMY_ARMOR_STAND.setInvisible(true);
+        DUMMY_DEPLOYABLE_ENTRY = new DeployableEntry(Deployable.SOS_FLARE, 90, DUMMY_ARMOR_STAND.getUniqueID());
+    }
 
     /**
      * Put any detected deployable into the list of active deployables.

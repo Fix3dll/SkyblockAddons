@@ -5,6 +5,7 @@ import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.listeners.RenderListener;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -20,11 +21,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -35,6 +36,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.util.Constants;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -93,7 +95,6 @@ public class ContainerPreviewManager {
 
     /**
      * Creates and returns a {@code ContainerPreview} object representing the given {@code ItemStack} if it is a backpack
-     *
      * @param stack the {@code ItemStack} to create a {@code Backpack} instance from
      * @return a {@code ContainerPreview} object representing {@code stack} if it is a backpack, or {@code null} otherwise
      */
@@ -161,7 +162,6 @@ public class ContainerPreviewManager {
     /**
      * Saves {@code containerInventory} to the container inventory cache if it's not {@code null} when a
      * {@link net.minecraft.client.gui.inventory.GuiChest} is closed.
-     *
      * @see codes.biscuit.skyblockaddons.listeners.GuiScreenListener#onGuiOpen(GuiOpenEvent)
      */
     public static void onContainerClose() {
@@ -174,7 +174,6 @@ public class ContainerPreviewManager {
     /**
      * Prepares for saving the container inventory when the container is closed.
      * Called when a {@link net.minecraft.client.gui.inventory.GuiChest} is opened.
-     *
      * @param containerInventory the container inventory
      */
     public static void onContainerOpen(@NonNull InventoryBasic containerInventory) {
@@ -307,13 +306,7 @@ public class ContainerPreviewManager {
                     int itemX = itemStartX + ((i % cols) * textureItemSquare);
                     int itemY = itemStartY + ((i / cols) * textureItemSquare);
 
-                    RenderItem renderItem = mc.getRenderItem();
-                    guiContainer.zLevel = 200;
-                    renderItem.zLevel = 200;
-                    renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
-                    renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
-                    guiContainer.zLevel = 0;
-                    renderItem.zLevel = 0;
+                    RenderListener.renderItemAndOverlay(item, null, itemX, itemY, 200);
 
                     if (frozen && mouseX > itemX && mouseX < itemX + 16 && mouseY > itemY && mouseY < itemY + 16) {
                         tooltipItem = item;
@@ -346,13 +339,7 @@ public class ContainerPreviewManager {
                     int itemX = x + ((i % cols) * 16);
                     int itemY = y + ((i / cols) * 16);
 
-                    RenderItem renderItem = mc.getRenderItem();
-                    guiContainer.zLevel = 200;
-                    renderItem.zLevel = 200;
-                    renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
-                    renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
-                    guiContainer.zLevel = 0;
-                    renderItem.zLevel = 0;
+                    RenderListener.renderItemAndOverlay(item, null, itemX, itemY, 200);
 
                     if (frozen && mouseX > itemX && mouseX < itemX+16 && mouseY > itemY && mouseY < itemY+16) {
                         tooltipItem = item;
@@ -386,7 +373,6 @@ public class ContainerPreviewManager {
 
     /**
      * Create a {@link ContainerPreview} from a backpack {@code ItemStack} in the storage menu and the list of items in that preview
-     *
      * @param stack the backpack {@code ItemStack} that's being hovered over
      * @param items the items in the backpack
      * @return the container preview
@@ -418,27 +404,23 @@ public class ContainerPreviewManager {
 
     /**
      * Called when a key is typed in a {@link GuiContainer}. Used to control backpack preview freezing.
-     *
      * @param keyCode the key code of the key that was typed
-     * @see codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook#keyTyped(int) ;
+     * @see codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook#keyTyped(Slot, int, CallbackInfo)  ;
      */
     public static void onContainerKeyTyped(int keyCode) {
-        if (main.getUtils().isOnSkyblock()) {
-            if (keyCode == 1 || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()) {
-                frozen = false;
-                currentContainerPreview = null;
-            }
-            if (keyCode == SkyblockKeyBinding.FREEZE_BACKPACK.getKeyCode() && frozen && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
-                lastToggleFreezeTime = System.currentTimeMillis();
-                frozen = false;
-            }
+        if (keyCode == 1 || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()) {
+            frozen = false;
+            currentContainerPreview = null;
+        }
+        if (keyCode == SkyblockKeyBinding.FREEZE_BACKPACK.getKeyCode() && frozen && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
+            lastToggleFreezeTime = System.currentTimeMillis();
+            frozen = false;
         }
     }
 
     /**
      * Renders the corresponding container preview if the given {@code ItemStack} is a container.
      * If a container preview is rendered, {@code true} is returned to cancel the original tooltip render event.
-     *
      * @param itemStack the {@code ItemStack} to render the container preview for
      * @param x the x-coordinate where the item's tooltip is rendered
      * @param y the y-coordinate where the item's tooltip is rendered
@@ -506,9 +488,8 @@ public class ContainerPreviewManager {
             }
             // Check for normal previews
             if (cachedContainerPreview == null) {
-                // Check the subfeature conditions
-                NBTTagCompound extraAttributes = ItemUtils.getExtraAttributes(itemStack);
-                ContainerData containerData = ItemUtils.getContainerData(ItemUtils.getSkyblockItemID(extraAttributes));
+                // Check the sub-feature conditions
+                ContainerData containerData = ItemUtils.getContainerData(ItemUtils.getSkyblockItemID(itemStack));
 
                 // TODO: Does checking menu item handle the baker inventory thing?
                 if (containerData == null || (containerData.isCakeBag() && Feature.CAKE_BAG_PREVIEW.isDisabled()) ||
@@ -563,9 +544,8 @@ public class ContainerPreviewManager {
 
     /**
      * Compresses the contents of the inventory
-     *
      * @param inventory the inventory to be compressed
-     * @return an nbt byte array of the compressed contents of the backpack
+     * @return a nbt byte array of the compressed contents of the backpack
      */
     public static NBTTagByteArray getCompressedInventoryContents(IInventory inventory) {
         if (inventory == null) {
@@ -581,7 +561,6 @@ public class ContainerPreviewManager {
     /**
      * Saves the currently opened menu inventory to the backpack cache.
      * Triggers {@link PersistentValuesManager#saveValues()} if the inventory has changed from the cached version.
-     *
      * @param inventory the inventory to save the contents of
      * @param storageKey the key in which to store the data
      * @throws NullPointerException if {@code inventory} or {@code storageKey} are {@code null}
@@ -631,7 +610,6 @@ public class ContainerPreviewManager {
     /**
      * Saves the currently opened menu inventory to the backpack cache.
      * Triggers {@link PersistentValuesManager#saveValues()} if the inventory has changed from the cached version.
-     *
      * @throws NullPointerException if {@link ContainerPreviewManager#containerInventory} or
      * {@link ContainerPreviewManager#storageKey} are {@code null}
      */

@@ -12,6 +12,6 @@ public class InventoryPlayerMixin {
 
     @Inject(method = "changeCurrentItem", at = @At("HEAD"))
     private void sba$changeCurrentItem(int direction, CallbackInfo ci) {
-        MinecraftHook.updatedCurrentItem();
+        MinecraftHook.onUpdateCurrentItem();
     }
 }

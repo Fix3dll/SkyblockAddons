@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,16 +39,16 @@ public class DungeonManager {
     @Getter @Setter private DungeonMilestone dungeonMilestone;
 
     /** The latest essences the player collected during a dungeon game */
-    @Getter private final Map<EssenceType, Integer> collectedEssences = new EnumMap<>(EssenceType.class);
+    @Getter private final EnumMap<EssenceType, Integer> collectedEssences = new EnumMap<>(EssenceType.class);
 
     /**
      * Represents the number of essences from salvaged items by the player.
      * It's in a separate map to avoid conflict with the collected map.
      */
-    @Getter private final Map<EssenceType, Integer> salvagedEssences = new EnumMap<>(EssenceType.class);
+    @Getter private final EnumMap<EssenceType, Integer> salvagedEssences = new EnumMap<>(EssenceType.class);
 
     /** The current teammates of the dungeon game */
-    @Getter private final Map<String, DungeonPlayer> teammates = new HashMap<>();
+    @Getter private final HashMap<String, DungeonPlayer> teammates = new HashMap<>();
 
     /** The current number of secrets found in the room */
     @Getter @Setter private int secrets = -1;

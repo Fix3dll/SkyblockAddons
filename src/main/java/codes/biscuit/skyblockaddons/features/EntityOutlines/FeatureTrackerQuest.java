@@ -9,7 +9,6 @@ import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
-import codes.biscuit.skyblockaddons.utils.MathUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
@@ -24,35 +23,33 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent.Specials.Pre;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Vector3d;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FeatureTrackerQuest {
+
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getMinecraft();
+
     private static final Pattern TRACKED_ANIMAL_NAME_PATTERN = Pattern.compile("\\[Lv[0-9]+] (?<rarity>[a-zA-Z]+) (?<animal>[a-zA-Z]+) .*❤");
     private static final Pattern TREVOR_FIND_ANIMAL_PATTERN = Pattern.compile("\\[NPC] Trevor: You can find your (?<rarity>[A-Z]+) animal near the [a-zA-Z ]+\\.");
     private static final Pattern ANIMAL_DIED_PATTERN = Pattern.compile("Your mob died randomly, you are rewarded [0-9]+ pelts?\\.");
     private static final Pattern ANIMAL_KILLED_PATTERN = Pattern.compile("Killing the animal rewarded you [0-9]+ pelts?\\.");
-
     private static final ResourceLocation TICKER_SYMBOL = new ResourceLocation("skyblockaddons", "tracker.png");
+
     private static TrackerRarity trackingAnimalRarity = null;
     private static TrackedEntity entityToOutline = null;
-    private static int entityNametagId = -1;
+    @Getter private static int entityNameTagId = -1;
 
     public FeatureTrackerQuest() {
-
     }
 
     /**
@@ -161,9 +158,9 @@ public class FeatureTrackerQuest {
                         if (trackedEntity.getAnimal() != null) {
                             entityToOutline = trackedEntity;
                             if (trackedEntity.getAnimal().isInvisible() || MC.thePlayer.isPotionActive(Potion.blindness)) {
-                                entityNametagId = -1;
+                                entityNameTagId = -1;
                             } else {
-                                entityNametagId = entity.getEntityId();
+                                entityNameTagId = entity.getEntityId();
                             }
                         }
                     }
@@ -187,7 +184,7 @@ public class FeatureTrackerQuest {
                 // The player has 10 minutes to kill the animal
                 CooldownManager.put("TREVOR_THE_TRAPPER_HUNT", 600000);
                 // The player has cooldown before they can receive another animal after killing the current one
-                if (main.getElectionData().isCandidateActive("Finnegan")) {
+                if (main.getElectionData().isPerkActive("Pelt-pocalypse")) {
                     CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 16000);
                 } else {
                     CooldownManager.put("TREVOR_THE_TRAPPER_RETURN", 21000);
@@ -216,69 +213,6 @@ public class FeatureTrackerQuest {
         }
     }
 
-    @SubscribeEvent()
-    public void onRenderWorld(RenderWorldLastEvent e) {
-        if (!isTrackerConditionsMet() || !Feature.TREVOR_BETTER_NAMETAG.isEnabled()) return;
-
-        Entity entityNametag = MC.theWorld.getEntityByID(entityNametagId);
-
-        // see SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY
-        if (entityNametag != null) {
-            Entity renderViewEntity = MC.getRenderViewEntity();
-            Vector3d viewPosition = Utils.getPlayerViewPosition();
-
-            double distanceScale = Math.max(1, renderViewEntity.getPositionVector().distanceTo(entityNametag.getPositionVector()) / 10F);
-
-            float partialTicks = e.partialTicks;
-            double x = MathUtils.interpolateX(entityNametag, partialTicks);
-            double y = MathUtils.interpolateY(entityNametag, partialTicks);
-            double z = MathUtils.interpolateZ(entityNametag, partialTicks);
-
-            x -= viewPosition.x;
-            y -= viewPosition.y;
-            z -= viewPosition.z;
-
-            y += 0.35F + entityNametag.height + 0.75F + (25 * distanceScale) / 40F;
-
-            float f = 1.6F;
-            float f1 = 0.016666668F * f;
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y, z);
-            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate(-MC.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate(MC.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
-            GlStateManager.scale(-f1, -f1, f1);
-
-            GlStateManager.scale(distanceScale, distanceScale, distanceScale);
-
-            GlStateManager.disableLighting();
-            GlStateManager.depthMask(false);
-            GlStateManager.disableDepth();
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.enableTexture2D();
-            GlStateManager.color(1, 1, 1, 1);
-            GlStateManager.enableAlpha();
-
-            if (entityNametag.hasCustomName()) {
-                MC.fontRendererObj.drawString(
-                        entityNametag.getCustomNameTag()
-                        , -MC.fontRendererObj.getStringWidth(entityNametag.getCustomNameTag()) / 2F
-                        , entityNametag.height + 11
-                        , -1
-                        , true
-                );
-            }
-
-            GlStateManager.enableDepth();
-            GlStateManager.depthMask(true);
-            GlStateManager.enableLighting();
-            GlStateManager.disableBlend();
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.popMatrix();
-        }
-    }
-
     @SubscribeEvent
     public void onClientTick(ClientTickEvent e) {
         if (isTrackerConditionsMet() && e.phase == Phase.START && MC.thePlayer != null) {
@@ -293,10 +227,10 @@ public class FeatureTrackerQuest {
     private void onQuestEnded() {
         entityToOutline = null;
         trackingAnimalRarity = null;
-        entityNametagId = -1;
+        entityNameTagId = -1;
     }
 
-    private boolean isTrackerConditionsMet() {
+    public static boolean isTrackerConditionsMet() {
         return main.getUtils().isOnSkyblock() && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled()
                 && main.getUtils().getMap() == Island.THE_FARMING_ISLANDS;
     }

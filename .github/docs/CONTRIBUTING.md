@@ -66,10 +66,8 @@ git checkout -b development --track origin/development
     > 
 2. (Optional) Run the **Minecraft Forge** client
     - Using IntelliJ IDEA
-        - Add the environment variable `FETCH_DATA_ONLINE=true` if you want to use data files from the CDN.
+        - Add the Java argument `-Dsba.data.online=true` if you want to use data files from the CDN.
         - Run the "Minecraft Client" debug configuration.
         - Click the link in the console to log in with [DevAuth](https://github.com/DJtheRedstoner/DevAuth).
-    - Using the command line
-    ```shell script
-    ./gradlew runClient --args="--username <username> --password <password>"
-    ```
+    - See [DevAuth/README](https://github.com/DJtheRedstoner/DevAuth?tab=readme-ov-file#configuration) for more details 
+      about configuration.

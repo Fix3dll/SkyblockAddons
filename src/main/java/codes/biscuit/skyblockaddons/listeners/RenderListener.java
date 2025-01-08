@@ -4,7 +4,6 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.*;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonClass;
 import codes.biscuit.skyblockaddons.core.dungeons.DungeonMilestone;
-import codes.biscuit.skyblockaddons.core.dungeons.DungeonPlayer;
 import codes.biscuit.skyblockaddons.features.*;
 import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureTrackerQuest;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
@@ -43,7 +42,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -54,7 +52,6 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -67,9 +64,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.GuiNotification;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Vector3d;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -84,6 +79,7 @@ import static net.minecraft.client.gui.Gui.icons;
 
 public class RenderListener {
 
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getMinecraft();
 
     private static final ItemStack BONE_ITEM = new ItemStack(Items.bone);
@@ -98,7 +94,6 @@ public class RenderListener {
     private static final ResourceLocation SLASH_ICON = new ResourceLocation("skyblockaddons", "icons/slash.png");
     private static final ResourceLocation IRON_GOLEM_ICON = new ResourceLocation("skyblockaddons", "icons/irongolem.png");
     private static final ResourceLocation FARM_ICON = new ResourceLocation("skyblockaddons", "icons/farm.png");
-    private static final ResourceLocation CRITICAL = new ResourceLocation("skyblockaddons", "critical.png");
     private static final ResourceLocation RIFTSTALKER_BLOODFIEND = new ResourceLocation("skyblockaddons", "vampire.png");
 
     private static final ItemStack WATER_BUCKET = new ItemStack(Items.water_bucket);
@@ -158,8 +153,6 @@ public class RenderListener {
     private static EntityEnderman enderman;
     private static EntityBlaze inferno;
     private static EntityOtherPlayerMP riftstalker;
-
-    private final SkyblockAddons main = SkyblockAddons.getInstance();
 
     @Getter @Setter private boolean predictHealth;
     @Getter @Setter private boolean predictMana;
@@ -2511,14 +2504,11 @@ public class RenderListener {
         main.getUtils().restoreGLOptions();
     }
 
-    private void renderItem(ItemStack item, float x, float y) {
+    public static void renderItem(ItemStack item, float x, float y) {
         renderItem(item, x, y, 1);
     }
 
-    /**
-     * The main purpose is scale the item for make it compatible for add new lines e.g. scale with two for add 2nd line
-     */
-    private void renderItem(ItemStack item, float x, float y, float scale) {
+    public static void renderItem(ItemStack item, float x, float y, float scale) {
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
@@ -2536,17 +2526,19 @@ public class RenderListener {
         GlStateManager.disableRescaleNormal();
     }
 
-    private void renderItemAndOverlay(ItemStack item, String name, float x, float y) {
+    public static void renderItemAndOverlay(ItemStack item, String name, float x, float y) {
+        renderItemAndOverlay(item, name, x, y, 0);
+    }
+
+    public static void renderItemAndOverlay(ItemStack item, String name, float x, float y, float z) {
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
+        GlStateManager.translate(x, y, z);
         MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
-        MC.getRenderItem().renderItemOverlayIntoGUI(
-                MC.fontRendererObj, item, 0, 0, name
-        );
+        MC.getRenderItem().renderItemOverlayIntoGUI(MC.fontRendererObj, item, 0, 0, name);
         GlStateManager.popMatrix();
 
         RenderHelper.disableStandardItemLighting();
@@ -2605,7 +2597,7 @@ public class RenderListener {
     public void drawDeployableStatus(float scale, ButtonLocation buttonLocation) {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (buttonLocation != null && activeDeployable == null) {
-            activeDeployable = DeployableManager.DUMMY_POWER_ORB_ENTRY;
+            activeDeployable = DeployableManager.DUMMY_DEPLOYABLE_ENTRY;
         }
         if (activeDeployable != null) {
             Deployable deployable = activeDeployable.getDeployable();
@@ -2651,10 +2643,8 @@ public class RenderListener {
             if (uuidOfActiveDep != null) {
                 entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
-        }
-
-        if (entity == null && buttonLocation != null) {
-            entity = getDeployableDummyArmorStand();
+        } else if (buttonLocation != null) {
+            entity = DeployableManager.DUMMY_ARMOR_STAND;
         }
 
         main.getUtils().enableStandardGLOptions();
@@ -2786,10 +2776,8 @@ public class RenderListener {
             if (uuidOfActiveDep != null) {
                 entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
-        }
-
-        if (entity == null && buttonLocation != null) {
-            entity = getDeployableDummyArmorStand();
+        } else if (buttonLocation != null) {
+            entity = DeployableManager.DUMMY_ARMOR_STAND;
         }
 
         main.getUtils().enableStandardGLOptions();
@@ -2908,139 +2896,7 @@ public class RenderListener {
 
     @SubscribeEvent()
     public void onRenderWorld(RenderWorldLastEvent e) {
-        float partialTicks = e.partialTicks;
-
-        HealingCircleManager.renderHealingCircleOverlays(partialTicks);
-
-        if (main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon()
-                && (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled()
-                || Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled())
-        ) {
-            Entity renderViewEntity = MC.getRenderViewEntity();
-            Vector3d viewPosition = Utils.getPlayerViewPosition();
-
-            int iconSize = 25;
-
-            for (EntityPlayer entity : MC.theWorld.playerEntities) {
-                if (renderViewEntity == entity) {
-                    continue;
-                }
-
-                if (!main.getDungeonManager().getTeammates().containsKey(entity.getName())) {
-                    continue;
-                }
-
-                DungeonPlayer dungeonPlayer = main.getDungeonManager().getTeammates().get(entity.getName());
-
-                double x = MathUtils.interpolateX(entity, partialTicks);
-                double y = MathUtils.interpolateY(entity, partialTicks);
-                double z = MathUtils.interpolateZ(entity, partialTicks);
-
-                x -= viewPosition.x;
-                y -= viewPosition.y;
-                z -= viewPosition.z;
-
-                if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
-                    y += 0.35F;
-                }
-
-                if (entity.isSneaking()) {
-                    y -= 0.65F;
-                }
-
-                double distanceScale = Math.max(1, renderViewEntity.getPositionVector().distanceTo(entity.getPositionVector()) / 10F);
-
-                if (Feature.OUTLINE_DUNGEON_TEAMMATES.isEnabled()) {
-                    y += entity.height + 0.75F + (iconSize * distanceScale) / 40F;
-                } else {
-                    y += entity.height / 2F + 0.25F;
-                }
-
-                float f = 1.6F;
-                float f1 = 0.016666668F * f;
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(x, y, z);
-                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(-MC.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(MC.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
-                GlStateManager.scale(-f1, -f1, f1);
-
-                GlStateManager.scale(distanceScale, distanceScale, distanceScale);
-
-                GlStateManager.disableLighting();
-                GlStateManager.depthMask(false);
-                GlStateManager.disableDepth();
-                GlStateManager.enableBlend();
-                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                GlStateManager.enableTexture2D();
-                GlStateManager.color(1, 1, 1, 1);
-                GlStateManager.enableAlpha();
-
-                if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled()
-                        && (!dungeonPlayer.isGhost() && (dungeonPlayer.isCritical() || dungeonPlayer.isLow()))) {
-                    Tessellator tessellator = Tessellator.getInstance();
-                    WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-
-                    MC.getTextureManager().bindTexture(CRITICAL);
-                    worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                    worldrenderer.pos(-iconSize / 2F, -iconSize / 2f, 0).tex(0, 0).endVertex();
-                    worldrenderer.pos(-iconSize / 2F, iconSize / 2F, 0).tex(0, 1).endVertex();
-                    worldrenderer.pos(iconSize / 2F, iconSize / 2F, 0).tex(1, 1).endVertex();
-                    worldrenderer.pos(iconSize / 2F, -iconSize / 2F, 0).tex(1, 0).endVertex();
-                    tessellator.draw();
-
-                    String text = "";
-                    if (dungeonPlayer.isLow()) {
-                        text = "LOW";
-                    } else if (dungeonPlayer.isCritical()) {
-                        text = "CRITICAL";
-                    }
-
-                    MC.fontRendererObj.drawString(
-                            text,
-                            -MC.fontRendererObj.getStringWidth(text) / 2F,
-                            iconSize / 2F + 2,
-                            -1,
-                            true
-                    );
-                }
-
-                if (!dungeonPlayer.isGhost() && Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
-                    if (shouldRenderNameOverlay(entity)) {
-                        String nameOverlay =
-                                ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] "
-                                        + ColorCode.GREEN + entity.getName();
-                        MC.fontRendererObj.drawString(
-                                nameOverlay,
-                                -MC.fontRendererObj.getStringWidth(nameOverlay) / 2F,
-                                iconSize / 2F + 13,
-                                -1,
-                                true
-                        );
-                    }
-                }
-
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
-                GlStateManager.enableLighting();
-                GlStateManager.disableBlend();
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                GlStateManager.popMatrix();
-            }
-        }
-    }
-
-    /**
-     * Checks {@link Feature#STOP_NAME_OVERLAY_WHEN_CLOSE} conditions
-     * @param teammate teammate
-     * @return true if {@link Feature#STOP_NAME_OVERLAY_WHEN_CLOSE} enabled and conditions are met or disabled
-     */
-    private boolean shouldRenderNameOverlay(EntityPlayer teammate) {
-        EntityPlayerSP thePlayer = MC.thePlayer;
-        return Feature.STOP_NAME_OVERLAY_WHEN_CLOSE.isDisabled()
-                || teammate.isSneaking()
-                || teammate.getDistanceToEntity(thePlayer) > 10
-                || !teammate.canEntityBeSeen(thePlayer);
+        HealingCircleManager.renderHealingCircleOverlays();
     }
 
     private void drawDeployableArmorStand(EntityArmorStand deployableArmorStand, float x, float y) {
@@ -3113,25 +2969,6 @@ public class RenderListener {
         GlStateManager.disableTexture2D();
         GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GlStateManager.popMatrix();
-    }
-
-    public EntityArmorStand getDeployableDummyArmorStand() {
-        if (deployableDummyArmorStand != null) {
-            return deployableDummyArmorStand;
-        }
-
-        deployableDummyArmorStand = new EntityArmorStand(Utils.getDummyWorld());
-
-        ItemStack deployableItemStack = ItemUtils.createSkullItemStack(
-                null,
-                null,
-                "3ae3572b-2679-40b4-ba50-14dd58cbbbf7",
-                "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b"
-        );
-
-        deployableDummyArmorStand.setCurrentItemOrArmor(4, deployableItemStack);
-
-        return deployableDummyArmorStand;
     }
 
     public void setTitleFeature(Feature feature) {

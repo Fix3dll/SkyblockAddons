@@ -124,8 +124,10 @@ public class DevUtils {
         }
 
         // Remove scores that aren't rendered.
-        scores = scores.stream().filter(input -> input.getPlayerName() != null && !input.getPlayerName().startsWith("#"))
-                .skip(Math.max(scores.size() - 15, 0)).collect(Collectors.toList());
+        scores = scores.stream()
+                .filter(input -> input.getPlayerName() != null && !input.getPlayerName().startsWith("#"))
+                .skip(Math.max(scores.size() - 15, 0))
+                .collect(Collectors.toList());
 
         /*
         Minecraft renders the scoreboard from bottom to top so to keep the same order when writing it from top

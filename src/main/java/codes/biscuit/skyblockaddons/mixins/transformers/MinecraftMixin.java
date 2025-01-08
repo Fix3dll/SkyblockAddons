@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.MinecraftHook;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,33 +12,21 @@ public class MinecraftMixin {
 
     @Inject(method = "rightClickMouse", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;rightClickDelayTimer:I"), cancellable = true)
     private void sba$rightClickMouse(CallbackInfo ci) {
-        ReturnValue<?> returnValue = new ReturnValue<>();
-        MinecraftHook.rightClickMouse(returnValue);
-        if (returnValue.isCancelled()) {
-            ci.cancel();
-        }
+        MinecraftHook.rightClickMouse(ci);
     }
 
     @Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/InventoryPlayer;currentItem:I"))
     private void sba$runTick(CallbackInfo ci) {
-        MinecraftHook.updatedCurrentItem();
+        MinecraftHook.onUpdateCurrentItem();
     }
 
     @Inject(method = "clickMouse", at = @At("HEAD"), cancellable = true)
     private void sba$clickMouse(CallbackInfo ci) {
-        ReturnValue<?> returnValue = new ReturnValue<>();
-        MinecraftHook.onClickMouse(returnValue);
-        if (returnValue.isCancelled()) {
-            ci.cancel();
-        }
+        MinecraftHook.onClickMouse(ci);
     }
 
     @Inject(method = "sendClickBlockToController", at = @At("HEAD"), cancellable = true)
     private void sba$sendClickBlockToController(boolean leftClick, CallbackInfo ci) {
-        ReturnValue<?> returnValue = new ReturnValue<>();
-        MinecraftHook.onSendClickBlockToController(leftClick, returnValue);
-        if (returnValue.isCancelled()) {
-            ci.cancel();
-        }
+        MinecraftHook.onSendClickBlockToController(leftClick, ci);
     }
 }

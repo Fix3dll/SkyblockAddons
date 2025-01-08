@@ -251,7 +251,6 @@
       "displayName": "Display Name",
       "showItem": "Show Item"
     },
-    "stopNameOverlayWhenClose": "Stop rendering when vanilla name tag good enough to see",
     "healthTextIcon": "Health Number Icon",
     "manaTextIcon": "Mana Number Icon",
     "defenceTextIcon": "Defence Number Icon",

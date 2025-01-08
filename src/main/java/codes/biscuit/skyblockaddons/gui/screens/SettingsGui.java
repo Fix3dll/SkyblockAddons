@@ -236,7 +236,10 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 buttonList.add(new ButtonCycling(x, (int) y, 140, 20,
                         Arrays.asList(EnumUtils.DeployableDisplayStyle.values()),
                         main.getConfigValues().getDeployableDisplayStyle().ordinal(),
-                        index -> main.getConfigValues().setDeployableDisplayStyle(EnumUtils.DeployableDisplayStyle.values()[index])
+                        index -> {
+                            main.getConfigValues().setDeployableDisplayStyle(EnumUtils.DeployableDisplayStyle.values()[index]);
+                            reInit = true;
+                        }
                 ));
                 break;
 

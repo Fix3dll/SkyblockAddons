@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.mixins.hooks.EntityPlayerSPHook;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.item.EntityItem;
@@ -14,11 +13,6 @@ public class EntityPlayerSPMixin {
 
     @Inject(method = "dropOneItem", at = @At("HEAD"), cancellable = true)
     public void sba$dropOneItem(boolean dropAll, CallbackInfoReturnable<EntityItem> cir) {
-        ReturnValue<EntityItem> returnValue = new ReturnValue<>();
-        EntityPlayerSPHook.dropOneItemConfirmation(returnValue);
-
-        if (returnValue.isCancelled()) {
-            cir.setReturnValue(returnValue.getReturnValue());
-        }
+        EntityPlayerSPHook.dropOneItemConfirmation(cir);
     }
 }

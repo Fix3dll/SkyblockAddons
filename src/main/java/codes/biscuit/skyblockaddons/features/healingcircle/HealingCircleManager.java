@@ -43,7 +43,7 @@ public class HealingCircleManager {
         }
     }
 
-    public static void renderHealingCircleOverlays(float partialTicks) {
+    public static void renderHealingCircleOverlays() {
         if (main.getUtils().isOnSkyblock() && Feature.SHOW_HEALING_CIRCLE_WALL.isEnabled()) {
 
             Iterator<HealingCircle> healingCircleIterator = healingCircles.iterator();

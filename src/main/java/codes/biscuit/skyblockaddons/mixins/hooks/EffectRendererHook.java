@@ -21,8 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
 public class EffectRendererHook {
 
     private static final Set<OverlayEffectRenderer> effectRenderers = new HashSet<>();
