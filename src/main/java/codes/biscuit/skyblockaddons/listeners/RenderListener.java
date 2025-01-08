@@ -148,7 +148,6 @@ public class RenderListener {
 
     private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?:(?:§[a-f0-9])?✪)+(?:§[a-f0-9]?[➊-➒])?");
 
-    private static EntityArmorStand deployableDummyArmorStand;
     private static EntityZombie revenant;
     private static EntitySpider tarantula;
     private static EntityCaveSpider caveSpider;
