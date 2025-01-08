@@ -136,10 +136,10 @@ tasks.register("copyLicenses", Copy::class) {
     from(project.projectDir) {
         include(
             "LICENSE",
-            "NOTICE",
             "dependencyLicenses/**"
         )
     }
+    from(".github/docs/NOTICES.md").into(project.projectDir)
     sourceSets.main.get().output.resourcesDir?.let { into(it) }
 }
 
