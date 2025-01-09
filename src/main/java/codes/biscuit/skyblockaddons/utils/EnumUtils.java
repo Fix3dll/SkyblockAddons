@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class EnumUtils {
 
+    @SuppressWarnings("unused")
     @Getter
     public enum AnchorPoint {
 
@@ -316,6 +317,7 @@ public class EnumUtils {
         DEFENCE_TEXT_ICON("settings.defenceTextIcon", 251),
         EFFECTIVE_HEALTH_TEXT_ICON("settings.effectiveHealthTextIcon", 252),
         ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR("settings.abbreviateThunderDisplaysDenominator", 253),
+        CLASS_COLORED_TEAMMATE("settings.classColoredTeammate", 258),
 
         DISCORD_RP_STATE(0),
         DISCORD_RP_DETAILS(0),

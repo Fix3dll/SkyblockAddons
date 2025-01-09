@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.features.dungeonmap;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
-import codes.biscuit.skyblockaddons.core.dungeons.DungeonPlayer;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonPlayer;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;

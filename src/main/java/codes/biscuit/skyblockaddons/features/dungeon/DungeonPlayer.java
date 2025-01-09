@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.core.dungeons;
+package codes.biscuit.skyblockaddons.features.dungeon;
 
 import codes.biscuit.skyblockaddons.features.dungeonmap.MapMarker;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
@@ -13,10 +13,6 @@ public class DungeonPlayer {
     private ColorCode healthColor;
     private MapMarker mapMarker;
     private int health;
-
-    public DungeonPlayer(String name) {
-        this.name = name;
-    }
 
     public DungeonPlayer(String name, DungeonClass dungeonClass, ColorCode healthColor, int health) {
         this.name = name;

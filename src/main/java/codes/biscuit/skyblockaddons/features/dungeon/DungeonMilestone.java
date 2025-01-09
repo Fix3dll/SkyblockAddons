@@ -1,13 +1,13 @@
-package codes.biscuit.skyblockaddons.core.dungeons;
+package codes.biscuit.skyblockaddons.features.dungeon;
 
 import lombok.Getter;
 
 @Getter
 public class DungeonMilestone {
 
-    private DungeonClass dungeonClass;
-    private String level;
-    private String value;
+    private final DungeonClass dungeonClass;
+    private final String level;
+    private final String value;
 
     public DungeonMilestone(DungeonClass dungeonClass) {
         this(dungeonClass, "⓿", "0");

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Event that is fired by {@link codes.biscuit.skyblockaddons.features.EntityOutlines.EntityOutlineRenderer} to determine which entities will be outlined.
+ * Event that is fired by {@link codes.biscuit.skyblockaddons.features.outline.EntityOutlineRenderer} to determine which entities will be outlined.
  * The event is fired twice each tick, first for the {@link Type#XRAY} phase, and second for the {@link Type#NO_XRAY} phase.
  * Event handlers can add entities/colors to be outlined for either phase using the {@link #queueEntitiesToOutline(Function)} event function
  * The resulting list of entities/associated colors is outlined after both events have been handled

@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
-import codes.biscuit.skyblockaddons.features.EntityOutlines.EntityOutlineRenderer;
+import codes.biscuit.skyblockaddons.features.outline.EntityOutlineRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.util.BlockPos;

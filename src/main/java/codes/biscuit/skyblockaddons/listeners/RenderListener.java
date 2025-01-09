@@ -2,11 +2,10 @@ package codes.biscuit.skyblockaddons.listeners;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.*;
-import codes.biscuit.skyblockaddons.core.dungeons.DungeonClass;
-import codes.biscuit.skyblockaddons.core.dungeons.DungeonManager;
-import codes.biscuit.skyblockaddons.core.dungeons.DungeonMilestone;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonClass;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonMilestone;
 import codes.biscuit.skyblockaddons.features.*;
-import codes.biscuit.skyblockaddons.features.EntityOutlines.FeatureTrackerQuest;
+import codes.biscuit.skyblockaddons.features.TrevorTrapperTracker;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonType;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonsSince;
@@ -37,7 +36,6 @@ import com.mojang.authlib.GameProfile;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -254,12 +252,6 @@ public class RenderListener {
                 }
             }
         }
-
-        if (entity instanceof AbstractClientPlayer) {
-            if (DungeonManager.onRenderEntityLabel((AbstractClientPlayer) entity, e.x, e.y, e.z)) {
-                e.setCanceled(true);
-            }
-        }
     }
 
     /**
@@ -469,7 +461,7 @@ public class RenderListener {
                     drawDragonTrackers(scale, buttonLocation);
                     break;
                 case PROXIMITY_INDICATOR:
-                    FeatureTrackerQuest.drawTrackerLocationIndicator(scale, buttonLocation);
+                    TrevorTrapperTracker.drawTrackerLocationIndicator(scale, buttonLocation);
                     break;
                 case PET_DISPLAY:
                     drawPetDisplay(scale, buttonLocation);

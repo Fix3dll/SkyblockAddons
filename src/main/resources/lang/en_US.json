@@ -255,7 +255,8 @@
     "manaTextIcon": "Mana Number Icon",
     "defenceTextIcon": "Defence Number Icon",
     "effectiveHealthTextIcon": "Effective Health Number Icon",
-    "xAllignment": "X Allignment [WIP]"
+    "xAllignment": "X Allignment [WIP]",
+    "classColoredTeammate": "Class Colored Outline"
   },
   "messages": {
     "enchants": "Enchants",
@@ -344,7 +345,8 @@
     "resourcesReloaded": "Resources reloaded.",
     "locationEditGui": {
       "atOpening": "TIP: You can adjust the scaling with the mouse wheel and increase the ratio by holding Shift. With right mouse click you can change the scale of that feature to default. You can also move the hovered feature with the WASD or arrow keys."
-    }
+    },
+    "classColoredTeammateRequirement": "Entity Outlines and Outline Dungeon Teammate features must be enabled"
   },
   "discordStatus": {
     "titleNone": "None",

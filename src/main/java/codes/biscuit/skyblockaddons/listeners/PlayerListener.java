@@ -3,8 +3,8 @@ package codes.biscuit.skyblockaddons.listeners;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.*;
-import codes.biscuit.skyblockaddons.core.dungeons.DungeonMilestone;
-import codes.biscuit.skyblockaddons.core.dungeons.DungeonPlayer;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonMilestone;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonPlayer;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
 import codes.biscuit.skyblockaddons.core.seacreatures.SeaCreatureManager;
 import codes.biscuit.skyblockaddons.events.DungeonPlayerReviveEvent;
@@ -1106,7 +1106,7 @@ public class PlayerListener {
         }
 
         /*
-        Don't show log for losing all items when the player dies in dungeons.
+        Don't show log for losing all items when the player dies in dungeon.
          The items come back after the player is revived and the large log causes a distraction.
          */
         if (Feature.ITEM_PICKUP_LOG.isEnabled() && e.entityPlayer == thisPlayer && main.getUtils().isInDungeon()) {

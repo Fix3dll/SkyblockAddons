@@ -1,8 +1,9 @@
-package codes.biscuit.skyblockaddons.core.dungeons;
+package codes.biscuit.skyblockaddons.features.dungeon;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
 import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
@@ -10,11 +11,15 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
@@ -22,6 +27,7 @@ import java.text.ParseException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -88,6 +94,26 @@ public class DungeonManager {
     @Getter private int playerListInfoDeaths;
 
     /**
+     * Entity-level predicate to determine whether a specific entity should be outlined, and if so, what color.
+     * <p>
+     * Return {@code null} if the entity should not be outlined, or the integer color of the entity to be outlined
+     * if the entity should be outlined
+     */
+    private static final Function<Entity, Integer> OUTLINE_COLOR = e -> {
+        // Only accept other player entities
+        if (e instanceof EntityOtherPlayerMP) {
+            String profileName = ((EntityOtherPlayerMP) e).getGameProfile().getName();
+            DungeonPlayer teammate = SkyblockAddons.getInstance().getDungeonManager().getDungeonPlayerByName(profileName);
+            if (teammate != null) {
+                return teammate.getDungeonClass().getColor().getColor();
+            }
+            // NPCs don't have a color on their team. Don't show them on outlines.
+            return null;
+        }
+        return null;
+    };
+
+    /**
      * Clear the dungeon game data. Called by {@link codes.biscuit.skyblockaddons.utils.Utils} each new game
      */
     public void reset() {
@@ -123,7 +149,6 @@ public class DungeonManager {
 
         DungeonClass dungeonClass = DungeonClass.fromDisplayName(matcher.group(1));
         return new DungeonMilestone(dungeonClass, matcher.group(2), matcher.group(3));
-
     }
 
     /**
@@ -348,10 +373,15 @@ public class DungeonManager {
     /**
      * Method for rendering {@link Feature#SHOW_CRITICAL_DUNGEONS_TEAMMATES}
      * and {@link Feature#SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY}
-     * @return true if one of the specified feature rendered
      */
-    public static boolean onRenderEntityLabel(AbstractClientPlayer player, double x, double y, double z) {
-        boolean rendered = false;
+    @SubscribeEvent()
+    public void onRenderLivingName(RenderLivingEvent.Specials.Pre<EntityLivingBase> e) {
+        AbstractClientPlayer player;
+        if (e.entity instanceof AbstractClientPlayer) {
+            player = (AbstractClientPlayer) e.entity;
+        } else {
+            return;
+        }
 
         if (main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon()
                 && (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() || Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled())
@@ -361,7 +391,7 @@ public class DungeonManager {
             DungeonPlayer dungeonPlayer = main.getDungeonManager().getTeammates().getOrDefault(profileName, null);
 
             if (renderViewEntity != player && dungeonPlayer != null) {
-                double newY = y + player.height;
+                double newY = e.y + player.height;
 
                 if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
                     newY += 0.35F;
@@ -374,7 +404,7 @@ public class DungeonManager {
                 }
 
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(x, newY, z);
+                GlStateManager.translate(e.x, newY, e.z);
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(-MC.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(MC.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
@@ -413,13 +443,13 @@ public class DungeonManager {
                                 true
                         );
                     }
-                    rendered = true;
+                    e.setCanceled(true);
                 }
 
                 if (!dungeonPlayer.isGhost() && Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
                     String nameOverlay =
                             ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] "
-                                    + ColorCode.GREEN + profileName;
+                                    + dungeonPlayer.getDungeonClass().getColor() + profileName;
                     MC.fontRendererObj.drawString(
                             nameOverlay,
                             -MC.fontRendererObj.getStringWidth(nameOverlay) / 2F,
@@ -436,7 +466,7 @@ public class DungeonManager {
                             -1,
                             true
                     );
-                    rendered = true;
+                    e.setCanceled(true);
                 }
 
                 GlStateManager.enableDepth();
@@ -447,7 +477,20 @@ public class DungeonManager {
                 GlStateManager.popMatrix();
             }
         }
+    }
 
-        return rendered;
+    /**
+     * Queues items to be outlined that satisfy global- and entity-level predicates.
+     * @param e the outline event
+     */
+    @SubscribeEvent
+    public void onRenderEntityOutlines(RenderEntityOutlineEvent e) {
+        if (e.getType() == RenderEntityOutlineEvent.Type.XRAY) {
+            // Test whether we should add any entities at all
+            if (Feature.OUTLINE_DUNGEON_TEAMMATES.isEnabled() && SkyblockAddons.getInstance().getUtils().isInDungeon()) {
+                // Queue specific items for outlining
+                e.queueEntitiesToOutline(OUTLINE_COLOR);
+            }
+        }
     }
 }

@@ -36,8 +36,9 @@ public class Translations {
         }
 
         // FALLBACK
-        if (text.isEmpty())
-            text = getString(defaultLangJson, path);
+        if (text.isEmpty()) text = getString(defaultLangJson, path);
+        // If there is no translation on fallback, return path
+        if (text.isEmpty()) return path;
 
         // Iterate through the string and replace any variables.
         Matcher matcher = VARIABLE_PATTERN.matcher(text);

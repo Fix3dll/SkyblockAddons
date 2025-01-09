@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.features.EntityOutlines;
+package codes.biscuit.skyblockaddons.features.outline;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 /**
  * Controls the behavior of the {@link codes.biscuit.skyblockaddons.core.Feature#MAKE_DROPPED_ITEMS_GLOW} and {@link codes.biscuit.skyblockaddons.core.Feature#SHOW_GLOWING_ITEMS_ON_ISLAND} features
  */
-public class FeatureItemOutlines {
+public class ItemOutlines {
 
     /**
      * Cached value of the client's SkyBlock location
@@ -57,7 +57,7 @@ public class FeatureItemOutlines {
         return null;
     };
 
-    public FeatureItemOutlines() {
+    public ItemOutlines() {
     }
 
     /**

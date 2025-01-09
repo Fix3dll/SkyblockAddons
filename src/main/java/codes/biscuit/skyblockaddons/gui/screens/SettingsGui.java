@@ -461,6 +461,17 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 ));
                 break;
 
+            case CLASS_COLORED_TEAMMATE:
+                boxWidth = 31; // Default size and stuff.
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                buttonList.add(new ButtonSettingToggle(x, y, setting.getMessage(), setting.getFeatureEquivalent()));
+                row += .4F;
+                y = getRowHeightSetting(row);
+                buttonList.add(new ButtonText(halfWidth, (int) y + 15, Translations.getMessage("messages.classColoredTeammateRequirement"), true, ColorCode.GRAY.getColor()));
+                row += .4F;
+                break;
+
             default:
                 boxWidth = 31; // Default size and stuff.
                 x = halfWidth - (boxWidth / 2);

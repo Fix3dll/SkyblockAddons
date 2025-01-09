@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.features.EntityOutlines;
+package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FeatureTrackerQuest {
+public class TrevorTrapperTracker {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getMinecraft();
@@ -51,7 +51,7 @@ public class FeatureTrackerQuest {
     private static TrackedEntity entityToOutline = null;
     private static int entityNameTagId = -1;
 
-    public FeatureTrackerQuest() {
+    public TrevorTrapperTracker() {
     }
 
     /**

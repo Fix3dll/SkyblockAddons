@@ -1,4 +1,4 @@
-package codes.biscuit.skyblockaddons.features.EntityOutlines;
+package codes.biscuit.skyblockaddons.features.outline;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Feature;
@@ -38,7 +38,7 @@ import static codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent.Type.
  * Class to handle all entity outlining, including xray and no-xray rendering
  * Features that include entity outlining should subscribe to the {@link RenderEntityOutlineEvent}.
  * <p>
- * See {@link FeatureItemOutlines} for an example of how to add specific entities based on predicates
+ * See {@link ItemOutlines} for an example of how to add specific entities based on predicates
  */
 public class EntityOutlineRenderer {
 
@@ -377,7 +377,9 @@ public class EntityOutlineRenderer {
                 entityRenderCache.setXrayCache(null);
                 entityRenderCache.setNoXrayCache(null);
                 entityRenderCache.setNoOutlineCache(null);
-                if (mc.renderGlobal.entityOutlineFramebuffer != null) mc.renderGlobal.entityOutlineFramebuffer.framebufferClear();
+                if (mc.renderGlobal.entityOutlineFramebuffer != null) {
+                    mc.renderGlobal.entityOutlineFramebuffer.framebufferClear();
+                }
                 emptyLastTick = true;
             }
         }
