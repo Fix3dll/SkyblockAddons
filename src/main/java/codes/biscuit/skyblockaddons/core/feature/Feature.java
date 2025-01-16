@@ -389,10 +389,11 @@ public enum Feature {
     }
 
     public void setValue(Object value) {
-//        if (FeatureData.isValidValue(value)) {
-        this.featureData.setValue(value);
-//        }
-//        throw new IllegalArgumentException("'value' is not valid! value: " + value);
+        if (FeatureData.isValidValue(value)) {
+            this.featureData.setValue(value);
+        } else {
+            throw new IllegalArgumentException(value + " is not valid for '" + this.name() + "'!");
+        }
     }
 
     public AnchorPoint getAnchorPoint() {
@@ -404,7 +405,7 @@ public enum Feature {
     }
 
     /**
-     * Whatever you set the scale factor to, the maximum limit will be set to 5.0 and the minimum limit to 0.5
+     * Whatever you set the scale factor to, the maximum limit will be set to {@code 5.0F} and the minimum limit to {@code 0.5F}
      * @param scale Float GUI Scale
      */
     public void setGuiScale(float scale) {
@@ -486,6 +487,13 @@ public enum Feature {
         return this.hasSettings() ? this.featureData.getSettings().size() : 0;
     }
 
+    /**
+     * Checks whether the specified is enabled. If the {@link Feature} is not enabled or doesn't have settings map,
+     * it returns {@code false} for all related {@link FeatureSetting}s.
+     * @param setting Feature related setting
+     * @return true if the {@code setting} is enabled
+     * @exception IllegalArgumentException if {@code setting} is not related with this Feature
+     */
     public boolean isEnabled(FeatureSetting setting) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
             throw new IllegalArgumentException(setting.getRelatedFeature() + " is not a related with " + this.name());
@@ -495,7 +503,7 @@ public enum Feature {
         } else if (!this.hasSettings()) {
             if (DEVELOPER_MODE.isEnabled()) LOGGER.error("{} doesn't have FeatureSettings!", this.name());
             return false;
-        } else if (!this.featureData.getSettings().containsKey(setting)) {
+        } else if (!this.featureData.getSettings().containsKey(setting)) { // For debug reason, not actually needed
             if (DEVELOPER_MODE.isEnabled()) LOGGER.error("{} does not contain setting '{}'!", this.name(), setting.name());
             return false;
         }
@@ -503,10 +511,22 @@ public enum Feature {
         return Boolean.TRUE.equals(this.featureData.getSettings().get(setting));
     }
 
+    /**
+     * @param setting Feature related setting
+     * @return opposite of isEnabled()
+     * @see Feature#isEnabled()
+     */
     public boolean isDisabled(FeatureSetting setting) {
         return !isEnabled(setting);
     }
 
+    /**
+     * Returns setting value as {@link Number}
+     * @param setting Feature related setting
+     * @return The value of the {@code setting} as {@link Number}
+     * @exception IllegalArgumentException if specified setting value is not instance of {@link Number}
+     * @see Feature#get(FeatureSetting)
+     */
     public @NonNull Number getAsNumber(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof Number) {
@@ -515,6 +535,13 @@ public enum Feature {
         throw new IllegalArgumentException("Setting " + setting + " is not a number. Type: " + value.getClass());
     }
 
+    /**
+     * Returns setting value as {@link RegistrableEnum}
+     * @param setting Feature related setting
+     * @return The value of the {@code setting} as {@link RegistrableEnum}
+     * @exception IllegalArgumentException if specified setting value is not instance of {@link RegistrableEnum}
+     * @see Feature#get(FeatureSetting)
+     */
     public @NonNull RegistrableEnum getAsEnum(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof RegistrableEnum) {
@@ -523,6 +550,13 @@ public enum Feature {
         throw new IllegalArgumentException("Setting " + setting + " is not a RegistrableEnum. Type: " + value.getClass());
     }
 
+    /**
+     * Returns setting value as {@link String}
+     * @param setting Feature related setting
+     * @return The value of the {@code setting} as {@link String}
+     * @exception IllegalArgumentException if specified setting value is not instance of {@link String}
+     * @see Feature#get(FeatureSetting)
+     */
     public @NonNull String getAsString(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof String) {
@@ -531,6 +565,14 @@ public enum Feature {
         throw new IllegalArgumentException("Setting " + setting + " is not a string. Type: " + value.getClass());
     }
 
+    /**
+     * If the Feature has a setting map and the specified setting is associated with this Feature, it returns the stored
+     * value of this setting. Universal settings can bypass these exceptions.
+     * @param setting Feature related setting
+     * @return The value of the {@code setting} in {@link Object}
+     * @exception IllegalArgumentException if {@code setting} is not related with this Feature
+     * @exception IllegalStateException if Feature doesn't have setting map or not contains {@code setting}
+     */
     public @NonNull Object get(FeatureSetting setting) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
             throw new IllegalArgumentException(setting.getRelatedFeature() + " is not a related with " + this.name());
@@ -543,6 +585,16 @@ public enum Feature {
         return this.featureData.getSettings().get(setting);
     }
 
+    /**
+     * Sets the value of the specified setting. If the setting is Universal and the specified value is valid, exceptions
+     * can be bypassed and saved. If the setting map does not exist, a new map is created for the Universal setting.
+     * @param setting Feature related setting
+     * @param value value to be associated with the specified setting
+     * @exception IllegalArgumentException if {@code setting} is not related with this Feature
+     * @exception IllegalStateException if Feature doesn't have setting map or not contains {@code setting}
+     * @exception IllegalStateException if specified value is not valid
+     * @see FeatureData#isValidValue(Object)
+     */
     public <T> void set(FeatureSetting setting, T value) {
         if (!setting.isUniversal()) {
             if (setting.getRelatedFeature() != this) {
@@ -564,6 +616,11 @@ public enum Feature {
         }
     }
 
+    /**
+     * Checks whether the specified {@link FeatureSetting} is present.
+     * @param setting of Feature
+     * @return true if {@link Feature}'s settings is not null and contains {@code setting}
+     */
     public boolean has(@NonNull FeatureSetting setting) {
         if (this.featureData.getSettings() == null) {
             return false;

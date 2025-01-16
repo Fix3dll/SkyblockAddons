@@ -15,6 +15,11 @@ import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * Customized deserialization of {@link ConfigValues} {@link ConfigValues} It parses each Feature in a tolerant manner.
+ * If any Feature object is read incorrectly, instead of failing completely, it marks that Feature to take its default
+ * value and continues reading the remaining properties.
+ */
 public class ConfigValuesAdapter implements JsonDeserializer<ConfigValues> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();

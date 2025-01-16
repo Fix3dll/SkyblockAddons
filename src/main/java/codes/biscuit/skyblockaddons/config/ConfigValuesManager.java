@@ -59,6 +59,7 @@ public class ConfigValuesManager {
     private final File settingsConfigFile;
     @Deprecated private final File legacyConfigFile; // TODO remove in future
 
+    /** Do not make direct changes! If you are using mutable objects, make a deep copy. */
     private final EnumMap<Feature, FeatureData<?>> DEFAULT_FEATURE_DATA = new EnumMap<>(Feature.class);
 
     private ConfigValues configValues = new ConfigValues();

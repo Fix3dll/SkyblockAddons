@@ -862,7 +862,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             );
         }
 
-        if (Feature.DUNGEONS_MAP_DISPLAY.isDisabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
+        if (Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
             if (keyCode == SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {
                 DungeonMapManager.decreaseZoomByStep();
             } else if (keyCode == SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {

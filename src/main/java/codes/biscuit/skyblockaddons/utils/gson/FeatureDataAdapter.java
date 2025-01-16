@@ -23,6 +23,10 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Serializes/deserializes FeatureData, which contains data specific to each feature.
+ * @see FeatureData
+ */
 public class FeatureDataAdapter<T> implements JsonDeserializer<FeatureData<T>>, JsonSerializer<FeatureData<T>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
@@ -74,7 +78,7 @@ public class FeatureDataAdapter<T> implements JsonDeserializer<FeatureData<T>>, 
     }
 
     @Override
-    public JsonElement serialize(FeatureData src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(FeatureData<T> src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
 
         Object value = src.getValue();
@@ -88,14 +92,14 @@ public class FeatureDataAdapter<T> implements JsonDeserializer<FeatureData<T>>, 
         }
         if (src.getCoords() != null) {
             JsonArray coords = new JsonArray();
-            coords.add(new JsonPrimitive((float) src.getCoords().getLeft()));
-            coords.add(new JsonPrimitive((float) src.getCoords().getRight()));
+            coords.add(new JsonPrimitive(src.getCoords().getLeft()));
+            coords.add(new JsonPrimitive(src.getCoords().getRight()));
             jsonObject.add("coords", coords);
         }
         if (!DEFAULT_SCALE.equals(src.getBarSizes().getLeft()) || !DEFAULT_SCALE.equals(src.getBarSizes().getRight())) {
             JsonArray barSizes = new JsonArray();
-            barSizes.add(new JsonPrimitive((float) src.getBarSizes().getLeft()));
-            barSizes.add(new JsonPrimitive((float) src.getBarSizes().getRight()));
+            barSizes.add(new JsonPrimitive(src.getBarSizes().getLeft()));
+            barSizes.add(new JsonPrimitive(src.getBarSizes().getRight()));
             jsonObject.add("barSizes", barSizes);
         }
         if (src.getGuiScale() != DEFAULT_SCALE) {
@@ -112,9 +116,9 @@ public class FeatureDataAdapter<T> implements JsonDeserializer<FeatureData<T>>, 
         TreeMap<FeatureSetting, Object> settings = src.getSettings();
         if (settings != null && !settings.isEmpty()) {
             JsonObject settingsJson = new JsonObject();
-            settings.forEach((featureSetting, settingValue) -> {
-                this.serializeValue(featureSetting.name(), settingValue, settingsJson, context);
-            });
+            settings.forEach((featureSetting, settingValue) ->
+                this.serializeValue(featureSetting.name(), settingValue, settingsJson, context)
+            );
             jsonObject.add("settings", settingsJson);
         }
 

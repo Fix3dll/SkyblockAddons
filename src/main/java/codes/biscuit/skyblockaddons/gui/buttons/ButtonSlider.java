@@ -22,6 +22,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
 
     private boolean dragging;
     private float normalizedValue;
+    private float previousFloatMouseX = -1;
 
     public ButtonSlider(double x, double y, int width, int height, float value, float min, float max, float step, UpdateCallback<Float> sliderCallback) {
         super(0, (int) x, (int) y, TextUtils.roundForString(value, 2));
@@ -70,7 +71,8 @@ public class ButtonSlider extends SkyblockAddonsButton {
             float minecraftScale = sr.getScaleFactor();
             float floatMouseX = Mouse.getX() / minecraftScale;
 
-            if (this.dragging) {
+            if (this.dragging && previousFloatMouseX != floatMouseX) {
+                previousFloatMouseX = floatMouseX;
                 this.normalizedValue = (floatMouseX - (this.xPosition + 4)) / (float) (this.width - 8);
                 this.normalizedValue = MathHelper.clamp_float(normalizedValue, 0.0F, 1.0F);
                 onUpdate();
@@ -118,4 +120,3 @@ public class ButtonSlider extends SkyblockAddonsButton {
         return MathUtils.denormalizeSliderValue(normalizedValue, min, max, step);
     }
 }
-

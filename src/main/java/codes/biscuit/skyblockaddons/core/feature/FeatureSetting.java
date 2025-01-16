@@ -1,10 +1,15 @@
 package codes.biscuit.skyblockaddons.core.feature;
 
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+/**
+ * There are 3 types of FeatureSettings: Universal, standard, and those with dynamic (unspecified) translation.
+ * The display order in the {@link SettingsGui} depends on the ordinal order.
+ */
 public enum FeatureSetting {
     COLOR("settings.changeColor"),
     X_ALLIGNMENT("settings.xAllignment"),

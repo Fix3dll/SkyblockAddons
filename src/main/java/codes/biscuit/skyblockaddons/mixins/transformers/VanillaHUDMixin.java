@@ -15,7 +15,7 @@ public class VanillaHUDMixin {
      * @author Fix3dll
      * @reason VanillaHUD legacy SBA compatibility
      */
-    @Overwrite
+    @Overwrite(remap = false)
     private static boolean isSBACompactTab() {
         return SkyblockAddons.getInstance().getUtils().isOnSkyblock()
                 && Feature.COMPACT_TAB_LIST.isEnabled()

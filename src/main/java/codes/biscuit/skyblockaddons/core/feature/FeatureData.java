@@ -1,8 +1,10 @@
 package codes.biscuit.skyblockaddons.core.feature;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.config.ConfigValuesManager;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.AnchorPoint;
+import codes.biscuit.skyblockaddons.utils.gson.FeatureDataAdapter;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +14,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.TreeMap;
 
+/**
+ * There is a FeatureData for each feature. This object contains various values specific to the feature.
+ * The Feature value or FeatureSetting value is dynamically stored. These dynamic values must be valid by
+ * {@link #isValidValue(Object)}.
+ * @see FeatureDataAdapter
+ * @see Feature
+ * @see ConfigValuesManager
+ */
 @Data
 public class FeatureData<T> {
 
