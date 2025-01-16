@@ -2,7 +2,6 @@
   "DROP_CONFIRMATION": {
     "value": false,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525,
     "settings": {
       "DROP_CONFIRMATION_IN_OTHER_GAMES": true
     }
@@ -11,12 +10,12 @@
     "value": true,
     "settings": {
       "BACKPACK_STYLE": "GUI",
-      "ENDER_CHEST_PREVIEW": true,
-      "MAKE_INVENTORY_COLORED": true,
-      "PERSONAL_COMPACTOR_PREVIEW": true,
       "SHOW_ONLY_WHEN_HOLDING_SHIFT": true,
-      "BUILDERS_TOOL_PREVIEW": true,
-      "CAKE_BAG_PREVIEW": true
+      "MAKE_INVENTORY_COLORED": true,
+      "CAKE_BAG_PREVIEW": true,
+      "PERSONAL_COMPACTOR_PREVIEW": true,
+      "ENDER_CHEST_PREVIEW": true,
+      "BUILDERS_TOOL_PREVIEW": true
     }
   },
   "HIDE_BONES": {
@@ -36,7 +35,6 @@
   "FULL_INVENTORY_WARNING": {
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525,
     "settings": {
       "REPEATING_FULL_INVENTORY_WARNING": true
     }
@@ -46,8 +44,7 @@
   },
   "MINION_STOP_WARNING": {
     "value": false,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "HIDE_HEALTH_BAR": {
     "value": false,
@@ -57,8 +54,7 @@
   },
   "MINION_FULL_WARNING": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "MANA_BAR": {
     "value": true,
@@ -67,7 +63,7 @@
       49.0,
       -43.0
     ],
-    "color": 16733525
+    "color": -11141121
   },
   "MANA_TEXT": {
     "value": true,
@@ -76,7 +72,7 @@
       49.0,
       -48.0
     ],
-    "color": 16733525,
+    "color": -11141121,
     "settings": {
       "MANA_TEXT_ICON": true
     }
@@ -88,7 +84,6 @@
       -48.0,
       -44.0
     ],
-    "color": 16733525,
     "settings": {
       "CHANGE_BAR_COLOR_WITH_POTIONS": true,
       "HEALTH_PREDICTION": true,
@@ -102,7 +97,6 @@
       -66.0,
       -49.0
     ],
-    "color": 16733525,
     "settings": {
       "HIDE_HEALTH_TEXT_ON_RIFT": true,
       "HEART_INSTEAD_HEALTH_ON_RIFT": true,
@@ -128,9 +122,8 @@
       114.0,
       -17.0
     ],
-    "color": 16733525,
+    "color": -11141291,
     "settings": {
-      "OTHER_DEFENCE_STATS": true,
       "DEFENCE_TEXT_ICON": true
     }
   },
@@ -141,7 +134,7 @@
       114.0,
       -8.0
     ],
-    "color": 16733525
+    "color": -11141291
   },
   "HEALTH_UPDATES": {
     "value": true,
@@ -164,7 +157,7 @@
       -41.0,
       29.0
     ],
-    "color": 16733525,
+    "color": -22016,
     "settings": {
       "DARK_AUCTION_TIMER_IN_OTHER_GAMES": true
     }
@@ -185,18 +178,16 @@
   },
   "SUMMONING_EYE_ALERT": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "MAKE_ENDERCHESTS_GREEN_IN_END": {
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "color": -11141291
   },
   "STOP_DROPPING_SELLING_RARE_ITEMS": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "REPLACE_ROMAN_NUMERALS_WITH_NUMBERS": {
     "value": false,
@@ -216,15 +207,15 @@
   "ENCHANTMENT_LORE_PARSING": {
     "value": true,
     "settings": {
-      "GOOD_ENCHANT_COLOR": "BLUE",
       "HIGHLIGHT_ENCHANTMENTS": true,
-      "COMMA_ENCHANT_COLOR": "BLUE",
-      "HIDE_GREY_ENCHANTS": true,
       "PERFECT_ENCHANT_COLOR": "CHROMA",
+      "GREAT_ENCHANT_COLOR": "GOLD",
+      "GOOD_ENCHANT_COLOR": "BLUE",
       "POOR_ENCHANT_COLOR": "GRAY",
+      "COMMA_ENCHANT_COLOR": "BLUE",
       "HIDE_ENCHANTMENT_LORE": true,
-      "ENCHANT_LAYOUT": "NORMAL",
-      "GREAT_ENCHANT_COLOR": "GOLD"
+      "HIDE_GREY_ENCHANTS": true,
+      "ENCHANT_LAYOUT": "NORMAL"
     }
   },
   "SHOW_ITEM_COOLDOWNS": {
@@ -237,12 +228,12 @@
       0.0,
       -84.0
     ],
-    "color": 16733525,
+    "color": -11141121,
     "settings": {
       "SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL": true,
-      "ABBREVIATE_SKILL_XP_DENOMINATOR": true,
+      "SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP": true,
       "SHOW_SKILL_XP_GAINED": true,
-      "SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP": true
+      "ABBREVIATE_SKILL_XP_DENOMINATOR": true
     }
   },
   "SPEED_PERCENTAGE": {
@@ -252,7 +243,7 @@
       -110.0,
       -11.0
     ],
-    "color": 16733525
+    "color": -1
   },
   "SLAYER_ARMOR_PROGRESS": {
     "value": true,
@@ -261,12 +252,11 @@
       231.0,
       -33.0
     ],
-    "color": 16733525
+    "color": -11141121
   },
   "SPECIAL_ZEALOT_ALERT": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "ENABLE_MESSAGE_WHEN_MINING_DEEP_CAVERNS": {
     "value": true
@@ -302,7 +292,7 @@
       -71.0,
       135.0
     ],
-    "color": 16733525,
+    "color": -16733526,
     "settings": {
       "COUNTER_ZEALOT_SPAWN_AREAS_ONLY": true
     }
@@ -328,7 +318,7 @@
       -71.0,
       87.0
     ],
-    "color": 16733525,
+    "color": -16733526,
     "settings": {
       "TOTAL_ZEALOT_SPAWN_AREAS_ONLY": true
     }
@@ -340,7 +330,7 @@
       -71.0,
       103.0
     ],
-    "color": 16733525,
+    "color": -16733526,
     "settings": {
       "EYE_ZEALOT_SPAWN_AREAS_ONLY": true
     }
@@ -352,7 +342,7 @@
       -71.0,
       119.0
     ],
-    "color": 16733525,
+    "color": -16733526,
     "settings": {
       "AVERAGE_ZEALOT_SPAWN_AREAS_ONLY": true
     }
@@ -367,14 +357,16 @@
       0.0,
       35.0
     ],
-    "color": 16733525
+    "color": -16733526
   },
   "DISCORD_RPC": {
     "value": false,
     "settings": {
+      "DISCORD_RP_DETAILS": "LOCATION",
       "DISCORD_RP_STATE": "AUTO_STATUS",
       "DISCORD_RP_AUTO_MODE": "NONE",
-      "DISCORD_RP_DETAILS": "LOCATION"
+      "DISCORD_RP_CUSTOM_DETAILS": "",
+      "DISCORD_RP_CUSTOM_STATE": ""
     }
   },
   "ENDSTONE_PROTECTOR_DISPLAY": {
@@ -384,7 +376,7 @@
       -184.0,
       11.0
     ],
-    "color": 16733525
+    "color": -1
   },
   "FANCY_WARP_MENU": {
     "value": true
@@ -395,8 +387,7 @@
     "coords": [
       36.0,
       100.0
-    ],
-    "color": 16733525
+    ]
   },
   "ENABLE_MESSAGE_WHEN_BREAKING_PARK": {
     "value": true
@@ -417,7 +408,7 @@
       15.5,
       -164.0
     ],
-    "color": 16733525
+    "color": -11141121
   },
   "ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT": {
     "value": false
@@ -428,7 +419,7 @@
   "CHANGE_ZEALOT_COLOR": {
     "value": false,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "color": -43521
   },
   "HIDE_SVEN_PUP_NAMETAGS": {
     "value": false
@@ -441,13 +432,13 @@
       70.666664
     ],
     "guiScale": 1.14,
-    "color": 16733525,
+    "color": -16777216,
     "settings": {
-      "CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD": true,
-      "SHOW_PLAYER_HEADS_ON_MAP": true,
       "ROTATE_MAP": true,
-      "DUNGEON_MAP_ZOOM": 1.1,
-      "CENTER_ROTATION_ON_PLAYER": true
+      "CENTER_ROTATION_ON_PLAYER": true,
+      "SHOW_PLAYER_HEADS_ON_MAP": true,
+      "CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD": true,
+      "DUNGEON_MAP_ZOOM": 1.1
     }
   },
   "MAKE_DROPPED_ITEMS_GLOW": {
@@ -459,7 +450,6 @@
   "SHOW_BASE_STAT_BOOST_PERCENTAGE": {
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525,
     "settings": {
       "BASE_STAT_COLOR_BY_RARITY": true
     }
@@ -467,7 +457,7 @@
   "SHOW_HEALING_CIRCLE_WALL": {
     "value": false,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525,
+    "color": -11141291,
     "settings": {
       "HEALING_CIRCLE_OPACITY": 0.4
     }
@@ -477,8 +467,7 @@
   },
   "SHOW_ITEM_DUNGEON_FLOOR": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "SHOW_DUNGEON_MILESTONE": {
     "value": true,
@@ -487,7 +476,7 @@
       0.0,
       51.5
     ],
-    "color": 16733525
+    "color": -171
   },
   "DUNGEONS_COLLECTED_ESSENCES_DISPLAY": {
     "value": true,
@@ -496,7 +485,7 @@
       -93.5,
       -47.333344
     ],
-    "color": 16733525,
+    "color": -171,
     "settings": {
       "SHOW_SALVAGE_ESSENCES_COUNTER": true,
       "RESET_SALVAGED_ESSENCES_AFTER_LEAVING_MENU": true
@@ -516,11 +505,11 @@
       -189.0,
       31.0
     ],
-    "color": 16733525,
+    "color": -1,
     "settings": {
+      "REVENANT_TRACKER_TEXT_MODE": false,
       "REVENANT_TRACKER_COLOR_BY_RARITY": true,
-      "HIDE_WHEN_NOT_IN_CRYPTS": true,
-      "REVENANT_TRACKER_TEXT_MODE": true
+      "HIDE_WHEN_NOT_IN_CRYPTS": true
     }
   },
   "TARANTULA_SLAYER_TRACKER": {
@@ -530,9 +519,9 @@
       -180.0,
       31.0
     ],
-    "color": 16733525,
+    "color": -1,
     "settings": {
-      "TARANTULA_TRACKER_TEXT_MODE": true,
+      "TARANTULA_TRACKER_TEXT_MODE": false,
       "TARANTULA_TRACKER_COLOR_BY_RARITY": true,
       "HIDE_WHEN_NOT_IN_SPIDERS_DEN": true
     }
@@ -544,11 +533,11 @@
       -172.0,
       31.0
     ],
-    "color": 16733525,
+    "color": -1,
     "settings": {
-      "TARANTULA_TRACKER_TEXT_MODE": true,
-      "HIDE_WHEN_NOT_IN_CASTLE": true,
-      "SVEN_TRACKER_COLOR_BY_RARITY": true
+      "SVEN_TRACKER_TEXT_MODE": false,
+      "SVEN_TRACKER_COLOR_BY_RARITY": true,
+      "HIDE_WHEN_NOT_IN_CASTLE": true
     }
   },
   "DRAGON_STATS_TRACKER": {
@@ -558,7 +547,7 @@
       51.0,
       70.76433
     ],
-    "color": 16733525,
+    "color": -1,
     "settings": {
       "DRAGON_TRACKER_TEXT_MODE": true,
       "DRAGON_TRACKER_COLOR_BY_RARITY": true,
@@ -571,8 +560,7 @@
     "coords": [
       41.5,
       143.0
-    ],
-    "color": 16733525
+    ]
   },
   "ROCK_PET_TRACKER": {
     "value": false,
@@ -581,7 +569,7 @@
       202.66667,
       9.333333
     ],
-    "color": 16733525
+    "color": -5592406
   },
   "DOLPHIN_PET_TRACKER": {
     "value": false,
@@ -590,7 +578,7 @@
       202.66667,
       25.333336
     ],
-    "color": 16733525,
+    "color": -11141121,
     "settings": {
       "SHOW_ONLY_HOLDING_FISHING_ROD": true
     }
@@ -603,8 +591,7 @@
   },
   "SHOW_STACKING_ENCHANT_PROGRESS": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "DUNGEONS_SECRETS_DISPLAY": {
     "value": true,
@@ -613,7 +600,7 @@
       41.48,
       120.96
     ],
-    "color": 16733525
+    "color": -5592406
   },
   "SKILL_PROGRESS_BAR": {
     "value": false,
@@ -622,7 +609,7 @@
       0.16668701,
       -60.5
     ],
-    "color": 16733525
+    "color": -11141291
   },
   "DISABLE_MORT_MESSAGES": {
     "value": true
@@ -632,8 +619,7 @@
   },
   "SHOW_SWORD_KILLS": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "HIDE_OTHER_PLAYERS_PRESENTS": {
     "value": true
@@ -648,7 +634,7 @@
       0.0,
       15.0
     ],
-    "color": 16733525
+    "color": -22016
   },
   "SHOW_EXPERIMENTATION_TABLE_TOOLTIPS": {
     "value": false
@@ -660,7 +646,7 @@
       49.0,
       -36.0
     ],
-    "color": 16733525
+    "color": -16733696
   },
   "DRILL_FUEL_TEXT": {
     "value": true,
@@ -669,7 +655,7 @@
       49.0,
       -33.0
     ],
-    "color": 16733525,
+    "color": -16733696,
     "settings": {
       "ABBREVIATE_DRILL_FUEL_DENOMINATOR": true
     }
@@ -677,7 +663,7 @@
   "FISHING_PARTICLE_OVERLAY": {
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525,
+    "color": -1,
     "settings": {
       "BIGGER_WAKE": true
     }
@@ -687,11 +673,16 @@
   },
   "TREVOR_THE_TRAPPER_FEATURES": {
     "value": true,
+    "anchorPoint": "BOTTOM_MIDDLE",
+    "coords": [
+      158.0,
+      -50.0
+    ],
     "settings": {
-      "TREVOR_BETTER_NAMETAG": true,
       "TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR": true,
       "TREVOR_HIGHLIGHT_TRACKED_ENTITY": true,
-      "TREVOR_SHOW_QUEST_COOLDOWN": true
+      "TREVOR_SHOW_QUEST_COOLDOWN": true,
+      "TREVOR_BETTER_NAMETAG": true
     }
   },
   "FETCHUR_TODAY": {
@@ -701,12 +692,12 @@
       -51.0,
       67.0
     ],
-    "color": 16733525,
+    "color": -11141291,
     "settings": {
-      "SHOW_FETCHUR_ITEM_NAME": true,
-      "WARN_WHEN_FETCHUR_CHANGES": true,
       "SHOW_FETCHUR_ONLY_IN_DWARVENS": true,
-      "SHOW_FETCHUR_INVENTORY_OPEN_ONLY": true
+      "SHOW_FETCHUR_ITEM_NAME": true,
+      "SHOW_FETCHUR_INVENTORY_OPEN_ONLY": true,
+      "WARN_WHEN_FETCHUR_CHANGES": true
     }
   },
   "STOP_RAT_SOUNDS": {
@@ -722,11 +713,11 @@
       -216.0,
       87.0
     ],
-    "color": 16733525,
+    "color": -1,
     "settings": {
-      "HIDE_WHEN_NOT_IN_END": true,
-      "VOIDGLOOM_TRACKER_TEXT_MODE": true,
-      "RIFTSTALKER_TRACKER_COLOR_BY_RARITY": true
+      "VOIDGLOOM_TRACKER_TEXT_MODE": false,
+      "VOIDGLOOM_TRACKER_COLOR_BY_RARITY": true,
+      "HIDE_WHEN_NOT_IN_END": true
     }
   },
   "HIDE_PLAYERS_NEAR_NPCS": {
@@ -739,7 +730,7 @@
       100.0,
       -47.0
     ],
-    "color": 16733525
+    "color": -16733526
   },
   "DOUBLE_WARP": {
     "value": false
@@ -751,9 +742,9 @@
     "value": true,
     "settings": {
       "TREVOR_HIGHLIGHT_TRACKED_ENTITY": true,
-      "OUTLINE_SHOWCASE_ITEMS": true,
       "OUTLINE_DUNGEON_TEAMMATES": true,
-      "ITEM_GLOW": true
+      "ITEM_GLOW": true,
+      "OUTLINE_SHOWCASE_ITEMS": true
     }
   },
   "EFFECTIVE_HEALTH_TEXT": {
@@ -763,10 +754,19 @@
       114.0,
       -27.0
     ],
-    "color": 16733525,
+    "color": -16733696,
     "settings": {
       "EFFECTIVE_HEALTH_TEXT_ICON": true
     }
+  },
+  "OTHER_DEFENCE_STATS": {
+    "value": true,
+    "anchorPoint": "BOTTOM_MIDDLE",
+    "coords": [
+      114.0,
+      -37.0
+    ],
+    "color": -11141291
   },
   "PREVENT_MOVEMENT_ON_DEATH": {
     "value": false
@@ -781,7 +781,7 @@
       -177.0,
       20.0
     ],
-    "color": 16733525,
+    "color": -5592406,
     "settings": {
       "DISABLE_SPIRIT_SCEPTRE_MESSAGES": true
     }
@@ -793,7 +793,7 @@
       -41.0,
       47.5
     ],
-    "color": 16733525,
+    "color": -22016,
     "settings": {
       "FARM_EVENT_TIMER_IN_OTHER_GAMES": true
     }
@@ -822,8 +822,8 @@
   "PLAYER_SYMBOLS_IN_CHAT": {
     "value": true,
     "settings": {
-      "SHOW_NETHER_FACTION": true,
-      "SHOW_PROFILE_TYPE": true
+      "SHOW_PROFILE_TYPE": true,
+      "SHOW_NETHER_FACTION": true
     }
   },
   "CRIMSON_ARMOR_ABILITY_STACKS": {
@@ -833,12 +833,11 @@
       0.0,
       -98.5
     ],
-    "color": 16733525
+    "color": -22016
   },
   "HIDE_TRUE_DEFENSE": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "color": 16733525
+    "anchorPoint": "BOTTOM_MIDDLE"
   },
   "INFERNO_SLAYER_TRACKER": {
     "value": true,
@@ -847,11 +846,11 @@
       -216.0,
       87.0
     ],
-    "color": 16733525,
+    "color": -1,
     "settings": {
-      "HIDE_WHEN_NOT_IN_CRIMSON": true,
-      "INFERNO_TRACKER_TEXT_MODE": true,
-      "INFERNO_TRACKER_COLOR_BY_RARITY": true
+      "INFERNO_TRACKER_TEXT_MODE": false,
+      "INFERNO_TRACKER_COLOR_BY_RARITY": true,
+      "HIDE_WHEN_NOT_IN_CRIMSON": true
     }
   },
   "RIFTSTALKER_SLAYER_TRACKER": {
@@ -861,11 +860,11 @@
       -167.0,
       31.0
     ],
-    "color": 16733525,
+    "color": -1,
     "settings": {
-      "HIDE_WHEN_NOT_IN_RIFT": true,
-      "RIFTSTALKER_TRACKER_TEXT_MODE": true,
-      "RIFTSTALKER_TRACKER_COLOR_BY_RARITY": true
+      "RIFTSTALKER_TRACKER_TEXT_MODE": false,
+      "RIFTSTALKER_TRACKER_COLOR_BY_RARITY": true,
+      "HIDE_WHEN_NOT_IN_RIFT": true
     }
   },
   "FIRE_FREEZE_TIMER": {
@@ -876,7 +875,7 @@
       96.0
     ],
     "guiScale": 2.0,
-    "color": 16733525,
+    "color": -171,
     "settings": {
       "FIRE_FREEZE_SOUND": true,
       "FIRE_FREEZE_WHEN_HOLDING": true
@@ -892,7 +891,7 @@
       -103.5,
       -103.0
     ],
-    "color": 16733525,
+    "color": -5635926,
     "settings": {
       "ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR": true
     }
@@ -904,7 +903,7 @@
       -108.0,
       -126.25
     ],
-    "color": 16733525,
+    "color": -22016,
     "settings": {
       "PET_ITEM_STYLE": "SHOW_ITEM"
     }

@@ -64,6 +64,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     /**
      * For {@link SBAModGuiFactory}
      */
+    @SuppressWarnings("unused")
     public SkyblockAddonsGui(GuiScreen parent) {
         this.parent = parent;
         this.tab = EnumUtils.GuiTab.MAIN;
@@ -325,7 +326,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 buttonList.add(new ButtonCredit(coords.getLeft(), coords.getRight(), text, credit, feature, featureGui.isMultilineButton()));
             }
 
-            if (feature.hasSettings()) {
+            if (feature.hasSettings() || feature.isColorFeature() || feature.couldBeXAllignment()) {
                 buttonList.add(new ButtonSettings(x + boxWidth - 33, y + boxHeight - 20, feature));
             }
             buttonList.add(new ButtonFeatureToggle(x + (boxWidth / 2F) - (31 / 2F), y+boxHeight-18, feature));

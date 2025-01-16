@@ -79,36 +79,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-//        if (reInit) {
-//            reInit = false;
-//            initGui();
-//        }
-//
-//        float alphaMultiplier = calculateAlphaMultiplier();
-//        // Alpha of the text will increase from 0 to 127 over 500ms.
-//        int alpha = (int) (255 * alphaMultiplier);
-//        GlStateManager.enableBlend();
-//        drawGradientBackground(alpha);
-//
-//        if (alpha < 4) alpha = 4; // Text under 4 alpha appear 100% transparent for some reason o.O
-//        int defaultBlue = ColorUtils.getDefaultBlue(alpha * 2);
-//        drawDefaultTitleText(this, alpha * 2);
-//
-//        if (feature != Feature.LANGUAGE) {
-//            int halfWidth = width / 2;
-//            int boxWidth = 140;
-//            int x = halfWidth - 90 - boxWidth;
-//            int width = halfWidth + 90 + boxWidth;
-//            width -= x;
-//            float numberOfRow = row - 1;
-//            int height = (int) (getRowHeightSetting(numberOfRow) - 70);
-//            int y = (int) getRowHeight(1);
-//            DrawUtils.drawRect(x, y, width, height, ColorUtils.getDummySkyblockColor(28, 29, 41, 230), 4);
-//
-//            drawScaledString(this, getMessage("settings.settings"), 110, defaultBlue, 1.5, 0);
-//        }
         super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
-//        GlStateManager.disableBlend();
     }
 
     private void addButton(FeatureSetting setting) {

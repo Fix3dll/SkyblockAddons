@@ -82,21 +82,25 @@ public class ConfigValuesManager {
     public void loadValues() {
         Gson gson = SkyblockAddons.getGson();
 
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("defaults.json");
-             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            DEFAULT_FEATURE_DATA.putAll(
-                    gson.fromJson(
-                            inputStreamReader,
-                            new TypeToken<EnumMap<Feature, FeatureData<?>>>() {}.getType()
-                    )
-            );
-        } catch (Exception ex) {
-            CrashReport crashReport = CrashReport.makeCrashReport(ex, "Reading default settings file");
-            throw new ReportedException(crashReport);
+        if (DEFAULT_FEATURE_DATA.isEmpty()) {
+            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("defaults.json");
+                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
+                DEFAULT_FEATURE_DATA.putAll(
+                        gson.fromJson(
+                                inputStreamReader,
+                                new TypeToken<EnumMap<Feature, FeatureData<?>>>() {
+                                }.getType()
+                        )
+                );
+            } catch (Exception ex) {
+                CrashReport crashReport = CrashReport.makeCrashReport(ex, "Reading default settings file");
+                throw new ReportedException(crashReport);
+            }
         }
 
+        boolean configFileExists = settingsConfigFile.exists();
         // TODO It's terrifying down there. I don't recommend looking unless necessary. Destroy in the future.
-        if (legacyConfigFile.exists()) {
+        if (legacyConfigFile.exists() && !configFileExists) {
             try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("migrationMap.json");
                  InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
                 migrationMap = gson.fromJson(
@@ -309,7 +313,7 @@ public class ConfigValuesManager {
                 }
                 int legacyColor = colors.getOrDefault(feature.getId(), 0);
                 if (legacyColor == 0) {
-                    if (feature.getFeatureGuiData() != null && feature.getFeatureGuiData().getDefaultColor() != null) {
+                    if (feature.isColorFeature()) {
                         legacyColor = feature.getFeatureGuiData().getDefaultColor().getColor(255);
                     } else {
                         legacyColor = ColorUtils.setColorAlpha(ColorCode.RED.getColor(), 255);
@@ -408,7 +412,7 @@ public class ConfigValuesManager {
                     scheduledTask.cancel();
                 }
             }, 20, 20);
-        } else if (settingsConfigFile.exists()) {
+        } else if (configFileExists) {
 
             try (InputStreamReader reader = new InputStreamReader(
                     Files.newInputStream(settingsConfigFile.toPath()), StandardCharsets.UTF_8

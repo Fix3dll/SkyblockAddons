@@ -537,7 +537,7 @@ public enum Feature {
         } else if (!this.hasSettings()) {
             throw new IllegalStateException(this.name() +  " doesn't have FeatureSettings!");
         } else if (!this.featureData.getSettings().containsKey(setting)) {
-            throw new IllegalStateException(this.name() + " does not contain setting '" + this.name() + "'!");
+            throw new IllegalStateException(this.name() + " does not contain setting '" + setting.name() + "'!");
         }
 
         return this.featureData.getSettings().get(setting);
@@ -550,7 +550,7 @@ public enum Feature {
             } else if (!this.hasSettings()) {
                 throw new IllegalStateException(this.name() + " doesn't have FeatureSettings!");
             } else if (!this.featureData.getSettings().containsKey(setting)) {
-                throw new IllegalStateException(this.name() + " does not contain setting '" + this.name() + "'!");
+                throw new IllegalStateException(this.name() + " does not contain setting '" + setting.name() + "'!");
             }
         } else if (this.featureData.getSettings() == null) {
             // If settings map is null, create new one for universal settings
