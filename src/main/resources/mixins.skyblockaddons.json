@@ -37,6 +37,7 @@
     "EntityLivingBaseMixin",
     "InventoryPlayerMixin",
     "ItemMixin",
-    "PatcherFontRendererMixin"
+    "PatcherFontRendererMixin",
+    "VanillaHUDMixin"
   ]
 }
