@@ -29,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class GuiContainerHook {
 
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getMinecraft();
 
     private static final ResourceLocation LOCK = new ResourceLocation("skyblockaddons", "lock.png");
@@ -42,59 +43,68 @@ public class GuiContainerHook {
         }
 
         if (hoveredSlot != null) {
-            SkyblockAddons main = SkyblockAddons.getInstance();
             if (hoveredSlot.getHasStack() && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled()
                     && main.getUtils().isEmptyGlassPane(hoveredSlot.getStack())) {
                 return;
             }
 
-            Container container = Minecraft.getMinecraft().thePlayer.openContainer;
+            Container container = MC.thePlayer.openContainer;
             int slotNum = hoveredSlot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
             main.getUtils().setLastHoveredSlot(slotNum);
             if (main.getUtils().isOnSkyblock() && Feature.LOCK_SLOTS.isEnabled()
                     && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
                 guiContainer.drawGradientRect(left, top, right, bottom, OVERLAY_RED, OVERLAY_RED);
-                GlStateManager.disableLighting();
-                GlStateManager.disableDepth();
-                GlStateManager.color(1,1,1,0.4F);
-                GlStateManager.enableBlend();
-                MC.getTextureManager().bindTexture(LOCK);
-                MC.ingameGUI.drawTexturedModalRect(hoveredSlot.xDisplayPosition, hoveredSlot.yDisplayPosition, 0, 0, 16, 16);
-                GlStateManager.enableLighting();
-                GlStateManager.enableDepth();
                 return;
             }
         }
         guiContainer.drawGradientRect(left, top, right, bottom, startColor, endColor); // default behaviour
     }
 
-    public static void keyTyped(Slot theSlot, int keyCode, CallbackInfo ci) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        Minecraft mc = Minecraft.getMinecraft();
+    public static void drawSlot(Slot slot) {
+        Container container = MC.thePlayer.openContainer;
 
-        if (main.getUtils().isOnSkyblock() && mc.thePlayer != null) {
+        if (slot != null) {
+            if (Feature.LOCK_SLOTS.isEnabled() && main.getUtils().isOnSkyblock()) {
+                int slotNum = slot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
+                if (main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
+                        && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
+                    GlStateManager.disableLighting();
+                    GlStateManager.disableDepth();
+                    GlStateManager.color(1,1,1,0.4F);
+                    GlStateManager.enableBlend();
+                    MC.getTextureManager().bindTexture(LOCK);
+                    MC.ingameGUI.drawTexturedModalRect(slot.xDisplayPosition, slot.yDisplayPosition, 0, 0, 16, 16);
+                    GlStateManager.enableLighting();
+                    GlStateManager.enableDepth();
+                }
+            }
+        }
+    }
+
+    public static void keyTyped(Slot theSlot, int keyCode, CallbackInfo ci) {
+        if (main.getUtils().isOnSkyblock() && MC.thePlayer != null) {
             ContainerPreviewManager.onContainerKeyTyped(keyCode);
 
-            if (Feature.LOCK_SLOTS.isEnabled() && (keyCode != 1 && keyCode != mc.gameSettings.keyBindInventory.getKeyCode())) {
+            if (Feature.LOCK_SLOTS.isEnabled() && (keyCode != 1 && keyCode != MC.gameSettings.keyBindInventory.getKeyCode())) {
                 int slot = main.getUtils().getLastHoveredSlot();
                 boolean isHotkeying = false;
-                if (mc.thePlayer.inventory.getItemStack() == null && theSlot != null) {
+                if (MC.thePlayer.inventory.getItemStack() == null && theSlot != null) {
                     for (int i = 0; i < 9; ++i) {
-                        if (keyCode == mc.gameSettings.keyBindsHotbar[i].getKeyCode()) {
+                        if (keyCode == MC.gameSettings.keyBindsHotbar[i].getKeyCode()) {
                             slot = i + 36; // They are hotkeying, the actual slot is the targeted one, +36 because
                             isHotkeying = true;
                         }
                     }
                 }
-                if (slot >= 9 || mc.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5) {
+                if (slot >= 9 || MC.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5) {
                     PersistentValuesManager pvm = main.getPersistentValuesManager();
                     if (pvm.getLockedSlots().contains(slot)) {
                         if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
                             main.getUtils().playLoudSound("random.orb", 1);
                             pvm.getLockedSlots().remove(slot);
                             pvm.saveValues();
-                        } else if (isHotkeying || mc.gameSettings.keyBindDrop.getKeyCode() == keyCode) {
+                        } else if (isHotkeying || MC.gameSettings.keyBindDrop.getKeyCode() == keyCode) {
                             // Only buttons that would cause an item to move/drop out of the slot will be canceled
                             ci.cancel(); // slot is locked
                             main.getUtils().playLoudSound("note.bass", 0.5);
@@ -109,7 +119,7 @@ public class GuiContainerHook {
                     }
                 }
             }
-            if (mc.gameSettings.keyBindDrop.getKeyCode() == keyCode
+            if (MC.gameSettings.keyBindDrop.getKeyCode() == keyCode
                     && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled()
                     && !main.getUtils().isInDungeon()
                     && !ItemDropChecker.canDropItem(theSlot)) {
@@ -122,8 +132,7 @@ public class GuiContainerHook {
      * This method returns true to CANCEL the click in a GUI (lol I get confused)
      */
     public static boolean onHandleMouseClick(Slot slot, int slotId, int clickedButton, int clickType) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+        GuiScreen currentScreen = MC.currentScreen;
 
         // Saves clicks in Pets menu
         if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS && currentScreen instanceof GuiChest) {

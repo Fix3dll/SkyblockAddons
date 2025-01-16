@@ -2516,47 +2516,51 @@ public class RenderListener {
     }
 
     public static void renderItem(ItemStack item, float x, float y, float scale) {
-        GlStateManager.pushMatrix();
+        boolean depthChanged = false;
+        boolean previousDepthState = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
+        if (item.getItem() == Items.skull) { // FIXME
+            GlStateManager.enableDepth();
+            depthChanged = true;
+        }
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
-        GlStateManager.enableDepth();
-        if (MC.currentScreen == null) {
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        }
 
+        GlStateManager.pushMatrix();
         if (scale > 1) {
             GlStateManager.scale(scale, scale, 1F);
         }
-        GlStateManager.translate(x / scale, y / scale, 50);
+        GlStateManager.translate(x / scale, y / scale, 0);
         MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
+        GlStateManager.popMatrix();
 
-        GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
-        GlStateManager.popMatrix();
+        if (depthChanged && !previousDepthState) {
+            GlStateManager.disableDepth();
+        }
     }
 
     public static void renderItemAndOverlay(ItemStack item, String name, float x, float y) {
-        renderItemAndOverlay(item, name, x, y, 50);
-    }
-
-    public static void renderItemAndOverlay(ItemStack item, String name, float x, float y, float z) {
-        GlStateManager.pushMatrix();
+        boolean depthChanged = false;
+        boolean previousDepthState = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
+        if (item.getItem() == Items.skull) { // FIXME
+            GlStateManager.enableDepth();
+            depthChanged = true;
+        }
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
-        GlStateManager.enableDepth();
-        if (MC.currentScreen == null) {
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        }
-        GlStateManager.translate(x, y, z);
 
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 0);
         MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
         MC.getRenderItem().renderItemOverlayIntoGUI(MC.fontRendererObj, item, 0, 0, name);
+        GlStateManager.popMatrix();
 
-        GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
-        GlStateManager.popMatrix();
+        if (depthChanged && !previousDepthState) {
+            GlStateManager.disableDepth();
+        }
     }
 
     private static final List<ItemDiff> DUMMY_PICKUP_LOG = Collections.unmodifiableList(Arrays.asList(

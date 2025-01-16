@@ -6,7 +6,6 @@ import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
-import codes.biscuit.skyblockaddons.listeners.RenderListener;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -22,6 +21,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  */
 public class ContainerPreviewManager {
 
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("skyblockaddons", "containerPreview.png");
@@ -206,7 +206,7 @@ public class ContainerPreviewManager {
                 items.add(ItemStack.loadItemStackFromNBT(item));
             }
         } catch (Exception ex) {
-            logger.error("There was an error decompressing container data.", ex);
+            LOGGER.error("There was an error decompressing container data.", ex);
         }
         return items;
     }
@@ -309,7 +309,13 @@ public class ContainerPreviewManager {
                     int itemX = itemStartX + ((i % cols) * textureItemSquare);
                     int itemY = itemStartY + ((i / cols) * textureItemSquare);
 
-                    RenderListener.renderItemAndOverlay(item, null, itemX, itemY, 200);
+                    RenderItem renderItem = mc.getRenderItem();
+                    guiContainer.zLevel = 200;
+                    renderItem.zLevel = 200;
+                    renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
+                    renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
+                    guiContainer.zLevel = 0;
+                    renderItem.zLevel = 0;
 
                     if (frozen && mouseX > itemX && mouseX < itemX + 16 && mouseY > itemY && mouseY < itemY + 16) {
                         tooltipItem = item;
@@ -342,7 +348,13 @@ public class ContainerPreviewManager {
                     int itemX = x + ((i % cols) * 16);
                     int itemY = y + ((i / cols) * 16);
 
-                    RenderListener.renderItemAndOverlay(item, null, itemX, itemY, 200);
+                    RenderItem renderItem = mc.getRenderItem();
+                    guiContainer.zLevel = 200;
+                    renderItem.zLevel = 200;
+                    renderItem.renderItemAndEffectIntoGUI(item, itemX, itemY);
+                    renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, item, itemX, itemY, null);
+                    guiContainer.zLevel = 0;
+                    renderItem.zLevel = 0;
 
                     if (frozen && mouseX > itemX && mouseX < itemX+16 && mouseY > itemY && mouseY < itemY+16) {
                         tooltipItem = item;
@@ -602,10 +614,10 @@ public class ContainerPreviewManager {
             if (dirty) {
                 if (cachedContainer == null) {
                     cache.put(storageKey, new CompressedStorage(inventoryContents));
-                    logger.info("Cached new container {}.", storageKey);
+                    LOGGER.info("Cached new container {}.", storageKey);
                 } else {
                     cachedContainer.setStorage(inventoryContents);
-                    logger.info("Refreshed cache for container {}.", storageKey);
+                    LOGGER.info("Refreshed cache for container {}.", storageKey);
                 }
 
                 SkyblockAddons.getInstance().getPersistentValuesManager().saveValues();

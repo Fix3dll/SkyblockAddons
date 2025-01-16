@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GuiContainer.class)
 public abstract class GuiContainerMixin {
@@ -25,6 +26,11 @@ public abstract class GuiContainerMixin {
     @Redirect(method = "drawScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/inventory/GuiContainer;drawGradientRect(IIIIII)V"))
     private void sba$drawGradientRect(GuiContainer instance, int left, int top, int right, int bottom, int startColor, int endColor) {
         GuiContainerHook.drawGradientRect(instance, left, top, right, bottom, startColor, endColor, this.theSlot);
+    }
+
+    @Inject(method = "drawScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/inventory/GuiContainer;drawSlot(Lnet/minecraft/inventory/Slot;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void sba$drawSlotLocked(int mouseX, int mouseY, float partialTicks, CallbackInfo ci, int i, int j, int k, int l, int i1, Slot slot) {
+        GuiContainerHook.drawSlot(slot);
     }
 
     @Inject(method = "drawScreen", at = @At("RETURN"))
