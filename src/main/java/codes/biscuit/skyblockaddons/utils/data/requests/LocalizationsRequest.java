@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.utils.data.requests;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Language;
+import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
@@ -46,7 +47,7 @@ public class LocalizationsRequest extends RemoteFileRequest<JsonObject> {
         public void completed(JsonObject result) {
             super.completed(result);
             overwriteCommonJsonMembers(
-                    SkyblockAddons.getInstance().getConfigValues().getLanguageConfig(),
+                    Translations.getLanguageJson(),
                     Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR)
             );
         }

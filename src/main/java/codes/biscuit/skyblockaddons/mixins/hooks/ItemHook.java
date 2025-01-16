@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import net.minecraft.item.ItemStack;
 
 public class ItemHook {

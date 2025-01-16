@@ -1,9 +1,10 @@
 package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
@@ -61,10 +62,11 @@ public class TrevorTrapperTracker {
      */
     // TODO: This should not be static after the feature refactor
     public static void drawTrackerLocationIndicator(float scale, ButtonLocation buttonLocation) {
-        if ((Feature.areEnabled(Feature.TREVOR_THE_TRAPPER_FEATURES,Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
+        Feature feature = Feature.TREVOR_THE_TRAPPER_FEATURES;
+        if ((feature.isEnabled(FeatureSetting.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
                 && main.getUtils().isTrackingAnimal()) || buttonLocation != null) {
-            float x = main.getConfigValues().getActualX(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR);
-            float y = main.getConfigValues().getActualY(Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR);
+            float x = main.getConfigValuesManager().getActualX(feature);
+            float y = main.getConfigValuesManager().getActualY(feature);
 
             int height = 9;
             int width = 3 * 11 + 9;
@@ -124,7 +126,7 @@ public class TrevorTrapperTracker {
     @SubscribeEvent
     public void onEntityOutline(RenderEntityOutlineEvent e) {
         if (e.getType() == RenderEntityOutlineEvent.Type.NO_XRAY) {
-            if (isTrackerConditionsMet() && Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY.isEnabled()
+            if (isTrackerConditionsMet() && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled(FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY)
                     && trackingAnimalRarity != null && entityToOutline != null && entityToOutline.getAnimal() != null
                     && !MC.thePlayer.isPotionActive(Potion.blindness)) {
                 e.queueEntityToOutline(entityToOutline.getAnimal(), entityToOutline.getRarity().getColorInt());
@@ -143,9 +145,7 @@ public class TrevorTrapperTracker {
                     if (rarity == null || !rarity.equals(trackingAnimalRarity))
                         return;
                     TrackerType animalType = TrackerType.getFromString(m.group("animal"));
-                        if (animalType != null && (Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR.isEnabled()
-                                || Feature.TREVOR_HIGHLIGHT_TRACKED_ENTITY.isEnabled()
-                                || Feature.TREVOR_BETTER_NAMETAG.isEnabled())) {
+                        if (animalType != null && shouldTrackEntity()) {
                         TrackedEntity trackedEntity = new TrackedEntity((EntityArmorStand) entity, animalType, rarity);
                         trackedEntity.attachAnimal(
                                 MC.theWorld.getEntitiesWithinAABB(
@@ -169,6 +169,12 @@ public class TrevorTrapperTracker {
                 }
             }
         }
+    }
+
+    private static boolean shouldTrackEntity() {
+        return Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled(FeatureSetting.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
+                || Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled(FeatureSetting.TREVOR_HIGHLIGHT_TRACKED_ENTITY)
+                || Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled(FeatureSetting.TREVOR_BETTER_NAMETAG);
     }
 
     @SubscribeEvent
@@ -203,7 +209,7 @@ public class TrevorTrapperTracker {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onNameTagRender(Pre<EntityLivingBase> e) {
         Entity entity = e.entity;
-        if (isTrackerConditionsMet() && !e.isCanceled() && Feature.TREVOR_SHOW_QUEST_COOLDOWN.isEnabled()
+        if (isTrackerConditionsMet() && !e.isCanceled() && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled(FeatureSetting.TREVOR_SHOW_QUEST_COOLDOWN)
                 && CooldownManager.isOnCooldown("TREVOR_THE_TRAPPER_RETURN"))
         {
             String strippedEntityTag = TextUtils.stripColor(entity.getCustomNameTag());
@@ -228,7 +234,9 @@ public class TrevorTrapperTracker {
 
     @SubscribeEvent
     public void onRenderNameTag(RenderLivingEvent.Specials.Pre<EntityLivingBase> e) {
-        if (Feature.TREVOR_BETTER_NAMETAG.isDisabled() || !isTrackerConditionsMet()) return;
+        if (Feature.TREVOR_THE_TRAPPER_FEATURES.isDisabled(FeatureSetting.TREVOR_BETTER_NAMETAG) || !isTrackerConditionsMet()) {
+            return;
+        }
 
         Entity entityNameTag = MC.theWorld.getEntityByID(entityNameTagId);
 

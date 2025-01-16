@@ -1,9 +1,10 @@
 package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
@@ -126,7 +127,7 @@ public class ItemDropChecker {
                     }
                 }
             }
-        } else if (Feature.areEnabled(Feature.DROP_CONFIRMATION, Feature.DOUBLE_DROP_IN_OTHER_GAMES)) {
+        } else if (Feature.DROP_CONFIRMATION.isEnabled(FeatureSetting.DROP_CONFIRMATION_IN_OTHER_GAMES)) {
             return dropConfirmed(item, 2, playAlert);
 
         } else {
@@ -184,7 +185,7 @@ public class ItemDropChecker {
      * A message is sent and a sound is played notifying the player how many more times they need to drop the item.
      */
     public static void onDropConfirmationFail() {
-        ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.DROP_CONFIRMATION);
+        ColorCode colorCode = Feature.DROP_CONFIRMATION.getRestrictedColor();
 
         if (attemptsRequiredToConfirm >= 2) {
             String multipleAttemptsRequiredMessage = Translations.getMessage("messages.clickMoreTimes", Integer.toString(attemptsRequiredToConfirm));

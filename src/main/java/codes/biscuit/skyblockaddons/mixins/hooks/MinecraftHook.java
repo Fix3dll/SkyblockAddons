@@ -2,7 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import lombok.Getter;
 import net.minecraft.block.material.Material;
@@ -35,9 +35,9 @@ public class MinecraftHook {
 
                 if (Feature.LOCK_SLOTS.isEnabled() && entityIn instanceof EntityItemFrame && ((EntityItemFrame)entityIn).getDisplayedItem() == null) {
                     int slot = MC.thePlayer.inventory.currentItem + 36;
-                    if (main.getConfigValues().getLockedSlots().contains(slot) && slot >= 9) {
+                    if (main.getPersistentValuesManager().getLockedSlots().contains(slot) && slot >= 9) {
                         main.getUtils().playLoudSound("note.bass", 0.5);
-                        main.getUtils().sendMessage(main.getConfigValues().getRestrictedColor(Feature.DROP_CONFIRMATION) + Translations.getMessage("messages.slotLocked"));
+                        main.getUtils().sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
                         ci.cancel();
                     }
                 }
@@ -48,7 +48,7 @@ public class MinecraftHook {
     public static void onUpdateCurrentItem() {
         if (Feature.LOCK_SLOTS.isEnabled() && (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())) {
             int slot = MC.thePlayer.inventory.currentItem + 36;
-            if (Feature.LOCK_SLOTS.isEnabled() && main.getConfigValues().getLockedSlots().contains(slot)
+            if (Feature.LOCK_SLOTS.isEnabled() && main.getPersistentValuesManager().getLockedSlots().contains(slot)
                     && (slot >= 9 || MC.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5)) {
 
                 lastLockedSlotItemChange = System.currentTimeMillis();

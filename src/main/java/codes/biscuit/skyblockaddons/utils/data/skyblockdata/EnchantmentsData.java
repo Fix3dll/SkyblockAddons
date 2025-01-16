@@ -1,8 +1,7 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
@@ -81,17 +80,17 @@ public class EnchantmentsData {
         }
 
         public String getFormat(int level) {
-            ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
+            Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
             if (level >= maxLevel) {
-                return config.getRestrictedColor(Feature.ENCHANTMENT_PERFECT_COLOR).toString();
+                return feature.getAsEnum(FeatureSetting.PERFECT_ENCHANT_COLOR).toString();
             }
             if (level > goodLevel) {
-                return config.getRestrictedColor(Feature.ENCHANTMENT_GREAT_COLOR).toString();
+                return feature.getAsEnum(FeatureSetting.GREAT_ENCHANT_COLOR).toString();
             }
             if (level == goodLevel) {
-                return config.getRestrictedColor(Feature.ENCHANTMENT_GOOD_COLOR).toString();
+                return feature.getAsEnum(FeatureSetting.GOOD_ENCHANT_COLOR).toString();
             }
-            return config.getRestrictedColor(Feature.ENCHANTMENT_POOR_COLOR).toString();
+            return feature.getAsEnum(FeatureSetting.POOR_ENCHANT_COLOR).toString();
         }
 
         /**

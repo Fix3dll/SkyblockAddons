@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.gui.buttons.SkyblockAddonsButton;
 import lombok.Getter;
 

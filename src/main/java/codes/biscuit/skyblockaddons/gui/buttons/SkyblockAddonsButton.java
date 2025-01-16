@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.core.chroma.MulticolorShaderManager;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenShader;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
@@ -56,7 +57,7 @@ public abstract class SkyblockAddonsButton extends GuiButton {
         boolean isChroma = boxColor == ManualChromaManager.getChromaColor(0, 0, alpha);
         if (isChroma) {
             if (MulticolorShaderManager.getInstance().shouldUseChromaShaders()
-                    && main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE) {
+                    && Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.FADE) {
                 ShaderManager.getInstance().enableShader(ChromaScreenShader.class);
                 drawRect(x, y, x + width, y + height, boxColor);
                 ShaderManager.getInstance().disableShader();

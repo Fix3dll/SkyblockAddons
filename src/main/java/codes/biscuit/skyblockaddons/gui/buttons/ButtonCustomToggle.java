@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;

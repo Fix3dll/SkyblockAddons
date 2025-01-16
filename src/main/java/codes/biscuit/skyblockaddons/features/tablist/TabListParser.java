@@ -2,9 +2,10 @@ package codes.biscuit.skyblockaddons.features.tablist;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkillType;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.spooky.SpookyEventManager;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
@@ -206,7 +207,7 @@ public class TabListParser {
                 String stripped = TextUtils.stripColor(line).trim();
                 Matcher m;
 
-                if (!foundEssenceSection && Feature.SHOW_SALVAGE_ESSENCES_COUNTER.isEnabled()
+                if (!foundEssenceSection && Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isEnabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)
                         && stripped.contains("Essence:")) {
                     foundEssenceSection = true;
                 }
@@ -227,7 +228,7 @@ public class TabListParser {
                     parsedRainTime = m.group("time");
                 }
 
-                if (!foundSkillSection && !foundSkill && Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP.isDisabled()) {
+                if (!foundSkillSection && !foundSkill && Feature.SKILL_DISPLAY.isDisabled(FeatureSetting.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
                     // The Catacombs still have old tab list instead of new Widgets
                     if (main.getUtils().getMap() == Island.DUNGEON
                             && (m = OLD_SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
@@ -334,9 +335,10 @@ public class TabListParser {
      */
     private static boolean isRelatedFeaturesDisabled() {
         return Feature.COMPACT_TAB_LIST.isDisabled()
-                && Feature.SHOW_SALVAGE_ESSENCES_COUNTER.isDisabled()
+                && Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isDisabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)
                 && Feature.BIRCH_PARK_RAINMAKER_TIMER.isDisabled()
                 && Feature.CANDY_POINTS_COUNTER.isDisabled()
-                && (Feature.SKILL_DISPLAY.isDisabled() || Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP.isEnabled());
+                && (Feature.SKILL_DISPLAY.isDisabled()
+                || Feature.SKILL_DISPLAY.isEnabled(FeatureSetting.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP));
     }
 }

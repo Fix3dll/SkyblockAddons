@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ public class GuiScreenHook {
 
     //TODO: Fix for Hypixel localization
     public static void handleComponentClick(IChatComponent component) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
+        //SkyblockAddons main = SkyblockAddons.getInstance();
         /* Deprecated example
         if (main.getUtils().isOnSkyblock() && component != null
                 // The prompt when Maddox picks up the phone.

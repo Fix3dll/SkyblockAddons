@@ -571,7 +571,7 @@ public class DevUtils {
      */
     public static void reloadConfig() {
         sendMessageOrLog("Reloading settings...");
-        main.getConfigValues().loadValues();
+        main.getConfigValuesManager().loadValues();
         sendMessageOrLog("Settings reloaded.");
     }
 

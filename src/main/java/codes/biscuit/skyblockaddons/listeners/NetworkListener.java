@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.listeners;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.events.PacketEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;

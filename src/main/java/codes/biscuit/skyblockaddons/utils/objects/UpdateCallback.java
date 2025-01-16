@@ -4,4 +4,5 @@ package codes.biscuit.skyblockaddons.utils.objects;
 public interface UpdateCallback<T> {
 
     void onUpdate(T updatedValue);
+
 }

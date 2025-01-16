@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.core;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.mixins.hooks.EffectRendererHook;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import codes.biscuit.skyblockaddons.utils.draw.DrawState3D;
@@ -83,7 +84,7 @@ public class OverlayEffectRenderer {
      */
     public void setupRenderEnvironment() {
         if (feature != null) {
-            DRAW_PARTICLE.setColor(SkyblockAddons.getInstance().getConfigValues().getSkyblockColor(feature)).newColorEnv();
+            DRAW_PARTICLE.setColor(feature.getSkyblockColor()).newColorEnv();
         }
     }
 

@@ -2,10 +2,13 @@ package codes.biscuit.skyblockaddons.features.discordrpc;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.*;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonCycling;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
+import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 
@@ -15,7 +18,7 @@ import java.util.function.Supplier;
  * Statuses that are shown on the Discord RPC feature
  */
 @SuppressWarnings("UnnecessaryUnicodeEscape")
-public enum DiscordStatus implements ButtonCycling.SelectItem {
+public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
 
     NONE("discordStatus.titleNone", "discordStatus.descriptionNone", () -> null),
     LOCATION("discordStatus.titleLocation", "discordStatus.descriptionLocation",
@@ -119,9 +122,15 @@ public enum DiscordStatus implements ButtonCycling.SelectItem {
 
     CUSTOM("discordStatus.titleCustom", "discordStatus.descriptionCustom",
             () -> {
-                SkyblockAddons main = SkyblockAddons.getInstance();
+                FeatureSetting currentStatus = SkyblockAddons.getInstance().getDiscordRPCManager().getCurrentStatus();
 
-                String text = main.getConfigValues().getCustomStatus(main.getDiscordRPCManager().getCurrentEntry());
+                String text;
+                if (currentStatus != null) {
+                    text = Feature.DISCORD_RPC.getAsString(currentStatus);
+                } else {
+                    return "!!";
+                }
+
                 return text.substring(0, Math.min(text.length(), 100));
             }),
 
@@ -142,11 +151,15 @@ public enum DiscordStatus implements ButtonCycling.SelectItem {
                     return DiscordStatus.valueOf("MOTES").displayMessageSupplier.get();
                 }
 
-                if ("AUTO_STATUS".equals(main.getConfigValues().getDiscordAutoDefault().name())) { // Avoid self reference.
-                    main.getConfigValues().setDiscordAutoDefault(DiscordStatus.NONE);
+                Feature feature = Feature.DISCORD_RPC;
+
+                // Avoid self reference.
+                if ("AUTO_STATUS".equals(feature.getAsEnum(FeatureSetting.DISCORD_RP_AUTO_MODE).name())) {
+                    feature.set(FeatureSetting.DISCORD_RP_AUTO_MODE, DiscordStatus.NONE);
                 }
 
-                return main.getConfigValues().getDiscordAutoDefault().displayMessageSupplier.get();
+                DiscordStatus mode = (DiscordStatus) feature.getAsEnum(FeatureSetting.DISCORD_RP_AUTO_MODE);
+                return mode.displayMessageSupplier.get();
             })
     ;
 
@@ -160,8 +173,8 @@ public enum DiscordStatus implements ButtonCycling.SelectItem {
         this.displayMessageSupplier = displayMessageSupplier;
     }
 
-    public String getDisplayString(EnumUtils.DiscordStatusEntry currentEntry) {
-        SkyblockAddons.getInstance().getDiscordRPCManager().setCurrentEntry(currentEntry);
+    public String getDisplayString(FeatureSetting currentStatus) {
+        SkyblockAddons.getInstance().getDiscordRPCManager().setCurrentStatus(currentStatus);
         return displayMessageSupplier.get();
     }
 

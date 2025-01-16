@@ -1,9 +1,10 @@
 package codes.biscuit.skyblockaddons.features.outline;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkyblockRarity;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent.Type;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.function.Function;
 
 /**
- * Controls the behavior of the {@link codes.biscuit.skyblockaddons.core.Feature#MAKE_DROPPED_ITEMS_GLOW} and {@link codes.biscuit.skyblockaddons.core.Feature#SHOW_GLOWING_ITEMS_ON_ISLAND} features
+ * Controls the behavior of the {@link Feature#MAKE_DROPPED_ITEMS_GLOW} and {@link FeatureSetting#SHOW_GLOWING_ITEMS_ON_ISLAND} features
  */
 public class ItemOutlines {
 
@@ -42,7 +43,8 @@ public class ItemOutlines {
         if (e instanceof EntityItem) {
             EntityItem item = (EntityItem) e;
             // Don't display showcase blocks if player doesn't want them or is outside the building
-            if (LocationUtils.getShowcaseLocations().contains(location) || Feature.OUTLINE_SHOWCASE_ITEMS.isDisabled()
+            if (LocationUtils.getShowcaseLocations().contains(location)
+                    || Feature.ENTITY_OUTLINES.isDisabled(FeatureSetting.OUTLINE_SHOWCASE_ITEMS)
                     && isShopShowcaseItem(item)) {
                 return null;
             }
@@ -69,7 +71,7 @@ public class ItemOutlines {
      */
     private static boolean shouldOutline() {
         return Feature.MAKE_DROPPED_ITEMS_GLOW.isEnabled()
-                && (Feature.SHOW_GLOWING_ITEMS_ON_ISLAND.isEnabled() || map != Island.PRIVATE_ISLAND);
+                && (Feature.MAKE_DROPPED_ITEMS_GLOW.isEnabled(FeatureSetting.SHOW_GLOWING_ITEMS_ON_ISLAND) || map != Island.PRIVATE_ISLAND);
     }
 
     /**

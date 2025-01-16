@@ -1,11 +1,12 @@
 package codes.biscuit.skyblockaddons.utils;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.Chroma3DShader;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenShader;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.TextStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -445,7 +446,7 @@ public class DrawUtils {
             return;
         }
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
-        if (SkyblockAddons.getInstance().getConfigValues().getTextStyle() == EnumUtils.TextStyle.STYLE_TWO) {
+        if (Feature.TEXT_STYLE.getValue() == TextStyle.STYLE_TWO) {
             int colorAlpha = Math.max(ColorUtils.getAlpha(color), 4);
             int colorBlack = new Color(0, 0, 0, colorAlpha / 255F).getRGB();
             String strippedText = TextUtils.stripColor(text);

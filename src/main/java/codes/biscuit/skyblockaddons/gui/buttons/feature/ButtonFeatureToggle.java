@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
@@ -8,6 +8,8 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.GuiIngameForge;
+
+import java.util.function.Supplier;
 
 public class ButtonFeatureToggle extends ButtonFeature {
 
@@ -20,14 +22,16 @@ public class ButtonFeatureToggle extends ButtonFeature {
     private static final int ANIMATION_SLIDE_TIME = 150;
 
     protected long animationButtonClicked = -1;
+    protected Supplier<Boolean> isEnabled;
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
      */
     public ButtonFeatureToggle(double x, double y, Feature feature) {
-        super(0, (int)x, (int)y, "", feature);
+        super(0, (int) x, (int) y, "", feature);
         this.width = 31;
         this.height = 15;
+        this.isEnabled = feature::isEnabled;
     }
 
     @Override
@@ -37,9 +41,9 @@ public class ButtonFeatureToggle extends ButtonFeature {
         GlStateManager.enableBlend();
         ColorUtils.bindColor(0xFF1E252E);
         mc.getTextureManager().bindTexture(TOGGLE_BORDER);
-        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
+        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, width, height, width, height, true);
 
-        boolean enabled = feature.isEnabled();
+        boolean enabled = isEnabled == null ? feature.isEnabled() : isEnabled.get();
         boolean remoteDisabled = feature.isRemoteDisabled();
 
         if (enabled) {
@@ -49,7 +53,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
         }
 
         mc.getTextureManager().bindTexture(TOGGLE_INSIDE_BACKGROUND);
-        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0, width, height, width, height, true);
+        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, width, height, width, height, true);
 
         int startingX = getStartingPosition(enabled);
         int slideAnimationOffset = 0;
@@ -57,28 +61,28 @@ public class ButtonFeatureToggle extends ButtonFeature {
         if (animationButtonClicked != -1) {
             startingX = getStartingPosition(!enabled); // They toggled so start from the opposite side.
 
-            int timeSinceOpen = (int)(System.currentTimeMillis() - animationButtonClicked);
+            int timeSinceOpen = (int) (System.currentTimeMillis() - animationButtonClicked);
             int animationTime = ANIMATION_SLIDE_TIME;
             if (timeSinceOpen > animationTime) {
                 timeSinceOpen = animationTime;
             }
 
-            slideAnimationOffset = ANIMATION_SLIDE_DISTANCE * timeSinceOpen/animationTime;
+            slideAnimationOffset = ANIMATION_SLIDE_DISTANCE * timeSinceOpen / animationTime;
         }
 
         startingX += enabled ? slideAnimationOffset : -slideAnimationOffset;
 
         GlStateManager.color(1, 1, 1, 1);
         mc.getTextureManager().bindTexture(TOGGLE_INSIDE_CIRCLE);
-        DrawUtils.drawModalRectWithCustomSizedTexture(startingX, yPosition+3, 0, 0, 9, 9, 9, 9, true);
+        DrawUtils.drawModalRectWithCustomSizedTexture(startingX, yPosition + 3, 0, 0, 9, 9, 9, 9, true);
         GlStateManager.disableBlend();
     }
 
     private int getStartingPosition(boolean enabled) {
-        if (!enabled)  {
-            return xPosition+CIRCLE_PADDING_LEFT;
+        if (!enabled) {
+            return xPosition + CIRCLE_PADDING_LEFT;
         } else {
-            return getStartingPosition(false)+ANIMATION_SLIDE_DISTANCE;
+            return getStartingPosition(false) + ANIMATION_SLIDE_DISTANCE;
         }
     }
 
@@ -97,7 +101,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
                         Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
                         break;
                     case TURN_ALL_TEXTS_CHROMA:
-                        main.getConfigValues().getChromaFeatures().add(feature);
+                        feature.setChroma(true);
                         break;
                 }
             } else {
@@ -121,8 +125,17 @@ public class ButtonFeatureToggle extends ButtonFeature {
                         Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.setEnabled(true);
                         break;
                     case TURN_ALL_TEXTS_CHROMA:
-                        main.getConfigValues().getChromaFeatures().remove(feature);
+                        feature.setChroma(false);
                         break;
+                }
+            }
+            if (feature == Feature.TURN_ALL_FEATURES_CHROMA) {
+                boolean areAllFeaturesChroma = ColorUtils.areAllFeaturesChroma();
+
+                for (Feature loopFeature : Feature.values()) {
+                    if (loopFeature.isGuiFeature() && loopFeature.getFeatureGuiData().getDefaultColor() != null) {
+                        loopFeature.setChroma(!areAllFeaturesChroma);
+                    }
                 }
             }
             this.animationButtonClicked = System.currentTimeMillis();

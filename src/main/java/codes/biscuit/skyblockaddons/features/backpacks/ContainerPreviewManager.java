@@ -2,9 +2,10 @@ package codes.biscuit.skyblockaddons.features.backpacks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.listeners.RenderListener;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
@@ -22,6 +23,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -211,6 +213,7 @@ public class ContainerPreviewManager {
 
     public static void drawContainerPreviews(GuiContainer guiContainer, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getMinecraft();
+        Feature backpackPreview = Feature.SHOW_BACKPACK_PREVIEW;
 
         if (currentContainerPreview == null) return;
 
@@ -227,13 +230,13 @@ public class ContainerPreviewManager {
 
         ItemStack tooltipItem = null;
 
-        if (main.getConfigValues().getBackpackStyle() == EnumUtils.BackpackStyle.GUI) {
+        if (backpackPreview.get(FeatureSetting.BACKPACK_STYLE) == EnumUtils.BackpackStyle.GUI) {
             mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
             GlStateManager.disableLighting();
             GlStateManager.pushMatrix();
             GlStateManager.translate(0,0,300);
             int textColor = 4210752;
-            if (Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+            if (backpackPreview.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
                 BackpackColor color = currentContainerPreview.getBackpackColor();
                 ContainerType type = currentContainerPreview.getContainerType();
                 if (color != null && color != BackpackColor.DEFAULT) {
@@ -432,12 +435,14 @@ public class ContainerPreviewManager {
             return true;
         }
 
-        if (!Feature.SHOW_BACKPACK_PREVIEW.isEnabled()) {
+        Feature backpackPreview = Feature.SHOW_BACKPACK_PREVIEW;
+
+        if (!backpackPreview.isEnabled()) {
             return false;
         }
 
         // Don't show if we only want to show while holding shift, and the player isn't holding shift
-        if (Feature.SHOW_BACKPACK_HOLDING_SHIFT.isEnabled() && !GuiScreen.isShiftKeyDown()) {
+        if (backpackPreview.isEnabled(FeatureSetting.SHOW_ONLY_WHEN_HOLDING_SHIFT) && !GuiScreen.isShiftKeyDown()) {
             return false;
         }
         // Don't render the preview the item represents a crafting recipe or the result of one.
@@ -452,7 +457,7 @@ public class ContainerPreviewManager {
 
         // Do not waste resources to process non-UUID items (except Ender Chests cus icons doesn't have UUID)
         if (newUuid == null) {
-            if (Feature.SHOW_ENDER_CHEST_PREVIEW.isEnabled() && m.matches()) {
+            if (backpackPreview.isEnabled(FeatureSetting.ENDER_CHEST_PREVIEW) && m.matches()) {
                 enderChestMatched = true;
             } else {
                 return false;
@@ -492,16 +497,19 @@ public class ContainerPreviewManager {
                 ContainerData containerData = ItemUtils.getContainerData(ItemUtils.getSkyblockItemID(itemStack));
 
                 // TODO: Does checking menu item handle the baker inventory thing?
-                if (containerData == null || (containerData.isCakeBag() && Feature.CAKE_BAG_PREVIEW.isDisabled()) ||
-                        ((containerData.isBuildersRuler() || containerData.isBuildersWand()) && Feature.BUILDERS_TOOL_PREVIEW.isDisabled()) ||
-                        ((containerData.isPersonalCompactor() || containerData.isPersonalDeletor()) && Feature.PERSONAL_COMPACTOR_PREVIEW.isDisabled())
+                if (containerData == null ||
+                        (containerData.isCakeBag() && backpackPreview.isDisabled(FeatureSetting.CAKE_BAG_PREVIEW)) ||
+                        ((containerData.isBuildersRuler() || containerData.isBuildersWand())
+                                && backpackPreview.isDisabled(FeatureSetting.BUILDERS_TOOL_PREVIEW)) ||
+                        ((containerData.isPersonalCompactor() || containerData.isPersonalDeletor())
+                                && backpackPreview.isDisabled(FeatureSetting.PERSONAL_COMPACTOR_PREVIEW))
                 ) {
                     return false;
                 }
 
                 //TODO: Probably some optimizations here we can do. Can we check chest equivalence?
                 // Avoid showing backpack preview in auction stuff.
-                net.minecraft.inventory.Container playerContainer = Minecraft.getMinecraft().thePlayer.openContainer;
+                Container playerContainer = Minecraft.getMinecraft().thePlayer.openContainer;
                 if (playerContainer instanceof ContainerChest) {
                     IInventory chestInventory = ((ContainerChest) playerContainer).getLowerChestInventory();
                     if (chestInventory.hasCustomName()) {
@@ -628,7 +636,7 @@ public class ContainerPreviewManager {
     private static int getRectColor() {
         int rectColor = ColorCode.DARK_GRAY.getColor(250);
 
-        if (Feature.MAKE_BACKPACK_INVENTORIES_COLORED.isEnabled()) {
+        if (Feature.SHOW_BACKPACK_PREVIEW.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
             ContainerType type = currentContainerPreview.getContainerType();
             if (type == ContainerType.PERSONAL_COMPACTOR || type == ContainerType.PERSONAL_DELETOR) {
                 if (currentContainerPreview.isActive()) {

@@ -2,7 +2,8 @@ package codes.biscuit.skyblockaddons.features.dungeon;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
@@ -46,8 +47,9 @@ public class DungeonManager {
     private static final Pattern PATTERN_BONUS_ESSENCE = Pattern.compile("^§.+?[^You] .+?found a .+?(Wither|Spider|Undead|Dragon|Gold|Diamond|Ice|Crimson) Essence.+?");
     private static final Pattern PATTERN_SALVAGE_ESSENCES = Pattern.compile("\\+(?<essenceNum>[0-9]+) (?<essenceType>Wither|Spider|Undead|Dragon|Gold|Diamond|Ice|Crimson) Essence!");
     private static final Pattern PATTERN_SECRETS = Pattern.compile("§7([0-9]+)/([0-9]+) Secrets");
-    private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("§.\\[(?<classLetter>.)] (?<name>[\\w§]+) §(?<healthColor>.)(?:§l)?(?<health>[\\d,]+|[\\w§]+)(?:[§c❤]{0,3})?");
-    private static final Pattern PLAYER_LIST_INFO_DEATHS_PATTERN = Pattern.compile("Team Deaths: (?<deaths>\\d+)");
+    private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("§.\\[(?<classLetter>.)] (?<name>[\\w§]+) §(?<healthColor>.)(?:§l)?(?<health>[\\w,§]+)(?:[§c❤]{0,3})?");
+    private static final Pattern PATTERN_PLAYER_LIST_INFO_DEATHS = Pattern.compile("Team Deaths: (?<deaths>\\d+)");
+    private static final Pattern PATTERN_STRIP_FORMAT = Pattern.compile("§.?");
     private static final ResourceLocation CRITICAL = new ResourceLocation("skyblockaddons", "critical.png");
     private static final int CRITICAL_ICON_SIZE = 25;
 
@@ -269,7 +271,7 @@ public class DungeonManager {
 
             DungeonClass dungeonClass = DungeonClass.fromFirstLetter(matcher.group("classLetter").charAt(0));
             ColorCode healthColor = ColorCode.getByChar(matcher.group("healthColor").charAt(0));
-            String healthText = TextUtils.stripColor(matcher.group("health"));
+            String healthText = PATTERN_STRIP_FORMAT.matcher(matcher.group("health")).replaceAll("");
             int health;
 
             if (healthText.equals("DEAD")) {
@@ -345,7 +347,7 @@ public class DungeonManager {
 
         if (deathDisplayPlayerInfo != null) {
             String deathDisplayString = deathDisplayPlayerInfo.getDisplayName().getUnformattedText();
-            Matcher deathDisplayMatcher = PLAYER_LIST_INFO_DEATHS_PATTERN.matcher(deathDisplayString);
+            Matcher deathDisplayMatcher = PATTERN_PLAYER_LIST_INFO_DEATHS.matcher(deathDisplayString);
 
             if (deathDisplayMatcher.matches()) {
                 playerListInfoDeaths = Integer.parseInt(deathDisplayMatcher.group("deaths"));
@@ -399,7 +401,7 @@ public class DungeonManager {
 
                 double distanceScale = Math.max(1.5, renderViewEntity.getPositionVector().distanceTo(player.getPositionVector()) / 8);
 
-                if (Feature.areEnabled(Feature.ENTITY_OUTLINES, Feature.OUTLINE_DUNGEON_TEAMMATES)) {
+                if (Feature.ENTITY_OUTLINES.isEnabled(FeatureSetting.OUTLINE_DUNGEON_TEAMMATES)) {
                     newY += distanceScale * 0.85F;
                 }
 
@@ -487,7 +489,7 @@ public class DungeonManager {
     public void onRenderEntityOutlines(RenderEntityOutlineEvent e) {
         if (e.getType() == RenderEntityOutlineEvent.Type.XRAY) {
             // Test whether we should add any entities at all
-            if (Feature.OUTLINE_DUNGEON_TEAMMATES.isEnabled() && SkyblockAddons.getInstance().getUtils().isInDungeon()) {
+            if (Feature.ENTITY_OUTLINES.isEnabled(FeatureSetting.OUTLINE_DUNGEON_TEAMMATES) && main.getUtils().isInDungeon()) {
                 // Queue specific items for outlining
                 e.queueEntitiesToOutline(OUTLINE_COLOR);
             }

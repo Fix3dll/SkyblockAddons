@@ -3,7 +3,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.events.SkyblockBlockBreakEvent;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
@@ -102,14 +102,14 @@ public class PlayerControllerMPHook {
                 }
 
                 // Prevent clicking on locked slots.
-                if (Feature.LOCK_SLOTS.isEnabled() && main.getConfigValues().getLockedSlots().contains(slotNum)
+                if (Feature.LOCK_SLOTS.isEnabled() && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                         && (slotNum >= 9 || player.openContainer instanceof ContainerPlayer && slotNum >= 5)) {
                     if (mouseButtonClicked == 1 && mode == 0 && slotIn != null && slotIn.getHasStack() && slotIn.getStack().getItem() == Items.skull) {
 
                         String itemID = ItemUtils.getSkyblockItemID(slotIn.getStack());
                         if (itemID == null) itemID = "";
 
-                        // Now that right clicking backpacks is removed, remove this check and block right clicking on backpacks if locked
+                        // Now that right-clicking backpacks is removed, remove this check and block right clicking on backpacks if locked
                         if (/*ItemUtils.isBuildersWand(slotIn.getStack()) || ItemUtils.isBackpack(slotIn.getStack()) || */itemID.contains("SACK")) {
                             return;
                         }

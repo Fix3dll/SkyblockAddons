@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.utils;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
@@ -15,8 +15,8 @@ public class ColorUtils {
 
     public static boolean areAllFeaturesChroma() {
         for (Feature loopFeature : Feature.values()) {
-            if (loopFeature.getGuiFeatureData() != null && loopFeature.getGuiFeatureData().getDefaultColor() != null) {
-                if (!loopFeature.isInChromaFeatures()) {
+            if (loopFeature.isGuiFeature() && loopFeature.getFeatureGuiData().getDefaultColor() != null) {
+                if (!loopFeature.isChroma()) {
                     return false;
                 }
             }

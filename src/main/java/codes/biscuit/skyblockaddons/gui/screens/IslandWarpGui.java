@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonCustomToggle;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandButton;

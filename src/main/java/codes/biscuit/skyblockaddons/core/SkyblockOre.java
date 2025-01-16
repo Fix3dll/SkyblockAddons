@@ -191,6 +191,11 @@ public enum SkyblockOre {
             () -> LocationUtils.isOn(Island.DWARVEN_MINES, Island.CRYSTAL_HOLLOWS),
             BlockType.ORE
     ),
+    PURE_QUARTZ(
+            state -> state.getBlock() == Blocks.quartz_block,
+            () -> LocationUtils.isOn(Island.DWARVEN_MINES),
+            BlockType.ORE
+    ),
 
     // GEMSTONES
     RUBY(

@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.utils.data.requests;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;

@@ -1,9 +1,10 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.events.SkyblockJoinedEvent;
 import codes.biscuit.skyblockaddons.events.SkyblockLeftEvent;
 import com.google.common.collect.Sets;
@@ -584,7 +585,8 @@ public class Utils {
             float completion = progress / total;
 
             if (completion > 0.85) {
-                if (!triggeredSlayerWarning || (Feature.REPEAT_SLAYER_BOSS_WARNING.isEnabled() && completion != lastCompletion)) {
+                boolean repeating = Feature.BOSS_APPROACH_ALERT.isEnabled(FeatureSetting.REPEATING_BOSS_APPROACH_ALERT);
+                if (!triggeredSlayerWarning || (repeating && completion != lastCompletion)) {
                     triggeredSlayerWarning = true;
                     main.getUtils().playLoudSound("random.orb", 0.5);
                     main.getRenderListener().setTitleFeature(Feature.BOSS_APPROACH_ALERT);

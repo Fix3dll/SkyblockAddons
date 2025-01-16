@@ -1,7 +1,8 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
 import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
@@ -44,7 +45,7 @@ public abstract class GuiChestMixin extends GuiContainer {
         GuiChestHook.onRenderChestForegroundLayer((GuiChest) (Object) this);
 
         int color = 4210752; // vanilla color
-        if (main.getUtils().isOnSkyblock() && Feature.areEnabled(Feature.SHOW_BACKPACK_PREVIEW, Feature.MAKE_BACKPACK_INVENTORIES_COLORED)) {
+        if (main.getUtils().isOnSkyblock() && Feature.SHOW_BACKPACK_PREVIEW.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
             BackpackColor backpackColor = BackpackInventoryManager.getBackpackColor().get(
                     main.getInventoryUtils().getInventoryPageNum()
             );

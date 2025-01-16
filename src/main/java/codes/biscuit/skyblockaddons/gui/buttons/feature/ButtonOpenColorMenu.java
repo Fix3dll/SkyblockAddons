@@ -1,23 +1,24 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.gui.screens.ColorSelectionGui;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.Color;
-import java.util.EnumSet;
+import java.util.function.Function;
 
 public class ButtonOpenColorMenu extends ButtonFeature {
 
     private static final float WIDTH_LIMIT = SkyblockAddonsGui.BUTTON_MAX_WIDTH - 10F;
-    private static final EnumSet<Feature> ENCHANT_COLOR_FEATURES = EnumSet.of(Feature.ENCHANTMENT_PERFECT_COLOR,
-            Feature.ENCHANTMENT_GREAT_COLOR,Feature.ENCHANTMENT_GOOD_COLOR, Feature.ENCHANTMENT_POOR_COLOR,
-            Feature.ENCHANTMENT_COMMA_COLOR);
+
+    private final FeatureSetting setting;
+    private final Function<Integer, Integer> boxColorSupplier;
 
     /**
      * Create a button that displays the color of whatever feature it is assigned to.
@@ -26,6 +27,19 @@ public class ButtonOpenColorMenu extends ButtonFeature {
         super(0, (int)x, (int)y, buttonText, feature);
         this.width = width;
         this.height = height;
+        this.setting = null;
+        this.boxColorSupplier = feature::getColor;
+    }
+
+    /**
+     * Create a button for {@link Feature#ENCHANTMENT_LORE_PARSING}'s {@link FeatureSetting}'s or similar
+     */
+    public ButtonOpenColorMenu(double x, double y, int width, int height, String buttonText, FeatureSetting setting) {
+        super(0, (int)x, (int)y, buttonText, setting.getRelatedFeature());
+        this.width = width;
+        this.height = height;
+        this.setting = setting;
+        this.boxColorSupplier = (boxAlpha) -> ((ColorCode) feature.get(setting)).getColor(boxAlpha);
     }
 
     @Override
@@ -39,7 +53,7 @@ public class ButtonOpenColorMenu extends ButtonFeature {
             boxAlpha = 100;
             fontColor = new Color(224, 224, 224, 255).getRGB();
         }
-        int boxColor = SkyblockAddons.getInstance().getConfigValues().getColor(feature, boxAlpha);
+        int boxColor = boxColorSupplier.apply(boxAlpha);
         // Regular features are red if disabled, green if enabled or part of the gui feature is enabled.
         GlStateManager.enableBlend();
         int stringWidth = mc.fontRendererObj.getStringWidth(displayString);
@@ -49,13 +63,15 @@ public class ButtonOpenColorMenu extends ButtonFeature {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (this.hovered && this.feature != null) {
+        if (this.hovered) {
             if (mc.currentScreen instanceof SettingsGui) {
                 SettingsGui gui = (SettingsGui) mc.currentScreen;
                 gui.setClosingGui(true);
-                // Temp fix until feature re-write. Open a color selection panel specific to the color setting
-                Feature toOpen = ENCHANT_COLOR_FEATURES.contains(this.feature) ? this.feature : gui.getFeature();
-                mc.displayGuiScreen(new ColorSelectionGui(toOpen, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
+                if (this.setting != null) {
+                    mc.displayGuiScreen(new ColorSelectionGui(setting, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
+                } else {
+                    mc.displayGuiScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
+                }
             }
             return true;
         }

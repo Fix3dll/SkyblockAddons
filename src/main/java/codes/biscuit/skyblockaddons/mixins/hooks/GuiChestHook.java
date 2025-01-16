@@ -2,10 +2,11 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
@@ -83,7 +84,7 @@ public class GuiChestHook {
 
         islandWarpGui = null;
 
-        if (Feature.SHOW_SALVAGE_ESSENCES_COUNTER.isEnabled()) {
+        if (Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isEnabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)) {
             InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
             if (inventoryType == InventoryType.SALVAGING) {
@@ -137,7 +138,8 @@ public class GuiChestHook {
         InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().getInventoryType();
 
         // Essences from TabListParser#parseSections
-        if (Feature.SHOW_SALVAGE_ESSENCES_COUNTER.isEnabled() && inventoryType == InventoryType.SALVAGING
+        if (Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isEnabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)
+                && inventoryType == InventoryType.SALVAGING
                 && main.getUtils().getMap() == Island.DUNGEON_HUB) {
             int ySize = 222 - 108 + 6 * 18;
             float x = guiLeft - 117 - 5;
@@ -357,7 +359,7 @@ public class GuiChestHook {
             return Collections.emptyList();
         }
 
-        if (Feature.areEnabled(Feature.SHOW_BACKPACK_PREVIEW, Feature.MAKE_BACKPACK_INVENTORIES_COLORED)) {
+        if (Feature.SHOW_BACKPACK_PREVIEW.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
             if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE_BACKPACK) {
                 int pageNum = main.getInventoryUtils().getInventoryPageNum();
                 if (BackpackInventoryManager.getBackpackColor().containsKey(pageNum)) {

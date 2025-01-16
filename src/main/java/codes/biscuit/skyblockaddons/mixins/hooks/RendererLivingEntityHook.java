@@ -1,7 +1,8 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.dungeon.DungeonPlayer;
 import codes.biscuit.skyblockaddons.features.outline.EntityOutlineRenderer;
 import com.google.common.collect.Sets;
@@ -32,7 +33,8 @@ public class RendererLivingEntityHook {
 
     public static int setOutlineColor(EntityLivingBase entity, int originalColor) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-        if (Feature.CLASS_COLORED_TEAMMATE.isDisabled() && main.getUtils().isInDungeon()
+        if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isDisabled(FeatureSetting.CLASS_COLORED_TEAMMATE)
+                && main.getUtils().isInDungeon()
                 && main.getDungeonManager().getTeammates().containsKey(entity.getName())) {
             DungeonPlayer dungeonPlayer = main.getDungeonManager().getTeammates().get(entity.getName());
 

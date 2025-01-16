@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Language;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
@@ -305,7 +306,8 @@ public class DataUtils {
      * @param loadOnlineStrings Loads local and online strings if {@code true}, loads only local strings if {@code false}
      */
     public static void loadLocalizedStrings(boolean loadOnlineStrings) {
-        loadLocalizedStrings(main.getConfigValues().getLanguage(), loadOnlineStrings);
+        Language currentLanguage = (Language) Feature.LANGUAGE.getValue();
+        loadLocalizedStrings(currentLanguage, loadOnlineStrings);
     }
 
     /**
@@ -325,8 +327,8 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getClassLoader().getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            main.getConfigValues().setLanguageConfig(gson.fromJson(inputStreamReader, JsonObject.class));
-            main.getConfigValues().setLanguage(language);
+            Translations.setLanguageJson(gson.fromJson(inputStreamReader, JsonObject.class));
+            Feature.LANGUAGE.setValue(language);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }

@@ -1,11 +1,13 @@
 package codes.biscuit.skyblockaddons.core;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
+import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 
@@ -17,6 +19,7 @@ import java.util.regex.Pattern;
 
 public class Translations {
 
+    @Getter @Setter private static JsonObject languageJson = new JsonObject();
     @Setter private static JsonObject defaultLangJson = null;
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("%[A-Za-z-]+%");
 
@@ -26,8 +29,8 @@ public class Translations {
 
         // Get the string.
         JsonObject langJson = null;
-        if (main.getConfigValues() != null)
-            langJson = main.getConfigValues().getLanguageConfig();
+        if (main.getConfigValuesManager() != null)
+            langJson = languageJson;
 
         if (langJson != null) {
             text = getString(langJson, path);
@@ -51,8 +54,9 @@ public class Translations {
         }
 
         // Handle RTL text...
-        if ((main.getConfigValues().getLanguage() == Language.HEBREW || main.getConfigValues().getLanguage() == Language.ARABIC) &&
-                !Minecraft.getMinecraft().fontRendererObj.getBidiFlag()) {
+        Language currentLanguage = (Language) Feature.LANGUAGE.getValue();
+        if ((currentLanguage == Language.HEBREW || currentLanguage == Language.ARABIC)
+                && !Minecraft.getMinecraft().fontRendererObj.getBidiFlag()) {
             text = bidiReorder(text);
         }
 

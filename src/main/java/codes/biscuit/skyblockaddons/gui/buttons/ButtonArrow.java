@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
@@ -66,7 +66,7 @@ public class ButtonArrow extends SkyblockAddonsButton {
                 gui.setClosingGui(true);
 
                 int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
-                mc.displayGuiScreen(new EnchantmentSettingsGui(gui.getFeature(), page, gui.getLastPage(), gui.getLastTab()));
+                mc.displayGuiScreen(new EnchantmentSettingsGui(page, gui.getLastPage(), gui.getLastTab()));
                 return true;
             } else if (mc.currentScreen instanceof SettingsGui) {
                 SettingsGui gui = (SettingsGui) mc.currentScreen;

@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.features.outline;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ButtonLanguage extends SkyblockAddonsButton {
     private static final Logger logger = SkyblockAddons.getLogger();

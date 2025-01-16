@@ -1,38 +1,36 @@
 package codes.biscuit.skyblockaddons.utils;
 
+import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-
-import java.awt.*;
 
 /**
  * @author Brian Graham (CraftedFury)
  */
-public enum ColorCode {
-
-	BLACK('0', 0x000000),
-	DARK_BLUE('1', 0x0000AA),
-	DARK_GREEN('2', 0x00AA00),
-	DARK_AQUA('3', 0x00AAAA),
-	DARK_RED('4', 0xAA0000),
-	DARK_PURPLE('5', 0xAA00AA),
-	GOLD('6', 0xFFAA00),
-	GRAY('7', 0xAAAAAA),
-	DARK_GRAY('8', 0x555555),
-	BLUE('9', 0x5555FF),
-	GREEN('a', 0x55FF55),
-	AQUA('b', 0x55FFFF),
-	RED('c', 0xFF5555),
-	LIGHT_PURPLE('d', 0xFF55FF),
-	YELLOW('e', 0xFFFF55),
-	WHITE('f', 0xFFFFFF),
+public enum ColorCode implements RegistrableEnum {
+	BLACK('0', 0xFF000000),
+	DARK_BLUE('1', 0xFF0000AA),
+	DARK_GREEN('2', 0xFF00AA00),
+	DARK_AQUA('3', 0xFF00AAAA),
+	DARK_RED('4', 0xFFAA0000),
+	DARK_PURPLE('5', 0xFFAA00AA),
+	GOLD('6', 0xFFFFAA00),
+	GRAY('7', 0xFFAAAAAA),
+	DARK_GRAY('8', 0xFF555555),
+	BLUE('9', 0xFF5555FF),
+	GREEN('a', 0xFF55FF55),
+	AQUA('b', 0xFF55FFFF),
+	RED('c', 0xFFFF5555),
+	LIGHT_PURPLE('d', 0xFFFF55FF),
+	YELLOW('e', 0xFFFFFF55),
+	WHITE('f', 0xFFFFFFFF),
 	MAGIC('k', true, "obfuscated"),
 	BOLD('l', true),
 	STRIKETHROUGH('m', true),
 	UNDERLINE('n', true, "underlined"),
 	ITALIC('o', true),
 	RESET('r'),
-	CHROMA('z', 0xFFFFFE);
+	CHROMA('z', 0xFFFFFFFE);
 
 	public static final char COLOR_CHAR = '§';
 	@Getter private final char code;
@@ -66,7 +64,7 @@ public enum ColorCode {
 		this.isFormat = isFormat;
 		this.jsonName = StringUtils.isEmpty(jsonName) ? this.name().toLowerCase() : jsonName;
 		this.toString = new String(new char[] { COLOR_CHAR, code });
-		this.color = (255 << 24) | (rgb & 0x00FFFFFF);
+		this.color = rgb;
 	}
 
 	/**
@@ -84,8 +82,13 @@ public enum ColorCode {
 		return null;
 	}
 
-    public Color getColorObject() {
-		return new Color(color);
+	public static ColorCode getByARGB(int argb) {
+		for (ColorCode color : values()) {
+			if (color.color == argb)
+				return color;
+		}
+
+		return null;
 	}
 
 	public int getColor(int alpha) {

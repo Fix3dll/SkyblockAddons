@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
@@ -100,12 +99,12 @@ public class ButtonStepper extends SkyblockAddonsButton {
     }
 
     private boolean hitMaximum(Modifier modifier, int mouseX, int mouseY) {
-        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
+        int warningSeconds = Feature.WARNING_TIME.numberValue().intValue();
         switch (modifier) {
             case SUBTRACT:
-                return isOverSubtractButton(mouseX, mouseY) && config.getWarningSeconds() == 1;
+                return isOverSubtractButton(mouseX, mouseY) && warningSeconds == 1;
             case ADD:
-                return isOverAddButton(mouseX, mouseY) && config.getWarningSeconds() == 99;
+                return isOverAddButton(mouseX, mouseY) && warningSeconds == 99;
             default:
                 return false;
         }

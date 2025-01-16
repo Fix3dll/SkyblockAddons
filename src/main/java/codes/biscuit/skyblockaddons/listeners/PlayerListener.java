@@ -3,6 +3,8 @@ package codes.biscuit.skyblockaddons.listeners;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.core.*;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.dungeon.DungeonMilestone;
 import codes.biscuit.skyblockaddons.features.dungeon.DungeonPlayer;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
@@ -227,7 +229,7 @@ public class PlayerListener {
         }
 
         if (Feature.OUTBID_ALERT_SOUND.isEnabled() && formattedText.matches("§6\\[Auction] §..*§eoutbid you .*")
-                && (Feature.OUTBID_ALERT_SOUND_IN_OTHER_GAMES.isEnabled() || main.getUtils().isOnSkyblock())) {
+                && (Feature.OUTBID_ALERT_SOUND.isEnabled(FeatureSetting.OUTBID_ALERT_SOUND_IN_OTHER_GAMES) || main.getUtils().isOnSkyblock())) {
             main.getUtils().playLoudSound("random.orb", 0.5);
         }
 
@@ -354,7 +356,7 @@ public class PlayerListener {
                     this.spiritSceptreHitEnemies = Integer.parseInt(matcher.group("hitEnemies"));
                     this.spiritSceptreDealtDamage = Float.parseFloat(matcher.group("dealtDamage").replace(",", ""));
 
-                    if (Feature.DISABLE_SPIRIT_SCEPTRE_MESSAGES.isEnabled()) {
+                    if (Feature.SPIRIT_SCEPTRE_DISPLAY.isEnabled(FeatureSetting.DISABLE_SPIRIT_SCEPTRE_MESSAGES)) {
                         e.setCanceled(true);
                     }
                 }
@@ -426,7 +428,8 @@ public class PlayerListener {
                 }
             }
 
-            if (main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING && Feature.SHOW_SALVAGE_ESSENCES_COUNTER.isEnabled()) {
+            if (main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING
+                    && Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isEnabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)) {
                 main.getDungeonManager().addSalvagedEssences(unformattedText);
             }
 
@@ -539,13 +542,13 @@ public class PlayerListener {
                 IChatComponent oldMessage = e.message;
                 String usernameWithSymbols = namesWithSymbols.get(username);
                 String suffix = " ";
-                if (Feature.SHOW_PROFILE_TYPE.isEnabled()){
+                if (Feature.PLAYER_SYMBOLS_IN_CHAT.isEnabled(FeatureSetting.SHOW_PROFILE_TYPE)) {
                     Matcher m = PROFILE_TYPE_SYMBOL.matcher(usernameWithSymbols);
                     if(m.find()) {
                         suffix +=  m.group(0);
                     }
                 }
-                if (Feature.SHOW_NETHER_FACTION.isEnabled()){
+                if (Feature.PLAYER_SYMBOLS_IN_CHAT.isEnabled(FeatureSetting.SHOW_NETHER_FACTION)) {
                     Matcher m = NETHER_FACTION_SYMBOL.matcher(usernameWithSymbols);
                     if(m.find()) {
                         suffix += m.group(0);
@@ -772,7 +775,7 @@ public class PlayerListener {
 
             if (entity.hasCustomName()) {
                 if (main.getUtils().getMap() == Island.PRIVATE_ISLAND && !main.getUtils().isGuest()) {
-                    int cooldown = main.getConfigValues().getWarningSeconds() * 1000 + 10000;
+                    int cooldown = Feature.WARNING_TIME.numberValue().intValue() * 1000 + 10000;
                     String nameTag = entity.getCustomNameTag();
                     if (Feature.MINION_FULL_WARNING.isEnabled() && nameTag.equals("§cMy storage is full! :(")) {
                         long now = System.currentTimeMillis();
@@ -945,8 +948,8 @@ public class PlayerListener {
                     && extraAttributes.hasKey("baseStatBoostPercentage", ItemUtils.NBT_INTEGER)) {
                 int baseStatBoost = extraAttributes.getInteger("baseStatBoostPercentage");
 
-                ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE);
-                if (Feature.BASE_STAT_BOOST_COLOR_BY_RARITY.isEnabled()) {
+                ColorCode colorCode = Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.getRestrictedColor();
+                if (Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.isEnabled(FeatureSetting.BASE_STAT_COLOR_BY_RARITY)) {
                     int rarityIndex = baseStatBoost / 10;
                     if (rarityIndex < 0) rarityIndex = 0;
                     if (rarityIndex >= SkyblockRarity.values().length) rarityIndex = SkyblockRarity.values().length - 1;
@@ -961,13 +964,13 @@ public class PlayerListener {
             }
 
             if (Feature.SHOW_SWORD_KILLS.isEnabled() && extraAttributes.hasKey("sword_kills", ItemUtils.NBT_INTEGER)) {
-                ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_SWORD_KILLS);
+                ColorCode colorCode = Feature.SHOW_SWORD_KILLS.getRestrictedColor();
                 e.toolTip.add(insertAt++, "§7Sword Kills: " + colorCode + extraAttributes.getInteger("sword_kills"));
             }
 
             if (Feature.SHOW_ITEM_DUNGEON_FLOOR.isEnabled() && extraAttributes.hasKey("item_tier", ItemUtils.NBT_INTEGER)) {
                 int floor = extraAttributes.getInteger("item_tier");
-                ColorCode colorCode = main.getConfigValues().getRestrictedColor(Feature.SHOW_ITEM_DUNGEON_FLOOR);
+                ColorCode colorCode = Feature.SHOW_ITEM_DUNGEON_FLOOR.getRestrictedColor();
                 e.toolTip.add(insertAt, "§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor));
             }
         }
@@ -986,7 +989,10 @@ public class PlayerListener {
         }
 
         if (Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS.isEnabled()) {
-            int startIndex = Feature.DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME.isEnabled() ? 1 : 0;
+            boolean replaceItemName = Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS.isEnabled(
+                    FeatureSetting.DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME
+            );
+            int startIndex = replaceItemName ? 1 : 0;
 
             for (int i = startIndex; i < e.toolTip.size(); i++) {
                 e.toolTip.set(i, RomanNumeralParser.replaceNumeralsWithIntegers(e.toolTip.get(i)));
@@ -1034,7 +1040,7 @@ public class PlayerListener {
             DevUtils.copyData();
         }
 
-        if (Feature.areEnabled(Feature.DUNGEONS_MAP_DISPLAY, Feature.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)
+        if (Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)
                 && main.getUtils().isInDungeon()) {
             if (SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.isPressed() && Keyboard.getEventKeyState()) {
                 DungeonMapManager.decreaseZoomByStep();
@@ -1062,7 +1068,7 @@ public class PlayerListener {
                     // Check that the sound matches the rat sound
                     if (eventSound.getSoundLocation().equals(sound.getSoundLocation()) &&
                             eventSound.getPitch() == sound.getPitch() && eventSound.getVolume() == sound.getVolume()) {
-                        if (Feature.STOP_ONLY_RAT_SQUEAK.isDisabled() ||
+                        if (Feature.STOP_RAT_SOUNDS.isDisabled(FeatureSetting.STOP_ONLY_RAT_SQUEAK) ||
                                 eventSound.getSoundLocation().toString().endsWith("mob.bat.idle")) {
                             // Cancel the result
                             event.result = null;
@@ -1299,7 +1305,7 @@ public class PlayerListener {
             } else {
                 // Reverse calculate the player's health by using the player's vanilla hearts.
                 // Also calculate the health change for the gui item.
-                if (Feature.HEALTH_PREDICTION.isEnabled()) {
+                if (Feature.HEALTH_BAR.isEnabled(FeatureSetting.HEALTH_PREDICTION)) {
                     float newHealth = PlayerStats.HEALTH.getValue() > PlayerStats.MAX_HEALTH.getValue()
                             ? PlayerStats.HEALTH.getValue()
                             : Math.round(PlayerStats.MAX_HEALTH.getValue() * ((p.getHealth()) / p.getMaxHealth()));

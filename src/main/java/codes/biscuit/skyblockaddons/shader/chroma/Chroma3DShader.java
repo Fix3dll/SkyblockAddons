@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.shader.chroma;
 
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.shader.UniformType;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Setter;
@@ -33,6 +34,6 @@ public class Chroma3DShader extends ChromaShader {
             return new float[] {(float) viewPosition.x, (float) viewPosition.y, (float) viewPosition.z};
         });
         registerUniform(UniformType.FLOAT, "alpha", () -> alpha);
-        registerUniform(UniformType.FLOAT, "brightness", () -> main.getConfigValues().getChromaBrightness().floatValue());
+        registerUniform(UniformType.FLOAT, "brightness", () -> Feature.CHROMA_BRIGHTNESS.numberValue().floatValue());
     }
 }

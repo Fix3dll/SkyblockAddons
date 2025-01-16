@@ -1,8 +1,7 @@
 package codes.biscuit.skyblockaddons.utils;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +10,7 @@ import lombok.experimental.Accessors;
 import java.awt.*;
 import java.util.LinkedList;
 
+// TODO merge with ColorCode
 @Accessors(chain = true)
 public class SkyblockColor {
 
@@ -50,7 +50,17 @@ public class SkyblockColor {
 
     public int getTintAtPosition(float x, float y) {
         if (this.colorAnimation == ColorAnimation.CHROMA) {
-            return ManualChromaManager.getChromaColor(x, y, Color.RGBtoHSB(ColorUtils.getRed(getColor()), ColorUtils.getGreen(getColor()), ColorUtils.getBlue(getColor()), null) , ColorUtils.getAlpha(getColor()));
+            int color = getColor();
+            return ManualChromaManager.getChromaColor(
+                    x, y,
+                    Color.RGBtoHSB(
+                            ColorUtils.getRed(color),
+                            ColorUtils.getGreen(color),
+                            ColorUtils.getBlue(color),
+                            null
+                    ),
+                    ColorUtils.getAlpha(color)
+            );
         }
 
         return colors.get(0);
@@ -81,12 +91,8 @@ public class SkyblockColor {
         return this;
     }
 
-    public boolean isMulticolor() {
-        return colorAnimation != ColorAnimation.NONE;
-    }
-
     public boolean isPositionalMulticolor() {
-        return colorAnimation != ColorAnimation.NONE && SkyblockAddons.getInstance().getConfigValues().getChromaMode() != EnumUtils.ChromaMode.ALL_SAME_COLOR;
+        return colorAnimation != ColorAnimation.NONE && Feature.CHROMA_MODE.getValue() != EnumUtils.ChromaMode.ALL_SAME_COLOR;
     }
 
     public int getColor() {
@@ -109,8 +115,7 @@ public class SkyblockColor {
     }
 
     public static boolean shouldUseChromaShaders() {
-        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
-        return config.getChromaMode() != EnumUtils.ChromaMode.ALL_SAME_COLOR && ShaderManager.getInstance().areShadersSupported();
+        return Feature.CHROMA_MODE.getValue() != EnumUtils.ChromaMode.ALL_SAME_COLOR && ShaderManager.getInstance().areShadersSupported();
     }
 
     public enum ColorAnimation {

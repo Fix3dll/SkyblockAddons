@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class ButtonResize extends ButtonFeature {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        float scale = main.getConfigValues().getGuiScale(feature);
+        float scale = feature.getGuiScale();
         hovered = mouseX >= (x - SIZE) * scale && mouseY >= (y - SIZE) * scale
                 && mouseX < (x + SIZE) * scale && mouseY < (y + SIZE) * scale;
         int color = hovered ? ColorCode.WHITE.getColor() : ColorCode.WHITE.getColor(70);

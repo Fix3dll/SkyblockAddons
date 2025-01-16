@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.config;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.features.FetchurManager;
 import codes.biscuit.skyblockaddons.features.backpacks.CompressedStorage;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTrackerData;
@@ -12,20 +12,25 @@ import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Setter @Getter
 public class PersistentValuesManager {
 
-    private static final Logger logger = SkyblockAddons.getLogger();
-
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final ReentrantLock SAVE_LOCK = new ReentrantLock();
 
     private final File persistentValuesFile;
+    @Deprecated private final File legacyValuesFile; // TODO remove in future
 
     private PersistentValues persistentValues = new PersistentValues();
 
@@ -38,7 +43,9 @@ public class PersistentValuesManager {
 
         private SlayerTrackerData slayerTracker = new SlayerTrackerData();
         private DragonTrackerData dragonTracker = new DragonTrackerData();
-        private Map<String, CompressedStorage> storageCache = new HashMap<>();
+
+        private final Map<String, CompressedStorage> storageCache = new HashMap<>();
+        private final Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
 
         private int oresMined = 0;
         private int seaCreaturesKilled = 0;
@@ -49,16 +56,27 @@ public class PersistentValuesManager {
     }
 
     public PersistentValuesManager(File configDir) {
-        this.persistentValuesFile = new File(configDir.getAbsolutePath() + "/skyblockaddons_persistent.cfg");
+        this.persistentValuesFile = new File(configDir.getAbsolutePath(), "/skyblockaddons/persistentValues.json");
+        this.legacyValuesFile = new File(configDir.getAbsolutePath(), "/skyblockaddons_persistent.cfg");
     }
 
     /**
      * Loads the persistent values from {@code config/skyblockaddons_persistent.cfg} in the user's Minecraft folder.
      */
     public void loadValues() {
+        if (legacyValuesFile.exists()) {
+            try {
+                Files.move(legacyValuesFile.toPath(), persistentValuesFile.toPath());
+            } catch (IOException e) {
+                LOGGER.error("Failed to move legacy persistent values file", e);
+            }
+        }
+
         if (persistentValuesFile.exists()) {
 
-            try (FileReader reader = new FileReader(persistentValuesFile)) {
+            try (InputStreamReader reader = new InputStreamReader(
+                    Files.newInputStream(persistentValuesFile.toPath()), StandardCharsets.UTF_8
+            )) {
                 persistentValues = SkyblockAddons.getGson().fromJson(reader, PersistentValues.class);
 
                 // If the file is completely empty because it is corrupted, Gson will return null
@@ -66,9 +84,8 @@ public class PersistentValuesManager {
                     persistentValues = new PersistentValues();
                 }
             } catch (Exception ex) {
-                logger.error("Error loading persistent values!", ex);
+                LOGGER.error("Error loading persistent values!", ex);
             }
-
         } else {
             saveValues();
         }
@@ -86,17 +103,19 @@ public class PersistentValuesManager {
             }
 
             boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
-            if (isDevMode) logger.info("Saving persistent values...");
+            if (isDevMode) LOGGER.info("Saving persistent values...");
 
             try {
                 //noinspection ResultOfMethodCallIgnored
                 persistentValuesFile.createNewFile();
 
-                try (FileWriter writer = new FileWriter(persistentValuesFile)) {
+                try (OutputStreamWriter writer = new OutputStreamWriter(
+                        Files.newOutputStream(persistentValuesFile.toPath()), StandardCharsets.UTF_8
+                )) {
                     SkyblockAddons.getGson().toJson(persistentValues, writer);
                 }
             } catch (Exception ex) {
-                logger.error("Error saving persistent values!", ex);
+                LOGGER.error("Error saving persistent values!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {
                     SkyblockAddons.getInstance().getUtils().sendErrorMessage(
                             "Error saving persistent values! Check log for more detail."
@@ -104,8 +123,7 @@ public class PersistentValuesManager {
                 }
             }
 
-            if (isDevMode) logger.info("Persistent values saved!");
-
+            if (isDevMode) LOGGER.info("Persistent values saved!");
             SAVE_LOCK.unlock();
         });
     }
@@ -148,6 +166,15 @@ public class PersistentValuesManager {
     public void setLastTimeFetchur(long lastTimeFetchur) {
         persistentValues.lastTimeFetchur = lastTimeFetchur;
         saveValues();
+    }
+
+    public Set<Integer> getLockedSlots() {
+        String profile = SkyblockAddons.getInstance().getUtils().getProfileName();
+        if (!persistentValues.profileLockedSlots.containsKey(profile)) {
+            persistentValues.profileLockedSlots.put(profile, new HashSet<>());
+        }
+
+        return persistentValues.profileLockedSlots.get(profile);
     }
 
 }

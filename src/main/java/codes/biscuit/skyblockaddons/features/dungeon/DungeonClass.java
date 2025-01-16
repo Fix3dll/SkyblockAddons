@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 
 @Getter
 public enum DungeonClass {
-
     HEALER(Items.potionitem, "Healer", ColorCode.LIGHT_PURPLE),
     ARCHER(Items.bow, "Archer", ColorCode.GOLD),
     TANK(Items.leather_chestplate, "Tank", ColorCode.DARK_GREEN),

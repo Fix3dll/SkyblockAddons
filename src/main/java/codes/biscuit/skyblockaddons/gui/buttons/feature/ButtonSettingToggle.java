@@ -1,15 +1,20 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.GuiIngameForge;
 
 public class ButtonSettingToggle extends ButtonFeatureToggle {
 
-    public ButtonSettingToggle(double x, double y, String buttonText, Feature feature) {
-        super(x, y, feature);
+    private final FeatureSetting setting;
+
+    public ButtonSettingToggle(double x, double y, String buttonText, FeatureSetting setting) {
+        super(x, y, setting.isUniversal() ? setting.getUniversalFeature() : setting.getRelatedFeature());
         this.displayString = buttonText;
+        this.setting = setting;
+        this.isEnabled = () -> feature.isEnabled(setting);
     }
 
     @Override
@@ -27,10 +32,10 @@ public class ButtonSettingToggle extends ButtonFeatureToggle {
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         if (this.hovered && this.feature != null && !this.feature.isRemoteDisabled()) {
-            if (feature.isDisabled()) {
-                feature.setEnabled(true);
+            if (feature.isDisabled(setting)) {
+                feature.set(setting, true);
             } else {
-                feature.setEnabled(false);
+                feature.set(setting, false);
 
                 if (feature == Feature.HIDE_FOOD_ARMOR_BAR) { // Reset the vanilla bars when disabling these two features.
                     GuiIngameForge.renderArmor = true; // The food gets automatically enabled, no need to include it.

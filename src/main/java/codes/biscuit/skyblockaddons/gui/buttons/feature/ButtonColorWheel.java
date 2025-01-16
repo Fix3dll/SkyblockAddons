@@ -1,11 +1,10 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.gui.screens.ColorSelectionGui;
 import codes.biscuit.skyblockaddons.gui.screens.LocationEditGui;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
-import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.GUIType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +28,7 @@ public class ButtonColorWheel extends ButtonFeature {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        float scale = SkyblockAddons.getInstance().getConfigValues().getGuiScale(feature);
+        float scale = feature.getGuiScale();
         this.hovered = isHovered(x, y, mouseX, mouseY, scale);
         GlStateManager.enableBlend();
         GlStateManager.color(1,1,1, hovered ? 1 : 0.5F);
@@ -47,9 +46,9 @@ public class ButtonColorWheel extends ButtonFeature {
             if (mc.currentScreen instanceof LocationEditGui) {
                 LocationEditGui gui = (LocationEditGui) mc.currentScreen;
                 gui.setClosing(true);
-                mc.displayGuiScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));
-                return true;
+                mc.displayGuiScreen(new ColorSelectionGui(feature, GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));
             }
+            return true;
         }
         return false;
     }

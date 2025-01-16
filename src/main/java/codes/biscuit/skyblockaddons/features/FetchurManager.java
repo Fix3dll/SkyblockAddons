@@ -1,7 +1,8 @@
 package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -94,9 +95,9 @@ public class FetchurManager {
             currentItemSaved = item;
             SkyblockAddons main = SkyblockAddons.getInstance();
             // Warn player when there's a change
-            if (Feature.WARN_WHEN_FETCHUR_CHANGES.isEnabled()) {
+            if (Feature.FETCHUR_TODAY.isEnabled(FeatureSetting.WARN_WHEN_FETCHUR_CHANGES)) {
                 main.getUtils().playLoudSound("random.orb", 0.5);
-                main.getRenderListener().setTitleFeature(Feature.WARN_WHEN_FETCHUR_CHANGES);
+                main.getRenderListener().setTitleFeature(Feature.FETCHUR_TODAY);
             }
         }
     }

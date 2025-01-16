@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.Language;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
@@ -116,7 +117,8 @@ public class FeatureBase extends ButtonFeature {
             if (feature == Feature.LANGUAGE) {
                 GlStateManager.color(1,1,1,1F);
                 try {
-                    mc.getTextureManager().bindTexture(main.getConfigValues().getLanguage().getResourceLocation());
+                    Language currentLanguage = (Language) Feature.LANGUAGE.getValue();
+                    mc.getTextureManager().bindTexture(currentLanguage.getResourceLocation());
                     if (main.getUtils().isHalloween()) {
                         mc.getTextureManager().bindTexture(new ResourceLocation("skyblockaddons", "flags/halloween.png"));
                     }

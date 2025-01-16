@@ -1,14 +1,16 @@
 package codes.biscuit.skyblockaddons.features.enchants;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.RomanNumeralParser;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
+import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -54,6 +56,7 @@ public class EnchantManager {
         // Update the cache so we have something to which to compare later
         loreCache.updateBefore(loreList);
 
+        Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
         int startEnchant = -1, endEnchant = -1, maxTooltipWidth = 0;
         int indexOfLastGreyEnchant = accountForAndRemoveGreyEnchants(loreList, item);
@@ -99,11 +102,11 @@ public class EnchantManager {
                 if (enchant != null) {
                     // Get the original (input) formatting code of the enchantment, which may have been affected by other mods
                     String inputFormatEnchant = "null";
-                    if (Feature.ENCHANTMENTS_HIGHLIGHT.isDisabled()) {
+                    if (feature.isDisabled(FeatureSetting.HIGHLIGHT_ENCHANTMENTS)) {
                         inputFormatEnchant = TextUtils.getFormattedString(loreList.get(i), m.group());
                     }
                     lastEnchant = new FormattedEnchant(enchant, level, inputFormatEnchant);
-                    // Try to add the enchant to the list, otherwise find the same enchant that was already present in the list
+                    // Try to add enchant to the list, otherwise find the same enchant that was already present in the list
                     if (!orderedEnchants.add(lastEnchant)) {
                         for (FormattedEnchant e : orderedEnchants) {
                             if (e.compareTo(lastEnchant) == 0) {
@@ -136,13 +139,13 @@ public class EnchantManager {
         loreList.subList(startEnchant, endEnchant + 1).clear();
 
         List<String> insertEnchants;
-        EnchantListLayout layout = SkyblockAddons.getInstance().getConfigValues().getEnchantLayout();
+        RegistrableEnum layout = feature.getAsEnum(FeatureSetting.ENCHANT_LAYOUT);
         // Pack as many enchantments as we can into one line (while not overstuffing it)
-        if (layout == EnchantListLayout.COMPRESS && numEnchants != 1) {
+        if (layout == EnchantLayout.COMPRESS && numEnchants != 1) {
             insertEnchants = new ArrayList<>();
 
             // Get format for comma
-            String comma = SkyblockAddons.getInstance().getConfigValues().getRestrictedColor(Feature.ENCHANTMENT_COMMA_COLOR) + COMMA;
+            String comma = feature.getAsEnum(FeatureSetting.COMMA_ENCHANT_COLOR) + COMMA;
             int commaLength = fontRenderer.getStringWidth(comma);
 
             // Process each line of enchants
@@ -167,12 +170,12 @@ public class EnchantManager {
             }
         }
         // Print 2 enchants per line, separated by a comma, with no enchant lore (typical hypixel behavior)
-        else if (layout == EnchantListLayout.NORMAL && !hasLore) {
+        else if (layout == EnchantLayout.NORMAL && !hasLore) {
             insertEnchants = new ArrayList<>();
 
             String comma;
-            if (Feature.ENCHANTMENTS_HIGHLIGHT.isEnabled()) {
-                comma = SkyblockAddons.getInstance().getConfigValues().getRestrictedColor(Feature.ENCHANTMENT_COMMA_COLOR) + COMMA;
+            if (feature.isEnabled(FeatureSetting.HIGHLIGHT_ENCHANTMENTS)) {
+                comma = feature.getAsEnum(FeatureSetting.COMMA_ENCHANT_COLOR) + COMMA;
             } else {
                 comma = COMMA;
             }
@@ -180,7 +183,7 @@ public class EnchantManager {
             int i = 0;
             StringBuilder builder = new StringBuilder(maxTooltipWidth);
             for (FormattedEnchant enchant : orderedEnchants) {
-                // Add the enchant
+                // Add enchant
                 builder.append(enchant.getFormattedString());
                 // Add a comma for the first on the row, followed by a comma
                 if (i % 2 == 0) {
@@ -202,7 +205,7 @@ public class EnchantManager {
         // Prints each enchantment out on a separate line. Also adds the lore if need be
         else {
             // Add each enchantment (one per line) + add enchant lore (if available)
-            if (Feature.HIDE_ENCHANT_DESCRIPTION.isDisabled()) {
+            if (feature.isDisabled(FeatureSetting.HIDE_ENCHANTMENT_LORE)) {
                 insertEnchants = new ArrayList<>((hasLore ? 3 : 1) * numEnchants);
                 for (FormattedEnchant enchant : orderedEnchants) {
                     // Add the enchant
@@ -243,7 +246,7 @@ public class EnchantManager {
                 long stackedEnchantNum = extraAttributes.getLong(enchant.getNbtNum());
                 Long nextLevel = enchant.getStackLevel().higher(stackedEnchantNum);
                 String statLabel = Translations.getMessage("enchants." + enchant.getStatLabel());
-                ColorCode colorCode = SkyblockAddons.getInstance().getConfigValues().getRestrictedColor(Feature.SHOW_STACKING_ENCHANT_PROGRESS);
+                ColorCode colorCode = Feature.SHOW_STACKING_ENCHANT_PROGRESS.getRestrictedColor();
                 StringBuilder b = new StringBuilder();
                 b.append("§7").append(statLabel).append(": ").append(colorCode);
                 if (nextLevel == null) {
@@ -285,7 +288,7 @@ public class EnchantManager {
 
     /**
      * Counts (and optionally removes) vanilla grey enchants that are added on the first 1-2 lines of lore.
-     * Removal of the grey enchants is specified by the {@link Feature#HIDE_GREY_ENCHANTS} feature.
+     * Removal of the grey enchants is specified by the {@link FeatureSetting#HIDE_GREY_ENCHANTS} feature.
      *
      * @param tooltip the tooltip being built
      * @param item    to which the tooltip corresponds
@@ -297,7 +300,7 @@ public class EnchantManager {
             return -1;
         }
         int lastGreyEnchant = -1;
-        boolean removeGreyEnchants = Feature.HIDE_GREY_ENCHANTS.isEnabled();
+        boolean removeGreyEnchants = Feature.ENCHANTMENT_LORE_PARSING.isEnabled(FeatureSetting.HIDE_GREY_ENCHANTS);
 
         // Start at index 1 since index 0 is the title
         int total = 0;
@@ -407,7 +410,7 @@ public class EnchantManager {
 
         public String getFormattedString() {
             StringBuilder b = new StringBuilder();
-            if (Feature.ENCHANTMENTS_HIGHLIGHT.isEnabled()) {
+            if (Feature.ENCHANTMENT_LORE_PARSING.isEnabled(FeatureSetting.HIGHLIGHT_ENCHANTMENTS)) {
                 b.append(enchant.getFormattedName(level));
             } else {
                 return inputFormattedString;

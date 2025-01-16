@@ -1,0 +1,611 @@
+package codes.biscuit.skyblockaddons.config;
+
+import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.Language;
+import codes.biscuit.skyblockaddons.core.feature.FeatureData;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
+import codes.biscuit.skyblockaddons.features.discordrpc.DiscordStatus;
+import codes.biscuit.skyblockaddons.features.enchants.EnchantLayout;
+import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.ColorUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.AnchorPoint;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.util.ReportedException;
+import org.apache.logging.log4j.Logger;
+
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class ConfigValuesManager {
+
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
+
+    private static final int CONFIG_VERSION = 11;
+
+    private static final ReentrantLock SAVE_LOCK = new ReentrantLock();
+
+    private final File settingsConfigFile;
+    @Deprecated private final File legacyConfigFile; // TODO remove in future
+
+    private final EnumMap<Feature, FeatureData<?>> DEFAULT_FEATURE_DATA = new EnumMap<>(Feature.class);
+
+    private ConfigValues configValues = new ConfigValues();
+
+    @Setter
+    public static class ConfigValues {
+
+        private int configVersion = CONFIG_VERSION;
+        private EnumMap<Feature, FeatureData<?>> features = new EnumMap<>(Feature.class);
+
+    }
+
+    public ConfigValuesManager(File mainConfigDir) {
+        this.settingsConfigFile = new File(mainConfigDir.getAbsolutePath(), "skyblockaddons/configurations.json");
+        this.legacyConfigFile = new File(mainConfigDir, "skyblockaddons.cfg");
+    }
+
+    // TODO migration map for Feature rework, remove in feature
+    @Deprecated @Getter private static TreeMap<Feature, TreeMap<FeatureSetting, Integer>> migrationMap = null;
+
+    public void loadValues() {
+        Gson gson = SkyblockAddons.getGson();
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("defaults.json");
+             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
+            DEFAULT_FEATURE_DATA.putAll(
+                    gson.fromJson(
+                            inputStreamReader,
+                            new TypeToken<EnumMap<Feature, FeatureData<?>>>() {}.getType()
+                    )
+            );
+        } catch (Exception ex) {
+            CrashReport crashReport = CrashReport.makeCrashReport(ex, "Reading default settings file");
+            throw new ReportedException(crashReport);
+        }
+
+        // TODO It's terrifying down there. I don't recommend looking unless necessary. Destroy in the future.
+        if (legacyConfigFile.exists()) {
+            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("migrationMap.json");
+                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
+                migrationMap = gson.fromJson(
+                        inputStreamReader,
+                        new TypeToken<TreeMap<Feature, TreeMap<FeatureSetting, Integer>>>() {}.getType()
+                );
+            } catch (Exception ex) {
+                CrashReport crashReport = CrashReport.makeCrashReport(ex, "Reading migration map file");
+                throw new ReportedException(crashReport);
+            }
+
+            JsonObject legacyLoadedConfig;
+            try (InputStreamReader reader = new InputStreamReader(
+                    Files.newInputStream(legacyConfigFile.toPath()), StandardCharsets.UTF_8
+            )) {
+                JsonElement fileElement = new JsonParser().parse(reader);
+
+                if (fileElement == null || fileElement.isJsonNull()) {
+                    throw new JsonParseException("File is null!");
+                }
+                legacyLoadedConfig = fileElement.getAsJsonObject();
+            } catch (JsonParseException | IllegalStateException | IOException ex) {
+                LOGGER.error("There was an error loading the config! Resetting all settings to default.");
+                LOGGER.catching(ex);
+                addDefaultsAndSave();
+                return;
+            }
+
+            ArrayList<String> discordCustomStatuses = gson.fromJson(
+                    legacyLoadedConfig.get("discordCustomStatuses"),
+                    new TypeToken<ArrayList<String>>() {}.getType()
+            );
+            HashSet<Integer> disabledFeaturesId = gson.fromJson(
+                    legacyLoadedConfig.getAsJsonArray("disabledFeatures"),
+                    new TypeToken<HashSet<Integer>>() {}.getType()
+            );
+            HashSet<Integer> chromaFeatures = gson.fromJson(
+                    legacyLoadedConfig.get("chromaFeatures"),
+                    new TypeToken<HashSet<Integer>>() {}.getType()
+            );
+            HashMap<String, HashSet<Integer>> profileLockedSlots = gson.fromJson(
+                    legacyLoadedConfig.get("profileLockedSlots"),
+                    new TypeToken<HashMap<String, HashSet<Integer>>>() {}.getType()
+            );
+            HashMap<Integer, Integer> anchorPoints = gson.fromJson(
+                    legacyLoadedConfig.get("anchorPoints"),
+                    new TypeToken<HashMap<Integer, Integer>>() {}.getType()
+            );
+            HashMap<Integer, Integer> colors = gson.fromJson(
+                    legacyLoadedConfig.get("colors"),
+                    new TypeToken<HashMap<Integer, Integer>>() {}.getType()
+            );
+            HashMap<Integer, Pair<Float, Float>> coordinates = new HashMap<>();
+            if (legacyLoadedConfig.has("coordinates")) {
+                for (Map.Entry<String, JsonElement> element : legacyLoadedConfig.getAsJsonObject("coordinates").entrySet()) {
+                    JsonArray coords = element.getValue().getAsJsonArray();
+                    coordinates.put(
+                            Integer.parseInt(element.getKey()),
+                            new Pair<>(coords.get(0).getAsFloat(), coords.get(1).getAsFloat())
+                    );
+                }
+            }
+            HashMap<Integer, Pair<Float, Float>> barSizes = new HashMap<>();
+            if (legacyLoadedConfig.has("barSizes")) {
+                for (Map.Entry<String, JsonElement> element : legacyLoadedConfig.getAsJsonObject("barSizes").entrySet()) {
+                    JsonArray coords = element.getValue().getAsJsonArray();
+                    barSizes.put(
+                            Integer.parseInt(element.getKey()),
+                            new Pair<>(coords.get(0).getAsFloat(), coords.get(1).getAsFloat())
+                    );
+                }
+            }
+            HashMap<Integer, Float> guiScales = new HashMap<>();
+            if (legacyLoadedConfig.has("guiScales")) {
+                guiScales = gson.fromJson(
+                        legacyLoadedConfig.get("guiScales"),
+                        new TypeToken<HashMap<Integer, Float>>() {}.getType()
+                );
+            }
+
+            EnumUtils.BackpackStyle backpackStyle = EnumUtils.BackpackStyle.GUI;
+            if (legacyLoadedConfig.has("backpackStyle")) {
+                backpackStyle = EnumUtils.BackpackStyle.values()[legacyLoadedConfig.get("backpackStyle").getAsInt()];
+            }
+            EnumUtils.DeployableDisplayStyle deployableDisplayStyle = EnumUtils.DeployableDisplayStyle.COMPACT;
+            if (legacyLoadedConfig.has("petItemStyle")) {
+                deployableDisplayStyle = EnumUtils.DeployableDisplayStyle.values()[legacyLoadedConfig.get("deployableStyle").getAsInt()];
+            }
+            EnumUtils.PetItemStyle petItemStyle = EnumUtils.PetItemStyle.SHOW_ITEM;
+            if (legacyLoadedConfig.has("petItemStyle")) {
+                petItemStyle = EnumUtils.PetItemStyle.values()[legacyLoadedConfig.get("petItemStyle").getAsInt()];
+            }
+            EnumUtils.TextStyle textStyle = EnumUtils.TextStyle.STYLE_ONE;
+            if (legacyLoadedConfig.has("textStyle")) {
+                textStyle = EnumUtils.TextStyle.values()[legacyLoadedConfig.get("textStyle").getAsInt()];
+            }
+            EnumUtils.ChromaMode chromaMode = EnumUtils.ChromaMode.FADE;
+            if (legacyLoadedConfig.has("chromaMode")) {
+                chromaMode = EnumUtils.ChromaMode.values()[legacyLoadedConfig.get("chromaMode").getAsInt()];
+            }
+            DiscordStatus discordStatus = DiscordStatus.LOCATION;
+            if (legacyLoadedConfig.has("discordStatus")) {
+                discordStatus = DiscordStatus.values()[legacyLoadedConfig.get("discordStatus").getAsInt()];
+            }
+            DiscordStatus discordDetails = DiscordStatus.AUTO_STATUS;
+            if (legacyLoadedConfig.has("discordDetails")) {
+                discordDetails = DiscordStatus.values()[legacyLoadedConfig.get("discordDetails").getAsInt()];
+            }
+            DiscordStatus discordAutoDefault = DiscordStatus.NONE;
+            if (legacyLoadedConfig.has("discordAutoDefault")) {
+                discordAutoDefault = DiscordStatus.values()[legacyLoadedConfig.get("discordAutoDefault").getAsInt()];
+            }
+            EnchantLayout enchantLayout = EnchantLayout.NORMAL;
+            if (legacyLoadedConfig.has("enchantLayout")) {
+                enchantLayout = EnchantLayout.values()[legacyLoadedConfig.get("enchantLayout").getAsInt()];
+            }
+            Language language = Language.ENGLISH;
+            if (legacyLoadedConfig.has("language")) {
+                String languageKey = legacyLoadedConfig.get("language").getAsString();
+                language = Language.getFromPath(languageKey);
+            }
+
+            float mapZoom = 1.1F, chromaSaturation = 0.75F, chromaBrightness = 0.9F, chromaSpeed = 6F, healingCircleOpacity = 0.2F, chromaSize = 30F;
+            int warningSeconds = 4;
+            if (legacyLoadedConfig.has("mapZoom")) {
+                mapZoom = legacyLoadedConfig.get("mapZoom").getAsFloat();
+            }
+            if (legacyLoadedConfig.has("chromaSaturation")) {
+                chromaSaturation =legacyLoadedConfig.get("chromaSaturation").getAsFloat();
+            }
+            if (legacyLoadedConfig.has("chromaBrightness")) {
+                chromaBrightness = legacyLoadedConfig.get("chromaBrightness").getAsFloat();
+            }
+            if (legacyLoadedConfig.has("chromaSpeed")) {
+                chromaSpeed = legacyLoadedConfig.get("chromaSpeed").getAsFloat();
+            }
+            if (legacyLoadedConfig.has("healingCircleOpacity")) {
+                healingCircleOpacity = legacyLoadedConfig.get("healingCircleOpacity").getAsFloat();
+            }
+            if (legacyLoadedConfig.has("chromaSize")) {
+                chromaSize = legacyLoadedConfig.get("chromaSize").getAsFloat();
+            }
+            if (legacyLoadedConfig.has("warningSeconds")) {
+                warningSeconds = legacyLoadedConfig.get("warningSeconds").getAsInt();
+            }
+
+            // migration
+            for (Feature feature : Feature.values()) {
+                // Exceptions
+                switch (feature) {
+                    case WARNING_TIME:
+                        FeatureData<Integer> featureData = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData.setValue(warningSeconds);
+                        feature.getFeatureData().overwriteData(featureData);
+                        continue;
+                    case TEXT_STYLE:
+                        FeatureData<EnumUtils.TextStyle> featureData2 = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData2.setValue(textStyle);
+                        feature.getFeatureData().overwriteData(featureData2);
+                        continue;
+                    case CHROMA_MODE:
+                        FeatureData<EnumUtils.ChromaMode> featureData3 = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData3.setValue(chromaMode);
+                        feature.getFeatureData().overwriteData(featureData3);
+                        continue;
+                    case CHROMA_SATURATION:
+                        FeatureData<Float> featureData4 = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData4.setValue(chromaSaturation);
+                        feature.getFeatureData().overwriteData(featureData4);
+                        continue;
+                    case CHROMA_SIZE:
+                        FeatureData<Float> featureData5 = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData5.setValue(chromaSize);
+                        feature.getFeatureData().overwriteData(featureData5);
+                        continue;
+                    case CHROMA_SPEED:
+                        FeatureData<Float> featureData6 = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData6.setValue(chromaSpeed);
+                        feature.getFeatureData().overwriteData(featureData6);
+                        continue;
+                    case CHROMA_BRIGHTNESS:
+                        FeatureData<Float> featureData7 = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData7.setValue(chromaBrightness);
+                        feature.getFeatureData().overwriteData(featureData7);
+                        continue;
+                    case LANGUAGE:
+                        FeatureData<Language> featureData8 = new FeatureData<>(feature.getFeatureGuiData());
+                        featureData8.setValue(language);
+                        feature.getFeatureData().overwriteData(featureData8);
+                        continue;
+                }
+
+                FeatureData<Boolean> newData = new FeatureData<>(feature.getFeatureGuiData());
+                newData.setValue(!disabledFeaturesId.contains(feature.getId()));
+                AnchorPoint anchor = AnchorPoint.fromId(anchorPoints.getOrDefault(feature.getId(), -1));
+                if (anchor != null) {
+                    newData.setAnchorPoint(anchor);
+                }
+                Pair<Float, Float> coords = coordinates.getOrDefault(feature.getId(), null);
+                if (coords != null) {
+                    newData.setCoords(coords);
+                }
+                Pair<Float, Float> barSize = barSizes.getOrDefault(feature.getId(), null);
+                if (barSize != null) {
+                    newData.setBarSizes(barSize);
+                }
+                float guiScale = guiScales.getOrDefault(feature.getId(), 1.0F);
+                if (guiScale != 1.0F) {
+                    newData.setGuiScale(guiScale);
+                }
+                int legacyColor = colors.getOrDefault(feature.getId(), 0);
+                if (legacyColor == 0) {
+                    if (feature.getFeatureGuiData() != null && feature.getFeatureGuiData().getDefaultColor() != null) {
+                        legacyColor = feature.getFeatureGuiData().getDefaultColor().getColor(255);
+                    } else {
+                        legacyColor = ColorUtils.setColorAlpha(ColorCode.RED.getColor(), 255);
+                    }
+                } else {
+                    legacyColor = ColorUtils.setColorAlpha(legacyColor, 255);
+                }
+                newData.setColor(legacyColor);
+                newData.setChroma(chromaFeatures.contains(feature.getId()));
+
+                TreeMap<FeatureSetting, Object> settings = new TreeMap<>();
+                migrationMap.forEach((mFeature, mSettingMap) -> {
+                    if (mFeature != feature || mSettingMap == null || mSettingMap.isEmpty()) return;
+
+                    for (Map.Entry<FeatureSetting, Integer> entry : mSettingMap.entrySet()) {
+                        settings.put(entry.getKey(), !disabledFeaturesId.contains(entry.getValue()));
+                    }
+                });
+                // Exceptional settings
+                switch (feature) {
+                    case SHOW_BACKPACK_PREVIEW:
+                        settings.put(FeatureSetting.BACKPACK_STYLE, backpackStyle);
+                        break;
+                    case PET_DISPLAY:
+                        settings.put(FeatureSetting.PET_ITEM_STYLE, petItemStyle);
+                        break;
+                    case DEPLOYABLE_STATUS_DISPLAY:
+                        settings.put(FeatureSetting.DEPLOYABLE_DISPLAY_STYLE, deployableDisplayStyle);
+                        break;
+                    case DUNGEONS_MAP_DISPLAY:
+                        settings.put(FeatureSetting.DUNGEON_MAP_ZOOM, mapZoom);
+                        break;
+                    case SHOW_HEALING_CIRCLE_WALL:
+                        settings.put(FeatureSetting.HEALING_CIRCLE_OPACITY, healingCircleOpacity);
+                        break;
+                    case ENCHANTMENT_LORE_PARSING:
+                        settings.put(FeatureSetting.ENCHANT_LAYOUT, enchantLayout);
+                        ColorCode comma = ColorCode.getByARGB(colors.getOrDefault(171, 2));
+                        settings.put(FeatureSetting.COMMA_ENCHANT_COLOR, comma != null ? comma : ColorCode.BLUE);
+                        ColorCode poor = ColorCode.getByARGB(colors.getOrDefault(168, 2));
+                        settings.put(FeatureSetting.POOR_ENCHANT_COLOR, poor != null ? poor : ColorCode.GRAY);
+                        ColorCode good = ColorCode.getByARGB(colors.getOrDefault(167, 2));
+                        settings.put(FeatureSetting.GOOD_ENCHANT_COLOR, good != null ? good : ColorCode.BLUE);
+                        ColorCode great = ColorCode.getByARGB(colors.getOrDefault(166, 2));
+                        settings.put(FeatureSetting.GREAT_ENCHANT_COLOR, great != null ? great : ColorCode.GOLD);
+                        ColorCode perfect = ColorCode.getByARGB(colors.getOrDefault(165, 2));
+                        settings.put(FeatureSetting.PERFECT_ENCHANT_COLOR, perfect != null ? perfect : ColorCode.CHROMA);
+                        break;
+                    case DISCORD_RPC:
+                        settings.put(FeatureSetting.DISCORD_RP_STATE, discordStatus);
+                        settings.put(FeatureSetting.DISCORD_RP_DETAILS, discordDetails);
+                        settings.put(FeatureSetting.DISCORD_RP_AUTO_MODE, discordAutoDefault);
+                        if (discordCustomStatuses.size() > 1) {
+                            settings.put(FeatureSetting.DISCORD_RP_CUSTOM_STATE, discordCustomStatuses.get(0));
+                            settings.put(FeatureSetting.DISCORD_RP_CUSTOM_DETAILS, discordCustomStatuses.get(1));
+                        }
+                        break;
+                }
+                if (feature.couldBeXAllignment()) {
+                    settings.put(FeatureSetting.X_ALLIGNMENT, false);
+                }
+                if (!settings.isEmpty()) {
+                    newData.setSettings(settings);
+                }
+                feature.getFeatureData().overwriteData(newData);
+            }
+            // Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR (173) FeatureSetting data to parent Feature
+            Pair<Float, Float> proximityCoords = coordinates.getOrDefault(173, null);
+            AnchorPoint proximityAnchor = AnchorPoint.fromId(anchorPoints.getOrDefault(173, -1));
+            if (proximityCoords != null && proximityAnchor != null) {
+                Feature.TREVOR_THE_TRAPPER_FEATURES.getFeatureData().setCoords(proximityCoords);
+                Feature.TREVOR_THE_TRAPPER_FEATURES.getFeatureData().setAnchorPoint(proximityAnchor);
+            }
+
+            LOGGER.info("Backing up legacy config...");
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+                String formattedDate = ZonedDateTime.now().format(formatter);
+                String backupFileName = "skyblockaddons-" + formattedDate + ".cfg";
+
+                File backupFile = new File(legacyConfigFile.getParentFile(), "/skyblockaddons/backup/" + backupFileName);
+                Files.createDirectories(backupFile.getParentFile().toPath());
+
+                Files.move(legacyConfigFile.toPath(), backupFile.toPath());
+            } catch (IOException e) {
+                LOGGER.error("Failed to move legacy configurations file", e);
+            }
+
+            // move profileLockedSlots to PersistentValues
+            main.getScheduler().scheduleTask(scheduledTask -> {
+                if (main.isFullyInitialized()) {
+                    PersistentValuesManager pvm = main.getPersistentValuesManager();
+                    pvm.getPersistentValues().getProfileLockedSlots().putAll(profileLockedSlots);
+                    pvm.saveValues();
+                    main.getConfigValuesManager().saveConfig(); // Save configValues too
+                    scheduledTask.cancel();
+                }
+            }, 20, 20);
+        } else if (settingsConfigFile.exists()) {
+
+            try (InputStreamReader reader = new InputStreamReader(
+                    Files.newInputStream(settingsConfigFile.toPath()), StandardCharsets.UTF_8
+            )) {
+                configValues = gson.fromJson(reader, ConfigValues.class);
+
+                // If the file is completely empty because it is corrupted, Gson will return null
+                if (configValues == null) {
+                    configValues = new ConfigValues();
+                    configValues.features.putAll(DEFAULT_FEATURE_DATA);
+                }
+
+                overwriteFeatureData();
+            } catch (Exception ex) {
+                LOGGER.error("Error loading configuration values!", ex);
+            }
+        } else {
+            addDefaultsAndSave();
+        }
+
+        // Post load
+        Feature.TURN_ALL_FEATURES_CHROMA.setEnabled(ColorUtils.areAllFeaturesChroma());
+    }
+
+    private void addDefaultsAndSave() {
+        configValues.features.putAll(DEFAULT_FEATURE_DATA);
+        overwriteFeatureData();
+        saveConfig();
+    }
+
+    private void overwriteFeatureData() {
+        for (Map.Entry<Feature, FeatureData<?>> entry : configValues.features.entrySet()) {
+            Feature feature = entry.getKey();
+            FeatureData<?> featureData = entry.getValue();
+
+            if (featureData != null) {
+                feature.getFeatureData().overwriteData(featureData);
+            } else {
+                FeatureData<?> defaultData = DEFAULT_FEATURE_DATA.get(feature);
+                if (defaultData != null) {
+                    feature.getFeatureData().overwriteData(defaultData);
+                    LOGGER.warn("Default FeatureData loaded for {} feature.", feature);
+                } else {
+                    throw new IllegalStateException("There is no default FeatureData for " + feature);
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void saveConfig() {
+        EnchantManager.markCacheDirty();
+        SkyblockAddons.runAsync(() -> {
+            if (!SAVE_LOCK.tryLock()) {
+                return;
+            }
+
+            boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
+            if (isDevMode) LOGGER.info("Saving config...");
+
+            for (Feature feature : Feature.values()) {
+                configValues.features.put(feature, feature.getFeatureData());
+            }
+
+            try {
+                //noinspection ResultOfMethodCallIgnored
+                settingsConfigFile.createNewFile();
+
+                try (OutputStreamWriter writer = new OutputStreamWriter(
+                        Files.newOutputStream(settingsConfigFile.toPath()), StandardCharsets.UTF_8
+                )) {
+                    SkyblockAddons.getGson().toJson(configValues, writer);
+                }
+            } catch (Exception ex) {
+                LOGGER.error("Error saving configurations file!", ex);
+                if (Minecraft.getMinecraft().thePlayer != null) {
+                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                            "Error saving configurations file! Check log for more detail."
+                    );
+                }
+            }
+
+            SAVE_LOCK.unlock();
+            if (isDevMode) LOGGER.info("Config saved!");
+        });
+    }
+
+    public void setSettingToDefault(FeatureSetting setting) {
+        Feature feature = setting.getRelatedFeature();
+        if (feature != null) {
+            FeatureData<?> data = DEFAULT_FEATURE_DATA.get(feature);
+            Object defaultValue = data == null ? null : data.getSettings().get(setting);
+            if (defaultValue != null) {
+                feature.set(setting, defaultValue);
+                if (Feature.DEVELOPER_MODE.isEnabled()) {
+                    LOGGER.info("{} has been set to default value.", setting.name());
+                }
+                return;
+            }
+        }
+        if (Feature.DEVELOPER_MODE.isEnabled()) {
+            LOGGER.warn("Could not reset {} to its default value.", setting.name());
+        }
+    }
+
+    public void setAllCoordinatesToDefault() {
+        for (Map.Entry<Feature, FeatureData<?>> entry : DEFAULT_FEATURE_DATA.entrySet()) {
+            Feature feature = entry.getKey();
+            FeatureData<?> featureData = entry.getValue();
+
+            if (featureData.getCoords() != null) {
+                feature.getFeatureData().setCoords(featureData.getCoords().clonePair());
+                feature.getFeatureData().setAnchorPoint(featureData.getAnchorPoint());
+                feature.getFeatureData().setGuiScale(featureData.getGuiScale());
+            }
+        }
+    }
+
+    private void putDefaultCoordinates(Feature feature) {
+        Pair<Float, Float> coords = DEFAULT_FEATURE_DATA.get(feature).getCoords().clonePair();
+        if (coords != null) {
+            feature.getFeatureData().setCoords(coords);
+        }
+    }
+
+    public void putDefaultBarSizes() {
+        for (Map.Entry<Feature, FeatureData<?>> entry : DEFAULT_FEATURE_DATA.entrySet()) {
+            Feature feature = entry.getKey();
+            FeatureData<?> featureData = entry.getValue();
+
+            feature.getFeatureData().setBarSizes(featureData.getBarSizes().clonePair());
+        }
+    }
+
+    public void putDefaultGuiScale(Feature feature) {
+        float defaultScale = DEFAULT_FEATURE_DATA.get(feature).getGuiScale();
+        feature.setGuiScale(defaultScale);
+    }
+
+    public float getActualX(Feature feature) {
+        int maxX = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
+        return getAnchorPoint(feature).getX(maxX) + getRelativeCoords(feature).getLeft();
+    }
+
+    public float getActualY(Feature feature) {
+        int maxY = new ScaledResolution(Minecraft.getMinecraft()).getScaledHeight();
+        return getAnchorPoint(feature).getY(maxY) + getRelativeCoords(feature).getRight();
+    }
+
+    public Pair<Float, Float> getRelativeCoords(Feature feature) {
+        Pair<Float, Float> coords = feature.getFeatureData().getCoords();
+        if (coords != null) {
+            return coords;
+        } else {
+            putDefaultCoordinates(feature);
+            coords = feature.getFeatureData().getCoords();
+            if (coords != null) {
+                return coords;
+            } else {
+                return new Pair<>(0F, 0F);
+            }
+        }
+    }
+
+    public void setClosestAnchorPoint(Feature feature) {
+        float x1 = getActualX(feature);
+        float y1 = getActualY(feature);
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        int maxX = sr.getScaledWidth();
+        int maxY = sr.getScaledHeight();
+        double shortestDistance = -1;
+        AnchorPoint closestAnchorPoint = AnchorPoint.BOTTOM_MIDDLE; // default
+        for (AnchorPoint point : AnchorPoint.values()) {
+            double distance = Point2D.distance(x1, y1, point.getX(maxX), point.getY(maxY));
+            if (shortestDistance == -1 || distance < shortestDistance) {
+                closestAnchorPoint = point;
+                shortestDistance = distance;
+            }
+        }
+        if (this.getAnchorPoint(feature) == closestAnchorPoint) {
+            return;
+        }
+        float targetX = getActualX(feature);
+        float targetY = getActualY(feature);
+        float x = targetX-closestAnchorPoint.getX(maxX);
+        float y = targetY-closestAnchorPoint.getY(maxY);
+        feature.getFeatureData().setAnchorPoint(closestAnchorPoint);
+        feature.getFeatureData().setCoords(x, y);
+    }
+
+    public AnchorPoint getAnchorPoint(Feature feature) {
+        AnchorPoint anchorPoints = feature.getFeatureData().getAnchorPoint();
+        if (anchorPoints != null) {
+            return anchorPoints;
+        } else {
+            anchorPoints = DEFAULT_FEATURE_DATA.get(feature).getAnchorPoint();
+            return anchorPoints == null ? AnchorPoint.BOTTOM_MIDDLE : anchorPoints;
+        }
+    }
+}

@@ -1,6 +1,6 @@
 package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
@@ -42,7 +42,7 @@ public class ButtonSettings extends ButtonFeature {
             SkyblockAddonsGui gui = (SkyblockAddonsGui) mc.currentScreen;
             main.getUtils().setFadingIn(false);
             if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {
-                mc.displayGuiScreen(new EnchantmentSettingsGui(feature, 0, gui.getPage(), gui.getTab()));
+                mc.displayGuiScreen(new EnchantmentSettingsGui(0, gui.getPage(), gui.getTab()));
             } else {
                 mc.displayGuiScreen(new SettingsGui(feature, 1, gui.getPage(), gui.getTab()));
             }

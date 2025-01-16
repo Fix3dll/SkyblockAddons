@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.OverlayEffectRenderer;
 import codes.biscuit.skyblockaddons.features.fishParticles.FishParticleManager;
 import codes.biscuit.skyblockaddons.features.healingcircle.HealingCircleManager;

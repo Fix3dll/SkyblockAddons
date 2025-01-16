@@ -2,6 +2,8 @@ package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.*;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -374,7 +376,7 @@ public class ActionBarParser {
                 skillType = lastSkillType;
             } else if (matcher.matches()) {
 
-                if (Feature.SHOW_SKILL_XP_GAINED.isEnabled()) {
+                if (Feature.SKILL_DISPLAY.isEnabled(FeatureSetting.SHOW_SKILL_XP_GAINED)) {
                     skillTextBuilder.append("+").append(matcher.group("gained"));
                 }
 
@@ -400,7 +402,7 @@ public class ActionBarParser {
                 percent = Math.min(100, percent);
 
 
-                if (!parseCurrAndTotal || Feature.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP.isEnabled()) {
+                if (!parseCurrAndTotal || Feature.SKILL_DISPLAY.isEnabled(FeatureSetting.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
                     // We may only have the percent at this point
                     skillTextBuilder.append(" (").append(String.format("%.2f", percent)).append("%)");
                 } else {
@@ -409,7 +411,7 @@ public class ActionBarParser {
                     // Only print the total when it doesn't = 0
                     if (totalSkillXP != 0) {
                         skillTextBuilder.append("/");
-                        if (Feature.ABBREVIATE_SKILL_XP_DENOMINATOR.isEnabled()) {
+                        if (Feature.SKILL_DISPLAY.isEnabled(FeatureSetting.ABBREVIATE_SKILL_XP_DENOMINATOR)) {
                             skillTextBuilder.append(TextUtils.abbreviate(totalSkillXP));
                         } else {
                             skillTextBuilder.append(nf.format(totalSkillXP));
@@ -419,7 +421,7 @@ public class ActionBarParser {
                 }
 
                 // This feature is only accessible when we have parsed the current and total skill xp
-                if (parseCurrAndTotal && Feature.SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL.isEnabled()) {
+                if (parseCurrAndTotal && Feature.SKILL_DISPLAY.isEnabled(FeatureSetting.SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL)) {
                     float gained = nf.parse(matcher.group("gained")).floatValue();
 
                     skillTextBuilder.append(" - ");

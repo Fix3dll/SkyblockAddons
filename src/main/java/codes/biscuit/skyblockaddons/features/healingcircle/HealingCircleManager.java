@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.features.healingcircle;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.MathUtils;
@@ -13,6 +13,8 @@ import org.lwjgl.opengl.GL11;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.Set;
+
+import static codes.biscuit.skyblockaddons.core.feature.FeatureSetting.HEALING_CIRCLE_OPACITY;
 
 public class HealingCircleManager {
 
@@ -44,7 +46,8 @@ public class HealingCircleManager {
     }
 
     public static void renderHealingCircleOverlays() {
-        if (main.getUtils().isOnSkyblock() && Feature.SHOW_HEALING_CIRCLE_WALL.isEnabled()) {
+        Feature feature = Feature.SHOW_HEALING_CIRCLE_WALL;
+        if (main.getUtils().isOnSkyblock() && feature.isEnabled()) {
 
             Iterator<HealingCircle> healingCircleIterator = healingCircles.iterator();
             while (healingCircleIterator.hasNext()) {
@@ -71,12 +74,11 @@ public class HealingCircleManager {
                     GlStateManager.enableAlpha();
                     GlStateManager.disableTexture2D();
 
-                    boolean chroma = Feature.SHOW_HEALING_CIRCLE_WALL.isInChromaFeatures();
-                    int color = main.getConfigValues().getColor(
-                            Feature.SHOW_HEALING_CIRCLE_WALL,
+                    boolean chroma = feature.isChroma();
+                    int color = feature.getColor(
                             ColorUtils.getAlphaIntFromFloat(
                                     MathUtils.clamp(
-                                            main.getConfigValues().getHealingCircleOpacity().floatValue(), 0, 1
+                                            feature.getAsNumber(HEALING_CIRCLE_OPACITY).floatValue(), 0, 1
                                     )
                             )
                     );

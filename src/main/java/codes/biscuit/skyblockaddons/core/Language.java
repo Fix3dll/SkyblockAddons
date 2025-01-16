@@ -1,11 +1,11 @@
 package codes.biscuit.skyblockaddons.core;
 
+import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 import net.minecraft.util.ResourceLocation;
 
 @Getter
-public enum Language {
-
+public enum Language implements RegistrableEnum {
     // listed by popularity
     ENGLISH("en_US"),
     CHINESE_TRADITIONAL("zh_TW"),

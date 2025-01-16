@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.listeners;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.events.InventoryLoadingDoneEvent;
@@ -234,12 +234,12 @@ public class GuiScreenListener {
                             return;
                         }
 
-                        if (main.getConfigValues().getLockedSlots().contains(i + 36)) {
+                        if (main.getPersistentValuesManager().getLockedSlots().contains(i + 36)) {
                             if (!slot.getHasStack() && !hotbarSlot.getHasStack()) {
                                 return;
                             } else {
                                 main.getUtils().playLoudSound("note.bass", 0.5);
-                                main.getUtils().sendMessage(main.getConfigValues().getRestrictedColor(Feature.DROP_CONFIRMATION) + Translations.getMessage("messages.slotLocked"));
+                                main.getUtils().sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
                                 event.setCanceled(true);
                             }
                         }

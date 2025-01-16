@@ -8,7 +8,6 @@ import java.util.Locale;
 
 @Getter
 public enum DragonType {
-
     PROTECTOR(ColorCode.DARK_BLUE),
     OLD(ColorCode.GRAY),
     WISE(ColorCode.BLUE),

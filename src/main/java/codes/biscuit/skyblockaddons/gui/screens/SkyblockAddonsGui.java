@@ -1,7 +1,8 @@
 package codes.biscuit.skyblockaddons.gui.screens;
 
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.gui.SBAModGuiFactory;
 import codes.biscuit.skyblockaddons.gui.buttons.*;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonCredit;
@@ -10,8 +11,9 @@ import codes.biscuit.skyblockaddons.gui.buttons.feature.FeatureBase;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonSettings;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeatureToggle;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
-import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.ChromaMode;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.TextStyle;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import lombok.Getter;
@@ -30,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class SkyblockAddonsGui extends SkyblockAddonsScreen {
@@ -118,7 +121,10 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 if (matchesSearch(feature.getMessage())) { // Matches search.
                     features.add(feature);
                 } else { // If a sub-setting matches the search show it up in the results as well.
-                    for (EnumUtils.FeatureSetting setting : feature.getSettings()) {
+                    TreeMap<FeatureSetting, Object> settings = feature.getFeatureData().getSettings();
+                    if (settings == null) continue;
+
+                    for (FeatureSetting setting : settings.keySet()) {
                         try {
                             if (matchesSearch(setting.getMessage())) {
                                 features.add(feature);
@@ -151,9 +157,12 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         for (Feature feature : features) {
             if (skip == 0) {
                 switch (feature) {
+                    case GENERAL_SETTINGS:
+                    case EDIT_LOCATIONS:
+                    case LANGUAGE:
+                        continue;
                     case TEXT_STYLE:
                     case CHROMA_MODE:
-                    case TURN_ALL_FEATURES_CHROMA:
                         addButton(feature, EnumUtils.ButtonType.CYCLING);
                         break;
                     case WARNING_TIME:
@@ -257,7 +266,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
             if (feature == Feature.LANGUAGE) {
                 main.getUtils().setFadingIn(false);
-                mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE,1, page,tab));
+                mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE, 1, page, tab));
 
             } else if (feature == Feature.EDIT_LOCATIONS) {
                 // If player tries to open "Edit GUI Locations" from outside
@@ -316,7 +325,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 buttonList.add(new ButtonCredit(coords.getLeft(), coords.getRight(), text, credit, feature, featureGui.isMultilineButton()));
             }
 
-            if (!feature.getSettings().isEmpty()) {
+            if (feature.hasSettings()) {
                 buttonList.add(new ButtonSettings(x + boxWidth - 33, y + boxHeight - 20, feature));
             }
             buttonList.add(new ButtonFeatureToggle(x + (boxWidth / 2F) - (31 / 2F), y+boxHeight-18, feature));
@@ -331,36 +340,18 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             switch (feature) {
                 case TEXT_STYLE:
                     buttonList.add(new ButtonCycling(bcX , bcY, bcWidth, bcHeight,
-                            Arrays.asList(EnumUtils.TextStyle.values()),
-                            main.getConfigValues().getTextStyle().ordinal(),
-                            index -> main.getConfigValues().setTextStyle(EnumUtils.TextStyle.values()[index])
+                            Arrays.asList(TextStyle.values()),
+                            ((TextStyle) Feature.TEXT_STYLE.getValue()).ordinal(),
+                            index -> Feature.TEXT_STYLE.setValue(TextStyle.values()[index])
                     ));
                     break;
                 case CHROMA_MODE:
                     buttonList.add(new ButtonCycling(
                             bcX , bcY, bcWidth, bcHeight,
-                            Arrays.asList(EnumUtils.ChromaMode.values()),
-                            main.getConfigValues().getChromaMode().ordinal(),
-                            index -> main.getConfigValues().setChromaMode(EnumUtils.ChromaMode.values()[index])
+                            Arrays.asList(ChromaMode.values()),
+                            ((ChromaMode) Feature.CHROMA_MODE.getValue()).ordinal(),
+                            index -> Feature.CHROMA_MODE.setValue(ChromaMode.values()[index])
                     ));
-                    break;
-                case TURN_ALL_FEATURES_CHROMA:
-                    final int currIdx = ColorUtils.areAllFeaturesChroma()
-                            ? EnumUtils.AllFeaturesChroma.ENABLED.ordinal()
-                            : EnumUtils.AllFeaturesChroma.DISABLED.ordinal();
-                    buttonList.add(new ButtonCycling(bcX , bcY, bcWidth, bcHeight, Arrays.asList(EnumUtils.AllFeaturesChroma.values()), currIdx, index -> {
-                        boolean areAllFeaturesChroma = ColorUtils.areAllFeaturesChroma();
-
-                        for (Feature loopFeature : Feature.values()) {
-                            if (loopFeature.getGuiFeatureData() != null && loopFeature.getGuiFeatureData().getDefaultColor() != null) {
-                                if (!areAllFeaturesChroma) {
-                                    main.getConfigValues().getChromaFeatures().add(loopFeature);
-                                } else {
-                                    main.getConfigValues().getChromaFeatures().remove(loopFeature);
-                                }
-                            }
-                        }
-                    }));
                     break;
             }
 
@@ -371,19 +362,20 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             switch (feature) {
                 case WARNING_TIME:
                     int solidButtonX = x + (boxWidth / 2) - 45;
-                    final int warningSeconds = main.getConfigValues().getWarningSeconds();
+                    final int warningSeconds = Feature.WARNING_TIME.numberValue().intValue();
                     buttonList.add(new ButtonStepper(solidButtonX, y + boxHeight - 23, 90, 15,
                             warningSeconds+"s",
                             modifier -> {
+                                int seconds = Feature.WARNING_TIME.numberValue().intValue();
                                 switch (modifier) {
                                     case SUBTRACT:
-                                        if (main.getConfigValues().getWarningSeconds() > 1) {
-                                            main.getConfigValues().setWarningSeconds(warningSeconds - 1);
+                                        if (seconds > 1) {
+                                            Feature.WARNING_TIME.setValue(seconds - 1);
                                         }
                                         break;
                                     case ADD:
-                                        if (main.getConfigValues().getWarningSeconds() < 99) {
-                                            main.getConfigValues().setWarningSeconds(warningSeconds + 1);
+                                        if (seconds < 99) {
+                                            Feature.WARNING_TIME.setValue(seconds + 1);
                                         }
                                         break;
                                     default:
@@ -399,20 +391,29 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             buttonList.add(new FeatureBase(x, y, text, feature));
 
             if (feature == Feature.CHROMA_SPEED) {
-                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSpeed().floatValue(),
-                        0.5F, 20, 0.5F, value -> main.getConfigValues().getChromaSpeed().setValue(value)));
-
+                buttonList.add(new ButtonSlider(
+                        x + 35, y + boxHeight - 23, 70, 15,
+                        Feature.CHROMA_SPEED.numberValue().floatValue(),
+                        0.5F, 20, 0.5F, Feature.CHROMA_SPEED::setValue
+                ));
             } else if (feature == Feature.CHROMA_SIZE) {
-                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSize().floatValue(),
-                        1, 100, 1, value -> main.getConfigValues().getChromaSize().setValue(value)));
-
+                buttonList.add(new ButtonSlider(
+                        x + 35, y + boxHeight - 23, 70, 15,
+                        Feature.CHROMA_SIZE.numberValue().floatValue(),
+                        1, 100, 1, Feature.CHROMA_SIZE::setValue
+                ));
             } else if (feature == Feature.CHROMA_BRIGHTNESS) {
-                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaBrightness().floatValue(),
-                        0, 1, 0.01F, value -> main.getConfigValues().getChromaBrightness().setValue(value)));
-
+                buttonList.add(new ButtonSlider(
+                        x + 35, y + boxHeight - 23, 70, 15,
+                        Feature.CHROMA_BRIGHTNESS.numberValue().floatValue(),
+                        0, 1, 0.01F, Feature.CHROMA_BRIGHTNESS::setValue
+                ));
             } else if (feature == Feature.CHROMA_SATURATION) {
-                buttonList.add(new ButtonSlider(x + 35, y + boxHeight - 23, 70, 15, main.getConfigValues().getChromaSaturation().floatValue(),
-                        0, 1, 0.01F, value -> main.getConfigValues().getChromaSaturation().setValue(value)));
+                buttonList.add(new ButtonSlider(
+                        x + 35, y + boxHeight - 23, 70, 15,
+                        Feature.CHROMA_SATURATION.numberValue().floatValue(),
+                        0, 1, 0.01F, Feature.CHROMA_SATURATION::setValue
+                ));
             }
         }
 
@@ -499,7 +500,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) {
                 main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, 1, EnumUtils.GuiTab.MAIN);
             }
-            main.getConfigValues().saveConfig();
+            main.getConfigValuesManager().saveConfig();
             Keyboard.enableRepeatEvents(false);
         }
     }

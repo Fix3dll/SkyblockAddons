@@ -1,8 +1,7 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
@@ -29,7 +28,7 @@ public class FontRendererHook {
         if (!shouldRenderChroma()) return;
 
         if (currentDrawState.shouldManuallyRecolorFont() || (Feature.TURN_ALL_TEXTS_CHROMA.isEnabled()
-                && SkyblockAddons.getInstance().getConfigValues().getChromaMode() == EnumUtils.ChromaMode.ALL_SAME_COLOR)) {
+                && Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.ALL_SAME_COLOR)) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
@@ -38,8 +37,7 @@ public class FontRendererHook {
     public static void setupFeatureFont(Feature feature) {
         if (!modInitialized) return;
 
-        ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
-        if (config.getChromaMode() == EnumUtils.ChromaMode.FADE && config.getChromaFeatures().contains(feature)) {
+        if (Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.FADE && feature.isChroma()) {
             fontFeature = feature;
         }
     }
@@ -54,12 +52,11 @@ public class FontRendererHook {
     public static void beginRenderString(boolean shadow) {
         if (modInitialized && SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
             boolean allChroma = Feature.TURN_ALL_TEXTS_CHROMA.isEnabled();
-            ConfigValues config = SkyblockAddons.getInstance().getConfigValues();
 
             if (allChroma || fontFeature != null) {
                 if (fontFeature != null) {
-                    DRAW_CHROMA.setupMulticolorFeature(config.getGuiScale(fontFeature));
-                    DRAW_CHROMA_SHADOW.setupMulticolorFeature(config.getGuiScale(fontFeature));
+                    DRAW_CHROMA.setupMulticolorFeature(fontFeature.getGuiScale());
+                    DRAW_CHROMA_SHADOW.setupMulticolorFeature(fontFeature.getGuiScale());
                 }
 
                 currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
@@ -71,7 +68,7 @@ public class FontRendererHook {
 
             if (allChroma || (currentDrawState != null && currentDrawState.isUsingShader())) {
                 // There is no need to force the white color if there is no fading
-                if (config.getChromaMode() == EnumUtils.ChromaMode.FADE) {
+                if (Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.FADE) {
                     float rgb = shadow ? 0.2f : 1f;
                     GlStateManager.color(rgb, rgb, rgb, ColorUtils.getAlpha());
                 }

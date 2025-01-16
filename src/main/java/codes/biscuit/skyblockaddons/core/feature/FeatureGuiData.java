@@ -1,11 +1,11 @@
-package codes.biscuit.skyblockaddons.core;
+package codes.biscuit.skyblockaddons.core.feature;
 
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import lombok.Getter;
 
 @Getter
-public class GuiFeatureData {
+public class FeatureGuiData {
 
     private ColorCode defaultColor = null;
     private EnumUtils.DrawType drawType = null;
@@ -18,29 +18,29 @@ public class GuiFeatureData {
      */
     private final boolean colorsRestricted;
 
-    public GuiFeatureData(ColorCode defaultColor) {
+    public FeatureGuiData(ColorCode defaultColor) {
         this(defaultColor, false);
     }
 
-    public GuiFeatureData(ColorCode defaultColor, boolean colorsRestricted) {
+    public FeatureGuiData(ColorCode defaultColor, boolean colorsRestricted) {
         this.defaultColor = defaultColor;
         this.colorsRestricted = colorsRestricted;
     }
 
-    public GuiFeatureData(EnumUtils.DrawType drawType) {
+    public FeatureGuiData(EnumUtils.DrawType drawType) {
         this(drawType, false);
     }
 
-    public GuiFeatureData(EnumUtils.DrawType drawType, ColorCode defaultColor) {
+    public FeatureGuiData(EnumUtils.DrawType drawType, ColorCode defaultColor) {
         this(drawType, defaultColor, false);
     }
 
-    private GuiFeatureData(EnumUtils.DrawType drawType, boolean colorsRestricted) {
+    private FeatureGuiData(EnumUtils.DrawType drawType, boolean colorsRestricted) {
         this.drawType = drawType;
         this.colorsRestricted = colorsRestricted;
     }
 
-    public GuiFeatureData(EnumUtils.DrawType drawType, ColorCode defaultColor, boolean colorsRestricted) {
+    public FeatureGuiData(EnumUtils.DrawType drawType, ColorCode defaultColor, boolean colorsRestricted) {
         this.drawType = drawType;
         this.defaultColor = defaultColor;
         this.colorsRestricted = colorsRestricted;

@@ -1,7 +1,7 @@
 package codes.biscuit.skyblockaddons.core.chroma;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
@@ -17,10 +17,10 @@ import java.awt.*;
  */
 public class ManualChromaManager {
 
+    private static final float[] defaultColorHSB = {0, 0.75F, 0.9F};
+
     @Getter @Setter private static boolean coloringTextChroma;
     @Getter private static float featureScale;
-
-    private static final float[] defaultColorHSB = {0, 0.75F, 0.9F};
 
     /**
      * Before rending a string that supports chroma, call this method so it marks the text
@@ -29,10 +29,9 @@ public class ManualChromaManager {
      * @param feature The feature to check if fade chroma is enabled.
      */
     public static void renderingText(Feature feature) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        if (main.getConfigValues().getChromaMode() == EnumUtils.ChromaMode.FADE && feature.isInChromaFeatures()) {
+        if (Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.FADE && feature.isChroma()) {
             coloringTextChroma = true;
-            featureScale = main.getConfigValues().getGuiScale(feature);
+            featureScale = feature.getGuiScale();
         }
     }
 
@@ -42,7 +41,7 @@ public class ManualChromaManager {
     }
 
     public static int getChromaColor(float x, float y, float[] currentHSB, int alpha) {
-        if (SkyblockAddons.getInstance().getConfigValues().getChromaMode() == EnumUtils.ChromaMode.ALL_SAME_COLOR) {
+        if (Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.ALL_SAME_COLOR) {
             x = 0; y = 0;
         }
         if (coloringTextChroma) {
@@ -53,8 +52,8 @@ public class ManualChromaManager {
         x *= scale;
         y *= scale;
 
-        float chromaSize = SkyblockAddons.getInstance().getConfigValues().getChromaSize().floatValue() * (Minecraft.getMinecraft().displayWidth / 100F);
-        float chromaSpeed = SkyblockAddons.getInstance().getConfigValues().getChromaSpeed().floatValue() / 360F;
+        float chromaSize = Feature.CHROMA_SIZE.numberValue().floatValue() * (Minecraft.getMinecraft().displayWidth / 100F);
+        float chromaSpeed = Feature.CHROMA_SPEED.numberValue().floatValue() / 360F;
 
         float ticks = (float) SkyblockAddons.getInstance().getScheduler().getTotalTicks() + Utils.getPartialTicks();
         float timeOffset = ticks * chromaSpeed;
@@ -64,26 +63,26 @@ public class ManualChromaManager {
         //if (currentHSB[2] < 0.3) { // Keep shadows as shadows
         //    return ColorUtils.setColorAlpha(Color.HSBtoRGB(newHue, currentHSB[1], currentHSB[2]), alpha);
         //} else {
-        float saturation = SkyblockAddons.getInstance().getConfigValues().getChromaSaturation().floatValue();
-        float brightness = SkyblockAddons.getInstance().getConfigValues().getChromaBrightness().floatValue()*currentHSB[2];
+        float saturation = Feature.CHROMA_SATURATION.numberValue().floatValue();
+        float brightness = Feature.CHROMA_BRIGHTNESS.numberValue().floatValue() * currentHSB[2];
         return ColorUtils.setColorAlpha(Color.HSBtoRGB(newHue, saturation, brightness), alpha);
         //}
     }
 
     public static int getChromaColor(float x, float y, float z, int alpha) {
-        if (SkyblockAddons.getInstance().getConfigValues().getChromaMode() == EnumUtils.ChromaMode.ALL_SAME_COLOR) {
+        if (Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.ALL_SAME_COLOR) {
             x = 0; y = 0; z = 0;
         }
-        float chromaSize = SkyblockAddons.getInstance().getConfigValues().getChromaSize().floatValue() * (Minecraft.getMinecraft().displayWidth / 100F);
-        float chromaSpeed = SkyblockAddons.getInstance().getConfigValues().getChromaSpeed().floatValue() / 360F;
+        float chromaSize = Feature.CHROMA_SIZE.numberValue().floatValue() * (Minecraft.getMinecraft().displayWidth / 100F);
+        float chromaSpeed = Feature.CHROMA_SPEED.numberValue().floatValue() / 360F;
 
         float ticks = (float) SkyblockAddons.getInstance().getScheduler().getTotalTicks() + Utils.getPartialTicks();
         float timeOffset = ticks * chromaSpeed;
 
         float newHue = ((x - y + z) / (chromaSize / 20F) - timeOffset) % 1;
 
-        float saturation = SkyblockAddons.getInstance().getConfigValues().getChromaSaturation().floatValue();
-        float brightness = SkyblockAddons.getInstance().getConfigValues().getChromaBrightness().floatValue();
+        float saturation = Feature.CHROMA_SATURATION.numberValue().floatValue();
+        float brightness = Feature.CHROMA_BRIGHTNESS.numberValue().floatValue();
         return ColorUtils.setColorAlpha(Color.HSBtoRGB(newHue, saturation, brightness), alpha);
     }
 

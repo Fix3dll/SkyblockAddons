@@ -1,10 +1,11 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
@@ -51,7 +52,7 @@ public class GuiContainerHook {
             int slotNum = hoveredSlot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
             main.getUtils().setLastHoveredSlot(slotNum);
             if (main.getUtils().isOnSkyblock() && Feature.LOCK_SLOTS.isEnabled()
-                    && main.getConfigValues().getLockedSlots().contains(slotNum)
+                    && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
                 guiContainer.drawGradientRect(left, top, right, bottom, OVERLAY_RED, OVERLAY_RED);
                 GlStateManager.disableLighting();
@@ -87,11 +88,12 @@ public class GuiContainerHook {
                     }
                 }
                 if (slot >= 9 || mc.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5) {
-                    if (main.getConfigValues().getLockedSlots().contains(slot)) {
+                    PersistentValuesManager pvm = main.getPersistentValuesManager();
+                    if (pvm.getLockedSlots().contains(slot)) {
                         if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
                             main.getUtils().playLoudSound("random.orb", 1);
-                            main.getConfigValues().getLockedSlots().remove(slot);
-                            main.getConfigValues().saveConfig();
+                            pvm.getLockedSlots().remove(slot);
+                            pvm.saveValues();
                         } else if (isHotkeying || mc.gameSettings.keyBindDrop.getKeyCode() == keyCode) {
                             // Only buttons that would cause an item to move/drop out of the slot will be canceled
                             ci.cancel(); // slot is locked
@@ -101,8 +103,8 @@ public class GuiContainerHook {
                     } else {
                         if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
                             main.getUtils().playLoudSound("random.orb", 0.1);
-                            main.getConfigValues().getLockedSlots().add(slot);
-                            main.getConfigValues().saveConfig();
+                            pvm.getLockedSlots().add(slot);
+                            pvm.saveValues();
                         }
                     }
                 }

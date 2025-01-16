@@ -1,11 +1,12 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.ItemDiff;
 import codes.biscuit.skyblockaddons.core.SlayerArmorProgress;
 import codes.biscuit.skyblockaddons.core.ThunderBottle;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
@@ -227,7 +228,8 @@ public class InventoryUtils {
      * @param p Player to check
      */
     public void checkIfInventoryIsFull(Minecraft mc, EntityPlayerSP p) {
-        if (main.getUtils().isOnSkyblock() && Feature.FULL_INVENTORY_WARNING.isEnabled()) {
+        Feature feature = Feature.FULL_INVENTORY_WARNING;
+        if (main.getUtils().isOnSkyblock() && feature.isEnabled()) {
             for (int i = 0; i < p.inventory.mainInventory.length; i++) {
                 // If we find an empty slot that isn't slot 8, remove any queued warnings and stop checking.
                 ItemStack idxItem = p.inventory.mainInventory[i];
@@ -254,11 +256,11 @@ public class InventoryUtils {
                     inventoryWarningShown = true;
                 }
                 // Schedule a repeat if needed.
-                if (Feature.REPEAT_FULL_INVENTORY_WARNING.isEnabled() && repeatWarningTask == null) {
+                if (feature.isEnabled(FeatureSetting.REPEATING_FULL_INVENTORY_WARNING) && repeatWarningTask == null) {
                     repeatWarningTask = main.getScheduler().scheduleTask(
                             scheduledTask -> {
                                 // Stop the task if the setting is disabled or the player is not in Skyblock
-                                if (!Feature.areEnabled(Feature.FULL_INVENTORY_WARNING, Feature.REPEAT_FULL_INVENTORY_WARNING)
+                                if (feature.isDisabled(FeatureSetting.REPEATING_FULL_INVENTORY_WARNING)
                                         || mc.theWorld == null || mc.thePlayer == null || !main.getUtils().isOnSkyblock()) {
                                     scheduledTask.cancel();
                                     repeatWarningTask = null;

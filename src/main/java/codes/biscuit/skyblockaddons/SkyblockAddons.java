@@ -1,13 +1,18 @@
 package codes.biscuit.skyblockaddons;
 
+import codes.biscuit.skyblockaddons.config.ConfigValuesManager.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PetCacheManager;
+import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
-import codes.biscuit.skyblockaddons.config.ConfigValues;
+import codes.biscuit.skyblockaddons.config.ConfigValuesManager;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
-import codes.biscuit.skyblockaddons.core.Feature;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.core.feature.FeatureData;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
+import codes.biscuit.skyblockaddons.utils.gson.ConfigValuesAdapter;
+import codes.biscuit.skyblockaddons.utils.gson.FeatureDataAdapter;
 import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
 import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
@@ -35,6 +40,7 @@ import com.google.gson.InstanceCreator;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,8 +52,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -92,6 +102,8 @@ public class SkyblockAddons {
             .registerTypeAdapter(Pattern.class, new PatternAdapter())
             .registerTypeAdapter(SkyblockRarity.class, new RarityAdapter())
             .registerTypeAdapter(UUID.class, new UuidAdapter())
+            .registerTypeAdapter(FeatureData.class, new FeatureDataAdapter())
+            .registerTypeAdapter(ConfigValues.class, new ConfigValuesAdapter())
             .create();
 
     private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(MOD_NAME));
@@ -105,7 +117,7 @@ public class SkyblockAddons {
             new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.MOD_NAME + " - #%d").build()
     );
 
-    private ConfigValues configValues;
+    private ConfigValuesManager configValuesManager;
     private PersistentValuesManager persistentValuesManager;
     private PetCacheManager petCacheManager;
     private final PlayerListener playerListener;
@@ -128,8 +140,7 @@ public class SkyblockAddons {
     private boolean usingOofModv1;
     private boolean usingPatcher;
 
-    @Getter
-    private final Set<Integer> registeredFeatureIDs = new HashSet<>();
+    @Getter private final HashSet<Integer> registeredFeatureIDs = new HashSet<>();
 
     public SkyblockAddons() {
         instance = this;
@@ -150,10 +161,16 @@ public class SkyblockAddons {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        configValues = new ConfigValues(e.getModConfigurationDirectory());
-        persistentValuesManager = new PersistentValuesManager(e.getModConfigurationDirectory());
-        petCacheManager = new PetCacheManager(e.getModConfigurationDirectory());
-        configValues.loadValues();
+        File mainConfigFile = e.getModConfigurationDirectory();
+        try {
+            Files.createDirectories(Paths.get(mainConfigFile.getPath(), "/skyblockaddons"));
+        } catch (IOException ex) {
+            LOGGER.error("Could not create SkyblockAddons folder", ex);
+        }
+        configValuesManager = new ConfigValuesManager(mainConfigFile);
+        persistentValuesManager = new PersistentValuesManager(mainConfigFile);
+        petCacheManager = new PetCacheManager(mainConfigFile);
+        configValuesManager.loadValues();
         DataUtils.readLocalAndFetchOnline();
         persistentValuesManager.loadValues();
         petCacheManager.loadValues();
@@ -197,23 +214,24 @@ public class SkyblockAddons {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        for (Feature feature : Feature.values()) {
-            if (feature.isColorFeature()) feature.getSettings().add(EnumUtils.FeatureSetting.COLOR);
-        }
-
+        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         if (Feature.FANCY_WARP_MENU.isEnabled()) {
             // Load in these textures so they don't lag the user loading them in later...
             for (IslandWarpGui.Island island : IslandWarpGui.Island.values()) {
-                Minecraft.getMinecraft().getTextureManager().bindTexture(island.getResourceLocation());
+                textureManager.bindTexture(island.getResourceLocation());
             }
         }
-        Minecraft.getMinecraft().getTextureManager().bindTexture(SkyblockAddonsGui.LOGO);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(SkyblockAddonsGui.LOGO_GLOW);
+        for (Language language : Language.values()) {
+            textureManager.bindTexture(language.getResourceLocation());
+        }
+        textureManager.bindTexture(SkyblockAddonsGui.LOGO);
+        textureManager.bindTexture(SkyblockAddonsGui.LOGO_GLOW);
+
         fullyInitialized = true;
         FontRendererHook.onModInitialized();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            configValues.saveConfig();
+            configValuesManager.saveConfig();
             persistentValuesManager.saveValues();
             petCacheManager.saveValues();
 
