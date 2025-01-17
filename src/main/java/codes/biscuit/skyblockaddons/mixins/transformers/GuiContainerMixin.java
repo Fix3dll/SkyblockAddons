@@ -28,7 +28,7 @@ public abstract class GuiContainerMixin {
         GuiContainerHook.drawGradientRect(instance, left, top, right, bottom, startColor, endColor, this.theSlot);
     }
 
-    @Inject(method = "drawScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/inventory/GuiContainer;drawSlot(Lnet/minecraft/inventory/Slot;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    @Inject(method = "drawScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/inventory/GuiContainer;drawSlot(Lnet/minecraft/inventory/Slot;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void sba$drawSlotLocked(int mouseX, int mouseY, float partialTicks, CallbackInfo ci, int i, int j, int k, int l, int i1, Slot slot) {
         GuiContainerHook.drawSlot(slot);
     }
