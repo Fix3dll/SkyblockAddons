@@ -229,6 +229,7 @@ public class InventoryUtils {
      */
     public void checkIfInventoryIsFull(Minecraft mc, EntityPlayerSP p) {
         Feature feature = Feature.FULL_INVENTORY_WARNING;
+
         if (main.getUtils().isOnSkyblock() && feature.isEnabled()) {
             for (int i = 0; i < p.inventory.mainInventory.length; i++) {
                 // If we find an empty slot that isn't slot 8, remove any queued warnings and stop checking.

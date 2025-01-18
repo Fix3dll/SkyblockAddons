@@ -857,8 +857,13 @@ public class PlayerListener {
     }
 
     public boolean isZealot(Entity enderman) {
-        List<EntityArmorStand> stands = MC.theWorld.getEntitiesWithinAABB(EntityArmorStand.class,
-                new AxisAlignedBB(enderman.posX - 1, enderman.posY, enderman.posZ - 1, enderman.posX + 1, enderman.posY + 5, enderman.posZ + 1));
+        List<EntityArmorStand> stands = MC.theWorld.getEntitiesWithinAABB(
+                EntityArmorStand.class,
+                new AxisAlignedBB(
+                        enderman.posX - 1, enderman.posY, enderman.posZ - 1,
+                        enderman.posX + 1, enderman.posY + 5, enderman.posZ + 1
+                )
+        );
         if (stands.isEmpty()) return false;
 
         EntityArmorStand armorStand = stands.get(0);

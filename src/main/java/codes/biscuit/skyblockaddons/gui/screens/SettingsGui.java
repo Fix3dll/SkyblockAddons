@@ -156,11 +156,6 @@ public class SettingsGui extends SkyblockAddonsScreen {
         displayCount--;
     }
 
-    /**
-     * When setting the y coordinates with {@code row}, we use {@code settingSize} for height.
-     * @param setting {@link FeatureSetting}
-     * @param settingValue {@code setting} value Object
-     */
     private void addButton(FeatureSetting setting, Object settingValue) {
         final int halfWidth = width / 2;
         int boxWidth;

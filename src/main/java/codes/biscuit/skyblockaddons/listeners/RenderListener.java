@@ -2516,12 +2516,7 @@ public class RenderListener {
     }
 
     public static void renderItem(ItemStack item, float x, float y, float scale) {
-        boolean depthChanged = false;
-        boolean previousDepthState = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
-        if (item.getItem() == Items.skull) { // FIXME
-            GlStateManager.enableDepth();
-            depthChanged = true;
-        }
+        GlStateManager.enableDepth();
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
 
@@ -2533,20 +2528,14 @@ public class RenderListener {
         MC.getRenderItem().renderItemIntoGUI(item, 0, 0);
         GlStateManager.popMatrix();
 
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
-        if (depthChanged && !previousDepthState) {
-            GlStateManager.disableDepth();
-        }
+        GlStateManager.disableDepth();
     }
 
     public static void renderItemAndOverlay(ItemStack item, String name, float x, float y) {
-        boolean depthChanged = false;
-        boolean previousDepthState = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
-        if (item.getItem() == Items.skull) { // FIXME
-            GlStateManager.enableDepth();
-            depthChanged = true;
-        }
+        GlStateManager.enableDepth();
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
 
@@ -2556,11 +2545,10 @@ public class RenderListener {
         MC.getRenderItem().renderItemOverlayIntoGUI(MC.fontRendererObj, item, 0, 0, name);
         GlStateManager.popMatrix();
 
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
-        if (depthChanged && !previousDepthState) {
-            GlStateManager.disableDepth();
-        }
+        GlStateManager.disableDepth();
     }
 
     private static final List<ItemDiff> DUMMY_PICKUP_LOG = Collections.unmodifiableList(Arrays.asList(

@@ -363,20 +363,20 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             switch (feature) {
                 case WARNING_TIME:
                     int solidButtonX = x + (boxWidth / 2) - 45;
-                    final int warningSeconds = Feature.WARNING_TIME.numberValue().intValue();
+                    final int warningSeconds = feature.numberValue().intValue();
                     buttonList.add(new ButtonStepper(solidButtonX, y + boxHeight - 23, 90, 15,
                             warningSeconds+"s",
                             modifier -> {
-                                int seconds = Feature.WARNING_TIME.numberValue().intValue();
+                                int seconds = feature.numberValue().intValue();
                                 switch (modifier) {
                                     case SUBTRACT:
                                         if (seconds > 1) {
-                                            Feature.WARNING_TIME.setValue(seconds - 1);
+                                            feature.setValue(seconds - 1);
                                         }
                                         break;
                                     case ADD:
                                         if (seconds < 99) {
-                                            Feature.WARNING_TIME.setValue(seconds + 1);
+                                            feature.setValue(seconds + 1);
                                         }
                                         break;
                                     default:
@@ -390,31 +390,29 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
         } else if (buttonType == EnumUtils.ButtonType.CHROMA_SLIDER) {
             buttonList.add(new FeatureBase(x, y, text, feature));
-
-            if (feature == Feature.CHROMA_SPEED) {
-                buttonList.add(new ButtonSlider(
-                        x + 35, y + boxHeight - 23, 70, 15,
-                        Feature.CHROMA_SPEED.numberValue().floatValue(),
-                        0.5F, 20, 0.5F, Feature.CHROMA_SPEED::setValue
-                ));
-            } else if (feature == Feature.CHROMA_SIZE) {
-                buttonList.add(new ButtonSlider(
-                        x + 35, y + boxHeight - 23, 70, 15,
-                        Feature.CHROMA_SIZE.numberValue().floatValue(),
-                        1, 100, 1, Feature.CHROMA_SIZE::setValue
-                ));
-            } else if (feature == Feature.CHROMA_BRIGHTNESS) {
-                buttonList.add(new ButtonSlider(
-                        x + 35, y + boxHeight - 23, 70, 15,
-                        Feature.CHROMA_BRIGHTNESS.numberValue().floatValue(),
-                        0, 1, 0.01F, Feature.CHROMA_BRIGHTNESS::setValue
-                ));
-            } else if (feature == Feature.CHROMA_SATURATION) {
-                buttonList.add(new ButtonSlider(
-                        x + 35, y + boxHeight - 23, 70, 15,
-                        Feature.CHROMA_SATURATION.numberValue().floatValue(),
-                        0, 1, 0.01F, Feature.CHROMA_SATURATION::setValue
-                ));
+            switch (feature) {
+                case CHROMA_SPEED:
+                    buttonList.add(new ButtonSlider(
+                            x + 35, y + boxHeight - 23, 70, 15,
+                            feature.numberValue().floatValue(),
+                            0.5F, 20, 0.5F, feature::setValue
+                    ));
+                    break;
+                case CHROMA_SIZE:
+                    buttonList.add(new ButtonSlider(
+                            x + 35, y + boxHeight - 23, 70, 15,
+                            feature.numberValue().floatValue(),
+                            1, 100, 1, feature::setValue
+                    ));
+                    break;
+                case CHROMA_BRIGHTNESS:
+                case CHROMA_SATURATION:
+                    buttonList.add(new ButtonSlider(
+                            x + 35, y + boxHeight - 23, 70, 15,
+                            feature.numberValue().floatValue(),
+                            0, 1, 0.01F, feature::setValue
+                    ));
+                    break;
             }
         }
 

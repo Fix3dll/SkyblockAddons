@@ -501,10 +501,10 @@ public enum Feature {
             // Feature must be enabled before the check FeatureSetting
             return false;
         } else if (!this.hasSettings()) {
-            if (DEVELOPER_MODE.isEnabled()) LOGGER.error("{} doesn't have FeatureSettings!", this.name());
+            if (DEVELOPER_MODE.isEnabled()) LOGGER.debug("{} doesn't have FeatureSettings!", this.name());
             return false;
         } else if (!this.featureData.getSettings().containsKey(setting)) { // For debug reason, not actually needed
-            if (DEVELOPER_MODE.isEnabled()) LOGGER.error("{} does not contain setting '{}'!", this.name(), setting.name());
+            if (DEVELOPER_MODE.isEnabled()) LOGGER.debug("{} does not contain setting '{}'!", this.name(), setting.name());
             return false;
         }
 

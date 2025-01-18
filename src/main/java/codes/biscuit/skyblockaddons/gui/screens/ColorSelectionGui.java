@@ -81,7 +81,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     /**
-     * Creates a gui to allow you to select a color for a specific feature.
+     * Creates a gui to allow you to select a color for a specific setting.
      * @param setting The setting that this color is for.
      * @param lastGUI The previous GUI that you came from.
      * @param lastTab The previous tab that you came from.
@@ -269,7 +269,6 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                 if (ColorUtils.getAlpha(selectedColor) == 255) {
                     setColor.accept(selectedColor);
                     setTextBoxHex(selectedColor);
-
                     main.getUtils().playSound("gui.button.press", 0.25, 1);
                 }
             }

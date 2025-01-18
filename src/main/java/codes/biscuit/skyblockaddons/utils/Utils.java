@@ -33,6 +33,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 import org.lwjgl.util.vector.Matrix4f;
 
 import javax.vecmath.Vector3d;
@@ -690,19 +691,23 @@ public class Utils {
     private boolean depthEnabled;
     private boolean blendEnabled;
     private boolean alphaEnabled;
-    private int blendFunctionSrcFactor;
-    private int blendFunctionDstFactor;
+    private int blendFunctionSrcRGB;
+    private int blendFunctionDstRGB;
+    private int blendFunctionSrcAlpha;
+    private int blendFunctionDstAlpha;
 
     public void enableStandardGLOptions() {
         depthEnabled = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
         blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
         alphaEnabled = GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
-        blendFunctionSrcFactor = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-        blendFunctionDstFactor = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        blendFunctionSrcRGB = GL11.glGetInteger(GL14.GL_BLEND_SRC_RGB);
+        blendFunctionDstRGB = GL11.glGetInteger(GL14.GL_BLEND_DST_RGB);
+        blendFunctionSrcAlpha = GL11.glGetInteger(GL14.GL_BLEND_SRC_ALPHA);
+        blendFunctionDstAlpha = GL11.glGetInteger(GL14.GL_BLEND_DST_ALPHA);
 
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.enableAlpha();
         GlStateManager.color(1, 1, 1, 1);
     }
@@ -710,6 +715,8 @@ public class Utils {
     public void restoreGLOptions() {
         if (depthEnabled) {
             GlStateManager.enableDepth();
+        } else {
+            GlStateManager.disableDepth();
         }
         if (!alphaEnabled) {
             GlStateManager.disableAlpha();
@@ -717,7 +724,7 @@ public class Utils {
         if (!blendEnabled) {
             GlStateManager.disableBlend();
         }
-        GlStateManager.blendFunc(blendFunctionSrcFactor, blendFunctionDstFactor);
+        GlStateManager.tryBlendFuncSeparate(blendFunctionSrcRGB, blendFunctionDstRGB, blendFunctionSrcAlpha, blendFunctionDstAlpha);
     }
 
     public boolean isModLoaded(String modId) {
