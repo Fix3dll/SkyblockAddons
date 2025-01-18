@@ -2449,12 +2449,12 @@ public class RenderListener {
         float y = main.getConfigValuesManager().getActualY(Feature.PET_DISPLAY);
 
         int height = 7 + MC.fontRendererObj.FONT_HEIGHT;
-        int width = MC.fontRendererObj.getStringWidth(text) + 18; // + ItemStack
+        int width = MC.fontRendererObj.getStringWidth(text) + 18; // + ItemStack width
 
         PetItemStyle style = (PetItemStyle) feature.getAsEnum(FeatureSetting.PET_ITEM_STYLE);
         int line = 1; // maybe new lines can be added in the future?
         // Second line
-        if (style != PetItemStyle.NONE) {
+        if (style != PetItemStyle.NONE && pet.getPetInfo().getHeldItemId() != null) {
             height *= 2;
             width += 18;
             line++;
