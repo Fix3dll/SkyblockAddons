@@ -2,9 +2,7 @@ package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.feature.FeatureGuiData;
-import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.Translations;
-import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonCycling;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonColorWheel;
@@ -862,13 +860,14 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             );
         }
 
-        if (Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
-            if (keyCode == SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {
-                DungeonMapManager.decreaseZoomByStep();
-            } else if (keyCode == SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {
-                DungeonMapManager.increaseZoomByStep();
-            }
-        }
+        DungeonMapManager.updateDungeonMapZoom();
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        DungeonMapManager.updateDungeonMapZoom();
     }
 
     /**
@@ -914,5 +913,4 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             return "";
         }
     }
-
 }

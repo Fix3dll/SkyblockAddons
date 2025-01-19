@@ -8,6 +8,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.util.Locale;
 
@@ -46,7 +47,8 @@ public enum SkyblockKeyBinding {
      * @return the current key code for this key binding
      */
     public int getKeyCode() {
-        return keyBinding.getKeyCode();
+        int keyCode = keyBinding.getKeyCode();
+        return keyCode == 0 ? Integer.MAX_VALUE : keyCode;
     }
 
     /**
@@ -55,7 +57,13 @@ public enum SkyblockKeyBinding {
      */
     public boolean isKeyDown() {
         if (registered) {
-            return keyBinding.isKeyDown();
+            int keyCode = keyBinding.getKeyCode();
+
+            if (keyCode < 0) {
+                return Mouse.isButtonDown(keyCode + 100);
+            } else {
+                return Keyboard.isKeyDown(keyCode);
+            }
         } else {
             return false;
         }
@@ -68,7 +76,13 @@ public enum SkyblockKeyBinding {
      */
     public boolean isPressed() {
         if (registered) {
-            return keyBinding.isPressed();
+            int keyCode = keyBinding.getKeyCode();
+
+            if (keyCode < 0) {
+                return Mouse.getEventButtonState() && Mouse.getEventButton() == keyCode + 100;
+            } else {
+                return Keyboard.getEventKeyState() && Keyboard.getEventKey() == keyCode;
+            }
         } else {
             return false;
         }

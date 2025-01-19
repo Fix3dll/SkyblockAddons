@@ -82,49 +82,47 @@ public class GuiContainerHook {
         }
     }
 
-    public static void keyTyped(Slot theSlot, int keyCode, CallbackInfo ci) {
-        if (main.getUtils().isOnSkyblock() && MC.thePlayer != null) {
-            ContainerPreviewManager.onContainerKeyTyped(keyCode);
+    public static void onKeyInput(Slot theSlot, int keyCode, CallbackInfo ci) {
+        if (!main.getUtils().isOnSkyblock() || MC.thePlayer == null) return;
 
-            if (Feature.LOCK_SLOTS.isEnabled() && (keyCode != 1 && keyCode != MC.gameSettings.keyBindInventory.getKeyCode())) {
-                int slot = main.getUtils().getLastHoveredSlot();
-                boolean isHotkeying = false;
-                if (MC.thePlayer.inventory.getItemStack() == null && theSlot != null) {
-                    for (int i = 0; i < 9; ++i) {
-                        if (keyCode == MC.gameSettings.keyBindsHotbar[i].getKeyCode()) {
-                            slot = i + 36; // They are hotkeying, the actual slot is the targeted one, +36 because
-                            isHotkeying = true;
-                        }
-                    }
-                }
-                if (slot >= 9 || MC.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5) {
-                    PersistentValuesManager pvm = main.getPersistentValuesManager();
-                    if (pvm.getLockedSlots().contains(slot)) {
-                        if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
-                            main.getUtils().playLoudSound("random.orb", 1);
-                            pvm.getLockedSlots().remove(slot);
-                            pvm.saveValues();
-                        } else if (isHotkeying || MC.gameSettings.keyBindDrop.getKeyCode() == keyCode) {
-                            // Only buttons that would cause an item to move/drop out of the slot will be canceled
-                            ci.cancel(); // slot is locked
-                            main.getUtils().playLoudSound("note.bass", 0.5);
-                            return;
-                        }
-                    } else {
-                        if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
-                            main.getUtils().playLoudSound("random.orb", 0.1);
-                            pvm.getLockedSlots().add(slot);
-                            pvm.saveValues();
-                        }
+        if (Feature.LOCK_SLOTS.isEnabled() && (keyCode != 1 && keyCode != MC.gameSettings.keyBindInventory.getKeyCode())) {
+            int slot = main.getUtils().getLastHoveredSlot();
+            boolean isHotkeying = false;
+            if (MC.thePlayer.inventory.getItemStack() == null && theSlot != null) {
+                for (int i = 0; i < 9; ++i) {
+                    if (keyCode == MC.gameSettings.keyBindsHotbar[i].getKeyCode()) {
+                        slot = i + 36; // They are hotkeying, the actual slot is the targeted one, +36 because
+                        isHotkeying = true;
                     }
                 }
             }
-            if (MC.gameSettings.keyBindDrop.getKeyCode() == keyCode
-                    && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled()
-                    && !main.getUtils().isInDungeon()
-                    && !ItemDropChecker.canDropItem(theSlot)) {
-                ci.cancel();
+            if (slot >= 9 || MC.thePlayer.openContainer instanceof ContainerPlayer && slot >= 5) {
+                PersistentValuesManager pvm = main.getPersistentValuesManager();
+                if (pvm.getLockedSlots().contains(slot)) {
+                    if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
+                        main.getUtils().playLoudSound("random.orb", 1);
+                        pvm.getLockedSlots().remove(slot);
+                        pvm.saveValues();
+                    } else if (isHotkeying || MC.gameSettings.keyBindDrop.getKeyCode() == keyCode) {
+                        // Only buttons that would cause an item to move/drop out of the slot will be canceled
+                        ci.cancel(); // slot is locked
+                        main.getUtils().playLoudSound("note.bass", 0.5);
+                        return;
+                    }
+                } else {
+                    if (SkyblockKeyBinding.LOCK_SLOT.getKeyCode() == keyCode) {
+                        main.getUtils().playLoudSound("random.orb", 0.1);
+                        pvm.getLockedSlots().add(slot);
+                        pvm.saveValues();
+                    }
+                }
             }
+        }
+        if (MC.gameSettings.keyBindDrop.getKeyCode() == keyCode
+                && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled()
+                && !main.getUtils().isInDungeon()
+                && !ItemDropChecker.canDropItem(theSlot)) {
+            ci.cancel();
         }
     }
 

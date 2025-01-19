@@ -86,7 +86,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
 
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -1029,10 +1028,10 @@ public class PlayerListener {
      * For handling of key presses while a GUI (e.g. chat, pause menu, F3) is open,
      * see {@link GuiScreenListener#onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre)}
      *
-     * @param e the {@code KeyInputEvent} that occurred
+     * @param e the {@code InputEvent} that occurred
      */
     @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent e) {
+    public void onKeyInput(InputEvent e) {
         if (SkyblockKeyBinding.OPEN_SETTINGS.isPressed()) {
             main.getUtils().setFadingIn(true);
             main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, 1, EnumUtils.GuiTab.MAIN);
@@ -1045,13 +1044,8 @@ public class PlayerListener {
             DevUtils.copyData();
         }
 
-        if (Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)
-                && main.getUtils().isInDungeon()) {
-            if (SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.isPressed() && Keyboard.getEventKeyState()) {
-                DungeonMapManager.decreaseZoomByStep();
-            } else if (SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.isPressed() && Keyboard.getEventKeyState()) {
-                DungeonMapManager.increaseZoomByStep();
-            }
+        if (main.getUtils().isInDungeon()) {
+            DungeonMapManager.updateDungeonMapZoom();
         }
     }
 

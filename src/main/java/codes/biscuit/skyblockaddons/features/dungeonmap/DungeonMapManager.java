@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.features.dungeonmap;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
@@ -494,17 +495,17 @@ public class DungeonMapManager {
     }
 
     /**
-     * Increases the zoom level of the dungeon map by 0.5.
+     * Increases the zoom level of the dungeon map by 0.1
      */
     public static void increaseZoomByStep() {
-        setMapZoom(getMapZoom() + 0.05F);
+        setMapZoom(getMapZoom() + 0.1F);
     }
 
     /**
-     * Decreases the zoom level of the dungeon map by 0.5.
+     * Decreases the zoom level of the dungeon map by 0.1
      */
     public static void decreaseZoomByStep() {
-        setMapZoom(getMapZoom() - 0.05F);
+        setMapZoom(getMapZoom() - 0.1F);
     }
 
     /**
@@ -525,6 +526,16 @@ public class DungeonMapManager {
                 Math.max(Math.min(value, MAX_ZOOM), MIN_ZOOM)
         );
         main.getConfigValuesManager().saveConfig();
+    }
+
+    public static void updateDungeonMapZoom() {
+        if (Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
+            if (SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.isPressed()) {
+                DungeonMapManager.decreaseZoomByStep();
+            } else if (SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.isPressed()) {
+                DungeonMapManager.increaseZoomByStep();
+            }
+        }
     }
 
     private static float transformXY(float xy, int widthHeight, float scale) {

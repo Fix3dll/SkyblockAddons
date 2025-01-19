@@ -32,6 +32,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -127,7 +128,7 @@ public class GuiScreenListener {
 
     /**
      * Listens for key presses while a GUI is open
-     * @param event the {@code GuiScreenEvent.KeyboardInputEvent} to listen for
+     * @param event the {@link PlayerListener#onKeyInput(InputEvent)} to listen for
      */
     @SubscribeEvent
     public void onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre event) {

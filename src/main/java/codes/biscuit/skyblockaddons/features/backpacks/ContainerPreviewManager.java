@@ -27,7 +27,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -37,8 +36,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.util.Constants;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -418,22 +415,6 @@ public class ContainerPreviewManager {
     }
 
     /**
-     * Called when a key is typed in a {@link GuiContainer}. Used to control backpack preview freezing.
-     * @param keyCode the key code of the key that was typed
-     * @see codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook#keyTyped(Slot, int, CallbackInfo)  ;
-     */
-    public static void onContainerKeyTyped(int keyCode) {
-        if (keyCode == 1 || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()) {
-            frozen = false;
-            currentContainerPreview = null;
-        }
-        if (keyCode == SkyblockKeyBinding.FREEZE_BACKPACK.getKeyCode() && frozen && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
-            lastToggleFreezeTime = System.currentTimeMillis();
-            frozen = false;
-        }
-    }
-
-    /**
      * Renders the corresponding container preview if the given {@code ItemStack} is a container.
      * If a container preview is rendered, {@code true} is returned to cancel the original tooltip render event.
      * @param itemStack the {@code ItemStack} to render the container preview for
@@ -442,6 +423,14 @@ public class ContainerPreviewManager {
      * @return {@code true} if a container preview is rendered, {@code false} otherwise
      */
     public static boolean onRenderTooltip(ItemStack itemStack, int x, int y) {
+        // Handle the freeze container toggle
+        if (cachedContainerPreview != null && SkyblockKeyBinding.FREEZE_BACKPACK.isKeyDown()
+                && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
+            lastToggleFreezeTime = System.currentTimeMillis();
+            frozen = !frozen;
+            currentContainerPreview = cachedContainerPreview;
+        }
+
         // Cancel tooltips while containers are frozen and we aren't trying to render a tooltip in the backpack
         if (frozen && !drawingFrozenItemTooltip) {
             return true;
@@ -545,13 +534,6 @@ public class ContainerPreviewManager {
         if (cachedContainerPreview != null) {
             cachedContainerPreview.setX(x);
             cachedContainerPreview.setY(y);
-
-            // Handle the freeze container toggle
-            if (Keyboard.isKeyDown(SkyblockKeyBinding.FREEZE_BACKPACK.getKeyCode()) && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
-                lastToggleFreezeTime = System.currentTimeMillis();
-                frozen = !frozen;
-                currentContainerPreview = cachedContainerPreview;
-            }
 
             if (!frozen) {
                 currentContainerPreview = cachedContainerPreview;
