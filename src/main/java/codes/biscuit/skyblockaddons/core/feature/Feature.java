@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.core.feature;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
@@ -501,10 +502,14 @@ public enum Feature {
             // Feature must be enabled before the check FeatureSetting
             return false;
         } else if (!this.hasSettings()) {
-            if (DEVELOPER_MODE.isEnabled()) LOGGER.debug("{} doesn't have FeatureSettings!", this.name());
+            if (!setting.isUniversal() && SkyblockAddonsASMTransformer.isDeobfuscated()) {
+                LOGGER.debug("{} doesn't have FeatureSettings!", this.name());
+            }
             return false;
         } else if (!this.featureData.getSettings().containsKey(setting)) { // For debug reason, not actually needed
-            if (DEVELOPER_MODE.isEnabled()) LOGGER.debug("{} does not contain setting '{}'!", this.name(), setting.name());
+            if (!setting.isUniversal() && SkyblockAddonsASMTransformer.isDeobfuscated()) {
+                LOGGER.debug("{} does not contain setting '{}'!", this.name(), setting.name());
+            }
             return false;
         }
 
