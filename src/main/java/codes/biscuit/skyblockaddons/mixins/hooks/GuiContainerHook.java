@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
@@ -55,6 +56,9 @@ public class GuiContainerHook {
                     && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
                 guiContainer.drawGradientRect(left, top, right, bottom, OVERLAY_RED, OVERLAY_RED);
+                if (Feature.LOCK_SLOTS.isEnabled(FeatureSetting.DRAW_LOCK_ONLY_WHEN_HOVERED)) {
+                    drawLockIcon(hoveredSlot);
+                }
                 return;
             }
         }
@@ -62,24 +66,27 @@ public class GuiContainerHook {
     }
 
     public static void drawSlot(Slot slot) {
-        Container container = MC.thePlayer.openContainer;
+        if (slot != null && Feature.LOCK_SLOTS.isEnabled() && main.getUtils().isOnSkyblock()) {
+            if (Feature.LOCK_SLOTS.isEnabled(FeatureSetting.DRAW_LOCK_ONLY_WHEN_HOVERED)) return;
 
-        if (slot != null) {
-            if (Feature.LOCK_SLOTS.isEnabled() && main.getUtils().isOnSkyblock()) {
-                int slotNum = slot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
-                if (main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
-                        && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
-                    GlStateManager.disableLighting();
-                    GlStateManager.disableDepth();
-                    GlStateManager.color(1,1,1,0.4F);
-                    GlStateManager.enableBlend();
-                    MC.getTextureManager().bindTexture(LOCK);
-                    MC.ingameGUI.drawTexturedModalRect(slot.xDisplayPosition, slot.yDisplayPosition, 0, 0, 16, 16);
-                    GlStateManager.enableLighting();
-                    GlStateManager.enableDepth();
-                }
+            Container container = MC.thePlayer.openContainer;
+            int slotNum = slot.slotNumber + main.getInventoryUtils().getSlotDifference(container);
+            if (main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
+                    && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
+                drawLockIcon(slot);
             }
         }
+    }
+
+    private static void drawLockIcon(Slot slot) {
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.color(1, 1, 1, 0.4F);
+        GlStateManager.enableBlend();
+        MC.getTextureManager().bindTexture(LOCK);
+        MC.ingameGUI.drawTexturedModalRect(slot.xDisplayPosition, slot.yDisplayPosition, 0, 0, 16, 16);
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
     }
 
     public static void onKeyInput(Slot theSlot, int keyCode, CallbackInfo ci) {

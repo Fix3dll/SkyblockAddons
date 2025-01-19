@@ -8,7 +8,16 @@ import lombok.Setter;
 
 /**
  * There are 3 types of FeatureSettings: Universal, standard, and those with dynamic (unspecified) translation.
- * The display order in the {@link SettingsGui} depends on the ordinal order.
+ * <ol>
+ *     <li>Universal setting: We can think of universal settings as Dummy FeatureSetting. Although it is an enum like
+ *     other settings, it does not have a fixed setting that it is associated with. It can be associated with a Feature
+ *     according to special conditions.</li>
+ *     <li>Standard setting: This is the default. Its value is preserved in the feature map in FeatureData.</li>
+ *     <li>Setting with dynamic translation: The only difference from the standard setting is that the translation value
+ *     is null. The translation may change depending on the condition.</li>
+ * </ol>
+ * Also, the display order in the {@link SettingsGui} depends on the ordinal order.
+ * @implNote Please don't forget to add new Feature or FeatureSetting values to {@code defaults.json} before push.
  */
 public enum FeatureSetting {
     COLOR("settings.changeColor"),
@@ -115,6 +124,7 @@ public enum FeatureSetting {
     EFFECTIVE_HEALTH_TEXT_ICON("settings.effectiveHealthTextIcon", Feature.EFFECTIVE_HEALTH_TEXT),
     ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR("settings.abbreviateThunderDisplaysDenominator", Feature.THUNDER_BOTTLE_DISPLAY),
     CLASS_COLORED_TEAMMATE("settings.classColoredTeammate", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
+    DRAW_LOCK_ONLY_WHEN_HOVERED("settings.drawLockOnlyWhenHovered", Feature.LOCK_SLOTS),
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
     DISCORD_RP_STATE("messages.secondStatus", Feature.DISCORD_RPC),
@@ -144,6 +154,7 @@ public enum FeatureSetting {
         this.universal = false;
     }
 
+    /** Standard FeatureSetting */
     FeatureSetting(@NonNull String translationKey, @NonNull Feature relatedFeature) {
         this.translationKey = translationKey;
         this.relatedFeature = relatedFeature;

@@ -384,7 +384,6 @@ public class SettingsGui extends SkyblockAddonsScreen {
             main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, lastPage, lastTab);
         } else {
             // Clear universal feature
-            FeatureSetting.COLOR.setUniversalFeature(null);
             FeatureSetting.X_ALLIGNMENT.setUniversalFeature(null);
         }
         Keyboard.enableRepeatEvents(false);

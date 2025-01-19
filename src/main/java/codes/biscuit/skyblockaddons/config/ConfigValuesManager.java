@@ -317,7 +317,7 @@ public class ConfigValuesManager {
                     if (feature.isColorFeature()) {
                         legacyColor = feature.getFeatureGuiData().getDefaultColor().getColor(255);
                     } else {
-                        legacyColor = ColorUtils.setColorAlpha(ColorCode.RED.getColor(), 255);
+                        legacyColor = ColorCode.RED.getColor(255);
                     }
                 } else {
                     legacyColor = ColorUtils.setColorAlpha(legacyColor, 255);
@@ -372,9 +372,6 @@ public class ConfigValuesManager {
                             settings.put(FeatureSetting.DISCORD_RP_CUSTOM_DETAILS, discordCustomStatuses.get(1));
                         }
                         break;
-                }
-                if (feature.couldBeXAllignment()) {
-                    settings.put(FeatureSetting.X_ALLIGNMENT, false);
                 }
                 if (!settings.isEmpty()) {
                     newData.setSettings(settings);
@@ -501,21 +498,44 @@ public class ConfigValuesManager {
         });
     }
 
+    /**
+     * Sets the setting to the default value. Note that this method does not trigger {@link #saveConfig()} afterward.
+     * @param setting Feature related setting
+     * @exception NullPointerException if the default settings are not saved in defaults.json
+     */
     public void setSettingToDefault(FeatureSetting setting) {
         Feature feature = setting.getRelatedFeature();
         if (feature != null) {
-            FeatureData<?> data = DEFAULT_FEATURE_DATA.get(feature);
-            Object defaultValue = data == null ? null : data.getSettings().get(setting);
-            if (defaultValue != null) {
+            FeatureData<?> data = Objects.requireNonNull(
+                    DEFAULT_FEATURE_DATA.get(feature),
+                    "There is no default FeatureData for " + feature
+            );
+
+            TreeMap<FeatureSetting, Object> settings = Objects.requireNonNull(
+                    data.getSettings(),
+                    "There is no default settings for " + feature
+            );
+
+            Object defaultValue = Objects.requireNonNull(
+                    settings.get(setting),
+                    "There is no default value for '" + setting + "' setting!"
+            );
+
+            if (feature.hasSettings()) {
                 feature.set(setting, defaultValue);
-                if (Feature.DEVELOPER_MODE.isEnabled()) {
-                    LOGGER.info("{} has been set to default value.", setting.name());
-                }
-                return;
+            } else {
+                feature.getFeatureData().setSettings(settings);
             }
+
+            if (Feature.DEVELOPER_MODE.isEnabled()) {
+                LOGGER.info("{} has been set to default value.", setting.name());
+            }
+
+            return;
         }
+
         if (Feature.DEVELOPER_MODE.isEnabled()) {
-            LOGGER.warn("Could not reset {} to its default value.", setting.name());
+            LOGGER.error("Could not reset {} to its default value.", setting.name());
         }
     }
 

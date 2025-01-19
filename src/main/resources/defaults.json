@@ -174,7 +174,10 @@
     "value": true
   },
   "LOCK_SLOTS": {
-    "value": true
+    "value": true,
+    "settings": {
+      "DRAW_LOCK_ONLY_WHEN_HOVERED": false
+    }
   },
   "SUMMONING_EYE_ALERT": {
     "value": true,

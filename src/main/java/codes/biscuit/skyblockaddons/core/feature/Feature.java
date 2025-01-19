@@ -1,7 +1,6 @@
 package codes.biscuit.skyblockaddons.core.feature;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
@@ -22,6 +21,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * @implNote Please don't forget to add new Feature or FeatureSetting values to {@code defaults.json} before push.
+ */
 @Getter
 public enum Feature {
     DROP_CONFIRMATION(1, "settings.itemDropConfirmation", new FeatureGuiData(ColorCode.RED, true), true),
@@ -328,10 +330,11 @@ public enum Feature {
     }
 
     public boolean isEnabled() {
-        if (this.getValue() instanceof Boolean) {
-            return (boolean) this.getValue();
+        Object value = this.getValue();
+        if (value instanceof Boolean) {
+            return (boolean) value;
         }
-        throw new IllegalStateException(this.name() + " is not a boolean! Type: " + this.getValue().getClass());
+        throw new IllegalStateException(this.name() + " is not a boolean! Type: " + value.getClass());
     }
 
     public boolean isDisabled() {
@@ -489,31 +492,18 @@ public enum Feature {
     }
 
     /**
-     * Checks whether the specified is enabled. If the {@link Feature} is not enabled or doesn't have settings map,
-     * it returns {@code false} for all related {@link FeatureSetting}s.
+     * Checks whether the specified is enabled. If the {@link Feature} is not enabled it returns {@code false}.
      * @param setting Feature related setting
      * @return true if the {@code setting} is enabled
-     * @exception IllegalArgumentException if {@code setting} is not related with this Feature
+     * @see Feature#get(FeatureSetting)
      */
     public boolean isEnabled(FeatureSetting setting) {
-        if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
-            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not a related with " + this.name());
-        } else if (this.isDisabled()) {
-            // Feature must be enabled before the check FeatureSetting
-            return false;
-        } else if (!this.hasSettings()) {
-            if (!setting.isUniversal() && SkyblockAddonsASMTransformer.isDeobfuscated()) {
-                LOGGER.debug("{} doesn't have FeatureSettings!", this.name());
-            }
-            return false;
-        } else if (!this.featureData.getSettings().containsKey(setting)) { // For debug reason, not actually needed
-            if (!setting.isUniversal() && SkyblockAddonsASMTransformer.isDeobfuscated()) {
-                LOGGER.debug("{} does not contain setting '{}'!", this.name(), setting.name());
-            }
+        // Feature must be enabled before the check FeatureSetting
+        if (this.isDisabled()) {
             return false;
         }
 
-        return Boolean.TRUE.equals(this.featureData.getSettings().get(setting));
+        return Boolean.TRUE.equals(this.get(setting));
     }
 
     /**
@@ -571,51 +561,53 @@ public enum Feature {
     }
 
     /**
-     * If the Feature has a setting map and the specified setting is associated with this Feature, it returns the stored
-     * value of this setting. Universal settings can bypass these exceptions.
-     * @param setting Feature related setting
+     * If the property has a settings map and the specified setting is associated with this property, it returns the 
+     * stored value of that setting. If the setting is associated with the property but no settings map exists, then the
+     * setting value is set to its default value and then the value of the setting is returned.
      * @return The value of the {@code setting} in {@link Object}
      * @exception IllegalArgumentException if {@code setting} is not related with this Feature
-     * @exception IllegalStateException if Feature doesn't have setting map or not contains {@code setting}
+     * @see codes.biscuit.skyblockaddons.config.ConfigValuesManager#setSettingToDefault(FeatureSetting) 
      */
     public @NonNull Object get(FeatureSetting setting) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
-            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not a related with " + this.name());
-        } else if (!this.hasSettings()) {
-            throw new IllegalStateException(this.name() +  " doesn't have FeatureSettings!");
-        } else if (!this.featureData.getSettings().containsKey(setting)) {
-            throw new IllegalStateException(this.name() + " does not contain setting '" + setting.name() + "'!");
+            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this.name());
+        }
+
+        // If there is a FeatureSetting related to the Feature but the settings map is empty, the map must be updated.
+        if (!this.hasSettings()) {
+            if (setting.isUniversal()) {
+                this.featureData.setSettings(new TreeMap<>());
+            } else {
+                SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
+            }
         }
 
         return this.featureData.getSettings().get(setting);
     }
 
     /**
-     * Sets the value of the specified setting. If the setting is Universal and the specified value is valid, exceptions
-     * can be bypassed and saved. If the setting map does not exist, a new map is created for the Universal setting.
+     * If the value is valid, it is set to the value of the specified setting. If the settings map does not exist, the
+     * map is created and then the value is added.
      * @param setting Feature related setting
      * @param value value to be associated with the specified setting
      * @exception IllegalArgumentException if {@code setting} is not related with this Feature
-     * @exception IllegalStateException if Feature doesn't have setting map or not contains {@code setting}
      * @exception IllegalStateException if specified value is not valid
      * @see FeatureData#isValidValue(Object)
      */
     public <T> void set(FeatureSetting setting, T value) {
-        if (!setting.isUniversal()) {
-            if (setting.getRelatedFeature() != this) {
-                throw new IllegalArgumentException(setting.getRelatedFeature() + " is not a related with " + this.name());
-            } else if (!this.hasSettings()) {
-                throw new IllegalStateException(this.name() + " doesn't have FeatureSettings!");
-            } else if (!this.featureData.getSettings().containsKey(setting)) {
-                throw new IllegalStateException(this.name() + " does not contain setting '" + setting.name() + "'!");
-            }
-        } else if (this.featureData.getSettings() == null) {
-            // If settings map is null, create new one for universal settings
-            this.featureData.setSettings(new TreeMap<>());
+        if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
+            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this.name());
         }
 
         if (FeatureData.isValidValue(value)) {
-            this.featureData.getSettings().put(setting, value);
+            if (this.hasSettings()) {
+                this.featureData.getSettings().put(setting, value);
+            } else {
+                TreeMap<FeatureSetting, Object> newSettings = new TreeMap<>();
+                newSettings.put(setting, value);
+
+                this.featureData.setSettings(newSettings);
+            }
         } else {
             throw new IllegalStateException("Tried to set invalid value to '" + setting.name() + "'. Value type: " + value.getClass());
         }

@@ -256,7 +256,8 @@
     "defenceTextIcon": "Defence Number Icon",
     "effectiveHealthTextIcon": "Effective Health Number Icon",
     "xAllignment": "X Allignment",
-    "classColoredTeammate": "Class Colored Outline"
+    "classColoredTeammate": "Class Colored Outline",
+    "drawLockOnlyWhenHovered": "Draw Lock Icon only when hovered with mouse"
   },
   "messages": {
     "enchants": "Enchants",
