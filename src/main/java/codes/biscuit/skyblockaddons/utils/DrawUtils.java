@@ -24,9 +24,12 @@ import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class DrawUtils {
 
+    /** Matches with text style codes except format codes */
+    private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(?i)§[0-9A-F]");
     private static final double HALF_PI = Math.PI / 2D;
     private static final double PI = Math.PI;
 
@@ -449,11 +452,11 @@ public class DrawUtils {
         if (Feature.TEXT_STYLE.getValue() == TextStyle.STYLE_TWO) {
             int colorAlpha = Math.max(ColorUtils.getAlpha(color), 4);
             int colorBlack = new Color(0, 0, 0, colorAlpha / 255F).getRGB();
-            String strippedText = TextUtils.stripColor(text);
-            fontRenderer.drawString(strippedText, x + 1, y + 0, colorBlack, false);
-            fontRenderer.drawString(strippedText, x - 1, y + 0, colorBlack, false);
-            fontRenderer.drawString(strippedText, x + 0, y + 1, colorBlack, false);
-            fontRenderer.drawString(strippedText, x + 0, y - 1, colorBlack, false);
+            String blackedText = "§r" + COLOR_CODE_PATTERN.matcher(text).replaceAll("§r");
+            fontRenderer.drawString(blackedText, x + 1, y + 0, colorBlack, false);
+            fontRenderer.drawString(blackedText, x - 1, y + 0, colorBlack, false);
+            fontRenderer.drawString(blackedText, x + 0, y + 1, colorBlack, false);
+            fontRenderer.drawString(blackedText, x + 0, y - 1, colorBlack, false);
             fontRenderer.drawString(text, x + 0, y + 0, color, false);
         } else {
             fontRenderer.drawString(text, x + 0, y + 0, color, true);
