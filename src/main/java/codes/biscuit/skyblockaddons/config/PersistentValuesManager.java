@@ -61,7 +61,7 @@ public class PersistentValuesManager {
     }
 
     /**
-     * Loads the persistent values from {@code config/skyblockaddons_persistent.cfg} in the user's Minecraft folder.
+     * Loads the persistent values from {@code config/skyblockaddons/persistentValues.json} in the user's Minecraft folder.
      */
     public void loadValues() {
         if (legacyValuesFile.exists()) {
@@ -93,7 +93,7 @@ public class PersistentValuesManager {
     }
 
     /**
-     * Saves the persistent values to {@code config/skyblockaddons_persistent.cfg} in the user's Minecraft folder.
+     * Saves the persistent values to {@code config/skyblockaddons/persistentValues.json} in the user's Minecraft folder.
      */
     public void saveValues() {
         // TODO: Better error handling that tries again/tells the player if it fails

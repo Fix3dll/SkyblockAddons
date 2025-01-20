@@ -79,13 +79,7 @@ public class ContainerPreviewManager {
     /**
      * Whether we are currently frozen in the container preview
      */
-    @Getter
-    private static boolean frozen;
-
-    /**
-     * The last (epoch) time we toggled the freeze button
-     */
-   private static long lastToggleFreezeTime;
+    @Getter private static boolean frozen;
 
     /**
      * True when we are drawing an {@code ItemStack}'s tooltip while {@link #isFrozen()} is true
@@ -423,22 +417,13 @@ public class ContainerPreviewManager {
      * @return {@code true} if a container preview is rendered, {@code false} otherwise
      */
     public static boolean onRenderTooltip(ItemStack itemStack, int x, int y) {
-        // Handle the freeze container toggle
-        if (cachedContainerPreview != null && SkyblockKeyBinding.FREEZE_BACKPACK.isKeyDown()
-                && System.currentTimeMillis() - lastToggleFreezeTime > 500) {
-            lastToggleFreezeTime = System.currentTimeMillis();
-            frozen = !frozen;
-            currentContainerPreview = cachedContainerPreview;
-        }
-
-        // Cancel tooltips while containers are frozen and we aren't trying to render a tooltip in the backpack
+        // Cancel tooltips while containers are frozen, and we aren't trying to render a tooltip in the backpack
         if (frozen && !drawingFrozenItemTooltip) {
             return true;
         }
 
         Feature backpackPreview = Feature.SHOW_BACKPACK_PREVIEW;
-
-        if (!backpackPreview.isEnabled()) {
+        if (backpackPreview.isDisabled()) {
             return false;
         }
 
@@ -542,6 +527,24 @@ public class ContainerPreviewManager {
         }
 
         return frozen;
+    }
+
+    /**
+     * Called when a key is typed in a {@link GuiContainer}. Used to control backpack preview freezing.
+     * @param keyCode the key code of the key that was typed
+     */
+    public static void onContainerKeyTyped(int keyCode) {
+        if (keyCode == 1 || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()) {
+            frozen = false;
+            currentContainerPreview = null;
+            cachedContainerPreview = null;
+        }
+
+        // Handle the freeze container toggle
+        if (cachedContainerPreview != null && SkyblockKeyBinding.FREEZE_BACKPACK.isKeyDown()) {
+            frozen = !frozen;
+            currentContainerPreview = cachedContainerPreview;
+        }
     }
 
     /**

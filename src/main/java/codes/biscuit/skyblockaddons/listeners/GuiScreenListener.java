@@ -151,6 +151,10 @@ public class GuiScreenListener {
                 }
             }
         }
+
+        if (main.getUtils().isOnSkyblock()) {
+            ContainerPreviewManager.onContainerKeyTyped(eventKey);
+        }
     }
 
     @SubscribeEvent
@@ -250,6 +254,8 @@ public class GuiScreenListener {
                 //TODO: Cover shift-clicking into locked slots
             }
         }
+
+        ContainerPreviewManager.onContainerKeyTyped(eventButton);
     }
 
     /**

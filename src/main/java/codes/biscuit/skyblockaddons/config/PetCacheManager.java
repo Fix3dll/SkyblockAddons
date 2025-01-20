@@ -45,7 +45,7 @@ public class PetCacheManager {
     }
 
     /**
-     * Loads the persistent values from {@code config/skyblockaddons_petCache.json} in the user's Minecraft folder.
+     * Loads the persistent values from {@code config/skyblockaddons/petCache.json} in the user's Minecraft folder.
      */
     public void loadValues() {
         if (legacyCacheFile.exists()) {
@@ -76,7 +76,7 @@ public class PetCacheManager {
     }
 
     /**
-     * Saves the pet cache to {@code config/skyblockaddons_petCache.json} in the user's Minecraft folder.
+     * Saves the pet cache to {@code configconfig/skyblockaddons/petCache.json} in the user's Minecraft folder.
      */
     public void saveValues() {
         // TODO: Better error handling that tries again/tells the player if it fails
