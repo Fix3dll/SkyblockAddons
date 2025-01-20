@@ -57,7 +57,7 @@ public enum SkyblockKeyBinding {
      */
     public boolean isKeyDown() {
         if (registered) {
-            int keyCode = keyBinding.getKeyCode();
+            int keyCode = this.getKeyCode();
 
             if (keyCode < 0) {
                 return Mouse.isButtonDown(keyCode + 100);
@@ -76,7 +76,7 @@ public enum SkyblockKeyBinding {
      */
     public boolean isPressed() {
         if (registered) {
-            int keyCode = keyBinding.getKeyCode();
+            int keyCode = this.getKeyCode();
 
             if (keyCode < 0) {
                 return Mouse.getEventButtonState() && Mouse.getEventButton() == keyCode + 100;
