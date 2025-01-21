@@ -5,6 +5,8 @@ import codes.biscuit.skyblockaddons.shader.chroma.Chroma3DShader;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenShader;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaShader;
+import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Handles all multicolor shaders in shader mode, as well as
@@ -77,6 +79,7 @@ public enum MulticolorShaderManager {
             if (!chromaEnabled) {
                 chromaEnabled = true;
                 ShaderManager.getInstance().enableShader(shaderType);
+                GlStateManager.shadeModel(GL11.GL_SMOOTH);
             }
         }
 
@@ -85,15 +88,11 @@ public enum MulticolorShaderManager {
             if (chromaEnabled) {
                 chromaEnabled = false;
                 ShaderManager.getInstance().disableShader();
+                GlStateManager.shadeModel(GL11.GL_FLAT);
             }
         }
     }
 
-    /**
-     *
-     * @param ignoreTexture
-     * @param is3D
-     */
     public void begin(boolean isTextured, boolean ignoreTexture, boolean is3D) {
         // Using shader chroma
         currentState.disable();
@@ -104,10 +103,6 @@ public enum MulticolorShaderManager {
 
     public void end() {
         currentState.disable();
-    }
-
-    public boolean isChromaEnabled() {
-        return currentState.chromaEnabled;
     }
 
     public boolean shouldUseChromaShaders() {

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import org.lwjgl.opengl.GL11;
 
 public abstract class DrawState {
 
@@ -52,11 +51,9 @@ public abstract class DrawState {
         }
     }
 
-
     protected void newColor(boolean is3D) {
         if (color.drawMulticolorUsingShader()) {
             MulticolorShaderManager.getInstance().begin(textured, ignoreTexture, is3D);
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
         }
         if (textured && ignoreTexture) {
             DrawUtils.enableOutlineMode();
@@ -87,11 +84,7 @@ public abstract class DrawState {
     }
 
     protected void endColor() {
-        MulticolorShaderManager multicolorShaderManager = MulticolorShaderManager.getInstance();
-        if (multicolorShaderManager.isChromaEnabled()) {
-            multicolorShaderManager.end();
-            GlStateManager.shadeModel(GL11.GL_FLAT);
-        }
+        MulticolorShaderManager.getInstance().end();
         if (textured && ignoreTexture) {
             DrawUtils.disableOutlineMode();
         }

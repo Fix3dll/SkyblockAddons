@@ -57,6 +57,7 @@ loom {
             vmArg("-Xmx3G")
             property("mixin.debug", "true")
             property("devauth.enabled", "true")
+            property("sba.data.online", "false")
             property("fml.coreMods.load", "codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsLoadingPlugin")
             programArgs("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
             if (SystemUtils.IS_OS_MAC_OSX) {

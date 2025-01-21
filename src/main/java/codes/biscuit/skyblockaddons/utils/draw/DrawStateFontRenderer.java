@@ -71,6 +71,6 @@ public class DrawStateFontRenderer extends DrawState2D {
     }
 
     public boolean isUsingShader() {
-        return multicolorFeatureOverride && color.drawMulticolorUsingShader();
+        return multicolorFeatureOverride && isActive;
     }
 }

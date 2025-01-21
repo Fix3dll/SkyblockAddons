@@ -65,13 +65,13 @@ public class FontRendererHook {
             // There is no need to force the white color if there is no fading
             float rgb = shadow ? 0.2f : 1f;
             GlStateManager.color(rgb, rgb, rgb, ColorUtils.getAlpha());
+
+            currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
+            currentDrawState.loadFeatureColorEnv();
         } else {
             DRAW_CHROMA.endMulticolorFeature();
             DRAW_CHROMA_SHADOW.endMulticolorFeature();
         }
-
-        currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
-        currentDrawState.loadFeatureColorEnv();
     }
 
     /**
@@ -86,12 +86,16 @@ public class FontRendererHook {
     /**
      * Called to turn chroma on
      */
-    public static boolean toggleChromaOn(int formatIndex) {
+    public static boolean toggleChromaOn(int formatIndex, boolean shadow) {
         if (!modInitialized || !SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
             return false;
         }
 
         if (formatIndex == CHROMA_FORMAT_INDEX) {
+            if (currentDrawState == null) {
+                currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
+                currentDrawState.loadFeatureColorEnv();
+            }
             currentDrawState.newColorEnv().bindActualColor();
             return true;
         }
@@ -105,12 +109,12 @@ public class FontRendererHook {
     public static void endRenderString() {
         if (shouldRenderChroma()) {
             currentDrawState.endColorEnv();
+            currentDrawState = null;
         }
     }
 
     public static int forceWhiteColor(int formatIndex) {
-        if (shouldRenderChroma() && formatIndex <= WHITE_FORMAT_INDEX
-                && (currentDrawState.isUsingShader() || Feature.TURN_ALL_TEXTS_CHROMA.isEnabled())) {
+        if (shouldRenderChroma() && formatIndex <= WHITE_FORMAT_INDEX && (currentDrawState.isUsingShader() || turnAllTextChroma)) {
             return WHITE_FORMAT_INDEX;
         }
 
