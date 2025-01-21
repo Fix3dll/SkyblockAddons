@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.utils.draw;
 
-import codes.biscuit.skyblockaddons.core.chroma.MulticolorShaderManager;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,13 +32,6 @@ public class DrawStateFontRenderer extends DrawState2D {
         if (multicolorFeatureOverride) {
             newColorEnv();
         }
-    }
-
-    public void restoreColorEnv() {
-        if (color.drawMulticolorUsingShader() && !multicolorFeatureOverride) {
-            MulticolorShaderManager.getInstance().end();
-        }
-        isActive = false;
     }
 
     public DrawStateFontRenderer newColorEnv() {

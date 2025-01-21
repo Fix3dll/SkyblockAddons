@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.ChromaMode;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import codes.biscuit.skyblockaddons.utils.draw.DrawStateFontRenderer;
+import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -22,22 +23,24 @@ public class FontRendererHook {
     private static final int WHITE_FORMAT_INDEX = 15;
 
     private static FontRenderer fontRenderer;
-    private static DrawStateFontRenderer currentDrawState = null;
     private static boolean modInitialized = false;
-    private static Feature fadeFontFeature = null;
+
+    private static DrawStateFontRenderer currentDrawState = null;
+
+    @Getter private static Feature fadeFontFeature = null;
     @Setter private static boolean turnAllTextChroma = false;
     @Setter private static boolean haltManualColor = false;
 
     public static void beforeRenderChar() {
         if (!shouldRenderChroma() || haltManualColor) return;
 
-        if (currentDrawState.shouldManuallyRecolorFont() || (turnAllTextChroma && fadeFontFeature == null)) {
+        if (currentDrawState.shouldManuallyRecolorFont()) {
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
     }
 
     public static void setupFeatureFont(Feature feature) {
-        if (!modInitialized || (!feature.isChroma() && !turnAllTextChroma)) return;
+        if (!modInitialized || !feature.isChroma()) return;
 
         if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
             fadeFontFeature = feature;
@@ -54,7 +57,7 @@ public class FontRendererHook {
     public static void beginRenderString(boolean shadow) {
         if (!modInitialized || !SkyblockAddons.getInstance().getUtils().isOnSkyblock()) return;
 
-        if (turnAllTextChroma && fadeFontFeature == null && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+        if (turnAllTextChroma && fadeFontFeature == null) {
             fadeFontFeature = Feature.TURN_ALL_TEXTS_CHROMA;
         }
 
@@ -78,8 +81,9 @@ public class FontRendererHook {
      * Called to restore the saved chroma state
      */
     public static void restoreChromaState() {
-        if (shouldRenderChroma()) {
-            currentDrawState.restoreColorEnv();
+        if (shouldRenderChroma() && !turnAllTextChroma) {
+            currentDrawState.endColorEnv();
+            currentDrawState = null;
         }
     }
 
@@ -94,9 +98,8 @@ public class FontRendererHook {
         if (formatIndex == CHROMA_FORMAT_INDEX) {
             if (currentDrawState == null) {
                 currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
-                currentDrawState.loadFeatureColorEnv();
+                currentDrawState.newColorEnv().bindActualColor();
             }
-            currentDrawState.newColorEnv().bindActualColor();
             return true;
         }
 

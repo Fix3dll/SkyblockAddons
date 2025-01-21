@@ -449,6 +449,12 @@ public class DrawUtils {
         if (text == null) {
             return;
         }
+
+        String displayText = text;
+        if (FontRendererHook.getFadeFontFeature() != null) {
+            displayText = COLOR_CODE_PATTERN.matcher(text).replaceAll("§z");
+        }
+
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
         if (Feature.TEXT_STYLE.getValue() == TextStyle.STYLE_TWO) {
             int colorAlpha = Math.max(ColorUtils.getAlpha(color), 4);
@@ -460,9 +466,9 @@ public class DrawUtils {
             fontRenderer.drawString(blackedText, x + 0, y + 1, colorBlack, false);
             fontRenderer.drawString(blackedText, x + 0, y - 1, colorBlack, false);
             FontRendererHook.setHaltManualColor(false);
-            fontRenderer.drawString(text, x + 0, y + 0, color, false);
+            fontRenderer.drawString(displayText, x + 0, y + 0, color, false);
         } else {
-            fontRenderer.drawString(text, x + 0, y + 0, color, true);
+            fontRenderer.drawString(displayText, x + 0, y + 0, color, true);
         }
     }
 
