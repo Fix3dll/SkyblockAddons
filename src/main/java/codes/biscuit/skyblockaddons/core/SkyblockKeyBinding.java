@@ -34,7 +34,7 @@ public enum SkyblockKeyBinding {
      * This is the key code stored before the key binding is de-registered
      * It's set to a number larger than Keyboard.KEYBOARD_SIZE by default to indicate no previous key code is stored.
      */
-    private int previousKeyCode = 999;
+    private int previousKeyCode = 9999;
 
     SkyblockKeyBinding(int defaultKey, String translationKey) {
         this.defaultKeyCode = defaultKey;
@@ -43,12 +43,12 @@ public enum SkyblockKeyBinding {
     }
 
     /**
-     * Returns the current key code for this key binding.
+     * Returns the current key code for this key binding. If there is no assigned key, it will return invalid key code.
      * @return the current key code for this key binding
      */
     public int getKeyCode() {
         int keyCode = keyBinding.getKeyCode();
-        return keyCode == 0 ? Integer.MAX_VALUE : keyCode;
+        return keyCode == 0 ? 9999 : keyCode;
     }
 
     /**
@@ -56,9 +56,9 @@ public enum SkyblockKeyBinding {
      * @see KeyBinding#isKeyDown()
      */
     public boolean isKeyDown() {
-        if (registered) {
-            int keyCode = this.getKeyCode();
+        int keyCode = this.getKeyCode();
 
+        if (registered && keyCode != 9999) {
             if (keyCode < 0) {
                 return Mouse.isButtonDown(keyCode + 100);
             } else {
@@ -75,9 +75,9 @@ public enum SkyblockKeyBinding {
      * @see KeyBinding#isPressed()
      */
     public boolean isPressed() {
-        if (registered) {
-            int keyCode = this.getKeyCode();
+        int keyCode = this.getKeyCode();
 
+        if (registered && keyCode != 9999) {
             if (keyCode < 0) {
                 return Mouse.getEventButtonState() && Mouse.getEventButton() == keyCode + 100;
             } else {
