@@ -46,12 +46,12 @@ public abstract class FontRendererMixin {
     }
 
     /**
-     * Inject call to {@link FontRendererHook#toggleChromaOn(int i1, boolean shadow)} to check for Z color code index and if so,
+     * Inject call to {@link FontRendererHook#toggleChromaOn(int i1)} to check for Z color code index and if so,
      * reset styles and toggle chroma on
      */
     @Inject(method = "renderStringAtPos", at = @At(value = "INVOKE", target = "Ljava/lang/String;indexOf(I)I", ordinal = 0, shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD)
     public void sba$toggleChromaCondition(String text, boolean shadow, CallbackInfo ci, int i, char c0, int i1) {
-        if (FontRendererHook.toggleChromaOn(i1, shadow)) {
+        if (FontRendererHook.toggleChromaOn(i1)) {
             this.resetStyles();
         }
     }

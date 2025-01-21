@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
+import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.AnchorPoint;
@@ -224,25 +225,28 @@ public enum Feature {
     /**
      * Called right after a feature's enable state is changed.
      */
-    public void onToggle() {
-        if (this.id == DEVELOPER_MODE.id) {
-            if (DEVELOPER_MODE.isEnabled()) {
+    public void onToggle(boolean enabled) {
+        if (this == DEVELOPER_MODE) {
+            if (enabled) {
                 SkyblockKeyBinding.DEVELOPER_COPY_NBT.register();
-            } else if (SkyblockKeyBinding.DEVELOPER_COPY_NBT.isRegistered()) {
+            } else {
                 SkyblockKeyBinding.DEVELOPER_COPY_NBT.deRegister();
             }
+        }
+
+        if (this == TURN_ALL_TEXTS_CHROMA) {
+            FontRendererHook.setTurnAllTextChroma(enabled);
         }
     }
 
     /**
      * Sets whether the current feature is enabled.
-     *
      * @param enabled {@code true} to enable the feature, {@code false} to disable it
      */
     public void setEnabled(boolean enabled) {
         if (this.getValue() instanceof Boolean) {
             this.setValue(enabled);
-            this.onToggle();
+            this.onToggle(enabled);
             SkyblockAddons.getInstance().getConfigValuesManager().saveConfig();
         } else {
             throw new IllegalStateException(this.name() + " value is not a boolean! Type: " + this.getValue().getClass());

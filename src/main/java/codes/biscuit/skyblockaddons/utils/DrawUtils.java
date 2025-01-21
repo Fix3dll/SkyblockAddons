@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.Chroma3DShader;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenShader;
@@ -453,10 +454,12 @@ public class DrawUtils {
             int colorAlpha = Math.max(ColorUtils.getAlpha(color), 4);
             int colorBlack = new Color(0, 0, 0, colorAlpha / 255F).getRGB();
             String blackedText = "§r" + COLOR_CODE_PATTERN.matcher(text).replaceAll("§r");
+            FontRendererHook.setHaltManualColor(true);
             fontRenderer.drawString(blackedText, x + 1, y + 0, colorBlack, false);
             fontRenderer.drawString(blackedText, x - 1, y + 0, colorBlack, false);
             fontRenderer.drawString(blackedText, x + 0, y + 1, colorBlack, false);
             fontRenderer.drawString(blackedText, x + 0, y - 1, colorBlack, false);
+            FontRendererHook.setHaltManualColor(false);
             fontRenderer.drawString(text, x + 0, y + 0, color, false);
         } else {
             fontRenderer.drawString(text, x + 0, y + 0, color, true);

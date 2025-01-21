@@ -106,8 +106,11 @@ public enum MulticolorShaderManager {
         currentState.disable();
     }
 
+    public boolean isChromaEnabled() {
+        return currentState.chromaEnabled;
+    }
+
     public boolean shouldUseChromaShaders() {
         return ShaderManager.getInstance().areShadersSupported();
     }
-
 }

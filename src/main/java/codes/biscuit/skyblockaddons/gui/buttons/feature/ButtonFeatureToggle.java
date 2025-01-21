@@ -100,9 +100,6 @@ public class ButtonFeatureToggle extends ButtonFeature {
                     case ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT:
                         Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
                         break;
-                    case TURN_ALL_TEXTS_CHROMA:
-                        feature.setChroma(true);
-                        break;
                 }
             } else {
                 feature.setEnabled(false);
@@ -123,9 +120,6 @@ public class ButtonFeatureToggle extends ButtonFeature {
                         break;
                     case DISABLE_ENDERMAN_TELEPORTATION_EFFECT:
                         Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.setEnabled(true);
-                        break;
-                    case TURN_ALL_TEXTS_CHROMA:
-                        feature.setChroma(false);
                         break;
                 }
             }

@@ -87,8 +87,9 @@ public abstract class DrawState {
     }
 
     protected void endColor() {
-        if (color.drawMulticolorUsingShader()) {
-            MulticolorShaderManager.getInstance().end();
+        MulticolorShaderManager multicolorShaderManager = MulticolorShaderManager.getInstance();
+        if (multicolorShaderManager.isChromaEnabled()) {
+            multicolorShaderManager.end();
             GlStateManager.shadeModel(GL11.GL_FLAT);
         }
         if (textured && ignoreTexture) {

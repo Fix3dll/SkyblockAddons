@@ -3,9 +3,10 @@ package codes.biscuit.skyblockaddons.mixins.hooks;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
-import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.ChromaMode;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
 import codes.biscuit.skyblockaddons.utils.draw.DrawStateFontRenderer;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,67 +18,60 @@ public class FontRendererHook {
     private static final DrawStateFontRenderer DRAW_CHROMA = new DrawStateFontRenderer(CHROMA_COLOR);
     private static final SkyblockColor CHROMA_COLOR_SHADOW = new SkyblockColor(0xFF555555).setColorAnimation(SkyblockColor.ColorAnimation.CHROMA);
     private static final DrawStateFontRenderer DRAW_CHROMA_SHADOW = new DrawStateFontRenderer(CHROMA_COLOR_SHADOW);
-    private static DrawStateFontRenderer currentDrawState = null;
-    private static boolean modInitialized = false;
     private static final int CHROMA_FORMAT_INDEX = 22;
     private static final int WHITE_FORMAT_INDEX = 15;
-    private static boolean turnAllText = false;
-    private static Feature fontFeature = null;
+
+    private static FontRenderer fontRenderer;
+    private static DrawStateFontRenderer currentDrawState = null;
+    private static boolean modInitialized = false;
+    private static Feature fadeFontFeature = null;
+    @Setter private static boolean turnAllTextChroma = false;
+    @Setter private static boolean haltManualColor = false;
 
     public static void beforeRenderChar() {
-        if (!shouldRenderChroma()) return;
+        if (!shouldRenderChroma() || haltManualColor) return;
 
-        if (currentDrawState.shouldManuallyRecolorFont() || (Feature.TURN_ALL_TEXTS_CHROMA.isEnabled()
-                && Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.ALL_SAME_COLOR)) {
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+        if (currentDrawState.shouldManuallyRecolorFont() || (turnAllTextChroma && fadeFontFeature == null)) {
             currentDrawState.bindAnimatedColor(fontRenderer.posX, fontRenderer.posY);
         }
     }
 
     public static void setupFeatureFont(Feature feature) {
-        if (!modInitialized) return;
+        if (!modInitialized || (!feature.isChroma() && !turnAllTextChroma)) return;
 
-        if (Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.FADE && feature.isChroma()) {
-            fontFeature = feature;
+        if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+            fadeFontFeature = feature;
         }
     }
 
     public static void endFeatureFont() {
-        fontFeature = null;
+        fadeFontFeature = null;
     }
 
     /**
      * Called to save the current shader state
      */
     public static void beginRenderString(boolean shadow) {
-        if (modInitialized && SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
-            boolean allChroma = Feature.TURN_ALL_TEXTS_CHROMA.isEnabled();
+        if (!modInitialized || !SkyblockAddons.getInstance().getUtils().isOnSkyblock()) return;
 
-            if (allChroma || fontFeature != null) {
-                if (fontFeature != null) {
-                    DRAW_CHROMA.setupMulticolorFeature(fontFeature.getGuiScale());
-                    DRAW_CHROMA_SHADOW.setupMulticolorFeature(fontFeature.getGuiScale());
-                }
-
-                currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
-                currentDrawState.loadFeatureColorEnv();
-            } else {
-                DRAW_CHROMA.endMulticolorFeature();
-                DRAW_CHROMA_SHADOW.endMulticolorFeature();
-            }
-
-            if (allChroma || (currentDrawState != null && currentDrawState.isUsingShader())) {
-                // There is no need to force the white color if there is no fading
-                if (Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.FADE) {
-                    float rgb = shadow ? 0.2f : 1f;
-                    GlStateManager.color(rgb, rgb, rgb, ColorUtils.getAlpha());
-                }
-                if (allChroma) {
-                    setupFeatureFont(Feature.TURN_ALL_TEXTS_CHROMA);
-                    turnAllText = true;
-                }
-            }
+        if (turnAllTextChroma && fadeFontFeature == null && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+            fadeFontFeature = Feature.TURN_ALL_TEXTS_CHROMA;
         }
+
+        if (fadeFontFeature != null) {
+            DRAW_CHROMA.setupMulticolorFeature(fadeFontFeature.getGuiScale());
+            DRAW_CHROMA_SHADOW.setupMulticolorFeature(fadeFontFeature.getGuiScale());
+
+            // There is no need to force the white color if there is no fading
+            float rgb = shadow ? 0.2f : 1f;
+            GlStateManager.color(rgb, rgb, rgb, ColorUtils.getAlpha());
+        } else {
+            DRAW_CHROMA.endMulticolorFeature();
+            DRAW_CHROMA_SHADOW.endMulticolorFeature();
+        }
+
+        currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
+        currentDrawState.loadFeatureColorEnv();
     }
 
     /**
@@ -92,16 +86,12 @@ public class FontRendererHook {
     /**
      * Called to turn chroma on
      */
-    public static boolean toggleChromaOn(int formatIndex, boolean shadow) {
+    public static boolean toggleChromaOn(int formatIndex) {
         if (!modInitialized || !SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
             return false;
         }
 
         if (formatIndex == CHROMA_FORMAT_INDEX) {
-            if (currentDrawState == null) {
-                currentDrawState = shadow ? DRAW_CHROMA_SHADOW : DRAW_CHROMA;
-                currentDrawState.loadFeatureColorEnv();
-            }
             currentDrawState.newColorEnv().bindActualColor();
             return true;
         }
@@ -115,12 +105,6 @@ public class FontRendererHook {
     public static void endRenderString() {
         if (shouldRenderChroma()) {
             currentDrawState.endColorEnv();
-            currentDrawState = null;
-
-            if (turnAllText && !Feature.TURN_ALL_TEXTS_CHROMA.isEnabled()) {
-                endFeatureFont();
-                turnAllText = false;
-            }
         }
     }
 
@@ -138,7 +122,11 @@ public class FontRendererHook {
      * Fixes NPE caused by Splash Screen, calling FontRendererHook before SBA is loaded.
      */
     public static void onModInitialized() {
+        fontRenderer = Minecraft.getMinecraft().fontRendererObj;
         modInitialized = true;
+        if (Feature.TURN_ALL_TEXTS_CHROMA.isEnabled()) {
+            turnAllTextChroma = true;
+        }
     }
 
     /**
