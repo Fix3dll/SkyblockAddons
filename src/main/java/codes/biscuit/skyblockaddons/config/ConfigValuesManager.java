@@ -62,6 +62,8 @@ public class ConfigValuesManager {
     /** Do not make direct changes! If you are using mutable objects, make a deep copy. */
     private final EnumMap<Feature, FeatureData<?>> DEFAULT_FEATURE_DATA = new EnumMap<>(Feature.class);
 
+    private boolean firstLoad = true;
+
     private ConfigValues configValues = new ConfigValues();
 
     @Setter
@@ -430,9 +432,10 @@ public class ConfigValuesManager {
         } else {
             addDefaultsAndSave();
         }
+        firstLoad = false;
 
         // Post load
-        Feature.TURN_ALL_FEATURES_CHROMA.setEnabled(ColorUtils.areAllFeaturesChroma());
+        Feature.TURN_ALL_FEATURES_CHROMA.setEnabled(ColorUtils.areAllFeaturesChroma()); // also setEnabled saves config
     }
 
     private void addDefaultsAndSave() {
@@ -447,6 +450,7 @@ public class ConfigValuesManager {
             FeatureData<?> featureData = entry.getValue();
 
             if (featureData != null) {
+                if (firstLoad) firstLoadChecks(feature, featureData);
                 feature.getFeatureData().overwriteData(featureData);
             } else {
                 FeatureData<?> defaultData = DEFAULT_FEATURE_DATA.get(feature);
@@ -455,6 +459,22 @@ public class ConfigValuesManager {
                     LOGGER.warn("Default FeatureData loaded for {} feature.", feature);
                 } else {
                     throw new IllegalStateException("There is no default FeatureData for " + feature);
+                }
+            }
+        }
+    }
+
+    private void firstLoadChecks(Feature feature, FeatureData<?> featureData) {
+        TreeMap<FeatureSetting, Object> settings = featureData.getSettings();
+        TreeMap<FeatureSetting, Object> defaultSettings = DEFAULT_FEATURE_DATA.get(feature).getSettings();
+
+        if (settings != null && defaultSettings != null) {
+            for (Map.Entry<FeatureSetting, Object> settingsEntry : defaultSettings.entrySet()) {
+                FeatureSetting defaultSetting = settingsEntry.getKey();
+                Object defaultValue = settingsEntry.getValue();
+
+                if (!settings.containsKey(defaultSetting)) {
+                    settings.put(defaultSetting, defaultValue);
                 }
             }
         }

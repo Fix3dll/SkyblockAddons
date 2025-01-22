@@ -125,6 +125,7 @@ public enum FeatureSetting {
     ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR("settings.abbreviateThunderDisplaysDenominator", Feature.THUNDER_BOTTLE_DISPLAY),
     CLASS_COLORED_TEAMMATE("settings.classColoredTeammate", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
     DRAW_LOCK_ONLY_WHEN_HOVERED("settings.drawLockOnlyWhenHovered", Feature.LOCK_SLOTS),
+    FARMING_TOOLS_PREVIEW("settings.showFarmingToolsPreview", Feature.SHOW_BACKPACK_PREVIEW),
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
     DISCORD_RP_STATE("messages.secondStatus", Feature.DISCORD_RPC),

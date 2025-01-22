@@ -9,6 +9,11 @@
     "rarity": "RARE",
     "spawnMessage": "Your Chumcap Bucket trembles, it's an Agarimoo."
   },
+  "BLOATED_MITHRIL_GRUBBER": {
+    "name": "Mithril Grubber",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "A leech of the mines surfaces... you've caught a Bloated Mithril Grubber."
+  },
   "BLUE_SHARK": {
     "name": "Blue Shark",
     "rarity": "UNCOMMON",
@@ -69,6 +74,11 @@
     "rarity": "EPIC",
     "spawnMessage": "You've discovered a Guardian Defender of the sea."
   },
+  "LARGE_MITHRIL_GRUBBER": {
+    "name": "Mithril Grubber",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "A leech of the mines surfaces... you've caught a Large Mithril Grubber."
+  },
   "LAVA_BLAZE": {
     "name": "Lava Blaze",
     "rarity": "EPIC",
@@ -98,6 +108,11 @@
     "name": "Magma Slug",
     "rarity": "RARE",
     "spawnMessage": "From beneath the lava appears a Magma Slug."
+  },
+  "MEDIUM_MITHRIL_GRUBBER": {
+    "name": "Mithril Grubber",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "A leech of the mines surfaces... you've caught a Medium Mithril Grubber."
   },
   "MITHRIL_GRUBBER": {
     "name": "Mithril Grubber",

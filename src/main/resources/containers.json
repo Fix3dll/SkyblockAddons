@@ -76,6 +76,24 @@
       9
     ]
   },
+  "BASKET_OF_SEEDS": {
+    "type": "BASKET_OF_SEEDS",
+    "size": 54,
+    "compressedItemStacksTag": "basket_of_seeds_data",
+    "dimensions": [
+      6,
+      9
+    ]
+  },
+  "NETHER_WART_POUCH": {
+    "type": "NETHER_WART_POUCH",
+    "size": 54,
+    "compressedItemStacksTag": "nether_wart_pouch_data",
+    "dimensions": [
+      6,
+      9
+    ]
+  },
   "PERSONAL_COMPACTOR_4000": {
     "type": "PERSONAL_COMPACTOR",
     "size": 1,

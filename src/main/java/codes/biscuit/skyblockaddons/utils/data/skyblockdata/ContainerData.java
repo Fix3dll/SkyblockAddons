@@ -1,9 +1,11 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class ContainerData {
 
     public enum ContainerType {
@@ -12,37 +14,45 @@ public class ContainerData {
         PERSONAL_COMPACTOR,
         PERSONAL_DELETOR,
         BUILDERS_WAND,
-        BUILDERS_RULER
+        BUILDERS_RULER,
+        BASKET_OF_SEEDS,
+        NETHER_WART_POUCH
     }
 
     /**
      * The container type (see {@link ContainerType}).
      */
-    @Getter private ContainerType type;
+    @SerializedName("type")
+    private ContainerType type;
 
     /**
      * The size of the container
      */
+    @SerializedName("size")
     private int size;
 
     /**
      * The data tag where a compressed array of item stacks are stored.
      */
-    @Getter private String compressedItemStacksTag;
+    @SerializedName("compressedItemStacksTag")
+    private String compressedItemStacksTag;
 
     /**
      * Data tags where individual item stacks are stored.
      */
-    @Getter private List<String> itemStackDataTags;
+    @SerializedName("itemStackDataTags")
+    private List<String> itemStackDataTags;
 
     /**
      * The ExtraAttributes NBT tag for retrieving backpack color
      */
-    @Getter private String colorTag;
+    @SerializedName("colorTag")
+    private String colorTag;
 
     /**
      * The container (item array) dimensions
      */
+    @SerializedName("dimensions")
     private int[] dimensions = {6, 9};
 
 
@@ -72,7 +82,13 @@ public class ContainerData {
         return type == ContainerType.BUILDERS_RULER;
     }
 
-    /* Functions that check the size of the container */
+    public boolean isBasketOfSeeds() {
+        return type == ContainerType.BASKET_OF_SEEDS;
+    }
+
+    public boolean isNetherWartPouch() {
+        return type == ContainerType.NETHER_WART_POUCH;
+    }
 
     /**
      * @return the item capacity of the container, or a maximum of 54

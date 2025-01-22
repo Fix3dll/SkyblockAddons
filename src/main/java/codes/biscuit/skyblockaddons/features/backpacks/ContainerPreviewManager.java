@@ -488,7 +488,9 @@ public class ContainerPreviewManager {
                         ((containerData.isBuildersRuler() || containerData.isBuildersWand())
                                 && backpackPreview.isDisabled(FeatureSetting.BUILDERS_TOOL_PREVIEW)) ||
                         ((containerData.isPersonalCompactor() || containerData.isPersonalDeletor())
-                                && backpackPreview.isDisabled(FeatureSetting.PERSONAL_COMPACTOR_PREVIEW))
+                                && backpackPreview.isDisabled(FeatureSetting.PERSONAL_COMPACTOR_PREVIEW)) ||
+                        ((containerData.isBasketOfSeeds() || containerData.isNetherWartPouch())
+                                && backpackPreview.isDisabled(FeatureSetting.FARMING_TOOLS_PREVIEW))
                 ) {
                     return false;
                 }

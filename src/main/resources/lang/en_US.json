@@ -257,7 +257,8 @@
     "effectiveHealthTextIcon": "Effective Health Number Icon",
     "xAllignment": "X Allignment",
     "classColoredTeammate": "Class Colored Outline",
-    "drawLockOnlyWhenHovered": "Draw Lock Icon only when hovered with mouse"
+    "drawLockOnlyWhenHovered": "Draw Lock Icon only when hovered with mouse",
+    "showFarmingToolsPreview": "Show Preview for Farming Tools"
   },
   "messages": {
     "enchants": "Enchants",

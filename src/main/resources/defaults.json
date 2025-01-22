@@ -15,7 +15,8 @@
       "CAKE_BAG_PREVIEW": true,
       "PERSONAL_COMPACTOR_PREVIEW": true,
       "ENDER_CHEST_PREVIEW": true,
-      "BUILDERS_TOOL_PREVIEW": true
+      "BUILDERS_TOOL_PREVIEW": true,
+      "FARMING_TOOLS_PREVIEW": true
     }
   },
   "HIDE_BONES": {
