@@ -135,7 +135,7 @@ public class ContainerPreviewManager {
             String name = null;
 
             if (type != null) {
-                switch (containerData.getType()) {
+                switch (type) {
                     case PERSONAL_COMPACTOR:
                     case PERSONAL_DELETOR:
                         break;

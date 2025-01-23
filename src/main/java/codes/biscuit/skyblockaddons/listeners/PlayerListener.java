@@ -61,6 +61,7 @@ import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -180,6 +181,7 @@ public class PlayerListener {
     };
     @Getter @Setter private long fireFreezeTimer = 0L;
     private boolean doubleHook = false;
+    private String cachedChatRunCommand;
 
     /**
      * Reset all the timers and stuff when joining a new world.
@@ -261,9 +263,16 @@ public class PlayerListener {
         } else {
             Matcher matcher;
 
-            if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
+            if (cachedChatRunCommand == null && e.message != null && formattedText.contains("§2§l[PICK UP]")) {
+                this.setChatRunCommandFromComponent(e.message);
+
+            } else if (e.message != null && formattedText.contains("§a§l[YES]")) {
+                this.setChatRunCommandFromComponent(e.message);
+
+            } else if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
                 int manaLost = Integer.parseInt(unformattedText.split(Pattern.quote("! ("))[1].split(Pattern.quote(" Mana)"))[0]);
                 PlayerStats.MANA.setValue(PlayerStats.MANA.getValue() - manaLost);
+
             } else if ((matcher = AUTOPET_PATTERN.matcher(formattedText)).matches()) {
                 PetManager.getInstance().findCurrentPetFromAutopet(
                         matcher.group("level"), matcher.group("rarityColor"), matcher.group("name")
@@ -1040,6 +1049,9 @@ public class PlayerListener {
             main.getUtils().setFadingIn(false);
             main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.EDIT_LOCATIONS, 0, null);
 
+        } else if (SkyblockKeyBinding.ANSWER_ABIPHONE_OR_OPTION.isPressed() && MC.thePlayer != null && cachedChatRunCommand != null) {
+            MC.thePlayer.sendChatMessage(cachedChatRunCommand);
+
         } else if (Feature.DEVELOPER_MODE.isEnabled() && SkyblockKeyBinding.DEVELOPER_COPY_NBT.isPressed()) {
             DevUtils.copyData();
         }
@@ -1360,4 +1372,17 @@ public class PlayerListener {
         }
     }
 
+    private void setChatRunCommandFromComponent(IChatComponent component) {
+        for (IChatComponent sibling : component.getSiblings()) {
+            ChatStyle style = sibling.getChatStyle();
+            if (style != null) {
+                ClickEvent clickEvent = style.getChatClickEvent();
+                if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
+                    cachedChatRunCommand = clickEvent.getValue();
+                    main.getScheduler().scheduleTask(scheduledTask -> cachedChatRunCommand = null, 20 * 10);
+                    return;
+                }
+            }
+        }
+    }
 }

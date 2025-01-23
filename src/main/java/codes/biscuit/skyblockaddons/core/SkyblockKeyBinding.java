@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.core;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.apache.commons.lang3.ArrayUtils;
@@ -20,6 +21,7 @@ public enum SkyblockKeyBinding {
     FREEZE_BACKPACK(Keyboard.KEY_F, "settings.freezeBackpackPreview"),
     INCREASE_DUNGEON_MAP_ZOOM(Keyboard.KEY_ADD, "keyBindings.increaseDungeonMapZoom"),
     DECREASE_DUNGEON_MAP_ZOOM(Keyboard.KEY_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
+    ANSWER_ABIPHONE_OR_OPTION(Keyboard.KEY_NONE, "keyBindings.answerAbiphoneOrOption"),
     DEVELOPER_COPY_NBT(Minecraft.isRunningOnMac ? Keyboard.KEY_LMENU : Keyboard.KEY_RCONTROL, "keyBindings.developerCopyNBT");
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
@@ -49,6 +51,10 @@ public enum SkyblockKeyBinding {
     public int getKeyCode() {
         int keyCode = keyBinding.getKeyCode();
         return keyCode == 0 ? 9999 : keyCode;
+    }
+
+    public String getKeyName() {
+        return GameSettings.getKeyDisplayString(keyBinding.getKeyCode());
     }
 
     /**

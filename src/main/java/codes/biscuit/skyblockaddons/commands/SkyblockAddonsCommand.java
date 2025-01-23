@@ -13,7 +13,6 @@ import codes.biscuit.skyblockaddons.utils.Utils;
 import com.google.common.base.CaseFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.command.*;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -178,8 +177,12 @@ public class SkyblockAddonsCommand extends CommandBase {
                 Feature.DEVELOPER_MODE.setEnabled(!Feature.DEVELOPER_MODE.isEnabled());
 
                 if (Feature.DEVELOPER_MODE.isEnabled()) {
-                    main.getUtils().sendMessage(ColorCode.GREEN + getMessage("commands.responses.sba.dev.enabled",
-                            GameSettings.getKeyDisplayString(SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode())));
+                    main.getUtils().sendMessage(
+                            ColorCode.GREEN + getMessage(
+                                    "commands.responses.sba.dev.enabled",
+                                    SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyName()
+                            )
+                    );
                 } else {
                     main.getUtils().sendMessage(ColorCode.RED + getMessage("commands.responses.sba.dev.disabled"));
                 }

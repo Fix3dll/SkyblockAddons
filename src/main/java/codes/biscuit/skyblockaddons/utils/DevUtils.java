@@ -32,7 +32,6 @@ import net.minecraft.world.WorldType;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -631,9 +630,7 @@ public class DevUtils {
             DevUtils.copyMode = copyMode;
             main.getUtils().sendMessage(
                     ColorCode.YELLOW + Translations.getMessage(
-                            "messages.copyModeSet",
-                            copyMode,
-                            Keyboard.getKeyName(SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode())
+                            "messages.copyModeSet", copyMode, SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyName()
                     )
             );
         }

@@ -710,7 +710,8 @@
   "keyBindings": {
     "developerCopyNBT": "Copy NBT",
     "increaseDungeonMapZoom": "Dungeon Map Zoom In",
-    "decreaseDungeonMapZoom": "Dungeon Map Zoom Out"
+    "decreaseDungeonMapZoom": "Dungeon Map Zoom Out",
+    "answerAbiphoneOrOption": "Answer the Abiphone or Option"
   },
   "dragonTracker": {
     "protector": "Protector",
