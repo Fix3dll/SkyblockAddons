@@ -7,7 +7,9 @@ import codes.biscuit.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import codes.biscuit.skyblockaddons.utils.gson.FeatureDataAdapter;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import lombok.Data;
 import lombok.NonNull;
 import org.apache.logging.log4j.Logger;
@@ -46,6 +48,12 @@ public class FeatureData<T> {
     private boolean chroma = false;
     @SerializedName("settings")
     private TreeMap<FeatureSetting, Object> settings = null;
+
+    public FeatureData<T> deepCopy() {
+        Gson gson = SkyblockAddons.getGson();
+        String json = gson.toJson(this);
+        return gson.fromJson(json, new TypeToken<FeatureData<T>>() {}.getType());
+    }
 
     public void overwriteData(FeatureData<?> guiData) {
         //noinspection unchecked

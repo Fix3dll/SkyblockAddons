@@ -1,17 +1,22 @@
 package codes.biscuit.skyblockaddons.mixins.transformers;
 
-import codes.biscuit.skyblockaddons.mixins.hooks.MouseHelperHook;
+import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import net.minecraft.util.MouseHelper;
-import org.lwjgl.opengl.Display;
+import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = MouseHelper.class, remap = false)
+@Mixin(value = MouseHelper.class)
 public class MouseHelperMixin {
 
-    @Redirect(method = "ungrabMouseCursor", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;setCursorPosition(II)V"))
-    private void sba$ungrabMouseCursor(int new_x, int new_y) {
-        MouseHelperHook.ungrabMouseCursor(Display.getWidth() / 2, Display.getHeight() / 2);
+    @Inject(method = "ungrabMouseCursor", at = @At("HEAD"), cancellable = true)
+    private void sba$ungrabMouseCursor(CallbackInfo ci) {
+        if (Feature.DONT_RESET_CURSOR_INVENTORY.isEnabled() && !SkyblockAddons.getInstance().getPlayerListener().shouldResetMouse()) {
+            ci.cancel();
+            Mouse.setGrabbed(false);
+        }
     }
 }

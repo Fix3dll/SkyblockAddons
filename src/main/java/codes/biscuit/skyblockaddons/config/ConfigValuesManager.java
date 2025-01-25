@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConfigValuesManager {
@@ -136,9 +137,9 @@ public class ConfigValuesManager {
                     legacyLoadedConfig.get("discordCustomStatuses"),
                     new TypeToken<ArrayList<String>>() {}.getType()
             );
-            HashSet<Integer> disabledFeaturesId = gson.fromJson(
+            TreeSet<Integer> disabledFeaturesId = gson.fromJson(
                     legacyLoadedConfig.getAsJsonArray("disabledFeatures"),
-                    new TypeToken<HashSet<Integer>>() {}.getType()
+                    new TypeToken<TreeSet<Integer>>() {}.getType()
             );
             HashSet<Integer> chromaFeatures = gson.fromJson(
                     legacyLoadedConfig.get("chromaFeatures"),
@@ -156,7 +157,7 @@ public class ConfigValuesManager {
                     legacyLoadedConfig.get("colors"),
                     new TypeToken<HashMap<Integer, Integer>>() {}.getType()
             );
-            HashMap<Integer, Pair<Float, Float>> coordinates = new HashMap<>();
+            TreeMap<Integer, Pair<Float, Float>> coordinates = new TreeMap<>();
             if (legacyLoadedConfig.has("coordinates")) {
                 for (Map.Entry<String, JsonElement> element : legacyLoadedConfig.getAsJsonObject("coordinates").entrySet()) {
                     JsonArray coords = element.getValue().getAsJsonArray();
@@ -227,7 +228,7 @@ public class ConfigValuesManager {
             }
 
             float mapZoom = 1.1F, chromaSaturation = 0.75F, chromaBrightness = 0.9F, chromaSpeed = 6F, healingCircleOpacity = 0.2F, chromaSize = 30F;
-            int warningSeconds = 4;
+            int warningSeconds = 4, lastFeatureId;
             if (legacyLoadedConfig.has("mapZoom")) {
                 mapZoom = legacyLoadedConfig.get("mapZoom").getAsFloat();
             }
@@ -248,6 +249,11 @@ public class ConfigValuesManager {
             }
             if (legacyLoadedConfig.has("warningSeconds")) {
                 warningSeconds = legacyLoadedConfig.get("warningSeconds").getAsInt();
+            }
+            if (legacyLoadedConfig.has("lastFeatureId")) {
+                lastFeatureId = legacyLoadedConfig.get("lastFeatureId").getAsInt();
+            } else {
+                lastFeatureId = Math.max(coordinates.lastKey(), disabledFeaturesId.last());
             }
 
             // migration
@@ -294,6 +300,12 @@ public class ConfigValuesManager {
                         featureData8.setValue(language);
                         feature.getFeatureData().overwriteData(featureData8);
                         continue;
+                }
+
+                if (feature.getId() > lastFeatureId) {
+                    LOGGER.warn("The '{}' feature is set to its default settings.", feature);
+                    feature.getFeatureData().overwriteData(DEFAULT_FEATURE_DATA.get(feature).deepCopy());
+                    continue;
                 }
 
                 FeatureData<Boolean> newData = new FeatureData<>(feature.getFeatureGuiData());
@@ -409,6 +421,7 @@ public class ConfigValuesManager {
                     pvm.getPersistentValues().getProfileLockedSlots().putAll(profileLockedSlots);
                     pvm.saveValues();
                     main.getConfigValuesManager().saveConfig(); // Save configValues too
+                    LOGGER.info("SkyblockAddons Unofficial new config migration completed.");
                     scheduledTask.cancel();
                 }
             }, 20, 20);
