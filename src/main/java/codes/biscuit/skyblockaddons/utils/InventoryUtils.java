@@ -526,8 +526,9 @@ public class InventoryUtils {
                 if (main.getUtils().isInDungeon() && StringUtils.isBlank(displayName)) {
                     // Ignore Archer's ghost abilities cooldown
                     return;
-                } else if (LocationUtils.isOn(Island.KUUDRA) && itemStack.getDisplayName().contains("You will be revived in")) {
-                    // Ignore revive counter item in Kuudra
+                } else if (LocationUtils.isOn(Island.KUUDRA) && (displayName.contains("You will be revived in")
+                        || displayName.contains("Purchasable revive is on cooldown!"))) {
+                    // Ignore revive counter and Purchase Revive cooldown items in Kuudra
                     return;
                 }
             } else if (ItemUtils.isQuiverArrow(itemStack)) {
