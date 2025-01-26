@@ -232,6 +232,9 @@ public class ConfigValuesManager {
             int warningSeconds = 4, lastFeatureId;
             if (legacyLoadedConfig.has("mapZoom")) {
                 mapZoom = legacyLoadedConfig.get("mapZoom").getAsFloat();
+                if (mapZoom < 0.5F) { // legacy normalized zoom
+                    mapZoom = 1.1F; // default value
+                }
             }
             if (legacyLoadedConfig.has("chromaSaturation")) {
                 chromaSaturation =legacyLoadedConfig.get("chromaSaturation").getAsFloat();
@@ -324,7 +327,9 @@ public class ConfigValuesManager {
                     newData.setBarSizes(barSize);
                 }
                 float guiScale = guiScales.getOrDefault(feature.getId(), 1.0F);
-                if (guiScale != 1.0F) {
+                if (guiScale < 0.5F) { // legacy normalized scale
+                    newData.setGuiScale(DEFAULT_FEATURE_DATA.get(feature).getGuiScale());
+                } else if (guiScale != 1.0F) {
                     newData.setGuiScale(guiScale);
                 }
                 int legacyColor = colors.getOrDefault(feature.getId(), 0);
