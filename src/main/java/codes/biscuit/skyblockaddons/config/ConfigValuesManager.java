@@ -71,6 +71,7 @@ public class ConfigValuesManager {
     public static class ConfigValues {
 
         private int configVersion = CONFIG_VERSION;
+        private int lastFeatureId;
         private EnumMap<Feature, FeatureData<?>> features = new EnumMap<>(Feature.class);
 
     }
@@ -506,6 +507,9 @@ public class ConfigValuesManager {
 
             for (Feature feature : Feature.values()) {
                 configValues.features.put(feature, feature.getFeatureData());
+                if (feature.getId() > configValues.lastFeatureId) {
+                    configValues.lastFeatureId = feature.getId();
+                }
             }
 
             try {

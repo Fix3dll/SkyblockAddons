@@ -32,6 +32,9 @@ public class ConfigValuesAdapter implements JsonDeserializer<ConfigValues> {
         if (jsonObject.has("configVersion")) {
             configValues.setConfigVersion(jsonObject.get("configVersion").getAsInt());
         }
+        if (jsonObject.has("lastFeatureId")) {
+            configValues.setLastFeatureId(jsonObject.get("lastFeatureId").getAsInt());
+        }
         if (jsonObject.has("features")) {
             JsonObject featuresObject = jsonObject.getAsJsonObject("features");
             EnumMap<Feature, FeatureData<?>> features = new EnumMap<>(Feature.class);
