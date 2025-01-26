@@ -258,7 +258,8 @@
     "xAllignment": "X Allignment",
     "classColoredTeammate": "Class Colored Outline",
     "drawLockOnlyWhenHovered": "Draw Lock Icon only when hovered with mouse",
-    "showFarmingToolsPreview": "Show Preview for Farming Tools"
+    "showFarmingToolsPreview": "Show Preview for Farming Tools",
+    "renderItemOnLog": "Render Item on Item Pickup Log"
   },
   "messages": {
     "enchants": "Enchants",

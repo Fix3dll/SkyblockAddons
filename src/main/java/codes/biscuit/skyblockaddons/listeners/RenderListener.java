@@ -149,6 +149,12 @@ public class RenderListener {
             new SlayerArmorProgress(new ItemStack(Items.leather_helmet))
     };
 
+    private static final List<ItemDiff> DUMMY_PICKUP_LOG = Collections.unmodifiableList(Arrays.asList(
+            new ItemDiff(ColorCode.DARK_PURPLE + "Forceful Ember Chestplate", 1, new ItemStack(Items.chainmail_chestplate)),
+            new ItemDiff("Boat", -1, new ItemStack(Items.boat)),
+            new ItemDiff(ColorCode.BLUE + "Aspect of the End", 1, new ItemStack(Items.diamond_sword))
+    ));
+
     private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?:(?:§[a-f0-9])?✪)+(?:§[a-f0-9]?[➊-➒])?");
 
     private static EntityZombie revenant;
@@ -2521,7 +2527,7 @@ public class RenderListener {
         RenderHelper.enableGUIStandardItemLighting();
 
         GlStateManager.pushMatrix();
-        if (scale > 1) {
+        if (scale != 1) {
             GlStateManager.scale(scale, scale, 1F);
         }
         GlStateManager.translate(x / scale, y / scale, 0);
@@ -2551,24 +2557,31 @@ public class RenderListener {
         GlStateManager.disableDepth();
     }
 
-    private static final List<ItemDiff> DUMMY_PICKUP_LOG = Collections.unmodifiableList(Arrays.asList(
-            new ItemDiff(ColorCode.DARK_PURPLE + "Forceful Ember Chestplate", 1, new ItemStack(Items.chainmail_chestplate)),
-            new ItemDiff("Boat", -1, new ItemStack(Items.boat)),
-            new ItemDiff(ColorCode.BLUE + "Aspect of the End", 1, new ItemStack(Items.diamond_sword))
-    ));
-
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     public void drawItemPickupLog(float scale, ButtonLocation buttonLocation) {
-        float x = main.getConfigValuesManager().getActualX(Feature.ITEM_PICKUP_LOG);
-        float y = main.getConfigValuesManager().getActualY(Feature.ITEM_PICKUP_LOG);
+        Feature feature = Feature.ITEM_PICKUP_LOG;
+        float x = main.getConfigValuesManager().getActualX(feature);
+        float y = main.getConfigValuesManager().getActualY(feature);
 
-        boolean downwards = Feature.ITEM_PICKUP_LOG.getAnchorPoint().isOnTop();
+        boolean downwards = feature.getAnchorPoint().isOnTop();
+        boolean renderItemStack = feature.isEnabled(FeatureSetting.RENDER_ITEM_ON_LOG);
 
-        int lineHeight = 8 + 1; // 1 pixel spacer
-        int height = lineHeight * 3 - 1;
+        int heightSpacer = renderItemStack ? 6 : 1;
+        int lineHeight = MC.fontRendererObj.FONT_HEIGHT + heightSpacer; // + pixel spacer
+        int height = lineHeight * DUMMY_PICKUP_LOG.size();
         int width = MC.fontRendererObj.getStringWidth("+ 1x Forceful Ember Chestplate");
+
+        if (renderItemStack) {
+            width += 18;
+        }
 
         x = transformX(x, width, scale, false);
         y = transformY(y, height, scale);
+        // X/Y Alignment
+        if (renderItemStack) {
+            x += 9;
+            y += (heightSpacer / 2) * DUMMY_PICKUP_LOG.size();
+        }
 
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
@@ -2582,18 +2595,29 @@ public class RenderListener {
         if (buttonLocation != null) {
             log = DUMMY_PICKUP_LOG;
         }
+        String spacing = renderItemStack ? "     " : " "; // space width is 4
         for (ItemDiff itemDiff : log) {
-            String text = String.format(
-                    "%s %sx §r%s",
-                    itemDiff.getAmount() > 0 ? "§a+" : "§c-",
-                    Math.abs(itemDiff.getAmount()), itemDiff.getDisplayName()
-            );
-            float stringY = y + (i * lineHeight);
-            if (!downwards) {
-                stringY = y + height - (i * lineHeight) - 8;
+            float stringY;
+            if (downwards) {
+                stringY = y + (i * lineHeight) + heightSpacer / 2;
+            } else {
+                stringY = y + height - (i * lineHeight) - 9 - heightSpacer / 2;
             }
 
+            String countText = String.format(
+                    "%s %sx",
+                    itemDiff.getAmount() > 0 ? "§a+" : "§c-",
+                    Math.abs(itemDiff.getAmount())
+            );
+            String text = countText + spacing + "§r" + itemDiff.getDisplayName();
             DrawUtils.drawText(text, x, stringY, 0xFFFFFFFF);
+            if (renderItemStack) {
+                renderItem(
+                        itemDiff.getItemStack(),
+                        x + MC.fontRendererObj.getStringWidth(countText) + 2,
+                        stringY - heightSpacer / 2 - 1
+                );
+            }
             i++;
         }
 

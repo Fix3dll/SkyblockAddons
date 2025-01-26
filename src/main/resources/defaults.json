@@ -169,7 +169,10 @@
     "coords": [
       84.5,
       17.0
-    ]
+    ],
+    "settings": {
+      "RENDER_ITEM_ON_LOG": true
+    }
   },
   "DONT_RESET_CURSOR_INVENTORY": {
     "value": true
