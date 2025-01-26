@@ -71,7 +71,7 @@ public class DevUtils {
     @Getter @Setter private static boolean loggingActionBarMessages = false;
     @Getter @Setter private static boolean loggingSlayerTracker = false;
     @Getter @Setter private static boolean loggingSkyBlockOre = false;
-    private static CopyMode copyMode = CopyMode.ENTITY;
+    @Getter private static CopyMode copyMode = CopyMode.ENTITY;
     private static List<Class<? extends Entity>> entityNames = DEFAULT_ENTITY_NAMES;
     private static int entityCopyRadius = DEFAULT_ENTITY_COPY_RADIUS;
     @Setter private static boolean sidebarFormatted = DEFAULT_SIDEBAR_FORMATTED;

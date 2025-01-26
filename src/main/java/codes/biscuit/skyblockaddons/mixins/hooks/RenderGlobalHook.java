@@ -1,8 +1,8 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.features.outline.EntityOutlineRenderer;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.util.BlockPos;
@@ -26,10 +26,9 @@ public class RenderGlobalHook {
     }
 
     public static void onAddBlockBreakParticle(int breakerId, BlockPos pos, int progress) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
         // On public islands, hypixel sends a progress = 10 update once it registers the start of block breaking
-        if (breakerId == 0 && main.getUtils().getMap() != Island.PRIVATE_ISLAND &&
-                pos.equals(MinecraftHook.prevClickBlock) && progress == 10) {
+        if (breakerId == 0 && !LocationUtils.isOn(Island.PRIVATE_ISLAND) && pos.equals(MinecraftHook.prevClickBlock)
+                && progress == 10) {
             //System.out.println(progress);
             MinecraftHook.startMineTime = System.currentTimeMillis();
         }

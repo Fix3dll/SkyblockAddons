@@ -35,6 +35,7 @@ import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.InventoryUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.RomanNumeralParser;
 import codes.biscuit.skyblockaddons.utils.ScoreboardManager;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
@@ -266,7 +267,7 @@ public class PlayerListener {
             if (cachedChatRunCommand == null && e.message != null && formattedText.contains("§2§l[PICK UP]")) {
                 this.setChatRunCommandFromComponent(e.message);
 
-            } else if (e.message != null && formattedText.contains("§a§l[YES]")) {
+            } else if (e.message != null && (formattedText.contains("§a§l[YES]") || formattedText.contains("§a[Yes]"))) {
                 this.setChatRunCommandFromComponent(e.message);
 
             } else if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
@@ -654,6 +655,7 @@ public class PlayerListener {
 
             updateHealthAttributes(mc);
             PetManager.getInstance().checkCurrentPet(mc);
+            flyingCheck();
 
             if (timerTick == 20) {
                 // Add natural mana every second (increase is based on your max mana).
@@ -726,7 +728,7 @@ public class PlayerListener {
         Entity entity = e.entity;
 
         // Detect Broodmother spawn
-        if (Feature.BROOD_MOTHER_ALERT.isEnabled() && main.getUtils().getMap() == Island.SPIDERS_DEN) {
+        if (Feature.BROOD_MOTHER_ALERT.isEnabled() && LocationUtils.isOn(Island.SPIDERS_DEN)) {
             if (entity.hasCustomName() && entity.posY > 165 && entity.getName().contains("Broodmother")) {
                 if (lastBroodmother == -1 || System.currentTimeMillis() - lastBroodmother > 15000) {
                     lastBroodmother = System.currentTimeMillis();
@@ -737,7 +739,7 @@ public class PlayerListener {
                 }
             }
         }
-        if (Feature.BAL_BOSS_ALERT.isEnabled() && main.getUtils().getMap() == Island.CRYSTAL_HOLLOWS) {
+        if (Feature.BAL_BOSS_ALERT.isEnabled() && LocationUtils.isOn(Island.CRYSTAL_HOLLOWS)) {
             if (lastBal == -1 || System.currentTimeMillis() - lastBal > 60000) {
                 for (Entity cubes : MC.theWorld.loadedEntityList) {
                     if (cubes instanceof EntityMagmaCube) {
@@ -763,7 +765,7 @@ public class PlayerListener {
             }
 
             if (entity instanceof EntityOtherPlayerMP && Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled()
-                    && !main.getUtils().isGuest() && main.getUtils().getMap() != Island.DUNGEON) {
+                    && !main.getUtils().isGuest() && !LocationUtils.isOn(Island.DUNGEON)) {
                 float health = ((EntityOtherPlayerMP) entity).getHealth();
 
                 if (NPCUtils.getNpcLocations().containsKey(entity.getUniqueID())) {
@@ -782,7 +784,7 @@ public class PlayerListener {
             DeployableManager.getInstance().detectDeployables((EntityArmorStand) entity);
 
             if (entity.hasCustomName()) {
-                if (main.getUtils().getMap() == Island.PRIVATE_ISLAND && !main.getUtils().isGuest()) {
+                if (LocationUtils.isOn(Island.PRIVATE_ISLAND) && !main.getUtils().isGuest()) {
                     int cooldown = Feature.WARNING_TIME.numberValue().intValue() * 1000 + 10000;
                     String nameTag = entity.getCustomNameTag();
                     if (Feature.MINION_FULL_WARNING.isEnabled() && nameTag.equals("§cMy storage is full! :(")) {
@@ -1036,8 +1038,7 @@ public class PlayerListener {
      * This method handles key presses while the player is in-game.
      * For handling of key presses while a GUI (e.g. chat, pause menu, F3) is open,
      * see {@link GuiScreenListener#onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre)}
-     *
-     * @param e the {@code InputEvent} that occurred
+     * @param e the {@link InputEvent} that occurred
      */
     @SubscribeEvent
     public void onKeyInput(InputEvent e) {
@@ -1053,6 +1054,10 @@ public class PlayerListener {
             MC.thePlayer.sendChatMessage(cachedChatRunCommand);
 
         } else if (Feature.DEVELOPER_MODE.isEnabled() && SkyblockKeyBinding.DEVELOPER_COPY_NBT.isPressed()) {
+            // InputEvent is triggered off-screen. Replaced with CopyMode.ENTITY as CopyMode.ITEM would not work.
+            if (DevUtils.getCopyMode() == DevUtils.CopyMode.ITEM) {
+                DevUtils.setCopyMode(DevUtils.CopyMode.ENTITY);
+            }
             DevUtils.copyData();
         }
 
@@ -1110,23 +1115,21 @@ public class PlayerListener {
 
     /**
      * This method is called when a player dies in Skyblock.
-     *
      * @param e the event that caused this method to be called
      */
     @SubscribeEvent
     public void onPlayerDeath(SkyblockPlayerDeathEvent e) {
         EntityPlayerSP thisPlayer = MC.thePlayer;
 
-        //  Resets all user input on death as to not walk backwards or strafe into the portal
+        // Resets all user input on death as to not walk backwards or strafe into the portal
         if (Feature.PREVENT_MOVEMENT_ON_DEATH.isEnabled() && e.entityPlayer == thisPlayer) {
             KeyBinding.unPressAllKeys();
         }
 
-        /*
-        Don't show log for losing all items when the player dies in dungeon.
-         The items come back after the player is revived and the large log causes a distraction.
-         */
-        if (Feature.ITEM_PICKUP_LOG.isEnabled() && e.entityPlayer == thisPlayer && main.getUtils().isInDungeon()) {
+        // Don't show log for losing all items when the player dies in dungeon.
+        // The items come back after the player is revived and the large log causes a distraction.
+        if (Feature.ITEM_PICKUP_LOG.isEnabled() && e.entityPlayer == thisPlayer
+                && (main.getUtils().isInDungeon() || LocationUtils.isOn(Island.KUUDRA))) {
             lastDeath = Minecraft.getSystemTime();
             main.getInventoryUtils().resetPreviousInventory();
         }
@@ -1383,6 +1386,23 @@ public class PlayerListener {
                     return;
                 }
             }
+        }
+    }
+
+    private boolean previousAllowFlyingState = false;
+
+    private void flyingCheck() {
+        EntityPlayerSP thePlayer = MC.thePlayer;
+
+        if (thePlayer != null && LocationUtils.isOn(Island.KUUDRA)) {
+            if (previousAllowFlyingState != thePlayer.capabilities.allowFlying) {
+                // Reset the previous inventory so the screen doesn't get spammed with a large pickup log
+                if (Feature.ITEM_PICKUP_LOG.isEnabled()) {
+                    main.getInventoryUtils().resetPreviousInventory();
+                }
+            }
+
+            previousAllowFlyingState = thePlayer.capabilities.allowFlying;
         }
     }
 }

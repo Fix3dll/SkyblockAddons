@@ -1096,7 +1096,7 @@ public class RenderListener {
                 break;
 
             case ENDSTONE_PROTECTOR_DISPLAY:
-                if ((main.getUtils().getMap() != Island.THE_END
+                if ((!LocationUtils.isOn(Island.THE_END)
                         || EndstoneProtectorManager.getMinibossStage() == null
                         || !EndstoneProtectorManager.isCanDetectSkull()
                     ) && buttonLocation == null) return;
@@ -1632,7 +1632,7 @@ public class RenderListener {
 
             case FETCHUR_TODAY:
                 boolean showDwarven = feature.isDisabled(FeatureSetting.SHOW_FETCHUR_ONLY_IN_DWARVENS)
-                        || main.getUtils().getMap() == Island.DWARVEN_MINES;
+                        || LocationUtils.isOn(Island.DWARVEN_MINES);
                 boolean showInventory = feature.isDisabled(FeatureSetting.SHOW_FETCHUR_INVENTORY_OPEN_ONLY)
                         || MC.currentScreen != null;
                 FetchurManager.FetchurItem fetchurItem = FetchurManager.getInstance().getCurrentFetchurItem();

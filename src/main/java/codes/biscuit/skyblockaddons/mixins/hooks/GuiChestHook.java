@@ -5,6 +5,7 @@ import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.objects.ReturnValue;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
@@ -140,7 +141,7 @@ public class GuiChestHook {
         // Essences from TabListParser#parseSections
         if (Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isEnabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)
                 && inventoryType == InventoryType.SALVAGING
-                && main.getUtils().getMap() == Island.DUNGEON_HUB) {
+                && LocationUtils.isOn(Island.DUNGEON_HUB)) {
             int ySize = 222 - 108 + 6 * 18;
             float x = guiLeft - 117 - 5;
             float y = guiTop + ySize / 2F - 72 / 2F;

@@ -150,6 +150,7 @@ public class Utils {
 
     /**
      * The player's current map in SkyBlock
+     * @see LocationUtils#isOn(Island...)
      */
     private Island map = Island.UNKNOWN;
 

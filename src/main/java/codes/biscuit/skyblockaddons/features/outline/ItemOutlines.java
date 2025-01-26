@@ -27,10 +27,6 @@ public class ItemOutlines {
      * Cached value of the client's SkyBlock location
      */
     private static String location;
-    /**
-     * Cached value of the client's SkyBlock map
-     */
-    private static Island map;
 
     /**
      * Entity-level predicate to determine whether a specific entity should be outlined, and if so, what color.
@@ -70,8 +66,8 @@ public class ItemOutlines {
      * @return {@code false} if no entities should be outlined (i.e., accept if the player has item outlines enabled for the current skyblock location)
      */
     private static boolean shouldOutline() {
-        return Feature.MAKE_DROPPED_ITEMS_GLOW.isEnabled()
-                && (Feature.MAKE_DROPPED_ITEMS_GLOW.isEnabled(FeatureSetting.SHOW_GLOWING_ITEMS_ON_ISLAND) || map != Island.PRIVATE_ISLAND);
+        Feature feature = Feature.MAKE_DROPPED_ITEMS_GLOW;
+        return feature.isEnabled() && (feature.isEnabled(FeatureSetting.SHOW_GLOWING_ITEMS_ON_ISLAND) || !LocationUtils.isOn(Island.PRIVATE_ISLAND));
     }
 
     /**
@@ -99,7 +95,6 @@ public class ItemOutlines {
         // Cache constants
         SkyblockAddons main = SkyblockAddons.getInstance();
         location = main.getUtils().getLocation();
-        map = main.getUtils().getMap();
 
         if (e.getType() == Type.XRAY) {
             // Test whether we should add any entities at all

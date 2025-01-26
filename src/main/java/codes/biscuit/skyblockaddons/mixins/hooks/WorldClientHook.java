@@ -1,9 +1,9 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.npc.NPCUtils;
 import codes.biscuit.skyblockaddons.events.SkyblockBlockBreakEvent;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -42,9 +42,8 @@ public class WorldClientHook {
             if (/*mc.playerController.getIsHittingBlock() && */MinecraftHook.recentlyClickedBlocks.containsKey(pos) &&
                     stateBefore != Block.getStateId(state) && stateBefore != BEDROCK_STATE && stateBefore != AIR_STATE) {
                 // Get the player's ID (0 on public islands and the player's entity ID on private islands)
-                Island map = SkyblockAddons.getInstance().getUtils().getMap();
                 // Blocks broken on guest islands don't count
-                if (map == Island.PRIVATE_ISLAND) {
+                if (LocationUtils.isOn(Island.PRIVATE_ISLAND)) {
                     return;
                 }
                 int playerID = /*location == Location.ISLAND || location == Location.GUEST_ISLAND ? mc.thePlayer.getEntityId() :*/ 0;

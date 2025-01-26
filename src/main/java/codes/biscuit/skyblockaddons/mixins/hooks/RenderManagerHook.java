@@ -29,8 +29,6 @@ public class RenderManagerHook {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
         if (main.getUtils().isOnSkyblock()) {
-            Island currentMap = main.getUtils().getMap();
-
             if (Feature.HIDE_BONES.isEnabled() && main.getInventoryUtils().isWearingSkeletonHelmet()) {
                 if (entityIn instanceof EntityItem && entityIn.ridingEntity instanceof EntityArmorStand && entityIn.ridingEntity.isInvisible()) {
                     EntityItem entityItem = (EntityItem) entityIn;
@@ -49,7 +47,7 @@ public class RenderManagerHook {
                 }
             }
             if (mc.theWorld != null && Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled() && !main.getUtils().isGuest()
-                    && currentMap != Island.DUNGEON) {
+                    && !LocationUtils.isOn(Island.DUNGEON)) {
                 if (entityIn instanceof EntityOtherPlayerMP && !NPCUtils.isNPC(entityIn) && NPCUtils.isNearNPC(entityIn)) {
                     cir.cancel();
                 }

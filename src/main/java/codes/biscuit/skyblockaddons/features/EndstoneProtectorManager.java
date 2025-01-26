@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.features;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,6 @@ import java.util.concurrent.Executors;
 
 public class EndstoneProtectorManager {
 
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getMinecraft();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
@@ -30,7 +30,7 @@ public class EndstoneProtectorManager {
     private static long lastWaveStart = -1;
 
     public static void checkGolemStatus() {
-        if (MC.theWorld != null && main.getUtils().getMap() == Island.THE_END && Feature.ENDSTONE_PROTECTOR_DISPLAY.isEnabled()) {
+        if (MC.theWorld != null && LocationUtils.isOn(Island.THE_END) && Feature.ENDSTONE_PROTECTOR_DISPLAY.isEnabled()) {
             World world = MC.theWorld;
 
             Chunk chunk = world.getChunkFromBlockCoords(new BlockPos(-689, 5, -273)); // This is the original spawn.

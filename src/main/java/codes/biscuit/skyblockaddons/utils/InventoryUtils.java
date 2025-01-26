@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.utils;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.InventoryType;
 import codes.biscuit.skyblockaddons.core.ItemDiff;
@@ -521,9 +522,14 @@ public class InventoryUtils {
                 if (!lore.isEmpty()) {
                     displayName = lore.get(0);
                 }
-            } else if (main.getUtils().isInDungeon() && itemStack.getItem() == Items.dye && StringUtils.isBlank(displayName)) {
-                // Ignore Archer's ghost abilities cooldown
-                return;
+            } else if (itemStack.getItem() == Items.dye) {
+                if (main.getUtils().isInDungeon() && StringUtils.isBlank(displayName)) {
+                    // Ignore Archer's ghost abilities cooldown
+                    return;
+                } else if (LocationUtils.isOn(Island.KUUDRA) && itemStack.getDisplayName().contains("You will be revived in")) {
+                    // Ignore revive counter item in Kuudra
+                    return;
+                }
             } else if (ItemUtils.isQuiverArrow(itemStack)) {
                 // Ignore quiver arrow
                 return;

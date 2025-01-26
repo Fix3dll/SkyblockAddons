@@ -20,6 +20,7 @@ import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
+import lombok.NonNull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -133,23 +134,11 @@ public class GuiScreenListener {
     @SubscribeEvent
     public void onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre event) {
         int eventKey = Keyboard.getEventKey();
+        GuiScreen guiScreen = event.gui;
 
-        if (Feature.DEVELOPER_MODE.isEnabled() && eventKey == SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode() && Keyboard.getEventKeyState()) {
-            // Copy Item NBT
-            GuiScreen currentScreen = event.gui;
-
-            // Check if the player is in an inventory.
-            if (currentScreen instanceof GuiContainer) {
-                Slot currentSlot = ((GuiContainer) currentScreen).getSlotUnderMouse();
-
-                if (currentSlot != null && currentSlot.getHasStack()) {
-                    DevUtils.setCopyMode(DevUtils.CopyMode.ITEM);
-                    DevUtils.copyNBTTagToClipboard(
-                            currentSlot.getStack().serializeNBT(),
-                            ColorCode.GREEN + "Item data was copied to clipboard!"
-                    );
-                }
-            }
+        // Copy NBT, check if the player is in an inventory.
+        if (guiScreen instanceof GuiContainer) {
+            this.onDeveloperKeyPressed((GuiContainer) guiScreen);
         }
 
         if (main.getUtils().isOnSkyblock()) {
@@ -222,9 +211,15 @@ public class GuiScreenListener {
             return;
         }
 
-        if (Feature.LOCK_SLOTS.isEnabled() && event.gui instanceof GuiContainer) {
-            GuiContainer guiContainer = (GuiContainer) event.gui;
+        // Check if the player is in an inventory.
+        GuiContainer guiContainer;
+        if (event.gui instanceof GuiContainer) {
+            guiContainer = (GuiContainer) event.gui;
+        } else {
+            guiContainer = null;
+        }
 
+        if (Feature.LOCK_SLOTS.isEnabled() && guiContainer != null) {
             if (eventButton >= 0) {
                 /*
                 This prevents swapping items in/out of locked hotbar slots when using a hotbar key binding that is bound
@@ -256,6 +251,11 @@ public class GuiScreenListener {
         }
 
         ContainerPreviewManager.onContainerKeyTyped(eventButton);
+
+        // Copy NBT
+        if (guiContainer != null) {
+            this.onDeveloperKeyPressed(guiContainer);
+        }
     }
 
     /**
@@ -359,6 +359,20 @@ public class GuiScreenListener {
             }
             // lastClickedButton has completed its task, time to clean up
             GuiContainerHook.setLastClickedButtonOnPetsMenu(null);
+        }
+    }
+
+    private void onDeveloperKeyPressed(@NonNull GuiContainer guiContainer) {
+        if (Feature.DEVELOPER_MODE.isEnabled() && SkyblockKeyBinding.DEVELOPER_COPY_NBT.isPressed()) {
+            Slot currentSlot = guiContainer.getSlotUnderMouse();
+
+            if (currentSlot != null && currentSlot.getHasStack()) {
+                DevUtils.setCopyMode(DevUtils.CopyMode.ITEM);
+                DevUtils.copyNBTTagToClipboard(
+                        currentSlot.getStack().serializeNBT(),
+                        ColorCode.GREEN + "Item data was copied to clipboard!"
+                );
+            }
         }
     }
 }

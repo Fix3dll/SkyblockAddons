@@ -15,6 +15,9 @@ import java.util.Set;
  */
 // TODO special zones could be add to data repository as constant
 public class LocationUtils {
+
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+
     @Setter private static HashMap<String, Set<String>> slayerLocations;
 
     /**
@@ -44,7 +47,7 @@ public class LocationUtils {
      * @return true if current location is where zealot spawns
      */
     public static boolean isOnZealotSpawnLocation() {
-        return zealotSpawnLocations.contains(SkyblockAddons.getInstance().getUtils().getLocation());
+        return zealotSpawnLocations.contains(main.getUtils().getLocation());
     }
 
     /**
@@ -52,14 +55,23 @@ public class LocationUtils {
      * @return true if current location where the given slayer type is counted
      */
     public static boolean isOnSlayerLocation(EnumUtils.SlayerQuest slayerQuest) {
-        return slayerLocations.get(slayerQuest.name()).contains(SkyblockAddons.getInstance().getUtils().getLocation());
+        return slayerLocations.get(slayerQuest.name()).contains(main.getUtils().getLocation());
     }
 
     /**
      * @return true if current location is where counts in Glacite Tunnels
      */
     public static boolean isOnGlaciteTunnelsLocation() {
-        return glaciteTunnelsLocations.contains(SkyblockAddons.getInstance().getUtils().getLocation());
+        return glaciteTunnelsLocations.contains(main.getUtils().getLocation());
+    }
+
+    /**
+     * @param island Island to check if the player is on it
+     * @return true if current map is one of the specified island
+     * @see #isOn(Island...)
+     */
+    public static boolean isOn(Island island) {
+        return main.getUtils().isOnSkyblock() && main.getUtils().getMap() == island;
     }
 
     /**
@@ -71,7 +83,11 @@ public class LocationUtils {
             throw new IllegalArgumentException("\"islands\" cannot be null or empty");
         }
 
-        Island currentIsland = SkyblockAddons.getInstance().getUtils().getMap();
+        if (!main.getUtils().isOnSkyblock()) {
+            return false;
+        }
+
+        Island currentIsland = main.getUtils().getMap();
         for (Island island : islands) {
             if (currentIsland == island) return true;
         }
@@ -87,7 +103,11 @@ public class LocationUtils {
             throw new IllegalArgumentException("\"locations\" cannot be null or empty");
         }
 
-        String currentLocation = SkyblockAddons.getInstance().getUtils().getLocation();
+        if (!main.getUtils().isOnSkyblock()) {
+            return false;
+        }
+
+        String currentLocation = main.getUtils().getLocation();
         for (String location : locations) {
             if (currentLocation.equals(location)) return true;
         }

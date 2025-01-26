@@ -10,6 +10,7 @@ import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
+import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
@@ -179,7 +180,7 @@ public class TrevorTrapperTracker {
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent e) {
-        if (main.getUtils().getMap() == Island.THE_FARMING_ISLANDS && e.type != 2) {
+        if (LocationUtils.isOn(Island.THE_FARMING_ISLANDS) && e.type != 2) {
             String stripped = TextUtils.stripColor(e.message.getFormattedText());
             // Once the player has started the hunt, start some timers
             Matcher matcher = TREVOR_FIND_ANIMAL_PATTERN.matcher(stripped);
@@ -308,8 +309,7 @@ public class TrevorTrapperTracker {
     }
 
     private boolean isTrackerConditionsMet() {
-        return main.getUtils().isOnSkyblock() && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled()
-                && main.getUtils().getMap() == Island.THE_FARMING_ISLANDS;
+        return LocationUtils.isOn(Island.THE_FARMING_ISLANDS) && Feature.TREVOR_THE_TRAPPER_FEATURES.isEnabled();
     }
 
     @Getter
