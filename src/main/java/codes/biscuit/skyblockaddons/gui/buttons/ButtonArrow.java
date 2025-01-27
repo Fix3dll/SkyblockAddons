@@ -73,7 +73,7 @@ public class ButtonArrow extends SkyblockAddonsButton {
                 gui.setClosingGui(true);
 
                 int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
-                mc.displayGuiScreen(new SettingsGui(gui.getFeature(), page, gui.getLastPage(), gui.getLastTab()));
+                mc.displayGuiScreen(new SettingsGui(gui.getFeature(), page, gui.getLastPage(), gui.getLastTab(), gui.getLastGUI()));
                 return true;
 
             }

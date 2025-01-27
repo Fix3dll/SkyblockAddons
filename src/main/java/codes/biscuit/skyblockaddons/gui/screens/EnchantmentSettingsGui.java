@@ -32,7 +32,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
     private int maxPage;
 
     public EnchantmentSettingsGui(int page, int lastPage, EnumUtils.GuiTab lastTab) {
-        super(Feature.ENCHANTMENT_LORE_PARSING, page, lastPage, lastTab);
+        super(Feature.ENCHANTMENT_LORE_PARSING, page, lastPage, lastTab, EnumUtils.GUIType.MAIN);
         maxPage = 1;
         if (feature.hasSettings()) {
             for (FeatureSetting setting : feature.getFeatureData().getSettings().keySet()) {
@@ -86,7 +86,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawSettingsScreen(mouseX, mouseY); // Draw buttons.
+        super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
     }
 
     private void addButton(FeatureSetting setting) {

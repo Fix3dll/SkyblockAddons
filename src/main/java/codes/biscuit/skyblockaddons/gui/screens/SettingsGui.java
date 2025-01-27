@@ -32,6 +32,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
     @Getter final Feature feature;
     @Getter final int lastPage;
     @Getter final EnumUtils.GuiTab lastTab;
+    @Getter final EnumUtils.GUIType lastGUI;
     @Getter int page;
     float row = 1;
     int column = 1;
@@ -45,11 +46,12 @@ public class SettingsGui extends SkyblockAddonsScreen {
     /**
      * The main gui, opened with /sba.
      */
-    public SettingsGui(Feature feature, int page, int lastPage, EnumUtils.GuiTab lastTab) {
+    public SettingsGui(Feature feature, int page, int lastPage, EnumUtils.GuiTab lastTab, EnumUtils.GUIType lastGUI) {
         this.feature = feature;
         this.page = page;
         this.lastPage = lastPage;
         this.lastTab = lastTab;
+        this.lastGUI = lastGUI;
     }
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
@@ -437,7 +439,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
     public void onGuiClosed() {
         if (!closingGui) {
             closingGui = true;
-            main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, lastPage, lastTab);
+            main.getRenderListener().setGuiToOpen(lastGUI, lastPage, lastTab);
         } else {
             // Clear universal feature
             FeatureSetting.X_ALLIGNMENT.setUniversalFeature(null);

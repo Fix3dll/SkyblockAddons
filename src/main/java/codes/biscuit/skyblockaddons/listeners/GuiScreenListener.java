@@ -11,6 +11,7 @@ import codes.biscuit.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import codes.biscuit.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
+import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsScreen;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiChestHook;
 import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
@@ -110,7 +111,7 @@ public class GuiScreenListener {
         GuiScreen oldGuiScreen = Minecraft.getMinecraft().currentScreen;
 
         // Closing a container
-        if (guiScreen == null && oldGuiScreen instanceof GuiContainer) {
+        if (guiScreen == null && (oldGuiScreen instanceof GuiContainer || oldGuiScreen instanceof SkyblockAddonsScreen)) {
             lastContainerCloseMs = System.currentTimeMillis();
             main.getInventoryUtils().setInventoryType(null);
         }

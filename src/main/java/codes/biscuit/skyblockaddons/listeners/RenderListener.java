@@ -2886,7 +2886,7 @@ public class RenderListener {
             if (guiFeatureToOpen == Feature.ENCHANTMENT_LORE_PARSING) {
                 MC.displayGuiScreen(new EnchantmentSettingsGui(1, guiPageToOpen, guiTabToOpen));
             } else {
-                MC.displayGuiScreen(new SettingsGui(guiFeatureToOpen, 1, guiPageToOpen, guiTabToOpen));
+                MC.displayGuiScreen(new SettingsGui(guiFeatureToOpen, 1, guiPageToOpen, guiTabToOpen, null));
             }
         } else if (guiToOpen == EnumUtils.GUIType.WARP) {
             MC.displayGuiScreen(new IslandWarpGui());

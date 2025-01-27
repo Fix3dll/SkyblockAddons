@@ -5,6 +5,7 @@ import codes.biscuit.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -44,7 +45,7 @@ public class ButtonSettings extends ButtonFeature {
             if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {
                 mc.displayGuiScreen(new EnchantmentSettingsGui(0, gui.getPage(), gui.getTab()));
             } else {
-                mc.displayGuiScreen(new SettingsGui(feature, 1, gui.getPage(), gui.getTab()));
+                mc.displayGuiScreen(new SettingsGui(feature, 1, gui.getPage(), gui.getTab(), EnumUtils.GUIType.MAIN));
             }
             return true;
         }

@@ -347,6 +347,11 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
         // Draw location information of hovered feature to the middle of screen
         drawFeatureCoords(lastHoveredButton);
+
+        if (lastHoveredButton != null && Mouse.isButtonDown(2)) {
+            closing = true;
+            mc.displayGuiScreen(new SettingsGui(lastHoveredButton.feature, 1, lastPage, lastTab, EnumUtils.GUIType.EDIT_LOCATIONS));
+        }
     }
 
     public Snap[] checkSnapping() {

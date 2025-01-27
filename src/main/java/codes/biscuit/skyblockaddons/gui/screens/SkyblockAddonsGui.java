@@ -267,7 +267,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
             if (feature == Feature.LANGUAGE) {
                 main.getUtils().setFadingIn(false);
-                mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE, 1, page, tab));
+                mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE, 1, page, tab, EnumUtils.GUIType.MAIN));
 
             } else if (feature == Feature.EDIT_LOCATIONS) {
                 // If player tries to open "Edit GUI Locations" from outside
