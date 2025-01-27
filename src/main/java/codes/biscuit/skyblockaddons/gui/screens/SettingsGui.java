@@ -14,6 +14,7 @@ import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
@@ -95,7 +96,9 @@ public class SettingsGui extends SkyblockAddonsScreen {
             }
             addUniversalButton();
         }
-        addSocials(scrollIgnoredButtons);
+        ArrayList<GuiButton> socials = new ArrayList<>();
+        addSocials(socials);
+        socials.forEach(this::addScrollIgnoredButton);
     }
 
     private int findDisplayCount() {
@@ -163,7 +166,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 }
             });
         }
-        super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
+        this.drawSettingsScreen(mouseX, mouseY); // Draw buttons.
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         scrollIgnoredButtons.forEach(guiButton -> guiButton.drawButton(mc, mouseX, mouseY));
         GlStateManager.disableBlend();
@@ -416,6 +419,18 @@ public class SettingsGui extends SkyblockAddonsScreen {
     protected void addScrollIgnoredButton(GuiButton button) {
         scrollIgnoredButtons.add(button);
         buttonList.add(button);
+    }
+
+    protected void drawSettingsScreen(int mouseX, int mouseY) {
+        for (GuiButton guiButton : this.buttonList) {
+            if (!scrollIgnoredButtons.contains(guiButton)) {
+                guiButton.drawButton(this.mc, mouseX, mouseY);
+            }
+        }
+
+        for (GuiLabel guiLabel : this.labelList) {
+            guiLabel.drawLabel(this.mc, mouseX, mouseY);
+        }
     }
 
     @Override

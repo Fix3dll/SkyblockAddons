@@ -9,8 +9,10 @@ import codes.biscuit.skyblockaddons.gui.buttons.ButtonText;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonOpenColorMenu;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonSettingToggle;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 
@@ -77,12 +79,14 @@ public class EnchantmentSettingsGui extends SettingsGui {
         row += .4F;
         addScrollIgnoredButton(new ButtonArrow(width / 2D - 15 - 150, height - 70, ButtonArrow.ArrowType.LEFT, page == 0));
         addScrollIgnoredButton(new ButtonArrow(width / 2D - 15 + 150, height - 70, ButtonArrow.ArrowType.RIGHT, page == maxPage));
-        addSocials(scrollIgnoredButtons);
+        ArrayList<GuiButton> socials = new ArrayList<>();
+        addSocials(socials);
+        socials.forEach(this::addScrollIgnoredButton);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
+        this.drawSettingsScreen(mouseX, mouseY); // Draw buttons.
     }
 
     private void addButton(FeatureSetting setting) {
