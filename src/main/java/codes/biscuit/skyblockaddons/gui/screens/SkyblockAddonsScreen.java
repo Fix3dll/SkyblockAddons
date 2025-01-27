@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.Color;
+import java.util.List;
 
 public class SkyblockAddonsScreen extends GuiScreen {
 
@@ -120,7 +122,7 @@ public class SkyblockAddonsScreen extends GuiScreen {
         GlStateManager.disableBlend();
     }
 
-    public void addSocials() {
+    public void addSocials(List<GuiButton> buttonList) {
         //buttonList.add(new ButtonSocial(width / 2 + 175, 30, EnumUtils.Social.DISCORD));
         buttonList.add(new ButtonSocial(width / 2D + 125, 30, EnumUtils.Social.MODRINTH));
         buttonList.add(new ButtonSocial(width / 2D + 150, 30, EnumUtils.Social.GITHUB));

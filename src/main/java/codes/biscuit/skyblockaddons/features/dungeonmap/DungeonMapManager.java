@@ -120,8 +120,12 @@ public class DungeonMapManager {
         int minecraftScale = new ScaledResolution(mc).getScaleFactor();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         // Scissor is in screen coordinates...
-        GL11.glScissor(Math.round((x - size / 2f * scale) * minecraftScale),
-                mc.displayHeight - Math.round((y + size / 2F * scale) * minecraftScale), Math.round(size * minecraftScale * scale), Math.round(size * minecraftScale * scale));
+        GL11.glScissor(
+                Math.round((x - size / 2f * scale) * minecraftScale),
+                mc.displayHeight - Math.round((y + size / 2F * scale) * minecraftScale),
+                Math.round(size * minecraftScale * scale),
+                Math.round(size * minecraftScale * scale)
+        );
 
         x = transformXY(x, size, scale);
         y = transformXY(y, size, scale);

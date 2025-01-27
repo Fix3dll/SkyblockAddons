@@ -186,7 +186,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
             addChromaSliders();
         }
 
-        addSocials();
+        addSocials(buttonList);
         Keyboard.enableRepeatEvents(true);
         super.initGui();
     }

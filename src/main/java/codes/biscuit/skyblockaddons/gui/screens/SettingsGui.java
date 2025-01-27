@@ -13,16 +13,21 @@ import codes.biscuit.skyblockaddons.utils.*;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
 public class SettingsGui extends SkyblockAddonsScreen {
 
+    final ArrayList<GuiButton> scrollIgnoredButtons = new ArrayList<>();
     @Getter final Feature feature;
     @Getter final int lastPage;
     @Getter final EnumUtils.GuiTab lastTab;
@@ -32,6 +37,9 @@ public class SettingsGui extends SkyblockAddonsScreen {
     int displayCount;
     @Setter boolean closingGui;
     boolean reInit = false;
+
+    int scrollValue;
+    int maxScrollValue;
 
     /**
      * The main gui, opened with /sba.
@@ -47,9 +55,12 @@ public class SettingsGui extends SkyblockAddonsScreen {
     @Override
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
+        scrollValue = 0;
+        maxScrollValue = mc.displayHeight / 2;
         row = 1;
         column = 1;
         buttonList.clear();
+        scrollIgnoredButtons.clear();
         if (feature == Feature.LANGUAGE) {
             Language currentLanguage = (Language) feature.getFeatureData().getValue();
 
@@ -58,9 +69,9 @@ public class SettingsGui extends SkyblockAddonsScreen {
             int skip = (page - 1) * displayCount;
 
             boolean max = page == 1;
-            buttonList.add(new ButtonArrow(width / 2 - 15 - 50, height - 70, ButtonArrow.ArrowType.LEFT, max));
+            addScrollIgnoredButton(new ButtonArrow(width / 2 - 15 - 50, height - 70, ButtonArrow.ArrowType.LEFT, max));
             max = Language.values().length - skip - displayCount <= 0;
-            buttonList.add(new ButtonArrow(width / 2 - 15 + 50, height - 70, ButtonArrow.ArrowType.RIGHT, max));
+            addScrollIgnoredButton(new ButtonArrow(width / 2 - 15 + 50, height - 70, ButtonArrow.ArrowType.RIGHT, max));
 
             for (Language language : Language.values()) {
                 if (skip == 0) {
@@ -84,7 +95,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
             }
             addUniversalButton();
         }
-        addSocials();
+        addSocials(scrollIgnoredButtons);
     }
 
     private int findDisplayCount() {
@@ -106,6 +117,12 @@ public class SettingsGui extends SkyblockAddonsScreen {
             reInit = false;
             initGui();
         }
+        int scroll = Mouse.getDWheel() / 10;
+        if (Math.abs(scrollValue + scroll) <= maxScrollValue) {
+            scrollValue += scroll;
+        } else {
+            scroll = 0;
+        }
 
         float alphaMultiplier = calculateAlphaMultiplier();
         // Alpha of the text will increase from 0 to 127 over 500ms.
@@ -126,10 +143,29 @@ public class SettingsGui extends SkyblockAddonsScreen {
             float numberOfRow = row - 1;
             int height = (int) (getRowHeightSetting(numberOfRow) - 70);
             int y = (int) getRowHeight(1);
+            this.maxScrollValue = height - 35; // - 35 because we don't want it to be completely invisible
             DrawUtils.drawRect(x, y, width, height, ColorUtils.getDummySkyblockColor(28, 29, 41, 230), 4);
-            drawScaledString(this, Translations.getMessage("settings.settings"), 110, defaultBlue, 1.5, 0);
+            // Scroll ability with scissor
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
+            ScaledResolution sr = new ScaledResolution(mc);
+            int scaleFactor = sr.getScaleFactor();
+            GL11.glScissor(
+                    x * scaleFactor,
+                    (sr.getScaledHeight() - (y + height)) * scaleFactor,
+                    width * scaleFactor,
+                    height * scaleFactor
+            );
+            drawScaledString(this, Translations.getMessage("settings.settings"), 110 + scrollValue, defaultBlue, 1.5, 0);
         }
+        final int finalScroll = scroll;
+        buttonList.forEach(guiButton -> {
+            if (!scrollIgnoredButtons.contains(guiButton)) {
+                guiButton.yPosition += finalScroll;
+            }
+        });
         super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        scrollIgnoredButtons.forEach(guiButton -> guiButton.drawButton(mc, mouseX, mouseY));
         GlStateManager.disableBlend();
     }
 
@@ -375,6 +411,11 @@ public class SettingsGui extends SkyblockAddonsScreen {
     protected double getRowHeightSetting(double row) {
         row--;
         return 140 + (row * 35); //height*(0.18+(row*0.08));
+    }
+
+    protected void addScrollIgnoredButton(GuiButton button) {
+        scrollIgnoredButtons.add(button);
+        buttonList.add(button);
     }
 
     @Override

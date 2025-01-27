@@ -47,9 +47,12 @@ public class EnchantmentSettingsGui extends SettingsGui {
     @Override
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
+        scrollValue = 0;
+        maxScrollValue = mc.displayHeight / 2;
         row = 1;
         column = 1;
         buttonList.clear();
+        scrollIgnoredButtons.clear();
         for (FeatureSetting setting : feature.getFeatureData().getSettings().keySet()) {
             switch (page) {
                 case 0:
@@ -72,9 +75,9 @@ public class EnchantmentSettingsGui extends SettingsGui {
             }
         }
         row += .4F;
-        buttonList.add(new ButtonArrow(width / 2D - 15 - 150, height - 70, ButtonArrow.ArrowType.LEFT, page == 0));
-        buttonList.add(new ButtonArrow(width / 2D - 15 + 150, height - 70, ButtonArrow.ArrowType.RIGHT, page == maxPage));
-        addSocials();
+        addScrollIgnoredButton(new ButtonArrow(width / 2D - 15 - 150, height - 70, ButtonArrow.ArrowType.LEFT, page == 0));
+        addScrollIgnoredButton(new ButtonArrow(width / 2D - 15 + 150, height - 70, ButtonArrow.ArrowType.RIGHT, page == maxPage));
+        addSocials(scrollIgnoredButtons);
     }
 
     @Override

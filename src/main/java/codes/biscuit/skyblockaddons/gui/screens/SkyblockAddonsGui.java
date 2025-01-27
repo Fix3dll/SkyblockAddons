@@ -153,7 +153,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         buttonList.add(new ButtonArrow(width / 2D - 15 - 50, height - 70, ButtonArrow.ArrowType.LEFT, max));
         max = features.size() - skip - displayCount <= 0;
         buttonList.add(new ButtonArrow(width / 2D - 15 + 50, height - 70, ButtonArrow.ArrowType.RIGHT, max));
-        addSocials();
+        addSocials(buttonList);
 
         for (Feature feature : features) {
             if (skip == 0) {
