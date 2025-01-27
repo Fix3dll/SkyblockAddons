@@ -156,13 +156,13 @@ public class SettingsGui extends SkyblockAddonsScreen {
                     height * scaleFactor
             );
             drawScaledString(this, Translations.getMessage("settings.settings"), 110 + scrollValue, defaultBlue, 1.5, 0);
+            final int finalScroll = scroll;
+            buttonList.forEach(guiButton -> {
+                if (!scrollIgnoredButtons.contains(guiButton)) {
+                    guiButton.yPosition += finalScroll;
+                }
+            });
         }
-        final int finalScroll = scroll;
-        buttonList.forEach(guiButton -> {
-            if (!scrollIgnoredButtons.contains(guiButton)) {
-                guiButton.yPosition += finalScroll;
-            }
-        });
         super.drawScreen(mouseX, mouseY, partialTicks); // Draw buttons.
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         scrollIgnoredButtons.forEach(guiButton -> guiButton.drawButton(mc, mouseX, mouseY));
