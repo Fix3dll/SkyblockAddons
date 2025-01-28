@@ -2595,7 +2595,6 @@ public class RenderListener {
         if (buttonLocation != null) {
             log = DUMMY_PICKUP_LOG;
         }
-        String spacing = renderItemStack ? "     " : " "; // space width is 4
         for (ItemDiff itemDiff : log) {
             float stringY;
             if (downwards) {
@@ -2609,8 +2608,13 @@ public class RenderListener {
                     itemDiff.getAmount() > 0 ? "§a+" : "§c-",
                     Math.abs(itemDiff.getAmount())
             );
-            String text = countText + spacing + "§r" + itemDiff.getDisplayName();
-            DrawUtils.drawText(text, x, stringY, 0xFFFFFFFF);
+            DrawUtils.drawText(countText, x, stringY, 0xFFFFFFFF);
+            DrawUtils.drawText(
+                    "§r" + itemDiff.getDisplayName(),
+                    x + MC.fontRendererObj.getStringWidth(countText) + (renderItemStack ? 20 : 4),
+                    stringY,
+                    0xFFFFFFFF
+            );
             if (renderItemStack) {
                 renderItem(
                         itemDiff.getItemStack(),
