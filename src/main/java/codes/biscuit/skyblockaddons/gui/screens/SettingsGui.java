@@ -38,7 +38,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
     int column = 1;
     int displayCount;
     @Setter boolean closingGui;
-    boolean reInit = false;
+    @Setter boolean reInit = false;
 
     int scrollValue;
     int maxScrollValue;
@@ -372,7 +372,20 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 row += .1F;
                 y = getRowHeightSetting(row);
                 buttonList.add(new ButtonText(halfWidth, (int) y + 15, Translations.getMessage("messages.classColoredTeammateRequirement"), true, ColorCode.GRAY.getColor()));
-                row += .4F;
+                if (feature.isDisabled(setting)) row += .4F;
+                break;
+
+            case HEALER_COLOR:
+            case MAGE_COLOR:
+            case BERSERK_COLOR:
+            case ARCHER_COLOR:
+            case TANK_COLOR:
+                if (feature.isDisabled(FeatureSetting.CLASS_COLORED_TEAMMATE)) return;
+                boxWidth = 100;
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                buttonList.add(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), setting));
+                if (setting == FeatureSetting.TANK_COLOR) row += 0.4F; // Last spacing
                 break;
 
             default:

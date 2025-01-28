@@ -23,14 +23,22 @@ public class EnumRegistry {
         REGISTRY.put("ENCHANT_LAYOUT", EnchantLayout.class);
         REGISTRY.put("LANGUAGE", Language.class);
         // Exceptions: key FeatureSetting.name(), value Enum.class
+        // Discord settings
         REGISTRY.put("DISCORD_RP_STATE", DiscordStatus.class);
         REGISTRY.put("DISCORD_RP_DETAILS", DiscordStatus.class);
         REGISTRY.put("DISCORD_RP_AUTO_MODE", DiscordStatus.class);
+        // Enchant colors
         REGISTRY.put("COMMA_ENCHANT_COLOR", ColorCode.class);
         REGISTRY.put("POOR_ENCHANT_COLOR", ColorCode.class);
         REGISTRY.put("GOOD_ENCHANT_COLOR", ColorCode.class);
         REGISTRY.put("GREAT_ENCHANT_COLOR", ColorCode.class);
         REGISTRY.put("PERFECT_ENCHANT_COLOR", ColorCode.class);
+        // Dungeon class colors
+        REGISTRY.put("HEALER_COLOR", ColorCode.class);
+        REGISTRY.put("MAGE_COLOR", ColorCode.class);
+        REGISTRY.put("BERSERK_COLOR", ColorCode.class);
+        REGISTRY.put("ARCHER_COLOR", ColorCode.class);
+        REGISTRY.put("TANK_COLOR", ColorCode.class);
     }
 
     public static RegistrableEnum getEnumValue(String enumType, String enumKey) {

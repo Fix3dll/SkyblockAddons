@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.gui.buttons.feature;
 
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
+import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.GuiIngameForge;
@@ -42,6 +43,10 @@ public class ButtonSettingToggle extends ButtonFeatureToggle {
                 } else if (feature == Feature.HIDE_HEALTH_BAR) {
                     GuiIngameForge.renderHealth = true;
                 }
+            }
+
+            if (setting == FeatureSetting.CLASS_COLORED_TEAMMATE) {
+                ((SettingsGui) mc.currentScreen).setReInit(true);
             }
             this.animationButtonClicked = System.currentTimeMillis();
             return true;

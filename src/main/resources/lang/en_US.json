@@ -259,7 +259,12 @@
     "classColoredTeammate": "Class Colored Outline",
     "drawLockOnlyWhenHovered": "Draw Lock Icon only when hovered with mouse",
     "showFarmingToolsPreview": "Show Preview for Farming Tools",
-    "renderItemOnLog": "Render Item on Item Pickup Log"
+    "renderItemOnLog": "Render Item on Item Pickup Log",
+    "healerColor": "Healer",
+    "mageColor": "Mage",
+    "berserkColor": "Berserk",
+    "archerColor": "Archer",
+    "tankColor": "Tank"
   },
   "messages": {
     "enchants": "Enchants",

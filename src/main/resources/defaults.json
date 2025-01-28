@@ -593,7 +593,12 @@
   "SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY": {
     "value": true,
     "settings": {
-      "CLASS_COLORED_TEAMMATE": true
+      "CLASS_COLORED_TEAMMATE": true,
+      "HEALER_COLOR": "LIGHT_PURPLE",
+      "MAGE_COLOR": "AQUA",
+      "BERSERK_COLOR": "DARK_RED",
+      "ARCHER_COLOR": "GOLD",
+      "TANK_COLOR": "DARK_GREEN"
     }
   },
   "SHOW_STACKING_ENCHANT_PROGRESS": {

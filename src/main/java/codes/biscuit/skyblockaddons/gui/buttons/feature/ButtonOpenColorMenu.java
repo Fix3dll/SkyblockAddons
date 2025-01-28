@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.gui.screens.ColorSelectionGui;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -39,7 +40,14 @@ public class ButtonOpenColorMenu extends ButtonFeature {
         this.width = width;
         this.height = height;
         this.setting = setting;
-        this.boxColorSupplier = (boxAlpha) -> ((ColorCode) feature.get(setting)).getColor(boxAlpha);
+        this.boxColorSupplier = (boxAlpha) -> {
+            Object color = feature.get(setting);
+            if (color instanceof ColorCode) {
+                return ((ColorCode) color).getColor(boxAlpha);
+            } else {
+                return ColorUtils.setColorAlpha(((Number) color).intValue(), boxAlpha);
+            }
+        };
     }
 
     @Override

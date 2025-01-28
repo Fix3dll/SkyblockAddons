@@ -127,6 +127,12 @@ public enum FeatureSetting {
     DRAW_LOCK_ONLY_WHEN_HOVERED("settings.drawLockOnlyWhenHovered", Feature.LOCK_SLOTS),
     FARMING_TOOLS_PREVIEW("settings.showFarmingToolsPreview", Feature.SHOW_BACKPACK_PREVIEW),
     RENDER_ITEM_ON_LOG("settings.renderItemOnLog", Feature.ITEM_PICKUP_LOG),
+    HEALER_COLOR("settings.healerColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
+    MAGE_COLOR("settings.mageColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
+    BERSERK_COLOR("settings.berserkColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
+    ARCHER_COLOR("settings.archerColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
+    TANK_COLOR("settings.tankColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
+
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
     DISCORD_RP_STATE("messages.secondStatus", Feature.DISCORD_RPC),

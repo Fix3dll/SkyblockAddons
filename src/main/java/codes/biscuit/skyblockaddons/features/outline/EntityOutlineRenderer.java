@@ -1,8 +1,10 @@
 package codes.biscuit.skyblockaddons.features.outline;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -204,10 +206,18 @@ public class EntityOutlineRenderer {
 
     public static Integer getCustomOutlineColor(EntityLivingBase entity) {
         if (entityRenderCache.getXrayCache() != null && entityRenderCache.getXrayCache().containsKey(entity)) {
-            return entityRenderCache.getXrayCache().get(entity);
+            int color = entityRenderCache.getXrayCache().get(entity);
+            if (color == ColorCode.CHROMA.getColor()) {
+                return ManualChromaManager.getChromaColor(0, 0, 255);
+            }
+            return color;
         }
         if (entityRenderCache.getNoXrayCache() != null && entityRenderCache.getNoXrayCache().containsKey(entity)) {
-            return entityRenderCache.getNoXrayCache().get(entity);
+            int color = entityRenderCache.getNoXrayCache().get(entity);
+            if (color == ColorCode.CHROMA.getColor()) {
+                return ManualChromaManager.getChromaColor(0, 0, 255);
+            }
+            return color;
         }
         return null;
     }

@@ -501,6 +501,10 @@ public class ConfigValuesManager {
                 Object defaultValue = settingsEntry.getValue();
 
                 if (!settings.containsKey(defaultSetting)) {
+                    // New sub-setting entry
+                    settings.put(defaultSetting, defaultValue);
+                } else if (defaultValue.getClass() != settings.get(defaultSetting).getClass()) {
+                    // The sub-setting value is overridden by different type
                     settings.put(defaultSetting, defaultValue);
                 }
             }
