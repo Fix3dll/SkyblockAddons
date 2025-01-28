@@ -150,7 +150,7 @@ public class PersistentValuesManager {
 
     public void addOresMined() {
         persistentValues.oresMined++;
-        saveValues();
+        SkyblockAddons.getInstance().getPlayerListener().setSavePersistentFlag(true);
     }
 
     public void addKills() {

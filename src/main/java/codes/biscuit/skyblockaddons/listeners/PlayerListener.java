@@ -183,6 +183,7 @@ public class PlayerListener {
     @Getter @Setter private long fireFreezeTimer = 0L;
     private boolean doubleHook = false;
     private String cachedChatRunCommand;
+    @Setter private boolean savePersistentFlag = false;
 
     /**
      * Reset all the timers and stuff when joining a new world.
@@ -679,6 +680,10 @@ public class PlayerListener {
                 if (Feature.DUNGEON_DEATH_COUNTER.isEnabled() && main.getUtils().isInDungeon()
                         && main.getDungeonManager().isPlayerListInfoEnabled()) {
                     main.getDungeonManager().updateDeathsFromPlayerListInfo();
+                }
+                if (savePersistentFlag) {
+                    main.getPersistentValuesManager().saveValues();
+                    savePersistentFlag = false;
                 }
             } else if (timerTick % 5 == 0) { // Check inventory, location, updates, and skeleton helmet every 1/4 second.
                 EntityPlayerSP player = mc.thePlayer;
