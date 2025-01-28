@@ -350,7 +350,15 @@ public class ConfigValuesManager {
                     if (mFeature != feature || mSettingMap == null || mSettingMap.isEmpty()) return;
 
                     for (Map.Entry<FeatureSetting, Integer> entry : mSettingMap.entrySet()) {
-                        settings.put(entry.getKey(), !disabledFeaturesId.contains(entry.getValue()));
+                        FeatureSetting legacySetting = entry.getKey();
+                        int legacySettingFeatureId = entry.getValue();
+
+                        if (legacySettingFeatureId > lastFeatureId) {
+                            Object defaultValue = DEFAULT_FEATURE_DATA.get(mFeature).getSettings().get(legacySetting);
+                            settings.put(legacySetting, defaultValue);
+                        } else {
+                            settings.put(legacySetting, !disabledFeaturesId.contains(legacySettingFeatureId));
+                        }
                     }
                 });
                 // Exceptional settings
