@@ -307,7 +307,7 @@ public class ConfigValuesManager {
                 }
 
                 if (feature.getId() > lastFeatureId) {
-                    LOGGER.warn("The '{}' feature is set to its default settings.", feature);
+                    LOGGER.warn("The '{}' Feature is set to its default settings.", feature);
                     feature.getFeatureData().overwriteData(DEFAULT_FEATURE_DATA.get(feature).deepCopy());
                     continue;
                 }
@@ -356,6 +356,7 @@ public class ConfigValuesManager {
                         if (legacySettingFeatureId > lastFeatureId) {
                             Object defaultValue = DEFAULT_FEATURE_DATA.get(mFeature).getSettings().get(legacySetting);
                             settings.put(legacySetting, defaultValue);
+                            LOGGER.warn("The '{}' FeatureSetting is set to its default value.", legacySetting);
                         } else {
                             settings.put(legacySetting, !disabledFeaturesId.contains(legacySettingFeatureId));
                         }
@@ -404,6 +405,7 @@ public class ConfigValuesManager {
                 if (!settings.isEmpty()) {
                     newData.setSettings(settings);
                 }
+                firstLoadChecks(feature, newData);
                 feature.getFeatureData().overwriteData(newData);
             }
             // Feature.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR (173) FeatureSetting data to parent Feature
