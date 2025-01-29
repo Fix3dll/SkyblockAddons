@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.features.dungeon;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.EssenceType;
+import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
@@ -106,8 +107,8 @@ public class DungeonManager {
         if (e instanceof EntityOtherPlayerMP) {
             String profileName = ((EntityOtherPlayerMP) e).getGameProfile().getName();
             DungeonPlayer teammate = SkyblockAddons.getInstance().getDungeonManager().getDungeonPlayerByName(profileName);
-            if (teammate != null) {
-                return teammate.getDungeonClass().getColor().getColor();
+            if (teammate != null && teammate.getDungeonClass() != null) {
+                return teammate.getDungeonClass().getColor();
             }
             // NPCs don't have a color on their team. Don't show them on outlines.
             return null;
@@ -385,9 +386,10 @@ public class DungeonManager {
             return;
         }
 
-        if (main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon()
-                && (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() || Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled())
-        ) {
+        boolean nameOverlayEnabled = Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled();
+        boolean criticalOverlayEnabled = Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled();
+
+        if (main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon() && (criticalOverlayEnabled || nameOverlayEnabled)) {
             final Entity renderViewEntity = MC.getRenderViewEntity();
             String profileName = player.getName();
             DungeonPlayer dungeonPlayer = main.getDungeonManager().getTeammates().getOrDefault(profileName, null);
@@ -395,7 +397,7 @@ public class DungeonManager {
             if (renderViewEntity != player && dungeonPlayer != null) {
                 double newY = e.y + player.height;
 
-                if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
+                if (nameOverlayEnabled) {
                     newY += 0.35F;
                 }
 
@@ -422,7 +424,7 @@ public class DungeonManager {
                 GlStateManager.enableTexture2D();
                 GlStateManager.color(1, 1, 1, 1);
 
-                if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() && !dungeonPlayer.isGhost()
+                if (criticalOverlayEnabled && !dungeonPlayer.isGhost()
                         && (dungeonPlayer.isCritical() || dungeonPlayer.isLow())) {
                     MC.getTextureManager().bindTexture(CRITICAL);
                     DrawUtils.drawModalRectWithCustomSizedTexture(-CRITICAL_ICON_SIZE / 2F, -CRITICAL_ICON_SIZE, 0, 0, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE);
@@ -448,16 +450,22 @@ public class DungeonManager {
                     e.setCanceled(true);
                 }
 
-                if (!dungeonPlayer.isGhost() && Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled()) {
-                    String nameOverlay =
-                            ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] "
-                                    + dungeonPlayer.getDungeonClass().getColor() + profileName;
-                    MC.fontRendererObj.drawString(
-                            nameOverlay,
-                            -MC.fontRendererObj.getStringWidth(nameOverlay) / 2F,
-                            CRITICAL_ICON_SIZE / 2F + 2,
-                            -1,
-                            true
+                if (!dungeonPlayer.isGhost() && dungeonPlayer.getDungeonClass() != null && nameOverlayEnabled) {
+                    String dungeonClass = ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] ";
+                    float nameX = MC.fontRendererObj.getStringWidth(dungeonClass.concat(profileName)) / 2F;
+                    float nameY = CRITICAL_ICON_SIZE / 2F + 2;
+
+                    DrawUtils.drawText(dungeonClass, -nameX, nameY, -1);
+
+                    int classColor = dungeonPlayer.getDungeonClass().getColor();
+                    if (classColor == ColorCode.CHROMA.getColor()) {
+                       classColor = ManualChromaManager.getChromaColor(0, 0, 255);
+                    }
+                    DrawUtils.drawText(
+                            profileName,
+                            -nameX + MC.fontRendererObj.getStringWidth(dungeonClass),
+                            nameY,
+                            classColor
                     );
 
                     String health = dungeonPlayer.getHealth() + (ColorCode.RED + "❤");

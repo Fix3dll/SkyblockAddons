@@ -47,25 +47,25 @@ public enum DungeonClass {
         return null;
     }
 
-    public ColorCode getColor() {
+    public int getColor() {
         Feature feature = Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY;
         if (feature.isEnabled()) {
             switch (this) {
                 case HEALER:
-                    return (ColorCode) feature.get(FeatureSetting.HEALER_COLOR);
+                    return feature.getAsNumber(FeatureSetting.HEALER_COLOR).intValue();
                 case MAGE:
-                    return (ColorCode) feature.get(FeatureSetting.MAGE_COLOR);
+                    return feature.getAsNumber(FeatureSetting.MAGE_COLOR).intValue();
                 case BERSERK:
-                    return (ColorCode) feature.get(FeatureSetting.BERSERK_COLOR);
+                    return feature.getAsNumber(FeatureSetting.BERSERK_COLOR).intValue();
                 case ARCHER:
-                    return (ColorCode) feature.get(FeatureSetting.ARCHER_COLOR);
+                    return feature.getAsNumber(FeatureSetting.ARCHER_COLOR).intValue();
                 case TANK:
-                    return (ColorCode) feature.get(FeatureSetting.TANK_COLOR);
+                    return feature.getAsNumber(FeatureSetting.TANK_COLOR).intValue();
                 default:
-                    return this.defaultColor;
+                    return this.defaultColor.getColor();
             }
         } else {
-            return this.defaultColor;
+            return this.defaultColor.getColor();
         }
     }
 }

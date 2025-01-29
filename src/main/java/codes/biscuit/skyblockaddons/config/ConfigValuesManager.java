@@ -505,9 +505,11 @@ public class ConfigValuesManager {
                 if (!settings.containsKey(defaultSetting)) {
                     // New sub-setting entry
                     settings.put(defaultSetting, defaultValue);
+                    LOGGER.info("New '{}' FeatureSetting loaded for '{}' Feature.", defaultSetting, feature);
                 } else if (defaultValue.getClass() != settings.get(defaultSetting).getClass()) {
                     // The sub-setting value is overridden by different type
                     settings.put(defaultSetting, defaultValue);
+                    LOGGER.warn("'{}' FeatureSetting for '{}' Feature has been updated with new defaults!", defaultSetting, feature);
                 }
             }
         }
