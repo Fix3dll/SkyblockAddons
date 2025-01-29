@@ -184,13 +184,12 @@ public class RenderListener {
     @Setter private SkillType skill;
     @Setter private String skillText;
 
-    @Setter
-    private EnumUtils.GUIType guiToOpen;
+    @Setter private EnumUtils.GUIType guiToOpen;
     private int guiPageToOpen = 1;
     private EnumUtils.GuiTab guiTabToOpen = EnumUtils.GuiTab.MAIN;
     private Feature guiFeatureToOpen;
 
-    private float maxRiftHealth = 0.0F;
+    @Setter private float maxRiftHealth = 0.0F;
 
     // caching
     private PetManager.Pet pet = null;

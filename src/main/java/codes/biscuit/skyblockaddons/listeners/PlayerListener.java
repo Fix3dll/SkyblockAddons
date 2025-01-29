@@ -208,6 +208,7 @@ public class PlayerListener {
             NPCUtils.getNpcLocations().clear();
             JerryPresent.getJerryPresents().clear();
             FishParticleManager.clearParticleCache();
+            main.getRenderListener().setMaxRiftHealth(0.0F);
         }
     }
 

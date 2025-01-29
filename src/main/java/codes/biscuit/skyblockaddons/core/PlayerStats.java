@@ -6,28 +6,27 @@ import org.apache.commons.lang3.mutable.MutableFloat;
  * Contains a player's stats. This includes health, mana and defence...
  */
 public enum PlayerStats {
-
-    DEFENCE(new MutableFloat(0)),
-    HEALTH(new MutableFloat(100)),
-    MAX_HEALTH(new MutableFloat(100)),
-    MAX_RIFT_HEALTH(new MutableFloat(0)),
-    MANA(new MutableFloat(100)),
-    MAX_MANA(new MutableFloat(100)),
-    FUEL(new MutableFloat(3000)),
-    MAX_FUEL(new MutableFloat(3000)),
-    OVERFLOW_MANA(new MutableFloat(20));
+    DEFENCE(0),
+    HEALTH(100),
+    MAX_HEALTH(100),
+    MAX_RIFT_HEALTH(0),
+    MANA(100),
+    MAX_MANA(100),
+    FUEL(3000),
+    MAX_FUEL(3000),
+    OVERFLOW_MANA(20);
 
     private final MutableFloat mutableValue;
 
-    PlayerStats(MutableFloat defaultValue) {
-        this.mutableValue = defaultValue;
+    PlayerStats(float defaultValue) {
+        this.mutableValue = new MutableFloat(defaultValue);
     }
 
     public float getValue() {
-        return mutableValue.getValue();
+        return this.mutableValue.getValue();
     }
 
     public void setValue(final float value) {
-        mutableValue.setValue(value);
+        this.mutableValue.setValue(value);
     }
 }
