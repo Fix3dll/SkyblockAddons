@@ -209,6 +209,7 @@ public class PlayerListener {
             JerryPresent.getJerryPresents().clear();
             FishParticleManager.clearParticleCache();
             main.getRenderListener().setMaxRiftHealth(0.0F);
+            PlayerStats.MAX_RIFT_HEALTH.setValue(0);
         }
     }
 
