@@ -2,10 +2,12 @@ package codes.biscuit.skyblockaddons.gui.buttons;
 
 import codes.biscuit.skyblockaddons.core.chroma.MulticolorShaderManager;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenShader;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.ChromaMode;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -49,6 +51,24 @@ public class ButtonColorBox extends SkyblockAddonsButton {
                 ShaderManager.getInstance().disableShader();
             }
         }
+    }
+
+    public static void drawColorRect(int left, int top, int right, int bottom, int color) {
+        boolean isChromaColor = color == ColorCode.CHROMA.getColor(ColorUtils.getAlpha(color));
+
+        GlStateManager.enableBlend();
+        if (isChromaColor) {
+            if (MulticolorShaderManager.getInstance().shouldUseChromaShaders() && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                ShaderManager.getInstance().enableShader(ChromaScreenShader.class);
+                drawRect(left, top, right, bottom, color);
+                ShaderManager.getInstance().disableShader();
+            } else {
+                drawChromaRect(left, top, right, bottom, ColorUtils.getAlpha(color));
+            }
+        } else {
+            drawRect(left, top, right, bottom, color);
+        }
+        GlStateManager.disableBlend();
     }
 
     public static void drawChromaRect(int left, int top, int right, int bottom, int alpha) {

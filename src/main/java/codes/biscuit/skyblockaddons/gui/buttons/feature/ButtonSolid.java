@@ -52,7 +52,7 @@ public class ButtonSolid extends ButtonFeature {
         int stringWidth = mc.fontRendererObj.getStringWidth(displayString);
         float widthLimit = SkyblockAddonsGui.BUTTON_MAX_WIDTH - 10;
         float scale = stringWidth > widthLimit ? 1F / (stringWidth / widthLimit) : 1F;
-        drawButtonBoxAndText(boxColor, boxAlpha, scale, fontColor);
+        drawButtonBoxAndText(boxColor, scale, fontColor);
         GlStateManager.disableBlend();
     }
 

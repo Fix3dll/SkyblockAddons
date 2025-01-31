@@ -10,6 +10,7 @@ import codes.biscuit.skyblockaddons.gui.elements.CheckBox;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.ChromaMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -232,7 +233,12 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                 Gui.drawModalRectWithCustomSizedTexture(imageX, imageY, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight);
 
                 drawScaledString(this, Translations.getMessage("messages.selectedColor"), 120, defaultBlue, 1.5, 75);
-                drawRect(width / 2 + 90, 140, width / 2 + 130, 160, color.get());
+
+                int currentColor = this.color.get();
+                if (setting == null && feature.isChroma() && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                    currentColor = ColorCode.CHROMA.getColor(); // alpha is default on here
+                }
+                ButtonColorBox.drawColorRect(width / 2 + 90, 140, width / 2 + 130, 160, currentColor);
 
                 if (chromaCheckbox != null) chromaCheckbox.draw();
 

@@ -68,14 +68,14 @@ public class ButtonStepper extends SkyblockAddonsButton {
                 startX = xPosition + width - height;
             }
             //noinspection SuspiciousNameCombination
-            drawButtonBoxAndText(modifier.displayString, startX, yPosition, height, height, boxColor, boxAlpha, 1F, fontColor);
+            drawButtonBoxAndText(modifier.displayString, startX, yPosition, height, height, boxColor, 1F, fontColor);
         }
 
         boxColor = main.getUtils().getDefaultColor(100);
         int stringWidth = mc.fontRendererObj.getStringWidth(displayString);
         int textBoxWidth = width - 2 * (SPACER + height);
         float scale = stringWidth > WIDTH_LIMIT ? 1F / (stringWidth / WIDTH_LIMIT) : 1F;
-        drawButtonBoxAndText(displayString, xPosition + height + SPACER, yPosition, textBoxWidth, height, boxColor, 100, scale, ColorCode.WHITE.getColor());
+        drawButtonBoxAndText(displayString, xPosition + height + SPACER, yPosition, textBoxWidth, height, boxColor, scale, ColorCode.WHITE.getColor());
         GlStateManager.disableBlend();
     }
 

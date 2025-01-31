@@ -66,7 +66,7 @@ public class ButtonOpenColorMenu extends ButtonFeature {
         GlStateManager.enableBlend();
         int stringWidth = mc.fontRendererObj.getStringWidth(displayString);
         float scale = stringWidth > WIDTH_LIMIT ? 1 / (stringWidth / WIDTH_LIMIT) : 1;
-        drawButtonBoxAndText(boxColor, boxAlpha, scale, fontColor);
+        drawButtonBoxAndText(boxColor, scale, fontColor);
     }
 
     @Override

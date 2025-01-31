@@ -33,12 +33,6 @@ public class EnumRegistry {
         REGISTRY.put("GOOD_ENCHANT_COLOR", ColorCode.class);
         REGISTRY.put("GREAT_ENCHANT_COLOR", ColorCode.class);
         REGISTRY.put("PERFECT_ENCHANT_COLOR", ColorCode.class);
-        // Dungeon class colors
-        REGISTRY.put("HEALER_COLOR", ColorCode.class);
-        REGISTRY.put("MAGE_COLOR", ColorCode.class);
-        REGISTRY.put("BERSERK_COLOR", ColorCode.class);
-        REGISTRY.put("ARCHER_COLOR", ColorCode.class);
-        REGISTRY.put("TANK_COLOR", ColorCode.class);
     }
 
     public static RegistrableEnum getEnumValue(String enumType, String enumKey) {
