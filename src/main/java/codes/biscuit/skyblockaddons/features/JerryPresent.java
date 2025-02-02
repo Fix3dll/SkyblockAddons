@@ -125,7 +125,14 @@ public class JerryPresent {
         WHITE("3047a516-415b-3bf4-b597-b78fd2a9ccf4"),
         GREEN("5fa813c0-5519-30c4-a53c-955945e93e10"),
         RED("4afe5d71-918f-3741-a969-5f785c5b2945"),
-        PARTY("7709e502-6eb4-34f7-9566-264606689fb2");
+        // Mayor Foxy
+        PARTY("7709e502-6eb4-34f7-9566-264606689fb2"),
+        // Century Raffle
+        STRAWBERRY("3150a961-c8a0-3b97-90d2-0b46d58cf67a"),
+        RED_VELVET("feda593e-3195-309a-a080-2a34f0499815"),
+        GREEN_VELVET("be14aa93-494e-33c7-960f-7c22639e998e"),
+        CHEESECAKE("10b96870-8c24-3c83-ae17-269eca761d11"),
+        BLUEBERRY("d653d288-163c-36ac-ba4b-87a0cefa42b5");
 
         private final String skullID;
 
