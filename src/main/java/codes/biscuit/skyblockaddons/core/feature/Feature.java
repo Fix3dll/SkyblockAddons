@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.core.feature;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.config.ConfigValuesManager;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
@@ -244,12 +245,16 @@ public enum Feature {
      * @param enabled {@code true} to enable the feature, {@code false} to disable it
      */
     public void setEnabled(boolean enabled) {
-        if (this.getValue() instanceof Boolean) {
+        ConfigValuesManager cvm = SkyblockAddons.getInstance().getConfigValuesManager();
+        Object value = this.getValue();
+
+        if (value instanceof Boolean) {
             this.setValue(enabled);
             this.onToggle(enabled);
-            SkyblockAddons.getInstance().getConfigValuesManager().saveConfig();
+            cvm.saveConfig();
         } else {
-            throw new IllegalStateException(this.name() + " value is not a boolean! Type: " + this.getValue().getClass());
+            cvm.restoreFeatureDefaultValue(this);
+            throw new IllegalStateException(this + " value is not a boolean! Type: " + value);
         }
     }
 
@@ -335,10 +340,12 @@ public enum Feature {
 
     public boolean isEnabled() {
         Object value = this.getValue();
+
         if (value instanceof Boolean) {
             return (boolean) value;
         }
-        throw new IllegalStateException(this.name() + " is not a boolean! Type: " + value.getClass());
+        SkyblockAddons.getInstance().getConfigValuesManager().restoreFeatureDefaultValue(this);
+        throw new IllegalStateException(this + " is not a boolean! Type: " + value);
     }
 
     public boolean isDisabled() {
@@ -393,14 +400,16 @@ public enum Feature {
         if (value instanceof Number) {
             return (Number) value;
         }
-        throw new IllegalStateException(this.name() + " value is not a number!");
+        SkyblockAddons.getInstance().getConfigValuesManager().restoreFeatureDefaultValue(this);
+        throw new IllegalStateException(this + " value is not a number!");
     }
 
     public void setValue(Object value) {
         if (FeatureData.isValidValue(value)) {
             this.featureData.setValue(value);
         } else {
-            throw new IllegalArgumentException(value + " is not valid for '" + this.name() + "'!");
+            SkyblockAddons.getInstance().getConfigValuesManager().restoreFeatureDefaultValue(this);
+            throw new IllegalArgumentException(value + " is not valid for '" + this + "'!");
         }
     }
 
@@ -531,7 +540,8 @@ public enum Feature {
         if (value instanceof Number) {
             return (Number) value;
         }
-        throw new IllegalArgumentException("Setting " + setting + " is not a number. Type: " + value.getClass());
+        SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
+        throw new IllegalArgumentException("Setting " + setting + " is not a number. Type: " + value);
     }
 
     /**
@@ -546,7 +556,8 @@ public enum Feature {
         if (value instanceof RegistrableEnum) {
             return (RegistrableEnum) value;
         }
-        throw new IllegalArgumentException("Setting " + setting + " is not a RegistrableEnum. Type: " + value.getClass());
+        SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
+        throw new IllegalArgumentException("Setting " + setting + " is not a RegistrableEnum. Type: " + value);
     }
 
     /**
@@ -561,7 +572,8 @@ public enum Feature {
         if (value instanceof String) {
             return (String) value;
         }
-        throw new IllegalArgumentException("Setting " + setting + " is not a string. Type: " + value.getClass());
+        SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
+        throw new IllegalArgumentException("Setting " + setting + " is not a string. Type: " + value);
     }
 
     /**
@@ -574,7 +586,7 @@ public enum Feature {
      */
     public @NonNull Object get(FeatureSetting setting) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
-            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this.name());
+            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this);
         }
 
         // If there is a FeatureSetting related to the Feature but the settings map is empty, the map must be updated.
@@ -600,7 +612,7 @@ public enum Feature {
      */
     public <T> void set(FeatureSetting setting, T value) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
-            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this.name());
+            throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this);
         }
 
         if (FeatureData.isValidValue(value)) {
@@ -613,7 +625,7 @@ public enum Feature {
                 this.featureData.setSettings(newSettings);
             }
         } else {
-            throw new IllegalStateException("Tried to set invalid value to '" + setting.name() + "'. Value type: " + value.getClass());
+            throw new IllegalStateException("Tried to set invalid value to '" + setting + "'. Value type: " + value);
         }
     }
 

@@ -597,6 +597,21 @@ public class ConfigValuesManager {
         }
     }
 
+    public void restoreFeatureDefaultValue(Feature feature) {
+        FeatureData<?> defaultData = Objects.requireNonNull(
+                DEFAULT_FEATURE_DATA.get(feature),
+                "There is no default FeatureData for " + feature
+        );
+
+        Object defaultValue = Objects.requireNonNull(
+                defaultData.getValue(),
+                "There is no default value for '" + feature + "' feature!"
+        );
+
+        feature.setValue(defaultValue);
+        LOGGER.warn("The value of the '{}' Feature is reset to its default value.", feature);
+    }
+
     public void setAllCoordinatesToDefault() {
         for (Map.Entry<Feature, FeatureData<?>> entry : DEFAULT_FEATURE_DATA.entrySet()) {
             Feature feature = entry.getKey();
