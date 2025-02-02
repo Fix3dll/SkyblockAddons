@@ -2,10 +2,10 @@
   "bannerImageURL": null,
   "bannerLink": null,
   "updateInfo": {
-    "latestRelease": "1.10.2",
+    "latestRelease": "1.10.3",
     "releaseDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
     "releaseChangelog": "https://modrinth.com/mod/skyblockaddons-unofficial/changelog",
-    "releaseNote": "BREAKING CHANGE: Please read the changelog for detailed explanation.",
+    "releaseNote": "Please read the changelog for 1.10.x changes.",
     "latestBeta": "1.10.0-beta.4",
     "betaDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
     "betaChangelog": "https://modrinth.com/mod/skyblockaddons-unofficial/changelog",
