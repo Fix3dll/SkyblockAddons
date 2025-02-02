@@ -282,6 +282,7 @@ public class SkyblockAddonsCommand extends CommandBase {
             } else if (args[0].equalsIgnoreCase("reload")) {
                 DevUtils.reloadAll();
             } else if (args[0].equalsIgnoreCase("reloadConfig")) {
+                main.getConfigValuesManager().setFirstLoad(true); // Trigger extra checks for corrupted values.
                 DevUtils.reloadConfig();
             } else if (args[0].equalsIgnoreCase("reloadRes")) {
                 DevUtils.reloadResources();

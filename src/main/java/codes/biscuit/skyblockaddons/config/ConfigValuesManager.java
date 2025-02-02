@@ -63,7 +63,7 @@ public class ConfigValuesManager {
     /** Do not make direct changes! If you are using mutable objects, make a deep copy. */
     private final EnumMap<Feature, FeatureData<?>> DEFAULT_FEATURE_DATA = new EnumMap<>(Feature.class);
 
-    private boolean firstLoad = true;
+    @Setter private boolean firstLoad = true;
 
     private ConfigValues configValues = new ConfigValues();
 
@@ -495,7 +495,18 @@ public class ConfigValuesManager {
 
     private void firstLoadChecks(Feature feature, FeatureData<?> featureData) {
         TreeMap<FeatureSetting, Object> settings = featureData.getSettings();
-        TreeMap<FeatureSetting, Object> defaultSettings = DEFAULT_FEATURE_DATA.get(feature).getSettings();
+        FeatureData<?> defaultFeatureData = DEFAULT_FEATURE_DATA.get(feature);
+        TreeMap<FeatureSetting, Object> defaultSettings = defaultFeatureData.getSettings();
+
+        if (featureData.getValue().getClass() != defaultFeatureData.getValue().getClass()) {
+            featureData.setValue(defaultFeatureData.getValue());
+            LOGGER.warn("The corrupted value of the '{}' Feature was reset to its default value.", feature);
+        }
+
+        if (settings == null && defaultSettings != null) {
+            featureData.setSettings(new TreeMap<>());
+            settings = featureData.getSettings();
+        }
 
         if (settings != null && defaultSettings != null) {
             for (Map.Entry<FeatureSetting, Object> settingsEntry : defaultSettings.entrySet()) {
@@ -505,7 +516,7 @@ public class ConfigValuesManager {
                 if (!settings.containsKey(defaultSetting)) {
                     // New sub-setting entry
                     settings.put(defaultSetting, defaultValue);
-                    LOGGER.info("New '{}' FeatureSetting loaded for '{}' Feature.", defaultSetting, feature);
+                    LOGGER.info("Default '{}' FeatureSetting loaded for '{}' Feature.", defaultSetting, feature);
                 } else if (defaultValue.getClass() != settings.get(defaultSetting).getClass()) {
                     // The sub-setting value is overridden by different type
                     settings.put(defaultSetting, defaultValue);
@@ -597,17 +608,20 @@ public class ConfigValuesManager {
         }
     }
 
+    /**
+     * Restore the value of the Feature to its default value. Note that this method does not trigger
+     * {@link #saveConfig()} afterward.
+     * @param feature the Feature whose value we want to restore
+     */
     public void restoreFeatureDefaultValue(Feature feature) {
         FeatureData<?> defaultData = Objects.requireNonNull(
                 DEFAULT_FEATURE_DATA.get(feature),
                 "There is no default FeatureData for " + feature
         );
-
         Object defaultValue = Objects.requireNonNull(
                 defaultData.getValue(),
-                "There is no default value for '" + feature + "' feature!"
+                "There is no default value for '" + feature + "' Feature!"
         );
-
         feature.setValue(defaultValue);
         LOGGER.warn("The value of the '{}' Feature is reset to its default value.", feature);
     }
