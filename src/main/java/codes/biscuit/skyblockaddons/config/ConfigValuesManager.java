@@ -71,10 +71,13 @@ public class ConfigValuesManager {
     @Setter
     public static class ConfigValues {
 
-        private int configVersion = CONFIG_VERSION;
-        private int lastFeatureId;
+        private int configVersion = Integer.MIN_VALUE;
+        private int lastFeatureId = Integer.MIN_VALUE;
         private EnumMap<Feature, FeatureData<?>> features = new EnumMap<>(Feature.class);
 
+        public boolean isEmpty() {
+            return configVersion == Integer.MIN_VALUE && lastFeatureId == Integer.MIN_VALUE && features.isEmpty();
+        }
     }
 
     public ConfigValuesManager(File mainConfigDir) {
@@ -453,6 +456,8 @@ public class ConfigValuesManager {
                 if (configValues == null) {
                     configValues = new ConfigValues();
                     configValues.features.putAll(deepCopyDefaults());
+                } else if (configValues.features.isEmpty()) {
+                    configValues.features.putAll(deepCopyDefaults());
                 }
 
                 overwriteFeatureData();
@@ -538,6 +543,7 @@ public class ConfigValuesManager {
             boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
             if (isDevMode) LOGGER.info("Saving config...");
 
+            configValues.configVersion = CONFIG_VERSION;
             for (Feature feature : Feature.values()) {
                 configValues.features.put(feature, feature.getFeatureData());
                 if (feature.getId() > configValues.lastFeatureId) {

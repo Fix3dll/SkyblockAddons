@@ -37,13 +37,30 @@ public class ConfigValuesAdapter implements JsonDeserializer<ConfigValues> {
         ConfigValues configValues = new ConfigValues();
 
         if (jsonObject.has("configVersion")) {
-            configValues.setConfigVersion(jsonObject.get("configVersion").getAsInt());
+            try {
+                configValues.setConfigVersion(jsonObject.get("configVersion").getAsInt());
+            } catch (Exception e) {
+                LOGGER.error("Error while parsing 'configVersion':", e);
+                configValues.setConfigVersion(Integer.MIN_VALUE);
+            }
         }
         if (jsonObject.has("lastFeatureId")) {
-            configValues.setLastFeatureId(jsonObject.get("lastFeatureId").getAsInt());
+            try {
+                configValues.setLastFeatureId(jsonObject.get("lastFeatureId").getAsInt());
+            } catch (Exception e) {
+                LOGGER.error("Error while parsing 'lastFeatureId':", e);
+                configValues.setLastFeatureId(Integer.MIN_VALUE);
+            }
         }
         if (jsonObject.has("features")) {
-            JsonObject featuresObject = jsonObject.getAsJsonObject("features");
+            JsonObject featuresObject;
+            try {
+                featuresObject = jsonObject.getAsJsonObject("features");
+            } catch (Exception e) {
+                featuresObject = new JsonObject();
+                SkyblockAddons.getInstance().getConfigValuesManager().backupConfig();
+                LOGGER.error("Error while parsing 'features'! It will be restored to defaults. Error:", e);
+            }
             EnumMap<Feature, FeatureData<?>> features = new EnumMap<>(Feature.class);
 
             for (Map.Entry<String, JsonElement> entry : featuresObject.entrySet()) {
