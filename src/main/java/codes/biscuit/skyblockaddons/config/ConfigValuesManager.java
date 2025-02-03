@@ -57,6 +57,7 @@ public class ConfigValuesManager {
 
     private static final ReentrantLock SAVE_LOCK = new ReentrantLock();
 
+    private final File configFile;
     private final File settingsConfigFile;
     @Deprecated private final File legacyConfigFile; // TODO remove in future
 
@@ -77,6 +78,7 @@ public class ConfigValuesManager {
     }
 
     public ConfigValuesManager(File mainConfigDir) {
+        this.configFile = mainConfigDir;
         this.settingsConfigFile = new File(mainConfigDir.getAbsolutePath(), "skyblockaddons/configurations.json");
         this.legacyConfigFile = new File(mainConfigDir, "skyblockaddons.cfg");
     }
@@ -93,8 +95,7 @@ public class ConfigValuesManager {
                 DEFAULT_FEATURE_DATA.putAll(
                         gson.fromJson(
                                 inputStreamReader,
-                                new TypeToken<EnumMap<Feature, FeatureData<?>>>() {
-                                }.getType()
+                                new TypeToken<EnumMap<Feature, FeatureData<?>>>() {}.getType()
                         )
                 );
             } catch (Exception ex) {
@@ -451,7 +452,7 @@ public class ConfigValuesManager {
                 // If the file is completely empty because it is corrupted, Gson will return null
                 if (configValues == null) {
                     configValues = new ConfigValues();
-                    configValues.features.putAll(DEFAULT_FEATURE_DATA);
+                    configValues.features.putAll(deepCopyDefaults());
                 }
 
                 overwriteFeatureData();
@@ -468,7 +469,7 @@ public class ConfigValuesManager {
     }
 
     private void addDefaultsAndSave() {
-        configValues.features.putAll(DEFAULT_FEATURE_DATA);
+        configValues.features.putAll(deepCopyDefaults());
         overwriteFeatureData();
         saveConfig();
     }
@@ -718,6 +719,38 @@ public class ConfigValuesManager {
         } else {
             anchorPoints = DEFAULT_FEATURE_DATA.get(feature).getAnchorPoint();
             return anchorPoints == null ? AnchorPoint.BOTTOM_MIDDLE : anchorPoints;
+        }
+    }
+
+    /**
+     * @return deep copy of {@code DEFAULT_FEATURE_DATA}
+     */
+    public EnumMap<Feature, FeatureData<?>> deepCopyDefaults() {
+        Gson gson = SkyblockAddons.getGson();
+        String json = gson.toJson(DEFAULT_FEATURE_DATA);
+        return gson.fromJson(json, new TypeToken<EnumMap<Feature, FeatureData<?>>>() {}.getType());
+    }
+
+    /**
+     * Creates backup of 'configurations.json'
+     */
+    public void backupConfig() {
+        if (!settingsConfigFile.exists()) {
+            LOGGER.warn("configurations.json file for backup is not exist!");
+            return;
+        }
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+            String formattedDate = ZonedDateTime.now().format(formatter);
+            String backupFileName = "configurations.json." + formattedDate + ".backup";
+
+            File backupFile = new File(configFile, "/skyblockaddons/backup/" + backupFileName);
+            Files.createDirectories(backupFile.getParentFile().toPath());
+
+            Files.copy(settingsConfigFile.toPath(), backupFile.toPath());
+            LOGGER.info("Configurations backed up successfully: {}", backupFile.getPath());
+        } catch (IOException e) {
+            LOGGER.error("Failed to backup configurations file!", e);
         }
     }
 }

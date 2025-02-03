@@ -26,7 +26,14 @@ public class ConfigValuesAdapter implements JsonDeserializer<ConfigValues> {
 
     @Override
     public ConfigValues deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject jsonObject = json.getAsJsonObject();
+        JsonObject jsonObject;
+        try {
+            jsonObject = json.getAsJsonObject();
+        } catch (JsonParseException | IllegalStateException e) {
+            SkyblockAddons.getInstance().getConfigValuesManager().backupConfig();
+            LOGGER.error("configurations.json is corrupted! It will be restored to default settings.", e);
+            return null;
+        }
         ConfigValues configValues = new ConfigValues();
 
         if (jsonObject.has("configVersion")) {
