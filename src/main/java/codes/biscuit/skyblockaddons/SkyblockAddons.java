@@ -1,38 +1,35 @@
 package codes.biscuit.skyblockaddons;
 
-import codes.biscuit.skyblockaddons.config.ConfigValuesManager.ConfigValues;
-import codes.biscuit.skyblockaddons.config.PetCacheManager;
-import codes.biscuit.skyblockaddons.core.Language;
-import codes.biscuit.skyblockaddons.core.SkyblockRarity;
 import codes.biscuit.skyblockaddons.commands.SkyblockAddonsCommand;
 import codes.biscuit.skyblockaddons.config.ConfigValuesManager;
+import codes.biscuit.skyblockaddons.config.ConfigValuesManager.ConfigValues;
 import codes.biscuit.skyblockaddons.config.PersistentValuesManager;
+import codes.biscuit.skyblockaddons.config.PetCacheManager;
+import codes.biscuit.skyblockaddons.core.Language;
+import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
+import codes.biscuit.skyblockaddons.core.SkyblockRarity;
+import codes.biscuit.skyblockaddons.core.Updater;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.feature.FeatureData;
-import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
-import codes.biscuit.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
-import codes.biscuit.skyblockaddons.utils.gson.ConfigValuesAdapter;
-import codes.biscuit.skyblockaddons.utils.gson.FeatureDataAdapter;
-import codes.biscuit.skyblockaddons.utils.gson.RarityAdapter;
-import codes.biscuit.skyblockaddons.utils.gson.UuidAdapter;
-import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
-import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
+import codes.biscuit.skyblockaddons.core.scheduler.Scheduler;
+import codes.biscuit.skyblockaddons.features.SkillXpManager;
+import codes.biscuit.skyblockaddons.features.TrevorTrapperTracker;
+import codes.biscuit.skyblockaddons.features.discordrpc.DiscordRPCManager;
 import codes.biscuit.skyblockaddons.features.dungeon.DungeonManager;
 import codes.biscuit.skyblockaddons.features.outline.EntityOutlineRenderer;
 import codes.biscuit.skyblockaddons.features.outline.ItemOutlines;
-import codes.biscuit.skyblockaddons.features.TrevorTrapperTracker;
-import codes.biscuit.skyblockaddons.features.SkillXpManager;
-import codes.biscuit.skyblockaddons.features.discordrpc.DiscordRPCManager;
 import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.listeners.*;
-import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
-import codes.biscuit.skyblockaddons.core.Updater;
-import codes.biscuit.skyblockaddons.core.scheduler.Scheduler;
-import codes.biscuit.skyblockaddons.utils.*;
+import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
+import codes.biscuit.skyblockaddons.utils.InventoryUtils;
+import codes.biscuit.skyblockaddons.utils.SkyblockAddonsMessageFactory;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
-import codes.biscuit.skyblockaddons.utils.gson.GsonInitializableTypeAdapter;
-import codes.biscuit.skyblockaddons.utils.gson.PatternAdapter;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
+import codes.biscuit.skyblockaddons.utils.gson.*;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,7 +57,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -202,7 +201,7 @@ public class SkyblockAddons {
          de-register it so its default key doesn't conflict with other key bindings with the same key.
          */
         if (Feature.DEVELOPER_MODE.isDisabled()) {
-            SkyblockKeyBinding.DEVELOPER_COPY_NBT.deRegister();
+            SkyblockKeyBinding.DEVELOPER_COPY_NBT.unregister();
         }
 
         usingLabymod = utils.isModLoaded("labymod");

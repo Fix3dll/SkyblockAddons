@@ -119,7 +119,7 @@ public enum SkyblockKeyBinding {
     /**
      * Removes this keybinding from {@link Minecraft#gameSettings}.
      */
-    public void deRegister() {
+    public void unregister() {
         if (registered) {
             int index = ArrayUtils.indexOf(Minecraft.getMinecraft().gameSettings.keyBindings, keyBinding);
 

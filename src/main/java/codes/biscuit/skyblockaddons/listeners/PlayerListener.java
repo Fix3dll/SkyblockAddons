@@ -18,17 +18,17 @@ import codes.biscuit.skyblockaddons.features.FetchurManager;
 import codes.biscuit.skyblockaddons.features.JerryPresent;
 import codes.biscuit.skyblockaddons.features.PetManager;
 import codes.biscuit.skyblockaddons.features.cooldowns.CooldownManager;
+import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonMilestone;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonPlayer;
 import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
 import codes.biscuit.skyblockaddons.features.fishParticles.FishParticleManager;
-import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
 import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
-
-import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
 import codes.biscuit.skyblockaddons.utils.ActionBarParser;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
@@ -184,6 +184,7 @@ public class PlayerListener {
     private boolean doubleHook = false;
     private String cachedChatRunCommand;
     @Setter private boolean savePersistentFlag = false;
+    private boolean previousAllowFlyingState = false;
 
     /**
      * Reset all the timers and stuff when joining a new world.
@@ -834,7 +835,7 @@ public class PlayerListener {
         if (e.entity instanceof EntityEnderman) {
             if (countedEndermen.remove(e.entity.getUniqueID())) {
                 main.getPersistentValuesManager().addKills();
-                EndstoneProtectorManager.onKill();
+                EndstoneProtectorManager.incrementZealotCount();
             } else if (main.getUtils().isOnSkyblock() && Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.isEnabled()) {
                 if (isZealot(e.entity)) {
                     long now = System.currentTimeMillis();
@@ -862,7 +863,7 @@ public class PlayerListener {
 //                        possibleZealotsKilled--;
 
                         main.getPersistentValuesManager().addKills();
-                        EndstoneProtectorManager.onKill();
+                        EndstoneProtectorManager.incrementZealotCount();
                     }
 
 //                    System.out.println((originalPossibleZealotsKilled-possibleZealotsKilled)+" zealots were actually killed...");
@@ -887,7 +888,7 @@ public class PlayerListener {
         return armorStand.hasCustomName() && armorStand.getCustomNameTag().contains("Zealot");
     }
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public void onEntitySpawn(EntityEvent.EnteringChunk e) {
         if (!main.getUtils().isOnSkyblock()) return;
         Entity entity = e.entity;
@@ -897,7 +898,9 @@ public class PlayerListener {
 
             EntityPlayerSP p = MC.thePlayer;
             ItemStack heldItem = p.getHeldItem();
-            if (heldItem != null && "EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))) {
+            if (heldItem != null && ("EXPLOSIVE_BOW".equals(ItemUtils.getSkyblockItemID(heldItem))
+                    || "JUJU_SHORTBOW".equals(ItemUtils.getSkyblockItemID(heldItem))
+                    || "TERMINATOR".equals(ItemUtils.getSkyblockItemID(heldItem)))) {
 
                 AxisAlignedBB playerRadius = new AxisAlignedBB(p.posX - 3, p.posY - 3, p.posZ - 3, p.posX + 3, p.posY + 3, p.posZ + 3);
                 if (playerRadius.isVecInside(arrow.getPositionVector())) {
@@ -928,7 +931,7 @@ public class PlayerListener {
 //                                        possibleZealotsKilled--;
 
                                     main.getPersistentValuesManager().addKills();
-                                    EndstoneProtectorManager.onKill();
+                                    EndstoneProtectorManager.incrementZealotCount();
                                 }
                             }
 //                            System.out.println((originalPossibleZealotsKilled-possibleZealotsKilled)+" zealots were actually killed...");
@@ -1395,8 +1398,6 @@ public class PlayerListener {
             }
         }
     }
-
-    private boolean previousAllowFlyingState = false;
 
     private void flyingCheck() {
         EntityPlayerSP thePlayer = MC.thePlayer;
