@@ -9,10 +9,10 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -58,9 +58,7 @@ public class PetCacheManager {
 
         if (petCacheFile.exists()) {
 
-            try (InputStreamReader reader = new InputStreamReader(
-                    Files.newInputStream(petCacheFile.toPath()), StandardCharsets.UTF_8
-            )) {
+            try (BufferedReader reader = Files.newBufferedReader(petCacheFile.toPath(), StandardCharsets.UTF_8)) {
                 petCache = SkyblockAddons.getGson().fromJson(reader, PetCacheManager.PetCache.class);
 
                 // If cache file is completely empty because it is corrupted, Gson will return null
@@ -92,9 +90,7 @@ public class PetCacheManager {
                 //noinspection ResultOfMethodCallIgnored
                 petCacheFile.createNewFile();
 
-                try (OutputStreamWriter writer = new OutputStreamWriter(
-                        Files.newOutputStream(petCacheFile.toPath()), StandardCharsets.UTF_8
-                )) {
+                try (BufferedWriter writer = Files.newBufferedWriter(petCacheFile.toPath(), StandardCharsets.UTF_8)) {
                     SkyblockAddons.getGson().toJson(petCache, writer);
                 }
             } catch (Exception ex) {

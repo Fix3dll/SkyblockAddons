@@ -462,6 +462,12 @@
       "maxLevel": 1,
       "nbtName": "silk_touch"
     },
+    "small brain": {
+      "goodLevel": 0,
+      "loreName": "Small Brain",
+      "maxLevel": 5,
+      "nbtName": "small_brain"
+    },
     "smarty pants": {
       "goodLevel": 0,
       "loreName": "Smarty Pants",

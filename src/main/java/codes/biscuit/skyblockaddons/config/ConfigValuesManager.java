@@ -29,11 +29,12 @@ import net.minecraft.util.ReportedException;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.geom.Point2D;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
@@ -447,9 +448,7 @@ public class ConfigValuesManager {
             }, 20, 20);
         } else if (configFileExists) {
 
-            try (InputStreamReader reader = new InputStreamReader(
-                    Files.newInputStream(settingsConfigFile.toPath()), StandardCharsets.UTF_8
-            )) {
+            try (BufferedReader reader = Files.newBufferedReader(settingsConfigFile.toPath(), StandardCharsets.UTF_8)) {
                 configValues = gson.fromJson(reader, ConfigValues.class);
 
                 // If the file is completely empty because it is corrupted, Gson will return null
@@ -462,7 +461,16 @@ public class ConfigValuesManager {
 
                 overwriteFeatureData();
             } catch (Exception ex) {
-                LOGGER.error("Error loading configuration values!", ex);
+                if (configValues == null || configValues.isEmpty()) {
+                    LOGGER.error("The configuration file is corrupt! After the previous file is backed up, it will be restored to default.", ex);
+//                    DataUtils.getFailedRequests().put("configurations.json", ex); // TODO in-game error alerts
+
+                    // Backup then restore defaults.
+                    backupConfig();
+                    addDefaultsAndSave();
+                } else {
+                    LOGGER.error("Error loading configuration values!", ex);
+                }
             }
         } else {
             addDefaultsAndSave();
@@ -555,9 +563,7 @@ public class ConfigValuesManager {
                 //noinspection ResultOfMethodCallIgnored
                 settingsConfigFile.createNewFile();
 
-                try (OutputStreamWriter writer = new OutputStreamWriter(
-                        Files.newOutputStream(settingsConfigFile.toPath()), StandardCharsets.UTF_8
-                )) {
+                try (BufferedWriter writer = Files.newBufferedWriter(settingsConfigFile.toPath(), StandardCharsets.UTF_8)) {
                     SkyblockAddons.getGson().toJson(configValues, writer);
                 }
             } catch (Exception ex) {
