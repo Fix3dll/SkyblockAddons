@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -77,7 +79,6 @@ public class PersistentValuesManager {
         }
 
         if (persistentValuesFile.exists()) {
-
             try (BufferedReader reader = Files.newBufferedReader(persistentValuesFile.toPath(), StandardCharsets.UTF_8)) {
                 persistentValues = SkyblockAddons.getGson().fromJson(reader, PersistentValues.class);
 
@@ -109,12 +110,19 @@ public class PersistentValuesManager {
             if (isDevMode) LOGGER.info("Saving persistent values...");
 
             try {
-                //noinspection ResultOfMethodCallIgnored
-                persistentValuesFile.createNewFile();
+                File tempFile = File.createTempFile(persistentValuesFile.getName(), ".tmp", persistentValuesFile.getParentFile());
 
-                try (BufferedWriter writer = Files.newBufferedWriter(persistentValuesFile.toPath(), StandardCharsets.UTF_8)) {
+                try (BufferedWriter writer = Files.newBufferedWriter(
+                        tempFile.toPath(), StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
+                )) {
                     SkyblockAddons.getGson().toJson(persistentValues, writer);
                 }
+
+                Files.move(
+                        tempFile.toPath(), persistentValuesFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
+                );
             } catch (Exception ex) {
                 LOGGER.error("Error saving persistent values!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {

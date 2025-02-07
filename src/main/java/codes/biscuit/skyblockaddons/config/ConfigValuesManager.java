@@ -37,6 +37,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -540,7 +542,6 @@ public class ConfigValuesManager {
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void saveConfig() {
         EnchantManager.markCacheDirty();
         SkyblockAddons.runAsync(() -> {
@@ -560,12 +561,19 @@ public class ConfigValuesManager {
             }
 
             try {
-                //noinspection ResultOfMethodCallIgnored
-                settingsConfigFile.createNewFile();
+                File tempFile = File.createTempFile(settingsConfigFile.getName(), ".tmp", settingsConfigFile.getParentFile());
 
-                try (BufferedWriter writer = Files.newBufferedWriter(settingsConfigFile.toPath(), StandardCharsets.UTF_8)) {
+                try (BufferedWriter writer = Files.newBufferedWriter(
+                        tempFile.toPath(), StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
+                )) {
                     SkyblockAddons.getGson().toJson(configValues, writer);
                 }
+
+                Files.move(
+                        tempFile.toPath(), settingsConfigFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
+                );
             } catch (Exception ex) {
                 LOGGER.error("Error saving configurations file!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {

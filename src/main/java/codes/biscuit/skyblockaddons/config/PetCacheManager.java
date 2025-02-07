@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -57,7 +59,6 @@ public class PetCacheManager {
         }
 
         if (petCacheFile.exists()) {
-
             try (BufferedReader reader = Files.newBufferedReader(petCacheFile.toPath(), StandardCharsets.UTF_8)) {
                 petCache = SkyblockAddons.getGson().fromJson(reader, PetCacheManager.PetCache.class);
 
@@ -87,12 +88,19 @@ public class PetCacheManager {
             if (isDevMode) LOGGER.info("Saving pet cache...");
 
             try {
-                //noinspection ResultOfMethodCallIgnored
-                petCacheFile.createNewFile();
+                File tempFile = File.createTempFile(petCacheFile.getName(), ".tmp", petCacheFile.getParentFile());
 
-                try (BufferedWriter writer = Files.newBufferedWriter(petCacheFile.toPath(), StandardCharsets.UTF_8)) {
+                try (BufferedWriter writer = Files.newBufferedWriter(
+                        tempFile.toPath(), StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
+                )) {
                     SkyblockAddons.getGson().toJson(petCache, writer);
                 }
+
+                Files.move(
+                        tempFile.toPath(), petCacheFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
+                );
             } catch (Exception ex) {
                 LOGGER.error("Error while saving pet cache!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {
