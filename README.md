@@ -29,6 +29,6 @@ Big thanks to all the open source software we use in this project! They are all 
 
 For Contributors
 ------
-Please read the [contributor's guide](/.github/docs/CONTRIBUTING.md) for instructions.
+Please read the [contributor's guide](/CONTRIBUTING.md) for instructions.
 
 *SkyblockAddons is not affiliated or endorsed by Hypixel*
