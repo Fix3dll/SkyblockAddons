@@ -9,12 +9,14 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -57,10 +59,7 @@ public class PetCacheManager {
         }
 
         if (petCacheFile.exists()) {
-
-            try (InputStreamReader reader = new InputStreamReader(
-                    Files.newInputStream(petCacheFile.toPath()), StandardCharsets.UTF_8
-            )) {
+            try (BufferedReader reader = Files.newBufferedReader(petCacheFile.toPath(), StandardCharsets.UTF_8)) {
                 petCache = SkyblockAddons.getGson().fromJson(reader, PetCacheManager.PetCache.class);
 
                 // If cache file is completely empty because it is corrupted, Gson will return null
@@ -89,14 +88,19 @@ public class PetCacheManager {
             if (isDevMode) LOGGER.info("Saving pet cache...");
 
             try {
-                //noinspection ResultOfMethodCallIgnored
-                petCacheFile.createNewFile();
+                File tempFile = File.createTempFile(petCacheFile.getName(), ".tmp", petCacheFile.getParentFile());
 
-                try (OutputStreamWriter writer = new OutputStreamWriter(
-                        Files.newOutputStream(petCacheFile.toPath()), StandardCharsets.UTF_8
+                try (BufferedWriter writer = Files.newBufferedWriter(
+                        tempFile.toPath(), StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
                 )) {
                     SkyblockAddons.getGson().toJson(petCache, writer);
                 }
+
+                Files.move(
+                        tempFile.toPath(), petCacheFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
+                );
             } catch (Exception ex) {
                 LOGGER.error("Error while saving pet cache!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {

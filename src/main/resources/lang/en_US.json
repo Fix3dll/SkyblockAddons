@@ -235,6 +235,7 @@
     "infernoSlayerTracker": "Slayer Tracker - Inferno/Blaze",
     "riftstalkerSlayerTracker": "Slayer Tracker - Riftstalker/Vampire",
     "expandDeployableStatus": "Show stats in 2 columns on detailed status",
+    "showOnlyHoldingMiningTool": "Show only when holding a mining tool",
     "showOnlyHoldingFishingRod": "Show only when holding a fishing rod",
     "hideHealthThingsOnRift": "Don't show while in Rift Dimension",
     "hideOnlyOutsideRift": "Hide only outside Rift Dimension",

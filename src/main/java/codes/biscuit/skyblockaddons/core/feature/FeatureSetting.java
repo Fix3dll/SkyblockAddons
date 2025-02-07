@@ -108,6 +108,7 @@ public enum FeatureSetting {
     TREVOR_BETTER_NAMETAG("settings.trevorTheTrapper.betterNametag", Feature.TREVOR_THE_TRAPPER_FEATURES),
     HIDE_WHEN_NOT_IN_RIFT("settings.hideWhenNotDoingQuest", Feature.RIFTSTALKER_SLAYER_TRACKER),
     ABBREVIATE_DRILL_FUEL_DENOMINATOR("settings.abbreviateDrillFuelDenominator", Feature.DRILL_FUEL_TEXT),
+    SHOW_ONLY_HOLDING_MINING_TOOL("settings.showOnlyHoldingMiningTool", Feature.ROCK_PET_TRACKER),
     SHOW_ONLY_HOLDING_FISHING_ROD("settings.showOnlyHoldingFishingRod", Feature.DOLPHIN_PET_TRACKER),
     HIDE_HEALTH_BAR_ON_RIFT("settings.hideHealthThingsOnRift", Feature.HEALTH_BAR),
     HIDE_HEALTH_TEXT_ON_RIFT("settings.hideHealthThingsOnRift", Feature.HEALTH_TEXT),

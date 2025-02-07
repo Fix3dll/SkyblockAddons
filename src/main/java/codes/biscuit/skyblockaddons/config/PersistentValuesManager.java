@@ -11,12 +11,16 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,6 +33,7 @@ public class PersistentValuesManager {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final ReentrantLock SAVE_LOCK = new ReentrantLock();
 
+    private final File configFile;
     private final File persistentValuesFile;
     @Deprecated private final File legacyValuesFile; // TODO remove in future
 
@@ -55,9 +60,10 @@ public class PersistentValuesManager {
 //        private HypixelLanguage hypixelLanguage = HypixelLanguage.ENGLISH;
     }
 
-    public PersistentValuesManager(File configDir) {
-        this.persistentValuesFile = new File(configDir.getAbsolutePath(), "/skyblockaddons/persistentValues.json");
-        this.legacyValuesFile = new File(configDir.getAbsolutePath(), "/skyblockaddons_persistent.cfg");
+    public PersistentValuesManager(File mainConfigDir) {
+        this.configFile = mainConfigDir;
+        this.persistentValuesFile = new File(mainConfigDir.getAbsolutePath(), "/skyblockaddons/persistentValues.json");
+        this.legacyValuesFile = new File(mainConfigDir.getAbsolutePath(), "/skyblockaddons_persistent.cfg");
     }
 
     /**
@@ -73,10 +79,7 @@ public class PersistentValuesManager {
         }
 
         if (persistentValuesFile.exists()) {
-
-            try (InputStreamReader reader = new InputStreamReader(
-                    Files.newInputStream(persistentValuesFile.toPath()), StandardCharsets.UTF_8
-            )) {
+            try (BufferedReader reader = Files.newBufferedReader(persistentValuesFile.toPath(), StandardCharsets.UTF_8)) {
                 persistentValues = SkyblockAddons.getGson().fromJson(reader, PersistentValues.class);
 
                 // If the file is completely empty because it is corrupted, Gson will return null
@@ -85,6 +88,7 @@ public class PersistentValuesManager {
                 }
             } catch (Exception ex) {
                 LOGGER.error("Error loading persistent values!", ex);
+                backupValues();
             }
         } else {
             saveValues();
@@ -106,14 +110,19 @@ public class PersistentValuesManager {
             if (isDevMode) LOGGER.info("Saving persistent values...");
 
             try {
-                //noinspection ResultOfMethodCallIgnored
-                persistentValuesFile.createNewFile();
+                File tempFile = File.createTempFile(persistentValuesFile.getName(), ".tmp", persistentValuesFile.getParentFile());
 
-                try (OutputStreamWriter writer = new OutputStreamWriter(
-                        Files.newOutputStream(persistentValuesFile.toPath()), StandardCharsets.UTF_8
+                try (BufferedWriter writer = Files.newBufferedWriter(
+                        tempFile.toPath(), StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
                 )) {
                     SkyblockAddons.getGson().toJson(persistentValues, writer);
                 }
+
+                Files.move(
+                        tempFile.toPath(), persistentValuesFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
+                );
             } catch (Exception ex) {
                 LOGGER.error("Error saving persistent values!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {
@@ -126,6 +135,29 @@ public class PersistentValuesManager {
             if (isDevMode) LOGGER.info("Persistent values saved!");
             SAVE_LOCK.unlock();
         });
+    }
+
+    /**
+     * Creates backup of 'persistentValues.json'
+     */
+    public void backupValues() {
+        if (!persistentValuesFile.exists()) {
+            LOGGER.warn("persistentValues.json file for backup is not exist!");
+            return;
+        }
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+            String formattedDate = ZonedDateTime.now().format(formatter);
+            String backupFileName = "persistentValues.json." + formattedDate + ".backup";
+
+            File backupFile = new File(configFile, "/skyblockaddons/backup/" + backupFileName);
+            Files.createDirectories(backupFile.getParentFile().toPath());
+
+            Files.copy(persistentValuesFile.toPath(), backupFile.toPath());
+            LOGGER.info("Persistent values backed up successfully: {}", backupFile.getPath());
+        } catch (IOException e) {
+            LOGGER.error("Failed to backup persistent values file!", e);
+        }
     }
 
     /**

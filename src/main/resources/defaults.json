@@ -576,7 +576,10 @@
       202.66667,
       9.333333
     ],
-    "color": -5592406
+    "color": -5592406,
+    "settings": {
+      "SHOW_ONLY_HOLDING_MINING_TOOL": false
+    }
   },
   "DOLPHIN_PET_TRACKER": {
     "value": false,
