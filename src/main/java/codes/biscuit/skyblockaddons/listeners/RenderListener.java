@@ -1137,11 +1137,16 @@ public class RenderListener {
                 break;
 
             case ROCK_PET_TRACKER:
+                if (buttonLocation == null && feature.isEnabled(FeatureSetting.SHOW_ONLY_HOLDING_MINING_TOOL)
+                        && !main.getPlayerListener().isHoldingMiningTool()) {
+                    return;
+                }
                 text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getOresMined());
                 break;
 
             case DOLPHIN_PET_TRACKER:
-                if (feature.isEnabled(FeatureSetting.SHOW_ONLY_HOLDING_FISHING_ROD) && !main.getPlayerListener().isHoldingRod()) {
+                if (buttonLocation == null && feature.isEnabled(FeatureSetting.SHOW_ONLY_HOLDING_FISHING_ROD)
+                        && !main.getPlayerListener().isHoldingRod()) {
                     return;
                 }
                 text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled());

@@ -1302,6 +1302,28 @@ public class PlayerListener {
         return false;
     }
 
+    public boolean isHoldingMiningTool() {
+        EntityPlayerSP player = MC.thePlayer;
+
+        if (player != null) {
+            ItemStack item = player.getHeldItem();
+            if (item != null) {
+                ItemType type = ItemUtils.getItemType(item);
+                if (type != null) {
+                    switch (type) {
+                        case PICKAXE:
+                        case GAUNTLET:
+                        case DRILL:
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isHoldingFireFreeze() {
         EntityPlayerSP player = MC.thePlayer;
 
