@@ -14,7 +14,7 @@ public class ScheduledTask {
     private long startTick = SkyblockAddons.getInstance().getScheduler().getTotalTicks();
     private final int id;
     private int delay;
-    private final int period;
+    private int period;
     /**
      * -- GETTER --
      * <br>Gets if the current task is an asynchronous task.
@@ -107,6 +107,20 @@ public class ScheduledTask {
     }
 
     /**
+     * Updates the delay of a scheduled task.
+     * @param delay of the scheduled task
+     * @return true if the delay is not the same as the previous one and has been updated
+     */
+    public boolean updateDelay(int delay) {
+        if (this.delay != delay) {
+            this.startTick = SkyblockAddons.getInstance().getScheduler().getTotalTicks();
+            this.delay = delay;
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns the delay (in ticks) for the task to repeat itself.
      * @return How long until the task repeats itself.
      */
@@ -114,9 +128,18 @@ public class ScheduledTask {
         return this.period;
     }
 
-    public void updateDelay(int delay) {
-        this.startTick = SkyblockAddons.getInstance().getScheduler().getTotalTicks();
-        this.delay = delay;
+    /**
+     * Updates the period of a scheduled task.
+     * @param period of the scheduled task
+     * @return true if the period is not the same as the previous one and has been updated
+     */
+    public boolean updatePeriod(int period) {
+        if (this.period != period) {
+            this.period = period;
+            this.repeating = period > 0;
+            return true;
+        }
+        return false;
     }
 
     /**

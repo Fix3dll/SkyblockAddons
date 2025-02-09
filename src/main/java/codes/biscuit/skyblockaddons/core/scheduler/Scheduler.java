@@ -64,7 +64,6 @@ public class Scheduler {
 
     /**
      * Runs a task (asynchronously) on the next tick.
-     *
      * @param task The task to run.
      * @param delay The delay (in ticks) to wait before running the task.
      * @return The scheduled task.
@@ -75,21 +74,17 @@ public class Scheduler {
 
     /**
      * Runs a task (asynchronously) on the next tick.
-     *
      * @param task The task to run.
      * @param delay The delay (in ticks) to wait before running the task.
      * @param period The delay (in ticks) to wait before calling the task again.
      * @return The scheduled task.
      */
     public ScheduledTask scheduleAsyncTask(Consumer<ScheduledTask> task, int delay, int period) {
-        ScheduledTask scheduledTask = new ScheduledTask(task, delay, period, true);
-        this.pendingTasks.add(scheduledTask);
-        return scheduledTask;
+        return this.scheduleTask(task, delay, period, false, true);
     }
 
     /**
      * Runs a task (synchronously) on the next tick.
-     *
      * @param task The task to run.
      * @param delay The delay (in ticks) to wait before running the task.
      * @return The scheduled task.
@@ -100,19 +95,17 @@ public class Scheduler {
 
     /**
      * Runs a task (synchronously) on the next tick.
-     *
      * @param task The task to run.
      * @param delay The delay (in ticks) to wait before running the task.
      * @param period The delay (in ticks) to wait before calling the task again.
      * @return The scheduled task.
      */
     public ScheduledTask scheduleTask(Consumer<ScheduledTask> task, int delay, int period) {
-        return this.scheduleTask(task, delay, period, false);
+        return this.scheduleTask(task, delay, period, false, false);
     }
 
     /**
      * Runs a task (synchronously) on the next tick.
-     *
      * @param task The task to run.
      * @param delay The delay (in ticks) to wait before the task is run.
      * @param period The delay (in ticks) to wait before calling the task again.
@@ -120,8 +113,8 @@ public class Scheduler {
      *              synchronous task.
      * @return The scheduled task.
      */
-    public ScheduledTask scheduleTask(Consumer<ScheduledTask> task, int delay, int period, boolean queued) {
-        ScheduledTask scheduledTask = new ScheduledTask(task, delay, period, false);
+    public ScheduledTask scheduleTask(Consumer<ScheduledTask> task, int delay, int period, boolean queued, boolean async) {
+        ScheduledTask scheduledTask = new ScheduledTask(task, delay, period, async);
         if (queued) {
             this.queuedTasks.add(scheduledTask);
         } else {

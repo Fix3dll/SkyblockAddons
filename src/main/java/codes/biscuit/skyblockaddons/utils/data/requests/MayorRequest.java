@@ -1,14 +1,19 @@
 package codes.biscuit.skyblockaddons.utils.data.requests;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
@@ -101,11 +106,30 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
 
         private ScheduledTask scheduleJerryMayorTask() {
             return main.getScheduler().scheduleAsyncTask(scheduledTask -> {
+                if (!main.getUtils().isOnSkyblock()) {
+                    return;
+                } else if (scheduledTask.updatePeriod(300 * 20)) {
+                    return;
+                }
+
                 MayorJerryData mayorJerryData = main.getMayorJerryData();
                 if (mayorJerryData == null || System.currentTimeMillis() > mayorJerryData.getNextSwitch()) {
-                    DataUtils.loadOnlineData(new JerryMayorRequest());
+                    ChatComponentText updateText = new ChatComponentText(
+                            ColorCode.RED + Translations.getMessage("messages.perkpocalypseUnknown")
+                    );
+                    updateText.setChatStyle(
+                            updateText.getChatStyle().setChatClickEvent(
+                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/calendar")
+                            ).setChatHoverEvent(
+                                    new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            new ChatComponentText("§7/calendar")
+                                    )
+                            )
+                    );
+                    main.getUtils().sendMessage(updateText, true);
                 }
-            }, 0, 60 * 20);
+            }, 0, 3 * 20);
         }
 
     }

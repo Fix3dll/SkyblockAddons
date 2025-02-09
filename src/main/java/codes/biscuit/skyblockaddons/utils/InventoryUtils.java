@@ -10,8 +10,6 @@ import codes.biscuit.skyblockaddons.core.ThunderBottle;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTracker;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
-import codes.biscuit.skyblockaddons.utils.data.DataUtils;
-import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -49,7 +47,7 @@ import java.util.regex.Pattern;
  */
 public class InventoryUtils {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public static final HashSet<String> BAT_PERSON_SET_IDS = new HashSet<>(
             Arrays.asList("BAT_PERSON_BOOTS", "BAT_PERSON_LEGGINGS", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_HELMET")
@@ -58,32 +56,24 @@ public class InventoryUtils {
     private List<ItemStack> previousInventory;
     private final Multimap<String, ItemDiff> itemPickupLog = ArrayListMultimap.create();
 
-    @Setter
-    private boolean inventoryWarningShown;
+    @Setter private boolean inventoryWarningShown;
 
     /**
      * Whether the player is wearing a Skeleton Helmet.
      */
-    @Getter
-    private boolean wearingSkeletonHelmet;
+    @Getter private boolean wearingSkeletonHelmet;
 
-    @Getter
-    private boolean usingToxicArrowPoison;
+    @Getter private boolean usingToxicArrowPoison;
 
-    @Getter
-    private boolean usingTwilightArrowPoison;
+    @Getter private boolean usingTwilightArrowPoison;
 
-    @Getter
-    private final SlayerArmorProgress[] slayerArmorProgresses = new SlayerArmorProgress[4];
+    @Getter private final SlayerArmorProgress[] slayerArmorProgresses = new SlayerArmorProgress[4];
 
-    @Getter @Setter
-    private InventoryType inventoryType;
-    @Getter
-    String inventoryKey;
-    @Getter @Setter
-    private int inventoryPageNum;
-    @Getter
-    private String inventorySubtype;
+    @Getter @Setter private InventoryType inventoryType;
+    @Getter private String inventoryKey;
+    @Getter @Setter private int inventoryPageNum;
+    @Getter private String inventorySubtype;
+    @Getter private String inventoryMayorName;
 
     private ScheduledTask repeatWarningTask = null;
     private boolean inQuiverMode = false;
@@ -275,7 +265,8 @@ public class InventoryUtils {
                             },
                             10 * 20,
                             10 * 20,
-                            true
+                            true,
+                            false
                     );
                 }
             }
@@ -462,19 +453,15 @@ public class InventoryUtils {
             Matcher m = inventoryTypeItr.getInventoryPattern().matcher(chestName);
             if (m.matches()) {
                 if (m.groupCount() > 0) {
-                    if (inventoryTypeItr.equals(InventoryType.MAYOR)) {
+                    if (inventoryTypeItr == InventoryType.MAYOR) {
                         try {
-                            String mayorName = m.group("mayor");
-                            if (!mayorName.equals(main.getUtils().getMayor())) {
-                                // Update new mayor data from API
-                                DataUtils.loadOnlineData(new MayorRequest(mayorName));
-
-                                main.getUtils().setMayor(mayorName);
-                                logger.info("Mayor changed to {}", mayorName);
-                            }
-                        } catch (IllegalStateException | IllegalArgumentException e) {
-                            logger.warn("Could not detect mayor in Mayor Menu");
-                        } break;
+                            inventoryMayorName = m.group("mayor").trim();
+                            inventoryType = InventoryType.MAYOR;
+                            break; // early break
+                        } catch (NullPointerException | IllegalStateException | IllegalArgumentException e) {
+                            LOGGER.warn("Could not detect mayor in Mayor Menu");
+                            inventoryMayorName = null;
+                        }
                     }
 
                     try {

@@ -1,6 +1,7 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.SkyblockMayor;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import org.apache.logging.log4j.Logger;
@@ -50,9 +51,8 @@ public class ElectionData {
 
         MayorJerryData mayorJerryData = SkyblockAddons.getInstance().getMayorJerryData();
         if (mayorJerryData != null && mayorJerryData.hasMayorAndActive()) {
-            return mayorJerryData.getMayor().getPerks().stream().anyMatch(
-                    perk -> perk.getName().equalsIgnoreCase(perkName)
-            );
+            // Perkpocalypse mayors come with all perks active
+            return mayorJerryData.getMayor() == SkyblockMayor.getByPerkName(perkName);
         }
 
         return false;
@@ -82,7 +82,7 @@ public class ElectionData {
 
         MayorJerryData mayorJerryData = SkyblockAddons.getInstance().getMayorJerryData();
         return mayorJerryData != null && mayorJerryData.hasMayorAndActive()
-                && candidateName.equalsIgnoreCase(mayorJerryData.getMayor().getName());
+                && candidateName.equalsIgnoreCase(mayorJerryData.getMayor().name());
     }
 
     @Getter

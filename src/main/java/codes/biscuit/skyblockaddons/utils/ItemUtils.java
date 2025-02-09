@@ -18,6 +18,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.text.WordUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -376,11 +377,10 @@ public class ItemUtils {
      * an empty list if this item doesn't have a lore tag.
      * The itemStack argument must not be {@code null}. The returned lore list is unmodifiable since it has been
      * converted from an {@code NBTTagList}.
-     *
      * @param itemStack the ItemStack to get the lore from
      * @return the lore of an ItemStack as a string list
      */
-    public static List<String> getItemLore(ItemStack itemStack) {
+    public static @NotNull List<String> getItemLore(ItemStack itemStack) {
         if (itemStack != null) {
             if (itemStack.hasTagCompound()) {
                 NBTTagCompound display = itemStack.getSubCompound("display", false);

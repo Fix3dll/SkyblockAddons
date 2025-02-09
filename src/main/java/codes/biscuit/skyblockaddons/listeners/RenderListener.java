@@ -3022,7 +3022,8 @@ public class RenderListener {
                     scheduledTask -> main.getRenderListener().setTitleFeature(null),
                     Feature.WARNING_TIME.numberValue().intValue() * 20,
                     0,
-                    true
+                    true,
+                    false
             );
         }
     }
@@ -3038,7 +3039,8 @@ public class RenderListener {
                     scheduledTask -> main.getRenderListener().setSubtitleFeature(null),
                     Feature.WARNING_TIME.numberValue().intValue() * 20,
                     0,
-                    true
+                    true,
+                    false
             );
         }
     }

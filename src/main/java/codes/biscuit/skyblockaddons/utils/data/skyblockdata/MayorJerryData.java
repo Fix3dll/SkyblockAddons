@@ -1,37 +1,93 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
-import com.google.gson.annotations.SerializedName;
+import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.core.SkyblockMayor;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
+import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import codes.biscuit.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StringUtils;
+import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-@Getter
+@Getter @Setter @ToString
 public class MayorJerryData {
 
-    @SerializedName("nextSwitch")
-    private Long nextSwitch;
-    @SerializedName("mayor")
-    private Mayor mayor;
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final Pattern DATE_PATTERN = Pattern.compile("Next set of perks in (?:(?<hours>\\d+)h)?(?: ?(?<minutes>\\d+)m)?(?: ?(?<seconds>\\d+)s)?!");
+
+    private Long nextSwitch = 0L;
+    private SkyblockMayor mayor = null;
 
     public boolean hasMayorAndActive() {
         return mayor != null && nextSwitch >= System.currentTimeMillis();
     }
 
-    @Getter
-    public static class Mayor {
-        @SerializedName("name")
-        private String name = "Fix3dll";
-        @SerializedName("perks")
-        private List<Perk> perks = Collections.emptyList();
+    public void parseMayorJerryPerkpocalypse(ItemStack mayorItem) {
+        if (mayorItem == null) {
+            return; // silently return
+        }
+
+        List<String> loreList = ItemUtils.getItemLore(mayorItem);
+
+        boolean perkpocalypsePerksFound = false;
+        boolean perksStartFlag = false;
+        for (String line : loreList) {
+            String stripped = TextUtils.stripColor(line);
+            if (!perksStartFlag && stripped.isEmpty()) continue;
+
+            if (!perkpocalypsePerksFound && stripped.contains("Perkpocalypse Perks:")) {
+                perkpocalypsePerksFound = true;
+            } else if (!perkpocalypsePerksFound) {
+                continue;
+            }
+
+            if (line.contains("§m")) {
+                perksStartFlag = !perksStartFlag;
+            } else if (perksStartFlag) {
+                String resetStripped = TextUtils.stripResets(line);
+                if (!resetStripped.startsWith("§7")) {
+                    this.mayor = SkyblockMayor.getByPerkName(stripped);
+                    if (this.mayor != null) continue;
+                }
+            }
+
+            if (!perksStartFlag) {
+                parseNextSwitch(stripped);
+            }
+        }
+
+        if (Feature.DEVELOPER_MODE.isEnabled()) {
+            LOGGER.info(this);
+        }
     }
 
-    @Getter
-    public static class Perk {
-        @SerializedName("name")
-        private String name;
-        @SerializedName("description")
-        private String description;
+    private void parseNextSwitch(String strippedLine) {
+        Matcher matcher = DATE_PATTERN.matcher(strippedLine);
+        if (!matcher.matches()) return;
 
+        try {
+            int delayMs = 0;
+            String hours = matcher.group("hours");
+            if (!StringUtils.isNullOrEmpty(hours)) {
+                delayMs += Integer.parseInt(hours) * 60 * 60 * 1000;
+            }
+            String minutes = matcher.group("minutes");
+            if (!StringUtils.isNullOrEmpty(minutes)) {
+                delayMs += Integer.parseInt(minutes) * 60 * 1000;
+            }
+            String seconds = matcher.group("seconds");
+            if (!StringUtils.isNullOrEmpty(seconds)) {
+                delayMs += Integer.parseInt(seconds) * 1000;
+            }
+            this.nextSwitch = System.currentTimeMillis() + delayMs;
+        } catch (IllegalStateException | IllegalArgumentException ignored) {
+        }
     }
 }

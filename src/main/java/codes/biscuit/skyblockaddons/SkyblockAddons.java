@@ -156,7 +156,9 @@ public class SkyblockAddons {
         dungeonManager = new DungeonManager();
         discordRPCManager = new DiscordRPCManager();
         skillXpManager = new SkillXpManager();
+
         electionData = new ElectionData();
+        mayorJerryData = new MayorJerryData();
     }
 
     @Mod.EventHandler

@@ -30,6 +30,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,7 +52,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GuiScreenListener {
 
     private final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     private InventoryChangeListener inventoryChangeListener;
     private InventoryBasic listenedInventory;
@@ -159,9 +160,10 @@ public class GuiScreenListener {
         if (guiScreen instanceof GuiChest) {
             GuiChest guiChest = (GuiChest) guiScreen;
             InventoryBasic chestInventory = (InventoryBasic) guiChest.lowerChestInventory;
+            InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
             // Save backpack colors
-            if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE) {
+            if (inventoryType == InventoryType.STORAGE) {
                 for (int i = 0; i < chestInventory.getSizeInventory(); i++) {
                     ItemStack item = chestInventory.getStackInSlot(i);
                     if (item == null || item.getItem() != Items.skull) continue;
@@ -174,7 +176,7 @@ public class GuiScreenListener {
                         }
                     }
                 }
-            } else if (main.getInventoryUtils().getInventoryType() == InventoryType.CALENDAR) {
+            } else if (inventoryType == InventoryType.CALENDAR) {
                 for (int i = 0; i < chestInventory.getSizeInventory(); i++) {
                     ItemStack item = chestInventory.getStackInSlot(i);
                     if (item == null || item.getItem() != Items.skull) continue;
@@ -188,10 +190,37 @@ public class GuiScreenListener {
                             DataUtils.loadOnlineData(new MayorRequest(mayorName));
 
                             main.getUtils().setMayor(mayorName);
-                            logger.info("Mayor changed to {}", mayorName);
+                            LOGGER.info("Mayor changed to {}", mayorName);
+                        }
+
+                        if (mayorName.contains("Jerry")) {
+                            main.getMayorJerryData().parseMayorJerryPerkpocalypse(item);
                         }
 
                         break;
+                    }
+                }
+            } else if (inventoryType == InventoryType.MAYOR) {
+                String mayorName = main.getInventoryUtils().getInventoryMayorName();
+
+                if (!StringUtils.isNullOrEmpty(mayorName)) {
+                    if (!mayorName.equals(main.getUtils().getMayor())) {
+                        // Update new mayor data from API
+                        DataUtils.loadOnlineData(new MayorRequest(mayorName));
+
+                        main.getUtils().setMayor(mayorName);
+                        LOGGER.info("Mayor changed to {}", mayorName);
+                    }
+
+                    if (mayorName.contains("Jerry")) {
+                        for (int i = 0; i < chestInventory.getSizeInventory(); i++) {
+                            ItemStack item = chestInventory.getStackInSlot(i);
+                            if (item == null || item.getItem() != Items.skull) continue;
+
+                            if (item.getDisplayName().contains("Mayor")) {
+                                main.getMayorJerryData().parseMayorJerryPerkpocalypse(item);
+                            }
+                        }
                     }
                 }
             }
