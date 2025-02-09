@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 public class MayorJerryData {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final long ONE_MINUTE = 60 * 1000;
     private static final Pattern DATE_PATTERN = Pattern.compile("Next set of perks in (?:(?<hours>\\d+)h)?(?: ?(?<minutes>\\d+)m)?(?: ?(?<seconds>\\d+)s)?!");
 
     private Long nextSwitch = 0L;
@@ -86,7 +87,8 @@ public class MayorJerryData {
             if (!StringUtils.isNullOrEmpty(seconds)) {
                 delayMs += Integer.parseInt(seconds) * 1000;
             }
-            this.nextSwitch = System.currentTimeMillis() + delayMs;
+            // round up to the next minute
+            this.nextSwitch = ((System.currentTimeMillis() + delayMs + ONE_MINUTE - 1) / ONE_MINUTE) * ONE_MINUTE;
         } catch (IllegalStateException | IllegalArgumentException ignored) {
         }
     }

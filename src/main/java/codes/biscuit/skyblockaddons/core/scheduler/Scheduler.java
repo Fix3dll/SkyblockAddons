@@ -41,7 +41,7 @@ public class Scheduler {
 
                             if (scheduledTask.isRepeating()) {
                                 if (!scheduledTask.isCanceled()) {
-                                    scheduledTask.updateDelay(scheduledTask.getPeriod());
+                                    scheduledTask.updateDelay(scheduledTask.getPeriod(), true);
                                 }
                             } else {
                                 scheduledTask.cancel();

@@ -112,7 +112,17 @@ public class ScheduledTask {
      * @return true if the delay is not the same as the previous one and has been updated
      */
     public boolean updateDelay(int delay) {
-        if (this.delay != delay) {
+        return this.updateDelay(delay, false);
+    }
+
+    /**
+     * Updates the delay of a scheduled task.
+     * @param delay of the scheduled task
+     * @param force force
+     * @return true if the delay is not the same as the previous one and has been updated
+     */
+    public boolean updateDelay(int delay, boolean force) {
+        if (this.delay != delay || force) {
             this.startTick = SkyblockAddons.getInstance().getScheduler().getTotalTicks();
             this.delay = delay;
             return true;

@@ -9,7 +9,6 @@ import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
 import codes.biscuit.skyblockaddons.utils.data.RemoteFileRequest;
-import codes.biscuit.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -112,8 +111,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
                     return;
                 }
 
-                MayorJerryData mayorJerryData = main.getMayorJerryData();
-                if (mayorJerryData == null || System.currentTimeMillis() > mayorJerryData.getNextSwitch()) {
+                if (System.currentTimeMillis() > main.getMayorJerryData().getNextSwitch()) {
                     ChatComponentText updateText = new ChatComponentText(
                             ColorCode.RED + Translations.getMessage("messages.perkpocalypseUnknown")
                     );
