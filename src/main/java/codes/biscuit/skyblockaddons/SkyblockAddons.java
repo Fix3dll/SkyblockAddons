@@ -134,7 +134,7 @@ public class SkyblockAddons {
 
     @Setter private OnlineData onlineData;
     @Setter private ElectionData electionData;
-    @Setter private MayorJerryData mayorJerryData;
+    private final MayorJerryData mayorJerryData;
 
     private boolean usingLabymod;
     private boolean usingOofModv1;
