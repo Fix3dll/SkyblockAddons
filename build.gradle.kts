@@ -9,7 +9,7 @@ plugins {
     id("gg.essential.loom") version ("1.6.21")
     id("dev.architectury.architectury-pack200") version ("0.1.3")
     id("io.freefair.lombok") version ("8.11")
-    id("com.gradleup.shadow") version ("8.3.0")
+    id("com.gradleup.shadow") version ("8.3.5")
     id("net.kyori.blossom") version ("1.3.1")
 }
 
@@ -107,7 +107,7 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")
 
-    bundle("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
+    bundle("org.spongepowered:mixin:0.8.7-SNAPSHOT") {
         isTransitive = false
     }
     annotationProcessor("org.spongepowered:mixin:0.8.7-SNAPSHOT:processor")

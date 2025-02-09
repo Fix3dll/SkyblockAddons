@@ -231,7 +231,7 @@ public enum Feature {
             if (enabled) {
                 SkyblockKeyBinding.DEVELOPER_COPY_NBT.register();
             } else {
-                SkyblockKeyBinding.DEVELOPER_COPY_NBT.deRegister();
+                SkyblockKeyBinding.DEVELOPER_COPY_NBT.unregister();
             }
         }
 

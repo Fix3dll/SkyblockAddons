@@ -1,8 +1,8 @@
 package codes.biscuit.skyblockaddons.features;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Getter;
@@ -78,7 +78,7 @@ public class EndstoneProtectorManager {
         }
     }
 
-    public static void onKill() {
+    public static void incrementZealotCount() {
         zealotCount++;
     }
 
