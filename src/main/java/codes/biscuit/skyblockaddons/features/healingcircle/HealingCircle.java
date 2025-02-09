@@ -1,18 +1,28 @@
 package codes.biscuit.skyblockaddons.features.healingcircle;
 
+import codes.biscuit.skyblockaddons.SkyblockAddons;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonClass;
+import codes.biscuit.skyblockaddons.features.dungeon.DungeonPlayer;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 @Getter @Setter
 public class HealingCircle {
 
-    public static final float DIAMETER = 12;
-    public static final float RADIUS = 12 / 2F;
+    private static final float DEFAULT_DIAMETER = 12;
+    private static final float DEFAULT_RADIUS = 12 / 2F;
+    private static final long DEFAULT_DURATION = 10000;
+
+    @Getter @Setter private static float radius = 0;
+    @Getter private static float diameter = DEFAULT_DIAMETER;
+    private static long duration = DEFAULT_DURATION;
 
     private List<HealingCircleParticle> healingCircleParticles = new ArrayList<>();
     private long creation = System.currentTimeMillis();
@@ -24,6 +34,9 @@ public class HealingCircle {
 
     public HealingCircle(HealingCircleParticle healingCircleParticle) {
         addPoint(healingCircleParticle);
+        if (radius == 0) {
+            calculateRadius();
+        }
     }
 
     public void addPoint(HealingCircleParticle healingCircleParticle) {
@@ -127,7 +140,7 @@ public class HealingCircle {
             Point2D.Double point = healingCircleParticle.getPoint();
 
             double distance = point.distance(center);
-            if (distance > (DIAMETER - 1) / 2F && distance < (DIAMETER + 1) / 2F) {
+            if (distance > (diameter - 1) / 2F && distance < (diameter + 1) / 2F) {
                 perfectParticles++;
             }
         }
@@ -176,7 +189,7 @@ public class HealingCircle {
         while (healingCircleParticleIterator.hasNext()) {
             HealingCircleParticle healingCircleParticle = healingCircleParticleIterator.next();
 
-            if (System.currentTimeMillis() - healingCircleParticle.getCreation() > 10000) {
+            if (System.currentTimeMillis() - healingCircleParticle.getCreation() > duration) {
                 this.totalX -= healingCircleParticle.getPoint().getX();
                 this.totalZ -= healingCircleParticle.getPoint().getY();
                 this.totalParticles--;
@@ -188,5 +201,52 @@ public class HealingCircle {
 
     public boolean hasCachedCenterPoint() {
         return cachedCenterPoint != null;
+    }
+
+    private void calculateRadius() {
+        SkyblockAddons main = SkyblockAddons.getInstance();
+
+        HashMap<String, DungeonPlayer> teammates = main.getDungeonManager().getTeammates();
+        Pair<DungeonClass, Integer> thePlayerClass = main.getDungeonManager().getThePlayerClass();
+        boolean isThePlayerHealer = thePlayerClass != null && thePlayerClass.getLeft() == DungeonClass.HEALER;
+
+        // Formulas: https://wiki.hypixel.net/Healer
+        if (teammates.isEmpty() && isThePlayerHealer) { // solo healer run
+            int thePlayerClassLevel = thePlayerClass.getRight();
+            radius = 5.5F + (float) Math.floor(thePlayerClassLevel / 5F) * 0.5F;
+            diameter = radius * 2;
+            duration = (10 + (long) Math.floor(thePlayerClassLevel / 5F)) * 1000;
+        } else if (!teammates.isEmpty()) {
+            int healerCounter = 0;
+            DungeonPlayer healerData = null;
+
+            for (DungeonPlayer teammateData : teammates.values()) {
+                if (teammateData.getDungeonClass() == DungeonClass.HEALER) {
+                    healerCounter++;
+                    healerData = teammateData;
+                }
+            }
+
+            // TODO improve
+            if (healerCounter == 1 && !isThePlayerHealer) {
+                int healerClassLevel = healerData.getClassLevel();
+                radius = 5.5F + (float) Math.floor(healerClassLevel / 5F) * 0.5F;
+                diameter = radius * 2;
+                duration = (10 + (long) Math.floor(healerClassLevel / 5F)) * 1000;
+            } else if (healerCounter == 0 && isThePlayerHealer) {
+                int thePlayerClassLevel = thePlayerClass.getRight();
+                radius = 5.5F + (float) Math.floor(thePlayerClassLevel / 5F) * 0.5F;
+                diameter = radius * 2;
+                duration = (10 + (long) Math.floor(thePlayerClassLevel / 5F)) * 1000;
+            } else {
+                radius = DEFAULT_RADIUS;
+                diameter = DEFAULT_DIAMETER;
+                duration = DEFAULT_DURATION;
+            }
+        } else {
+            radius = DEFAULT_RADIUS;
+            diameter = DEFAULT_DIAMETER;
+            duration = DEFAULT_DURATION;
+        }
     }
 }

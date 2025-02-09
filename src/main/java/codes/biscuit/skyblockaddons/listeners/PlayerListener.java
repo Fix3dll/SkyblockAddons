@@ -23,6 +23,7 @@ import codes.biscuit.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import codes.biscuit.skyblockaddons.features.enchants.EnchantManager;
 import codes.biscuit.skyblockaddons.features.fishParticles.FishParticleManager;
 import codes.biscuit.skyblockaddons.features.deployables.DeployableManager;
+import codes.biscuit.skyblockaddons.features.healingcircle.HealingCircle;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTracker;
 import codes.biscuit.skyblockaddons.features.tablist.TabListParser;
 import codes.biscuit.skyblockaddons.features.tablist.TabStringType;
@@ -142,8 +143,10 @@ public class PlayerListener {
             "fireworks.twinkle", "fireworks.twinkle_far", "mob.ghast.moan"));
 
     // All Rat pet sounds as instance with their respective sound categories, except the sound when it lays a cheese
-    private static final Set<PositionedSoundRecord> RAT_SOUNDS = new HashSet<>(Arrays.asList(new PositionedSoundRecord(new ResourceLocation("minecraft", "mob.bat.idle"), 1.0f, 1.1904762f, 0.0f, 0.0f, 0.0f),
-            new PositionedSoundRecord(new ResourceLocation("minecraft", "mob.chicken.step"), 0.15f, 1.0f, 0.0f, 0.0f, 0.0f)));
+    private static final Set<PositionedSoundRecord> RAT_SOUNDS = new HashSet<>(Arrays.asList(
+            new PositionedSoundRecord(new ResourceLocation("minecraft", "mob.bat.idle"), 1.0f, 1.1904762f, 0.0f, 0.0f, 0.0f),
+            new PositionedSoundRecord(new ResourceLocation("minecraft", "mob.chicken.step"), 0.15f, 1.0f, 0.0f, 0.0f, 0.0f)
+    ));
 
     private long lastWorldJoin = -1;
     private long lastBal = -1;
@@ -1167,13 +1170,13 @@ public class PlayerListener {
 
     /**
      * This method is called when a player in Dungeons gets revived.
-     *
      * @param e the event that caused this method to be called
      */
     @SubscribeEvent
     public void onDungeonPlayerRevive(DungeonPlayerReviveEvent e) {
         if (e.revivedPlayer == MC.thePlayer) {
             lastRevive = Minecraft.getSystemTime();
+            HealingCircle.setRadius(0); // recalculate
         }
 
         // Reset the previous inventory so the screen doesn't get spammed with a large pickup log

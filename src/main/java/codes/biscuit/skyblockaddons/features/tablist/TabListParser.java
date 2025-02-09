@@ -40,10 +40,8 @@ public class TabListParser {
     private static final Pattern OLD_SKILL_LEVEL_PATTERN = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
     private static final Pattern JERRY_POWER_UPS_PATTERN = Pattern.compile("Active Power Ups(?:§.)*(?:\\n(§.)*§7.+)*");
 
-    @Getter
-    private static List<RenderColumn> renderColumns;
-    @Getter
-    private static String parsedRainTime;
+    @Getter private static List<RenderColumn> renderColumns;
+    @Getter private static String parsedRainTime;
 
     public static void parse() {
         Minecraft mc = Minecraft.getMinecraft();

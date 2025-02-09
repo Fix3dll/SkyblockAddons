@@ -6,9 +6,11 @@ import codes.biscuit.skyblockaddons.core.chroma.ManualChromaManager;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
+import codes.biscuit.skyblockaddons.features.healingcircle.HealingCircle;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -96,6 +98,8 @@ public class DungeonManager {
     /** The number of deaths displayed on the detailed tab list (if enabled) */
     @Getter private int playerListInfoDeaths;
 
+    @Getter @Setter private Pair<DungeonClass, Integer> thePlayerClass = null;
+
     /**
      * Entity-level predicate to determine whether a specific entity should be outlined, and if so, what color.
      * <p>
@@ -123,9 +127,11 @@ public class DungeonManager {
         dungeonMilestone = null;
         collectedEssences.clear();
         teammates.clear();
+        thePlayerClass = null;
         deaths = 0;
         alternateDeaths = 0;
         playerListInfoDeaths = 0;
+        HealingCircle.setRadius(0);
     }
 
     /**
@@ -469,12 +475,11 @@ public class DungeonManager {
                     );
 
                     String health = dungeonPlayer.getHealth() + (ColorCode.RED + "❤");
-                    MC.fontRendererObj.drawString(
+                    DrawUtils.drawText(
                             health,
                             -MC.fontRendererObj.getStringWidth(health) / 2F,
                             CRITICAL_ICON_SIZE / 2F + 13,
-                            -1,
-                            true
+                            -1
                     );
                     e.setCanceled(true);
                 }

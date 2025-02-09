@@ -4,12 +4,14 @@ import codes.biscuit.skyblockaddons.features.dungeonmap.MapMarker;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter
+@Getter @Setter @ToString
 public class DungeonPlayer {
 
     private String name;
     private DungeonClass dungeonClass;
+    private int classLevel;
     private ColorCode healthColor;
     private MapMarker mapMarker;
     private int health;
@@ -17,6 +19,7 @@ public class DungeonPlayer {
     public DungeonPlayer(String name, DungeonClass dungeonClass, ColorCode healthColor, int health) {
         this.name = name;
         this.dungeonClass = dungeonClass;
+        this.classLevel = 0;
         this.healthColor = healthColor;
         this.health = health;
     }
@@ -31,16 +34,5 @@ public class DungeonPlayer {
 
     public boolean isGhost() {
         return this.health == 0;
-    }
-
-    @Override
-    public String toString() {
-        return "DungeonPlayer{" +
-                "name='" + name + '\'' +
-                ", dungeonClass=" + dungeonClass +
-                ", healthColor=" + healthColor.name() +
-                ", mapMarker=" + mapMarker +
-                ", health=" + health +
-                '}';
     }
 }
