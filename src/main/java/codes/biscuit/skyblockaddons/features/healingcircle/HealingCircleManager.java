@@ -84,8 +84,6 @@ public class HealingCircleManager {
                     );
                     DrawUtils.drawCylinder(circleCenter.getX(), 0, circleCenter.getY(), HealingCircle.getRadius(), 255, ColorUtils.getDummySkyblockColor(color, chroma));
 
-                    System.out.println(HealingCircle.getRadius());
-                    System.out.println(HealingCircle.getDiameter());
                     GlStateManager.enableCull();
                     GlStateManager.enableTexture2D();
                     GlStateManager.enableDepth();
