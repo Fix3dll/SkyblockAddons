@@ -543,7 +543,7 @@
     "thunderbolt": {
       "goodLevel": 5,
       "loreName": "Thunderbolt",
-      "maxLevel": 6,
+      "maxLevel": 7,
       "nbtName": "thunderbolt"
     },
     "thunderlord": {
