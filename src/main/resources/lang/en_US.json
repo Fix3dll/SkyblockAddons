@@ -265,7 +265,19 @@
     "mageColor": "Mage",
     "berserkColor": "Berserk",
     "archerColor": "Archer",
-    "tankColor": "Tank"
+    "tankColor": "Tank",
+    "autoUpdate": {
+      "title": "Auto Update",
+      "stable": {
+        "title": "Stable",
+        "description": "Downloads the latest version from the Release channel. (Recommended)"
+      },
+      "beta": {
+        "title": "Beta",
+        "description": "Downloads the latest version from the Beta channel."
+      }
+    },
+    "fullAutoUpdate": "Full Auto Update"
   },
   "messages": {
     "enchants": "Enchants",
@@ -286,17 +298,21 @@
       "wantToViewPatchNotes": "Need support or want to read the full changelog?",
       "joinDiscord": "Join our Discord server!",
       "watchShowcase": "Watch Video",
+      "autoDownloadButton": "Auto Download",
+      "autoDownloadButtonHover": "Click here to auto download %targetVersion%!",
+      "autoDownloadStarted": "Automatic download started.",
       "downloadButton": "Download",
       "changelogButton": "Changelog",
       "openModFolderButton": "Open Mods Folder",
       "joinDiscordButton": "Join Discord",
       "newUpdateAvailable": "A new update (%version%) is available!",
-      "noDownloadAvailable": "No download link available, please check our Discord server.",
+      "noDownloadAvailable": "No download link available, please check Modrinth page.",
       "notificationBox": {
         "majorAvailable": "A new major update (%version%) is available! The link for the download can be found in chat.",
         "betaAvailable": "A new beta update (%version%) is available! Look in chat for the download link.",
         "patchAvailable": "A new patch update (%version%) is available! Look in chat for download options!"
-      }
+      },
+      "autoUpdateTargetIsNotUpToDate": "Auto Update target is not up to date!"
     },
     "slotLocked": "This slot is locked!",
     "summoningEyeFound": "Summoning Eye!",
@@ -322,6 +338,8 @@
     "switchedSlots": "You have just switched from a locked slot or rare item. Please wait a bit before dropping!",
     "clickToOpenLink": "Click to open this link!",
     "clickToOpenFolder": "Click to open your mods folder!",
+    "clickToCopy": "Click to copy!",
+    "clickToReload": "Click to reload!",
     "firstStatus": "This status will appear at the top",
     "secondStatus": "This status will appear under your first status",
     "fallbackStatus": "This status will appear when your automatic status has nothing to show",

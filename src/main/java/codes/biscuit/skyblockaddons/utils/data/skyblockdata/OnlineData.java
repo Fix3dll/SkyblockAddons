@@ -1,8 +1,11 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
 import codes.biscuit.skyblockaddons.core.SkyblockRarity;
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
+import lombok.AccessLevel;
 import lombok.Getter;
+import moe.nea.libautoupdate.UpdateData;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +23,27 @@ public class OnlineData {
     private UpdateInfo updateInfo;
     @SerializedName("languageJSONFormat")
     private String languageJSONFormat;
+    @SerializedName("autoUpdateStable")
+    @Getter(AccessLevel.NONE)
+    private AutoUpdateData autoUpdateStable;
+    @SerializedName("autoUpdateBeta")
+    @Getter(AccessLevel.NONE)
+    private AutoUpdateData autoUpdateBeta;
+
+    /**
+     * @return null if OnlineData is not fetched from CDN
+     */
+    public UpdateData getUpdateData(String updateStream) {
+        if (autoUpdateStable == null || autoUpdateBeta == null) {
+            return null;
+        } else if (updateStream.equalsIgnoreCase("stable")) {
+            return autoUpdateStable.buildUpdateData();
+        } else if (updateStream.equalsIgnoreCase("beta")) {
+            return autoUpdateBeta.buildUpdateData();
+        } else {
+            throw new IllegalStateException("Unexpected 'updateStream': " + updateStream);
+        }
+    }
 
     /**
      * This is the list of features in the mod that should be disabled. Features in this list will be disabled for all
@@ -71,5 +95,19 @@ public class OnlineData {
         private List<String> dontDropTheseItems;
         @SerializedName("allowDroppingTheseItems")
         private List<String> allowDroppingTheseItems;
+    }
+
+    @Getter
+    public static class AutoUpdateData {
+        @SerializedName("versionNumber")
+        private JsonElement versionNumber;
+        @SerializedName("sha256")
+        private String sha256;
+        @SerializedName("download")
+        private String download;
+
+        private UpdateData buildUpdateData() {
+            return new UpdateData(null, this.versionNumber, this.sha256, this.download);
+        }
     }
 }

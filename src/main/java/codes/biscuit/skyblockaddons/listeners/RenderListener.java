@@ -29,7 +29,7 @@ import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 import codes.biscuit.skyblockaddons.gui.screens.LocationEditGui;
 import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
-import codes.biscuit.skyblockaddons.core.Updater;
+import codes.biscuit.skyblockaddons.core.updater.Updater;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;

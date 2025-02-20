@@ -19,6 +19,7 @@ public class EnumRegistry {
         REGISTRY.put("PET_ITEM_STYLE", EnumUtils.PetItemStyle.class);
         REGISTRY.put("TEXT_STYLE", EnumUtils.TextStyle.class);
         REGISTRY.put("CHROMA_MODE", EnumUtils.ChromaMode.class);
+        REGISTRY.put("AUTO_UPDATE", EnumUtils.AutoUpdateMode.class);
         REGISTRY.put("COLOR_CODE", ColorCode.class);
         REGISTRY.put("ENCHANT_LAYOUT", EnchantLayout.class);
         REGISTRY.put("LANGUAGE", Language.class);
