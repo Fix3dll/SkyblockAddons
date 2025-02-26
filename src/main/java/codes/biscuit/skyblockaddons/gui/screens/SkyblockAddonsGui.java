@@ -12,6 +12,7 @@ import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonSettings;
 import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonFeatureToggle;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.AutoUpdateMode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.ChromaMode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.TextStyle;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
@@ -164,6 +165,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                         continue;
                     case TEXT_STYLE:
                     case CHROMA_MODE:
+                    case AUTO_UPDATE:
                         addButton(feature, EnumUtils.ButtonType.CYCLING);
                         break;
                     case WARNING_TIME:
@@ -352,6 +354,14 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                             Arrays.asList(ChromaMode.values()),
                             ((ChromaMode) Feature.CHROMA_MODE.getValue()).ordinal(),
                             index -> Feature.CHROMA_MODE.setValue(ChromaMode.values()[index])
+                    ));
+                    break;
+                case AUTO_UPDATE:
+                    buttonList.add(new ButtonCycling(
+                            bcX , bcY, bcWidth, bcHeight,
+                            Arrays.asList(AutoUpdateMode.values()),
+                            ((AutoUpdateMode) Feature.AUTO_UPDATE.getValue()).ordinal(),
+                            index -> Feature.AUTO_UPDATE.setValue(AutoUpdateMode.values()[index])
                     ));
                     break;
             }

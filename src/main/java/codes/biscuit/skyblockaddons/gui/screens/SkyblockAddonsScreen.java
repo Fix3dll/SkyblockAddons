@@ -2,6 +2,7 @@ package codes.biscuit.skyblockaddons.gui.screens;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonSocial;
+import codes.biscuit.skyblockaddons.gui.buttons.SkyblockAddonsButton;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
@@ -30,6 +31,17 @@ public class SkyblockAddonsScreen extends GuiScreen {
 
     // Used to calculate the transparency when fading in.
     final long timeOpened = System.currentTimeMillis();
+
+    boolean firstDraw = true;
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if (firstDraw) {
+            sortButtonList();
+            firstDraw = false;
+        }
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
 
     public float calculateAlphaMultiplier() {
         if (main.getUtils().isFadingIn()) {
@@ -83,6 +95,26 @@ public class SkyblockAddonsScreen extends GuiScreen {
         drawScaledString(gui, FORMATTED_VERSION, 55, defaultBlue, 1.3, 170 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(FORMATTED_VERSION), false);
 
         main.getUtils().restoreGLOptions();
+    }
+
+    /**
+     * Sorts buttons by {@link SkyblockAddonsButton#priority}. They are sorted so that the ones with higher priority are
+     * displayed last and the ones with lower priority are displayed first.
+     */
+    protected void sortButtonList() {
+        buttonList.sort((b1, b2) -> {
+            boolean b1IsCustom = b1 instanceof SkyblockAddonsButton;
+            boolean b2IsCustom = b2 instanceof SkyblockAddonsButton;
+
+            if (b1IsCustom && b2IsCustom) {
+                return Integer.compare(((SkyblockAddonsButton) b1).priority, ((SkyblockAddonsButton) b2).priority);
+            }
+
+            if (b1IsCustom) return -1;
+            if (b2IsCustom) return 1;
+
+            return 0;
+        });
     }
 
     static void drawScaledString(GuiScreen guiScreen, String text, int y, int color, double scale, int xOffset) {

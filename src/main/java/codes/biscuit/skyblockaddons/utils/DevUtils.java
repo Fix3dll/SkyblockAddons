@@ -54,9 +54,9 @@ public class DevUtils {
     //TODO: Add options to enter custom action bar messages to test ActionBarParser
     //      Add an option to log changed action bar messages only to reduce log spam
 
-    private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft MC = Minecraft.getMinecraft();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     /** Pattern used for removing the placeholder emoji player names from the Hypixel scoreboard */
     public static final Pattern SIDEBAR_PLAYER_NAME_PATTERN = Pattern.compile("[\uD83D\uDD2B\uD83C\uDF6B\uD83D\uDCA3\uD83D\uDC7D\uD83D\uDD2E\uD83D\uDC0D\uD83D\uDC7E\uD83C\uDF20\uD83C\uDF6D\u26BD\uD83C\uDFC0\uD83D\uDC79\uD83C\uDF81\uD83C\uDF89\uD83C\uDF82]+");
@@ -96,15 +96,15 @@ public class DevUtils {
      * @param stripControlCodes if {@code true}, the control codes will be removed, otherwise they will be copied
      */
     private static void copyScoreboardSidebar(boolean stripControlCodes) {
-        Scoreboard scoreboard = mc.theWorld.getScoreboard();
+        Scoreboard scoreboard = MC.theWorld.getScoreboard();
         if (scoreboard == null) {
-            main.getUtils().sendErrorMessage("Nothing is being displayed in the sidebar!");
+            Utils.sendErrorMessage("Nothing is being displayed in the sidebar!");
             return;
         }
 
         ScoreObjective sideBarObjective = scoreboard.getObjectiveInDisplaySlot(1);
         if (sideBarObjective == null) {
-            main.getUtils().sendErrorMessage("Nothing is being displayed in the sidebar!");
+            Utils.sendErrorMessage("Nothing is being displayed in the sidebar!");
             return;
         }
 
@@ -114,7 +114,7 @@ public class DevUtils {
         List<Score> scores = (List<Score>) scoreboard.getSortedScores(sideBarObjective);
 
         if (scores == null || scores.isEmpty()) {
-            main.getUtils().sendErrorMessage("No scores were found!");
+            Utils.sendErrorMessage("No scores were found!");
             return;
         }
 
@@ -163,8 +163,8 @@ public class DevUtils {
      * @param copyRadius copy the NBT data of entities inside this radius(in blocks) around the player
      */
     private static void copyEntityData(List<Class<? extends Entity>> includedEntityClasses, int copyRadius) {
-        EntityPlayerSP player = mc.thePlayer;
-        List<Entity> loadedEntitiesCopy = new LinkedList<>(mc.theWorld.loadedEntityList);
+        EntityPlayerSP player = MC.thePlayer;
+        List<Entity> loadedEntitiesCopy = new LinkedList<>(MC.theWorld.loadedEntityList);
         ListIterator<Entity> loadedEntitiesCopyIterator;
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -211,14 +211,14 @@ public class DevUtils {
             copyStringToClipboard(stringBuilder.toString(), ColorCode.GREEN + "Entity data was copied to clipboard!");
         }
         else {
-            main.getUtils().sendErrorMessage("No entities matching the given parameters were found.");
+            Utils.sendErrorMessage("No entities matching the given parameters were found.");
         }
     }
 
     public static void setEntityNamesFromString(String includedEntityNames) {
         List<Class<? extends Entity>> entityClasses = getEntityClassListFromString(includedEntityNames);
         if (entityClasses == null || entityClasses.isEmpty()) {
-            main.getUtils().sendErrorMessage("The entity class list is not valid or is empty! Falling back to default.");
+            Utils.sendErrorMessage("The entity class list is not valid or is empty! Falling back to default.");
             resetEntityNamesToDefault();
         } else {
             entityNames = entityClasses;
@@ -227,7 +227,7 @@ public class DevUtils {
 
     public static void setEntityCopyRadius(int copyRadius) {
         if (copyRadius <= 0) {
-            main.getUtils().sendErrorMessage("Radius cannot be negative! Falling back to " + DEFAULT_ENTITY_COPY_RADIUS + ".");
+            Utils.sendErrorMessage("Radius cannot be negative! Falling back to " + DEFAULT_ENTITY_COPY_RADIUS + ".");
             resetEntityCopyRadiusToDefault();
         } else {
             entityCopyRadius = copyRadius;
@@ -290,7 +290,7 @@ public class DevUtils {
             } else if (entityName.equals("PlayerMP") | entityName.equals("OtherPlayerMP")) {
                 entityClasses.add(EntityOtherPlayerMP.class);
             } else {
-                main.getUtils().sendErrorMessage("The entity name \"" + entityName + "\" is invalid. Skipping!");
+                Utils.sendErrorMessage("The entity name \"" + entityName + "\" is invalid. Skipping!");
             }
         }
 
@@ -322,7 +322,7 @@ public class DevUtils {
      */
     public static void copyNBTTagToClipboard(NBTBase nbtTag, String message) {
         if (nbtTag == null) {
-            main.getUtils().sendErrorMessage("This item has no NBT data!");
+            Utils.sendErrorMessage("This item has no NBT data!");
             return;
         }
         writeToClipboard(prettyPrintNBT(nbtTag), message);
@@ -333,11 +333,11 @@ public class DevUtils {
      * @see net.minecraft.client.gui.GuiPlayerTabOverlay
      */
     public static void copyTabListHeaderAndFooter() {
-        IChatComponent tabHeader = mc.ingameGUI.getTabList().header;
-        IChatComponent tabFooter = mc.ingameGUI.getTabList().footer;
+        IChatComponent tabHeader = MC.ingameGUI.getTabList().header;
+        IChatComponent tabFooter = MC.ingameGUI.getTabList().footer;
 
         if (tabHeader == null && tabFooter == null) {
-            main.getUtils().sendErrorMessage("There is no header or footer!");
+            Utils.sendErrorMessage("There is no header or footer!");
             return;
         }
 
@@ -396,8 +396,8 @@ public class DevUtils {
     public static String getServerBrand() {
         final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
 
-        if (!mc.isSingleplayer()) {
-            Matcher matcher = SERVER_BRAND_PATTERN.matcher(mc.thePlayer.getClientBrand());
+        if (!MC.isSingleplayer()) {
+            Matcher matcher = SERVER_BRAND_PATTERN.matcher(MC.thePlayer.getClientBrand());
 
             if (matcher.find()) {
                 // Group 1 is the server brand.
@@ -414,20 +414,20 @@ public class DevUtils {
      * Copy the block data with its tile entity data if the block has one.
      */
     public static void copyBlockData() {
-        if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK ||
-                mc.objectMouseOver.getBlockPos() == null) {
-            main.getUtils().sendErrorMessage("You are not looking at a block!");
+        if (MC.objectMouseOver == null || MC.objectMouseOver.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK ||
+                MC.objectMouseOver.getBlockPos() == null) {
+            Utils.sendErrorMessage("You are not looking at a block!");
             return;
         }
 
-        BlockPos blockPos = mc.objectMouseOver.getBlockPos();
+        BlockPos blockPos = MC.objectMouseOver.getBlockPos();
 
-        IBlockState blockState = mc.theWorld.getBlockState(blockPos);
-        if (mc.theWorld.getWorldType() != WorldType.DEBUG_WORLD) {
-            blockState = blockState.getBlock().getActualState(blockState, mc.theWorld, blockPos);
+        IBlockState blockState = MC.theWorld.getBlockState(blockPos);
+        if (MC.theWorld.getWorldType() != WorldType.DEBUG_WORLD) {
+            blockState = blockState.getBlock().getActualState(blockState, MC.theWorld, blockPos);
         }
 
-        TileEntity tileEntity = mc.theWorld.getTileEntity(blockPos);
+        TileEntity tileEntity = MC.theWorld.getTileEntity(blockPos);
         NBTTagCompound nbt = new NBTTagCompound();
         if (tileEntity != null) {
             NBTTagCompound nbtTileEntity = new NBTTagCompound();
@@ -532,7 +532,7 @@ public class DevUtils {
                             stringBuilder.append(key).append("(decoded): ").append(
                                     prettyPrintNBT(backpackData));
                         } catch (IOException e) {
-                            logger.error("Couldn't decompress backpack data into NBT, skipping!", e);
+                            LOGGER.error("Couldn't decompress backpack data into NBT, skipping!", e);
                         }
                     }
 
@@ -569,20 +569,20 @@ public class DevUtils {
      * This method reloads all of the mod's settings from the settings file.
      */
     public static void reloadConfig() {
-        sendMessageOrLog("Reloading settings...");
+        Utils.sendMessageOrElseLog("Reloading settings...", LOGGER, false);
         main.getConfigValuesManager().loadValues();
-        sendMessageOrLog("Settings reloaded.");
+        Utils.sendMessageOrElseLog("Settings reloaded.", LOGGER, false);
     }
 
     /**
      * This method reloads all of the mod's resources from the corresponding files.
      */
     public static void reloadResources() {
-        sendMessageOrLog(Translations.getMessage("messages.reloadingResources"));
+        Utils.sendMessageOrElseLog(Translations.getMessage("messages.reloadingResources"), LOGGER, false);
         DataUtils.registerNewRemoteRequests();
         DataUtils.readLocalAndFetchOnline();
         main.getPersistentValuesManager().loadValues();
-        ((SimpleReloadableResourceManager) mc.getResourceManager()).reloadResourcePack(
+        ((SimpleReloadableResourceManager) MC.getResourceManager()).reloadResourcePack(
                 FMLClientHandler.instance().getResourcePackFor(SkyblockAddons.MOD_ID)
         );
         try {
@@ -590,14 +590,14 @@ public class DevUtils {
                     SkyblockAddonsASMTransformer.isDeobfuscated() ? "notifyReloadListeners" : "func_110544_b"
             );
             notifyReloadListenersMethod.setAccessible(true);
-            notifyReloadListenersMethod.invoke(mc.getResourceManager());
+            notifyReloadListenersMethod.invoke(MC.getResourceManager());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            logger.error("An error occurred while reloading the mod's resources.", e);
+            LOGGER.error("An error occurred while reloading the mod's resources.", e);
         }
         SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
             if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
                 DataUtils.onSkyblockJoined();
-                sendMessageOrLog(Translations.getMessage("messages.resourcesReloaded"));
+                Utils.sendMessageOrElseLog(Translations.getMessage("messages.resourcesReloaded"), LOGGER, false);
                 scheduledTask.cancel();
             }
         }, 0, 2);
@@ -613,10 +613,10 @@ public class DevUtils {
         try {
             clipboard.setContents(output, output);
             if (successMessage != null) {
-                main.getUtils().sendMessage(successMessage);
+                Utils.sendMessage(successMessage);
             }
         } catch (IllegalStateException exception) {
-            main.getUtils().sendErrorMessage("Clipboard not available!");
+            Utils.sendErrorMessage("Clipboard not available!");
         }
     }
 
@@ -628,19 +628,11 @@ public class DevUtils {
     public static void setCopyMode(CopyMode copyMode) {
         if (DevUtils.copyMode != copyMode) {
             DevUtils.copyMode = copyMode;
-            main.getUtils().sendMessage(
+            Utils.sendMessage(
                     ColorCode.YELLOW + Translations.getMessage(
                             "messages.copyModeSet", copyMode, SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyName()
                     )
             );
-        }
-    }
-
-    private static void sendMessageOrLog(String message) {
-        if (mc.thePlayer != null) {
-            main.getUtils().sendMessage(message);
-        } else {
-            logger.info(message);
         }
     }
 

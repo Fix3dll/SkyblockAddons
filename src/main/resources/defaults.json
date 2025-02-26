@@ -973,5 +973,11 @@
   },
   "SHOW_COLOR_ICONS": {
     "value": true
+  },
+  "AUTO_UPDATE": {
+    "value": "STABLE"
+  },
+  "FULL_AUTO_UPDATE": {
+    "value": false
   }
 }

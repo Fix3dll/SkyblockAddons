@@ -1,16 +1,24 @@
-package codes.biscuit.skyblockaddons.core;
+package codes.biscuit.skyblockaddons.core.updater;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.asm.SkyblockAddonsASMTransformer;
+import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.AutoUpdateMode;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import lombok.Getter;
+import moe.nea.libautoupdate.CurrentVersion;
+import moe.nea.libautoupdate.PotentialUpdate;
+import moe.nea.libautoupdate.UpdateContext;
+import moe.nea.libautoupdate.UpdateTarget;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,14 +32,19 @@ import static net.minecraftforge.common.ForgeVersion.Status.*;
 public class Updater {
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("(?<major>[0-9])\\.(?<minor>[0-9])\\.(?<patch>[0-9]).*");
+    private static final UpdateContext AUTO_UPDATE_CONTEXT = new UpdateContext(
+            new CustomUpdateSource(),
+            UpdateTarget.deleteAndSaveInTheSameFolder(SkyblockAddons.class),
+            CurrentVersion.ofTag(SkyblockAddons.VERSION),
+            SkyblockAddons.MOD_ID
+    );
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     private ComparableVersion target = null;
 
-    @Getter
-    private String messageToRender;
+    @Getter private String messageToRender;
     private String downloadLink;
     private String changelogLink;
     private String note;
@@ -39,6 +52,12 @@ public class Updater {
     private boolean hasUpdate = false;
     private boolean isPatch = false;
     private boolean sentUpdateMessage = false;
+    private PotentialUpdate cachedPotentialUpdate = null;
+    private boolean updateLaunched = false;
+
+    public Updater() {
+        AUTO_UPDATE_CONTEXT.cleanup();
+    }
 
     /**
      * Returns whether the update notification message has already been sent.
@@ -62,7 +81,7 @@ public class Updater {
      * Checks the online data for an update and sets the correct message to be displayed.
      */
     public void checkForUpdate() {
-        logger.info("Checking to see if an update is available...");
+        LOGGER.info("Checking to see if an update is available...");
         OnlineData.UpdateInfo updateInfo = main.getOnlineData().getUpdateInfo();
 
         // Variables reset for testing update checker notifications
@@ -70,7 +89,7 @@ public class Updater {
         main.getRenderListener().setUpdateMessageDisplayed(false);
 
         if (updateInfo == null) {
-            logger.error("Update check failed: Update info is null!");
+            LOGGER.error("Update check failed: Update info is null!");
             return;
         }
 
@@ -88,11 +107,11 @@ public class Updater {
             releaseDiff = latestRelease.compareTo(current);
         } else {
             if (!isCurrentBeta) {
-                logger.error("Update check failed: Current version is a release version and key `latestRelease` is null " +
+                LOGGER.error("Update check failed: Current version is a release version and key `latestRelease` is null " +
                         "or empty.");
                 return;
             } else {
-                logger.warn("Key `latestRelease` is null or empty, skipping!");
+                LOGGER.warn("Key `latestRelease` is null or empty, skipping!");
             }
         }
 
@@ -102,10 +121,10 @@ public class Updater {
                 betaDiff = latestBeta.compareTo(current);
             } else {
                 if (latestRelease == null) {
-                    logger.error("Update check failed: Keys `latestRelease` and `latestBeta` are null or empty.");
+                    LOGGER.error("Update check failed: Keys `latestRelease` and `latestBeta` are null or empty.");
                     return;
                 } else {
-                    logger.warn("Key `latestBeta` is null or empty, skipping!");
+                    LOGGER.warn("Key `latestBeta` is null or empty, skipping!");
                 }
             }
         }
@@ -125,8 +144,9 @@ public class Updater {
 
             // If release is newer than this beta, target release
             if (latestReleaseExists) {
-                ComparableVersion currentWithoutPrerelease = new ComparableVersion(currentVersionString.substring(0,
-                        currentVersionString.indexOf('-')));
+                ComparableVersion currentWithoutPrerelease = new ComparableVersion(
+                        currentVersionString.substring(0, currentVersionString.indexOf('-'))
+                );
 
                 if (releaseDiff > 0 || latestRelease.compareTo(currentWithoutPrerelease) == 0) {
                     status = OUTDATED;
@@ -134,7 +154,7 @@ public class Updater {
                 } else if (!latestBetaExists && releaseDiff < 0) {
                     status = AHEAD;
                 } else if (releaseDiff == 0) {
-                    logger.warn("The current beta version ({}) matches the latest release version. " +
+                    LOGGER.warn("The current beta version ({}) matches the latest release version. " +
                             "There is probably something wrong with the online data.", currentVersionString);
                     status = UP_TO_DATE;
                 }
@@ -153,12 +173,26 @@ public class Updater {
         }
 
         if (status == OUTDATED || status == BETA_OUTDATED) {
+            Object autoUpdate = Feature.AUTO_UPDATE.getValue();
+            if (autoUpdate == AutoUpdateMode.STABLE || autoUpdate == AutoUpdateMode.BETA) {
+                AutoUpdateMode updateStream = (AutoUpdateMode) autoUpdate;
+                AUTO_UPDATE_CONTEXT.checkUpdate(updateStream.name()).whenComplete((potentialUpdate, throwable) -> {
+                    if (potentialUpdate.getUpdate() == null) {
+                        Utils.sendMessageOrElseLog("The automatic update check could not be completed because the Online Data was not fetched from the CDN.", LOGGER, true);
+                    } else if (throwable != null) {
+                        Utils.sendMessageOrElseLog("Auto update check failed!", LOGGER, true);
+                        LOGGER.catching(throwable);
+                    } else if (potentialUpdate.isUpdateAvailable()) {
+                        cachedPotentialUpdate = potentialUpdate;
+                    }
+                });
+            }
             hasUpdate = true;
 
             String currentVersion = current.toString();
             String targetVersion = target.toString();
 
-            logger.info("Found an update: {}", targetVersion);
+            LOGGER.info("Found an update: {}", targetVersion);
 
             if (status == OUTDATED) {
                 targetVersion = updateInfo.getLatestRelease();
@@ -182,7 +216,7 @@ public class Updater {
                         currentMatcher.group("minor").equals(targetMatcher.group("minor")) &&
                         !isCurrentBeta;
             } catch (Exception ex) {
-                logger.warn("Couldn't parse update version numbers... This shouldn't affect too much.", ex);
+                LOGGER.warn("Couldn't parse update version numbers... This shouldn't affect too much.", ex);
             }
 
             if (isPatch) {
@@ -194,18 +228,18 @@ public class Updater {
             }
         } else if (status == AHEAD) {
             if (!SkyblockAddonsASMTransformer.isDeobfuscated()) {
-                logger.warn("The current version is newer than the latest version. Please tell an SBA developer to update" +
+                LOGGER.warn("The current version is newer than the latest version. Please tell an SBA developer to update" +
                         " the online data.");
             } else {
-                logger.error("The current version is newer than the latest version. You're doing something wrong.");
-                logger.error("Current: {}", current);
-                logger.error("Latest: {}", latestRelease);
-                logger.error("Latest Beta: {}", latestBeta);
-                logger.error("Release Diff: {}", releaseDiff);
-                logger.error("Beta Diff: {}", betaDiff);
+                LOGGER.error("The current version is newer than the latest version. You're doing something wrong.");
+                LOGGER.error("Current: {}", current);
+                LOGGER.error("Latest: {}", latestRelease);
+                LOGGER.error("Latest Beta: {}", latestBeta);
+                LOGGER.error("Release Diff: {}", releaseDiff);
+                LOGGER.error("Beta Diff: {}", betaDiff);
             }
         } else {
-            logger.info("Up to date!");
+            LOGGER.info("Up to date!");
         }
     }
 
@@ -216,7 +250,7 @@ public class Updater {
 
         String targetVersion = target.toString();
 
-        main.getUtils().sendMessage("§7§m----------------§7[ §b§lSkyblockAddons §7]§7§m----------------", false);
+        Utils.sendMessage("§7§m----------------§7[ §b§lSkyblockAddons §7]§7§m----------------", false);
 
         ChatComponentText newUpdate = new ChatComponentText(
                 String.format("§b%s\n", getMessage("messages.updateChecker.newUpdateAvailable", targetVersion))
@@ -227,22 +261,59 @@ public class Updater {
             newUpdate.appendSibling(versionNote);
         }
 
-        /*
-        ChatComponentText viewChangelog = new ChatComponentText(
-                String.format("§b%s\n", getMessage("messages.updateChecker.wantToViewPatchNotes", targetVersion)));
-        ChatComponentText joinDiscord = new ChatComponentText(
-                String.format("§b%s\n", getMessage("messages.updateChecker.joinDiscord", targetVersion))
-        );
-        newUpdate.appendSibling(viewChangelog).appendSibling(joinDiscord);
-        */
-        main.getUtils().sendMessage(newUpdate, false);
+        Utils.sendMessage(newUpdate, false);
 
+        // TODO organization
+        ChatComponentText autoDownloadButton;
         ChatComponentText downloadButton;
         ChatComponentText openModsFolderButton;
         ChatComponentText changelogButton;
 
+        autoDownloadButton = new ChatComponentText(
+                String.format("§a§l[%s]", getMessage("messages.updateChecker.autoDownloadButton"))
+        );
+
+        Object autoUpdateValue = Feature.AUTO_UPDATE.getValue();
+        if ((autoUpdateValue == AutoUpdateMode.STABLE || autoUpdateValue == AutoUpdateMode.BETA) && cachedPotentialUpdate != null) {
+            AutoUpdateMode autoUpdateMode = (AutoUpdateMode) autoUpdateValue;
+            if (!main.getOnlineData().getUpdateData(autoUpdateMode.name()).getVersionNumber().getAsString().contains(targetVersion)) {
+                autoDownloadButton.text = String.format("§8§m[%s]§r", getMessage("messages.updateChecker.autoDownloadButton"));
+                autoDownloadButton.setChatStyle(
+                        autoDownloadButton.getChatStyle().setChatHoverEvent(
+                                new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        new ChatComponentText("§7" + getMessage("messages.updateChecker.autoUpdateTargetIsNotUpToDate"))
+                                )
+                        )
+                );
+                autoDownloadButton.appendText(" ");
+            } else {
+                if (Feature.FULL_AUTO_UPDATE.isEnabled()) {
+                    if (!updateLaunched) {
+                        Utils.sendMessage(ColorCode.YELLOW + getMessage("messages.updateChecker.autoDownloadStarted") + "\n", false);
+                        launchAutoUpdate(cachedPotentialUpdate);
+                    }
+                    autoDownloadButton.text = "";
+                } else {
+                    autoDownloadButton.setChatStyle(
+                            autoDownloadButton.getChatStyle().setChatClickEvent(
+                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sba internal launchAutoUpdate")
+                            ).setChatHoverEvent(
+                                    new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            new ChatComponentText("§7" + getMessage("messages.updateChecker.autoDownloadButtonHover", targetVersion))
+                                    )
+                            )
+                    );
+                    autoDownloadButton.appendText(" ");
+                }
+            }
+        } else {
+            autoDownloadButton.text = "";
+        }
+
         downloadButton = new ChatComponentText(
-                String.format("§b§l[%s]", getMessage("messages.updateChecker.downloadButton", targetVersion))
+                String.format("§b[%s]", getMessage("messages.updateChecker.downloadButton"))
         );
 
         if (downloadLink != null && !downloadLink.isEmpty()) {
@@ -266,10 +337,10 @@ public class Updater {
                     )
             );
         }
-        downloadButton.appendText(" ");
+        autoDownloadButton.appendSibling(downloadButton).appendText(" ");
 
         openModsFolderButton = new ChatComponentText(
-                String.format("§e§l[%s]", getMessage("messages.updateChecker.openModFolderButton"))
+                String.format("§e[%s]", getMessage("messages.updateChecker.openModFolderButton"))
         );
         openModsFolderButton.setChatStyle(
                 openModsFolderButton.getChatStyle().setChatClickEvent(
@@ -281,11 +352,11 @@ public class Updater {
                         )
                 )
         );
-        downloadButton.appendSibling(openModsFolderButton);
+        autoDownloadButton.appendSibling(openModsFolderButton).appendText(" ");
 
         if (changelogLink != null && !changelogLink.isEmpty()) {
             changelogButton = new ChatComponentText(
-                    String.format(" §9§l[%s]", getMessage("messages.updateChecker.changelogButton"))
+                    String.format("§9[%s]", getMessage("messages.updateChecker.changelogButton"))
             );
             changelogButton.setChatStyle(
                     changelogButton.getChatStyle().setChatClickEvent(
@@ -297,22 +368,43 @@ public class Updater {
                             )
                     )
             );
-            downloadButton.appendSibling(changelogButton);
+            autoDownloadButton.appendSibling(changelogButton).appendText(" ");
         }
 
-        main.getUtils().sendMessage(downloadButton, false);
-        main.getUtils().sendMessage("§7§m--------------------------------------------------", false);
+        Utils.sendMessage(autoDownloadButton, false);
+        Utils.sendMessage("§7§m--------------------------------------------------", false);
 
         sentUpdateMessage = true;
     }
 
     /**
      * Returns whether the given version is a beta version
-     *
      * @param version the version to check
      * @return {@code true} if the given version is a beta version, {@code false} otherwise
      */
     private boolean isBetaVersion(ComparableVersion version) {
         return version.toString().contains("b");
+    }
+
+    public void launchAutoUpdate() {
+        if (cachedPotentialUpdate != null && !updateLaunched) {
+            launchAutoUpdate(cachedPotentialUpdate);
+        } else {
+            LOGGER.warn("cachedPotentialUpdate: {}, updateLaunched: {}", cachedPotentialUpdate, updateLaunched);
+        }
+    }
+
+    public void launchAutoUpdate(@NotNull PotentialUpdate potentialUpdate) {
+        updateLaunched = true;
+        potentialUpdate.launchUpdate().whenComplete((ignored, throwableUpdate) -> {
+            if (throwableUpdate != null) {
+                Utils.sendMessageOrElseLog("§cAuto update failed! See the log for more details.", LOGGER, true);
+                LOGGER.catching(throwableUpdate);
+            } else {
+                Utils.sendMessageOrElseLog("§aThe update has been downloaded successfully. It will be installed after the reboot.", LOGGER, false);
+            }
+            cachedPotentialUpdate = null;
+            updateLaunched = false;
+        });
     }
 }

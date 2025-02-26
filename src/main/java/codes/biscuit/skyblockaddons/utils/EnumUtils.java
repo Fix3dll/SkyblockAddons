@@ -204,6 +204,33 @@ public class EnumUtils {
         }
     }
 
+    public enum AutoUpdateMode implements ButtonCycling.SelectItem, RegistrableEnum {
+        NONE("settings.none", null),
+        STABLE("settings.autoUpdate.stable.title", "settings.autoUpdate.stable.description"),
+        BETA("settings.autoUpdate.beta.title", "settings.autoUpdate.beta.description");
+
+        private final String TRANSLATION_KEY;
+        private final String DESCRIPTION_KEY;
+
+        AutoUpdateMode(String translationKey, String descriptionKey) {
+            TRANSLATION_KEY = translationKey;
+            DESCRIPTION_KEY = descriptionKey;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return Translations.getMessage(TRANSLATION_KEY);
+        }
+
+        @Override
+        public String getDescription() {
+            if (DESCRIPTION_KEY != null) {
+                return Translations.getMessage(DESCRIPTION_KEY);
+            }
+            return null;
+        }
+    }
+
     /**
      * If you make a feature, feel free to add your name here with an associated website of your choice.
      */
