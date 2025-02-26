@@ -46,6 +46,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -87,6 +89,7 @@ public class RenderListener {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getMinecraft();
+    public static final ICamera CAMERA = new Frustum();
 
     private static final ItemStack BONE_ITEM = new ItemStack(Items.bone);
     private static final ResourceLocation BARS = new ResourceLocation("skyblockaddons", "barsV2.png");

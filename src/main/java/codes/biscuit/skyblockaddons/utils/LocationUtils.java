@@ -3,7 +3,6 @@ package codes.biscuit.skyblockaddons.utils;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.Island;
 import com.google.common.collect.Sets;
-import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collections;
@@ -25,15 +24,6 @@ public class LocationUtils {
      */
     private static final Set<String> zealotSpawnLocations = Collections.unmodifiableSet(
             Sets.newHashSet("Dragon's Nest", "Zealot Bruiser Hideout")
-    );
-
-    /**
-     * List of SkyBlock locations where we might see items in showcases from outside. We don't outline showcase blocks
-     * while the player is in this area to avoid disturbing players.
-     */
-    @Getter
-    private static final Set<String> showcaseLocations = Collections.unmodifiableSet(
-            Sets.newHashSet("Village", "Auction House", "Bazaar Alley", "Library", "Jerry's Workshop")
     );
 
     /**

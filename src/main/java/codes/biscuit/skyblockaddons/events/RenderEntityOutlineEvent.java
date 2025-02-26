@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.events;
 
+import codes.biscuit.skyblockaddons.listeners.RenderListener;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -107,7 +108,12 @@ public class RenderEntityOutlineEvent extends Event {
         entitiesToChooseFrom = new HashSet<>(entities.size());
         // Only consider entities that aren't invisible armorstands to increase FPS significantly
         entities.forEach(e -> {
-            if (e != null && !(e instanceof EntityArmorStand && e.isInvisible()) && !(e instanceof EntityItemFrame)) {
+            if (e == null) return;
+
+            // Entity not visible on screen
+            if (!RenderListener.CAMERA.isBoundingBoxInFrustum(e.getEntityBoundingBox())) return;
+
+            if (!(e instanceof EntityArmorStand && e.isInvisible()) && !(e instanceof EntityItemFrame)) {
                 entitiesToChooseFrom.add(e);
             }
         });

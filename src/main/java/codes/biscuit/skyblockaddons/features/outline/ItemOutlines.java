@@ -1,6 +1,5 @@
 package codes.biscuit.skyblockaddons.features.outline;
 
-import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.SkyblockRarity;
@@ -9,6 +8,7 @@ import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent;
 import codes.biscuit.skyblockaddons.events.RenderEntityOutlineEvent.Type;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItem;
@@ -24,11 +24,6 @@ import java.util.function.Function;
 public class ItemOutlines {
 
     /**
-     * Cached value of the client's SkyBlock location
-     */
-    private static String location;
-
-    /**
      * Entity-level predicate to determine whether a specific entity should be outlined, and if so, what color.
      * Should be used in conjunction with the global-level predicate, {@link #shouldOutline()}.
      * <p>
@@ -39,10 +34,13 @@ public class ItemOutlines {
         if (e instanceof EntityItem) {
             EntityItem item = (EntityItem) e;
             // Don't display showcase blocks if player doesn't want them or is outside the building
-            if (LocationUtils.getShowcaseLocations().contains(location)
-                    || Feature.ENTITY_OUTLINES.isDisabled(FeatureSetting.OUTLINE_SHOWCASE_ITEMS)
-                    && isShopShowcaseItem(item)) {
-                return null;
+            if (isShopShowcaseItem(item)) {
+                boolean outlineDisabled = Feature.ENTITY_OUTLINES.isDisabled(FeatureSetting.OUTLINE_SHOWCASE_ITEMS);
+                if (outlineDisabled) {
+                    return null;
+                } else if (!Minecraft.getMinecraft().thePlayer.canEntityBeSeen(item)) {
+                    return null;
+                }
             }
             SkyblockRarity itemRarity = ItemUtils.getRarity(item.getEntityItem());
             if (itemRarity != null) {
@@ -92,10 +90,6 @@ public class ItemOutlines {
      */
     @SubscribeEvent
     public void onRenderEntityOutlines(RenderEntityOutlineEvent e) {
-        // Cache constants
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        location = main.getUtils().getLocation();
-
         if (e.getType() == Type.XRAY) {
             // Test whether we should add any entities at all
             if (shouldOutline()) {
