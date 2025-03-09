@@ -11,14 +11,11 @@ import java.util.Map;
 
 /**
  * Keeps track of bait in the Player's Inventory.
- *
  * @author Charzard4261
  */
 public class BaitManager {
 
-    /**
-     * The BaitListManager instance.
-     */
+    /** The BaitListManager instance. */
     @Getter private static final BaitManager instance = new BaitManager();
 
     public static final Map<BaitType, Integer> DUMMY_BAITS = new HashMap<>();
@@ -87,8 +84,9 @@ public class BaitManager {
         OBFUSCATED_FISH_2_SILVER("§a§kObfuscated 2 §7§LSILVER", "OBFUSCATED_FISH_2_SILVER", "684f2c41-ef26-31fb-96ec-dbbc3b3be6fa", "cb12de47e0b48ab8f7d8f500fdc5d7869b7f2192f823620088582a56afcf68fb"),
         OBFUSCATED_FISH_2_GOLD("§a§kObfuscated 2 §6§LGOLD", "OBFUSCATED_FISH_2_GOLD", "53807fee-2e39-3230-bdd1-3efcf0be73a9", "4631953a0351988029b90e838181e4e563d782e470ea33b8c612756f730625c2"),
         OBFUSCATED_FISH_2_DIAMOND("§a§kObfuscated 2 §B§LDIAMOND", "OBFUSCATED_FISH_2_DIAMOND", "a8e16045-e364-3050-ab40-cde339c36c7e", "4055f82614fc812b611950e3ad2e6921a60f1a275565a7dea2c0fc22a65827f0"),
-        FROZEN_BAIT("§9Frozen Bait", "FROZEN_BAIT", "66d603f6-32bd-3a51-9193-6491f75bd7ae", "38dc68a97cefe92c8cdaa7cb1a7a4de8f16c161da736edf54f79b74beecd6513"),
-        WORM_BAIT("§aWorm Bait", "WORM_BAIT", "730a6086-ad87-38fa-8fa4-0b76a060f4fc", "df03ad96092f3f789902436709cdf69de6b727c121b3c2daef9ffa1ccaed186c")
+        FROZEN("§9Frozen Bait", "FROZEN_BAIT", "66d603f6-32bd-3a51-9193-6491f75bd7ae", "38dc68a97cefe92c8cdaa7cb1a7a4de8f16c161da736edf54f79b74beecd6513"),
+        WORM("§aWorm Bait", "WORM_BAIT", "730a6086-ad87-38fa-8fa4-0b76a060f4fc", "df03ad96092f3f789902436709cdf69de6b727c121b3c2daef9ffa1ccaed186c"),
+        GOLDEN("§aGolden Bait", "GOLDEN_BAIT", "341b5583-eb74-35f3-af85-eee6bbce133a", "72e2908dbb112dcd0b367df43fafcc41a56d9cf803e90a367834b4911f84f391"),
         ;
 
         private final String itemID;
