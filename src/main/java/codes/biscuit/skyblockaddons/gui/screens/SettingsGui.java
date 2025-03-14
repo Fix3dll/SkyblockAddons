@@ -437,6 +437,10 @@ public class SettingsGui extends SkyblockAddonsScreen {
     }
 
     protected void drawSettingsScreen(int mouseX, int mouseY) {
+        if (this.firstDraw) {
+            sortButtonList();
+            this.firstDraw = false;
+        }
         for (GuiButton guiButton : this.buttonList) {
             if (!scrollIgnoredButtons.contains(guiButton)) {
                 guiButton.drawButton(this.mc, mouseX, mouseY);

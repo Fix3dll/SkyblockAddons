@@ -1,11 +1,13 @@
 package codes.biscuit.skyblockaddons.gui.buttons;
 
+import codes.biscuit.skyblockaddons.gui.screens.SettingsGui;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -38,6 +40,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
 
     private final int textWidth;
     private final Consumer<Integer> callback;
+    private final boolean isSettingsGui;
 
     /*
      * Rough sketch of the button
@@ -69,12 +72,14 @@ public class ButtonCycling extends SkyblockAddonsButton {
             throw new IllegalArgumentException("ButtonCycling's callback cannot be null!");
         }
 
+        this.priority = 1001;
         this.textWidth = width - (2 * height) - 6; // 2 * 3 text padding on both sides
         this.width = width;
         this.height = height;
         this.itemList = items;
         this.index = selectedIndex > 0 && selectedIndex < itemList.size() ? selectedIndex : 0;
         this.callback = callback;
+        this.isSettingsGui = Minecraft.getMinecraft().currentScreen instanceof SettingsGui;
     }
 
     @Override
@@ -99,8 +104,6 @@ public class ButtonCycling extends SkyblockAddonsButton {
 
         // inside text
         drawCenteredString(mc.fontRendererObj, trimmedName, xPosition + width / 2, yPosition + height / 4, ColorCode.WHITE.getColor());
-        // description
-        drawCenteredString(mc.fontRendererObj, description, xPosition + width / 2, yPosition + height + 2, ColorCode.GRAY.getColor());
 
         GlStateManager.color(1, 1, 1, 1);
 
@@ -123,6 +126,16 @@ public class ButtonCycling extends SkyblockAddonsButton {
                 int rectBottom = rectTop + 12;
                 drawRect(rectLeft, rectTop, rectRight, rectBottom, ColorCode.BLACK.getColor());
                 mc.fontRendererObj.drawString(name, rectLeft + 4, rectTop+2, ColorCode.WHITE.getColor());
+            }
+        }
+
+        // description
+        if (description != null) {
+            if (isSettingsGui) {
+                drawCenteredString(mc.fontRendererObj, description, xPosition + width / 2, yPosition + height + 2, ColorCode.GRAY.getColor());
+            } else if (isOverText(mouseX, mouseY)) {
+                int descWidth = mc.fontRendererObj.getStringWidth(description);
+                DrawUtils.drawHoveringText(Collections.singletonList(description), mouseX, mouseY, mc.currentScreen.width, mc.currentScreen.height, descWidth);
             }
         }
         GlStateManager.disableBlend();

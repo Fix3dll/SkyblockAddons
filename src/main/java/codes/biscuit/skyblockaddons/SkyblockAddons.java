@@ -27,7 +27,7 @@ import codes.biscuit.skyblockaddons.gui.screens.IslandWarpGui;
 import codes.biscuit.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import codes.biscuit.skyblockaddons.listeners.*;
 import codes.biscuit.skyblockaddons.core.SkyblockKeyBinding;
-import codes.biscuit.skyblockaddons.core.Updater;
+import codes.biscuit.skyblockaddons.core.updater.Updater;
 import codes.biscuit.skyblockaddons.core.scheduler.Scheduler;
 import codes.biscuit.skyblockaddons.utils.*;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;

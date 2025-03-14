@@ -112,5 +112,7 @@
   },
   "hypixelBrands": [
     ".*Hypixel BungeeCord.*"
-  ]
+  ],
+  "autoUpdateStable": null,
+  "autoUpdateBeta": null
 }

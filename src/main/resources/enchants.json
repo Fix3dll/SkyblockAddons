@@ -552,6 +552,12 @@
       "maxLevel": 7,
       "nbtName": "thunderlord"
     },
+    "tidal": {
+      "goodLevel": 0,
+      "loreName": "Tidal",
+      "maxLevel": 3,
+      "nbtName": "tidal"
+    },
     "titan killer": {
       "goodLevel": 5,
       "loreName": "Titan Killer",

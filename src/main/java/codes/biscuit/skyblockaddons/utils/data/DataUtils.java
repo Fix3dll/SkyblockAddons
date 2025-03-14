@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.core.Island;
 import codes.biscuit.skyblockaddons.core.Language;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.features.PetManager;
+import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.LocationData;
@@ -31,6 +32,7 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
 import net.minecraft.util.*;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -281,7 +283,7 @@ public class DataUtils {
 
                         if (!fallbackCDNUsed) {
                             if (Minecraft.getMinecraft().thePlayer != null) {
-                                main.getUtils().sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
+                                Utils.sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
                             } else {
                                 logger.warn(Translations.getMessage("messages.fallbackCdnUsed"));
                             }
@@ -374,6 +376,11 @@ public class DataUtils {
                                             ClickEvent.Action.RUN_COMMAND,
                                             String.format("/sba internal copy %s", errorMessageBuilder)
                                     )
+                            ).setChatHoverEvent(
+                                    new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            new ChatComponentText(ColorCode.GRAY + Translations.getMessage("messages.clickToCopy"))
+                                    )
                             )
                     );
             buttonRowComponent.appendText("  ");
@@ -381,12 +388,17 @@ public class DataUtils {
                     .setChatStyle(
                             new ChatStyle().setColor(EnumChatFormatting.WHITE).setChatClickEvent(
                                     new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sba reloadRes")
+                            ).setChatHoverEvent(
+                                    new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            new ChatComponentText(ColorCode.GRAY + Translations.getMessage("messages.clickToReload"))
+                                    )
                             )
                     )
             );
             failureMessageComponent.appendText("\n").appendSibling(buttonRowComponent);
 
-            main.getUtils().sendMessage(failureMessageComponent, false);
+            Utils.sendMessage(failureMessageComponent, false);
             failureMessageShown = true;
             failedRequests.clear();
         }

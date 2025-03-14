@@ -94,6 +94,7 @@ repositories {
     maven("https://repo.spongepowered.org/maven/")
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
     maven("https://repo.hypixel.net/repository/Hypixel/")
+    //maven("https://repo.nea.moe/releases")
     maven("https://jitpack.io") {
         content {
             includeGroupByRegex("com\\.github\\..*")
@@ -116,6 +117,8 @@ dependencies {
         exclude(group = "me.djtheredstoner", module = "DevAuth-forge-legacy")
     }
     bundle("net.hypixel:mod-api-forge-tweaker:1.0.1.1")
+    //bundle("moe.nea:libautoupdate:1.3.1")
+    bundle("com.github.nea89o:libautoupdate:841d9f7e78")
 
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("io.github.CDAGaming:DiscordIPC:0.10.2") {
@@ -197,6 +200,7 @@ tasks.shadowJar {
     // Relocate Discord RPC into the main codebase
     relocate("com.jagrosh.discordipc", "${project.group}.${modId}.discordipc")
     relocate("net.hypixel.modapi.tweaker", "${project.group}.${modId}.modapi.tweaker")
+    relocate("moe.nea.libautoupdate", "${project.group}.${modId}.libautoupdate")
 }
 
 tasks.withType(Test::class) {

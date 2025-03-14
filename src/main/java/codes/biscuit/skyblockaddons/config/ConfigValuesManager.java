@@ -12,6 +12,7 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.AnchorPoint;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -490,6 +491,14 @@ public class ConfigValuesManager {
     }
 
     private void overwriteFeatureData() {
+        if (firstLoad) {
+            // If the feature does not have any FeatureData, put the default FeatureData
+            // It can be a new Feature or a manually edited Feature
+            for (Feature feature : Feature.values()) {
+                configValues.features.computeIfAbsent(feature, k -> DEFAULT_FEATURE_DATA.get(k).deepCopy());
+            }
+        }
+
         for (Map.Entry<Feature, FeatureData<?>> entry : configValues.features.entrySet()) {
             Feature feature = entry.getKey();
             FeatureData<?> featureData = entry.getValue();
@@ -577,7 +586,7 @@ public class ConfigValuesManager {
             } catch (Exception ex) {
                 LOGGER.error("Error saving configurations file!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {
-                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                    Utils.sendErrorMessage(
                             "Error saving configurations file! Check log for more detail."
                     );
                 }
