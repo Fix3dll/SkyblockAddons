@@ -87,6 +87,8 @@ public class BaitManager {
         FROZEN("§9Frozen Bait", "FROZEN_BAIT", "66d603f6-32bd-3a51-9193-6491f75bd7ae", "38dc68a97cefe92c8cdaa7cb1a7a4de8f16c161da736edf54f79b74beecd6513"),
         WORM("§aWorm Bait", "WORM_BAIT", "730a6086-ad87-38fa-8fa4-0b76a060f4fc", "df03ad96092f3f789902436709cdf69de6b727c121b3c2daef9ffa1ccaed186c"),
         GOLDEN("§aGolden Bait", "GOLDEN_BAIT", "341b5583-eb74-35f3-af85-eee6bbce133a", "72e2908dbb112dcd0b367df43fafcc41a56d9cf803e90a367834b4911f84f391"),
+        HOTSPOT("§9Hotspot Bait", "HOTSPOT_BAIT", "5e1d8996-7d4f-3756-98f4-a78f388d652e", "de9b17db5c4cadef737e2fefb42a0123c32cbeaa1ca8932579eb2f05018612cd"),
+        TREASURE("§9Treasure Bait", "TREASURE_BAIT", "09266805-e22b-3608-ad37-9a0d35daec14", "c1695c80854447b5db5a0ee6d57ef0a7d91d815bd7e6318c516a39d12fe0639e")
         ;
 
         private final String itemID;
