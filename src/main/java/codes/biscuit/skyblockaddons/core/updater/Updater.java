@@ -174,7 +174,7 @@ public class Updater {
 
         if (status == OUTDATED || status == BETA_OUTDATED) {
             Object autoUpdate = Feature.AUTO_UPDATE.getValue();
-            if (autoUpdate == AutoUpdateMode.STABLE || autoUpdate == AutoUpdateMode.BETA) {
+            if (autoUpdate == AutoUpdateMode.STABLE || autoUpdate == AutoUpdateMode.LATEST) {
                 AutoUpdateMode updateStream = (AutoUpdateMode) autoUpdate;
                 AUTO_UPDATE_CONTEXT.checkUpdate(updateStream.name()).whenComplete((potentialUpdate, throwable) -> {
                     if (potentialUpdate.getUpdate() == null) {
@@ -274,9 +274,20 @@ public class Updater {
         );
 
         Object autoUpdateValue = Feature.AUTO_UPDATE.getValue();
-        if ((autoUpdateValue == AutoUpdateMode.STABLE || autoUpdateValue == AutoUpdateMode.BETA) && cachedPotentialUpdate != null) {
+        if (autoUpdateValue == AutoUpdateMode.STABLE || autoUpdateValue == AutoUpdateMode.LATEST) {
             AutoUpdateMode autoUpdateMode = (AutoUpdateMode) autoUpdateValue;
-            if (!main.getOnlineData().getUpdateData(autoUpdateMode.name()).getVersionNumber().getAsString().contains(targetVersion)) {
+            if (cachedPotentialUpdate == null) {
+                autoDownloadButton.text = String.format("§8§m[%s]§r", getMessage("messages.updateChecker.autoDownloadButton"));
+                autoDownloadButton.setChatStyle(
+                        autoDownloadButton.getChatStyle().setChatHoverEvent(
+                                new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        new ChatComponentText("§7" + getMessage("messages.updateChecker.autoUpdateTargetNotFound"))
+                                )
+                        )
+                );
+                autoDownloadButton.appendText(" ");
+            } else if (!main.getOnlineData().getUpdateData(autoUpdateMode.name()).getVersionNumber().getAsString().contains(targetVersion)) {
                 autoDownloadButton.text = String.format("§8§m[%s]§r", getMessage("messages.updateChecker.autoDownloadButton"));
                 autoDownloadButton.setChatStyle(
                         autoDownloadButton.getChatStyle().setChatHoverEvent(
@@ -388,6 +399,7 @@ public class Updater {
 
     public void launchAutoUpdate() {
         if (cachedPotentialUpdate != null && !updateLaunched) {
+            Utils.sendMessage(ColorCode.YELLOW + getMessage("messages.updateChecker.autoDownloadStarted"));
             launchAutoUpdate(cachedPotentialUpdate);
         } else {
             LOGGER.warn("cachedPotentialUpdate: {}, updateLaunched: {}", cachedPotentialUpdate, updateLaunched);
@@ -402,8 +414,8 @@ public class Updater {
                 LOGGER.catching(throwableUpdate);
             } else {
                 Utils.sendMessageOrElseLog("§aThe update has been downloaded successfully. It will be installed after the reboot.", LOGGER, false);
+                cachedPotentialUpdate = null;
             }
-            cachedPotentialUpdate = null;
             updateLaunched = false;
         });
     }

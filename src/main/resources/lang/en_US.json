@@ -272,9 +272,13 @@
         "title": "Stable",
         "description": "Downloads the latest version from the Release channel. (Recommended)"
       },
-      "beta": {
-        "title": "Beta",
-        "description": "Downloads the latest version from the Beta channel."
+      "latest": {
+        "title": "Latest",
+        "description": "Downloads the latest version, including Beta versions."
+      },
+      "disabled": {
+        "title": "Disabled",
+        "description": "There will be no check for automatic updates."
       }
     },
     "fullAutoUpdate": "Full Auto Update"
@@ -312,7 +316,8 @@
         "betaAvailable": "A new beta update (%version%) is available! Look in chat for the download link.",
         "patchAvailable": "A new patch update (%version%) is available! Look in chat for download options!"
       },
-      "autoUpdateTargetIsNotUpToDate": "Auto Update target is not up to date!"
+      "autoUpdateTargetIsNotUpToDate": "Auto Update target is not up to date!",
+      "autoUpdateTargetNotFound": "Auto Update target not found!"
     },
     "slotLocked": "This slot is locked!",
     "summoningEyeFound": "Summoning Eye!",

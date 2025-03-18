@@ -280,7 +280,6 @@ public class SkyblockAddonsCommand extends CommandBase {
                     }
                 } else if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("launchAutoUpdate")) {
-                        Utils.sendMessage(ColorCode.YELLOW + getMessage("messages.updateChecker.autoDownloadStarted"));
                         main.getUpdater().launchAutoUpdate();
                     }
                 }

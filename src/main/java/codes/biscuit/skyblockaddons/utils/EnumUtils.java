@@ -14,6 +14,10 @@ import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * @implNote If you are going to register an enum value for a FeatureData 'value', use a unique name. Enums with the same
+ * name in different enum classes that use the RegistrableEnum interface will also cause problems with deserialization.
+ */
 public class EnumUtils {
 
     @SuppressWarnings("unused")
@@ -205,9 +209,9 @@ public class EnumUtils {
     }
 
     public enum AutoUpdateMode implements ButtonCycling.SelectItem, RegistrableEnum {
-        NONE("settings.none", null),
+        UPDATE_OFF("settings.autoUpdate.disabled.title", "settings.autoUpdate.disabled.description"),
         STABLE("settings.autoUpdate.stable.title", "settings.autoUpdate.stable.description"),
-        BETA("settings.autoUpdate.beta.title", "settings.autoUpdate.beta.description");
+        LATEST("settings.autoUpdate.latest.title", "settings.autoUpdate.latest.description");
 
         private final String TRANSLATION_KEY;
         private final String DESCRIPTION_KEY;

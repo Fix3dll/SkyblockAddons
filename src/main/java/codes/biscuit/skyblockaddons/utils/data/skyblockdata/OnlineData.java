@@ -26,20 +26,18 @@ public class OnlineData {
     @SerializedName("autoUpdateStable")
     @Getter(AccessLevel.NONE)
     private AutoUpdateData autoUpdateStable;
-    @SerializedName("autoUpdateBeta")
+    @SerializedName("autoUpdateLatest")
     @Getter(AccessLevel.NONE)
-    private AutoUpdateData autoUpdateBeta;
+    private AutoUpdateData autoUpdateLatest;
 
     /**
      * @return null if OnlineData is not fetched from CDN
      */
     public UpdateData getUpdateData(String updateStream) {
-        if (autoUpdateStable == null || autoUpdateBeta == null) {
-            return null;
-        } else if (updateStream.equalsIgnoreCase("stable")) {
-            return autoUpdateStable.buildUpdateData();
-        } else if (updateStream.equalsIgnoreCase("beta")) {
-            return autoUpdateBeta.buildUpdateData();
+        if (updateStream.equalsIgnoreCase("stable")) {
+            return autoUpdateStable == null ? null : autoUpdateStable.buildUpdateData();
+        } else if (updateStream.equalsIgnoreCase("latest")) {
+            return autoUpdateLatest == null ? null : autoUpdateLatest.buildUpdateData();
         } else {
             throw new IllegalStateException("Unexpected 'updateStream': " + updateStream);
         }
