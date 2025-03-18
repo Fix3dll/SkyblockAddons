@@ -52,15 +52,14 @@ import java.util.regex.Pattern;
 @Getter
 public class ActionBarParser {
 
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
+
     private static final Pattern COLLECTIONS_CHAT_PATTERN = Pattern.compile("\\+(?<gained>[0-9,.]+) (?<skillName>[A-Za-z]+) (?<progress>\\((((?<current>[0-9.,kM]+)/(?<total>[0-9.,kM]+))|((?<percent>[0-9.,]+)%))\\))");
     private static final Pattern SKILL_GAIN_PATTERN_S = Pattern.compile("\\+(?<gained>[0-9,.]+) (?<skillName>[A-Za-z]+) (?<progress>\\((((?<current>[0-9.,]+)/(?<total>[0-9.,]+))|((?<percent>[0-9.,]+)%))\\))");
     private static final Pattern MANA_PATTERN_S = Pattern.compile("(?<num>[0-9,.]+)/(?<den>[0-9,.]+)✎(| Mana| (?<overflow>-?[0-9,.]+)ʬ)");
     private static final Pattern DEFENSE_PATTERN_S = Pattern.compile("(?<defense>[0-9,.]+)❈ Defense(?<other>( (?<align>\\|\\|\\|))?( {2}(?<tether>T[0-9,.]+!?))?.*)?");
-    private static final Pattern HEALTH_PATTERN_S =Pattern.compile("(?<health>[0-9,.]+)/(?<maxHealth>[0-9,.]+)❤(?<wand>\\+(?<wandHeal>[0-9,.]+)[▆▅▄▃▂▁])?");
-
-
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Pattern HEALTH_PATTERN_S = Pattern.compile("(?<health>[0-9,.]+)/(?<maxHealth>[0-9,.]+)❤(?<wand>\\+(?<wandHeal>[0-9,.]+)[▆▅▄▃▂▁])?(?: {2}(?<tether>T[0-9,.]+!?))?");
 
     /**
      * The amount of usable tickers or -1 if none are in the action bar.
@@ -71,12 +70,9 @@ public class ActionBarParser {
      * The total amount of possible tickers or 0 if none are in the action bar.
      */
     private int maxTickers = 0;
-    @Setter
-    private float lastSecondHealth = -1;
-    @Setter
-    private Float healthUpdate;
-    @Setter
-    private long lastHealthUpdate;
+    @Setter private float lastSecondHealth = -1;
+    @Setter private Float healthUpdate;
+    @Setter private long lastHealthUpdate;
 
     private float currentSkillXP;
     private int totalSkillXP;
@@ -193,8 +189,8 @@ public class ActionBarParser {
                 return parseDrill(section, splitStats);
             }
         } catch (ParseException e) {
-            logger.error("The section \"" + section + "\" will be skipped due to an error during number parsing.");
-            logger.error("Failed to parse number at offset " + e.getErrorOffset() + " in string \"" + e.getMessage() + "\".", e);
+            LOGGER.error("The section \"{}\" will be skipped due to an error during number parsing.", section);
+            LOGGER.error("Failed to parse number at offset " + e.getErrorOffset() + " in string \"" + e.getMessage() + "\".", e);
             return section;
         }
 
@@ -286,6 +282,11 @@ public class ActionBarParser {
             if (!healthLock) PlayerStats.HEALTH.setValue(newHealth);
             PlayerStats.MAX_HEALTH.setValue(maxHealth);
             healthLock = postSetLock;
+
+            String mastiffTether = m.group("tether");
+            if (!StringUtils.isEmpty(mastiffTether)) {
+                otherDefense = TextUtils.getFormattedString(healthSection, mastiffTether);
+            }
         }
         return returnString;
     }
