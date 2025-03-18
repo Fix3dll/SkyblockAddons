@@ -1,8 +1,11 @@
 package codes.biscuit.skyblockaddons.utils.data.skyblockdata;
 
 import codes.biscuit.skyblockaddons.core.SkyblockRarity;
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
+import lombok.AccessLevel;
 import lombok.Getter;
+import moe.nea.libautoupdate.UpdateData;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +23,25 @@ public class OnlineData {
     private UpdateInfo updateInfo;
     @SerializedName("languageJSONFormat")
     private String languageJSONFormat;
+    @SerializedName("autoUpdateStable")
+    @Getter(AccessLevel.NONE)
+    private AutoUpdateData autoUpdateStable;
+    @SerializedName("autoUpdateLatest")
+    @Getter(AccessLevel.NONE)
+    private AutoUpdateData autoUpdateLatest;
+
+    /**
+     * @return null if OnlineData is not fetched from CDN
+     */
+    public UpdateData getUpdateData(String updateStream) {
+        if (updateStream.equalsIgnoreCase("stable")) {
+            return autoUpdateStable == null ? null : autoUpdateStable.buildUpdateData();
+        } else if (updateStream.equalsIgnoreCase("latest")) {
+            return autoUpdateLatest == null ? null : autoUpdateLatest.buildUpdateData();
+        } else {
+            throw new IllegalStateException("Unexpected 'updateStream': " + updateStream);
+        }
+    }
 
     /**
      * This is the list of features in the mod that should be disabled. Features in this list will be disabled for all
@@ -71,5 +93,19 @@ public class OnlineData {
         private List<String> dontDropTheseItems;
         @SerializedName("allowDroppingTheseItems")
         private List<String> allowDroppingTheseItems;
+    }
+
+    @Getter
+    public static class AutoUpdateData {
+        @SerializedName("versionNumber")
+        private JsonElement versionNumber;
+        @SerializedName("sha256")
+        private String sha256;
+        @SerializedName("download")
+        private String download;
+
+        private UpdateData buildUpdateData() {
+            return new UpdateData(null, this.versionNumber, this.sha256, this.download);
+        }
     }
 }

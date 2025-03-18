@@ -151,6 +151,7 @@ public class FeatureDataAdapter<T> implements JsonDeserializer<FeatureData<T>>, 
         } else if (primitive.isNumber()) {
             return value.getAsNumber();
         } else if (primitive.isString()) {
+            // FIXME: enums with same name in different enum class
             Class<?> classType = EnumRegistry.getEnumClass(value.getAsString());
             if (classType != null) {
                 return context.<RegistrableEnum>deserialize(value, classType);

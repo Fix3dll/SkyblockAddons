@@ -162,12 +162,12 @@ public class SkyblockAddonsCommand extends CommandBase {
             if (args[0].equalsIgnoreCase("help")) {
                 if (args.length == 2) {
                     try {
-                        main.getUtils().sendMessage(getSubCommandUsage(args[1]), false);
+                        Utils.sendMessage(getSubCommandUsage(args[1]), false);
                     } catch (IllegalArgumentException e) {
-                        main.getUtils().sendErrorMessage(getMessage("commands.errors.wrongUsage.subCommandNotFound", args[1]));
+                        Utils.sendErrorMessage(getMessage("commands.errors.wrongUsage.subCommandNotFound", args[1]));
                     }
                 } else {
-                    main.getUtils().sendMessage(getCommandUsage(sender), false);
+                    Utils.sendMessage(getCommandUsage(sender), false);
                 }
             } else if (args[0].equalsIgnoreCase("edit")) {
                 main.getUtils().setFadingIn(false);
@@ -177,18 +177,18 @@ public class SkyblockAddonsCommand extends CommandBase {
                 Feature.DEVELOPER_MODE.setEnabled(!Feature.DEVELOPER_MODE.isEnabled());
 
                 if (Feature.DEVELOPER_MODE.isEnabled()) {
-                    main.getUtils().sendMessage(
+                    Utils.sendMessage(
                             ColorCode.GREEN + getMessage(
                                     "commands.responses.sba.dev.enabled",
                                     SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyName()
                             )
                     );
                 } else {
-                    main.getUtils().sendMessage(ColorCode.RED + getMessage("commands.responses.sba.dev.disabled"));
+                    Utils.sendMessage(ColorCode.RED + getMessage("commands.responses.sba.dev.disabled"));
                 }
             } else if (args[0].equalsIgnoreCase("resetZealotCounter")) {
                 main.getPersistentValuesManager().resetZealotCounter();
-                main.getUtils().sendMessage(ColorCode.GREEN + getMessage("commands.responses.sba.resetZealotCounter.resetSuccess"));
+                Utils.sendMessage(ColorCode.GREEN + getMessage("commands.responses.sba.resetZealotCounter.resetSuccess"));
             } else if (args[0].equalsIgnoreCase("set")) {
                 int number;
 
@@ -201,17 +201,17 @@ public class SkyblockAddonsCommand extends CommandBase {
                 if (args[1].equalsIgnoreCase("totalZealots") || args[1].equalsIgnoreCase("total")) {
                     main.getPersistentValuesManager().getPersistentValues().setTotalKills(number);
                     main.getPersistentValuesManager().saveValues();
-                    main.getUtils().sendMessage(getMessage("commands.responses.sba.set.zealotCounter.totalZealotsSet",
+                    Utils.sendMessage(getMessage("commands.responses.sba.set.zealotCounter.totalZealotsSet",
                             Integer.toString(number)));
                 } else if (args[1].equalsIgnoreCase("zealots")) {
                     main.getPersistentValuesManager().getPersistentValues().setKills(number);
                     main.getPersistentValuesManager().saveValues();
-                    main.getUtils().sendMessage(getMessage("commands.responses.sba.set.zealotCounter.zealotsSet",
+                    Utils.sendMessage(getMessage("commands.responses.sba.set.zealotCounter.zealotsSet",
                             Integer.toString(number)));
                 } else if (args[1].equalsIgnoreCase("eyes")) {
                     main.getPersistentValuesManager().getPersistentValues().setSummoningEyeCount(number);
                     main.getPersistentValuesManager().saveValues();
-                    main.getUtils().sendMessage(getMessage("commands.responses.sba.set.zealotCounter.eyesSet",
+                    Utils.sendMessage(getMessage("commands.responses.sba.set.zealotCounter.eyesSet",
                             Integer.toString(number)));
                 } else {
                     throw new WrongUsageException(getMessage("sba.set.zealotCounter.wrongUsage",
@@ -269,7 +269,7 @@ public class SkyblockAddonsCommand extends CommandBase {
 
                  // Include MAJOR.MINOR.PATCH-pre-release in the chat message and add build number if it's defined when
                  // the user chooses to copy for diagnostic purposes.
-                main.getUtils().sendMessage(versionChatComponent, true);
+                Utils.sendMessage(versionChatComponent, true);
             } else if (args[0].equalsIgnoreCase("internal")) {
                 if (args.length > 2) {
                     if (args[1].equalsIgnoreCase("copy")) {
@@ -277,6 +277,10 @@ public class SkyblockAddonsCommand extends CommandBase {
                                 Arrays.stream(args).skip(2).collect(Collectors.joining(" ")),
                                 getMessage("messages.copied")
                         );
+                    }
+                } else if (args.length == 2) {
+                    if (args[1].equalsIgnoreCase("launchAutoUpdate")) {
+                        main.getUpdater().launchAutoUpdate();
                     }
                 }
             } else if (args[0].equalsIgnoreCase("reload")) {
@@ -291,7 +295,7 @@ public class SkyblockAddonsCommand extends CommandBase {
                     String serverBrand = DevUtils.getServerBrand();
 
                     if (serverBrand != null) {
-                        main.getUtils().sendMessage(getMessage("commands.responses.sba.brand.brandOutput", serverBrand));
+                        Utils.sendMessage(getMessage("commands.responses.sba.brand.brandOutput", serverBrand));
                     } else {
                         throw new CommandException(getMessage("commands.responses.sba.brand.notFound"));
                     }
@@ -337,41 +341,41 @@ public class SkyblockAddonsCommand extends CommandBase {
                     DevUtils.copyOpenGLLogs();
 
                 } else if (args[0].equalsIgnoreCase("pd")) {
-                    main.getUtils().sendMessage(EnumChatFormatting.BOLD + "Death Counts: ");
-                    main.getUtils().sendMessage(EnumChatFormatting.WHITE + "Deaths: " + EnumChatFormatting.GOLD +
+                    Utils.sendMessage(EnumChatFormatting.BOLD + "Death Counts: ");
+                    Utils.sendMessage(EnumChatFormatting.WHITE + "Deaths: " + EnumChatFormatting.GOLD +
                             main.getDungeonManager().getDeaths());
-                    main.getUtils().sendMessage(EnumChatFormatting.WHITE + "Alt Deaths: " + EnumChatFormatting.GOLD +
+                    Utils.sendMessage(EnumChatFormatting.WHITE + "Alt Deaths: " + EnumChatFormatting.GOLD +
                             main.getDungeonManager().getAlternateDeaths());
-                    main.getUtils().sendMessage(EnumChatFormatting.WHITE + "Tab Deaths: " + EnumChatFormatting.GOLD +
+                    Utils.sendMessage(EnumChatFormatting.WHITE + "Tab Deaths: " + EnumChatFormatting.GOLD +
                             main.getDungeonManager().getPlayerListInfoDeaths());
                 } else if (args[0].equalsIgnoreCase("toggleActionBarLogging")) {
                     DevUtils.setLoggingActionBarMessages(!DevUtils.isLoggingActionBarMessages());
 
                     if (DevUtils.isLoggingActionBarMessages()) {
-                        main.getUtils().sendMessage(ColorCode.GREEN + getMessage(
+                        Utils.sendMessage(ColorCode.GREEN + getMessage(
                                 "commands.responses.sba.toggleActionBarLogging.enabled"));
                     } else {
-                        main.getUtils().sendMessage(ColorCode.RED + getMessage(
+                        Utils.sendMessage(ColorCode.RED + getMessage(
                                 "commands.responses.sba.toggleActionBarLogging.disabled"));
                     }
                 } else if (args[0].equalsIgnoreCase("toggleSlayerTrackerLogging")) {
                     DevUtils.setLoggingSlayerTracker(!DevUtils.isLoggingSlayerTracker());
 
                     if (DevUtils.isLoggingSlayerTracker()) {
-                        main.getUtils().sendMessage(ColorCode.GREEN + getMessage(
+                        Utils.sendMessage(ColorCode.GREEN + getMessage(
                                 "commands.responses.sba.toggleSlayerTrackerLogging.enabled"));
                     } else {
-                        main.getUtils().sendMessage(ColorCode.RED + getMessage(
+                        Utils.sendMessage(ColorCode.RED + getMessage(
                                 "commands.responses.sba.toggleSlayerTrackerLogging.disabled"));
                     }
                 } else if (args[0].equalsIgnoreCase("toggleSkyBlockOreLogging")) {
                     DevUtils.setLoggingSkyBlockOre(!DevUtils.isLoggingSkyBlockOre());
 
                     if (DevUtils.isLoggingSkyBlockOre()) {
-                        main.getUtils().sendMessage(ColorCode.GREEN + getMessage(
+                        Utils.sendMessage(ColorCode.GREEN + getMessage(
                                 "commands.responses.sba.toggleSkyBlockOreLogging.enabled"));
                     } else {
-                        main.getUtils().sendMessage(ColorCode.RED + getMessage(
+                        Utils.sendMessage(ColorCode.RED + getMessage(
                                 "commands.responses.sba.toggleSkyBlockOreLogging.disabled"));
                     }
                 } else {

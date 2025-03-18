@@ -9,15 +9,19 @@ public abstract class SkyblockAddonsButton extends GuiButton {
     protected static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final int FADE_MILLIS = 150;
 
-    // Used to calculate the transparency when fading in.
+    /** Used to calculate the transparency when fading in. */
     private final long timeOpened = System.currentTimeMillis();
 
+    /** A value to specify the drawing order. */
+    public int priority;
+
     public SkyblockAddonsButton(int buttonId, int x, int y, String buttonText) {
-        this(buttonId, x, y, 200, 20, buttonText);
+        this(buttonId, x, y, 200, 20, 1000, buttonText);
     }
 
-    public SkyblockAddonsButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+    public SkyblockAddonsButton(int buttonId, int x, int y, int widthIn, int heightIn, int priority, String buttonText) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
+        this.priority = priority;
     }
 
     public boolean isHovered(int mouseX, int mouseY) {

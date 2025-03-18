@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
 public class Utils {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     /**
      * Added to the beginning of messages sent by the mod.
@@ -220,7 +220,7 @@ public class Utils {
     public Utils() {
     }
 
-    public void sendMessage(String text, boolean prefix) {
+    public static void sendMessage(String text, boolean prefix) {
         ClientChatReceivedEvent event = new ClientChatReceivedEvent((byte) 1, new ChatComponentText((prefix ? MESSAGE_PREFIX : "") + text));
         MinecraftForge.EVENT_BUS.post(event); // Let other mods pick up the new message
         if (!event.isCanceled()) {
@@ -228,11 +228,11 @@ public class Utils {
         }
     }
 
-    public void sendMessage(String text) {
+    public static void sendMessage(String text) {
         sendMessage(text, true);
     }
 
-    public void sendMessage(ChatComponentText text, boolean prefix) {
+    public static void sendMessage(ChatComponentText text, boolean prefix) {
         if (prefix) { // Add the prefix in front.
             ChatComponentText newText = new ChatComponentText(MESSAGE_PREFIX);
             newText.appendSibling(text);
@@ -246,7 +246,23 @@ public class Utils {
         }
     }
 
-    public void sendErrorMessage(String errorText) {
+    public static void sendMessageOrElseLog(String message, Logger logger, boolean isError) {
+        if (Minecraft.getMinecraft().thePlayer != null) {
+            if (isError) {
+                sendErrorMessage(message);
+            } else {
+                sendMessage(message);
+            }
+        } else {
+            if (isError) {
+                logger.error(message);
+            } else {
+                logger.info(message);
+            }
+        }
+    }
+
+    public static void sendErrorMessage(String errorText) {
         sendMessage(ColorCode.RED + "Error: " + errorText);
     }
 
@@ -498,7 +514,7 @@ public class Utils {
                                     continue;
 
                                 } catch (IllegalArgumentException ex) {
-                                    logger.error("Failed to parse slayer level (" + ex.getMessage() + ")", ex);
+                                    LOGGER.error("Failed to parse slayer level (" + ex.getMessage() + ")", ex);
                                 }
                             }
                         }
@@ -514,7 +530,7 @@ public class Utils {
                         try {
                             main.getDungeonManager().updateDungeonPlayer(line);
                         } catch (NumberFormatException ex) {
-                            logger.error("Failed to update a dungeon player from the line " + line + ".", ex);
+                            LOGGER.error("Failed to update a dungeon player from the line " + line + ".", ex);
                         }
                     }
 
