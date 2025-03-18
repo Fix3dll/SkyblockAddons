@@ -235,7 +235,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         THE_GARDEN("The Garden", 50, 1050),
         DUNGEON_HUB("Dungeon Hub", 1500, 1100),
         JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150),
-        THE_RIFT("The Rift", 1720, 1050);
+        THE_RIFT("The Rift", 1720, 1050),
+        BACKWATER_BAYOU("Backwater Bayou", 960, 1275);
 
         private final String label;
         private final int x;
@@ -292,6 +293,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         JERRYS_WORKSHOP("workshop", getMessage("warpMenu.spawn"), Island.JERRYS_WORKSHOP, 35, 90),
 
         THE_RIFT("rift", getMessage("warpMenu.spawn"), Island.THE_RIFT, 35, 90),
+
+        BACKWATER_BAYOU("backwater", getMessage("warpMenu.spawn"), Island.BACKWATER_BAYOU, 60, 150),
 
         HUB("hub", getMessage("warpMenu.spawn"), Island.HUB, 610, 210),
         ELIZABETH("elizabeth", "Elizabeth", Island.HUB, 660, 150),

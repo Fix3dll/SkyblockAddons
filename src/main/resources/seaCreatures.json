@@ -258,5 +258,75 @@
     "name": "Yeti",
     "rarity": "LEGENDARY",
     "spawnMessage": "What is this creature!?"
+  },
+  "FROG_MAN": {
+    "name": "Frog Man",
+    "rarity": "COMMON",
+    "spawnMessage": "Is it a frog? Is it a man? Well, yes, sorta, IT'S FROG MAN!!!!!!"
+  },
+  "BANSHEE": {
+    "name": "Banshee",
+    "rarity": "RARE",
+    "spawnMessage": "The desolate wail of a Banshee breaks the silence."
+  },
+  "DUMPSTER_DIVER": {
+    "name": "Dumpster Diver",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "A Dumpster Diver has emerged from the swamp!"
+  },
+  "TRASH_GOBBLER": {
+    "name": "Trash Gobbler",
+    "rarity": "COMMON",
+    "spawnMessage": "The Trash Gobbler is hungry for you!"
+  },
+  "ALLIGATOR": {
+    "name": "Alligator",
+    "rarity": "RARE",
+    "spawnMessage": "A long snout breaks the surface of the water. It's an Alligator!"
+  },
+  "SNAPPING_TURTLE": {
+    "name": "Snapping Turtle",
+    "rarity": "RARE",
+    "spawnMessage": "A Snapping Turtle is coming your way, and it's ANGRY!"
+  },
+  "BAYOU_SLUDGE": {
+    "name": "Bayou Sludge",
+    "rarity": "EPIC",
+    "spawnMessage": "A swampy mass of slime emerges, the Bayou Sludge!"
+  },
+  "TITANOBOA": {
+    "name": "Titanoboa",
+    "rarity": "MYTHIC",
+    "spawnMessage": "A massive Titanoboa surfaces. It's body stretches as far as the eye can see."
+  },
+  "BLUE_RINGED_OCTOPUS": {
+    "name": "Blue Ringed Octopus",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "A garish set of tentacles arise. It's a Blue Ringed Octopus!"
+  },
+  "WIKI_TIKI": {
+    "name": "Wiki Tiki",
+    "rarity": "MYTHIC",
+    "spawnMessage": "The water bubbles and froths. A massive form emerges- you have disturbed the Wiki Tiki! You shall pay the price."
+  },
+  "FRIED_CHICKEN": {
+    "name": "Fried Chicken",
+    "rarity": "COMMON",
+    "spawnMessage": "Smells of burning. Must be a Fried Chicken."
+  },
+  "FIREPROOF_WITCH": {
+    "name": "Fireproof Witch",
+    "rarity": "RARE",
+    "spawnMessage": "Trouble's brewing, it's a Fireproof Witch!"
+  },
+  "FIERY_SCUTTLER": {
+    "name": "Fiery Scuttler",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "A Fiery Scuttler inconspicuously waddles up to you, friends in tow."
+  },
+  "RAGNAROK": {
+    "name": "Ragnarok",
+    "rarity": "MYTHIC",
+    "spawnMessage": "The sky darkens and the air thickens. The end times are upon us: Ragnarok is here."
   }
 }
