@@ -5,6 +5,8 @@ import net.minecraft.util.ResourceLocation;
 
 /**
  * Represents the Deployables introduced with the Slayer Update and unlocked through the Wolf slayer and Blaze slayer quests.
+ * <br>
+ * TODO: moving to a cleaner structure that will be compatible with new deployable types that may come in the future
  */
 @Getter
 public enum Deployable {
@@ -17,7 +19,10 @@ public enum Deployable {
     // Flares
     WARNING_FLARE(0.0, 10, 10, 0, 0,  "22e2bf6c1ec330247927ba63479e5872ac66b06903c86c82b52dac9f1c971458", 40*40, "warning"),
     ALERT_FLARE(0.5, 20, 20, 10, 0,  "9d2bf9864720d87fd06b84efa80b795c48ed539b16523c3b1f1990b40c003f6b", 40*40, "alert"),
-    SOS_FLARE(1.25, 30, 25, 10, 5,  "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b", 40*40, "sos");
+    SOS_FLARE(1.25, 30, 25, 10, 5,  "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b", 40*40, "sos"),
+
+    // Umberella
+    UMBERELLA("§9Umberella", 5.0D, 30*30, "umberella");
 
     /**
      * Start of the display name of the actual floating deployable entity.
@@ -30,7 +35,7 @@ public enum Deployable {
     /**
      * Percentage of mana regeneration increase given by the deployable
      */
-    private final double manaRegen;
+    private double manaRegen = 0.0;
     /**
      * Amount of strength given by the deployable
      */
@@ -38,7 +43,7 @@ public enum Deployable {
     /**
      * Amount of vitality given by the deployable
      */
-    private final double vitality;
+    private double vitality = 0.0;
     /**
      * Amount of mending given by the deployable
      */
@@ -67,6 +72,10 @@ public enum Deployable {
      * Entity textureId for detect Flares
      */
     private String textureId = "";
+    /**
+     * Amount of Trophy Fish Chance given by the deployable
+     */
+    private double trophyFishChance = 0.0;
 
     // Orbs
     Deployable(String display, double healthRegen, double manaRegen, int strength, double vitality, double mending, int rangeSquared, String resourcePath) {
@@ -92,6 +101,14 @@ public enum Deployable {
         this.textureId = textureId;
     }
 
+    // Umberella
+    Deployable(String display, double trophyFishChance, int rangeSquared, String resourcePath) {
+        this.display = display;
+        this.trophyFishChance = trophyFishChance;
+        this.rangeSquared = rangeSquared;
+        this.resourceLocation = new ResourceLocation("skyblockaddons", "deployables/"+resourcePath+".png");
+    }
+
     /**
      * Check if a distance is within this deployables radius.
      *
@@ -108,7 +125,7 @@ public enum Deployable {
      * @param displayName Entity display name
      * @return The matching type or null if none was found
      */
-    public static Deployable getByDisplayname(String displayName) {
+    public static Deployable getByDisplayName(String displayName) {
         for (Deployable orb : values()) {
             if(!orb.display.isEmpty() && displayName.startsWith(orb.display)) {
                 return orb;

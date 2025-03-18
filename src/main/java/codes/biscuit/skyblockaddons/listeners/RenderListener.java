@@ -2769,6 +2769,10 @@ public class RenderListener {
             display.add(String.format("§e+%s%% ⚔ ", deployable.getBonusAttackSpeed()));
         }
 
+        if (deployable.getTrophyFishChance() > 0.0) {
+            display.add(String.format("§6+%s ♔ ", deployable.getTrophyFishChance()));
+        }
+
         // For better visual (maybe?)
         if (feature.isEnabled(FeatureSetting.EXPAND_DEPLOYABLE_STATUS) && display.size() > 3) {
             List<String> displayCopy = new LinkedList<>(display);
@@ -2806,10 +2810,17 @@ public class RenderListener {
         x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
         y = transformY(y, height, scale);
 
-        float startY = Math.round(y + (iconAndSecondsHeight / 2f) - (effectsHeight / 2f));
+        float startY = Math.round(y + (iconAndSecondsHeight / 2F) - (effectsHeight / 2F));
         if (buttonLocation != null) {
-            buttonLocation.checkHoveredAndDrawBox(x, x + width, startY - spacingBetweenLines, startY + height, scale);
+            buttonLocation.checkHoveredAndDrawBox(x, x + width, y, y + height, scale);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+
+        // move the overflowing part to the buttonLocation box
+        if (effectsHeight > iconAndSecondsHeight) {
+            int add = Math.abs(effectsHeight - iconAndSecondsHeight) / 2;
+            y += add;
+            startY += add;
         }
 
         Entity entity = null;

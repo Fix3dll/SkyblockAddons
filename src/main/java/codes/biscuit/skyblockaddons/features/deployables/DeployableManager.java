@@ -82,7 +82,7 @@ public class DeployableManager {
     public void detectDeployables(EntityArmorStand entityArmorStand) {
         if (entityArmorStand.hasCustomName()) {
             String customNameTag = entityArmorStand.getCustomNameTag();
-            Deployable orb = Deployable.getByDisplayname(customNameTag);
+            Deployable orb = Deployable.getByDisplayName(customNameTag);
 
             if (orb != null && orb.isInRadius(entityArmorStand.getDistanceSqToEntity(Minecraft.getMinecraft().thePlayer))) {
                 Matcher matcher = POWER_ORB_PATTERN.matcher(TextUtils.stripColor(customNameTag));
