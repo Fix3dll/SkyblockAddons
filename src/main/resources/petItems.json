@@ -32,6 +32,13 @@
     "skullId": "25ef7610-1240-358a-82b1-270a7b463597",
     "texture": "674e061e6d853822bbad56d079357c248c9a40de494f20eae0078a0a02ef0da7"
   },
+  "BURNT_TEXTS": {
+    "displayName": "§6Burnt Texts",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "skullId": "2d03788c-6ce3-3daf-be8f-ff5b6482b828",
+    "texture": "78bd1889bf8a635ec71fc05b1ed548763778e3d371926d39a62c29d350c48b49"
+  },
   "CROCHET_TIGER_PLUSHIE": {
     "displayName": "§5Crochet Tiger Plushie",
     "material": "skull_item",
@@ -50,6 +57,13 @@
     "rarity": "RARE",
     "skullId": "5508d2cb-e64a-311e-b541-709670b492ad",
     "texture": "664698fea5ec3f2fd7db7a8e3f4e989a1716035c2bd3666434ba1af58157"
+  },
+  "EDIBLE_SEAWEED": {
+    "displayName": "§9Edible Seaweed",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "skullId": "9f55f394-a152-3062-bbc6-9fa52e5758e6",
+    "texture": "ef77346f5894cf0f5eff2a4c06cb9b6eab0bf39d789191b70cf7c08d36fda248"
   },
   "FOUR_EYED_FISH": {
     "displayName": "§5Four-Eyed Fish",

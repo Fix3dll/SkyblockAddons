@@ -63,7 +63,7 @@
     "charm": {
       "goodLevel": 0,
       "loreName": "Charm",
-      "maxLevel": 5,
+      "maxLevel": 6,
       "nbtName": "charm"
     },
     "cleave": {
@@ -201,7 +201,7 @@
     "frail": {
       "goodLevel": 5,
       "loreName": "Frail",
-      "maxLevel": 6,
+      "maxLevel": 7,
       "nbtName": "frail"
     },
     "frost walker": {
@@ -303,7 +303,7 @@
     "luck of the sea": {
       "goodLevel": 5,
       "loreName": "Luck Of The Sea",
-      "maxLevel": 6,
+      "maxLevel": 7,
       "nbtName": "luck_of_the_sea"
     },
     "lure": {
@@ -357,7 +357,7 @@
     "piscary": {
       "goodLevel": 5,
       "loreName": "Piscary",
-      "maxLevel": 6,
+      "maxLevel": 7,
       "nbtName": "piscary"
     },
     "power": {
@@ -407,6 +407,12 @@
       "loreName": "Quantum",
       "maxLevel": 5,
       "nbtName": "quantum"
+    },
+    "quick bite": {
+      "goodLevel": 0,
+      "loreName": "Quick Bite",
+      "maxLevel": 5,
+      "nbtName": "quick_bite"
     },
     "rainbow": {
       "goodLevel": 1,
@@ -501,7 +507,7 @@
     "spiked hook": {
       "goodLevel": 5,
       "loreName": "Spiked Hook",
-      "maxLevel": 6,
+      "maxLevel": 7,
       "nbtName": "spiked_hook"
     },
     "strong mana": {

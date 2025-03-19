@@ -40,6 +40,7 @@ import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import codes.biscuit.skyblockaddons.utils.RomanNumeralParser;
 import codes.biscuit.skyblockaddons.utils.ScoreboardManager;
 import codes.biscuit.skyblockaddons.utils.TextUtils;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import com.google.common.collect.Sets;
@@ -328,7 +329,7 @@ public class PlayerListener {
                 main.getPersistentValuesManager().addEyeResetKills();
                 // TODO: Seems like leg warning and num sc killed should be separate features
             } else if (SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
-                int spawned = unformattedText.contains("Magma Slug") ? 4 : 1;
+                int spawned = unformattedText.contains("Magma Slug") || unformattedText.contains("Bayou Sludge") ? 4 : 1;
                 if (doubleHook) {
                     spawned *= 2;
                     doubleHook = false;
@@ -1201,7 +1202,7 @@ public class PlayerListener {
             }
 
             if (DevUtils.isLoggingSkyBlockOre()) {
-                main.getUtils().sendMessage("§eMined ore: §f" + minedOre.name());
+                Utils.sendMessage("§eMined ore: §f" + minedOre.name());
             }
         }
         if (Feature.SHOW_ITEM_COOLDOWNS.isEnabled()) {
