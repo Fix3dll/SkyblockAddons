@@ -35,6 +35,7 @@ import codes.biscuit.skyblockaddons.mixins.hooks.FontRendererHook;
 import codes.biscuit.skyblockaddons.shader.ShaderManager;
 import codes.biscuit.skyblockaddons.shader.chroma.ChromaScreenTexturedShader;
 import codes.biscuit.skyblockaddons.utils.*;
+import codes.biscuit.skyblockaddons.utils.EnumUtils.AutoUpdateMode;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.DeployableDisplayStyle;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.PetItemStyle;
 import com.mojang.authlib.GameProfile;
@@ -172,6 +173,7 @@ public class RenderListener {
     @Getter @Setter private boolean predictMana;
 
     @Setter private boolean updateMessageDisplayed;
+    private ScheduledTask updateMessageDisplayTask;
 
     private Feature subtitleFeature;
     @Getter private Feature titleFeature;
@@ -686,38 +688,43 @@ public class RenderListener {
      */
     private void drawUpdateMessage() {
         Updater updater = main.getUpdater();
-        String message = updater.getMessageToRender();
 
-        if (updater.hasUpdate() && message != null && !updateMessageDisplayed) {
-            String[] textList = main.getUtils().wrapSplitText(message, 36);
+        if (updater.hasUpdate() && !updateMessageDisplayed) {
+            String message = updater.getMessageToRender();
 
-            int halfWidth = new ScaledResolution(MC).getScaledWidth() / 2;
-            Gui.drawRect(
-                    halfWidth - 110,
-                    20,
-                    halfWidth + 110,
-                    53 + textList.length * 10,
-                    ColorUtils.getDefaultBlue(140)
-            );
-            String title = SkyblockAddons.MOD_NAME;
-            GlStateManager.pushMatrix();
-            float scale = 1.5F;
-            GlStateManager.scale(scale, scale, 1);
-            DrawUtils.drawCenteredText(title, (int) (halfWidth / scale), (int) (30 / scale), ColorCode.WHITE.getColor());
-            GlStateManager.popMatrix();
-            int y = 45;
-            for (String line : textList) {
-                DrawUtils.drawCenteredText(line, halfWidth, y, ColorCode.WHITE.getColor());
-                y += 10;
+            if (message != null && Feature.AUTO_UPDATE.getValue() == AutoUpdateMode.UPDATE_OFF) {
+                String[] textList = main.getUtils().wrapSplitText(message, 36);
+
+                int halfWidth = new ScaledResolution(MC).getScaledWidth() / 2;
+                Gui.drawRect(
+                        halfWidth - 110,
+                        20,
+                        halfWidth + 110,
+                        53 + textList.length * 10,
+                        ColorUtils.getDefaultBlue(140)
+                );
+                String title = SkyblockAddons.MOD_NAME;
+                GlStateManager.pushMatrix();
+                float scale = 1.5F;
+                GlStateManager.scale(scale, scale, 1);
+                DrawUtils.drawCenteredText(title, (int) (halfWidth / scale), (int) (30 / scale), ColorCode.WHITE.getColor());
+                GlStateManager.popMatrix();
+                int y = 45;
+                for (String line : textList) {
+                    DrawUtils.drawCenteredText(line, halfWidth, y, ColorCode.WHITE.getColor());
+                    y += 10;
+                }
             }
-
-            main.getScheduler().scheduleTask(
-                    scheduledTask -> main.getRenderListener().setUpdateMessageDisplayed(true),
-                    10 * 20
-            );
 
             if (!main.getUpdater().hasSentUpdateMessage()) {
                 main.getUpdater().sendUpdateMessage();
+            }
+
+            if (updateMessageDisplayTask == null) {
+                updateMessageDisplayTask = main.getScheduler().scheduleTask(scheduledTask -> {
+                    main.getRenderListener().setUpdateMessageDisplayed(true);
+                    updateMessageDisplayTask = null;
+                }, 10 * 20);
             }
         }
     }

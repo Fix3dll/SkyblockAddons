@@ -64,8 +64,8 @@ import java.util.concurrent.ThreadFactory;
  */
 public class DataUtils {
 
-    private static final Gson gson = SkyblockAddons.getGson();
-    private static final Logger logger = SkyblockAddons.getLogger();
+    private static final Gson GSON = SkyblockAddons.getGson();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     private static final RequestConfig requestConfig = RequestConfig.custom()
@@ -151,7 +151,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            main.setOnlineData(gson.fromJson(inputStreamReader, OnlineData.class));
+            main.setOnlineData(GSON.fromJson(inputStreamReader, OnlineData.class));
         } catch (Exception ex) {
             handleLocalFileReadException(path, ex);
         }
@@ -163,7 +163,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getClassLoader().getResourceAsStream("lang/en_US.json");
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            Translations.setDefaultLangJson(gson.fromJson(inputStreamReader, JsonObject.class));
+            Translations.setDefaultLangJson(GSON.fromJson(inputStreamReader, JsonObject.class));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -173,7 +173,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            ItemUtils.setContainers(gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, ContainerData>>() {}.getType()));
+            ItemUtils.setContainers(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, ContainerData>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -183,7 +183,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            ItemUtils.setCompactorItems(gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, CompactorItem>>() {}.getType()));
+            ItemUtils.setCompactorItems(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, CompactorItem>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -193,7 +193,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)) {
-            SeaCreatureManager.getInstance().setSeaCreatures(gson.fromJson(inputStreamReader, new TypeToken<Map<String, SeaCreature>>() {}.getType()));
+            SeaCreatureManager.getInstance().setSeaCreatures(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, SeaCreature>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -203,7 +203,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            EnchantManager.setEnchants(gson.fromJson(inputStreamReader, new TypeToken<EnchantmentsData>() {}.getType()));
+            EnchantManager.setEnchants(GSON.fromJson(inputStreamReader, new TypeToken<EnchantmentsData>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -213,7 +213,7 @@ public class DataUtils {
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                      StandardCharsets.UTF_8)) {
-            CooldownManager.setItemCooldowns(gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, Integer>>() {
+            CooldownManager.setItemCooldowns(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, Integer>>() {
             }.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
@@ -224,7 +224,7 @@ public class DataUtils {
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                      StandardCharsets.UTF_8)) {
-            main.getSkillXpManager().initialize(gson.fromJson(inputStreamReader, SkillXpManager.JsonInput.class));
+            main.getSkillXpManager().initialize(GSON.fromJson(inputStreamReader, SkillXpManager.JsonInput.class));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -233,7 +233,7 @@ public class DataUtils {
         path = "/petItems.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
-            PetManager.setPetItems(gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, PetItem>>() {}.getType()));
+            PetManager.setPetItems(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, PetItem>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -242,7 +242,7 @@ public class DataUtils {
         path = "/locations.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
-            HashMap<String, LocationData> result = gson.fromJson(
+            HashMap<String, LocationData> result = GSON.fromJson(
                     inputStreamReader, new TypeToken<HashMap<String, LocationData>>() {}.getType()
             );
             for (Map.Entry<String, LocationData> entry : result.entrySet()) {
@@ -261,7 +261,7 @@ public class DataUtils {
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
             LocationUtils.setSlayerLocations(
-                    gson.fromJson(inputStreamReader, new TypeToken<HashMap<String, Set<String>>>() {}.getType())
+                    GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, Set<String>>>() {}.getType())
             );
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
@@ -277,19 +277,20 @@ public class DataUtils {
             request.execute(futureRequestExecutionService);
             if (request.getURL().contains(DataConstants.CDN_BASE_URL)) {
                 SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
-                    if (request.isDone() && failedUris.contains(request.getURL())) {
-                        request.setFallbackCDN();
-                        request.execute(futureRequestExecutionService);
+                    if (request.isDone()) {
+                        if (failedUris.contains(request.getURL())) {
+                            request.setFallbackCDN();
+                            request.execute(futureRequestExecutionService);
 
-                        if (!fallbackCDNUsed) {
-                            if (Minecraft.getMinecraft().thePlayer != null) {
-                                Utils.sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
-                            } else {
-                                logger.warn(Translations.getMessage("messages.fallbackCdnUsed"));
+                            if (!fallbackCDNUsed) {
+                                if (Minecraft.getMinecraft().thePlayer != null) {
+                                    Utils.sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
+                                } else {
+                                    LOGGER.warn(Translations.getMessage("messages.fallbackCdnUsed"));
+                                }
+                                fallbackCDNUsed = true;
                             }
-                            fallbackCDNUsed = true;
                         }
-
                         scheduledTask.cancel();
                     }
                 }, 0, 2);
@@ -329,7 +330,7 @@ public class DataUtils {
         try (   InputStream inputStream = DataUtils.class.getClassLoader().getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
                         StandardCharsets.UTF_8)){
-            Translations.setLanguageJson(gson.fromJson(inputStreamReader, JsonObject.class));
+            Translations.setLanguageJson(GSON.fromJson(inputStreamReader, JsonObject.class));
             Feature.LANGUAGE.setValue(language);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
@@ -481,7 +482,7 @@ public class DataUtils {
 
         // The loader encountered a file name it didn't expect.
         if (exception instanceof IllegalArgumentException) {
-            logger.error(exception.getMessage());
+            LOGGER.error(exception.getMessage());
             return;
         }
 
@@ -497,9 +498,9 @@ public class DataUtils {
                 throw new ReportedException(crashReport);
             }
         } else {
-            logger.error("Failed to load \"{}\" from the server. The local copy will be used instead.", fileName);
+            LOGGER.error("Failed to load \"{}\" from the server. The local copy will be used instead.", fileName);
             if (!(exception == null)) {
-                logger.error(exception.getMessage());
+                LOGGER.error(exception.getMessage());
             }
         }
     }
