@@ -77,7 +77,7 @@ public class Utils {
      * Matches the server ID (m##/M##) line on the Skyblock scoreboard
      */
     // TODO dungeon room coordinates can be used
-    private static final Pattern SERVER_REGEX = Pattern.compile("^\\d+/\\d+/\\d+ (?<serverType>[Mm])(?<serverCode>[0-9]+[A-Z]+) ?(?:(?<x>-?\\d+),(?<z>-?\\d+))?$");
+    private static final Pattern SERVER_REGEX = Pattern.compile("^\\d+/\\d+/\\d+ (?<serverType>[Mm])(?<serverCode>[0-9]+[A-Z]+) ?(?:(?<x>-?\\d+),(?<z>-?\\d+))?(?<mineshaft>[A-Z]+\\d)?$");
     /**
      * Matches the active slayer quest type line on the Skyblock scoreboard
      */
@@ -195,6 +195,12 @@ public class Utils {
      * The current serverID that the player is on.
      */
     private String serverID = "";
+
+    /**
+     * The current mineshaft the player is in, taken from the Scoreboard.
+     */
+    private String mineshaftID = "";
+
     private int lastHoveredSlot = -1;
 
     /**
@@ -354,6 +360,8 @@ public class Utils {
                             } else if (serverType.equals("M")) {
                                 serverID = "mega" + matcher.group("serverCode");
                             }
+                            String mineshaft = matcher.group("mineshaft");
+                            mineshaftID = mineshaft == null ? "" : mineshaft;
                             foundServerID = true;
                             continue;
                         }

@@ -1,5 +1,6 @@
 package codes.biscuit.skyblockaddons.core;
 
+import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.utils.LocationUtils;
 import lombok.Getter;
 import net.minecraft.block.Block;
@@ -447,8 +448,16 @@ public enum SkyblockOre {
 
     private static boolean isLowTierTungstenMineshaft(IBlockState state) {
         Block block = state.getBlock();
-        return block == Blocks.cobblestone || block == Blocks.stone_stairs ||
-                (block == Blocks.stone_slab && state.getValue(BlockStoneSlab.VARIANT) == BlockStoneSlab.EnumType.COBBLESTONE);
+        // TODO(TEST): Are there any variations that include cobblestone block other than the TUNG mineshaft variant?
+        if (block == Blocks.cobblestone) {
+            return true;
+        } else if (block == Blocks.stone_stairs) {
+            return SkyblockAddons.getInstance().getUtils().getMineshaftID().startsWith("TUNG");
+        } else if (block == Blocks.stone_slab && state.getValue(BlockStoneSlab.VARIANT) == BlockStoneSlab.EnumType.COBBLESTONE) {
+            return SkyblockAddons.getInstance().getUtils().getMineshaftID().startsWith("TUNG");
+        } else {
+            return false;
+        }
     }
 
     private static boolean isGemstoneWithColor(IBlockState state, EnumDyeColor color) {
