@@ -425,11 +425,14 @@ public class ActionBarParser {
                 if (parseCurrAndTotal && Feature.SKILL_DISPLAY.isEnabled(FeatureSetting.SKILL_ACTIONS_LEFT_UNTIL_NEXT_LEVEL)) {
                     float gained = nf.parse(matcher.group("gained")).floatValue();
 
-                    skillTextBuilder.append(" - ");
-
                     if (percent != 100) {
+                        skillTextBuilder.append(" - ");
+
                         if (gained != 0) {
-                            skillTextBuilder.append(Translations.getMessage("messages.actionsLeft", (int) Math.ceil((totalSkillXP - currentSkillXP) / gained)));
+                            skillTextBuilder.append(Translations.getMessage(
+                                    "messages.actionsLeft",
+                                    TextUtils.formatNumber((int) Math.ceil((totalSkillXP - currentSkillXP) / gained))
+                            ));
                         } else {
                             skillTextBuilder.append(Translations.getMessage("messages.actionsLeft", "∞"));
                         }

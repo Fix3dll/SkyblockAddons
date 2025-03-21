@@ -226,7 +226,7 @@ public class TabListParser {
                     parsedRainTime = m.group("time");
                 }
 
-                if (!foundSkillSection && !foundSkill && Feature.SKILL_DISPLAY.isDisabled(FeatureSetting.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP)) {
+                if (!foundSkillSection && !foundSkill) {
                     // The Catacombs still have old tab list instead of new Widgets
                     if (LocationUtils.isOn(Island.DUNGEON) && (m = OLD_SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
                         SkillType skillType = SkillType.getFromString(m.group("skill"));
