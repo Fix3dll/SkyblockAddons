@@ -2750,35 +2750,26 @@ public class RenderListener {
             passIndex++;
         }
 
-        if (deployable.getStrength() > 0) {
-            display.add(String.format("§c+%d ❁ ", deployable.getStrength()));
-        }
+        int strength = deployable.getStrength();
+        if (strength > 0) display.add("§c+" + strength + " ❁ ");
 
-        if (deployable.getVitality() > 0.0) {
-            double vit = deployable.getVitality();
-            display.add(String.format("§4+%s ♨ ", vit % 1 == 0.0 ? Integer.toString((int) vit) : vit));
-        }
+        double vitality = deployable.getVitality();
+        if (vitality > 0.0) display.add("§4+" + TextUtils.formatNumber(vitality) + " ♨ ");
 
-        if (deployable.getMending() > 0.0) {
-            double mending = deployable.getMending();
-            display.add(String.format("§a+%s ☄ ", mending % 1 == 0.0 ? Integer.toString((int) mending) : mending));
-        }
+        double mending = deployable.getMending();
+        if (mending > 0.0) display.add("§a+" + TextUtils.formatNumber(mending) + " ☄ ");
 
-        if (deployable.getTrueDefense() > 0) {
-            display.add(String.format("§f+%s ❂ ", deployable.getTrueDefense()));
-        }
+        int trueDefense = deployable.getTrueDefense();
+        if (trueDefense > 0) display.add("§f+" + trueDefense + " ❂ ");
 
-        if (deployable.getFerocity() > 0) {
-            display.add(String.format("§c+%s ⫽ ", deployable.getFerocity()));
-        }
+        int ferocity = deployable.getFerocity();
+        if (ferocity > 0) display.add("§c+" + ferocity + " ⫽ ");
 
-        if (deployable.getBonusAttackSpeed() > 0) {
-            display.add(String.format("§e+%s%% ⚔ ", deployable.getBonusAttackSpeed()));
-        }
+        int bonusAttackSpeed = deployable.getBonusAttackSpeed();
+        if (bonusAttackSpeed > 0) display.add("§e+" + bonusAttackSpeed + "% ⚔ ");
 
-        if (deployable.getTrophyFishChance() > 0.0) {
-            display.add(String.format("§6+%s ♔ ", deployable.getTrophyFishChance()));
-        }
+        int trophyFishChance = deployable.getTrophyFishChance();
+        if (trophyFishChance > 0) display.add("§6+" + trophyFishChance + " ♔ ");
 
         // For better visual (maybe?)
         if (feature.isEnabled(FeatureSetting.EXPAND_DEPLOYABLE_STATUS) && display.size() > 3) {

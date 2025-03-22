@@ -22,7 +22,7 @@ public enum Deployable {
     SOS_FLARE(1.25, 30, 25, 10, 5,  "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b", 40*40, "sos"),
 
     // Umberella
-    UMBERELLA("§9Umberella", 5.0D, 30*30, "umberella");
+    UMBERELLA("§9Umberella", 5, 30*30, "umberella");
 
     /**
      * Start of the display name of the actual floating deployable entity.
@@ -75,7 +75,7 @@ public enum Deployable {
     /**
      * Amount of Trophy Fish Chance given by the deployable
      */
-    private double trophyFishChance = 0.0;
+    private int trophyFishChance = 0;
 
     // Orbs
     Deployable(String display, double healthRegen, double manaRegen, int strength, double vitality, double mending, int rangeSquared, String resourcePath) {
@@ -102,7 +102,7 @@ public enum Deployable {
     }
 
     // Umberella
-    Deployable(String display, double trophyFishChance, int rangeSquared, String resourcePath) {
+    Deployable(String display, int trophyFishChance, int rangeSquared, String resourcePath) {
         this.display = display;
         this.trophyFishChance = trophyFishChance;
         this.rangeSquared = rangeSquared;
