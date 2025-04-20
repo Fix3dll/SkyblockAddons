@@ -105,7 +105,9 @@ public class PetManager {
         SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
 
         for (Pet pet : main.getPetCacheManager().getPetCache().getPetMap().values()) {
-            if (pet.displayName.contains(petName) && pet.petLevel == level && pet.petInfo.getPetRarity() == rarity) {
+            if (TextUtils.stripPetName(pet.displayName).equals(petName)
+                    && pet.petLevel == level
+                    && pet.petInfo.getPetRarity() == rarity) {
                 main.getPetCacheManager().setCurrentPet(pet);
             }
         }
@@ -129,7 +131,7 @@ public class PetManager {
             int index = petEntry.getKey();
             Pet pet = petEntry.getValue();
 
-            if (pet.displayName.contains(petName) && pet.petInfo.getPetRarity() == rarity) {
+            if (TextUtils.stripPetName(pet.displayName).equals(petName) && pet.petInfo.getPetRarity() == rarity) {
                 Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
                 if (m.matches()) {
                     boolean isCurrentPet = currentPet != null && currentPet.petInfo.getUniqueId() == pet.petInfo.getUniqueId();
