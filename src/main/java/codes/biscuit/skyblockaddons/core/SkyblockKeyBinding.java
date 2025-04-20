@@ -63,16 +63,16 @@ public enum SkyblockKeyBinding {
      */
     public boolean isKeyDown() {
         int keyCode = this.getKeyCode();
+        if (!registered || keyCode == 9999) return false;
 
-        if (registered && keyCode != 9999) {
-            if (keyCode < 0) {
-                return Mouse.isButtonDown(keyCode + 100);
-            } else {
-                return Keyboard.isKeyDown(keyCode);
-            }
-        } else {
+        if (keyCode < 0) {
+            return Mouse.isButtonDown(keyCode + 100);
+        }
+        
+        if (keyCode >= Keyboard.getKeyCount()) {
             return false;
         }
+        return Keyboard.isKeyDown(keyCode);
     }
 
     /**
