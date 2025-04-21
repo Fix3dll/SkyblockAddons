@@ -113,10 +113,10 @@ dependencies {
     }
     annotationProcessor("org.spongepowered:mixin:0.8.7-SNAPSHOT:processor")
 
-    compileOnly("net.hypixel:mod-api-forge:1.0.1.1") {
+    compileOnly("net.hypixel:mod-api-forge:1.0.1.2") {
         exclude(group = "me.djtheredstoner", module = "DevAuth-forge-legacy")
     }
-    bundle("net.hypixel:mod-api-forge-tweaker:1.0.1.1")
+    bundle("net.hypixel:mod-api-forge-tweaker:1.0.1.2")
     //bundle("moe.nea:libautoupdate:1.3.1")
     bundle("com.github.nea89o:libautoupdate:841d9f7e78")
 
