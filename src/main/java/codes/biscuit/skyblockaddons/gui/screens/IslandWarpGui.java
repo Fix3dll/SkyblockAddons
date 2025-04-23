@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.gui.screens;
 import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.SkyblockDate;
+import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.gui.buttons.ButtonCustomToggle;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandButton;
 import codes.biscuit.skyblockaddons.gui.buttons.IslandMarkerButton;
@@ -67,10 +68,15 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         this.buttonList.add(new ButtonCustomToggle(x, y - 30 - 60 * 2, 50,
                 Feature.FANCY_WARP_MENU::isEnabled,
-                () -> Feature.FANCY_WARP_MENU.setEnabled(Feature.FANCY_WARP_MENU.isDisabled())));
+                () -> Feature.FANCY_WARP_MENU.setEnabled(Feature.FANCY_WARP_MENU.isDisabled())
+        ));
         this.buttonList.add(new ButtonCustomToggle(x, y - 30 - 60, 50,
-                Feature.DOUBLE_WARP::isEnabled,
-                () -> Feature.DOUBLE_WARP.setEnabled(Feature.DOUBLE_WARP.isDisabled())));
+                () -> Feature.FANCY_WARP_MENU.isEnabled(FeatureSetting.DOUBLE_WARP),
+                () -> Feature.FANCY_WARP_MENU.set(
+                        FeatureSetting.DOUBLE_WARP,
+                        Feature.FANCY_WARP_MENU.isDisabled(FeatureSetting.DOUBLE_WARP)
+                )
+        ));
     }
 
     @Override
@@ -130,7 +136,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
                 x / textScale + 50, (y - 30 - 60 * 2) / textScale + 5, 0xFFFFFFFF
         );
         mc.fontRendererObj.drawStringWithShadow(
-                Feature.DOUBLE_WARP.getMessage(),
+                FeatureSetting.DOUBLE_WARP.getMessage(),
                 x / textScale + 50, (y - 30 - 60) / textScale + 5, 0xFFFFFFFF
         );
         GlStateManager.popMatrix();
@@ -147,7 +153,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         if (mouseButton == 0 && selectedMarker != null) {
             mc.displayGuiScreen(null);
 
-            if (Feature.DOUBLE_WARP.isEnabled()) {
+            if (Feature.FANCY_WARP_MENU.isEnabled(FeatureSetting.DOUBLE_WARP)) {
                 doubleWarpMarker = selectedMarker;
 
                 // Remove the marker if it didn't trigger for some reason...

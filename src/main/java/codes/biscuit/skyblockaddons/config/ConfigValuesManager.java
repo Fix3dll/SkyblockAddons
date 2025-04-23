@@ -21,7 +21,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -90,8 +89,20 @@ public class ConfigValuesManager {
         this.legacyConfigFile = new File(mainConfigDir, "skyblockaddons.cfg");
     }
 
-    // TODO migration map for Feature rework, remove in feature
-    @Deprecated @Getter private static TreeMap<Feature, TreeMap<FeatureSetting, Integer>> migrationMap = null;
+    /**
+     * Contains the information required to bind to the specified Feature as FeatureSetting.
+     * The Feature to be deprecated is defined as a FeatureSetting, preserving its value to the specified parent Feature.
+     * <pre>
+     * "parentFeature": {
+     *   "newFeatureSetting": legacyFeatureId,
+     *   ...
+     * }
+     * </pre>
+     * @see #loadValues()
+     * @deprecated Written to migrate CONFIG_VERSION 10 and earlier to 11.
+     */
+    @Deprecated
+    private static TreeMap<Feature, TreeMap<FeatureSetting, Integer>> migrationMap = null;
 
     public void loadValues() {
         Gson gson = SkyblockAddons.getGson();

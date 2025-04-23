@@ -130,7 +130,6 @@ public enum Feature {
     VOIDGLOOM_SLAYER_TRACKER(186, "settings.voidgloomSlayerTracker", new FeatureGuiData(DrawType.SLAYER_TRACKERS, ColorCode.WHITE)),
     HIDE_PLAYERS_NEAR_NPCS(190, "settings.hidePlayersNearNPCs", null),
     OVERFLOW_MANA(191, "settings.showOverflowManaNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.DARK_AQUA)),
-    DOUBLE_WARP(192, "settings.doubleWarp", null),
     DISABLE_EMPTY_GLASS_PANES(195, "settings.hideMenuGlassPanes", null),
     ENTITY_OUTLINES(196, "settings.entityOutlines", null),
     EFFECTIVE_HEALTH_TEXT(197, "settings.effectiveHealthNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.DARK_GREEN)),
@@ -498,7 +497,7 @@ public enum Feature {
     }
 
     public boolean hasSettings() {
-        return this.featureData.getSettings() != null && !this.featureData.getSettings().isEmpty();
+        return this.featureData.hasSettings();
     }
 
     public int settingsSize() {
@@ -609,25 +608,14 @@ public enum Feature {
      * @param value value to be associated with the specified setting
      * @exception IllegalArgumentException if {@code setting} is not related with this Feature
      * @exception IllegalStateException if specified value is not valid
-     * @see FeatureData#isValidValue(Object)
+     * @see FeatureData#setSetting(FeatureSetting, Object)
      */
     public <T> void set(FeatureSetting setting, T value) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
             throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this);
         }
 
-        if (FeatureData.isValidValue(value)) {
-            if (this.hasSettings()) {
-                this.featureData.getSettings().put(setting, value);
-            } else {
-                TreeMap<FeatureSetting, Object> newSettings = new TreeMap<>();
-                newSettings.put(setting, value);
-
-                this.featureData.setSettings(newSettings);
-            }
-        } else {
-            throw new IllegalStateException("Tried to set invalid value to '" + setting + "'. Value type: " + value);
-        }
+        this.featureData.setSetting(setting, value);
     }
 
     /**

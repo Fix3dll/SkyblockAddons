@@ -386,7 +386,10 @@
     "color": -1
   },
   "FANCY_WARP_MENU": {
-    "value": true
+    "value": true,
+    "settings": {
+      "DOUBLE_WARP": false
+    }
   },
   "LEGENDARY_SEA_CREATURE_WARNING": {
     "value": true,
@@ -746,9 +749,6 @@
       -47.0
     ],
     "color": -16733526
-  },
-  "DOUBLE_WARP": {
-    "value": false
   },
   "DISABLE_EMPTY_GLASS_PANES": {
     "value": true

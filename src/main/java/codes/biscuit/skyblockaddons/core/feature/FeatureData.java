@@ -72,6 +72,33 @@ public class FeatureData<T> {
         this.value = (T) value;
     }
 
+    /**
+     * If the value is valid, it is set to the value of the specified setting. If the settings map does not exist, the
+     * map is created and then the value is added. See the {@link Feature#set(FeatureSetting, Object)} method before
+     * using it.
+     * @param setting Feature related setting
+     * @param value value to be associated with the specified setting
+     * @exception IllegalStateException if specified value is not valid
+     * @see #isValidValue(Object)
+     */
+    public <V> void setSetting(FeatureSetting setting, V value) {
+        if (isValidValue(value)) {
+            if (this.hasSettings()) {
+                this.settings.put(setting, value);
+            } else {
+                TreeMap<FeatureSetting, Object> newSettings = new TreeMap<>();
+                newSettings.put(setting, value);
+                this.settings = newSettings;
+            }
+        } else {
+            throw new IllegalStateException("Tried to set invalid value to '" + setting + "'. Value type: " + value);
+        }
+    }
+
+    public boolean hasSettings() {
+        return this.settings != null && !this.settings.isEmpty();
+    }
+
     public static boolean isValidValue(Object value) {
         return value instanceof Boolean ||
                 value instanceof Number ||

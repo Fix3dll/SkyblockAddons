@@ -133,6 +133,7 @@ public enum FeatureSetting {
     BERSERK_COLOR("settings.berserkColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
     ARCHER_COLOR("settings.archerColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
     TANK_COLOR("settings.tankColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
+    DOUBLE_WARP("settings.doubleWarp", Feature.FANCY_WARP_MENU),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
