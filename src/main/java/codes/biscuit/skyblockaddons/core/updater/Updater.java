@@ -12,6 +12,7 @@ import moe.nea.libautoupdate.CurrentVersion;
 import moe.nea.libautoupdate.PotentialUpdate;
 import moe.nea.libautoupdate.UpdateContext;
 import moe.nea.libautoupdate.UpdateTarget;
+import moe.nea.libautoupdate.UpdateUtils;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -56,6 +57,9 @@ public class Updater {
     private boolean updateLaunched = false;
 
     public Updater() {
+        UpdateUtils.patchConnection(urlConnection ->
+                urlConnection.setRequestProperty("User-Agent", Utils.USER_AGENT)
+        );
         AUTO_UPDATE_CONTEXT.cleanup();
     }
 

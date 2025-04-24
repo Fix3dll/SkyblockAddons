@@ -43,7 +43,7 @@ public class ButtonBanner extends SkyblockAddonsButton {
                     URL url = new URL(main.getOnlineData().getBannerImageURL());
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                     connection.setReadTimeout(5000);
-                    connection.addRequestProperty("User-Agent", Utils.USER_AGENT);
+                    connection.setRequestProperty("User-Agent", Utils.USER_AGENT);
 
                     bannerImage = TextureUtil.readBufferedImage(connection.getInputStream());
 
