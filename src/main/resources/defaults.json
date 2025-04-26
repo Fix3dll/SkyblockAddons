@@ -979,5 +979,8 @@
   },
   "FULL_AUTO_UPDATE": {
     "value": false
+  },
+  "CHAT_MESSAGE_COPYING": {
+    "value": false
   }
 }

@@ -8,10 +8,12 @@
     "maxShiftBy": 2
   },
   "client": [
+    "ChatLineMixin",
     "EffectRendererMixin",
     "EntityPlayerSPMixin",
     "EntityRendererMixin",
     "FontRendererMixin",
+    "GuiChatMixin",
     "GuiChestMixin",
     "GuiContainerMixin",
     "GuiDisconnectedMixin",

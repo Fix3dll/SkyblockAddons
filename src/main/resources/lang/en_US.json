@@ -281,7 +281,8 @@
         "description": "There will be no check for automatic updates."
       }
     },
-    "fullAutoUpdate": "Full Auto Update"
+    "fullAutoUpdate": "Full Auto Update",
+    "chatMessageCopying": "Chat Message Copying"
   },
   "messages": {
     "enchants": "Enchants",
@@ -379,7 +380,11 @@
       "atOpening": "TIP: You can adjust the scaling with the mouse wheel and increase the ratio by holding Shift. With right mouse click you can change the scale of that feature to default. You can also move the hovered feature with the WASD or arrow keys. You can also open the settings by hovering your mouse over the feature you want to open the settings for and clicking the mouse wheel button."
     },
     "classColoredTeammateRequirement": "Entity Outlines and Outline Dungeon Teammate features must be enabled",
-    "perkpocalypseUnknown": "Mayor Jerry's Perkpocalypse mayor is not known! Click here to update Perkpocalypse mayor."
+    "perkpocalypseUnknown": "Mayor Jerry's Perkpocalypse mayor is not known! Click here to update Perkpocalypse mayor.",
+    "chatMessageCopying": {
+      "unformatted": "Unformatted chat message copied to clipboard!",
+      "formatted": "Formatted chat message copied to clipboard!"
+    }
   },
   "discordStatus": {
     "titleNone": "None",

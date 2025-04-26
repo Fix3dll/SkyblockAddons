@@ -175,8 +175,9 @@ public enum Feature {
     TURN_ALL_TEXTS_CHROMA(243, "settings.turnAllTextsChroma"),
     ENABLE_FEATURE_SNAPPING(254, "messages.enableFeatureSnapping"),
     SHOW_COLOR_ICONS(256, "messages.showColorIcons"),
-    AUTO_UPDATE(-15, "settings.autoUpdate.title"),
-    FULL_AUTO_UPDATE(-16, "settings.fullAutoUpdate"),
+    AUTO_UPDATE(257, "settings.autoUpdate.title"),
+    FULL_AUTO_UPDATE(258, "settings.fullAutoUpdate"),
+    CHAT_MESSAGE_COPYING(259, "settings.chatMessageCopying"),
     ;
 
     private static final LinkedHashSet<Feature> guiFeatures = new LinkedHashSet<>();
@@ -188,7 +189,7 @@ public enum Feature {
     private static final LinkedHashSet<Feature> generalTabFeatures = new LinkedHashSet<>(Arrays.asList(TEXT_STYLE,
             WARNING_TIME, CHROMA_SPEED, CHROMA_MODE, CHROMA_SIZE, TURN_ALL_FEATURES_CHROMA, CHROMA_SATURATION,
             CHROMA_BRIGHTNESS, NUMBER_SEPARATORS, DEVELOPER_MODE, TURN_ALL_TEXTS_CHROMA, SBA_BUTTON_IN_PAUSE_MENU,
-            AUTO_UPDATE, FULL_AUTO_UPDATE
+            AUTO_UPDATE, FULL_AUTO_UPDATE, CHAT_MESSAGE_COPYING
     ));
 
     @Getter
