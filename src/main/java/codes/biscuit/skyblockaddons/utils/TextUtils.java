@@ -30,7 +30,7 @@ public class TextUtils {
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-ORZ]");
     private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("\\[✌]|[♲Ⓑ⚒ቾ]+");
     private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[\\d+]");
-    private static final Pattern STRIP_PET_DISPLAY_NAME = Pattern.compile("]\\s(?:§.)*([\\w- ]+)");
+    private static final Pattern STRIP_PET_DISPLAY_NAME = Pattern.compile("]\\s(?:§.)*([\\w- ]+(?:§. ✦)?)");
     private static final Pattern REPEATED_COLOR_PATTERN = Pattern.compile("(?i)(§[0-9A-FK-ORZ])+");
     private static final Pattern NUMBERS_SLASHES = Pattern.compile("[^0-9 /]");
     private static final Pattern SCOREBOARD_CHARACTERS = Pattern.compile("[^a-z A-Z:0-9_/'.!§\\[\\]❤]");
@@ -550,7 +550,7 @@ public class TextUtils {
     }
 
     /**
-     * Strips level, colors etc. from a pet display name text
+     * Strips level, colors etc. (except cosmetic with color) from a pet display name text
      * @param displayName Pet's formatted display name to strip from
      * @return Stripped display name. If the name cannot be stripped, the input returns back.
      */

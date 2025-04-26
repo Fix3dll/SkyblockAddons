@@ -133,7 +133,7 @@ public class PlayerListener {
     private static final Pattern PROFILE_TYPE_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][♲Ⓑ]");
     private static final Pattern NETHER_FACTION_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][⚒ቾ]");
     private static final Pattern AUTOPET_PATTERN = Pattern.compile("§cAutopet §eequipped your §7\\[Lvl (?<level>\\d+)](?: §8\\[§6\\d+§8§.✦§8])? §(?<rarityColor>.)(?<name>.*)§e! §a§lVIEW RULE§r");
-    private static final Pattern PET_LEVELED_UP_PATTERN = Pattern.compile("§r§aYour §r§(?<rarityColor>.)(?<name>.*?)(?:§r§. ✦)? §r§aleveled up to level §r(?:§.)*(?<newLevel>\\d+)§r§a!§r");
+    private static final Pattern PET_LEVELED_UP_PATTERN = Pattern.compile("§r§aYour §r§(?<rarityColor>.)(?<name>.*?)(?<cosmetic>§r§. ✦)? §r§aleveled up to level §r(?:§.)*(?<newLevel>\\d+)§r§a!§r");
     private static final Pattern PET_ITEM_PATTERN = Pattern.compile("§r§aYour pet is now holding §r§(?<rarityColor>.)(?<petItem>.*)§r§a.§r");
 
     private static final Set<String> SOUP_RANDOM_MESSAGES = new HashSet<>(Arrays.asList("I feel like I can fly!", "What was in that soup?",
@@ -287,8 +287,13 @@ public class PlayerListener {
                 );
 
             } else if ((matcher = PET_LEVELED_UP_PATTERN.matcher(formattedText)).matches()) {
+                String petName = matcher.group("name");
+                String petCosmetic = matcher.group("cosmetic");
+                if (!StringUtils.isNullOrEmpty(petCosmetic)) {
+                    petName += petCosmetic.replace("§r", "");
+                }
                 PetManager.getInstance().updateAndSetCurrentLevelledPet(
-                        matcher.group("newLevel"), matcher.group("rarityColor"), matcher.group("name")
+                        matcher.group("newLevel"), matcher.group("rarityColor"), petName
                 );
 
             } else if ((matcher = PET_ITEM_PATTERN.matcher(formattedText)).matches()) {
