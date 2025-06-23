@@ -136,7 +136,7 @@ public class NetworkListener {
             }
         }).onError(reason -> {
             Utils utils = SkyblockAddons.getInstance().getUtils();
-            utils.sendMessage("ModAPI packet failed: " + reason);
+            Utils.sendMessage("ModAPI packet failed: " + reason);
             utils.setMap(Island.UNKNOWN);
             utils.setMode("null");
         });

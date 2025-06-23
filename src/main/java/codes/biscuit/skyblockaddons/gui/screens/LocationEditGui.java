@@ -12,6 +12,7 @@ import codes.biscuit.skyblockaddons.gui.buttons.feature.ButtonSolid;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
@@ -116,7 +117,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
         // 1 tip per session :)
         if (mc.thePlayer != null && !tipShown) {
             tipShown = true;
-            main.getUtils().sendMessage(ColorCode.GREEN + Translations.getMessage("messages.locationEditGui.atOpening"));
+            Utils.sendMessage(ColorCode.GREEN + Translations.getMessage("messages.locationEditGui.atOpening"));
         }
     }
 

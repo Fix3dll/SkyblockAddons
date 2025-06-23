@@ -108,11 +108,20 @@ public class DungeonManager {
      */
     private static final Function<Entity, Integer> OUTLINE_COLOR = e -> {
         // Only accept other player entities
-        if (e instanceof EntityOtherPlayerMP) {
+        if (e instanceof EntityOtherPlayerMP && main.getUtils().isInDungeon()) {
             String profileName = ((EntityOtherPlayerMP) e).getGameProfile().getName();
             DungeonPlayer teammate = SkyblockAddons.getInstance().getDungeonManager().getDungeonPlayerByName(profileName);
-            if (teammate != null && teammate.getDungeonClass() != null) {
-                return teammate.getDungeonClass().getColor();
+
+            if (teammate != null) {
+                if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isEnabled(FeatureSetting.CLASS_COLORED_TEAMMATE)) {
+                    return teammate.getDungeonClass().getColor();
+                } else {
+                    if (teammate.isCritical()) {
+                        return ColorCode.RED.getColor();
+                    } else if (teammate.isLow()) {
+                        return ColorCode.YELLOW.getColor();
+                    }
+                }
             }
             // NPCs don't have a color on their team. Don't show them on outlines.
             return null;
@@ -502,10 +511,7 @@ public class DungeonManager {
     public void onRenderEntityOutlines(RenderEntityOutlineEvent e) {
         if (e.getType() == RenderEntityOutlineEvent.Type.XRAY) {
             // Test whether we should add any entities at all
-            if (Feature.ENTITY_OUTLINES.isEnabled(FeatureSetting.OUTLINE_DUNGEON_TEAMMATES) && main.getUtils().isInDungeon()) {
-                // Queue specific items for outlining
-                e.queueEntitiesToOutline(OUTLINE_COLOR);
-            }
+            e.queueEntitiesToOutline(OUTLINE_COLOR);
         }
     }
 }

@@ -1,12 +1,8 @@
 package codes.biscuit.skyblockaddons.mixins.hooks;
 
 import codes.biscuit.skyblockaddons.SkyblockAddons;
-import codes.biscuit.skyblockaddons.core.feature.Feature;
-import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
-import codes.biscuit.skyblockaddons.features.dungeon.DungeonPlayer;
 import codes.biscuit.skyblockaddons.features.outline.EntityOutlineRenderer;
 import com.google.common.collect.Sets;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
@@ -32,23 +28,11 @@ public class RendererLivingEntityHook {
     }
 
     public static int setOutlineColor(EntityLivingBase entity, int originalColor) {
-        SkyblockAddons main = SkyblockAddons.getInstance();
-        if (Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY.isDisabled(FeatureSetting.CLASS_COLORED_TEAMMATE)
-                && main.getUtils().isInDungeon()
-                && main.getDungeonManager().getTeammates().containsKey(entity.getName())) {
-            DungeonPlayer dungeonPlayer = main.getDungeonManager().getTeammates().get(entity.getName());
-
-            if (dungeonPlayer.isCritical()) {
-                return Minecraft.getMinecraft().fontRendererObj.getColorCode('c');
-            } else if (dungeonPlayer.isLow()) {
-                return Minecraft.getMinecraft().fontRendererObj.getColorCode('e');
-            }
+        Integer i = EntityOutlineRenderer.getCustomOutlineColor(entity);
+        if (i != null) {
+            return i;
         } else {
-            Integer i = EntityOutlineRenderer.getCustomOutlineColor(entity);
-            if (i != null) {
-                return i;
-            }
+            return originalColor;
         }
-        return originalColor;
     }
 }

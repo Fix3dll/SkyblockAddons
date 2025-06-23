@@ -182,8 +182,14 @@ public class DataUtils {
         path = "/compactorItems.json";
         try (   InputStream inputStream = DataUtils.class.getResourceAsStream(path);
                 InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream),
-                        StandardCharsets.UTF_8)){
-            ItemUtils.setCompactorItems(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, CompactorItem>>() {}.getType()));
+                        StandardCharsets.UTF_8)) {
+            HashMap<String, CompactorItem> compactorItems = GSON.fromJson(
+                    inputStreamReader, new TypeToken<HashMap<String, CompactorItem>>() {}.getType()
+            );
+            compactorItems.forEach((skyblockId, compactorItem) ->
+                    ItemUtils.setItemStackSkyblockID(compactorItem.getItemStack(), skyblockId)
+            );
+            ItemUtils.setCompactorItems(compactorItems);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }

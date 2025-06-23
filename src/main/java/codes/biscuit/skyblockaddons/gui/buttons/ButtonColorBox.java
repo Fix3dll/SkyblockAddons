@@ -37,20 +37,7 @@ public class ButtonColorBox extends SkyblockAddonsButton {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         hovered = isHovered(mouseX, mouseY);
-
-        if (color == ColorCode.CHROMA && !MulticolorShaderManager.getInstance().shouldUseChromaShaders()) {
-            drawChromaRect(xPosition, yPosition, xPosition + width, yPosition + height, hovered ? 255 : 127);
-        } else {
-            if (color == ColorCode.CHROMA && MulticolorShaderManager.getInstance().shouldUseChromaShaders()) {
-                ShaderManager.getInstance().enableShader(ChromaScreenShader.class);
-            }
-            GlStateManager.enableBlend();
-            drawRect(xPosition, yPosition, xPosition + width, yPosition + height, hovered ? color.getColor() : color.getColor(127));
-            GlStateManager.disableBlend();
-            if (color == ColorCode.CHROMA && MulticolorShaderManager.getInstance().shouldUseChromaShaders()) {
-                ShaderManager.getInstance().disableShader();
-            }
-        }
+        drawColorRect(xPosition, yPosition, xPosition + width, yPosition + height, hovered ? color.getColor() : color.getColor(127));
     }
 
     public static void drawColorRect(int left, int top, int right, int bottom, int color) {

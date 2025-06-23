@@ -17,6 +17,7 @@ import codes.biscuit.skyblockaddons.mixins.hooks.GuiContainerHook;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.requests.MayorRequest;
 import codes.biscuit.skyblockaddons.utils.objects.Pair;
@@ -269,7 +270,7 @@ public class GuiScreenListener {
                                 return;
                             } else {
                                 main.getUtils().playLoudSound("note.bass", 0.5);
-                                main.getUtils().sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
+                                Utils.sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
                                 event.setCanceled(true);
                             }
                         }
@@ -346,7 +347,7 @@ public class GuiScreenListener {
             try {
                 inventory.removeInventoryChangeListener(inventoryChangeListener);
             } catch (NullPointerException e) {
-                SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                Utils.sendErrorMessage(
                         "Tried to remove an inventory listener from a container that has no listeners.");
             }
 

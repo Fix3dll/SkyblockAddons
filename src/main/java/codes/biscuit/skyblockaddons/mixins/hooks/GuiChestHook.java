@@ -57,8 +57,7 @@ public class GuiChestHook {
 
     private static final int REFORGE_MENU_HEIGHT = 222 - 108 + 5 * 18;
 
-    @Getter
-    private static IslandWarpGui islandWarpGui = null;
+    @Getter private static IslandWarpGui islandWarpGui = null;
 
     /** Reforge filter text field for reforges to match */
     private static GuiTextField textFieldMatches = null;

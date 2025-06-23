@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.features.ItemDropChecker;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.Translations;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -37,7 +38,7 @@ public class MinecraftHook {
                     int slot = MC.thePlayer.inventory.currentItem + 36;
                     if (main.getPersistentValuesManager().getLockedSlots().contains(slot) && slot >= 9) {
                         main.getUtils().playLoudSound("note.bass", 0.5);
-                        main.getUtils().sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
+                        Utils.sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
                         ci.cancel();
                     }
                 }

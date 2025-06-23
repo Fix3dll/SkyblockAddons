@@ -5,6 +5,7 @@ import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.scheduler.ScheduledTask;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import codes.biscuit.skyblockaddons.utils.data.DataFetchCallback;
 import codes.biscuit.skyblockaddons.utils.data.DataUtils;
 import codes.biscuit.skyblockaddons.utils.data.JSONResponseHandler;
@@ -125,7 +126,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
                                     )
                             )
                     );
-                    main.getUtils().sendMessage(updateText, true);
+                    Utils.sendMessage(updateText, true);
                 }
             }, 0, 3 * 20);
         }

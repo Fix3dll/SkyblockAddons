@@ -248,15 +248,15 @@
     "enchanted": true,
     "itemId": "gold_ingot"
   },
-  "ENCHANTED_GOLD_BLOCK": {
-    "displayName": "§9Enchanted Gold Block",
-    "enchanted": true,
-    "itemId": "gold_block"
-  },
   "ENCHANTED_GOLDEN_CARROT": {
     "displayName": "§aEnchanted Golden Carrot",
     "enchanted": true,
     "itemId": "golden_carrot"
+  },
+  "ENCHANTED_GOLD_BLOCK": {
+    "displayName": "§9Enchanted Gold Block",
+    "enchanted": true,
+    "itemId": "gold_block"
   },
   "ENCHANTED_GRILLED_PORK": {
     "displayName": "§9Enchanted Grilled Pork",
@@ -364,15 +364,15 @@
     "skullId": "361a2d8d-edbe-3b7b-92a5-86011562b752",
     "texture": "9a351d5316e5b508fbbf595e0773aec9639a0891807fef09bc59a56d46490cb0"
   },
-  "ENCHANTED_NETHER_STALK": {
-    "displayName": "§aEnchanted Nether Wart",
-    "enchanted": true,
-    "itemId": "nether_wart"
-  },
   "ENCHANTED_NETHERRACK": {
     "displayName": "§aEnchanted Netherrack",
     "enchanted": true,
     "itemId": "netherrack"
+  },
+  "ENCHANTED_NETHER_STALK": {
+    "displayName": "§aEnchanted Nether Wart",
+    "enchanted": true,
+    "itemId": "nether_wart"
   },
   "ENCHANTED_OAK_LOG": {
     "displayName": "§aEnchanted Oak Wood",
@@ -479,6 +479,16 @@
     "enchanted": true,
     "itemId": "fish:1"
   },
+  "ENCHANTED_REDSTONE": {
+    "displayName": "§aEnchanted Redstone",
+    "enchanted": true,
+    "itemId": "redstone"
+  },
+  "ENCHANTED_REDSTONE_BLOCK": {
+    "displayName": "§9Enchanted Redstone Block",
+    "enchanted": true,
+    "itemId": "redstone_block"
+  },
   "ENCHANTED_RED_MUSHROOM": {
     "displayName": "§fEnchanted Red Mushroom",
     "enchanted": true,
@@ -494,16 +504,6 @@
     "itemId": "skull",
     "skullId": "2bdb5767-546d-3fcc-b000-b3b58645bbe6",
     "texture": "f31f5c78b7e961591293756b9e15012db10457846c5ebc5db0f2b0e1873468ee"
-  },
-  "ENCHANTED_REDSTONE": {
-    "displayName": "§aEnchanted Redstone",
-    "enchanted": true,
-    "itemId": "redstone"
-  },
-  "ENCHANTED_REDSTONE_BLOCK": {
-    "displayName": "§9Enchanted Redstone Block",
-    "enchanted": true,
-    "itemId": "redstone_block"
   },
   "ENCHANTED_ROTTEN_FLESH": {
     "displayName": "§fEnchanted Rotten Flesh",
@@ -919,6 +919,11 @@
     "displayName": "§fBlock of Redstone",
     "enchanted": false,
     "itemId": "redstone_block"
+  },
+  "SLIME_BLOCK": {
+    "displayName": "§fSlime Block",
+    "enchanted": false,
+    "itemId": "slime"
   },
   "SNOW_BLOCK": {
     "displayName": "§fSnow Block",

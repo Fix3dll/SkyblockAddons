@@ -33,7 +33,10 @@ public class CompactorItemsRequest extends RemoteFileRequest<HashMap<String, Com
         @Override
         public void completed(HashMap<String, CompactorItem> result) {
             super.completed(result);
-            ItemUtils.setCompactorItems(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
+            Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR).forEach((skyblockId, compactorItem) ->
+                    ItemUtils.setItemStackSkyblockID(compactorItem.getItemStack(), skyblockId)
+            );
+            ItemUtils.setCompactorItems(result);
         }
     }
 }

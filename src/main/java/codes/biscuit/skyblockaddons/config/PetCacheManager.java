@@ -4,6 +4,7 @@ import codes.biscuit.skyblockaddons.SkyblockAddons;
 import codes.biscuit.skyblockaddons.core.feature.Feature;
 import codes.biscuit.skyblockaddons.core.PetInfo;
 import codes.biscuit.skyblockaddons.features.PetManager;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -104,7 +105,7 @@ public class PetCacheManager {
             } catch (Exception ex) {
                 LOGGER.error("Error while saving pet cache!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {
-                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                    Utils.sendErrorMessage(
                             "Error saving pet cache! Check log for more detail."
                     );
                 }

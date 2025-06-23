@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.features.FetchurManager;
 import codes.biscuit.skyblockaddons.features.backpacks.CompressedStorage;
 import codes.biscuit.skyblockaddons.features.dragontracker.DragonTrackerData;
 import codes.biscuit.skyblockaddons.features.slayertracker.SlayerTrackerData;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -126,7 +127,7 @@ public class PersistentValuesManager {
             } catch (Exception ex) {
                 LOGGER.error("Error saving persistent values!", ex);
                 if (Minecraft.getMinecraft().thePlayer != null) {
-                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                    Utils.sendErrorMessage(
                             "Error saving persistent values! Check log for more detail."
                     );
                 }

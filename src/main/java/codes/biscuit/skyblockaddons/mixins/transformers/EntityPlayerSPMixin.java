@@ -13,6 +13,8 @@ public class EntityPlayerSPMixin {
 
     @Inject(method = "dropOneItem", at = @At("HEAD"), cancellable = true)
     public void sba$dropOneItem(boolean dropAll, CallbackInfoReturnable<EntityItem> cir) {
-        EntityPlayerSPHook.dropOneItemConfirmation(cir);
+        if (EntityPlayerSPHook.dropOneItemConfirmation()) {
+            cir.cancel();
+        }
     }
 }

@@ -56,7 +56,7 @@ public class GuiContainerHook {
                     && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof ContainerPlayer && slotNum >= 5)) {
                 guiContainer.drawGradientRect(left, top, right, bottom, OVERLAY_RED, OVERLAY_RED);
-                if (Feature.LOCK_SLOTS.isEnabled(FeatureSetting.DRAW_LOCK_ONLY_WHEN_HOVERED)) {
+                if (Feature.LOCK_SLOTS.isEnabled(FeatureSetting.DRAW_LOCK_ONLY_WHEN_HOVERED)) { // TODO necessary?
                     drawLockIcon(hoveredSlot);
                 }
                 return;

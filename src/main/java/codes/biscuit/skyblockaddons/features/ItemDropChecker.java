@@ -7,6 +7,7 @@ import codes.biscuit.skyblockaddons.core.Translations;
 import codes.biscuit.skyblockaddons.core.feature.FeatureSetting;
 import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -189,11 +190,11 @@ public class ItemDropChecker {
 
         if (attemptsRequiredToConfirm >= 2) {
             String multipleAttemptsRequiredMessage = Translations.getMessage("messages.clickMoreTimes", Integer.toString(attemptsRequiredToConfirm));
-            main.getUtils().sendMessage(colorCode + multipleAttemptsRequiredMessage);
+            Utils.sendMessage(colorCode + multipleAttemptsRequiredMessage);
 
         } else {
             String oneMoreAttemptRequiredMessage = Translations.getMessage("messages.clickOneMoreTime");
-            main.getUtils().sendMessage(colorCode + oneMoreAttemptRequiredMessage);
+            Utils.sendMessage(colorCode + oneMoreAttemptRequiredMessage);
         }
         playAlert();
         attemptsRequiredToConfirm--;

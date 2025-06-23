@@ -6,6 +6,7 @@ import codes.biscuit.skyblockaddons.utils.DevUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.ItemUtils;
 import codes.biscuit.skyblockaddons.core.Rune;
+import codes.biscuit.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
@@ -75,7 +76,7 @@ public class SlayerTracker {
             slayerTrackerData.getSlayerDropCounts().put(slayerDrop, 0);
         }
         main.getPersistentValuesManager().saveValues();
-        main.getUtils().sendMessage(getMessage("commands.responses.sba.slayer.resetBossStats", slayerType));
+        Utils.sendMessage(getMessage("commands.responses.sba.slayer.resetBossStats", slayerType));
     }
 
     /**
@@ -97,7 +98,7 @@ public class SlayerTracker {
         if (args[2].equalsIgnoreCase("kills")) {
             int count = Integer.parseInt(args[3]);
             slayerTrackerData.getSlayerKills().put(slayerBoss, count);
-            main.getUtils().sendMessage(getMessage("commandUsage.sba.slayer.killsSet", args[1], args[3]));
+            Utils.sendMessage(getMessage("commandUsage.sba.slayer.killsSet", args[1], args[3]));
             main.getPersistentValuesManager().saveValues();
             return;
         }
@@ -112,7 +113,7 @@ public class SlayerTracker {
         if (slayerDrop != null) {
             int count = Integer.parseInt(args[3]);
             slayerTrackerData.getSlayerDropCounts().put(slayerDrop, count);
-            main.getUtils().sendMessage(getMessage(
+            Utils.sendMessage(getMessage(
                     "commandUsage.sba.slayer.statSet", args[2], args[1], args[3]));
             main.getPersistentValuesManager().saveValues();
             return;
@@ -160,7 +161,7 @@ public class SlayerTracker {
             slayerTrackerData.getSlayerDropCounts().put(drop, slayerTrackerData.getSlayerDropCounts().getOrDefault(drop, 0) + amount);
 
             if (DevUtils.isLoggingSlayerTracker()) {
-                main.getUtils().sendMessage(String.format("§fx%d §%s%s"
+                Utils.sendMessage(String.format("§fx%d §%s%s"
                         , amount
                         , drop.getRarity().getColorCode().getCode()
                         , drop.getDisplayName()

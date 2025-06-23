@@ -86,6 +86,7 @@ public class PlayerControllerMPHook {
             if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()) {
                 if (checkItemDrop(mode, slotNum, itemStack)) {
                     returnValue.cancel();
+                    return;
                 }
             }
 

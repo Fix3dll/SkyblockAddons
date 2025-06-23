@@ -1032,12 +1032,12 @@ public class PlayerListener {
 
         if (Feature.SHOW_SKYBLOCK_ITEM_ID.isEnabled() || Feature.DEVELOPER_MODE.isEnabled()) {
             String itemId = ItemUtils.getSkyblockItemID(e.itemStack);
-            String tooltipLine = EnumChatFormatting.DARK_GRAY + "skyblock:" + itemId;
+            String tooltipLine = ColorCode.DARK_GRAY + "skyblock:" + itemId;
 
             if (itemId != null) {
                 if (MC.gameSettings.advancedItemTooltips) {
                     for (int i = e.toolTip.size(); i-- > 0; ) {
-                        if (e.toolTip.get(i).startsWith(EnumChatFormatting.DARK_GRAY + "minecraft:")) {
+                        if (e.toolTip.get(i).startsWith(ColorCode.DARK_GRAY + "minecraft:")) {
                             e.toolTip.add(i + 1, tooltipLine);
                             break;
                         }
