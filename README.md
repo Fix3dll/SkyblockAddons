@@ -10,14 +10,8 @@
   </a>
 </div>
 
-Skyblock Addons has reached end of life. This fork contains unofficial updates from me. You can reach latest unofficial builds from GitHub Actions.
+SkyblockAddons has reached end of life. This fork contains updates from me. You can reach latest builds from GitHub Actions.
 If you are looking for a stable version, you can check the [Modrinth](https://modrinth.com/mod/skyblockaddons-unofficial) page.
-
-Special Credits
------
-TirelessTraveler (aka ILikePlayingGames) for helping maintain the project.
-
-DidiSkywalker & CraftedFury (Nahydrin) for adding/PRing many incredible features!
 
 Thanks to Our Translators
 ------

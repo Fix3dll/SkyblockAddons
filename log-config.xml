@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-    <RegexFilter regex="Error executing task.*|Unable to play unknown soundEvent.*" onMatch="DENY" onMismatch="NEUTRAL"/>
+    <RegexFilter regex="Failed to verify signature on property.*|Profile contained invalid signature for textures property.*|Received passengers for unknown entity|Received passengers for unknown entity .*|Requested creation of existing team .*" onMatch="DENY" onMismatch="NEUTRAL"/>
 </Configuration>
