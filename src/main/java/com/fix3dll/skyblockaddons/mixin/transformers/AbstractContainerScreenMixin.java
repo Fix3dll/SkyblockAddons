@@ -12,8 +12,6 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -71,8 +69,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Inject(method = "renderSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.AFTER))
-    public void sba$renderSlots(GuiGraphics graphics, CallbackInfo ci, @Local Slot slot, @Share("acs") LocalRef<AbstractContainerScreen<?>> acsRef) {
-        acsRef.set((AbstractContainerScreen<?>) (Object) this);
+    public void sba$renderSlots(GuiGraphics graphics, CallbackInfo ci, @Local Slot slot) {
         AbstractContainerScreenHook.renderSlot(graphics, slot);
     }
 
@@ -101,10 +98,10 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @WrapMethod(method = "renderLabels")
-    public void sba$renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY, Operation<Void> original, @Share("acs") LocalRef<AbstractContainerScreen<?>> acsRef) {
+    public void sba$renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY, Operation<Void> original) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        AbstractContainerScreenHook.onRenderLabels(acsRef.get(), guiGraphics);
+        AbstractContainerScreenHook.onRenderLabels((AbstractContainerScreen<?>) (Object) this, guiGraphics);
 
         if (main.getUtils().isOnSkyblock() && Feature.SHOW_BACKPACK_PREVIEW.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
             BackpackColor backpackColor = BackpackInventoryManager.getBackpackColor().get(
