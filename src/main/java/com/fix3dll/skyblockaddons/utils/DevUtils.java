@@ -4,7 +4,9 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.mojang.blaze3d.platform.GLX;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -22,8 +24,8 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,18 +42,12 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,12 +61,7 @@ public class DevUtils {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
-    /** All (probably?) Minecraft entity names, for tab completion */
-    public static final List<String> ALL_ENTITY_NAMES = new LinkedList<>();
-    /** All (probably?) Minecraft entity classes */
-    public static final Set<Class<?>> ALL_ENTITY_CLASSES = new HashSet<>();
-
-    public static final Map<String, Class<? extends Entity>> ALL_ENTITIES = new HashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Class<? extends Entity>> ALL_ENTITIES = new Object2ObjectOpenHashMap<>();
 
     // If you change this, please change it in the string "commands.usage.sba.help.copyEntity" as well.
     public static final int DEFAULT_ENTITY_COPY_RADIUS = 3;
@@ -86,39 +77,17 @@ public class DevUtils {
     @Setter private static boolean sidebarFormatted = DEFAULT_SIDEBAR_FORMATTED;
 
     static {
-        for (Field field : EntityType.class.getFields()) {
-            String fieldName = field.getName();
-            String subclassName = "";
-
-            // Exceptions
-            if (fieldName.equalsIgnoreCase("LIGHTNING_BOLT")) {
-                fieldName = "LIGHTNING"; // LightningEntity.class
-            } else if (fieldName.equalsIgnoreCase("FEATURE_ENABLED_REGISTRY_KEYS")) {
-                continue; // from interface, pass
-            } else if (fieldName.endsWith("_DISPLAY")) {
-                subclassName = TextUtils.capitalizeFully(
-                        fieldName.toLowerCase(Locale.ENGLISH),
-                        '_'
-                ).replaceAll("_", "").concat("Entity");
-                fieldName = "DISPLAY"; // DisplayEntity.class
-            }
-
-            String className = TextUtils.capitalizeFully(
-                    fieldName.toLowerCase(Locale.ENGLISH),
-                    '_'
-            ).replaceAll("_", "").concat("Entity");
-
-            Class<?> entityClass = ReflectionUtils.getClassFromSubpackages(
-                    className,
-                    subclassName,
-                    "net.minecraft.entity"
+        try {
+            List<Class<?>> allEntities = ReflectionUtils.scanPackage(
+                    "net.minecraft", Minecraft.class.getClassLoader(), LivingEntity.class
             );
-
-            if (entityClass != null) {
-                ALL_ENTITY_NAMES.add(className.replace("Entity", ""));
-                ALL_ENTITY_CLASSES.add(entityClass);
-                ALL_ENTITIES.put(className.replace("Entity", ""), (Class<? extends Entity>) entityClass);
+            for (Class<?> entityClass : allEntities) {
+                String entityName = entityClass.getSimpleName().replace("Entity", "");
+                //noinspection unchecked
+                ALL_ENTITIES.put(entityName, (Class<? extends Entity>) entityClass);
+                // TODO mapped names for outside of dev env
             }
+        } catch (IOException | URISyntaxException ignored) {
         }
     }
 
@@ -275,7 +244,6 @@ public class DevUtils {
 
     /**
      * Compiles a list of entity classes from a string.
-     *
      * @param text The string to parse
      * @return The list of entities
      */
@@ -290,7 +258,6 @@ public class DevUtils {
         String[] entityNamesArray = text.split(",");
 
         for (String entityName : entityNamesArray) {
-//            if (Registries.ENTITY_TYPE.getIds().contains(ResourceLocation.fromNamespaceAndPath(entityName))) {
             if (ALL_ENTITIES.containsKey(entityName)) {
                 entityClasses.add(ALL_ENTITIES.get(entityName));
             } else {
@@ -366,7 +333,7 @@ public class DevUtils {
 
     /**
      * Copies OpenGL logs, CPU model and GPU model to clipboard.
-     * @see  com.mojang.blaze3d.platform.GLX
+     * @see com.mojang.blaze3d.platform.GLX
      */
     public static void copyOpenGLLogs() {
         // TODO complete
@@ -575,29 +542,43 @@ public class DevUtils {
      * This method reloads all of the mod's settings from the settings file.
      */
     public static void reloadConfig() {
-        LOGGER.info("Reloading settings...");
+        Utils.sendMessageOrElseLog("Reloading settings...", LOGGER, false);
         main.getConfigValuesManager().loadValues();
-        LOGGER.info("Settings reloaded");
+        Utils.sendMessageOrElseLog("Settings reloaded.", LOGGER, false);
     }
 
     /**
      * This method reloads all of the mod's resources from the corresponding files.
      */
     public static void reloadResources() {
-        LOGGER.info("Reloading resources...");
-//        DataUtils.readLocalAndFetchOnline();
-//        main.getPersistentValuesManager().loadValues();
-//        ((SimpleReloadableResourceManager) mc.getResourceManager()).reloadResourcePack(FMLClientHandler.instance().getResourcePackFor(SkyblockAddons.MOD_ID));
-//        try {
-//            Method notifyReloadListenersMethod = SimpleReloadableResourceManager.class.getDeclaredMethod(
-//                    SkyblockAddonsASMTransformer.isDeobfuscated() ? "notifyReloadListeners" : "func_110544_b"
-//            );
-//            notifyReloadListenersMethod.setAccessible(true);
-//            notifyReloadListenersMethod.invoke(mc.getResourceManager());
-//        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-//            LOGGER.error("An error occurred while reloading the mod's resources.", e);
-//        }
-        LOGGER.info("Resources reloaded");
+        Utils.sendMessageOrElseLog(Translations.getMessage("messages.reloadingResources"), LOGGER, false);
+        DataUtils.registerNewRemoteRequests();
+        DataUtils.readLocalAndFetchOnline();
+        main.getPersistentValuesManager().loadValues();
+        SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
+            if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
+                DataUtils.onSkyblockJoined();
+                PackRepository packs = MC.getResourcePackRepository();
+                if (packs.isAvailable(SkyblockAddons.MOD_ID) && packs.getSelectedIds().contains(SkyblockAddons.MOD_ID)) {
+                    MC.reloadResourcePacks().whenComplete((unused, throwable) -> {
+                        if (throwable == null) {
+                            Utils.sendMessageOrElseLog(
+                                    Translations.getMessage("messages.resourcesReloaded"), LOGGER, false
+                            );
+                        } else {
+                            Utils.sendMessageOrElseLog(
+                                    throwable.getMessage(), LOGGER, false
+                            );
+                        }
+                    });
+                } else {
+                    Utils.sendMessageOrElseLog(
+                            Translations.getMessage("messages.resourcesReloaded"), LOGGER, false
+                    );
+                }
+                scheduledTask.cancel();
+            }
+        }, 0, 2);
     }
 
     // Internal methods
@@ -619,13 +600,12 @@ public class DevUtils {
     public static void setCopyMode(CopyMode copyMode) {
         if (DevUtils.copyMode != copyMode) {
             DevUtils.copyMode = copyMode;
-            Utils.sendMessage(
-                    ColorCode.GREEN + Translations.getMessage(
-                            "messages.copyModeSet",
-                            copyMode,
-                            SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyBinding().getTranslatedKeyMessage().getString()
-                    )
-            );
+            Utils.sendMessage(ColorCode.GREEN + Translations.getMessage(
+                    "messages.copyModeSet",
+                    copyMode,
+                    SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyBinding().getTranslatedKeyMessage().getString()
+
+            ));
         }
     }
 
@@ -636,5 +616,5 @@ public class DevUtils {
         SIDEBAR,
         TAB_LIST
     }
-}
 
+}

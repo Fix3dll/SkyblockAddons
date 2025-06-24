@@ -1,4 +1,6 @@
 import java.util.*
+import java.text.NumberFormat
+import java.text.ParseException
 
 plugins {
     java
@@ -19,6 +21,7 @@ loom {
             vmArg("-Xmx4G")
             property("mixin.debug", "true")
             property("devauth.enabled", "true")
+            property("sba.data.online", "false")
         }
         remove(getByName("server"))
     }
@@ -93,6 +96,23 @@ tasks.remapJar {
 
 tasks.processResources {
     dependsOn("copyLicenses")
+
+    if (project.hasProperty("runningOnCi")) {
+        val nf = NumberFormat.getIntegerInstance(Locale.US)
+        val buildNumber = project.property("buildNumber")
+        val runAttempt = project.property("runAttempt")
+        val includeRunAttempt = nf.parse(runAttempt as String).toInt() > 1
+
+        try {
+            if (includeRunAttempt) {
+                project.setProperty("buildNumber", "${buildNumber}.${nf.parse(runAttempt).toInt() - 1}")
+            }
+            project.version = "${project.version}+" + project.property("buildNumber")
+        } catch (e: ParseException) {
+            throw InvalidUserDataException("Build number could not be parsed (${e.message})", e)
+        }
+    }
+
     inputs.property("version", project.version)
 
     filesMatching("fabric.mod.json") {

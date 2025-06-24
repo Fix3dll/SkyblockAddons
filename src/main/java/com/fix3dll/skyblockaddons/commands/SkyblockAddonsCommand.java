@@ -105,8 +105,9 @@ public class SkyblockAddonsCommand {
                             int val = ctx.getArgument("number", Integer.class);
                             main.getPersistentValuesManager().getPersistentValues().setKills(val);
                             main.getPersistentValuesManager().saveValues();
-                            Utils.sendMessage(Translations.getMessage(
-                                    "commands.responses.sba.set.zealotCounter.zealotsSet", val));
+                            Utils.sendMessage(
+                                    Translations.getMessage("commands.responses.sba.set.zealotCounter.zealotsSet", val)
+                            );
                             return 1;
                         })));
         set.then(literal("totalZealots")
@@ -115,8 +116,9 @@ public class SkyblockAddonsCommand {
                             int val = ctx.getArgument("number", Integer.class);
                             main.getPersistentValuesManager().getPersistentValues().setTotalKills(val);
                             main.getPersistentValuesManager().saveValues();
-                            Utils.sendMessage(Translations.getMessage(
-                                    "commands.responses.sba.set.zealotCounter.totalZealotsSet", val));
+                            Utils.sendMessage(
+                                    Translations.getMessage("commands.responses.sba.set.zealotCounter.totalZealotsSet", val)
+                            );
                             return 1;
                         })));
         set.then(literal("eyes")
@@ -125,8 +127,9 @@ public class SkyblockAddonsCommand {
                             int val = ctx.getArgument("number", Integer.class);
                             main.getPersistentValuesManager().getPersistentValues().setSummoningEyeCount(val);
                             main.getPersistentValuesManager().saveValues();
-                            Utils.sendMessage(Translations.getMessage(
-                                    "commands.responses.sba.set.zealotCounter.eyesSet", val));
+                            Utils.sendMessage(
+                                    Translations.getMessage("commands.responses.sba.set.zealotCounter.eyesSet", val)
+                            );
                             return 1;
                         })));
         builder.then(set);
@@ -154,14 +157,18 @@ public class SkyblockAddonsCommand {
                     bosses.append(", ");
                 }
             }
-            Utils.sendErrorMessage(Translations.getMessage(
-                    "commands.responses.sba.slayer.bossRequired", bosses.toString()
-            ));
+            Utils.sendErrorMessage(
+                    Translations.getMessage("commands.responses.sba.slayer.bossRequired", bosses.toString())
+            );
             return 0;
         // <boss>  →  statRequired
         }).then(argument("boss", StringArgumentType.word()).suggests((ctx, suggestionsBuilder) -> {
+            String remaining = suggestionsBuilder.getRemaining();
             for (SlayerBoss boss : SlayerBoss.values()) {
-                suggestionsBuilder.suggest(boss.getMobType());
+                String bossType = boss.getMobType();
+                if (bossType.startsWith(remaining)) {
+                    suggestionsBuilder.suggest(bossType);
+                }
             }
             return suggestionsBuilder.buildFuture();
         }).executes(ctx -> {
@@ -172,8 +179,9 @@ public class SkyblockAddonsCommand {
             return 1;
             // <boss> <stat> <value>
         }).then(argument("stat",  StringArgumentType.word()).suggests((ctx, suggestionsBuilder) -> {
-            suggestionsBuilder.suggest("reset_all");
-            suggestionsBuilder.suggest("kills");
+            String remaining = suggestionsBuilder.getRemaining();
+            if ("reset_all".startsWith(remaining)) suggestionsBuilder.suggest("reset_all");
+            if ("kills".startsWith(remaining)) suggestionsBuilder.suggest("kills");
             String input = suggestionsBuilder.getInput();
             if (!input.isBlank()) {
                 int lastSpace   = input.lastIndexOf(' ');
@@ -182,7 +190,10 @@ public class SkyblockAddonsCommand {
                 SlayerBoss slayerBoss = SlayerBoss.getFromMobType(boss);
                 if (slayerBoss != null) {
                     for (SlayerDrop drop : slayerBoss.getDrops()) {
-                        suggestionsBuilder.suggest(drop.name().toLowerCase(Locale.ENGLISH));
+                        String dropName = drop.name().toLowerCase(Locale.ENGLISH);
+                        if (dropName.startsWith(remaining)) {
+                            suggestionsBuilder.suggest(drop.name().toLowerCase(Locale.ENGLISH));
+                        }
                     }
                 }
 
@@ -212,17 +223,12 @@ public class SkyblockAddonsCommand {
             String versionString = Translations.getMessage("messages.version") + " v" + SkyblockAddons.METADATA.getVersion();
 
             MutableComponent versionText = Component.literal(versionString).withStyle(style ->
-                style.withHoverEvent(
-                        new HoverEvent.ShowText(
-                                Component.literal(
-                                        ColorCode.AQUA + Translations.getMessage("commands.responses.sba.version.hoverText")
-                                )/*.withColor(ChatFormatting.WHITE.getColor())*/
-                        )
-                ).withClickEvent(
-                        new ClickEvent.SuggestCommand(SkyblockAddons.METADATA.getVersion().toString())
-                )
-            );
+                    style.withHoverEvent(new HoverEvent.ShowText(Component.literal(
+                            ColorCode.AQUA + Translations.getMessage("commands.responses.sba.version.hoverText")
 
+                    ))).withClickEvent(
+                            new ClickEvent.SuggestCommand(SkyblockAddons.METADATA.getVersion().toString())
+                    ));
             Utils.sendMessage(versionText, true);
 
             return 1;
@@ -276,9 +282,31 @@ public class SkyblockAddonsCommand {
         // COPY_ENTITY
         builder.then(literal("copyEntity").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
             DevUtils.setCopyMode(DevUtils.CopyMode.ENTITY);
+            DevUtils.resetEntityCopyRadiusToDefault();
+            DevUtils.resetEntityNamesToDefault();
             DevUtils.copyEntityData();
             return 1;
-        }));
+        }).then(argument("entityType", StringArgumentType.word()).suggests((ctx, suggestionsBuilder) -> {
+            String remaining = suggestionsBuilder.getRemaining();
+            DevUtils.ALL_ENTITIES.keySet().forEach(string -> {
+                if (string.startsWith(remaining)) {
+                    suggestionsBuilder.suggest(string);
+                }
+            });
+            return suggestionsBuilder.buildFuture();
+        }).executes(ctx -> {
+            DevUtils.setCopyMode(DevUtils.CopyMode.ENTITY);
+            DevUtils.setEntityNamesFromString(ctx.getArgument("entityType", String.class));
+            DevUtils.resetEntityCopyRadiusToDefault();
+            DevUtils.copyEntityData();
+            return 1;
+        }).then(argument("radius", IntegerArgumentType.integer()).executes(ctx -> {
+            DevUtils.setCopyMode(DevUtils.CopyMode.ENTITY);
+            DevUtils.setEntityNamesFromString(ctx.getArgument("entityType", String.class));
+            DevUtils.setEntityCopyRadius(ctx.getArgument("radius", Integer.class));
+            DevUtils.copyEntityData();
+            return 1;
+        }))));
 
         // COPY_SIDEBAR
         builder.then(literal("copySidebar").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
@@ -394,7 +422,6 @@ public class SkyblockAddonsCommand {
     /**
      * <p>Gets the usage string for the command. If developer mode is enabled, the developer mode usage string is added to
      * the main usage string.</p>
-     * TODO improve {@link Component}
      */
     public static Component getCommandUsage() {
         StringBuilder builder = new StringBuilder(HEADER);

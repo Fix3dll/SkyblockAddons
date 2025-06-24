@@ -20,6 +20,7 @@ import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import com.fix3dll.skyblockaddons.core.updater.Updater;
 import com.fix3dll.skyblockaddons.core.scheduler.Scheduler;
 import com.fix3dll.skyblockaddons.listeners.ScreenListener;
+import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.InventoryUtils;
 import com.fix3dll.skyblockaddons.utils.SkyblockAddonsMessageFactory;
 import com.fix3dll.skyblockaddons.utils.Utils;
@@ -178,6 +179,7 @@ public class SkyblockAddons implements ClientModInitializer {
 				}
 			}
 
+			DevUtils.resetEntityNamesToDefault(); // initialize class
 			NetworkListener.setupModAPI();
 			fullyInitialized = true;
 		});

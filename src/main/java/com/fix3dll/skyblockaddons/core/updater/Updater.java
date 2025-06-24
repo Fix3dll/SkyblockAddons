@@ -368,7 +368,8 @@ public class Updater {
      * @return {@code true} if the given version is a beta version, {@code false} otherwise
      */
     private boolean isBetaVersion(Version version) {
-        return version.toString().contains("b");
+        String versionString = version.toString();
+        return versionString.contains("a") || versionString.contains("b");
     }
 
 
