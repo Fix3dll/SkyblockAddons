@@ -528,9 +528,9 @@
       "maxLevel": 6,
       "nbtName": "sunder"
     },
-    "syphon": {
+    "drain": {
       "goodLevel": 3,
-      "loreName": "Syphon",
+      "loreName": "Drain",
       "maxLevel": 5,
       "nbtName": "syphon"
     },
