@@ -9,7 +9,11 @@ import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.mixin.hooks.AbstractContainerScreenHook;
 import com.fix3dll.skyblockaddons.mixin.hooks.ScreenHook;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -24,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -68,7 +71,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Inject(method = "renderSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.AFTER))
-    public void sba$renderSlots(GuiGraphics graphics, CallbackInfo ci, @Local Slot slot) {
+    public void sba$renderSlots(GuiGraphics graphics, CallbackInfo ci, @Local Slot slot, @Share("acs") LocalRef<AbstractContainerScreen<?>> acsRef) {
+        acsRef.set((AbstractContainerScreen<?>) (Object) this);
         AbstractContainerScreenHook.renderSlot(graphics, slot);
     }
 
@@ -96,28 +100,24 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    /**
-     * @author Fix3dll (SBA)
-     * @reason To change the labels color
-     */
-    @Overwrite
-    public void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    @WrapMethod(method = "renderLabels")
+    public void sba$renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY, Operation<Void> original, @Share("acs") LocalRef<AbstractContainerScreen<?>> acsRef) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        //noinspection unchecked
-        AbstractContainerScreenHook.onRenderLabels((AbstractContainerScreen<T>) (Object) this, guiGraphics);
+        AbstractContainerScreenHook.onRenderLabels(acsRef.get(), guiGraphics);
 
-        int color = 4210752; // vanilla color
         if (main.getUtils().isOnSkyblock() && Feature.SHOW_BACKPACK_PREVIEW.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
             BackpackColor backpackColor = BackpackInventoryManager.getBackpackColor().get(
                     main.getInventoryUtils().getInventoryPageNum()
             );
             if (backpackColor != null) {
-                color = backpackColor.getInventoryTextColor();
+                int color = backpackColor.getInventoryTextColor();
+                guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, color, false);
+                guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, color, false);
             }
+        } else {
+            original.call(guiGraphics, mouseX, mouseY);
         }
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, color, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, color, false);
     }
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
