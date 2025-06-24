@@ -3,11 +3,8 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
-
-import java.util.List;
 
 public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
 
@@ -35,38 +32,26 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        editBox.mouseClicked(mouseX, mouseY, button);
-        editBox.setFocused(this.isHovered);
-        this.playDownSound(MC.getSoundManager());
-
-        return editBox.isFocused();
+        editBox.setFocused(this.isMouseOver(mouseX, mouseY));
+        return editBox.mouseClicked(mouseX, mouseY, button);
     }
 
-    protected void keyTyped(char typedChar, int keyCode) {
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
         if (editBox.isFocused()) {
-            editBox.keyPressed(typedChar, keyCode, /* FIXME */ 0);
+            boolean consumed = editBox.charTyped(codePoint, modifiers);
+            textUpdated.onUpdate(editBox.getValue());
+            return consumed;
         }
-        textUpdated.onUpdate(editBox.getValue());
+        return false;
     }
 
-    public void updateScreen() {
-        editBox.moveCursorToEnd(false);
-    }
-
-    public static void callKeyTyped(List<? extends GuiEventListener> buttonList, char typedChar, int keyCode) {
-        for (GuiEventListener button : buttonList) {
-            if (button instanceof ButtonInputFieldWrapper) {
-                ((ButtonInputFieldWrapper) button).keyTyped(typedChar, keyCode);
-            }
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (editBox.isFocused()) {
+            return editBox.keyPressed(keyCode, scanCode, modifiers);
         }
-    }
-
-    public static void callUpdateScreen(List<? extends GuiEventListener> buttonList) {
-        for (GuiEventListener button : buttonList) {
-            if (button instanceof ButtonInputFieldWrapper) {
-                ((ButtonInputFieldWrapper) button).updateScreen();
-            }
-        }
+        return false;
     }
 
 }

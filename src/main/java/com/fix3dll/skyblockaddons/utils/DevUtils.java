@@ -42,7 +42,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -87,7 +86,8 @@ public class DevUtils {
                 ALL_ENTITIES.put(entityName, (Class<? extends Entity>) entityClass);
                 // TODO mapped names for outside of dev env
             }
-        } catch (IOException | URISyntaxException ignored) {
+        } catch (Exception ex) {
+            LOGGER.catching(ex);
         }
     }
 

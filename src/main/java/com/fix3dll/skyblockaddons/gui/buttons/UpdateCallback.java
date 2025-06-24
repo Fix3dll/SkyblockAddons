@@ -4,4 +4,5 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 public interface UpdateCallback<T> {
 
     void onUpdate(T updatedValue);
+
 }

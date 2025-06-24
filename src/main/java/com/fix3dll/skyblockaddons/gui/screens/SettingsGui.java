@@ -26,6 +26,7 @@ import lombok.Setter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -157,8 +158,6 @@ public class SettingsGui extends SkyblockAddonsScreen {
             graphics.drawSpecial(source -> DrawUtils.drawRoundedRect(graphics, source, x, y, finalWidth, height, 4, ARGB.color(230, 28, 29, 41)));
             // Scroll ability with scissor
             int scaleFactor = (int) MC.getWindow().getGuiScale();
-            int scaledHeight = MC.getWindow().getGuiScaledHeight();
-//            System.out.println(y + " > " + height + " > " + MC.getWindow().getScreenHeight() + " > " + MC.getWindow().getGuiScaledHeight());
             RenderSystem.enableScissor(
                     x * scaleFactor,
                     (MC.getWindow().getGuiScaledHeight() - (y + height)) * scaleFactor,
@@ -469,6 +468,15 @@ public class SettingsGui extends SkyblockAddonsScreen {
         return result;
     }
 
+    // Call mouseClicked in each case to update the focus of the ButtonInputFieldWrappers
+    private void updateButtonInputFields(double mouseX, double mouseY, int button) {
+        for (GuiEventListener guiEventListener : this.children()) {
+            if (guiEventListener instanceof ButtonInputFieldWrapper bif && bif.mouseClicked(mouseX, mouseY, button)) {
+                bif.playDownSound(MC.getSoundManager());
+            }
+        }
+    }
+
     @Override
     public void removed() {
         if (!closingGui) {
@@ -478,25 +486,16 @@ public class SettingsGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        ButtonInputFieldWrapper.callKeyTyped(children(), codePoint, modifiers);
-        return super.charTyped(codePoint, modifiers);
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        ButtonInputFieldWrapper.callUpdateScreen(children());
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         this.scrollY = scrollY;
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
-    public void tick() {
-        ButtonInputFieldWrapper.callUpdateScreen(children());
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean consumed =  super.mouseClicked(mouseX, mouseY, button);
+        updateButtonInputFields(mouseX, mouseY, button);
+        return consumed;
     }
+
 }
