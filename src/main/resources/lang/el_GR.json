@@ -1,0 +1,698 @@
+{
+  "languageText": "Γλώσσα: ",
+  "language": "Ελληνικά",
+  "settings": {
+    "settings": "Ρυθμίσεις",
+    "magmaBossWarning": "Προειδοποιήσει εμφάνισης κύβου μάγματος",
+    "balBossWarning": "Προειδοποίηση Bal Boss",
+    "broodMotherWarning": "Προειδοποίηση Brood Mother",
+    "itemDropConfirmation": "Επιβεβαίωση Ρίψης Αντικειμένου",
+    "hideSkeletonHatBones": "Κρύψε τα κόκαλα του Skeleton's helmet",
+    "skeletonHatBonesBar": "Κράνος του Σκελετού κοκάλινη μπάρα",
+    "hideFoodAndArmor": "Κρύψε Μπάρα Πείνας και Προστασίας",
+    "fullInventoryWarning": "Προειδοποίηση Γεμάτων Αποθεμάτων",
+    "repeating": "Επανάληψη Προειδοποίησης",
+    "disableEmberRodAbility": "Απενεργοποίηση του Ember Rod στο νησι",
+    "editLocations": "Επεξεργάσου τις Τοποθεσίες GUI",
+    "guiScale": "Κλίμακα Gui: %scale%",
+    "resetLocations": "Επαναφορά Τοποθεσιών",
+    "minionStopWarning": "Προειδοποίηση \"Το Minion δεν Μπορεί να Φτάσει\"",
+    "hidePlayersNearNPCs": "Κρύψε Παίχτες Κοντά Σε Σημαντικούς Χαρακτήρες",
+    "backpackStyle": "Στυλ Σακιδίου: %style%",
+    "backpackStyles": {
+      "regular": "Κανονικό",
+      "compact": "Συμπυκνωμένο"
+    },
+    "showBackpackPreview": "Εμφάνισε την Προβολή Σακιδίου",
+    "hideHealthBar": "Απόκρυψη Κλασικής Μπάρας Ζωής",
+    "fullMinionWarning": "Προειδοποίηση γεμάτου minion",
+    "showOnlyWhenHoldingShift": "Εμφάνιση μόνο όταν κρατάτε Shift",
+    "manaBar": "Μπάρα Mana",
+    "manaNumber": "Αριθμός Mana",
+    "healthBar": "Μπάρα Ζωής",
+    "healthNumber": "Αριθμός Ζωής",
+    "defenseIcon": "Σύμβολο Άμυνας",
+    "defenseNumber": "Αριθμός Άμυνας",
+    "defensePercentage": "Ποσοστό Άμυνας",
+    "healthUpdates": "Αριθμός Αλλαγής Ζωής",
+    "hidePlayersInLobby": "Κρύψε μακριανές ουσίες στην αίθουσα",
+    "darkAuctionTimer": "Χρονόμετρο Dark Auction",
+    "magmaBossTimer": "Χρονόμετρο κύβου μάγματος",
+    "itemPickupLog": "Αρχείο καταγραφής παραλαβής στοιχείων",
+    "avoidPlacingEnchantedItems": "Αποφύγετε την τοποθέτηση μαγευμένων αντικείμενων",
+    "stopBowChargeFromResetting": "Σταματήστε τη φόρτιση τόξου από την επαναφορά",
+    "preventMovementOnDeath": "Αποτρέψτε το περπάτημα μετά το θάνατο",
+    "showItemAnvilUses": "Εμφάνιση χρήσεων Anvil",
+    "lockSlots": "Να επιτρέπονται οι υποδοχές κλειδώματος",
+    "lockSlot": "Κλείδωμα Θέσεως",
+    "dontResetCursorInventory": "Μην επαναφέρετε τον δείκτη μεταξύ των αποθεμάτων",
+    "summoningEyeAlert": "Ειδοποίηση για Summoning Eye",
+    "makeEnderchestsInEndGreen": "Άλλαξε το Χρώμα του Enderchest στο the End",
+    "changeColor": "Άλλαξε Χρώμα",
+    "showInOtherGames": "Εμφάνιση σε Άλλα Παιχνίδια",
+    "useVanillaTexture": "Χρησιμοποίησε την Vanilla εμφάνιση",
+    "textStyle": "Στυλ Κειμένου",
+    "textStyles": {
+      "one": "Στυλ Ένα",
+      "two": "Στυλ Δύο"
+    },
+    "warningDuration": "Διάρκεια Προειδοποίησης",
+    "dontOpenProfileWithBow": "Μην Ανοίγεις το Προφίλ με Τόξο",
+    "stopDroppingSellingRareItems": "Αποτροπή Ρίψης/Πώλησης Σπανίων Αντικειμένων",
+    "makeBackpackInventoriesColored": "Χρωματιστά Αποθέματα",
+    "replaceRomanNumeralsWithNumbers": "Αντικατάσταση Ρωμαικών Αριθμων στα Αντικείμενα",
+    "changeBarColorForPotions": "Αλλαγή χρώματος γραμμής για Wither & Poison",
+    "craftingPatterns": "Επιλέξτε μοτίβα χειροτεχνίας",
+    "soundIndicatorForFishing": "Ηχητική Ειδοποίηση για Ψάρεμα",
+    "avoidBlinkingNightVision": "Απενεργοποιήστε το να αναβοσβήνουν τα Night Vision Potion",
+    "disableMinionLocationWarning": "Απενεργοποίηση προειδοποιήσεων τοποθεσίας η οποία δεν είναι τέλεια",
+    "showItemCooldowns": "Εμφάνιση αντικειμένων Cooldowns",
+    "speedPercentage": "Ποσοστό Ταχύτητας",
+    "collectionDisplay": "Επιδεξιότητα μπάρα προόδου",
+    "revenantIndicator": "Δείκτης προόδου Slayer Armor",
+    "specialZealotAlert": "Ειδικό Zealot συναγερμός",
+    "enableMessageWhenActionPrevented": "Εμφάνιση μηνύματος όταν αποτρέπεται μια ενέργεια",
+    "hidePetHealthBar": "Απόκρυψη Μπάρας Ζωής Κατοικίδιου",
+    "powerOrbDisplay": "Εμφάνιση Power Orb",
+    "powerOrbDisplayStyle": "Στυλ σφαίρας δύναμης: %style%",
+    "powerOrbStyle": {
+      "detailed": "Με Λεπτομέρειες",
+      "compact": "Συμπαγής"
+    },
+    "disableMagicalSoupMessage": "Απενεργοποίηση μηνυμάτων Magical Mushroom Soup",
+    "zealotCounter": "Μετρητής Zealot - Καταμέτρηση από το τελευταίο μάτι",
+    "tickerChargesDisplay": "Οθόνη Ticker / Charges",
+    "tab": {
+      "generalSettings": "Γενικές Ρυθμίσεις"
+    },
+    "tabEffectTimers": "Χρονόμετρα Potion και Powerup",
+    "noArrowsLeftAlert": "Ειδοποίηση Για Όταν Δεν Έχουν Απομείνει Βέλη",
+    "showCakeBagPreview": "Δείξε την Προεπισκόπηση για το Σακίδιο με τα Κέικ",
+    "showBackpackPreviewInAH": "Εμφάνιση προεπισκόπησης σακιδίου για τα στοιχεία σας ενώ το AH είναι ανοιχτό",
+    "enableDevFeatures": "Ενεργοποίηση λειτουργιών προγραμματιστή",
+    "chromaSpeed": "Ταχύτητα Chroma",
+    "chromaMode": "Λειτουργία πολύχρωμος χρώματος",
+    "chromaModes": {
+      "allTheSame": "Όλα το Ίδιο Χρώμα",
+      "fade": "Ξεθώριασμα χρώματος"
+    },
+    "chromaFadeWidth": "Πλάτος εξασθένισης Chroma",
+    "showBrokenFragments": "Εμφάνιση σπασμένων Dragon Fragments",
+    "skyblockAddonsButtonInPauseMenu": "Εμφάνιση Κουμπιού SBA στο Μενού Παύσης",
+    "showTotalZealotCount": "Μετρητής Zealot - Συνολικός αριθμός Zealot",
+    "showSummoningEyeCount": "Μετρητής Zealot - Συνολικός αριθμός ματιών",
+    "showZealotsPerEye": "Μετρητής Zealot - Εμφάνιση Zealots ανά μάτι",
+    "turnBowGreenWhenUsingToxicArrowPoison": "Χρώμα τόξο πράσινο όταν χρησιμοποιείται τοξικό βέλος",
+    "birchParkRainmakerTimer": "Χρονόμετρο Birch Park βροχοποιός",
+    "combatTimerDisplay": "Χρονόμετρο μάχης",
+    "discordRP": "Discord Rich Presence",
+    "endstoneProtectorDisplay": "Οθόνη Endstone Protector",
+    "fancyWarpMenu": "Φανταστικό Warp μενού",
+    "stopRatSounds": "Διακοπή των ήχων του Rat Pet",
+    "onlyStopRatSqueak": "Διακοπή μόνο του ήχου Rat Squeak",
+    "doubleWarp": "Διπλή Τηλεμεταφορά",
+    "advancedMode": "Λειτουργία για Προχωρημένους",
+    "legendarySeaCreatureWarning": "Προηδοποίηση για Θρυληκά Sea Creatures",
+    "bossApproachAlert": "Ειδοποίηση προσέγγισης εξέχων όγκος Slayer",
+    "disableTeleportPadMessages": "Απενεργοποίηση μηνυμάτων Teleport Pad",
+    "baitListDisplay": "Εμφάνιση λίστας δολώματος ενώ κρατάτε ένα καλάμι ψαρέματος",
+    "freezeBackpackPreview": "Πάγωμα την Προβολή Σακιδίου",
+    "hideGreyEnchants": "Απόκρυψη κανονικών γκρι μάγων",
+    "zealotCounterExplosiveBow": "Zealot Counter Explosive Bow Support",
+    "disableEndermanTeleportation": "Απενεργοποίηση Τηλεμεταφοράς Enderman",
+    "changeZealotColor": "Αλλαγή Χρώματος Zealot",
+    "hideSvenPupNametags": "Κρύψε Sven κουταβάκια oνόματα",
+    "turnAllFeaturesChroma": "Ενεργοποίησε όλες τις Λειτουργίες Chroma",
+    "dungeonMapDisplay": "Εμφάνιση χάρτη Dungeon",
+    "rotateMap": "Περιστροφή χάρτη στην περιστροφή του παίκτη σας",
+    "centerRotationOnYourPlayer": "Κεντράρισμα την Περιστροφής Γύρω από τον Παίκτη Σας",
+    "showFetchurOnlyInDwarven": "Εμφάνιση αντικειμένου του Fetchur μόνο στα Dwarven Mines",
+    "showFetchurItemName": "Εμφάνιση ονόματος αντικειμένου του Fetchur",
+    "showFetchurInventoryOpenOnly": "Εμφάνιση αντικειμένου του Fetchur μόνο όταν τα αποθέματα είναι ανοιχτά",
+    "warnWhenFetchurChanges": "Προειδοποίησε με όταν αλλάξει ο Fetchur",
+    "mapZoom": "Ζουμ Χάρτη",
+    "glowingDroppedItems": "Λαμπερά αντικείμενα που έπεσαν",
+    "outlineDungeonTeammates": "Επισήμανση Συμπαικτών στο Dungeon",
+    "baseStatBoostPercentage": "Εμφάνιση Ενίσχυσης Στατιστικών Βάσης για Αντικείμενα Dungeons",
+    "colorByRarity": "Χρώμα Κατά Σπανιότητα",
+    "showPlayerHeadsOnMap": "Δείξε τα Κεφάλια Παικτών στον Χάρτη Dungeon",
+    "showHealingCircleWall": "Εμφάνιση τοίχου Dungeon Healing Circle",
+    "showCriticalTeammates": "Εμφάνιση κριτικών συμπαίκτων μπουντρούμι",
+    "showGlowingItemsOnIsland": "Εμφάνιση λαμπερών αντικειμένων στο νησί",
+    "showItemDungeonFloor": "Εμφάνιση πατώματος σε Dungeon αντικείμενα",
+    "showDungeonMilestone": "Εμφάνιση ορόσημο Dungeon",
+    "dungeonsCollectedEssencesDisplay": "Εμφάνιση συλλογών αιθουσών Dungeon",
+    "stopBonzoStaffSounds": "Σταμάτα τους Ήχους από το Ραβδί του Bonzo",
+    "showRarityUpgraded": "Εμφάνιση εάν η σπανιότητα του στοιχείου έχει αναβαθμιστεί",
+    "revenantSlayerTracker": "Slayer Tracker - Revenant/Zombie",
+    "tarantulaSlayerTracker": "Slayer Tracker - Tarantula/Spider",
+    "svenSlayerTracker": "Slayer Tracker - Sven/Wolf",
+    "voidgloomSlayerTracker": "Slayer Tracker - Voidgloom/Enderman",
+    "textMode": "Λειτουργία κειμένου",
+    "dragonsNestOnly": "Εμφάνιση Μόνο στο Dragon's Nest",
+    "dragonStatsTracker": "Dragon Tracker",
+    "skillActionsLeftUntilNextLevel": "Εμφάνιση ενεργειών που απομένουν μέχρι το επόμενο επίπεδο",
+    "dungeonDeathCounter": "Μετρητής θανάτων Dungeon",
+    "showPersonalCompactorPreview": "Εμφάνιση προεπισκόπησης Personal Compactor",
+    "rockPetTracker": "Πέτρινο κατοικίδιο Tracker",
+    "dolphinPetTracker": "Δελφίνι κατοικίδιο Tracker",
+    "dungeonsTeammateNameOverlay": "Επικάλυψη ονόματος συμπαίκτη Dungeon",
+    "dungeonsSecretsDisplay": "Εμφάνιση μυστικών Dungeon",
+    "showSkillPercentageInstead": "Εμφάνιση ποσοστού αντί για XP",
+    "showSkillXPGained": "Εμφάνιση XP αποκτήθηκαν",
+    "skillProgressBar": "Skill γραμμή προόδου",
+    "showSalvageEssencesCounter": "Εμφάνιση μετρητή Salvage Essences",
+    "disableMortMessages": "Απενεργοποίηση Mort μηνύματα",
+    "disableBossMessages": "Απενεργοποίηση Boss μηνύματα",
+    "hideOtherPlayersPresents": "Απόκρυψη δώρων άλλων παικτών",
+    "showSwordKills": "Εμφάνιση Sword Kills",
+    "compactTabList": "Συμπαγής λίστα καρτελών",
+    "highlightSpecialEnchantments": "Επισημάνετε τις ειδικές γοητείες",
+    "disableDamageChatMessages": "Απενεργοποίηση Μηνυμάτων Ζημιάς στη Συνομιλία",
+    "showSpiritSceptreDisplay": "Εμφάνιση Ζημιάς Spirit Sceptre/Wither blade",
+    "outbidAlertSound": "Ήχος Ειδοποίησης Outbid",
+    "hideMenuGlassPanes": "Απόκρυψη Υποδείξεων Υαλοπίνακα του Μενού",
+    "candyPointsCounter": "Spooky Event Καραμέλες / μετρητές πόντων",
+    "healingCircleOpacity": "Θεραπεία αδιαφάνειας κύκλου",
+    "chromaSize": "Χρωματιστό Μέγεθος",
+    "chromaSaturation": "Κορεσμός χρώματος",
+    "chromaBrightness": "Φωτεινότητα Chroma",
+    "useNewChromaEffect": "Χρησιμοποιήστε το νέο εφέ Χρωματισμού",
+    "showExperimentationTableTooltips": "Εμφάνιση συμβουλών εργαλείου πίνακα πειραματισμού",
+    "drillFuelBar": "Δράπανο Fuel Bar",
+    "drillFuelNumber": "Αριθμός καυσίμου τρυπανιών",
+    "fetchurToday": "Εμφάνισε «Τι Θέλει ο Fetchur Σήμερα»",
+    "fishingParticleOverlay": "Επικάλυψη Σωματιδίων Ψαρέματος",
+    "enchantmentLoreParsing": "Υποδείξεις Μαγέματος Ανάλυσης",
+    "cooldownPrediction": "Πρόβλεψη και Συντόμευση Χρόνου Επαναφόρτισης",
+    "legendaryMonkeyLevel100": "[TEMP] Θρυλικός Πίθηκος Επιπέδου 100",
+    "biggerWake": "Μεγέθυνση Επικάλυψης Σωματιδίων",
+    "stackingEnchantProgress": "Εμφάνιση Προόδου Στοίβαξης Μαγέματος",
+    "showReforgeOverlay": "Εμφάνιση Επικάλυψης Reforge",
+    "reforgeFilter": "Φίλτρο Reforge",
+    "hideEnchantDescription": "Απόκρυψη Περιγραφής Μαγέματος",
+    "trevorTheTrapper": {
+      "title": "Χαρακτηριστικά Trevor the Trapper",
+      "trackedEntityProximityIndicator": "Εμφάνιση Δείκτη Εγγύτητας Ανιχνευμένης Οντότητας",
+      "highlightTrackedEntity": "Επισήμανση Ανιχνευμένης Οντότητας",
+      "showQuestCooldown": "Εμφάνιση Χρόνου Επαναφόρτισης Trevor's Quest",
+      "showQuestCooldownDescription": "Αυτό θα εμφανιστεί πάνω από το κεφάλι του Trevor"
+    },
+    "showEnderChestPreview": "Εμφάνιση Προεπισκόπησης Σεντουκιού Έντερ",
+    "hideWhenNotDoingQuest": "Απόκρυψη όταν δε γίνεται αποστολή",
+    "showOverflowManaNumber": "Αριθμός Υπερχείλισης Μάνα",
+    "axeCooldownIndicator": "Δείκτης Χρόνου Επαναφόρτισης Τσεκουριού",
+    "vanillaHealthPrediction": "Χρήση Πρόβλεψης Ζωής Vanilla",
+    "entityOutlines": "Εμφάνιση Περιγραμμάτων Οντότητας",
+    "effectiveHealthNumber": "Αριθμός Αποτελεσματικής Ζωής",
+    "guiScaleX": "Κλίμακα GUI X: %scale%",
+    "guiScaleY": "Κλίμακα GUI Y: %scale%",
+    "abbreviateSkillXpDenominator": "Συντόμευση Παρονομαστή Skill XP",
+    "otherDefenseStats": "Άλλα Στατιστικά Άμυνας (Soul Tether/Στοίχιση Κελιών)",
+    "hideSpawnPointPlayers": "Απόκρυψη Παικτών στο Spawn του Hub",
+    "jacobsContestTimer": "Χρονόμετρο Διαγωνισμού του Jacob",
+    "dontReplaceRomanNumeralsInItemNames": "Να μην αντικατασταθούν τα ονόματα αντικειμένων",
+    "backpackOpeningSound": "Leather Backpack Opening Sound",
+    "devMode": "Developer Mode",
+    "showSkyblockItemId": "Show Skyblock Item ID on Hover",
+    "showFeatureNamesOnHover": "Show Feature Names on Hover",
+    "resetSalvagedEssencesAfterLeavingMenu": "Reset Salvaged Essence Counter After Closing Menu",
+    "changeDungeonMapZoomWithKeyboard": "Adjust zoom with +/- keys",
+    "showPlayerSymbolsInChat": "Show Player Symbols In Chat",
+    "crimsonArmorAbilityStacks": "Show Crimson Armor Stacks",
+    "hideTrueDefense": "Hide True Defense",
+    "showProfileType": "Show Profile Type",
+    "showNetherFaction": "Show Nether Faction",
+    "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas"
+  },
+  "messages": {
+    "enchants": "Μαγεύει",
+    "reforges": "Ενισχύει",
+    "dropConfirmation": "Ξαναρίξε αυτό το αντικείμενο για επιβεβαίωση!",
+    "magmaBossWarning": "Εξέχων όγκος Κύβου Μάγμα!",
+    "balBossWarning": "Bal Boss!",
+    "broodMotherWarning": "Brood Mother!",
+    "fullInventory": "Γεμάτα Αποθέματα!",
+    "labymod": "Χρήστες Labymod: Η Απόκρυψη Φαγητού, Ασπίδας, και Μπάρας Ζωής, είναι ασύμβατη.",
+    "minionCannotReach": "Το %type% minion δεν μπορεί να φτάσει και έχει σταματήσει την αναπαραγωγή!",
+    "minionIsFull": "Ένα minion στο νησί σου είναι γεμάτο!",
+    "typeEnchantmentsHere": "Γράψε %type% Εδώ!",
+    "separateMultiple": "Διαχωρίστε τα πολλαπλά με κόμματα.",
+    "enchantsToMatch": "%type% Να ταιριάζει:",
+    "enchantsToExclude": "%type% Να εξαιρέσεις:",
+    "updateChecker": {
+      "wantToViewPatchNotes": "Χρειάζεστε υποστήριξη ή θέλετε να διαβάσετε ολόκληρο το changelog;",
+      "joinDiscord": "Μπείτε στον διακομιστή μας στο Discord!",
+      "watchShowcase": "Παρακολουθήστε το βίντεο",
+      "downloadButton": "Λήψη",
+      "openModFolderButton": "Άνοιγμα φακέλου Mods",
+      "joinDiscordButton": "Μπείτε στο Discord",
+      "newUpdateAvailable": "Μία νέα ενημέρωση (%version%) είναι διαθέσιμη!",
+      "noDownloadAvailable": "Δεν υπάρχει διαθέσιμος σύνδεσμος για λήψη, παρακαλώ ελέγξτε τον διακομιστή Discord.",
+      "notificationBox": {
+        "majorAvailable": "Μία νέα σημαντική ενημέρωση (%version%) είναι διαθέσιμη! Ο σύνδεσμος για την εγκατάσταση μπορεί να βρεθεί στο chat.",
+        "betaAvailable": "Μια νέα ενημέρωση beta (%version%) είναι διαθέσιμη! Κοιτάξτε το chat για επιλογές εγκατάστασης.",
+        "patchAvailable": "Μία νέα σημαντική ενημέρωση (%version%) είναι διαθέσιμη! Κοιτάξτε το chat για επιλογές εγκατάστασης!"
+      }
+    },
+    "slotLocked": "Αυτή η θέση είναι κλειδωμένη!",
+    "summoningEyeFound": "Summoning Eye!",
+    "cancelledDropping": "Μια λειτουργία σάς εμπόδισε να αποθέσετε αυτό το \"σπάνιο\" αντικείμενο ή εργαλείο από το hotbar σας.",
+    "clickMoreTimes": "Κάντε κλικ αυτό το στοιχείο %times% περισσότερες φορές εάν θέλετε πραγματικά να το κάνετε.",
+    "clickOneMoreTime": "Κάντε κλικ αυτό το στοιχείο μια περισσότερη φορά εάν θέλετε πραγματικά να το κάνετε.",
+    "featureDisabled": "Η λειτουργία απενεργοποιήθηκε",
+    "anvilUses": "Χρήσεις αμόνι: %uses%",
+    "specialZealotFound": "Ειδικό Zealot!",
+    "blockIncompletePatterns": "Αποκλεισμός δημιουργίας ελλιπών μοτίβων (συνιστάται)",
+    "searchFeatures": "Αναζήτηση",
+    "downloadingUpdateFile": "Λήψη αρχείου ενημέρωσης...",
+    "onlyFewArrowsLeft": "Μόνο %arrows% Βέλη Μένουν!",
+    "noArrowsLeft": "Δεν έχουν απομείνει βέλη!",
+    "chooseAColor": "Διάλεξε χρώμα",
+    "selectedColor": "Επιλεγμένο χρώμα",
+    "setHexColor": "Ορίστε το Hex Color",
+    "rescaleFeatures": "Λειτουργίες επαναπώλησης",
+    "resizeBars": "Αλλαγή μεγέθους μπάρας",
+    "showColorIcons": "Εμφάνιση εικονιδίων χρώματος",
+    "enableFeatureSnapping": "Ενεργοποίηση απόσπασης λειτουργιών",
+    "stage": "Επίπεδο %stage%",
+    "switchedSlots": "Μόλις άλλαξες από μία κλειδωμένη θέση ή σπάνιο αντικείμενο. Παρακαλούμε περίμενε λίγο πριν ρίξεις!",
+    "clickToOpenLink": "Πατήστε για το άνοιγμα αυτου του συνδέσμου!",
+    "clickToOpenFolder": "Κάντε κλικ για να ανοίξετε το φάκελο mods!",
+    "firstStatus": "Αυτή η κατάσταση θα εμφανιστεί στην κορυφή",
+    "secondStatus": "Αυτή η κατάσταση θα εμφανιστεί στην πρώτη σας κατάσταση",
+    "fallbackStatus": "Αυτή η κατάσταση θα εμφανιστεί όταν η αυτόματη κατάστασή σας δεν εμφανίζει τίποτα",
+    "legendarySeaCreatureWarning": "Θρυλική Ψαριά!",
+    "bossApproaching": "Είστε κοντά στην αναπαραγωγή ενός εξέχων όγκος!",
+    "fetchurItem": "Fetchur: %item%",
+    "fetchurWarning": "Ο Fetchur άλλαξε!",
+    "enableAll": "Ενεργοποίηση όλων",
+    "disableAll": "Απενεργοποίηση όλων",
+    "enchantmentInclusionExample": "π.χ. \"prot, feather\"",
+    "enchantmentExclusionExample": "π.χ. \"proj, blast\"",
+    "reforgeInclusionExample": "π.χ. \"godly, strong\"",
+    "reforgeExclusionExample": "π.χ. \"odd, clean\"",
+    "actionsLeft": "%number% Απομένουν",
+    "effectActive": "1 Εφέ ενεργό",
+    "effectsActive": "%number% Ενεργά εφέ",
+    "none": "Τίποτα",
+    "copyModeSet": "Η λειτουργία αντιγραφής προγραμματιστή έχει οριστεί σε: %mode%. Πατήστε \"%keyName%\" για να ενεργοποιήσετε ένα αντίγραφο δεδομένων!",
+    "chroma": "Χρωματιστό",
+    "worldRenderedCooldownTime": "Χρόνος Επαναφόρτισης: %time%δ",
+    "entityOutlinesRequirement": "Απαιτεί Shaders, Fast Render, και Antialiasing να είναι OFF",
+    "version": "Έκδοση",
+    "invalidFeatureConfiguration": "Ανιχνεύθηκαν μη έγκυρες ρυθμίσεις για το χαρακτηριστικό %featureName%, επαναφέρονται οι ρυθμίσεις του στις προεπιλεγμένες τιμές.",
+    "fileFetchFailed": "%modName% has failed to fetch %number% file(s). Please copy the error using the button below and report it in our Discord server.",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "discordStatus": {
+    "titleNone": "Τίποτα",
+    "descriptionNone": "Δεν εμφανίζεται κείμενο",
+    "titleLocation": "Τοποθεσία",
+    "descriptionLocation": "Δείχνει την τωρινή σου τοποθεσία",
+    "titlePurse": "Πορτοφόλι",
+    "descriptionPurse": "Δείχνει το ποσό των κερμάτων στο πορτοφόλι σας",
+    "titleBits": "Bits",
+    "descriptionBits": "Εμφανίζει το ποσό των bits που έχετε",
+    "titleStats": "Στατιστικά",
+    "descriptionStats": "Εμφανίζει τα στατιστικά σας HP, Defense και Mana",
+    "titleZealots": "Ζηλωτές",
+    "descriptionZealots": "Εμφανίζει την μετρητή Zealot",
+    "titleItem": "Κρατημένο πράγμα",
+    "descriptionItem": "Δείχνει το όνομα του αντικειμένου που κρατάς",
+    "titleProfile": "Προφίλ",
+    "descriptionProfile": "Δείχνει το όνομα του Προφιλ σου",
+    "titleTime": "Ώρα Skyblock",
+    "descriptionTime": "Εμφανίζει την τρέχουσα ώρα Skyblock. Π.χ. 12:00 π.μ. 1η νωρίς το χειμώνα",
+    "titleCustom": "Προσαρμοσμένη κατάσταση",
+    "descriptionCustom": "Εισαγάγετε μια προσαρμοσμένη κατάσταση",
+    "titleAuto": "Αυτόματη κατάσταση",
+    "descriptionAuto": "Εμφανίζει αυτόματα μια κατάσταση. Π.χ. Zealot σας μετράει ενώ βρίσκεστε στο End.",
+    "titleRevenants": "Αποστολή Revenant",
+    "descriptionRevenants": "Δείχνει ότι κάνετε μια αποστολή Revenant.",
+    "titleSvens": "Αποστολή Sven",
+    "descriptionSvens": "Δείχνει ότι κάνετε μια αποστολή Sven.",
+    "titleTarantula": "Αποστολή Ταραντούλα",
+    "descriptionTarantula": "Δείχνει ότι κάνετε μια αποστολή Tarantula.",
+    "titleVoidgloom": "Voidgloom Quest",
+    "descriptionVoidgloom": "Shows that you are doing a Voidgloom quest.",
+    "titleInferno": "Inferno Quest",
+    "descriptionInferno": "Shows that you are doing an Inferno quest."
+  },
+  "enchantLayout": {
+    "title": "Έλεγχος του τρόπου εμφάνισης των μαγεμάτων στις υποδείξεις αντικειμένων",
+    "titleCompress": "Συμπίεση",
+    "descriptionCompress": "Συμπιέζει μαγέματα σε όσο το δυνατόν λιγότερες γραμμές",
+    "titleNormal": "Κανονικό",
+    "descriptionNormal": "Εμφανίζει τα μαγέματα όπως ο Hypixel",
+    "titleExpand": "Επέκταση",
+    "descriptionExpand": "Εμφανίζει κάθε μάγεμα στη δική του γραμμή"
+  },
+  "commands": {
+    "usage": {
+      "sba": {
+        "base": {
+          "help": "Opens the main menu"
+        },
+        "brand": {
+          "help": "Shows the server brand"
+        },
+        "copyBlock": {
+          "help": "Αντιγράφει δεδομένα σχετικά με το μπλοκ που κοιτάτε"
+        },
+        "copyEntity": {
+          "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+          "detailedHelp": {
+            "description": "Αντιγράφει τα δεδομένα NBT οντοτήτων. Οι τύποι των οντοτήτων που περιλαμβάνονται και η ακτίνα γύρω από τη συσκευή αναπαραγωγής για την αντιγραφή δεδομένων από μπορούν να προσαρμοστούν. Εάν δεν δίνονται επιλογές, χρησιμοποιούνται οι προεπιλεγμένες ρυθμίσεις. Οι προεπιλεγμένες ρυθμίσεις είναι: περιλαμβάνουν παίκτες, θωρακισμένες βάσεις και όπλα, και μια ακτίνα 3 μπλοκ. Εάν δεν δοθεί η ακτίνα, χρησιμοποιείται η προεπιλεγμένη ακτίνα.",
+            "options": {
+              "entityNames": "Ονόματα των τύπων οντοτήτων για τις οποίες θέλετε να αντιγράψετε δεδομένα (π.χ. Player,Creeper). Πατήστε \"Tab\" αφού πληκτρολογήσετε την εντολή για μια πλήρη λίστα. Διαχωρίστε πολλά ονόματα με κόμματα, τα ονόματα είναι case-sensitive.",
+              "radius": "Η ακτίνα (σε μπλοκ) γύρω από τον παίκτη για την αντιγραφή δεδομένων NBT οντοτήτων από"
+            }
+          }
+        },
+        "copySidebar": {
+          "help": "Copies the scoreboard text",
+          "detailedHelp": {
+            "description": "Αντιγράφει το κείμενο που εμφανίζεται στην υποδοχή εμφάνισης της πλευρικής γραμμής του πίνακα αποτελεσμάτων",
+            "options": {
+              "formatted": "Καθορίζει εάν οι κωδικοί μορφοποίησης πρέπει να περιλαμβάνονται κατά την αντιγραφή. Μπορεί να είναι \"true\" ή \"false\", από προεπιλογή σε \"false\" εάν δεν παρέχεται τιμή. Οι κωδικοί μορφοποίησης αντιγράφονται εάν είναι \"true\"."
+            }
+          }
+        },
+        "copyTabList": {
+          "help": "Copies the tab list header and footer",
+          "detailedHelp": {
+            "description": "Αυτή η εντολή αντιγράφει την κεφαλίδα και το υποσέλιδο της λίστας του προγράμματος αναπαραγωγής καρτελών. Περιλαμβάνονται κωδικοί μορφοποίησης."
+          }
+        },
+        "dev": {
+          "help": "Toggles the developer mode",
+          "detailedHelp": {
+            "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+          },
+          "prefix": "Dev"
+        },
+        "edit": {
+          "help": "Edits GUI locations"
+        },
+        "folder": {
+          "help": "Opens your mods folder"
+        },
+        "help": {
+          "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+          "detailedHelp": {
+            "options": {
+              "command": "The sub-command to get detailed usage for"
+            }
+          }
+        },
+        "printDeaths": {
+          "help": "Εκτυπώνει τις μετρήσεις που αποθηκεύονται στους μετρητές θανάτου dungeon για σκοπούς αποσφαλμάτωσης."
+        },
+        "reload": {
+          "help": "Επαναφορτώνει όλες τις ρυθμίσεις και τους πόρους του mod. Το παιχνίδι θα παγώσει για λίγα δευτερόλεπτα."
+        },
+        "reloadConfig": {
+          "help": "Επαναφορτώνει τις ρυθμίσεις του mod"
+        },
+        "reloadRes": {
+          "help": "Επαναφορτώνει τους πόρους του mod. Το παιχνίδι θα παγώσει για λίγα δευτερόλεπτα."
+        },
+        "resetZealotCounter": {
+          "help": "Επαναφέρει όλες τις μετρήσεις του μετρητή zealot."
+        },
+        "set": {
+          "zealotCounter": {
+            "help": "Manually sets your zealot counts",
+            "detailedHelp": {
+              "description": "Μη αυτόματη ρύθμιση μετρήσεων στον μετρητή zealot.",
+              "options": {
+                "eyes": "Διάρκεια Ζωής summoning eyes αποκτήθηκαν",
+                "totalZealots": "Εφ' όρου ζωής σκοτωμοί zealot",
+                "zealots": "Τα Zealot που σκοτώθηκαι από το τελευταίο Summoning Eye"
+              }
+            }
+          }
+        },
+        "slayer": {
+          "help": "Manually sets slayer stats, press tab for arguments",
+          "detailedHelp": {
+            "description": "Manually sets slayer stats, press tab for arguments",
+            "options": {
+              "boss": "Slayer boss: \"Zombie\", \"Spider\", ή \"Wolf\"",
+              "number": "Αριθμός για να ορίσετε το stat σε",
+              "stat": "Το στατιστικό στοιχείο του Slayer για αλλαγή, μπορεί να είναι \"kill\" ή το όνομα ενός αντικειμένου που έχει πέσει με τη μορφή: \"REVENANT_FLESH\""
+            }
+          }
+        },
+        "toggleActionBarLogging": {
+          "help": "Toggles logging action bar messages"
+        },
+        "toggleMagmaTimerLogging": {
+          "help": "Toggles logging magma boss timer debug messages"
+        },
+        "version": {
+          "help": "Εμφανίζει την έκδοση του mod"
+        }
+      }
+    },
+    "responses": {
+      "sba": {
+        "brand": {
+          "brandOutput": "Επωνυμία διακομιστή: %brand%",
+          "notFound": "Η επωνυμία διακομιστή δεν βρέθηκε!"
+        },
+        "dev": {
+          "disabled": "Η λειτουργία προγραμματιστή απενεργοποιήθηκε!",
+          "enabled": "Η λειτουργία προγραμματιστή ενεργοποιήθηκε! ΣΥΜΒΟΥΛΗ: Πατήστε \"%keyName%\" για να αντιγράψετε δεδομένα NBT!"
+        },
+        "folder": {
+          "error": "An error occurred while trying to open the mods folder: %s"
+        },
+        "resetZealotCounter": {
+          "resetSuccess": "Οι μετρητές Zealot επαναφέρθηκαν!"
+        },
+        "set": {
+          "zealotCounter": {
+            "eyesSet": "Ορίστε τον συνολικό αριθμό summoning eye σε %number%!",
+            "totalZealotsSet": "Ορίστε τον σύνολο αριθμό zealot σε %number%!",
+            "wrongUsage": "Μη έγκυρη επιλογή! Επιλέξτε %options%.",
+            "zealotsSet": "Ορίστε τον τρέχοντα αριθμό zealot σε %number%!"
+          }
+        },
+        "slayer": {
+          "bossRequired": "Πρέπει να διαλέξεις ένα εξέχων όγκος! Παρακαλώ διάλεξε %bosses%",
+          "statRequired": "Πρέπει να διαλέξεις ένα στατιστικό. Πάτα tab για επιλογές.",
+          "numberRequired": "Πρέπει να προσθέσεις τον αριθμό που θέλεις.",
+          "killsSet": "Σκοτωμοί για slayer %boss% ήταν ρυθμισμένο στο %number%.",
+          "statSet": "Στατιστικό %stat% για slayer %boss% ήταν ρυθμισμένο στο %number%.",
+          "invalidBoss": "\"%input%\" δεν είναι έγκυρο στατιστικό!",
+          "invalidStat": "\"%input%\" δεν είναι έγκυρο boss!"
+        },
+        "toggleActionBarLogging": {
+          "disabled": "Τα μηνύματα της γραμμής ενεργειών δεν θα καταγράφονται πλέον.",
+          "enabled": "Τα μηνύματα του Action bar θα καταγράφονται από τώρα."
+        },
+        "toggleMagmaTimerLogging": {
+          "disabled": "Τα μηνύματα του χρονομέτρου Magma boss δε θα καταγράφονται πλέον.",
+          "enabled": "Τα μηνύματα του χρονομέτρου Magma boss τώρα θα καταγράφονται."
+        },
+        "version": {
+          "hoverText": "Κάντε κλικ για να το βάλετε στη συνομιλία, ώστε να μπορείτε να αντιγράψετε."
+        }
+      }
+    },
+    "errors": {
+      "wrongUsage": {
+        "generic": "Λάθος χρήση!",
+        "subCommandNotFound": "Η υπο-εντολή %sub-command% δεν βρέθηκε."
+      }
+    }
+  },
+  "commandUsage": {
+    "sba": {
+      "base": {
+        "help": "Opens the main menu"
+      },
+      "brand": {
+        "help": "Shows the server brand",
+        "brandOutput": "Επωνυμία διακομιστή: %brand%",
+        "notFound": "Η επωνυμία διακομιστή δεν βρέθηκε!"
+      },
+      "copyBlock": {
+        "help": "Αντιγράφει δεδομένα σχετικά με το μπλοκ που κοιτάτε"
+      },
+      "copyEntity": {
+        "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+        "detailedHelp": {
+          "description": "Αντιγράφει τα δεδομένα NBT οντοτήτων. Οι τύποι των οντοτήτων που περιλαμβάνονται και η ακτίνα γύρω από τη συσκευή αναπαραγωγής για την αντιγραφή δεδομένων από μπορούν να προσαρμοστούν. Εάν δεν δίνονται επιλογές, χρησιμοποιούνται οι προεπιλεγμένες ρυθμίσεις. Οι προεπιλεγμένες ρυθμίσεις είναι: περιλαμβάνουν παίκτες, θωρακισμένες βάσεις και όπλα, και μια ακτίνα 3 μπλοκ. Εάν δεν δοθεί η ακτίνα, χρησιμοποιείται η προεπιλεγμένη ακτίνα.",
+          "options": {
+            "entityNames": "Ονόματα των τύπων οντοτήτων για τις οποίες θέλετε να αντιγράψετε δεδομένα (π.χ. Player,Creeper). Πατήστε \"Tab\" αφού πληκτρολογήσετε την εντολή για μια πλήρη λίστα. Διαχωρίστε πολλά ονόματα με κόμματα, τα ονόματα είναι case-sensitive.",
+            "radius": "Η ακτίνα (σε μπλοκ) γύρω από τον παίκτη για την αντιγραφή δεδομένων NBT οντοτήτων από"
+          }
+        }
+      },
+      "copySidebar": {
+        "help": "Copies the scoreboard text",
+        "detailedHelp": {
+          "description": "Αντιγράφει το κείμενο που εμφανίζεται στην υποδοχή εμφάνισης της πλευρικής γραμμής του πίνακα αποτελεσμάτων",
+          "options": {
+            "formatted": "Καθορίζει εάν οι κωδικοί μορφοποίησης πρέπει να περιλαμβάνονται κατά την αντιγραφή. Μπορεί να είναι \"true\" ή \"false\", από προεπιλογή σε \"false\" εάν δεν παρέχεται τιμή. Οι κωδικοί μορφοποίησης αντιγράφονται εάν είναι \"true\"."
+          }
+        }
+      },
+      "copyTabList": {
+        "help": "Copies the tab list header and footer",
+        "detailedHelp": {
+          "description": "Αυτή η εντολή αντιγράφει την κεφαλίδα και το υποσέλιδο της λίστας του προγράμματος αναπαραγωγής καρτελών. Περιλαμβάνονται κωδικοί μορφοποίησης."
+        }
+      },
+      "dev": {
+        "help": "Toggles the developer mode",
+        "detailedHelp": {
+          "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+        },
+        "disabled": "Η λειτουργία προγραμματιστή απενεργοποιήθηκε!",
+        "enabled": "Η λειτουργία προγραμματιστή ενεργοποιήθηκε! ΣΥΜΒΟΥΛΗ: Πατήστε \"%keyName%\" για να αντιγράψετε δεδομένα NBT!",
+        "prefix": "Dev"
+      },
+      "edit": {
+        "help": "Edits GUI locations"
+      },
+      "folder": {
+        "help": "Opens your mods folder",
+        "error": "An error occurred while trying to open the mods folder: %s"
+      },
+      "help": {
+        "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+        "detailedHelp": {
+          "options": {
+            "command": "The sub-command to get detailed usage for"
+          }
+        }
+      },
+      "printDeaths": {
+        "help": "Εκτυπώνει τις μετρήσεις που αποθηκεύονται στους μετρητές θανάτου dungeon για σκοπούς αποσφαλμάτωσης."
+      },
+      "reload": {
+        "help": "Επαναφορτώνει όλες τις ρυθμίσεις και τους πόρους του mod. Το παιχνίδι θα παγώσει για λίγα δευτερόλεπτα."
+      },
+      "reloadConfig": {
+        "help": "Επαναφορτώνει τις ρυθμίσεις του mod"
+      },
+      "reloadRes": {
+        "help": "Επαναφορτώνει τους πόρους του mod. Το παιχνίδι θα παγώσει για λίγα δευτερόλεπτα."
+      },
+      "resetZealotCounter": {
+        "help": "Επαναφέρει όλες τις μετρήσεις του μετρητή zealot.",
+        "resetSuccess": "Οι μετρητές Zealot επαναφέρθηκαν!"
+      },
+      "set": {
+        "zealotCounter": {
+          "help": "Manually sets your zealot counts",
+          "detailedHelp": {
+            "description": "Μη αυτόματη ρύθμιση μετρήσεων στον μετρητή zealot.",
+            "options": {
+              "eyes": "Διάρκεια Ζωής summoning eyes αποκτήθηκαν",
+              "totalZealots": "Εφ' όρου ζωής σκοτωμοί zealot",
+              "zealots": "Τα Zealot που σκοτώθηκαι από το τελευταίο Summoning Eye"
+            }
+          },
+          "eyesSet": "Ορίστε τον συνολικό αριθμό summoning eye σε %number%!",
+          "totalZealotsSet": "Ορίστε τον σύνολο αριθμό zealot σε %number%!",
+          "wrongUsage": "Μη έγκυρη επιλογή! Επιλέξτε %options%.",
+          "zealotsSet": "Ορίστε τον τρέχοντα αριθμό zealot σε %number%!"
+        }
+      },
+      "slayer": {
+        "help": "Manually sets slayer stats, press tab for arguments",
+        "detailedHelp": {
+          "description": "Manually sets slayer stats, press tab for arguments",
+          "options": {
+            "boss": "Slayer boss: \"Zombie\", \"Spider\", ή \"Wolf\"",
+            "number": "Αριθμός για να ορίσετε το stat σε",
+            "stat": "Το στατιστικό στοιχείο του Slayer για αλλαγή, μπορεί να είναι \"kill\" ή το όνομα ενός αντικειμένου που έχει πέσει με τη μορφή: \"REVENANT_FLESH\""
+          }
+        },
+        "bossRequired": "Πρέπει να διαλέξεις ένα εξέχων όγκος! Παρακαλώ διάλεξε %bosses%",
+        "statRequired": "Πρέπει να διαλέξεις ένα στατιστικό. Πάτα tab για επιλογές.",
+        "numberRequired": "Πρέπει να προσθέσεις τον αριθμό που θέλεις.",
+        "killsSet": "Σκοτωμοί για slayer %boss% ήταν ρυθμισμένο στο %number%.",
+        "statSet": "Στατιστικό %stat% για slayer %boss% ήταν ρυθμισμένο στο %number%.",
+        "invalidBoss": "\"%input%\" δεν είναι έγκυρο στατιστικό!",
+        "invalidStat": "\"%input%\" δεν είναι έγκυρο boss!"
+      },
+      "toggleActionBarLogging": {
+        "help": "Toggles logging action bar messages",
+        "disabled": "Τα μηνύματα της γραμμής ενεργειών δεν θα καταγράφονται πλέον.",
+        "enabled": "Τα μηνύματα του Action bar θα καταγράφονται από τώρα."
+      },
+      "toggleMagmaTimerLogging": {
+        "help": "Toggles logging magma boss timer debug messages",
+        "disabled": "Τα μηνύματα του χρονομέτρου Magma boss δε θα καταγράφονται πλέον.",
+        "enabled": "Τα μηνύματα του χρονομέτρου Magma boss τώρα θα καταγράφονται."
+      },
+      "version": {
+        "help": "Εμφανίζει την έκδοση του mod",
+        "hoverText": "Κάντε κλικ για να το βάλετε στη συνομιλία, ώστε να μπορείτε να αντιγράψετε."
+      },
+      "errors": {
+        "wrongUsage": {
+          "generic": "Λάθος χρήση!",
+          "subCommandNotFound": "Η υπο-εντολή %sub-command% δεν βρέθηκε."
+        }
+      }
+    }
+  },
+  "keyBindings": {
+    "developerCopyNBT": "Αντιγραφή NBT",
+    "increaseDungeonMapZoom": "Dungeon Map Zoom In",
+    "decreaseDungeonMapZoom": "Dungeon Map Zoom Out"
+  },
+  "dragonTracker": {
+    "protector": "Προστάτης",
+    "old": "Γέρος",
+    "wise": "Σοφός",
+    "unstable": "Ασταθής",
+    "young": "Νεαρός",
+    "strong": "Δυνατός",
+    "superior": "Υπέρτερος",
+    "recentDragons": "Πρόσφατοι Δράκοι:",
+    "dragonsSince": "Δράκοι από:",
+    "aspectOfTheDragons": "AOTD",
+    "enderDragonPet": "Kατοικίδιο Δράκως",
+    "eyesPlaced": "Μάτια τοποθετημένα",
+    "never": "Ποτέ"
+  },
+  "slayerTracker": {
+    "revenant": "Revenant Horror:",
+    "tarantula": "Ταραντούλα Broodfather:",
+    "sven": "Sven Packmaster:",
+    "voidgloom": "Voidgloom Seraph:",
+    "bossesKilled": "Εξέχων όντος σκοτωμένο"
+  },
+  "warpMenu": {
+    "click": "Κάντε κλικ σε ένα σημείο στρέβλωσης για να ταξιδέψετε εκεί!",
+    "mustUnlock": "Πρέπει να έχει ξεκλειδωθεί η συγκεκριμένη κύλιση.",
+    "privateIsland": "Ιδιωτικό νησί",
+    "home": "Το νησί σας",
+    "spawn": "Αφετηρία",
+    "unknown": "Δεν έχω επισκεφτεί",
+    "notUnlocked": "Δεν ξεκλειδώθηκε",
+    "inCombat": "Σε Μάχη..."
+  },
+  "enchants": {
+    "superTier": "Μέγιστη Βαθμίδα",
+    "highTier": "Υψηλή Βαθμίδα",
+    "midTier": "Μεσαία Βαθμίδα",
+    "lowTier": "Χαμηλή Βαθμίδα",
+    "commas": "Κόμμα",
+    "expertiseKills": "Εμφάνιση Σκοτωμών Expertise",
+    "compactedBlocks": "Συμπυκνωμένα Blocks",
+    "cultivatedCrops": "Καλλιεργημένα Σπαρτά",
+    "hecatombsSRuns": "Hecatombs S Runs",
+    "championCombatXp": "Champion Combat XP",
+    "maxed": "Μέγιστο"
+  }
+}

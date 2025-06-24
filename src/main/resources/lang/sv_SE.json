@@ -1,0 +1,698 @@
+{
+  "languageText": "Språk: ",
+  "language": "Svenska",
+  "settings": {
+    "settings": "Inställningar",
+    "magmaBossWarning": "Varna för magmakub-bossar",
+    "balBossWarning": "Bal Boss Warning",
+    "broodMotherWarning": "Brood Mother Warning",
+    "itemDropConfirmation": "Släppbekräftelse för föremål",
+    "hideSkeletonHatBones": "Dölj ben från skeleton's helmet",
+    "skeletonHatBonesBar": "Benmätare för skeleton's helmet",
+    "hideFoodAndArmor": "Dölj mat- och rustningsmätare",
+    "fullInventoryWarning": "Varna för fullt förråd",
+    "repeating": "Upprepa varning",
+    "disableEmberRodAbility": "Inaktivera ember rod-förmågor på din ö",
+    "editLocations": "Redigera GUI-positioner",
+    "guiScale": "GUI-storlek: %scale%",
+    "resetLocations": "Återställ positioner",
+    "minionStopWarning": "\"Minion Cannot Reach\"-varningar",
+    "hidePlayersNearNPCs": "Dölj spelare nära viktiga NPC:er",
+    "backpackStyle": "Backpack-stil: %style%",
+    "backpackStyles": {
+      "regular": "Vanlig",
+      "compact": "Kompakt"
+    },
+    "showBackpackPreview": "Tillåt förhandsvisning av backpack",
+    "hideHealthBar": "Dölj standardhälsomätaren",
+    "fullMinionWarning": "Varna för fulla minionförråd",
+    "showOnlyWhenHoldingShift": "Visa endast när Skift hålls ned",
+    "manaBar": "Manamätare",
+    "manaNumber": "Mananummer",
+    "healthBar": "Häslomätare",
+    "healthNumber": "Hälsonummer",
+    "defenseIcon": "Skyddsymbol",
+    "defenseNumber": "Skyddsnummer",
+    "defensePercentage": "Skyddsprocent",
+    "healthUpdates": "Hälsouppdateringar",
+    "hidePlayersInLobby": "Dölj entiteter långt bort i lobbyn",
+    "darkAuctionTimer": "Tidur för svarta aktioner",
+    "magmaBossTimer": "Tidur för magmakub-bossar",
+    "itemPickupLog": "Föremålslogg",
+    "avoidPlacingEnchantedItems": "Undvik att placera förtrollade föremål",
+    "stopBowChargeFromResetting": "Stop Bow Charge From Resetting",
+    "preventMovementOnDeath": "Unvik att gå efter du återuppstått",
+    "showItemAnvilUses": "Visa föremåls städanvändningar",
+    "lockSlots": "Tillåt låsning av föremålsplatser",
+    "lockSlot": "Lås föremålsplats",
+    "dontResetCursorInventory": "Återställ inte muspekarpositionen mellan menyer",
+    "summoningEyeAlert": "Varna för summoning eye",
+    "makeEnderchestsInEndGreen": "Ändra färgen på enderkistor i End",
+    "changeColor": "Ändra färg",
+    "showInOtherGames": "Visa i andra spel",
+    "useVanillaTexture": "Använd standardtexturen",
+    "textStyle": "Typsnitt",
+    "textStyles": {
+      "one": "Stil ett",
+      "two": "Stil två"
+    },
+    "warningDuration": "Varningstid",
+    "dontOpenProfileWithBow": "Öppna inte profiler när du håller i en pilbåge",
+    "stopDroppingSellingRareItems": "Undvik att släppa/sälja sällsynta föremål",
+    "makeBackpackInventoriesColored": "Färga förråd",
+    "replaceRomanNumeralsWithNumbers": "Ersätt romerska siffror på föremål",
+    "changeBarColorForPotions": "Change Bar Color for Wither & Poison",
+    "craftingPatterns": "Välj tillverkningsmönster",
+    "soundIndicatorForFishing": "Ljudindikator för fiske",
+    "avoidBlinkingNightVision": "Inaktivera blinkningar av mörkerseendeffekten",
+    "disableMinionLocationWarning": "Inaktivera minionvarningar om att platsen inte är perfekt",
+    "showItemCooldowns": "Visa föremåls väntetid",
+    "speedPercentage": "Hastighetsprocent",
+    "collectionDisplay": "Display för skill-framsteg",
+    "revenantIndicator": "Slayer Armor Progress Indicator",
+    "specialZealotAlert": "Varna för speciella zealoter",
+    "enableMessageWhenActionPrevented": "Visa ett meddelande när en åtgärd förhindras",
+    "hidePetHealthBar": "Dölj hälsomätare för husdjur",
+    "powerOrbDisplay": "Display för power orb",
+    "powerOrbDisplayStyle": "Power orb-stil: %style%",
+    "powerOrbStyle": {
+      "detailed": "Detaljerad",
+      "compact": "Kompakt"
+    },
+    "disableMagicalSoupMessage": "Dölj meddelanden från magical mushroom soup",
+    "zealotCounter": "Zealot-räknare - Dödade zealoter sedan senaste ögat",
+    "tickerChargesDisplay": "Display för ticker/charges",
+    "tab": {
+      "generalSettings": "Allmänna inställningar"
+    },
+    "tabEffectTimers": "Tidur för förmågor och brygdtider",
+    "noArrowsLeftAlert": "Varna när det är slut med pilar",
+    "showCakeBagPreview": "Tillåt förhandsvisning av cake bag",
+    "showBackpackPreviewInAH": "Tillåt förhandsvisning av backpack när AH-menyn är öppnen",
+    "enableDevFeatures": "Aktivera utvecklarfunktioner",
+    "chromaSpeed": "Hastighet",
+    "chromaMode": "Kromatiskt färgläge",
+    "chromaModes": {
+      "allTheSame": "Alla samma färg",
+      "fade": "Färgtoning"
+    },
+    "chromaFadeWidth": "Färgtoningsbredd",
+    "showBrokenFragments": "Show Broken Dragon Fragments",
+    "skyblockAddonsButtonInPauseMenu": "Visa SBA-knappen i pausmenyn",
+    "showTotalZealotCount": "Zealot-räknare - Totalt antal dödade zeloter",
+    "showSummoningEyeCount": "Zealot-räknare - Totalt antal samlade ögon",
+    "showZealotsPerEye": "Zealot-räknare - Dödade zeloter per öga",
+    "turnBowGreenWhenUsingToxicArrowPoison": "Color Bow Green When Using Toxic Arrow Poison",
+    "birchParkRainmakerTimer": "Regntidur i Birch Park",
+    "combatTimerDisplay": "Display för stridstidur",
+    "discordRP": "Discord Rich Presence",
+    "endstoneProtectorDisplay": "Display för endstone protector",
+    "fancyWarpMenu": "Snygg teleporteringsmeny",
+    "stopRatSounds": "Stoppa ljud från råtthusdjur",
+    "onlyStopRatSqueak": "Stoppa endast gnisselljud från råtthusdjur",
+    "doubleWarp": "Teleportera två gånger",
+    "advancedMode": "Avancerat läge",
+    "legendarySeaCreatureWarning": "Varna för legendariska havsvarelser",
+    "bossApproachAlert": "Slayer Boss Approach Alert",
+    "disableTeleportPadMessages": "Inaktivera meddelanden från teleport pads",
+    "baitListDisplay": "Visa beteslistan när du håller i ett fiskespö",
+    "freezeBackpackPreview": "Lås position för förhandsvisningar",
+    "hideGreyEnchants": "Dölj vanliga grå förtrollningar",
+    "zealotCounterExplosiveBow": "Zealot Counter Explosive Bow Support",
+    "disableEndermanTeleportation": "Inaktivera enderman-teleportering",
+    "changeZealotColor": "Ändra zealot-färg",
+    "hideSvenPupNametags": "Dölj namnskyltar för sven pups",
+    "turnAllFeaturesChroma": "Kromatisk färg för alla funktioner",
+    "dungeonMapDisplay": "Display för Dungeon-kartan",
+    "rotateMap": "Rotera kartan med din spelares rotation",
+    "centerRotationOnYourPlayer": "Rotate Around Your Player's Marker",
+    "showFetchurOnlyInDwarven": "Visa endast Fetchurs föremål i Dwarven Mines",
+    "showFetchurItemName": "Visa Fetchurs föremålsnamn",
+    "showFetchurInventoryOpenOnly": "Visa endast Fetchurs föremål i ditt förråd",
+    "warnWhenFetchurChanges": "Varna när Fetchur förändras",
+    "mapZoom": "Kartzoom",
+    "glowingDroppedItems": "Glödande släppta föremål",
+    "outlineDungeonTeammates": "Visa konturer för lagkamrater i Dungeons",
+    "baseStatBoostPercentage": "Show Base Stat Boost for Dungeon Items",
+    "colorByRarity": "Färg efter sällsynthet",
+    "showPlayerHeadsOnMap": "Visa spelarhuvuden på Dungeon-kartan",
+    "showHealingCircleWall": "Show Dungeon Healing Circle Wall",
+    "showCriticalTeammates": "Show Critical Dungeon Teammates",
+    "showGlowingItemsOnIsland": "Visa glödande föremål på ön",
+    "showItemDungeonFloor": "Visa på vilket Dungeon floor ett föremål kan inskaffas",
+    "showDungeonMilestone": "Show Dungeon Milestone",
+    "dungeonsCollectedEssencesDisplay": "Display för samlade Dungeons essence",
+    "stopBonzoStaffSounds": "Stoppa ljud från Bonzo's Staff",
+    "showRarityUpgraded": "Visa om föremåls sällsynthet har uppgraderats",
+    "revenantSlayerTracker": "Slayer-spårare - Revenant/zombie",
+    "tarantulaSlayerTracker": "Slayer-spårare - Tarantella/spindel",
+    "svenSlayerTracker": "Slayer-spårare - Sven/varg",
+    "voidgloomSlayerTracker": "Slayer-spårare - Voidgloom/enderman",
+    "textMode": "Textläge",
+    "dragonsNestOnly": "Visa endast i Dragon's Nest",
+    "dragonStatsTracker": "Drakspårare",
+    "skillActionsLeftUntilNextLevel": "Show Actions Left Until Next Level",
+    "dungeonDeathCounter": "Dödsfallsräknare för Dungeons",
+    "showPersonalCompactorPreview": "Tillåt förhandsvisning av personal compactor",
+    "rockPetTracker": "Rock-husdjursspårare",
+    "dolphinPetTracker": "Dolphin-husdjursspårare",
+    "dungeonsTeammateNameOverlay": "Namnöverlägg för lagkamrater i Dungeons",
+    "dungeonsSecretsDisplay": "Display för Dungeon secrets",
+    "showSkillPercentageInstead": "Visa procent istället för erfarenhetspoäng",
+    "showSkillXPGained": "Visa erhållna erfarenhetspoäng",
+    "skillProgressBar": "Skill Progress Bar",
+    "showSalvageEssencesCounter": "Visa räknare för salvage essence",
+    "disableMortMessages": "Inaktivera Mort-meddelanden",
+    "disableBossMessages": "Inaktivera bossmeddelanden",
+    "hideOtherPlayersPresents": "Dölj andra spelares presenter",
+    "showSwordKills": "Show Sword Kills",
+    "compactTabList": "Kompakt spelarlista",
+    "highlightSpecialEnchantments": "Tydliggör speciella förtrollningar",
+    "disableDamageChatMessages": "Disable Damage Chat Messages",
+    "showSpiritSceptreDisplay": "Spirit Sceptre/Wither Blade Damage Display",
+    "outbidAlertSound": "Outbid Alert Sound",
+    "hideMenuGlassPanes": "Hide Menu Glass Pane Tooltips",
+    "candyPointsCounter": "Spooky Event-godis/poängräknare",
+    "healingCircleOpacity": "Opacitet för helande cirkel",
+    "chromaSize": "Storlek",
+    "chromaSaturation": "Mättnad",
+    "chromaBrightness": "Ljusstyrka",
+    "useNewChromaEffect": "Use New Chroma Effect",
+    "showExperimentationTableTooltips": "Visa inforutor för experimentation table",
+    "drillFuelBar": "Bränslemätare för drill",
+    "drillFuelNumber": "Bränslenummer för drill",
+    "fetchurToday": "Visa vad Fetchur vill ha idag",
+    "fishingParticleOverlay": "Överlägg för fiskepartiklar",
+    "enchantmentLoreParsing": "Parse Enchant Tooltips",
+    "cooldownPrediction": "Räkna ut och förkorta väntetiden",
+    "legendaryMonkeyLevel100": "[TEMP] Nivå 100 legendarisk monkey",
+    "biggerWake": "Förstora överläggspartiklar",
+    "stackingEnchantProgress": "Show Stacking Enchant Progress",
+    "showReforgeOverlay": "Visa reforge-överlägg",
+    "reforgeFilter": "Reforge-filter",
+    "hideEnchantDescription": "Dölj förtrollningsbeskrivning",
+    "trevorTheTrapper": {
+      "title": "Trevor the trapper-funktioner",
+      "trackedEntityProximityIndicator": "Show Tracked Entity Proximity Indicator",
+      "highlightTrackedEntity": "Tydliggör spårad entitet",
+      "showQuestCooldown": "Visa väntetid för Trevors uppdrag",
+      "showQuestCooldownDescription": "Detta kommer att visas ovanför Trevors huvud"
+    },
+    "showEnderChestPreview": "Tillåt förhandsvisning av enderkistor",
+    "hideWhenNotDoingQuest": "Hide When Not Doing Quest",
+    "showOverflowManaNumber": "Overflow Mana Number",
+    "axeCooldownIndicator": "Axe Cooldown Indicator",
+    "vanillaHealthPrediction": "Använd standardhälsoprognos",
+    "entityOutlines": "Visa entitetskonturer",
+    "effectiveHealthNumber": "Effektivt hälsonummer",
+    "guiScaleX": "GUI X-storlek: %scale%",
+    "guiScaleY": "GUI X-storlek: %scale%",
+    "abbreviateSkillXpDenominator": "Abbreviate Skill XP Denominator",
+    "otherDefenseStats": "Other Defense Stats (Soul Tether/Cell Alignment)",
+    "hideSpawnPointPlayers": "Hide Players at Hub Spawn Point",
+    "jacobsContestTimer": "Jacob's Contest Timer",
+    "dontReplaceRomanNumeralsInItemNames": "Don't Replace in Item Names",
+    "backpackOpeningSound": "Leather Backpack Opening Sound",
+    "devMode": "Developer Mode",
+    "showSkyblockItemId": "Show Skyblock Item ID on Hover",
+    "showFeatureNamesOnHover": "Show Feature Names on Hover",
+    "resetSalvagedEssencesAfterLeavingMenu": "Reset Salvaged Essence Counter After Closing Menu",
+    "changeDungeonMapZoomWithKeyboard": "Adjust zoom with +/- keys",
+    "showPlayerSymbolsInChat": "Show Player Symbols In Chat",
+    "crimsonArmorAbilityStacks": "Show Crimson Armor Stacks",
+    "hideTrueDefense": "Hide True Defense",
+    "showProfileType": "Show Profile Type",
+    "showNetherFaction": "Show Nether Faction",
+    "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas"
+  },
+  "messages": {
+    "enchants": "Förtrollningar",
+    "reforges": "Reforges",
+    "dropConfirmation": "Släpp föremålet igen för att bekräfta!",
+    "magmaBossWarning": "Magmakub-boss!",
+    "balBossWarning": "Bal Boss!",
+    "broodMotherWarning": "Brood Mother!",
+    "fullInventory": "Fullt förråd!",
+    "labymod": "Labymod Users: Hide Food, Armor, and Health Bar, is incompatible.",
+    "minionCannotReach": "En minion av typen %type% kan inte nå och har slutat att fungera!",
+    "minionIsFull": "En minion på din ö är full!",
+    "typeEnchantmentsHere": "Skriv %type% här!",
+    "separateMultiple": "Separera med kommatecken.",
+    "enchantsToMatch": "%type% för att matcha:",
+    "enchantsToExclude": "%type% för att exkludera:",
+    "updateChecker": {
+      "wantToViewPatchNotes": "Behöver du hjälp eller vill du läsa hela ändringsloggen?",
+      "joinDiscord": "Anslut till vår Discordserver!",
+      "watchShowcase": "Spela video",
+      "downloadButton": "Ladda ned",
+      "openModFolderButton": "Öppna mappen för moddar",
+      "joinDiscordButton": "Anslut till Discord",
+      "newUpdateAvailable": "En ny uppdatering (%version%) finns tillgänglig!",
+      "noDownloadAvailable": "Ingen nedladdningslänk finns tillgänglig, kolla om den finns i vår Discordserver.",
+      "notificationBox": {
+        "majorAvailable": "En ny större uppdatering (%version%) finns tillgänglig! Länken för nedladdningen finns i chatten.",
+        "betaAvailable": "En ny betauppdatering (%version%) finns tillgänglig! Titta i chatten efter nedladdningslänken.",
+        "patchAvailable": "En ny betauppdatering (%version%) finns tillgänglig! Titta i chatten för nedladdningsalternativ!"
+      }
+    },
+    "slotLocked": "Denna föremålsplats är låst!",
+    "summoningEyeFound": "Summoning Eye!",
+    "cancelledDropping": "En funktion har förhindrat dig från att släppa detta \"sällsynta\" föremål eller verktyg från din föremålsmeny.",
+    "clickMoreTimes": "Klicka/släpp detta föremål %times% gånger till om du verkligen vill göra detta.",
+    "clickOneMoreTime": "Klicka/släpp detta föremål 1 gång till om du verkligen vill göra detta.",
+    "featureDisabled": "Inaktiverad funktion",
+    "anvilUses": "Städanvändningar: %uses%",
+    "specialZealotFound": "Speciell zealot!",
+    "blockIncompletePatterns": "Block crafting incomplete patterns (recommended)",
+    "searchFeatures": "Sök efter funktioner",
+    "downloadingUpdateFile": "Laddar ned uppdateringsfil...",
+    "onlyFewArrowsLeft": "Endast %arrows% pilar kvar!",
+    "noArrowsLeft": "Inga pilar kvar!",
+    "chooseAColor": "Välj en färg",
+    "selectedColor": "Vald färg",
+    "setHexColor": "Ange Hex-färg",
+    "rescaleFeatures": "Omskala funktioner",
+    "resizeBars": "Ändra mätarstorlek",
+    "showColorIcons": "Visa färgikoner",
+    "enableFeatureSnapping": "Aktivera hjälpt justering",
+    "stage": "Etapp %stage%",
+    "switchedSlots": "Du har precis bytt från en låst föremålsplats eller ett sällsynt föremål. Vänta lite innan du släpper!",
+    "clickToOpenLink": "Klicka för att öppna denna länk!",
+    "clickToOpenFolder": "Klicka för att öppna mappen för moddar!",
+    "firstStatus": "Denna status kommer att visas överst",
+    "secondStatus": "Denna status kommer att visas under din första status",
+    "fallbackStatus": "Denna status kommer att visas när din automatiska status inte har något att visa",
+    "legendarySeaCreatureWarning": "Legendarisk fångst!",
+    "bossApproaching": "Du är nära att skapa en boss!",
+    "fetchurItem": "Fetchur: %item%",
+    "fetchurWarning": "Fetchur förändrades!",
+    "enableAll": "Aktivera alla",
+    "disableAll": "Inaktivera alla",
+    "enchantmentInclusionExample": "t.ex. \"prot, feather\"",
+    "enchantmentExclusionExample": "t.ex. \"proj, blast\"",
+    "reforgeInclusionExample": "t.ex. \"godly, strong\"",
+    "reforgeExclusionExample": "t.ex. \"odd, clean\"",
+    "actionsLeft": "%number% kvar",
+    "effectActive": "1 aktiv effekt",
+    "effectsActive": "%number% aktiva effekter",
+    "none": "Ingen",
+    "copyModeSet": "The developer copy mode has been set to: %mode%. Press \"%keyName%\" to trigger a data copy!",
+    "chroma": "Kromatisk färg",
+    "worldRenderedCooldownTime": "Väntetid: %time% s",
+    "entityOutlinesRequirement": "Requires Shaders, Fast Render, and Antialiasing to be OFF",
+    "version": "Version",
+    "invalidFeatureConfiguration": "Invalid configuration detected for feature %featureName%, resetting its settings to default values.",
+    "fileFetchFailed": "%modName% has failed to fetch %number% file(s). Please copy the error using the button below and report it in our Discord server.",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "discordStatus": {
+    "titleNone": "Ingen",
+    "descriptionNone": "Ingen text visas",
+    "titleLocation": "Plats",
+    "descriptionLocation": "Visar din nuvarande plats",
+    "titlePurse": "Purse",
+    "descriptionPurse": "Visar antalet mynt i din purse",
+    "titleBits": "Bits",
+    "descriptionBits": "Shows the amount of bits you have",
+    "titleStats": "Statistik",
+    "descriptionStats": "Visar din HP-, skydd- och manastatistik",
+    "titleZealots": "Zealots",
+    "descriptionZealots": "Visar din zealot-räknare",
+    "titleItem": "Föremål som hålls",
+    "descriptionItem": "Visar namnet på det föremål du håller i",
+    "titleProfile": "Profil",
+    "descriptionProfile": "Visar ditt profilnamn",
+    "titleTime": "Skyblock-tid",
+    "descriptionTime": "Visar den nuvarande skyblocktiden. T.ex. 12:00am 1st Early Winter",
+    "titleCustom": "Anpassad status",
+    "descriptionCustom": "Ange en anpassad status",
+    "titleAuto": "Automatisk status",
+    "descriptionAuto": "Visar automatiskt en status. T.ex. antalet zealot:er när du är i End.",
+    "titleRevenants": "Revenant-uppdrag",
+    "descriptionRevenants": "Visar att du genomför ett revenant-uppdrag.",
+    "titleSvens": "Sven-uppdrag",
+    "descriptionSvens": "Visar att du genomför ett sven-uppdrag.",
+    "titleTarantula": "Tarantula-uppdrag",
+    "descriptionTarantula": "Visar att du genomför ett tarantula-uppdrag.",
+    "titleVoidgloom": "Voidgloom Quest",
+    "descriptionVoidgloom": "Shows that you are doing a Voidgloom quest.",
+    "titleInferno": "Inferno Quest",
+    "descriptionInferno": "Shows that you are doing an Inferno quest."
+  },
+  "enchantLayout": {
+    "title": "Kontrollera hur förtrollningar visas i inforutor för föremål",
+    "titleCompress": "Komprimera",
+    "descriptionCompress": "Komprimerar förtrollningar till så få rader som möjligt",
+    "titleNormal": "Normal",
+    "descriptionNormal": "Visar förtrollningar som Hypixel gör",
+    "titleExpand": "Expandera",
+    "descriptionExpand": "Varje förtrollning visas på en egen rad"
+  },
+  "commands": {
+    "usage": {
+      "sba": {
+        "base": {
+          "help": "Opens the main menu"
+        },
+        "brand": {
+          "help": "Shows the server brand"
+        },
+        "copyBlock": {
+          "help": "Copies data about the block that you are looking at"
+        },
+        "copyEntity": {
+          "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+          "detailedHelp": {
+            "description": "Copies the NBT data of entities. The types of entities included and the radius around the player to copy data from can be customized. If no options are given, the default settings are used. The default settings are: include players, armor stands, and mobs, and a radius of 3 blocks. If the radius isn't given, the default radius is used.",
+            "options": {
+              "entityNames": "Names of the types of entities you want to copy data for (e.g. Player,Creeper). Press \"Tab\" after typing the command for a full list. Separate multiple names with commas, names are case-sensitive.",
+              "radius": "The radius (in blocks) around the player to copy entity NBT data from"
+            }
+          }
+        },
+        "copySidebar": {
+          "help": "Copies the scoreboard text",
+          "detailedHelp": {
+            "description": "Kopierar den text som visas i resultattavlans sidofält",
+            "options": {
+              "formatted": "Determines if the formatting codes should be included when copying. Can be either \"true\" or \"false\", defaults to \"false\" if no value is provided. Formatting codes are copied if \"true\"."
+            }
+          }
+        },
+        "copyTabList": {
+          "help": "Copies the tab list header and footer",
+          "detailedHelp": {
+            "description": "Detta kommando kopierar spelarlistans rubrik och fotnot. Formateringskoder är inkluderade."
+          }
+        },
+        "dev": {
+          "help": "Toggles the developer mode",
+          "detailedHelp": {
+            "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+          },
+          "prefix": "Dev"
+        },
+        "edit": {
+          "help": "Edits GUI locations"
+        },
+        "folder": {
+          "help": "Opens your mods folder"
+        },
+        "help": {
+          "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+          "detailedHelp": {
+            "options": {
+              "command": "The sub-command to get detailed usage for"
+            }
+          }
+        },
+        "printDeaths": {
+          "help": "Prints the counts stored in the dungeon death counters for debugging purposes."
+        },
+        "reload": {
+          "help": "Reloads all of the mod's settings and resources. The game will freeze for a few seconds."
+        },
+        "reloadConfig": {
+          "help": "Reloads the mod's settings"
+        },
+        "reloadRes": {
+          "help": "Reloads the mod's resources. The game will freeze for a few seconds."
+        },
+        "resetZealotCounter": {
+          "help": "Resets all the zealot counter counts."
+        },
+        "set": {
+          "zealotCounter": {
+            "help": "Manually sets your zealot counts",
+            "detailedHelp": {
+              "description": "Ställer manuellt in antalet dödade zealoter.",
+              "options": {
+                "eyes": "Totalt antal samlade summoning eyes (någonsin)",
+                "totalZealots": "Totalt antal dödade zeloter (någonsin)",
+                "zealots": "Dödade zealoter sedan senaste summoning eye"
+              }
+            }
+          }
+        },
+        "slayer": {
+          "help": "Manually sets slayer stats, press tab for arguments",
+          "detailedHelp": {
+            "description": "Manually sets slayer stats, press tab for arguments",
+            "options": {
+              "boss": "Slayer-boss: \"Zombie\", \"Spidel\", eller \"Varg\"",
+              "number": "Nummer att ställa in statistiken till",
+              "stat": "Slayer stat to change, can be \"kills\" or the name of a dropped item formatted like this: \"REVENANT_FLESH\""
+            }
+          }
+        },
+        "toggleActionBarLogging": {
+          "help": "Toggles logging action bar messages"
+        },
+        "toggleMagmaTimerLogging": {
+          "help": "Toggles logging magma boss timer debug messages"
+        },
+        "version": {
+          "help": "Shows the mod's version"
+        }
+      }
+    },
+    "responses": {
+      "sba": {
+        "brand": {
+          "brandOutput": "Servertyp: %brand%",
+          "notFound": "Servertyp hittades inte!"
+        },
+        "dev": {
+          "disabled": "Utvecklarläge inaktiverat!",
+          "enabled": "Utvecklarläge aktiverat! TIPS: Tryck på %keyName% för att kopiera NBT-data!"
+        },
+        "folder": {
+          "error": "An error occurred while trying to open the mods folder: %s"
+        },
+        "resetZealotCounter": {
+          "resetSuccess": "Zealot counters reset!"
+        },
+        "set": {
+          "zealotCounter": {
+            "eyesSet": "Ställ in det totala antalet samlade summoning eyes till %number%!",
+            "totalZealotsSet": "Ställ in det totala antalet dödade zealoter till %number%!",
+            "wrongUsage": "Ogiltigt val! Välj %options%.",
+            "zealotsSet": "Ställ in det nuvarande antalet dödade zealoter till %number%!"
+          }
+        },
+        "slayer": {
+          "bossRequired": "Du måste välja en boss! Välj %bosses%",
+          "statRequired": "Du måste välja en statistik. Tryck på Tabb för alternativ.",
+          "numberRequired": "Du måste lägga till det nummer du vill ha.",
+          "killsSet": "Kills for slayer %boss% was set to %number%.",
+          "statSet": "Statistic %stat% for slayer %boss% was set to %number%.",
+          "invalidBoss": "\"%input%\" är inte en giltig statistik!",
+          "invalidStat": "\"%input%\" är inte en giltig boss!"
+        },
+        "toggleActionBarLogging": {
+          "disabled": "Meddelanden i åtgärdsfältet kommer inte längre att loggas.",
+          "enabled": "Meddelanden i åtgärdsfältet kommer nu att loggas."
+        },
+        "toggleMagmaTimerLogging": {
+          "disabled": "Magma boss timer messages will no longer be logged.",
+          "enabled": "Magma boss timer messages will now be logged."
+        },
+        "version": {
+          "hoverText": "Click to put in chat so you can copy."
+        }
+      }
+    },
+    "errors": {
+      "wrongUsage": {
+        "generic": "Fel användning!",
+        "subCommandNotFound": "Underkommandot \"%sub-command%\" hittades inte."
+      }
+    }
+  },
+  "commandUsage": {
+    "sba": {
+      "base": {
+        "help": "Opens the main menu"
+      },
+      "brand": {
+        "help": "Shows the server brand",
+        "brandOutput": "Servertyp: %brand%",
+        "notFound": "Servertyp hittades inte!"
+      },
+      "copyBlock": {
+        "help": "Copies data about the block that you are looking at"
+      },
+      "copyEntity": {
+        "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+        "detailedHelp": {
+          "description": "Copies the NBT data of entities. The types of entities included and the radius around the player to copy data from can be customized. If no options are given, the default settings are used. The default settings are: include players, armor stands, and mobs, and a radius of 3 blocks. If the radius isn't given, the default radius is used.",
+          "options": {
+            "entityNames": "Names of the types of entities you want to copy data for (e.g. Player,Creeper). Press \"Tab\" after typing the command for a full list. Separate multiple names with commas, names are case-sensitive.",
+            "radius": "The radius (in blocks) around the player to copy entity NBT data from"
+          }
+        }
+      },
+      "copySidebar": {
+        "help": "Copies the scoreboard text",
+        "detailedHelp": {
+          "description": "Kopierar den text som visas i resultattavlans sidofält",
+          "options": {
+            "formatted": "Determines if the formatting codes should be included when copying. Can be either \"true\" or \"false\", defaults to \"false\" if no value is provided. Formatting codes are copied if \"true\"."
+          }
+        }
+      },
+      "copyTabList": {
+        "help": "Copies the tab list header and footer",
+        "detailedHelp": {
+          "description": "Detta kommando kopierar spelarlistans rubrik och fotnot. Formateringskoder är inkluderade."
+        }
+      },
+      "dev": {
+        "help": "Toggles the developer mode",
+        "detailedHelp": {
+          "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+        },
+        "disabled": "Utvecklarläge inaktiverat!",
+        "enabled": "Utvecklarläge aktiverat! TIPS: Tryck på %keyName% för att kopiera NBT-data!",
+        "prefix": "Dev"
+      },
+      "edit": {
+        "help": "Edits GUI locations"
+      },
+      "folder": {
+        "help": "Opens your mods folder",
+        "error": "An error occurred while trying to open the mods folder: %s"
+      },
+      "help": {
+        "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+        "detailedHelp": {
+          "options": {
+            "command": "The sub-command to get detailed usage for"
+          }
+        }
+      },
+      "printDeaths": {
+        "help": "Prints the counts stored in the dungeon death counters for debugging purposes."
+      },
+      "reload": {
+        "help": "Reloads all of the mod's settings and resources. The game will freeze for a few seconds."
+      },
+      "reloadConfig": {
+        "help": "Reloads the mod's settings"
+      },
+      "reloadRes": {
+        "help": "Reloads the mod's resources. The game will freeze for a few seconds."
+      },
+      "resetZealotCounter": {
+        "help": "Resets all the zealot counter counts.",
+        "resetSuccess": "Zealot counters reset!"
+      },
+      "set": {
+        "zealotCounter": {
+          "help": "Manually sets your zealot counts",
+          "detailedHelp": {
+            "description": "Ställer manuellt in antalet dödade zealoter.",
+            "options": {
+              "eyes": "Totalt antal samlade summoning eyes (någonsin)",
+              "totalZealots": "Totalt antal dödade zeloter (någonsin)",
+              "zealots": "Dödade zealoter sedan senaste summoning eye"
+            }
+          },
+          "eyesSet": "Ställ in det totala antalet samlade summoning eyes till %number%!",
+          "totalZealotsSet": "Ställ in det totala antalet dödade zealoter till %number%!",
+          "wrongUsage": "Ogiltigt val! Välj %options%.",
+          "zealotsSet": "Ställ in det nuvarande antalet dödade zealoter till %number%!"
+        }
+      },
+      "slayer": {
+        "help": "Manually sets slayer stats, press tab for arguments",
+        "detailedHelp": {
+          "description": "Manually sets slayer stats, press tab for arguments",
+          "options": {
+            "boss": "Slayer-boss: \"Zombie\", \"Spidel\", eller \"Varg\"",
+            "number": "Nummer att ställa in statistiken till",
+            "stat": "Slayer stat to change, can be \"kills\" or the name of a dropped item formatted like this: \"REVENANT_FLESH\""
+          }
+        },
+        "bossRequired": "Du måste välja en boss! Välj %bosses%",
+        "statRequired": "Du måste välja en statistik. Tryck på Tabb för alternativ.",
+        "numberRequired": "Du måste lägga till det nummer du vill ha.",
+        "killsSet": "Kills for slayer %boss% was set to %number%.",
+        "statSet": "Statistic %stat% for slayer %boss% was set to %number%.",
+        "invalidBoss": "\"%input%\" är inte en giltig statistik!",
+        "invalidStat": "\"%input%\" är inte en giltig boss!"
+      },
+      "toggleActionBarLogging": {
+        "help": "Toggles logging action bar messages",
+        "disabled": "Meddelanden i åtgärdsfältet kommer inte längre att loggas.",
+        "enabled": "Meddelanden i åtgärdsfältet kommer nu att loggas."
+      },
+      "toggleMagmaTimerLogging": {
+        "help": "Toggles logging magma boss timer debug messages",
+        "disabled": "Magma boss timer messages will no longer be logged.",
+        "enabled": "Magma boss timer messages will now be logged."
+      },
+      "version": {
+        "help": "Shows the mod's version",
+        "hoverText": "Click to put in chat so you can copy."
+      },
+      "errors": {
+        "wrongUsage": {
+          "generic": "Fel användning!",
+          "subCommandNotFound": "Underkommandot \"%sub-command%\" hittades inte."
+        }
+      }
+    }
+  },
+  "keyBindings": {
+    "developerCopyNBT": "Kopiera NBT",
+    "increaseDungeonMapZoom": "Dungeon Map Zoom In",
+    "decreaseDungeonMapZoom": "Dungeon Map Zoom Out"
+  },
+  "dragonTracker": {
+    "protector": "Protector",
+    "old": "Old",
+    "wise": "Wise",
+    "unstable": "Unstable",
+    "young": "Young",
+    "strong": "Strong",
+    "superior": "Superior",
+    "recentDragons": "Senaste drakarna:",
+    "dragonsSince": "Dragons Since:",
+    "aspectOfTheDragons": "AOTD",
+    "enderDragonPet": "Dragon Pet",
+    "eyesPlaced": "Placerade ögon",
+    "never": "Aldrig"
+  },
+  "slayerTracker": {
+    "revenant": "Revenant Horror:",
+    "tarantula": "Tarantula Broodfather:",
+    "sven": "Sven Packmaster:",
+    "voidgloom": "Voidgloom Seraph:",
+    "bossesKilled": "Dödade bossar"
+  },
+  "warpMenu": {
+    "click": "Klicka på en punkt för att teleporteras dit!",
+    "mustUnlock": "Must have the specific scroll unlocked.",
+    "privateIsland": "Privat ö",
+    "home": "Din ö",
+    "spawn": "Startområdet",
+    "unknown": "Har inte besökts",
+    "notUnlocked": "Inte upplåst",
+    "inCombat": "I strid..."
+  },
+  "enchants": {
+    "superTier": "Maximal nivå",
+    "highTier": "Hög nivå",
+    "midTier": "Medelhög nivå",
+    "lowTier": "Låg nivå",
+    "commas": "Kommatecken",
+    "expertiseKills": "Expertise-dödanden",
+    "compactedBlocks": "Kompakterade block",
+    "cultivatedCrops": "Planterade grödor",
+    "hecatombsSRuns": "Hecatombs S Runs",
+    "championCombatXp": "Champion Combat XP",
+    "maxed": "Maxad"
+  }
+}

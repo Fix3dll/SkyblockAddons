@@ -1,0 +1,698 @@
+{
+  "languageText": "Language: ",
+  "language": "LOLCAT",
+  "settings": {
+    "settings": "Settings",
+    "magmaBossWarning": "Magma Boss Warnin",
+    "balBossWarning": "Bal Bos Warnin",
+    "broodMotherWarning": "Brood Mommy Warnin",
+    "itemDropConfirmation": "Itm drop comfirmashun",
+    "hideSkeletonHatBones": "Hide Skeletons Helmet Bonez",
+    "skeletonHatBonesBar": "Skeletons Helmet Bonez Bar",
+    "hideFoodAndArmor": "Hide Fud an Armor Bar",
+    "fullInventoryWarning": "Full Inventory Warnin",
+    "repeating": "Repeet Warnin",
+    "disableEmberRodAbility": "Disable Island Embr Rod",
+    "editLocations": "Edit GUI Locashuns",
+    "guiScale": "Gui Scale: %scale%",
+    "resetLocations": "Reset Locashuns",
+    "minionStopWarning": "\"Minion Cant Reach\" Warnin",
+    "hidePlayersNearNPCs": "Hide Players Near Important NPCs",
+    "backpackStyle": "Backpack style: %style%",
+    "backpackStyles": {
+      "regular": "Regular",
+      "compact": "Compact"
+    },
+    "showBackpackPreview": "Show Backpack Preview",
+    "hideHealthBar": "Hide Vanilla Health Bar",
+    "fullMinionWarning": "Full Minion Warnin",
+    "showOnlyWhenHoldingShift": "Show Only When Holdin Shift",
+    "manaBar": "Mana Bar",
+    "manaNumber": "Mana Numbr",
+    "healthBar": "Health Bar",
+    "healthNumber": "Health Numbr",
+    "defenseIcon": "Defence Symbol",
+    "defenseNumber": "Defence Numbr",
+    "defensePercentage": "Defence Persentage",
+    "healthUpdates": "Health Change Numbr",
+    "hidePlayersInLobby": "Hide Far Entitiez in Lobby",
+    "darkAuctionTimer": "Dark Aucshun Tiemr",
+    "magmaBossTimer": "Magma Bos Tiemr",
+    "itemPickupLog": "Item Pickup Log",
+    "avoidPlacingEnchantedItems": "Avoid Placin Enchantd Items",
+    "stopBowChargeFromResetting": "Stop Bow Charge Frum Resettin",
+    "preventMovementOnDeath": "Prevent Walkin Aftr Death",
+    "showItemAnvilUses": "Show Item Anvil Usez",
+    "lockSlots": "Allow Lockin Slotz",
+    "lockSlot": "Lock Slot",
+    "dontResetCursorInventory": "Doan Reset Cursor Tween Inventoriez",
+    "summoningEyeAlert": "Summonin Eye Alert",
+    "makeEnderchestsInEndGreen": "Change Enderchest Color in Da End",
+    "changeColor": "Change Color",
+    "showInOtherGames": "Show in Othr Gamez",
+    "useVanillaTexture": "Use the Vanilla Texchur",
+    "textStyle": "Text Style",
+    "textStyles": {
+      "one": "Style Wan",
+      "two": "Style 2"
+    },
+    "warningDuration": "Warnin Durashun",
+    "dontOpenProfileWithBow": "Doan Open Profile Wif Bow",
+    "stopDroppingSellingRareItems": "Stop Droppin/Sellin Rare Items",
+    "makeBackpackInventoriesColored": "Color Inventoriez",
+    "replaceRomanNumeralsWithNumbers": "Replace Roman Numerals on Items",
+    "changeBarColorForPotions": "Change Bar Color 4 Withr An Poison",
+    "craftingPatterns": "Choose Craftin Patterns",
+    "soundIndicatorForFishing": "Sound Indicator 4 Fishin",
+    "avoidBlinkingNightVision": "Disable Nite Vishun Poschun Blinkin",
+    "disableMinionLocationWarning": "Disable Locashun Not Perfik Warnin",
+    "showItemCooldowns": "Show Item Cooldowns",
+    "speedPercentage": "Sped Persentage",
+    "collectionDisplay": "Skill Progres Display",
+    "revenantIndicator": "Slayr Armor Progres Indicatr",
+    "specialZealotAlert": "Speshul Zealot Alert",
+    "enableMessageWhenActionPrevented": "Show Mesage When an Acshun Iz Preventd",
+    "hidePetHealthBar": "Hide Pet Health Bar",
+    "powerOrbDisplay": "Powr Orb Display",
+    "powerOrbDisplayStyle": "Powr Orb Style: %style%",
+    "powerOrbStyle": {
+      "detailed": "Detaild",
+      "compact": "Compact"
+    },
+    "disableMagicalSoupMessage": "Disable Magical Mushroom Soup Mesagez",
+    "zealotCounter": "Zealot Countr - Count Since Last Eye",
+    "tickerChargesDisplay": "Ticker/Chargez Display",
+    "tab": {
+      "generalSettings": "General Settings"
+    },
+    "tabEffectTimers": "Poshun an Powerup Tiemrs",
+    "noArrowsLeftAlert": "No Arrows Left Alert",
+    "showCakeBagPreview": "Show Preview 4 Caek Bags",
+    "showBackpackPreviewInAH": "Show Bakpack Preview 4 Ur Items While AH iz Open",
+    "enableDevFeatures": "Enable Developr Features",
+    "chromaSpeed": "Chroma Sped",
+    "chromaMode": "Chroma Color Mode",
+    "chromaModes": {
+      "allTheSame": "All Teh Same Color",
+      "fade": "Color Fade"
+    },
+    "chromaFadeWidth": "Chroma Fade Width",
+    "showBrokenFragments": "Show Brokd Dragon Fragments",
+    "skyblockAddonsButtonInPauseMenu": "Show SBA Butn in Pause Menu",
+    "showTotalZealotCount": "Zealot Countr - Total Zealot Count",
+    "showSummoningEyeCount": "Zealot Countr - Total Eye Count",
+    "showZealotsPerEye": "Zealot Countr - Show Zealots Per Eye",
+    "turnBowGreenWhenUsingToxicArrowPoison": "Color Bow Green When Usin Toxic Arrow Poison",
+    "birchParkRainmakerTimer": "Birch Park Rainmakr Tiemr",
+    "combatTimerDisplay": "Combat Tiemr Display",
+    "discordRP": "Discord Rich Presence",
+    "endstoneProtectorDisplay": "Endstone Protector Display",
+    "fancyWarpMenu": "Fancy Warp Menu",
+    "stopRatSounds": "Stop Rat Pet Soundz",
+    "onlyStopRatSqueak": "Only Stop teh Rat Squeak Sound",
+    "doubleWarp": "Warp Twice",
+    "advancedMode": "Advanced Mode",
+    "legendarySeaCreatureWarning": "Legendary Sea Creachur Warnin",
+    "bossApproachAlert": "Slayr Bos Approach Alert",
+    "disableTeleportPadMessages": "Disable Teleport Pad Mesagez",
+    "baitListDisplay": "Show Bait List While Holdin Rod",
+    "freezeBackpackPreview": "Freeze Bakpack Preview",
+    "hideGreyEnchants": "Hide Regular Grey Enchants",
+    "zealotCounterExplosiveBow": "Zealot Countr Explosiv Bow Support",
+    "disableEndermanTeleportation": "Disable Enderman Teleportashun",
+    "changeZealotColor": "Change Zealot Color",
+    "hideSvenPupNametags": "Hide Sven Pups Nametags",
+    "turnAllFeaturesChroma": "Turn All Featurez Chroma",
+    "dungeonMapDisplay": "Dungeon Map Display",
+    "rotateMap": "Rotate Map Wif Ur Players Rotashun",
+    "centerRotationOnYourPlayer": "Rotate Around Ur Players Markr",
+    "showFetchurOnlyInDwarven": "Only show Fetchur in da Dwarven Minez",
+    "showFetchurItemName": "Show Fetchurs item naym",
+    "showFetchurInventoryOpenOnly": "Only Show Fetchurs item when teh Inventory iz Open",
+    "warnWhenFetchurChanges": "Warn me when Fetchur changez",
+    "mapZoom": "Map Zoom",
+    "glowingDroppedItems": "Glowin Droppd Items",
+    "outlineDungeonTeammates": "Outline Dungeon Teammatez",
+    "baseStatBoostPercentage": "Show Base Stat Boost 4 Dungeon Items",
+    "colorByRarity": "Color by Rarity",
+    "showPlayerHeadsOnMap": "Show Playr Headz on Dungeon Map",
+    "showHealingCircleWall": "Show Dungeon Healin Circle Wall",
+    "showCriticalTeammates": "Show Critical Dungeon Teammatez",
+    "showGlowingItemsOnIsland": "Show Glowin Items On Island",
+    "showItemDungeonFloor": "Show Floor Obtaind on Dungeon Items",
+    "showDungeonMilestone": "Show Dungeon Milestone",
+    "dungeonsCollectedEssencesDisplay": "Dungeons Collectd Essencez Display",
+    "stopBonzoStaffSounds": "Stop Bonzos Staff Soundz",
+    "showRarityUpgraded": "Show if Items Rarity has been Upgradd",
+    "revenantSlayerTracker": "Slayr Trackr - Revenant/Zombie",
+    "tarantulaSlayerTracker": "Slayr Trackr - Tarantula/Spidr",
+    "svenSlayerTracker": "Slayr Trackr - Sven/Wolf",
+    "voidgloomSlayerTracker": "Slayr Trackr - Voidgloom/Enderman",
+    "textMode": "Text mode",
+    "dragonsNestOnly": "Only Show in da Dragons Nest",
+    "dragonStatsTracker": "Dragon Trackr",
+    "skillActionsLeftUntilNextLevel": "Show Acshuns Left Til Next Level",
+    "dungeonDeathCounter": "Dungeon Death Countr",
+    "showPersonalCompactorPreview": "Show Personal Compactor Preview",
+    "rockPetTracker": "Rawk Pet Trackr",
+    "dolphinPetTracker": "Dolfin Pet Trackr",
+    "dungeonsTeammateNameOverlay": "Dungeons Teammate Naym Overlay",
+    "dungeonsSecretsDisplay": "Dungeons Secrets Display",
+    "showSkillPercentageInstead": "Show Persentage Instead ov XP",
+    "showSkillXPGained": "Show XP Gaind",
+    "skillProgressBar": "Skill Progres Bar",
+    "showSalvageEssencesCounter": "Show Salvage Essencez Countr",
+    "disableMortMessages": "Disable Mort Mesagez",
+    "disableBossMessages": "Disable Bos Mesagez",
+    "hideOtherPlayersPresents": "Hide Othr Players Prezints",
+    "showSwordKills": "Show Sword Kills",
+    "compactTabList": "Compact Tab List",
+    "highlightSpecialEnchantments": "Highlight Speshul Enchantments",
+    "disableDamageChatMessages": "Disable Damage Chat Mesagez",
+    "showSpiritSceptreDisplay": "Spirit Sceptre/Withr Blade Damage Display",
+    "outbidAlertSound": "Outbid Alert Sound",
+    "hideMenuGlassPanes": "Hide Menu Glas Pane Tooltips",
+    "candyPointsCounter": "Spooky Event Candy/Points Countr",
+    "healingCircleOpacity": "Healin Circle Opacity",
+    "chromaSize": "Chroma Size",
+    "chromaSaturation": "Chroma Saturashun",
+    "chromaBrightness": "Chroma Brightnes",
+    "useNewChromaEffect": "Use New Chroma Effect",
+    "showExperimentationTableTooltips": "Show Experimentashun Table Tooltips",
+    "drillFuelBar": "Drill Fuel Bar",
+    "drillFuelNumber": "Drill Fuel Numbr",
+    "fetchurToday": "Show Wut Fetchur Wants Todai",
+    "fishingParticleOverlay": "Fishin Particle Overlay",
+    "enchantmentLoreParsing": "Parse Enchant Tooltips",
+    "cooldownPrediction": "Predict an Shorten Cooldown",
+    "legendaryMonkeyLevel100": "[TEMP] Level 100 Legendary Monkey",
+    "biggerWake": "Enlarge Overlay Particlez",
+    "stackingEnchantProgress": "Show Stackin Enchant Progres",
+    "showReforgeOverlay": "Show Reforge Overlay",
+    "reforgeFilter": "Reforge Filtr",
+    "hideEnchantDescription": "Hide Enchant Descripshun",
+    "trevorTheTrapper": {
+      "title": "Trevor da Trappr Featurez",
+      "trackedEntityProximityIndicator": "Show Trackd Entity Proximity Indicator",
+      "highlightTrackedEntity": "Highlight Trackd Entity",
+      "showQuestCooldown": "Show Trevors Quest Cooldown",
+      "showQuestCooldownDescription": "Dis will be displayd aboov Trevors head"
+    },
+    "showEnderChestPreview": "Show Endr Chest Preview",
+    "hideWhenNotDoingQuest": "Hide When Not Doin Quest",
+    "showOverflowManaNumber": "Overflow Mana Numbr",
+    "axeCooldownIndicator": "Axe Cooldown Indicator",
+    "vanillaHealthPrediction": "Use Vanilla Health Predicshun",
+    "entityOutlines": "Show Entity Outlinez",
+    "effectiveHealthNumber": "Effectiv Health Numbr",
+    "guiScaleX": "GUI X Scale: %scale%",
+    "guiScaleY": "GUI Y Scale: %scale%",
+    "abbreviateSkillXpDenominator": "Abbreviate Skill XP Denominator",
+    "otherDefenseStats": "Othr Defense Stats (Soul Tethr/Cell Alignment)",
+    "hideSpawnPointPlayers": "Hide Playerz at Hub Spawn Point",
+    "jacobsContestTimer": "Jacoobs Contest Tiemr",
+    "dontReplaceRomanNumeralsInItemNames": "Doan Replace in Item Namez",
+    "backpackOpeningSound": "Leather Backpack Opening Sound",
+    "devMode": "Developer Mode",
+    "showSkyblockItemId": "Show Skyblock Item ID on Hover",
+    "showFeatureNamesOnHover": "Show Feature Names on Hover",
+    "resetSalvagedEssencesAfterLeavingMenu": "Reset Salvaged Essence Counter After Closing Menu",
+    "changeDungeonMapZoomWithKeyboard": "Adjust zoom with +/- keys",
+    "showPlayerSymbolsInChat": "Show Player Symbols In Chat",
+    "crimsonArmorAbilityStacks": "Show Crimson Armor Stacks",
+    "hideTrueDefense": "Hide True Defense",
+    "showProfileType": "Show Profile Type",
+    "showNetherFaction": "Show Nether Faction",
+    "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas"
+  },
+  "messages": {
+    "enchants": "Enchants",
+    "reforges": "Reforgez",
+    "dropConfirmation": "Drop dis item again 2 confirm!",
+    "magmaBossWarning": "Magma Cube Bos!",
+    "balBossWarning": "Bal Boss!",
+    "broodMotherWarning": "Brood Mother!",
+    "fullInventory": "Full Inventory!",
+    "labymod": "Labymod Users: Hide Fud, Armor, an Health Bar, iz incompatible.",
+    "minionCannotReach": "A %type% minion cant reach an has stoppd spawnin!",
+    "minionIsFull": "A minion on ur island iz full!",
+    "typeEnchantmentsHere": "Type %type% Her!",
+    "separateMultiple": "Separate Multiple Wif Commas.",
+    "enchantsToMatch": "%type% 2 Match:",
+    "enchantsToExclude": "%type% 2 Exclude:",
+    "updateChecker": {
+      "wantToViewPatchNotes": "Ned support or wants 2 read teh full changelog?",
+      "joinDiscord": "Join r Discord servr!",
+      "watchShowcase": "Watch Video",
+      "downloadButton": "Download",
+      "openModFolderButton": "Open Modz Foldr",
+      "joinDiscordButton": "Join Discord",
+      "newUpdateAvailable": "A new update (%version%) iz available!",
+      "noDownloadAvailable": "No download link available, plz check r Discord servr.",
+      "notificationBox": {
+        "majorAvailable": "A new major update (%version%) iz available! Teh link 4 da download can be findz in chat.",
+        "betaAvailable": "A new beta update (%version%) iz available! Look in chat 4 da download link.",
+        "patchAvailable": "A new patch update (%version%) iz available! Look in chat 4 download opshuns!"
+      }
+    },
+    "slotLocked": "Dis slot iz lockd!",
+    "summoningEyeFound": "Summonin Eye!",
+    "cancelledDropping": "A feachur has stoppd u frum droppin dis \"rare\" item or tool frum ur hotbar.",
+    "clickMoreTimes": "Click/drop dis item %times% moar tiems if u rly wants 2 do dis.",
+    "clickOneMoreTime": "Click/drop dis item 1 moar tiem if u rly wants 2 do dis.",
+    "featureDisabled": "Feachur Disabld",
+    "anvilUses": "Anvil Usez: %uses%",
+    "specialZealotFound": "Speshul Zealot!",
+    "blockIncompletePatterns": "Block craftin incomplete patterns (recommendd)",
+    "searchFeatures": "Search featurez",
+    "downloadingUpdateFile": "Downloadin update file...",
+    "onlyFewArrowsLeft": "Only %arrows% arrows left!",
+    "noArrowsLeft": "No Arrows Left!",
+    "chooseAColor": "Choose Color",
+    "selectedColor": "Selectd Colr",
+    "setHexColor": "Set Hex Color",
+    "rescaleFeatures": "Rescale Featurez",
+    "resizeBars": "Resize Bars",
+    "showColorIcons": "Show Color Icons",
+    "enableFeatureSnapping": "Enable Feachur Snappin",
+    "stage": "Stage %stage%",
+    "switchedSlots": "U has jus switchd frum lockd slot or rare item. Plz wait bit before droppin!",
+    "clickToOpenLink": "Click 2 open dis link!",
+    "clickToOpenFolder": "Click 2 open ur modz foldr!",
+    "firstStatus": "Dis status will appear at teh top",
+    "secondStatus": "Dis status will appear undr ur furst status",
+    "fallbackStatus": "Dis status will appear when ur automatic status has nothin 2 show",
+    "legendarySeaCreatureWarning": "Legendary Katch!",
+    "bossApproaching": "U r close 2 spawnin bos!",
+    "fetchurItem": "Fetchur: %item%",
+    "fetchurWarning": "Fetchur changd!",
+    "enableAll": "Enable All",
+    "disableAll": "Disable All",
+    "enchantmentInclusionExample": "e.g. \"prot, feather\"",
+    "enchantmentExclusionExample": "e.g. \"proj, blast\"",
+    "reforgeInclusionExample": "e.g. \"godly, strong\"",
+    "reforgeExclusionExample": "e.g. \"odd, clean\"",
+    "actionsLeft": "%number% Left",
+    "effectActive": "1 Effect Activ",
+    "effectsActive": "%number% Effects Activ",
+    "none": "None",
+    "copyModeSet": "Teh developr copy mode haz been set 2: %mode%. Pres \"%keyName%\" 2 triggr data copy!",
+    "chroma": "Chroma",
+    "worldRenderedCooldownTime": "Cooldown: %time%s",
+    "entityOutlinesRequirement": "Requirez Shaders, Fast Rendr, an Antialiasin 2 be OFF",
+    "version": "Vershun",
+    "invalidFeatureConfiguration": "Invalid configurashun detectd 4 feachur %featureName%, resettin itz settings 2 default valuez.",
+    "fileFetchFailed": "%modName% has failed to fetch %number% file(s). Please copy the error using the button below and report it in our Discord server.",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "discordStatus": {
+    "titleNone": "None",
+    "descriptionNone": "Nu txt iz displayd",
+    "titleLocation": "Locashun",
+    "descriptionLocation": "Shows ur current locashun",
+    "titlePurse": "Purse",
+    "descriptionPurse": "Shows teh amount ov coins in ur purse",
+    "titleBits": "Bits",
+    "descriptionBits": "Shows teh amount ov bits u has",
+    "titleStats": "Stats",
+    "descriptionStats": "Shows ur HP, Defense an Mana stats",
+    "titleZealots": "Zealots",
+    "descriptionZealots": "Shows ur Zealot countr",
+    "titleItem": "Held Item",
+    "descriptionItem": "Shows teh naym ov teh item ure holdin",
+    "titleProfile": "Profile",
+    "descriptionProfile": "Shows ur Profile naym",
+    "titleTime": "Skyblock Tiem",
+    "descriptionTime": "Shows teh current Skyblock tiem. E.g. 12:00am 1st Early Wintr",
+    "titleCustom": "Custom Status",
+    "descriptionCustom": "Entr custom status",
+    "titleAuto": "Auto Status",
+    "descriptionAuto": "Automatically displays status. E.g. ur zealot count while in Da End.",
+    "titleRevenants": "Revenant Quest",
+    "descriptionRevenants": "Shows dat u r doin Revenant quest.",
+    "titleSvens": "Sven Quest",
+    "descriptionSvens": "Shows dat u r doin Sven quest.",
+    "titleTarantula": "Tarantula Quest",
+    "descriptionTarantula": "Shows dat u r doin Tarantula quest.",
+    "titleVoidgloom": "Voidgloom Quest",
+    "descriptionVoidgloom": "Shows that you are doing a Voidgloom quest.",
+    "titleInferno": "Inferno Quest",
+    "descriptionInferno": "Shows that you are doing an Inferno quest."
+  },
+  "enchantLayout": {
+    "title": "Control how enchants r displayd on item tooltips",
+    "titleCompress": "Compres",
+    "descriptionCompress": "Compresez enchants into as few linez as posible",
+    "titleNormal": "Normal",
+    "descriptionNormal": "Displays enchants liek Hypixel doez",
+    "titleExpand": "Expand",
+    "descriptionExpand": "Lists each enchant on itz own line"
+  },
+  "commands": {
+    "usage": {
+      "sba": {
+        "base": {
+          "help": "Opens the main menu"
+        },
+        "brand": {
+          "help": "Shows the server brand"
+        },
+        "copyBlock": {
+          "help": "Copiez data bout teh block dat u r lookin at"
+        },
+        "copyEntity": {
+          "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+          "detailedHelp": {
+            "description": "Copiez teh NBT data ov entitiez. The typez ov entitiez includd an teh radiuz around teh playr 2 copy data frum can be customizd. If no opshuns r given, teh default settings r usd. Teh default settingz r: include players, armor standz, and mobs, an radius of 3 blockz. If teh radius isnt given, teh default radius iz usd.",
+            "options": {
+              "entityNames": "Namez ov teh typez ov entitiez u wants 2 copy data 4 (e.g. Playr,Creepr). Pres \"Tab\" aftr typin teh command 4 full list. Separate multiple namez wif commas, namez r case-sensitiv.",
+              "radius": "Teh radius (in blockz) around teh playr 2 copy entity NBT data frum"
+            }
+          }
+        },
+        "copySidebar": {
+          "help": "Copies the scoreboard text",
+          "detailedHelp": {
+            "description": "Copiez teh text displayd in da scorebordz sidebar display slot",
+            "options": {
+              "formatted": "Determinez if teh formattin codez shud be includd when copyin. Can be eithr \"true\" or \"false\", defaults 2 \"false\" if no valu iz providd. Formattin codez are copid if \"true\"."
+            }
+          }
+        },
+        "copyTabList": {
+          "help": "Copies the tab list header and footer",
+          "detailedHelp": {
+            "description": "Dis command copiez teh headr an footr ov teh tab playr list. Formattin codez r includd."
+          }
+        },
+        "dev": {
+          "help": "Toggles the developer mode",
+          "detailedHelp": {
+            "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+          },
+          "prefix": "Dev"
+        },
+        "edit": {
+          "help": "Edits GUI locations"
+        },
+        "folder": {
+          "help": "Opens your mods folder"
+        },
+        "help": {
+          "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+          "detailedHelp": {
+            "options": {
+              "command": "The sub-command to get detailed usage for"
+            }
+          }
+        },
+        "printDeaths": {
+          "help": "Prints teh counts stord in da dungeon death counters 4 debuggin purposez."
+        },
+        "reload": {
+          "help": "Reloadz all ov teh modz settings an resourcez. Teh game will freeze 4 few secondz."
+        },
+        "reloadConfig": {
+          "help": "Reloadz teh modz settingz"
+        },
+        "reloadRes": {
+          "help": "Reloadz teh resourcez. Teh game will freeze 4 few secondz."
+        },
+        "resetZealotCounter": {
+          "help": "Resets all teh zealot countr counts."
+        },
+        "set": {
+          "zealotCounter": {
+            "help": "Manually sets your zealot counts",
+            "detailedHelp": {
+              "description": "Manually sets counts in da zealot countr.",
+              "options": {
+                "eyes": "Lifetime summonin eyez obtaind",
+                "totalZealots": "Lifetime zealots killd",
+                "zealots": "Zealots killd since teh last summonin eye drop"
+              }
+            }
+          }
+        },
+        "slayer": {
+          "help": "Manually sets slayer stats, press tab for arguments",
+          "detailedHelp": {
+            "description": "Manually sets slayer stats, press tab for arguments",
+            "options": {
+              "boss": "Slayr bos: \"Zombie\", \"Spider\", or \"Wolf\"",
+              "number": "Numbr 2 set teh stat 2",
+              "stat": "Slayr stat 2 change, can be \"kills\" or teh naym ov droppd item formattd liek dis: \"REVENANT_FLESH\""
+            }
+          }
+        },
+        "toggleActionBarLogging": {
+          "help": "Toggles logging action bar messages"
+        },
+        "toggleMagmaTimerLogging": {
+          "help": "Toggles logging magma boss timer debug messages"
+        },
+        "version": {
+          "help": "Shows teh modz vershun"
+        }
+      }
+    },
+    "responses": {
+      "sba": {
+        "brand": {
+          "brandOutput": "Servr Brand: %brand%",
+          "notFound": "Servr brand not findz!"
+        },
+        "dev": {
+          "disabled": "Developr mode disabld!",
+          "enabled": "Developr mode enabld! TIP: Pres \"%keyName%\" 2 copy NBT data!"
+        },
+        "folder": {
+          "error": "An error occurred while trying to open the mods folder: %s"
+        },
+        "resetZealotCounter": {
+          "resetSuccess": "Zealot counters reset!"
+        },
+        "set": {
+          "zealotCounter": {
+            "eyesSet": "Set total summonin eye count 2 %number%!",
+            "totalZealotsSet": "Set total zealot count 2 %number%!",
+            "wrongUsage": "Invalid selecshun! Plz choose %options%.",
+            "zealotsSet": "Set current zealot count 2 %number%!"
+          }
+        },
+        "slayer": {
+          "bossRequired": "U ned 2 select bos! Plz choose %bosses%",
+          "statRequired": "U ned 2 select stat. Pres tab 4 opshuns.",
+          "numberRequired": "U ned 2 add teh numbr u wants.",
+          "killsSet": "Kills 4 slayr %boss% wuz set 2 %number%.",
+          "statSet": "Statistic %stat% 4 slayr %boss% wuz set 2 %number%.",
+          "invalidBoss": "\"%input%\" iz not valid statistic!",
+          "invalidStat": "\"%input%\" iz not valid bos!"
+        },
+        "toggleActionBarLogging": {
+          "disabled": "Acshun bar mesagez will no longr be loggd.",
+          "enabled": "Acshun bar mesagez will nao be loggd."
+        },
+        "toggleMagmaTimerLogging": {
+          "disabled": "Magma bos tiemr mesagez will no longr be loggd.",
+          "enabled": "Magma bos tiemr mesagez will nao be loggd."
+        },
+        "version": {
+          "hoverText": "Click 2 put in chat so u can copy."
+        }
+      }
+    },
+    "errors": {
+      "wrongUsage": {
+        "generic": "Wrong usage!",
+        "subCommandNotFound": "Teh sub-command \"%sub-command%\" wuz nut findz."
+      }
+    }
+  },
+  "commandUsage": {
+    "sba": {
+      "base": {
+        "help": "Opens the main menu"
+      },
+      "brand": {
+        "help": "Shows the server brand",
+        "brandOutput": "Servr Brand: %brand%",
+        "notFound": "Servr brand not findz!"
+      },
+      "copyBlock": {
+        "help": "Copiez data bout teh block dat u r lookin at"
+      },
+      "copyEntity": {
+        "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+        "detailedHelp": {
+          "description": "Copiez teh NBT data ov entitiez. The typez ov entitiez includd an teh radiuz around teh playr 2 copy data frum can be customizd. If no opshuns r given, teh default settings r usd. Teh default settingz r: include players, armor standz, and mobs, an radius of 3 blockz. If teh radius isnt given, teh default radius iz usd.",
+          "options": {
+            "entityNames": "Namez ov teh typez ov entitiez u wants 2 copy data 4 (e.g. Playr,Creepr). Pres \"Tab\" aftr typin teh command 4 full list. Separate multiple namez wif commas, namez r case-sensitiv.",
+            "radius": "Teh radius (in blockz) around teh playr 2 copy entity NBT data frum"
+          }
+        }
+      },
+      "copySidebar": {
+        "help": "Copies the scoreboard text",
+        "detailedHelp": {
+          "description": "Copiez teh text displayd in da scorebordz sidebar display slot",
+          "options": {
+            "formatted": "Determinez if teh formattin codez shud be includd when copyin. Can be eithr \"true\" or \"false\", defaults 2 \"false\" if no valu iz providd. Formattin codez are copid if \"true\"."
+          }
+        }
+      },
+      "copyTabList": {
+        "help": "Copies the tab list header and footer",
+        "detailedHelp": {
+          "description": "Dis command copiez teh headr an footr ov teh tab playr list. Formattin codez r includd."
+        }
+      },
+      "dev": {
+        "help": "Toggles the developer mode",
+        "detailedHelp": {
+          "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+        },
+        "disabled": "Developr mode disabld!",
+        "enabled": "Developr mode enabld! TIP: Pres \"%keyName%\" 2 copy NBT data!",
+        "prefix": "Dev"
+      },
+      "edit": {
+        "help": "Edits GUI locations"
+      },
+      "folder": {
+        "help": "Opens your mods folder",
+        "error": "An error occurred while trying to open the mods folder: %s"
+      },
+      "help": {
+        "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+        "detailedHelp": {
+          "options": {
+            "command": "The sub-command to get detailed usage for"
+          }
+        }
+      },
+      "printDeaths": {
+        "help": "Prints teh counts stord in da dungeon death counters 4 debuggin purposez."
+      },
+      "reload": {
+        "help": "Reloadz all ov teh modz settings an resourcez. Teh game will freeze 4 few secondz."
+      },
+      "reloadConfig": {
+        "help": "Reloadz teh modz settingz"
+      },
+      "reloadRes": {
+        "help": "Reloadz teh resourcez. Teh game will freeze 4 few secondz."
+      },
+      "resetZealotCounter": {
+        "help": "Resets all teh zealot countr counts.",
+        "resetSuccess": "Zealot counters reset!"
+      },
+      "set": {
+        "zealotCounter": {
+          "help": "Manually sets your zealot counts",
+          "detailedHelp": {
+            "description": "Manually sets counts in da zealot countr.",
+            "options": {
+              "eyes": "Lifetime summonin eyez obtaind",
+              "totalZealots": "Lifetime zealots killd",
+              "zealots": "Zealots killd since teh last summonin eye drop"
+            }
+          },
+          "eyesSet": "Set total summonin eye count 2 %number%!",
+          "totalZealotsSet": "Set total zealot count 2 %number%!",
+          "wrongUsage": "Invalid selecshun! Plz choose %options%.",
+          "zealotsSet": "Set current zealot count 2 %number%!"
+        }
+      },
+      "slayer": {
+        "help": "Manually sets slayer stats, press tab for arguments",
+        "detailedHelp": {
+          "description": "Manually sets slayer stats, press tab for arguments",
+          "options": {
+            "boss": "Slayr bos: \"Zombie\", \"Spider\", or \"Wolf\"",
+            "number": "Numbr 2 set teh stat 2",
+            "stat": "Slayr stat 2 change, can be \"kills\" or teh naym ov droppd item formattd liek dis: \"REVENANT_FLESH\""
+          }
+        },
+        "bossRequired": "U ned 2 select bos! Plz choose %bosses%",
+        "statRequired": "U ned 2 select stat. Pres tab 4 opshuns.",
+        "numberRequired": "U ned 2 add teh numbr u wants.",
+        "killsSet": "Kills 4 slayr %boss% wuz set 2 %number%.",
+        "statSet": "Statistic %stat% 4 slayr %boss% wuz set 2 %number%.",
+        "invalidBoss": "\"%input%\" iz not valid statistic!",
+        "invalidStat": "\"%input%\" iz not valid bos!"
+      },
+      "toggleActionBarLogging": {
+        "help": "Toggles logging action bar messages",
+        "disabled": "Acshun bar mesagez will no longr be loggd.",
+        "enabled": "Acshun bar mesagez will nao be loggd."
+      },
+      "toggleMagmaTimerLogging": {
+        "help": "Toggles logging magma boss timer debug messages",
+        "disabled": "Magma bos tiemr mesagez will no longr be loggd.",
+        "enabled": "Magma bos tiemr mesagez will nao be loggd."
+      },
+      "version": {
+        "help": "Shows teh modz vershun",
+        "hoverText": "Click 2 put in chat so u can copy."
+      },
+      "errors": {
+        "wrongUsage": {
+          "generic": "Wrong usage!",
+          "subCommandNotFound": "Teh sub-command \"%sub-command%\" wuz nut findz."
+        }
+      }
+    }
+  },
+  "keyBindings": {
+    "developerCopyNBT": "Copy NBT",
+    "increaseDungeonMapZoom": "Dungeon Map Zoom In",
+    "decreaseDungeonMapZoom": "Dungeon Map Zoom Out"
+  },
+  "dragonTracker": {
+    "protector": "Protector",
+    "old": "Old",
+    "wise": "Wize",
+    "unstable": "Unstable",
+    "young": "Young",
+    "strong": "Strong",
+    "superior": "Superior",
+    "recentDragons": "Resent Dragons:",
+    "dragonsSince": "Dragons Since:",
+    "aspectOfTheDragons": "AOTD",
+    "enderDragonPet": "Dragon Pet",
+    "eyesPlaced": "Eyez Placd",
+    "never": "Nevr"
+  },
+  "slayerTracker": {
+    "revenant": "Revenant Horror:",
+    "tarantula": "Tarantula Broodfathr:",
+    "sven": "Sven Packmastr:",
+    "voidgloom": "Voidgloom Seraph:",
+    "bossesKilled": "Bosez Killd"
+  },
+  "warpMenu": {
+    "click": "Click warp point 2 travel thar!",
+    "mustUnlock": "Must has teh specific scroll unlockd.",
+    "privateIsland": "Private Island",
+    "home": "Ur Island",
+    "spawn": "Spawn",
+    "unknown": "Havent Visietd",
+    "notUnlocked": "Not Unlockd",
+    "inCombat": "In Combat..."
+  },
+  "enchants": {
+    "superTier": "Max Tir",
+    "highTier": "High Tir",
+    "midTier": "Mid Tir",
+    "lowTier": "Low Tir",
+    "commas": "Commas",
+    "expertiseKills": "Expertize Kills",
+    "compactedBlocks": "Compactd Blockz",
+    "cultivatedCrops": "Cultivatd Crops",
+    "hecatombsSRuns": "Hecatombs S Runs",
+    "championCombatXp": "Champion Combat XP",
+    "maxed": "Maxd"
+  }
+}

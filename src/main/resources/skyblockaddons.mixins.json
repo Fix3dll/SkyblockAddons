@@ -1,0 +1,45 @@
+{
+  "required": true,
+  "package": "com.fix3dll.skyblockaddons.mixin.transformers",
+  "refmap": "mixins.skyblockaddons.refmap.json",
+  "plugin": "com.fix3dll.skyblockaddons.mixin.SkyblockAddonsMixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "AbstractContainerScreenMixin",
+    "ChatComponentMixin",
+    "ChatScreenMixin",
+    "ChestSpecialRendererMixin",
+    "ClientLevelMixin",
+    "ContainerScreenMixin",
+    "DisconnectedScreenMixin",
+    "EndermanRendererMixin",
+    "EntityRendererMixin",
+    "FontStringRendererOutputMixin",
+    "GameOptionsMixin",
+    "GlyphRenderTypesMixin",
+    "GuiMessageLineMixin",
+    "GuiMixin",
+    "KeyBindsListMixin",
+    "LevelRendererMixin",
+    "LivingEntityRendererMixin",
+    "LocalPlayerMixin",
+    "MinecraftMixin",
+    "MouseHandlerMixin",
+    "MultiPlayerGameModeMixin",
+    "ParticleEngineMixin",
+    "PlayerRendererMixin",
+    "SoundEngineMixin"
+  ],
+  "mixins": [
+    "ConnectionMixin",
+    "InventoryMixin",
+    "ItemMixin",
+    "LivingEntityMixin",
+    "PauseScreenMixin",
+    "SimpleContainerMixin",
+    "StringDecomposerMixin"
+  ]
+}

@@ -1,0 +1,304 @@
+{
+  "dynamic": {
+    "map": "Private Island"
+  },
+  "hub": {
+    "map": "Hub",
+    "zones": [
+      "Archery Range",
+      "Auction House",
+      "Bank",
+      "Bazaar Alley",
+      "Blacksmith",
+      "Builder's House",
+      "Canvas Room",
+      "Coal Mine",
+      "Colosseum",
+      "Community Center",
+      "Election Room",
+      "Farm",
+      "Farmhouse",
+      "Fashion Shop",
+      "Fisherman's Hut",
+      "Flower House",
+      "Forest",
+      "Graveyard",
+      "Catacombs Entrance",
+      "Hexatorum",
+      "Unincorporated",
+      "Library",
+      "Mountain",
+      "Museum",
+      "Pet Care",
+      "Ruins",
+      "Tavern",
+      "Thaumaturgist",
+      "Village",
+      "Weaponsmith",
+      "Wilderness",
+      "Wizard Tower",
+      "Rabbit House",
+      "Trade Center",
+      "Artist's Abode"
+    ]
+  },
+  "mining_1": {
+    "map": "Gold Mine",
+    "zones": [
+      "Gold Mine"
+    ]
+  },
+  "mining_2": {
+    "map": "Deep Caverns",
+    "zones": [
+      "Deep Caverns",
+      "Gunpowder Mines",
+      "Lapis Quarry",
+      "Pigmen's Den",
+      "Slimehill",
+      "Diamond Reserve",
+      "Obsidian Sanctuary"
+    ]
+  },
+  "mining_3": {
+    "map": "Dwarven Mines",
+    "zones": [
+      "Aristocrat Passage",
+      "Barracks of Heroes",
+      "C&C Minecarts Co.",
+      "Cliffside Veins",
+      "Divan's Gateway",
+      "Dwarven Tavern",
+      "Dwarven Mines",
+      "Dwarven Village",
+      "Far Reserve",
+      "Forge Basin",
+      "Gates to the Mines",
+      "Goblin Burrows",
+      "Grand Library",
+      "Great Ice Wall",
+      "Hanging Court",
+      "Lava Springs",
+      "Miner's Guild",
+      "Palace Bridge",
+      "Rampart's Quarry",
+      "Royal Mines",
+      "Royal Palace",
+      "Royal Quarters",
+      "The Forge",
+      "The Lift",
+      "The Mist",
+      "Upper Mines",
+      "Dwarven Base Camp",
+      "Fossil Research Center",
+      "Glacite Tunnels",
+      "Glacite Lake"
+    ]
+  },
+  "combat_1": {
+    "map": "Spider's Den",
+    "zones": [
+      "Spider's Den",
+      "Spider Mound",
+      "Gravel Mines",
+      "Grandma's House",
+      "Arachne's Burrow",
+      "Arachne's Sanctuary",
+      "Archaeologist's Camp"
+    ]
+  },
+  "crimson_isle": {
+    "map": "Crimson Isle",
+    "zones": [
+      "Crimson Isle",
+      "Stronghold",
+      "Crimson Fields",
+      "Blazing Volcano",
+      "Odger's Hut",
+      "Plhlegblast Pool",
+      "Magma Chamber",
+      "Aura's Lab",
+      "Matriarch's Lair",
+      "Belly of the Beast",
+      "Dojo",
+      "Dojo Area",
+      "Burning Desert",
+      "Mystic Marsh",
+      "Barbarian Outpost",
+      "Mage Outpost",
+      "Dragontail",
+      "Chief's Hut",
+      "Dragontail Blacksmith",
+      "Dragontail Townsquare",
+      "Dragontail Auction House",
+      "Dragontail Bazaar",
+      "Dragontail Bank",
+      "Minion Shop",
+      "The Dukedom",
+      "The Bastion",
+      "Scarleton",
+      "Throne Room",
+      "Mage Council",
+      "Scarleton Plaza",
+      "Scarleton Minion Shop",
+      "Scarleton Auction House",
+      "Scarleton Bazaar",
+      "Scarleton Bank",
+      "Scarleton Blacksmith",
+      "Igrupan's House",
+      "Igrupan's Chicken Coop",
+      "Cathedral",
+      "Courtyard",
+      "The Wasteland",
+      "Ruins of Ashfang",
+      "Forgotten Skull",
+      "Smoldering Tomb"
+    ]
+  },
+  "combat_3": {
+    "map": "The End",
+    "zones": [
+      "The End",
+      "Dragon's Nest",
+      "Void Sepulture",
+      "Void Slate",
+      "Zealot Bruiser Hideout"
+    ]
+  },
+  "farming_1": {
+    "map": "The Farming Islands",
+    "zones": [
+      "The Barn",
+      "Windmill",
+      "Mushroom Desert",
+      "Oasis",
+      "Trapper's Den",
+      "Jake's House",
+      "Treasure Hunter Camp",
+      "Desert Settlement",
+      "Mushroom Gorge",
+      "Overgrown Mushroom Cave",
+      "Shepherd's Keep",
+      "Glowing Mushroom Cave"
+    ]
+  },
+  "foraging_1": {
+    "map": "The Park",
+    "zones": [
+      "Birch Park",
+      "Howling Cave",
+      "Spruce Woods",
+      "Lonely Island",
+      "Viking Longhouse",
+      "Dark Thicket",
+      "Savanna Woodland",
+      "Melody's Plateau",
+      "Jungle Island"
+    ]
+  },
+  "winter": {
+    "map": "Jerry's Workshop",
+    "zones": [
+      "Jerry's Workshop",
+      "Jerry Pond",
+      "Mount Jerry",
+      "Gary's Shack",
+      "Glacial Cave",
+      "Terry's Shack",
+      "Hot Springs",
+      "Reflective Pond",
+      "Sunken Jerry Pond",
+      "Sherry's Showroom",
+      "Einary's Emporium"
+    ]
+  },
+  "dungeon": {
+    "map": "Dungeon"
+  },
+  "dungeon_hub": {
+    "map": "Dungeon Hub",
+    "zones": [
+      "Dungeon Hub"
+    ]
+  },
+  "crystal_hollows": {
+    "map": "Crystal Hollows",
+    "zones": [
+      "Crystal Hollows",
+      "Crystal Nucleus",
+      "Dragon's Lair",
+      "Fairy Grotto",
+      "Goblin Holdout",
+      "Goblin Queens Den",
+      "Jungle Temple",
+      "Jungle",
+      "Khazad-dûm",
+      "Lost Precursor City",
+      "Magma Fields",
+      "Mines of Divan",
+      "Mithril Deposits",
+      "Precursor Remnants"
+    ]
+  },
+  "garden": {
+    "map": "Garden",
+    "zones": [
+      "The Garden"
+    ]
+  },
+  "rift": {
+    "map": "The Rift",
+    "zones": [
+      "Wizard Tower",
+      "The Bastion",
+      "Colosseum",
+      "Wyld Woods",
+      "Enigma's Crib",
+      "Broken Cage",
+      "Shifted Tavern",
+      "Pumpgrotto",
+      "Otherside",
+      "Black Lagoon",
+      "Lagoon Cave",
+      "Lagoon Hut",
+      "Leeches Lair",
+      "Around Colosseum",
+      "Rift Gallery Entrance",
+      "Rift Gallery",
+      "West Village",
+      "Dolphin Trainer",
+      "Cake House",
+      "Infested House",
+      "Mirrorverse",
+      "Dreadfarm",
+      "Great Beanstalk",
+      "Village Plaza",
+      "Taylor's",
+      "Lonely Terrace",
+      "Murder House",
+      "Book In A Book",
+      "Half-Eaten Cave",
+      "\"Your\" Island",
+      "Empty Bank",
+      "Barry Center",
+      "Barry HQ",
+      "Déjà Vu Alley",
+      "Living Cave",
+      "Living Stillness",
+      "Barrier Street",
+      "Photon Pathway",
+      "Stillgore Château",
+      "Oubliette",
+      "Fairylosopher Tower"
+    ]
+  },
+  "kuudra": {
+    "map": "Kuudra"
+  },
+  "mineshaft": {
+    "map": "Mineshaft"
+  },
+  "dark_auction": {
+    "map": "Dark Auction"
+  }
+}

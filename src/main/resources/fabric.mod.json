@@ -1,0 +1,47 @@
+{
+	"schemaVersion": 1,
+	"id": "skyblockaddons",
+	"version": "${version}",
+	"name": "SkyblockAddons",
+	"description": "A mod with many features to improve your Hypixel Skyblock experience. Use /sba to open the menu!",
+	"authors": [
+		"Fix3dll"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/skyblockaddons-unofficial/",
+		"sources": "https://github.com/Fix3dll/SkyblockAddons/",
+		"issues": "https://github.com/Fix3dll/SkyblockAddons/issues"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/skyblockaddons/logo.png",
+	"environment": "*",
+	"accessWidener" : "skyblockaddons.accesswidener",
+	"entrypoints": {
+		"client": [
+			"com.fix3dll.skyblockaddons.SkyblockAddons"
+		]
+	},
+	"mixins": [
+		"skyblockaddons.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.5",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"hypixel-mod-api": ">=1.0.1"
+	},
+	"suggests": {
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.modrinth": "https://modrinth.com/mod/skyblockaddons-unofficial",
+				"modmenu.donate": "https://buymeacoffee.com/fix3dll"
+			},
+			"parent": {
+				"icon": "assets/skyblockaddons/logo.png"
+			}
+		}
+	}
+}

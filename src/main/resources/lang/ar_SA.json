@@ -1,0 +1,698 @@
+{
+  "languageText": "Language: ",
+  "language": "العربية",
+  "settings": {
+    "settings": "الإعدادات",
+    "magmaBossWarning": "تحذير Magma Boss",
+    "balBossWarning": "Bal Boss Warning",
+    "broodMotherWarning": "Brood Mother Warning",
+    "itemDropConfirmation": "تأكيد من رمي العنصر",
+    "hideSkeletonHatBones": "إخفاء عظام Skeleton's Helmet",
+    "skeletonHatBonesBar": "شريط عظام الـSkeleton's Helmet",
+    "hideFoodAndArmor": "إخفاء شريط الطعام و شريط الدرع",
+    "fullInventoryWarning": "تحذير الإنفنتوري ممتلئ",
+    "repeating": "تكرار التحذير",
+    "disableEmberRodAbility": "تعطيل الـEmbed Rod في الجزيرة",
+    "editLocations": "تغيير مواقع الـGUI",
+    "guiScale": "مقاس الـGUI: %scale%",
+    "resetLocations": "إعادة تعيين المواقع",
+    "minionStopWarning": "تحذير \"عدم استطاعة الـMinion على الوصول\"",
+    "hidePlayersNearNPCs": "إخفاء اللاعبين بالقرب من الNPCs المهمين",
+    "backpackStyle": "%style% :نمط حقيبة الظهر",
+    "backpackStyles": {
+      "regular": "طبيعي",
+      "compact": "متراص"
+    },
+    "showBackpackPreview": "عرض محتوى حقيبة الظهر",
+    "hideHealthBar": "إخفاء شريط الصحة الطبيعية",
+    "fullMinionWarning": "تحذير الـMinionn الممتلئ",
+    "showOnlyWhenHoldingShift": "إظهار فقط عند الضغط على Shift",
+    "manaBar": "شريط الـMana",
+    "manaNumber": "رقم الـMana",
+    "healthBar": "شريط الصحة",
+    "healthNumber": "رقم الصحة",
+    "defenseIcon": "رمز الحماية",
+    "defenseNumber": "رقم الدفاع",
+    "defensePercentage": "نسبة الدفاع",
+    "healthUpdates": "رقم تعديل الصحة",
+    "hidePlayersInLobby": "إخفاء الكائنات البعيدة في الردهة",
+    "darkAuctionTimer": "مؤقت الDark Auction",
+    "magmaBossTimer": "مؤقت الMagma Boss",
+    "itemPickupLog": "سجل التقاط الأدوات",
+    "avoidPlacingEnchantedItems": "تجنب وضع الأدوات المطورة",
+    "stopBowChargeFromResetting": "أيقاف اعادة شحنة القوس",
+    "preventMovementOnDeath": "منع المشي بعد الموت",
+    "showItemAnvilUses": "أظهار عدد مرات أستخدام السندان",
+    "lockSlots": "السماح بقفل الخانات",
+    "lockSlot": "إقفال الخانة",
+    "dontResetCursorInventory": "لا تقوم باعادة الكورسر ما بين الانفينتوري",
+    "summoningEyeAlert": "تنبيه Summoning Eye",
+    "makeEnderchestsInEndGreen": "تغيير لون صندوق النهاية فال End",
+    "changeColor": "تغيير اللون",
+    "showInOtherGames": "إظهار في ألعاب أخرى",
+    "useVanillaTexture": "استخدام الشكل الأصلي",
+    "textStyle": "نمط النص",
+    "textStyles": {
+      "one": "النمط الأول",
+      "two": "النمط الثاني"
+    },
+    "warningDuration": "مدة التحذير",
+    "dontOpenProfileWithBow": "عدم فتح الـProfile عند مسك القوس",
+    "stopDroppingSellingRareItems": "إيقاف إسقاط/بيع الأشياء النادرة",
+    "makeBackpackInventoriesColored": "لون الInventory",
+    "replaceRomanNumeralsWithNumbers": "تبديل الترقيم الروماني بالارقام",
+    "changeBarColorForPotions": "تغيير لون الشريط للويذر و التسمم",
+    "craftingPatterns": "اختيار أنماط الصناعة",
+    "soundIndicatorForFishing": "مؤشر الصوت عند الصيد",
+    "avoidBlinkingNightVision": "إيقاف تغميظ جرعه الرؤية الليليه",
+    "disableMinionLocationWarning": "تعطيل تحذير الموقع ليس مثاليا",
+    "showItemCooldowns": "إظهار فترة إلانتظار للادوات",
+    "speedPercentage": "نسبة السرعة",
+    "collectionDisplay": "عرض تقدم المهارة",
+    "revenantIndicator": "مؤشر تقدم الـSlayer Armor",
+    "specialZealotAlert": "تنبيه الـSpecial Zealot",
+    "enableMessageWhenActionPrevented": "إظهار رسالة عند منع اجراء امر",
+    "hidePetHealthBar": "اخفاء شريط صحة الحيوان",
+    "powerOrbDisplay": "عرض الـPower Orb",
+    "powerOrbDisplayStyle": "مظهر الـPower Orb: %style%",
+    "powerOrbStyle": {
+      "detailed": "مُفصَّل",
+      "compact": "متراص"
+    },
+    "disableMagicalSoupMessage": "تعطيل رسائل الـMagical Mushroom Soup",
+    "zealotCounter": "إظهار الـZealot Counter - العدد منذ آخر Eye",
+    "tickerChargesDisplay": "عرض شريط المؤشرات/الشحنات",
+    "tab": {
+      "generalSettings": "الإعدادات العامة"
+    },
+    "tabEffectTimers": "مؤقتي الجرعات و مقويات الطاقة",
+    "noArrowsLeftAlert": "تنبيه نفاذ الأسهم",
+    "showCakeBagPreview": "إظهار معاينة لـCake Bags",
+    "showBackpackPreviewInAH": "إظهار معاينة حقيبة الظهر للاشياء الخاصة بك أثناء فتح المزاد",
+    "enableDevFeatures": "تشغيل ميزة المطور",
+    "chromaSpeed": "سرعة الـChroma",
+    "chromaMode": "وضعية لون الـChroma",
+    "chromaModes": {
+      "allTheSame": "جعل الكل نفس اللون",
+      "fade": "تلاشي الألوان"
+    },
+    "chromaFadeWidth": "عرض تلاشي الـChroma",
+    "showBrokenFragments": "إظهار Broken Dragon Fragments",
+    "skyblockAddonsButtonInPauseMenu": "إظهار زر SBA في قائمة الإيقاف المؤقت",
+    "showTotalZealotCount": "عداد الـZealot - المجموع الكلي للـZealot",
+    "showSummoningEyeCount": "عداد الـZealot - المجموع الكلي للـEye",
+    "showZealotsPerEye": "عداد الـZealot - إظهار عدد الـZealots على الـEye",
+    "turnBowGreenWhenUsingToxicArrowPoison": "تلوين القوس بالأخضر عند استخدام الـToxic Arrow Poison",
+    "birchParkRainmakerTimer": "مؤقت الـBirch Park Rainmaker",
+    "combatTimerDisplay": "عرض الـCombat Timer",
+    "discordRP": "Discord Rich Presence",
+    "endstoneProtectorDisplay": "عرض الـEndstone Protector",
+    "fancyWarpMenu": "قائمة التنقل الفاخرة",
+    "stopRatSounds": "Stop Rat Pet Sounds",
+    "onlyStopRatSqueak": "Only Stop the Rat Squeak Sound",
+    "doubleWarp": "النقل مرتين",
+    "advancedMode": "الوضع المتقدم",
+    "legendarySeaCreatureWarning": "تحذير الـLegendary Sea Creature",
+    "bossApproachAlert": "تنبيه اقتراب إستدعاء الـSlayer Boss",
+    "disableTeleportPadMessages": "ايقاف رسائل الـTeleport Pad",
+    "baitListDisplay": "إظهار قائمة الـBait أثناء حمل الصنارة",
+    "freezeBackpackPreview": "تجميد محتوى الـBackpack",
+    "hideGreyEnchants": "إخفاء التطويرات الرمادية العادية",
+    "zealotCounterExplosiveBow": "دعم الExplosive bow لعداد الZealot",
+    "disableEndermanTeleportation": "ايقاف انتقال الاندرمان",
+    "changeZealotColor": "تغيير لون الزيلوت",
+    "hideSvenPupNametags": "اخفاء اسماء جراء سفين",
+    "turnAllFeaturesChroma": "تشغيل جميع الميزات Chroma",
+    "dungeonMapDisplay": "عرض خريطة الدنجن",
+    "rotateMap": "تدوير الخريطة حسب دوران اللاعب الخاص بك",
+    "centerRotationOnYourPlayer": "تمركز الدوران حول اللاعب",
+    "showFetchurOnlyInDwarven": "Only Show Fetchur's item in the Dwarven Mines",
+    "showFetchurItemName": "Show Fetchur's item name",
+    "showFetchurInventoryOpenOnly": "Only Show Fetchur's item when the Inventory is Open",
+    "warnWhenFetchurChanges": "Warn me when Fetchur changes",
+    "mapZoom": "تكبير الخريطة",
+    "glowingDroppedItems": "توهج الادوات المسقطه",
+    "outlineDungeonTeammates": "Outline Dungeon Teammates",
+    "baseStatBoostPercentage": "إظهار تعزيز لقاعدة احصائيات لأشياء الدنجن",
+    "colorByRarity": "اللون حسب الندرة",
+    "showPlayerHeadsOnMap": "إظهار رؤساء اللاعبين على خريطة الزنزانة",
+    "showHealingCircleWall": "إظهار جدار دائرة الشفاء في الدنجنز",
+    "showCriticalTeammates": "إظهار الزملاء المنخفضا الصحة في الدنجن",
+    "showGlowingItemsOnIsland": "إظهار إضاءة الأشياء على الجزيرة",
+    "showItemDungeonFloor": "إظهار الطابق حيث تم الحصول على شيء من الدنجن",
+    "showDungeonMilestone": "إظهار معالم الدنجن",
+    "dungeonsCollectedEssencesDisplay": "عرض كمية الجوهرات من الدنجن",
+    "stopBonzoStaffSounds": "إيقاف أصوات عصا بونزو",
+    "showRarityUpgraded": "اطهار اذا تم ترقية الندره",
+    "revenantSlayerTracker": "عداد السلاير - زومبي/ريڤينانت",
+    "tarantulaSlayerTracker": "عداد السلاير - تارانتولا/سبايدر",
+    "svenSlayerTracker": "عداد السلاير - سڤين/ذئب",
+    "voidgloomSlayerTracker": "Slayer Tracker - Voidgloom/Enderman",
+    "textMode": "وضع الكتابة",
+    "dragonsNestOnly": "الإظهار فقط في الDragon Nest",
+    "dragonStatsTracker": "عداد التنانين",
+    "skillActionsLeftUntilNextLevel": "إظهار كم بقي فعل على المستوى التالي",
+    "dungeonDeathCounter": "عدد الموتى في الدنجن",
+    "showPersonalCompactorPreview": "إظهار عرض الكمباكتر الشخصي",
+    "rockPetTracker": "عداد الروك بت",
+    "dolphinPetTracker": "عداد بت الدلفين",
+    "dungeonsTeammateNameOverlay": "تراكب أسماء الزملاء في الدنجن",
+    "dungeonsSecretsDisplay": "عرض أسرار الدنجنز",
+    "showSkillPercentageInstead": "إظهار النسبة بدل الإكس بي",
+    "showSkillXPGained": "إظهار الإكس بي المكتسبة",
+    "skillProgressBar": "شريط تقدم المهارة",
+    "showSalvageEssencesCounter": "إظهار عداد الـEssences المستخلصة",
+    "disableMortMessages": "إخفاء رسائل Mort",
+    "disableBossMessages": "إخفاء رسائل الـBoss",
+    "hideOtherPlayersPresents": "إخفاء هداية الأخرين",
+    "showSwordKills": "إظهار قتلات السيف",
+    "compactTabList": "قائمة الـTab المتراصة",
+    "highlightSpecialEnchantments": "تمييز التطويرات الخاصة",
+    "disableDamageChatMessages": "Disable Damage Chat Messages",
+    "showSpiritSceptreDisplay": "Spirit Sceptre/Wither Blade Damage Display",
+    "outbidAlertSound": "Outbid Alert Sound",
+    "hideMenuGlassPanes": "Hide Menu Glass Pane Tooltips",
+    "candyPointsCounter": "Spooky Event Candy/Points Counter",
+    "healingCircleOpacity": "Healing Circle Opacity",
+    "chromaSize": "Chroma Size",
+    "chromaSaturation": "Chroma Saturation",
+    "chromaBrightness": "Chroma Brightness",
+    "useNewChromaEffect": "Use New Chroma Effect",
+    "showExperimentationTableTooltips": "Show Experimentation Table Tooltips",
+    "drillFuelBar": "Drill Fuel Bar",
+    "drillFuelNumber": "Drill Fuel Number",
+    "fetchurToday": "Show What Fetchur Wants Today",
+    "fishingParticleOverlay": "Fishing Particle Overlay",
+    "enchantmentLoreParsing": "Parse Enchant Tooltips",
+    "cooldownPrediction": "Predict and Shorten Cooldown",
+    "legendaryMonkeyLevel100": "[TEMP] Level 100 Legendary Monkey",
+    "biggerWake": "Enlarge Overlay Particles",
+    "stackingEnchantProgress": "Show Stacking Enchant Progress",
+    "showReforgeOverlay": "Show Reforge Overlay",
+    "reforgeFilter": "Reforge Filter",
+    "hideEnchantDescription": "Hide Enchant Description",
+    "trevorTheTrapper": {
+      "title": "Trevor the Trapper Features",
+      "trackedEntityProximityIndicator": "Show Tracked Entity Proximity Indicator",
+      "highlightTrackedEntity": "Highlight Tracked Entity",
+      "showQuestCooldown": "Show Trevor's Quest Cooldown",
+      "showQuestCooldownDescription": "This will be displayed above Trevor's head"
+    },
+    "showEnderChestPreview": "Show Ender Chest Preview",
+    "hideWhenNotDoingQuest": "Hide When Not Doing Quest",
+    "showOverflowManaNumber": "Overflow Mana Number",
+    "axeCooldownIndicator": "Axe Cooldown Indicator",
+    "vanillaHealthPrediction": "Use Vanilla Health Prediction",
+    "entityOutlines": "Show Entity Outlines",
+    "effectiveHealthNumber": "Effective Health Number",
+    "guiScaleX": "GUI X Scale: %scale%",
+    "guiScaleY": "GUI Y Scale: %scale%",
+    "abbreviateSkillXpDenominator": "Abbreviate Skill XP Denominator",
+    "otherDefenseStats": "Other Defense Stats (Soul Tether/Cell Alignment)",
+    "hideSpawnPointPlayers": "Hide Players at Hub Spawn Point",
+    "jacobsContestTimer": "Jacob's Contest Timer",
+    "dontReplaceRomanNumeralsInItemNames": "Don't Replace in Item Names",
+    "backpackOpeningSound": "Leather Backpack Opening Sound",
+    "devMode": "Developer Mode",
+    "showSkyblockItemId": "Show Skyblock Item ID on Hover",
+    "showFeatureNamesOnHover": "Show Feature Names on Hover",
+    "resetSalvagedEssencesAfterLeavingMenu": "Reset Salvaged Essence Counter After Closing Menu",
+    "changeDungeonMapZoomWithKeyboard": "Adjust zoom with +/- keys",
+    "showPlayerSymbolsInChat": "Show Player Symbols In Chat",
+    "crimsonArmorAbilityStacks": "Show Crimson Armor Stacks",
+    "hideTrueDefense": "Hide True Defense",
+    "showProfileType": "Show Profile Type",
+    "showNetherFaction": "Show Nether Faction",
+    "zealotSpawnAreasOnly": "Show Only in Zealot Spawn Areas"
+  },
+  "messages": {
+    "enchants": "التطويرات",
+    "reforges": "ريفورجس",
+    "dropConfirmation": "!إرمي هذا العنصر مرة أخرى للتأكيد",
+    "magmaBossWarning": "Magma Cube Boss!",
+    "balBossWarning": "Bal Boss!",
+    "broodMotherWarning": "Brood Mother!",
+    "fullInventory": "امتلأت الانفنتوري!",
+    "labymod": "مستعملي اللابي مود: إن إخفاء شريط الطعام، الدروع، الصحه، غير متوافق.",
+    "minionCannotReach": "!لا يمكنه الوصول وانه سيتوقف عن الإنشاء %type%إن تابع ال",
+    "minionIsFull": "امتلأت حقيبة أحدى الMinions في جزيرتك!",
+    "typeEnchantmentsHere": "اكتب %type% هنا!",
+    "separateMultiple": "أفرز المتعددين بالفواصل.",
+    "enchantsToMatch": "%type% للمطابقة:",
+    "enchantsToExclude": "%type% للاستبعاد:",
+    "updateChecker": {
+      "wantToViewPatchNotes": "هل تريد قراءة التغييرات؟",
+      "joinDiscord": "Join our Discord server!",
+      "watchShowcase": "Watch Video",
+      "downloadButton": "Download",
+      "openModFolderButton": "Open Mods Folder",
+      "joinDiscordButton": "Join Discord",
+      "newUpdateAvailable": "تحديث جديد (%version%) متاح!",
+      "noDownloadAvailable": "No download link available, please check our Discord server.",
+      "notificationBox": {
+        "majorAvailable": "يوجد هناك تحديث جديد، (%version%) متاح! يمكن ايجاد رابط التنزيل في الشات.",
+        "betaAvailable": "A new beta update (%version%) is available! Look in chat for the download link.",
+        "patchAvailable": "تحديث تصحيحات (%version%) الآن متاح!\nانظر في الشات لتنزيل الخيارات!"
+      }
+    },
+    "slotLocked": "الخانة مقفله!",
+    "summoningEyeFound": "Summoning Eye!",
+    "cancelledDropping": "SkyblockAddons منعك من إسقاط هذه الأداة أو الشيء النادر من قائمة أدواتك.",
+    "clickMoreTimes": "اضغط / أسقط هذا الغرض %times% مرات أكثر إذا كنت تريد فعلا القيام بذلك.",
+    "clickOneMoreTime": "انقر/ اسقط هذا الغرض مرة اخرى إذا كنت تريد حقا أن تفعل هذا.",
+    "featureDisabled": "تعطيل الميزة",
+    "anvilUses": "استخدامات السندان: %uses%",
+    "specialZealotFound": "زيلوت فريد!",
+    "blockIncompletePatterns": "أنماط صناعة الحجر غير مكتملة\n(ينصح بها)",
+    "searchFeatures": "البحث عن الخواص",
+    "downloadingUpdateFile": "يتم تنزيل تحديث الملف...",
+    "onlyFewArrowsLeft": "تبقى %arrows% سهم فقط!",
+    "noArrowsLeft": "نفذت الاسهم!",
+    "chooseAColor": "اختر لون",
+    "selectedColor": "اللون المحدد",
+    "setHexColor": "تعيين لون الهيكس",
+    "rescaleFeatures": "تغيير مقاسات الميزات",
+    "resizeBars": "تغيير حجم الأشرطة",
+    "showColorIcons": "إظهار أيقونات الألوان",
+    "enableFeatureSnapping": "تشغيل ميزة الالتقاط",
+    "stage": "المرحلة %stage%",
+    "switchedSlots": "لقد قمت للتو بالتبديل من خانة مقفلة أو عنصر نادر. الرجاء الانتظار قليلاً قبل الإسقاط!",
+    "clickToOpenLink": "انقر لفتح هذا الرابط!",
+    "clickToOpenFolder": "انقر لفتح مجلد المودات الخاص بك!",
+    "firstStatus": "ستظهر هذه الحالة في الجزء العلوي",
+    "secondStatus": "ستظهر هذه الحالة تحت حالتك الأولى",
+    "fallbackStatus": "ستظهر هذه الحالة عندما لا توفر حالتك التلقائية على أي شيء لإظهاره",
+    "legendarySeaCreatureWarning": "التقاط اسطوري!",
+    "bossApproaching": "أنت قريب من توليد رئيس!",
+    "fetchurItem": "Fetchur: %item%",
+    "fetchurWarning": "Fetchur changed!",
+    "enableAll": "تشغيل الكل",
+    "disableAll": "تعطيل الكل",
+    "enchantmentInclusionExample": "مثل \"prot, feather\"",
+    "enchantmentExclusionExample": "مثل \"proj, blast\"",
+    "reforgeInclusionExample": "مثل \"godly, strong\"",
+    "reforgeExclusionExample": "مثال: \"odd, clean\"",
+    "actionsLeft": "بقي %number%",
+    "effectActive": "تأثير 1 فعال",
+    "effectsActive": "التأثيرات الفعالة: %number%",
+    "none": "لا شيء",
+    "copyModeSet": "The developer copy mode has been set to: %mode%. Press \"%keyName%\" to trigger a data copy!",
+    "chroma": "Chroma",
+    "worldRenderedCooldownTime": "Cooldown: %time%s",
+    "entityOutlinesRequirement": "Requires Shaders, Fast Render, and Antialiasing to be OFF",
+    "version": "Version",
+    "invalidFeatureConfiguration": "Invalid configuration detected for feature %featureName%, resetting its settings to default values.",
+    "fileFetchFailed": "%modName% has failed to fetch %number% file(s). Please copy the error using the button below and report it in our Discord server.",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "discordStatus": {
+    "titleNone": "لا شيء",
+    "descriptionNone": "لم يتم عرض أي نص",
+    "titleLocation": "الموقع",
+    "descriptionLocation": "عرض موقعك الحالي",
+    "titlePurse": "Purse",
+    "descriptionPurse": "يعرض كمية العملات في حقيبتك",
+    "titleBits": "Bits",
+    "descriptionBits": "Shows the amount of bits you have",
+    "titleStats": "إحصائيات",
+    "descriptionStats": "يعرض إحصائيات الصحة والدفاع والمانا الخاصة بك",
+    "titleZealots": "Zealots",
+    "descriptionZealots": "عرض عداد زيلوت",
+    "titleItem": "الغرض الذي تمسكه",
+    "descriptionItem": "يظهر اسم الغرض الذي تحمله",
+    "titleProfile": "الملف الشخصي",
+    "descriptionProfile": "عرض اسم ملفك الشخصي",
+    "titleTime": "وقت سكاي بلوك",
+    "descriptionTime": "عرض وقت سكاي بلوك الحالي. مثال 12:00 صباحا في بدايه الشتاء الأول",
+    "titleCustom": "حالة مخصصة",
+    "descriptionCustom": "أدخل حالة مخصصة",
+    "titleAuto": "حالة تلقائية",
+    "descriptionAuto": "يعرض تلقائياً حالة. على سبيل المثال عداد الزيلوتس أثناء وجودك في النهاية.",
+    "titleRevenants": "مهمة الريفينانت",
+    "descriptionRevenants": "تظهر انك تقوم بمهمة الريفينانت.",
+    "titleSvens": "مهمة سفين",
+    "descriptionSvens": "تظهر انك تقوم بمهمة سفين.",
+    "titleTarantula": "مهمة الترانتشولا",
+    "descriptionTarantula": "تظهر انك تقوم بمهمة الترانتشولا.",
+    "titleVoidgloom": "Voidgloom Quest",
+    "descriptionVoidgloom": "Shows that you are doing a Voidgloom quest.",
+    "titleInferno": "Inferno Quest",
+    "descriptionInferno": "Shows that you are doing an Inferno quest."
+  },
+  "enchantLayout": {
+    "title": "Control how enchants are displayed on item tooltips",
+    "titleCompress": "Compress",
+    "descriptionCompress": "Compresses enchants into as few lines as possible",
+    "titleNormal": "Normal",
+    "descriptionNormal": "Displays enchants like Hypixel does",
+    "titleExpand": "Expand",
+    "descriptionExpand": "Lists each enchant on its own line"
+  },
+  "commands": {
+    "usage": {
+      "sba": {
+        "base": {
+          "help": "Opens the main menu"
+        },
+        "brand": {
+          "help": "Shows the server brand"
+        },
+        "copyBlock": {
+          "help": "Copies data about the block that you are looking at"
+        },
+        "copyEntity": {
+          "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+          "detailedHelp": {
+            "description": "نسخ بينات NBT للأشياء. انواع الأشياء المضمونه والقطر الذي حول الاعب لنسخ البيانات يمكن تشخيصة. إذا لم يتم إعطاء أي خيارات، الاعدادات الافتراضية تستخدم. الاعدادات الافتراضية هي: إشمال اللاعبين، حاملات الدروع، الغواغئ، وقطر 3 كتلات. إذا لم يعطا نصف القطر، يستخدم القطر الافتراضى.",
+            "options": {
+              "entityNames": "اسماء انواع الأشياء الذي تريد نصخ البيانات (مثل لاعب، كريبر). اضغط على \"Tab\" بعد كتابة الأمر للقائمة كاملة. افصل أسماء متعدده بفواصل، الأسماء حساسة لحالة الأحرف.",
+              "radius": "المجال في البلوكات حول اللاعب لنسخ بياناتNBT منه"
+            }
+          }
+        },
+        "copySidebar": {
+          "help": "Copies the scoreboard text",
+          "detailedHelp": {
+            "description": "ينسخ النص المعرض في الـscoreboard القائمة الجانبية",
+            "options": {
+              "formatted": "يحدد اذا ينبغي تضمين رموز الألوان عند النسخ. يمكن أن بكون إما \"صحيح\" او \"خطأ\"، الافتراضي هو \"خطأ\" إذا لم يتم توفير أي قيمة. يتم نسخ رموز الألوان إذا \"صحيح\"."
+            }
+          }
+        },
+        "copyTabList": {
+          "help": "Copies the tab list header and footer",
+          "detailedHelp": {
+            "description": "هذا الأمر ينسج الهامش العلوي والسفلي من تاب اللاعب. شفرات التنسيق متضمنة."
+          }
+        },
+        "dev": {
+          "help": "Toggles the developer mode",
+          "detailedHelp": {
+            "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+          },
+          "prefix": "Dev"
+        },
+        "edit": {
+          "help": "Edits GUI locations"
+        },
+        "folder": {
+          "help": "Opens your mods folder"
+        },
+        "help": {
+          "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+          "detailedHelp": {
+            "options": {
+              "command": "The sub-command to get detailed usage for"
+            }
+          }
+        },
+        "printDeaths": {
+          "help": "Prints the counts stored in the dungeon death counters for debugging purposes."
+        },
+        "reload": {
+          "help": "Reloads all of the mod's settings and resources. The game will freeze for a few seconds."
+        },
+        "reloadConfig": {
+          "help": "Reloads the mod's settings"
+        },
+        "reloadRes": {
+          "help": "Reloads the mod's resources. The game will freeze for a few seconds."
+        },
+        "resetZealotCounter": {
+          "help": "Resets all the zealot counter counts."
+        },
+        "set": {
+          "zealotCounter": {
+            "help": "Manually sets your zealot counts",
+            "detailedHelp": {
+              "description": "يضع العد في عداد الزيلوتس يدوياً.",
+              "options": {
+                "eyes": "عدد عيون الأستدعاء في حياتك",
+                "totalZealots": "الزيلوتس الذي قتلوا في حياتك",
+                "zealots": "الزيلوتس الذي قتلوا منذ آخر عين استدعاء"
+              }
+            }
+          }
+        },
+        "slayer": {
+          "help": "Manually sets slayer stats, press tab for arguments",
+          "detailedHelp": {
+            "description": "Manually sets slayer stats, press tab for arguments",
+            "options": {
+              "boss": "Slayer boss: \"Zombie\", \"Spider\", أو \"Wolf\"",
+              "number": "رقم لوضع الاحصائية الى",
+              "stat": "احصائية السلاير للتغير, قد يكون \"kills\" او اسم الغرض المسقوط منسق هكذا: \"REVENANT_FLESH\""
+            }
+          }
+        },
+        "toggleActionBarLogging": {
+          "help": "Toggles logging action bar messages"
+        },
+        "toggleMagmaTimerLogging": {
+          "help": "Toggles logging magma boss timer debug messages"
+        },
+        "version": {
+          "help": "Shows the mod's version"
+        }
+      }
+    },
+    "responses": {
+      "sba": {
+        "brand": {
+          "brandOutput": "العلامة التجارية للخادم: %brand%",
+          "notFound": "لم يتم العثور على العلامة التجارية للخادم!"
+        },
+        "dev": {
+          "disabled": "وضع المطور معطل!",
+          "enabled": "وضع المطور مفعل! تلميح: اضغط \"%keyName% لنسخ بيانات NBT!"
+        },
+        "folder": {
+          "error": "An error occurred while trying to open the mods folder: %s"
+        },
+        "resetZealotCounter": {
+          "resetSuccess": "Zealot counters reset!"
+        },
+        "set": {
+          "zealotCounter": {
+            "eyesSet": "وضع عدد استدعاء العين الكلي إلى %number%!",
+            "totalZealotsSet": "وضع مجموع الزيلوتس الكلي إلى %number%!",
+            "wrongUsage": "اختيار غير صالح! الرجاء اختيار %options%.",
+            "zealotsSet": "وضع عدد الزيلوتس الحالي إلى %number%!"
+          }
+        },
+        "slayer": {
+          "bossRequired": "يجب أن تضع Boss! الرجاء اختيار %bosses%",
+          "statRequired": "يجب تضع إحصائية. إضعط tab لأعدادات أكثر.",
+          "numberRequired": "يجب ان تضع الرقم الذي تريده.",
+          "killsSet": "القتلات للـSlayer %boss% وضعت الى %number%.",
+          "statSet": "احصائية %stat% للـSlayer %boss% وضع الى %number%.",
+          "invalidBoss": "\"%input%\" ليس احصائية حقيقية!",
+          "invalidStat": "\"%input%\" ليس Boss حقيقي!"
+        },
+        "toggleActionBarLogging": {
+          "disabled": "لن يتم تسجيل رسائل شريط العمل بعد الآن.",
+          "enabled": "سيتم الآن تسجيل رسائل شريط العمل."
+        },
+        "toggleMagmaTimerLogging": {
+          "disabled": "Magma boss timer messages will no longer be logged.",
+          "enabled": "Magma boss timer messages will now be logged."
+        },
+        "version": {
+          "hoverText": "Click to put in chat so you can copy."
+        }
+      }
+    },
+    "errors": {
+      "wrongUsage": {
+        "generic": "استخدام خاطئ!",
+        "subCommandNotFound": "لم يتم العثور على الأمر الفرعي \"%sub-command%\"."
+      }
+    }
+  },
+  "commandUsage": {
+    "sba": {
+      "base": {
+        "help": "Opens the main menu"
+      },
+      "brand": {
+        "help": "Shows the server brand",
+        "brandOutput": "العلامة التجارية للخادم: %brand%",
+        "notFound": "لم يتم العثور على العلامة التجارية للخادم!"
+      },
+      "copyBlock": {
+        "help": "Copies data about the block that you are looking at"
+      },
+      "copyEntity": {
+        "help": "Copies NBT data for entities of the given name(s) within the given radius around the player",
+        "detailedHelp": {
+          "description": "نسخ بينات NBT للأشياء. انواع الأشياء المضمونه والقطر الذي حول الاعب لنسخ البيانات يمكن تشخيصة. إذا لم يتم إعطاء أي خيارات، الاعدادات الافتراضية تستخدم. الاعدادات الافتراضية هي: إشمال اللاعبين، حاملات الدروع، الغواغئ، وقطر 3 كتلات. إذا لم يعطا نصف القطر، يستخدم القطر الافتراضى.",
+          "options": {
+            "entityNames": "اسماء انواع الأشياء الذي تريد نصخ البيانات (مثل لاعب، كريبر). اضغط على \"Tab\" بعد كتابة الأمر للقائمة كاملة. افصل أسماء متعدده بفواصل، الأسماء حساسة لحالة الأحرف.",
+            "radius": "المجال في البلوكات حول اللاعب لنسخ بياناتNBT منه"
+          }
+        }
+      },
+      "copySidebar": {
+        "help": "Copies the scoreboard text",
+        "detailedHelp": {
+          "description": "ينسخ النص المعرض في الـscoreboard القائمة الجانبية",
+          "options": {
+            "formatted": "يحدد اذا ينبغي تضمين رموز الألوان عند النسخ. يمكن أن بكون إما \"صحيح\" او \"خطأ\"، الافتراضي هو \"خطأ\" إذا لم يتم توفير أي قيمة. يتم نسخ رموز الألوان إذا \"صحيح\"."
+          }
+        }
+      },
+      "copyTabList": {
+        "help": "Copies the tab list header and footer",
+        "detailedHelp": {
+          "description": "هذا الأمر ينسج الهامش العلوي والسفلي من تاب اللاعب. شفرات التنسيق متضمنة."
+        }
+      },
+      "dev": {
+        "help": "Toggles the developer mode",
+        "detailedHelp": {
+          "description": "This command toggles the developer mode. This mode is meant for developers of SkyBlock mods & tools. It provides game data such as entity and item NBT."
+        },
+        "disabled": "وضع المطور معطل!",
+        "enabled": "وضع المطور مفعل! تلميح: اضغط \"%keyName% لنسخ بيانات NBT!",
+        "prefix": "Dev"
+      },
+      "edit": {
+        "help": "Edits GUI locations"
+      },
+      "folder": {
+        "help": "Opens your mods folder",
+        "error": "An error occurred while trying to open the mods folder: %s"
+      },
+      "help": {
+        "help": "Shows this help message. If a command is provided, detailed help about that command is shown.",
+        "detailedHelp": {
+          "options": {
+            "command": "The sub-command to get detailed usage for"
+          }
+        }
+      },
+      "printDeaths": {
+        "help": "Prints the counts stored in the dungeon death counters for debugging purposes."
+      },
+      "reload": {
+        "help": "Reloads all of the mod's settings and resources. The game will freeze for a few seconds."
+      },
+      "reloadConfig": {
+        "help": "Reloads the mod's settings"
+      },
+      "reloadRes": {
+        "help": "Reloads the mod's resources. The game will freeze for a few seconds."
+      },
+      "resetZealotCounter": {
+        "help": "Resets all the zealot counter counts.",
+        "resetSuccess": "Zealot counters reset!"
+      },
+      "set": {
+        "zealotCounter": {
+          "help": "Manually sets your zealot counts",
+          "detailedHelp": {
+            "description": "يضع العد في عداد الزيلوتس يدوياً.",
+            "options": {
+              "eyes": "عدد عيون الأستدعاء في حياتك",
+              "totalZealots": "الزيلوتس الذي قتلوا في حياتك",
+              "zealots": "الزيلوتس الذي قتلوا منذ آخر عين استدعاء"
+            }
+          },
+          "eyesSet": "وضع عدد استدعاء العين الكلي إلى %number%!",
+          "totalZealotsSet": "وضع مجموع الزيلوتس الكلي إلى %number%!",
+          "wrongUsage": "اختيار غير صالح! الرجاء اختيار %options%.",
+          "zealotsSet": "وضع عدد الزيلوتس الحالي إلى %number%!"
+        }
+      },
+      "slayer": {
+        "help": "Manually sets slayer stats, press tab for arguments",
+        "detailedHelp": {
+          "description": "Manually sets slayer stats, press tab for arguments",
+          "options": {
+            "boss": "Slayer boss: \"Zombie\", \"Spider\", أو \"Wolf\"",
+            "number": "رقم لوضع الاحصائية الى",
+            "stat": "احصائية السلاير للتغير, قد يكون \"kills\" او اسم الغرض المسقوط منسق هكذا: \"REVENANT_FLESH\""
+          }
+        },
+        "bossRequired": "يجب أن تضع Boss! الرجاء اختيار %bosses%",
+        "statRequired": "يجب تضع إحصائية. إضعط tab لأعدادات أكثر.",
+        "numberRequired": "يجب ان تضع الرقم الذي تريده.",
+        "killsSet": "القتلات للـSlayer %boss% وضعت الى %number%.",
+        "statSet": "احصائية %stat% للـSlayer %boss% وضع الى %number%.",
+        "invalidBoss": "\"%input%\" ليس احصائية حقيقية!",
+        "invalidStat": "\"%input%\" ليس Boss حقيقي!"
+      },
+      "toggleActionBarLogging": {
+        "help": "Toggles logging action bar messages",
+        "disabled": "لن يتم تسجيل رسائل شريط العمل بعد الآن.",
+        "enabled": "سيتم الآن تسجيل رسائل شريط العمل."
+      },
+      "toggleMagmaTimerLogging": {
+        "help": "Toggles logging magma boss timer debug messages",
+        "disabled": "Magma boss timer messages will no longer be logged.",
+        "enabled": "Magma boss timer messages will now be logged."
+      },
+      "version": {
+        "help": "Shows the mod's version",
+        "hoverText": "Click to put in chat so you can copy."
+      },
+      "errors": {
+        "wrongUsage": {
+          "generic": "استخدام خاطئ!",
+          "subCommandNotFound": "لم يتم العثور على الأمر الفرعي \"%sub-command%\"."
+        }
+      }
+    }
+  },
+  "keyBindings": {
+    "developerCopyNBT": "نسخ NBT",
+    "increaseDungeonMapZoom": "Dungeon Map Zoom In",
+    "decreaseDungeonMapZoom": "Dungeon Map Zoom Out"
+  },
+  "dragonTracker": {
+    "protector": "Protector",
+    "old": "Old",
+    "wise": "Wise",
+    "unstable": "Unstable",
+    "young": "Young",
+    "strong": "Strong",
+    "superior": "Superior",
+    "recentDragons": "آخر التنانين:",
+    "dragonsSince": "التنانين منذ:",
+    "aspectOfTheDragons": "AOTD",
+    "enderDragonPet": "Dragon Pet",
+    "eyesPlaced": "العيون التي وضعت",
+    "never": "أبدا"
+  },
+  "slayerTracker": {
+    "revenant": "Revenant Horror:",
+    "tarantula": "Tarantula Broodfather:",
+    "sven": "Sven Packmaster:",
+    "voidgloom": "Voidgloom Seraph:",
+    "bossesKilled": "الرئساء المقتولون"
+  },
+  "warpMenu": {
+    "click": "Click a warp point to travel there!",
+    "mustUnlock": "Must have the specific scroll unlocked.",
+    "privateIsland": "Private Island",
+    "home": "Your Island",
+    "spawn": "Spawn",
+    "unknown": "Haven't Visited",
+    "notUnlocked": "Not Unlocked",
+    "inCombat": "In Combat..."
+  },
+  "enchants": {
+    "superTier": "Max Tier",
+    "highTier": "High Tier",
+    "midTier": "Mid Tier",
+    "lowTier": "Low Tier",
+    "commas": "Commas",
+    "expertiseKills": "Expertise Kills",
+    "compactedBlocks": "Compacted Blocks",
+    "cultivatedCrops": "Cultivated Crops",
+    "hecatombsSRuns": "Hecatombs S Runs",
+    "championCombatXp": "Champion Combat XP",
+    "maxed": "Maxed"
+  }
+}

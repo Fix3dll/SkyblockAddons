@@ -1,0 +1,892 @@
+{
+  "ABSOLUTE_ENDER_PEARL": {
+    "displayName": {"text":"","extra":[{"text":"Absolute Ender Pearl","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-640971782,-103139894,-1305574774,-540541590],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY1MjE0NjQ4ODk4NiwKICAicHJvZmlsZUlkIiA6ICI0M2NmNWJkNjUyMDM0YzU5ODVjMDIwYWI3NDE0OGQxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJrYW1pbDQ0NSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS82N2Q5ZmUwNjUwMjRmZmY0YjM0Yzc4ZjkyY2QzMTUwZDZiZGZhYWI3YzM3NWEwZWU3ODUwNzZlMWE0YTI1NGU5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=","signature":"A0BVNIawhgGDCQVvTLXXYSctjpgzn/V2+PhTobL2ESTEoukuGHSYjrp+E4dMypflLRYl+KJIKnjr79RbIDulQ3T9Iaqwk388ahbWT9tJM+gkynnggbBOrnoIjdqpo6OJomF8/r0ipznj8PtDM85Oet4zkphorNNPKrq+y6u3LywRxeLVdlY+E4xSLyTSbll3uKcW/Z5Fp7oM/WNnr02vg7+Da/wSc1ZP35yU0CeiH8NDH22XuMeJMZwRJymza0Xhv/SlFD+UXmvKuPH63l3N5TjaEqbCwBs7s7hWzHwDh4UZBjcceTrYQ6lG2NZFVbTdrC/SK3E6DwnWzc56OjdAsDS0Gv33cT+4nUsIeGCvjQR2ZhiCiqT+0s2htOo3Xqw16UosrwEd1Q5iWJigbixfG74qCjnIy2M3q53Z7FkloklaLmU+XVSQCU/864S8rVaBz76xwzlnnKP4Mg7y8DfW4SksHMKpCJbbIWF8FGocFl0n10vbW2+gM0MXZ6tWpSieUxLGgAy0F6QrKLgbLz8Pw0vh67316MsOGFi7qFdHuWZ1u2cw00kE5gvsd89nX3bVnSLvjMviO9rUIwtS1SOmiyF9ZVfxBPb1kVTllwG1MwUhpEL1sZmQJ8sCLqJs8PHbSveov7hvL6id2vhwd/uCUCX2VASrM6/7Rf/IROuNCCA="}]}
+  },
+  "BOX_OF_SEEDS": {
+    "displayName": {"text":"","extra":[{"text":"Box of Seeds","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-845574925,-610193096,-2090800817,-1977339688],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcyMDA0MjE1Njk3NiwKICAicHJvZmlsZUlkIiA6ICI5MGQ1NDY0OGEzNWE0YmExYTI2Yjg1YTg4NTU4OGJlOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJFdW4wbWlhIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJjM2Y4NTRiYjY1MjY1YWIzZmYyZTM2MjY2OWE1ZjgwNmFiODRkYzI0MGE0Yjk5ZjlhNjJhYjcyNjc3MjhiYTMiCiAgICB9CiAgfQp9","signature":"if1szYpuqOsav543J7qAI1bbocyw/jT/Cutv54Ra9L13VT7IcVi6OOtEiTpSKiQ6ZXLTCxiL27craoK2PaPcb4mY88IncaFbMU1Ouh1i8Z+6iBaiJFZVJwTEzzU5U/ve3gpbJ4qHgFeE7WyiYuoihxPLDvfPLcBK3hH8tC7S64JQmsLevzMLjBKxrHsNPK2yHqE9LLaLUVIUkajVHe4vZJkbNBAAbKemw5MOkwP/wrasDEky07wzlKTCvkwjeb/ZszDCWsTmPcnYJF9C/8dZ3aGaC8fRL/lX+iIMlT0ryTYrEEYnUAXSK6pNyrB+tvkmNoLJ1oN7nqxQbFQwD6Mc8PADrMxsOKzDu5Ym0jtyK6Wu13wnXxJqyPOrTuU7uYlLhRTabM90Wg2AwgiSR8HQx8v+WPbDHEBlRdaAhWINdIvihQuVAyp+3B0W75bEjRS8vMS4UUPSeDU/I2SESopPJtGHyz52lirG6QrwqkGRkTx12G+UXj+kJLG0GFuAiGrUFZTkKihk8+hwvMa+H8job7X9dPd8s8tWKitOUj1CbWqMwzfEfvpMxht/9AtzfRmZJ056Gfc1hybBj2kFpXtA2OEnWfKcN++NMSTnlOw45tYDQOVf4oGRmM/tHw0xpYF1ZOtF/aUFtp6p/LNNuc/Cj+wJiV0cuADHF0zxxZd7qiE="}]}
+  },
+  "CLAY": {
+    "displayName": {"text":"","extra":[{"text":"Clay","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "clay"
+  },
+  "COAL_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Block of Coal","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "coal_block"
+  },
+  "CONCENTRATED_STONE": {
+    "displayName": {"text":"","extra":[{"text":"Concentrated Stone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-265372979,1372467777,-1562433152,-263984761],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxOTExMjE3NzM4NCwKICAicHJvZmlsZUlkIiA6ICJjNjc3MGJjZWMzZjE0ODA3ODc4MTU0NWRhMGFmMDI1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDVUNGTDE2IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzhjODYzN2JjMDYyOGY1NzEwZjg1YjhkMDY3OWNjMmMxOWFmZTBlMTA4OWIyNDhiNmZkYjY3ZjY4N2FlODFkYzIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==","signature":"ribDkeZ/oW43vgFtttL3httMDQj61RoGXuSlyDN31MJLhK+w3xw4kcrySorrk48Rgi2LRJgvfYB7E19+vUM4YLAwlWCHh+i4Y8lm5bmYhtNBD1iSVMR0wE+3xd3AJ1Ho+zddDfo5yzVnR98MlHONCooWRmpe+gJfIrNuCX4J8VMD9mbDBCdm1f7VoL8OSHA+CBuGrpq4AK3p16XPhTRPuuWWD8/++OE/ci6vlWkw017b0Elhb/2Xp17UvRZ5VPp4LcU3LDMT2v6oAwu/BS/TZjuugdcX0P6ugEkbhEgYhhmlKqb4TIo6lPb1yeqTDwp/r/rS/bpJAwsbe97iXbsBZws/Q4HbzAcB7m9FbNAciyxK9vASkfCM49Bril69Aj+5Gkzv4eWzmcda+4uz0P99Br2zIkdSi9k94SVsqXkoXEcW7aZKu7rE52Jz781DOluPfDemRHilCBSkBVM+XwWMeX9uuGxR+dGAQkLRkNV5z9kn0oXWYeWqbJyczJtj2SMdXvk3uc9hbLKeEG/+4hYkpNT9ekXsiQrIUl0HHG4xuBGgUBqvgVOOIDj1R9MSlEqnkRilAGG46xMxhXmIoNXm/YPirg6vZW4SUeq8k1FB47eHNtr50B0V+dBpLo0BZxCDTXPoT0BrQDP1p19hZIgyzGYPR15nsj/zPqmPEIsvNuw="}]}
+  },
+  "CONDENSED_FERMENTO": {
+    "displayName": {"text":"","extra":[{"text":"Condensed Fermento","color":"gold"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1770098259,-1110098072,-1246379594,-66745979],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY2Njg4NjkyMDczOSwKICAicHJvZmlsZUlkIiA6ICJkYmQ4MDQ2M2EwMzY0Y2FjYjI3OGNhODBhMDBkZGIxMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4bG9nMjEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIzM2QzYTcwZDgyZWVlMWNhYWE1OGMxNmI4M2VlNjIyNGU4YmZjN2NkYTYzNjc5Mzg1M2UwNDFhMWZiYWE2YiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9","signature":"xw8NX81IKiWWencME+amjyu23vEerRUc0z96xi+KXjiXCS8rHkgV4mo1yTYd0kdxvyhRYYGt73M8H+N1pAqmpe28cL9LHaXRuvlNc7o8VZo0fRyx9GTq7sJvk2fhD7d+A294dxWqAMrpJSlvcO9pLAoX6NJLqitLLZMjStvaKcdIOfwIpF7QZtVd4qOFzbY4D9eYVTJcXvqppzKpXj3F/gF12mdbYE9NF3yuhTUZcYmye5k3f3CRnmXmuhMCD3ayXTW1NfWyMQII9v5XwAV4uXJ/+6k8tGcMH/f46uy10rn9l+nZR/btebuPLgZRJWOD8uSNGQa/TTY8TdV72++lY+hj5d9j4yiahq9ImA8K9EmZH6H4z4L+4/z6acG6CEiVQVUjU7KquvqOpLLQ4GHHfXqDWgsgbEW5Qpj4eBnrfKjIj1oNtdZtl6FjQ42QOsmgxKR+Cb9+AwxQHqC70h6sZ0iYYlaEI1Bm3D0izWxHHHIxIriYbOS4+VCF8BhYZcbZlaEVhBHMs35FXdCewFGZef4fmmIOmLFpIdWxiuym9Te0cHOSatgYzncGvb93pz/g7WioeQW334vGz6QN+jFxJ4I7kedBMEPWSkl2SSdw16sMMAUftL+Eynub5kh/NoetTHFNKX6UmceN4x85S9fQ/eWIokb76YUFq5ZuOWF2skk="}]}
+  },
+  "DIAMOND_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Block of Diamond","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "diamond_block"
+  },
+  "EMERALD_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Block of Emerald","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "emerald_block"
+  },
+  "ENCHANTED_ACACIA_LOG": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Acacia Wood","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "log2"
+  },
+  "ENCHANTED_ANCIENT_CLAW": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Ancient Claw","color":"dark_purple"}],"italic":false},
+    "enchanted": true,
+    "material": "flint"
+  },
+  "ENCHANTED_BAKED_POTATO": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Baked Potato","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "baked_potato"
+  },
+  "ENCHANTED_BIRCH_LOG": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Birch Wood","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "birch_log"
+  },
+  "ENCHANTED_BLAZE_POWDER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Blaze Powder","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "blaze_powder"
+  },
+  "ENCHANTED_BLAZE_ROD": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Blaze Rod","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "blaze_rod"
+  },
+  "ENCHANTED_BONE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Bone","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "bone"
+  },
+  "ENCHANTED_BONE_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Bone Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "quartz_block"
+  },
+  "ENCHANTED_BREAD": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Bread","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "bread"
+  },
+  "ENCHANTED_BROWN_MUSHROOM": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Brown Mushroom","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "brown_mushroom"
+  },
+  "ENCHANTED_CACTUS": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cactus","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "cactus"
+  },
+  "ENCHANTED_CACTUS_GREEN": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cactus Green","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "green_dye"
+  },
+  "ENCHANTED_CARROT": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Carrot","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "carrot"
+  },
+  "ENCHANTED_CLAY_BALL": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Clay","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "clay_ball"
+  },
+  "ENCHANTED_CLOWNFISH": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Clownfish","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "tropical_fish"
+  },
+  "ENCHANTED_COAL": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Coal","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "coal"
+  },
+  "ENCHANTED_COAL_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Block of Coal","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "coal_block"
+  },
+  "ENCHANTED_COBBLESTONE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cobblestone","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "cobblestone"
+  },
+  "ENCHANTED_COCOA": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cocoa Bean","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "cocoa_beans"
+  },
+  "ENCHANTED_COOKED_FISH": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cooked Fish","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "cooked_fish"
+  },
+  "ENCHANTED_COOKED_MUTTON": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cooked Mutton","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "cooked_mutton"
+  },
+  "ENCHANTED_COOKED_SALMON": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cooked Salmon","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "cooked_salmon"
+  },
+  "ENCHANTED_COOKIE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Cookie","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "cookie"
+  },
+  "ENCHANTED_DANDELION": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Dandelion","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "yellow_flower"
+  },
+  "ENCHANTED_DARK_OAK_LOG": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Dark Oak Wood","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "dark_oak_log"
+  },
+  "ENCHANTED_DIAMOND": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Diamond","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "diamond"
+  },
+  "ENCHANTED_DIAMOND_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Diamond Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "diamond_block"
+  },
+  "ENCHANTED_EGG": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Egg","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "egg"
+  },
+  "ENCHANTED_EMERALD": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Emerald","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "emerald"
+  },
+  "ENCHANTED_EMERALD_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Emerald Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "emerald_block"
+  },
+  "ENCHANTED_ENDER_PEARL": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Ender Pearl","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "ender_pearl"
+  },
+  "ENCHANTED_ENDSTONE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted End Stone","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "end_stone"
+  },
+  "ENCHANTED_FEATHER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Feather","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "feather"
+  },
+  "ENCHANTED_FERMENTED_SPIDER_EYE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Fermented Spider Eye","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "fermented_spider_eye"
+  },
+  "ENCHANTED_FLINT": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Flint","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "flint"
+  },
+  "ENCHANTED_GHAST_TEAR": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Ghast Tear","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "ghast_tear"
+  },
+  "ENCHANTED_GLACITE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Glacite","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "packed_ice"
+  },
+  "ENCHANTED_GLISTERING_MELON": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Glistering Melon","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "speckled_melon"
+  },
+  "ENCHANTED_GLOWSTONE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Glowstone","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "glowstone"
+  },
+  "ENCHANTED_GLOWSTONE_DUST": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Glowstone Dust","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "glowstone_dust"
+  },
+  "ENCHANTED_GOLD": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Gold","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "gold_ingot"
+  },
+  "ENCHANTED_GOLD_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Gold Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "gold_block"
+  },
+  "ENCHANTED_GOLDEN_CARROT": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Golden Carrot","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "golden_carrot"
+  },
+  "ENCHANTED_GRILLED_PORK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Grilled Pork","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "cooked_porkchop"
+  },
+  "ENCHANTED_GUNPOWDER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Gunpowder","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "gunpowder"
+  },
+  "ENCHANTED_HARD_STONE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Hard Stone","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "stone"
+  },
+  "ENCHANTED_HAY_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Hay Bale","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "hay_block"
+  },
+  "ENCHANTED_HUGE_MUSHROOM_1": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Brown Mushroom Block","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "brown_mushroom_block"
+  },
+  "ENCHANTED_HUGE_MUSHROOM_2": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Red Mushroom Block","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "red_mushroom_block"
+  },
+  "ENCHANTED_ICE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Ice","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "ice"
+  },
+  "ENCHANTED_INK_SACK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Ink Sac","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "ink_sac"
+  },
+  "ENCHANTED_IRON": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Iron","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "iron_ingot"
+  },
+  "ENCHANTED_IRON_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Iron Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "iron_block"
+  },
+  "ENCHANTED_JUNGLE_LOG": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Jungle Wood","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "jungle_log"
+  },
+  "ENCHANTED_LAPIS_LAZULI": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Lapis Lazuli","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "lapis_lazuli"
+  },
+  "ENCHANTED_LAPIS_LAZULI_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Lapis Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "lapis_block"
+  },
+  "ENCHANTED_LEATHER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Leather","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "leather"
+  },
+  "ENCHANTED_MAGMA_CREAM": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Magma Cream","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "magma_cream"
+  },
+  "ENCHANTED_MELON": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Melon","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "melon"
+  },
+  "ENCHANTED_MELON_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Melon Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "melon_block"
+  },
+  "ENCHANTED_MITHRIL": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Mithril","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "prismarine_crystals"
+  },
+  "ENCHANTED_MUTTON": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Mutton","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "mutton"
+  },
+  "ENCHANTED_MYCELIUM": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Mycelium","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "mycelium"
+  },
+  "ENCHANTED_MYCELIUM_CUBE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Mycelium Cube","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[907685261,-306300037,-1834646015,358790994],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY0Mzg4NjMxNjgyMywKICAicHJvZmlsZUlkIiA6ICIwNTVhOTk2NTk2M2E0YjRmOGMwMjRmMTJmNDFkMmNmMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGVWb3hlbGxlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzlhMzUxZDUzMTZlNWI1MDhmYmJmNTk1ZTA3NzNhZWM5NjM5YTA4OTE4MDdmZWYwOWJjNTlhNTZkNDY0OTBjYjAiCiAgICB9CiAgfQp9","signature":"YFDfnjSauZA9wrPhlx2toJb93wMSNaY/7fTxuntBmRvlMhuBgYhf7wC78Hu2Ar52SjHXKwJHsIeg2SmKPT3LCuWw5iAO1mLKEhY5hWKyi9ZgFOxbIVLdLeidKvbv2dKFfoLwmGSpt5yHBccpHujC8Wx9dVQEqKxLdrHg4ltDCTy4GId+T7zbGAXUHPCixN35x16KzVWH0sCQrfaNmCSXfEmXPVT4kD+ybFE/SUr0qNSTIvBbMCFKIdWZIEl1IqOJpqZyyZe/XzF26hQehHLeJYski+ohi8F00ttXJC0xzOqcHZnJjKuSkSrm+rEqTXFyLYogTWPD6UmrrTRzA5XxauuI1+90jXNHeBDfwrSYFT1EAUQGwqdYCWzEbMcAanpM/F92RrIPLonaVt5dzYH5ggFTzYv0RCqr18q74Hw/eafAcC43ziFqKx0hKf859CsWwAc3Ivzq7KXRzgBw/eqWXe7p7WlrFH5+QEEp5HQaE4arNf97PsGJ5G4v0BGsAYJL13500aHX3sSOnpZKsJCIGjp5EexLyYytwbwWWWms9jKzzyS1zfT2cN7N7yfNuqboeQHvdFFLbaAAZIvLYxx7Xpd6gzOwW4v5siQw1pjpVC7bblhg1tRbjU49msP3/OUYa+qMgCjTFGutZmD560u9lOaTfFjni+O5dRoccLqXhTw="}]}
+  },
+  "ENCHANTED_NETHER_STALK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Nether Wart","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "nether_wart"
+  },
+  "ENCHANTED_NETHERRACK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Netherrack","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "netherrack"
+  },
+  "ENCHANTED_OAK_LOG": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Oak Wood","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "log"
+  },
+  "ENCHANTED_OBSIDIAN": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Obsidian","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "obsidian"
+  },
+  "ENCHANTED_PACKED_ICE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Packed Ice","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "packed_ice"
+  },
+  "ENCHANTED_PAPER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Paper","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "paper"
+  },
+  "ENCHANTED_POISONOUS_POTATO": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Poisonous Potato","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "poisonous_potato"
+  },
+  "ENCHANTED_POPPY": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Poppy","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "red_flower"
+  },
+  "ENCHANTED_PORK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Pork","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "porkchop"
+  },
+  "ENCHANTED_POTATO": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Potato","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "potato"
+  },
+  "ENCHANTED_PRISMARINE_CRYSTALS": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Prismarine Crystals","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "prismarine_crystals"
+  },
+  "ENCHANTED_PRISMARINE_SHARD": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Prismarine Shard","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "prismarine_shard"
+  },
+  "ENCHANTED_PUFFERFISH": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Pufferfish","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "pufferfish"
+  },
+  "ENCHANTED_PUMPKIN": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Pumpkin","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "pumpkin"
+  },
+  "ENCHANTED_QUARTZ": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Quartz","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "quartz"
+  },
+  "ENCHANTED_QUARTZ_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Quartz Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "quartz_block"
+  },
+  "ENCHANTED_RABBIT": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Raw Rabbit","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "rabbit"
+  },
+  "ENCHANTED_RABBIT_FOOT": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Rabbit Foot","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "rabbit_foot"
+  },
+  "ENCHANTED_RABBIT_HIDE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Rabbit Hide","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "rabbit_hide"
+  },
+  "ENCHANTED_RAW_BEEF": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Raw Beef","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "beef"
+  },
+  "ENCHANTED_RAW_CHICKEN": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Raw Chicken","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "chicken"
+  },
+  "ENCHANTED_RAW_FISH": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Raw Fish","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "fish"
+  },
+  "ENCHANTED_RAW_SALMON": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Raw Salmon","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "salmon"
+  },
+  "ENCHANTED_RED_MUSHROOM": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Red Mushroom","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "red_mushroom"
+  },
+  "ENCHANTED_RED_SAND": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Red Sand","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "red_sand"
+  },
+  "ENCHANTED_RED_SAND_CUBE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Red Sand Cube","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[735795047,1416445900,-1342131275,-2042250266],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY0Mzg4NjMwMjEwOSwKICAicHJvZmlsZUlkIiA6ICIxYzdmNmQ3NDJjNjU0ZDZhYTZlMjU3NTM1MTE3MWM3NiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBbHlzYWFLb2JlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2YzMWY1Yzc4YjdlOTYxNTkxMjkzNzU2YjllMTUwMTJkYjEwNDU3ODQ2YzVlYmM1ZGIwZjJiMGUxODczNDY4ZWUiCiAgICB9CiAgfQp9","signature":"RfBDuKoHGxpYnfWr6MEPnHsMWvULiV5DiwSOsn5SOniiQQXcbJEHqjiOxcNYd0/4FtgPMhEVDQBfWGyydMfo4dZXCPz9G1CO8i9JAmx9lnVP9OOtDBEyQ3i99JnWlI9eXhmiUrCp48nzkewbKd4knUGoktHlSlLUDx7CQ5omSjDnYJOMKQgbKPphzuBcMviGLutrExi0o/Uez3QBr0h6X28gw+acZ89HhuWC7OvwPPFPwwalfoSY1w/Ypm+fzNKBKcN5c2u4GMdG2kg8euI6G5sGJSE1x5VSjVFbwybgQ4IA7MEJwT7cs8DnAtQ7z6I/BVtBU/9QgIlEhIBM1UWMldlNLdHnq9vOKSwQS2isRxc4G30IbVRq5C7oSgnZKETlzhGztNsypBXaHdO9dsr+/Zfw58qSC4McGNtmPxeFYwgdXssM1+PXYWUm/x+CSPUbo/IvpHPMqblqVY0oTMtm8x52cvnoB6MSmvhzmNQSq7O+O6sUY38GIh22YlorHhGZ4fr2ntuWnykMXtrXfRGtw2PPCSL3IXhAgEAYGWcrjUk0+1XKn4Dw0OFPrM9+GsayZp+GSB75G3fgxqMt9wjTW8yYPOV0F+asCz+y+fNx3LDC32QF/tX/+p6jpFhgVBZyZWuSzCwz/drYUbCQ2P5+nBSuT9mkiDerPyQU/lk4iCs="}]}
+  },
+  "ENCHANTED_REDSTONE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Redstone","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "redstone"
+  },
+  "ENCHANTED_REDSTONE_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Redstone Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "redstone_block"
+  },
+  "ENCHANTED_ROTTEN_FLESH": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Rotten Flesh","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "rotten_flesh"
+  },
+  "ENCHANTED_SAND": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Sand","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "sand"
+  },
+  "ENCHANTED_SEEDS": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Seeds","color":"white"}],"italic":false},
+    "enchanted": true,
+    "material": "wheat_seeds"
+  },
+  "ENCHANTED_SHARK_FIN": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Shark Fin","color":"dark_purple"}],"italic":false},
+    "enchanted": true,
+    "material": "prismarine_shard"
+  },
+  "ENCHANTED_SLIME_BALL": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Slimeball","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "slime_ball"
+  },
+  "ENCHANTED_SLIME_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Slime Block","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "slime_block"
+  },
+  "ENCHANTED_SNOW_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Snow Block","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "snow_block"
+  },
+  "ENCHANTED_SPIDER_EYE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Spider Eye","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "spider_eye"
+  },
+  "ENCHANTED_SPONGE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Sponge","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "sponge"
+  },
+  "ENCHANTED_SPRUCE_LOG": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Spruce Wood","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "spruce_log"
+  },
+  "ENCHANTED_STRING": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted String","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "string"
+  },
+  "ENCHANTED_SUGAR": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Sugar","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "sugar"
+  },
+  "ENCHANTED_SUGAR_CANE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Sugar Cane","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "reeds"
+  },
+  "ENCHANTED_SULPHUR": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Sulphur","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "glowstone_dust"
+  },
+  "ENCHANTED_SULPHUR_CUBE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Sulphur Cube","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-807122095,-1515244196,-1121173280,1705822707],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY0Mzg4NjMzMDgyNSwKICAicHJvZmlsZUlkIiA6ICJmODJmNTQ1MDIzZDA0MTFkYmVlYzU4YWI4Y2JlMTNjNyIsCiAgInByb2ZpbGVOYW1lIiA6ICJSZXNwb25kZW50cyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80ZjBjMjhkZmNmNDJkNGRiZDI3YzMzNzhmNjcxNzZjODQ4MDBiYzY5YjRjZDUzMTcwMmM5NWNhNmZiOTkwNDU4IgogICAgfQogIH0KfQ==","signature":"ef/lq5XMp15Lcu+KerqVlvacev6Asp96dsdvy/wSHJYPqG7++s7DjysnL7oJOBG2xTWLKB6ot+CyiGk4Hc7buCcABjdmOS8hiFbBie2KaFUtqoCgiHDULd3tqMktB6QE9a8hDNiu+MBLE8Y3qdGEm8Kg3aegLCStJ+hf2hR0JiKZ9Lc5SVtrMEz383H+a+WyuZjQrWCa+uaC67Igkqq4I5A/9Q9R+fd6y8IEvx9xBylFgeH1pVukCZ7b+8vvEP5iJZxg2RNu6WH4R09RLzgF06ZgkGhoiGR9JDXVDy5jjyufEY05gxaiQmgNn/cWKtrmny4+bY3HETXK40N5yTXO1/GXRyiFjKucaAL3NorTllAROjy9nMnF8fOMBqcWIJOkDutVj4uOfRBO8+k7GlmSNL08gYXC8nXoGDdxscDOS7EGThpSb91PmHhAfSUxi8cir4/JJxKf8H9rgBdh5Av/UKq2dToXnExZeuo9lE/CZSRK7kWEmXF6GMGsLSRfOaJFDOldMu9hHfJVr8frSH04zvSEssrTb730RLch01g4q6hWMM0xXxDzADvV2vTieI+qMP39/QDSa2swy4Q6rGk+LDqcaIhlrMKRQvx/6xFOaW25k+5v2fNKGCKCQ6SLWebyts+PvUeOk1+nMZ7TUupXvxNrbjZu+Nhk45MBVl8ESaE="}]}
+  },
+  "ENCHANTED_TITANIUM": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Titanium","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-942723913,-1231995793,-1372722177,706013370],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcyMDA0MjcwNDg4MCwKICAicHJvZmlsZUlkIiA6ICJmMjc0YzRkNjI1MDQ0ZTQxOGVmYmYwNmM3NWIyMDIxMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJIeXBpZ3NlbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8zZGNjMGVjOTg3M2Y0ZjhkNDA3YmEwYTBmOTgzZTI1Nzc4Nzc3MmVhZjg3ODRlMjI2YTYxYzdmNzI3YWM5ZTI2IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=","signature":"e5uoffTpYZH0QAKi9Z575jMdcmeiaRD5zaLgUW1pYJhNkQL7dYuRGrvMK0F07Kfk/lmPBOpGaAhyr3L71c13a7DdEfXEW15qprs0tJxpoXHZPfBDW90gwndjx0de9AJJufXDGOaXwgwrnz0U2Sjtj36VwwUB4yZHzLC2C2sgr4i9G9heVbvSos4WsyUWsJClciaWi28iDkefuyAmybh880+TeCbo7oDJG1U+sw0MLTd02iLXpVUVb4Pa2c4B/7B1b4tj2ADhy8DhkrajOM8I2OZhS46pfNEzMkIL5aVD8onItj9ho59gJbqMSDBx70Y0fEiYw6swT8g6xOicEhtcj2PiiAlItgAEHSZOyA7YOIiF0b8FKNqzlMqIqzTXUvRKpGLyLQb1JQziTPbal36WrWqnOuZJEHuiNqEpiPG7igvBbPeuQboIfoR9CbwpBLm0h0se86jesxDLwFzL52fdbYQIETkxAUXGbHcdXj4OxY7RA5HPZBNuHji2x5q8eVR2Vr2A1ZyZjf6T8nRD6wHPOCRNHbj4WsbC2bCyTryC3c1hWk9/PwUyOaPlVarv+53qQj9LoSniTyTIym0XESy7nuV/QaIRBp84lDApi96Ou+3tbgpQg/796pIYabNfK9CV5agwSflBvWvhxR2MFg51yVSjE3rekZmaJTtIlny3g5U="}]}
+  },
+  "ENCHANTED_TUNGSTEN": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Tungsten","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1195073012,-1408159739,-2085956887,-1732038987],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwODkxNDY2MjE1NCwKICAicHJvZmlsZUlkIiA6ICJlNzhjY2YyNjMxZTY0MjJkOGY1YzE3ZTliZGQ3N2RjOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJEQU5JRUwxOTB5IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJhNDQxY2IxOTQxZDMyYWQ3ZGQyNTVlMDU3ZjJkZDM1Mjk5MDQ2Y2FhYTU0NGJlOTY4ZTBiNzRkNjlmNzE5OWQiCiAgICB9CiAgfQp9","signature":"sRqf4S74sG8AOyo8HuP4hj4+CJdGhVKvo8f44qIYD+qh/00cdKM9TLxQAVL49+1/pngnqj9CMJ4xjJ70at99BvMtP8RcRHIhnWnOjU2BlgRFH9WHSQAfymi0Bo31DOb8BoHFSzOImzqITzOq9e2IEGfdndgC8F5Lo9GuRNgOVNB87XQJIOJozMxNj1pNbrdcfcED4eI9k6cHtdIXzqUsI+gCQ+byiWgX+Eg+Uf0xoaFvWYNvlXbC2e4K3EcYB7CF5puBKXsTU176M13N9F5BYgHZymVID2PvVDTSOCQexpH3TSGyAKhBptong2CZP4Ea9QMTTNOkWeXNjWSbujc4Supx7cg58DAlU9QbD0lEMxwHuV74DWpPVxnefFQN40T3faarfJMcgX/VeQ2kd7Plql2QTV6hl+MfrJ7K4BV0rYCJy9EFGrH4wgeFbHMWChl1gSzf8nfM875sbzVtz0UfIOR4j8V4ixJWxBk9SQD+jLFrnyugThO/H+6vk2ZxLKRUPDPS8W58mECmOfHglk8rjrsaag8K6sqHxGIceayZ2OscCRehYF9dWJxNcTmZvvvUf+JArU5Vj3h4VdzozKLyloabwMNSKwROP7DnpBb2AOrz0bPw/CjgnIGIuM2bR16hxb26Q94Hfr97LYNYROUsij25G9zUK3fashir/uCdgPs="}]}
+  },
+  "ENCHANTED_UMBER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Umber","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1965590866,997470887,-2008267778,-1290275295],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwODkxOTkwOTI3NiwKICAicHJvZmlsZUlkIiA6ICJkNWMyZjNmZWY2NjM0ZDk4OGFmMmJjMDkwNGEzMzAzNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJCTU1HQSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yZGZhNTMxYjE4YWU4MjI3NzAwZGQyNDY0OTg3ZDcyYWFhYzE2MGRkNGE2YzRmMzAwNjdmMmU1ZjFmMjEwMWU5IgogICAgfQogIH0KfQ==","signature":"AF1AC0y4YXQpfUXakIH9CMyBaKkO7ChkUCVZPeECvqBXYZB7NVG0DtKLt/kHfq6CR2OfWGniZj93o6YhjQPmB18EvRfrktTksfEFeoMss4DfhXjNZBVHI+oCCdSHsnwiPntIVbLAUlP0miz9gwJHwEB1rz36zkBl3JcKCdzDiN4BNqKbZEUn7hsTkHHavClXUgRDAwdFObRBYXjbef3Bi6NmCU0qMcuIdJze6cX1sa8d0pwQ6vKvUa2MNsVJEp/GnTQCemF+hs4pPxrDffLFuYlsDjjJ5KO/I5fGTBF2NpLtwijdjh2HrZ2mLYkLBWA30HZSKRLAXXIsRzp/G2Q4c7hEycWP1DhtsdzO9YB3UpTEpY5OyXHm1V1lAWUa9p+8W9EuKqAa7+RSAhnXNHQhkV01zOxJZfCDO/lP9lvzoj1P3UutrECObmy+yQB4fnP6160XyhobpxdMz+J6X3JSs/fDKFqMJsu2IHFBCpjw+aZNX4F6+WnwdQdj6yjUwHEbmL98iRLmPRJYqzoZUEEtT1jjmhhclAyyyaSgZtJxp2zqZ6R/+4lUoHf/DlMq8d9bxEMofefwwiFZ8IMsA17ZGCh5p6/11V5tpJLXUszLfReXQiAtPFYDcS/z50fbUNmWhHcY4wVaTfjaPd2tSTD/ZipsxYmPbR1XfNiz830PLqc="}]}
+  },
+  "ENCHANTED_WATER_LILY": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Lily Pad","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "waterlily"
+  },
+  "ENCHANTED_WET_SPONGE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Wet Sponge","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "sponge"
+  },
+  "ENCHANTED_WOOL": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Wool","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "wool"
+  },
+  "FINE_AMBER_GEM": {
+    "displayName": {"text":"","extra":[{"text":"⸕ Fine Amber Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1579933696,-406832066,-1139725171,-371889948],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4Mzg0Njc1MCwKICAicHJvZmlsZUlkIiA6ICIyNzc1MmQ2ZTUyYmM0MzVjYmNhOWQ5NzY1MjQ2YWNhNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJkZW1pbWVkIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzRiMWNjZTIyZGUxOWVkNjcyN2FiYzVlNmMyZDU3ODY0Yzg3MWE0NGM5NTZiYmUyZWIzOTYwMjY5YjY4NmI4YjMiCiAgICB9CiAgfQp9","signature":"moOlrwWBNTEvJbAiBBGrHBBRdC5Hi+yrMGt0+U7VfarW/DjiTcm9glGiekEx8+KRlqmgAKGS++ndwTvGNfTc7TREhuDfxpOCSzDiEvYXoD4nSG0hd01OFlXzFsugdNG79xiZmDSCpOZjJIh6FLLoXiTmnwBsswn2Q0cUvfmIfQsUbH3LDobDi9XnnrkxNUP1Iuj1KI6GTBD+C+KkqPhIIsrVM4J3UHV7Bc5+NUsQcDuxIzz+0o86zRuF62XeCJDHfNC0snJ38AIsEhlMkl9JlI78hvM8NfBdReIBzqQlteee9P+zRFP8n2KjueLvOtac5iQLjuuQZGiJ5M38z3XcDRx50OH3Q5FK2KdBegFH+A/5Iryl3oB6f3yUcCbmocEQJfARyIBAVD0OdK8Bk2lGreUrS5wtGKPjW2NG6WWjy6toJsdi8UhAA4TmrkHNOeZfRboNiZhc3Ul4U8uOSsLoT3EOKqxJT3v3Og0tsSdyEaKoxk8FngX4pJ4b1FG+zE/7Ika9RKVgi5GMxedu6iOkgp/4Kojg01Ysvp+/kxi8rJHHoauh1Lz0jlhw38I6O07SXhj754h3oP0aion8yNRpJzbx8U6ZTF4Zc7It5byU0PaobkWRuScpezbAx4Jg/MwadodRXD+DM4HEnMqfWinBk8Qr17eB8IMK/LbVeurTxIg="}]}
+  },
+  "FINE_AMETHYST_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❈ Fine Amethyst Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-177015201,-1507773253,-1927254770,-492503334],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4Mzg2Mjc2NCwKICAicHJvZmlsZUlkIiA6ICJmMGIzYmRkMjEwNDg0Y2VlYjZhNTQyYmZiOGEyNTdiMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBbm9uaW1ZVFQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2ExZWU1ZmZjZTA0ZWI3ZGE1OTJkNDI0MTRmZjM1ZTFiZjM4MTk0ZDZiODJlMzEwZGJjNjI2MWI0N2ZiOWM5MSIKICAgIH0KICB9Cn0=","signature":"mYtUx28bJKhcOdgmRXNaWGwtFTcYRZY6nL+Lm72jupkaR80lcV3SE6O5bwZkI2eemW5qveuMh7JB633nDp8jiWcJ77kjgke244wD3KqX7cEKcrRDXL2q/k+isc02j0UZ49QqV00dCFlFQk6UFsTLio0mcCRliJmJIo2QORcToL4KU+VCDZOiCrfKyNT9RWfL1GgYN3dmVXpsUcFzoOZKyHhli028UT4AXZ6dhsUBFzHIVm735oEl9lPydE4ygMcD0+lShP/FIYQpEhtD52J7AOEiP4OWk/A1XozPL7miIeJtCv7ZCDR+YoeHInrgue9kx5t8VNQb9YGbzSRGfX0MhInvq0KXmsEkrETUZuioJwrnAWN8zpxPUxlP3FM6aIS+GuxkvfuKcvqJXvw9KJ+cAof8HWVbB4D43ag8nSNQX84+3yc0kwM2rePZZwMyK2Pxh8Aa50h/k4Gufe3DrOjJypSw+t62o80KOlUWAfo99tClS0rurbGfN9FOwj4P9PB2QH/K+tqLfEFI1a8o5uRNT5aauoNirDzxFzc+ZfVLMR+pL8JeqEC3Fb00UCqY+tbONT6w/V9rqfXTT1OvKEhNZbwQLsrN/fTnEWxkLkXmUGk4FlQmYEJFSuBUmEqK9VdqDljz/MhEvizOTBS2b4fuseDQOdw1XdlQRl2FCKDmGwI="}]}
+  },
+  "FINE_AQUAMARINE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☂ Fine Aquamarine Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1047366650,-1318440312,-1999301266,-458480023],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MDg1NTkyMiwKICAicHJvZmlsZUlkIiA6ICI1OWZmOTU1YzMxYjk0MWI0YWQwNDg4NDk0ODkzNzUzOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdhMzQ5IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJiODIyYjlkYzcwYjljYTIwMDA4YzMzMmY0ODFjYmViYjUyYmQ1MDY2OWNhOThhODlmZDMzZDEzNDVmYTEwZjIiCiAgICB9CiAgfQp9","signature":"npqOgnzB3Qj4QU6KZgwQSbO0wMsk3UMKchNBIGvB2HDtN3EQXlgV6WG6R25RRKUoOH/sWqTZ0ySMhCE64dVXz445/D8LLMls6SX2Enof7N9aNx8sB6CM1yw4mmsCk352U0Rsz+WTuiqay2vpXHVRvz2RMwu/lO39Dgggj6vgALHVBGPnXE//uZyrtY9d9A//6qhnaRWeAS8H0NLEO62BsLZs9VhqgGqGXB3IPJiRQaCHkR3CAcUrijylSrBsMzaVtVFkeoltd1ka0aO6aYERhA0zrQlqzmhVFFn0XxTvBvACCTcnVHjuPFu4GHQYOY+y2mjxP9OTtCHbCXLyCeSogjH+PixyB3Uu/HbOBjecCTgjc1uCwVNrKEpIjhCh8OjxH1SNl3/vjNyehq+NNmHr6J6q+qrii6YAn48JoWSmJ3mJT9BlVtb+fmV/jI83vADMNtBch1ZHyYf/2LpwUFho1C3saCa4ed7R6FYdKsigrinXVokvH3nugFr2mo2SkbNYCwg+Tdej5jaISw6imtq+aO40n1YZI9grNIFz1vNWUgIN4Fb75A9AGSetlXyl0wBx4YU5W4YF/MgoHFpGx6JSjguqvrjwVJd98VWQ5Mn38I8lKbl2NTFmXIDANUqkfrm0uockb2DGhfW0udFp09yxIZQyfQHO73p36Dyhxxn4Vlk="}]}
+  },
+  "FINE_CITRINE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Fine Citrine Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-46954690,-1430766643,-1333278402,881337559],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwODQ3NzEwNzg5NSwKICAicHJvZmlsZUlkIiA6ICJlMzcxMWU2Y2E0ZmY0NzA4YjY5ZjhiNGZlYzNhZjdhMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNckJ1cnN0IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2VjMGFiOWM5ZjM1YTFiZjQ0ZGUxOGEwZGIyYWEwZWQyZWJlOGI5ZmFhODIwMzA3ZGEzNjM4ZjM2YTgzMDY1MzYiCiAgICB9CiAgfQp9","signature":"UE4MiFJGwWYf7nxze8dkedOllok315qPd5VLWPaEK/W9bZgBUCPfEQvfs6pI5BVHWj5Mql2INjtx//g8ft/hbW2NmZV/ZGShLHq2MEuDhdMhyDvThBpxz1bcnYP+jisDwyLMHgfmaLVBl3WTTvlQ0LmMJIPdOdUoM7USp0PwOC29pvsucoKoFk8Ll+9tEMLcrAYTxkvM5HnLIVvzhvGRjJWSGO6M5C7bp2Z8OkivDRPfbsRhpcmTDb/tORFHK8QtNIscypPnDcy4tbq1sUAswAAPbG8s8JW4d/5HAVMxNrZyS9G3EJvaK5RG4JbshKYt3ZoPLzIUqXcBFQlk9JxcBIvGq1ZzTvLI2V6C44tKXslhn5FMNW2AOWYBPvXKkomP9HDV243RJZSiu0R2DdFib8k+pPH0n7ukq+TpXfcZQtPXCIXxmW4+qHwpcZaKY+9iJnWm4h6rF0jl3rQ7stih61/sbamxONRrZz5R869RbN8n+jRNzG97VOO5iKRWt4iT17QtnMS8Ls021dsXwNpIBGSTKCUsr8ghtjA8jSOlGRXGJ1Ox4fTzyhfd5VAuad0koS/Dg1bvv20vIucaJpgjG1LsBEf4UYLbTNLwYwZvXZIDnJHEruzg6b1zTj2Bp/ypCqNfuO8pz8K+0qpAKU/D/rST2fb26jHSq6hWh2jU0AA="}]}
+  },
+  "FINE_JADE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Fine Jade Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-957013102,-2025571104,-1907852202,-1347206078],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4Mzg3NjAxNywKICAicHJvZmlsZUlkIiA6ICI0ZTMwZjUwZTdiYWU0M2YzYWZkMmE3NDUyY2ViZTI5YyIsCiAgInByb2ZpbGVOYW1lIiA6ICJfdG9tYXRvel8iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjI4ZjFjMGM1MDkyZTEyZDMzNzcwZGY0NWM1ODQ1YTk2MTA4ODYwMzliMzRhYmU5M2ExNmM1ZTk0MmRmYzhlNCIKICAgIH0KICB9Cn0=","signature":"MDq91oZTssKws87cFdkwWMLROsGF//R0ZHSDf/4GAaajwAqTF4NY94wmx8ilYPq7YAaBFuX/fnnS0NAco71nbQGDgHNijWmnRZhn3AkiSxj6t72PlVvEa3NKYojq6yJW4TGz6K+BxgWpCclhci2Tbk05lbRQ1pjyLEzaHubL/LGtuKn8UfPHBrrwjIErIvrTqiP9qqPKZgLerrnoPcchokSmx1aFJigrSJNVe02d1C2aAcjne5zP8/n4X+NYQSo9/f/nck2rHt58dx6d9nZZ9PDGvGpyuhyE4DMdxHSkJFhEfKup8CEirhqi+2+hpV41od9kY9ebhPw9a6ezrK5zme1tmwZ0ytg4xBcarVIK9PJOI7alQqQ7/il1g7hL+306OBHk9OYQt7b30BvPEi4C43xK5GHk4LZHJCjLr8fwgXm7/rLNLmopt2W7zpSFk/AIH8N59xaiq9+PNJGQhbpwZPx23TUL1TZeK3Zgq6kKaQ5rDoATbbCbZx5NddmioqbInJ57De6eiMX8NLb2V8l86Pq0BLY5zjkqmjUFQpUxW+jdjScY5+NIhw2aVj64Dx2Z3hvknRYxATuIB9jnlGCRNm8Wz8NMinBzSqYbAi097zUozuqqTwrmD82IGt2p59AOgxlF8RTEe9dC8CIWyq6jB5QzyNFn+eMRhelEKMtoPJw="}]}
+  },
+  "FINE_JASPER_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❁ Fine Jasper Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-381490330,-1555023643,-1426452996,1041740972],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4Mzg4ODc3MSwKICAicHJvZmlsZUlkIiA6ICJjNTBhZmE4YWJlYjk0ZTQ1OTRiZjFiNDI1YTk4MGYwMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJUd29FQmFlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2FhYzE1ZjZmY2YyY2U5NjNlZjRjYTcxZjFhODY4NWFkYjk3ZWI3NjllMWQxMTE5NGNiYmQyZTk2NGE4ODk3OGMiCiAgICB9CiAgfQp9","signature":"pKCkH61SYX6JI3Q5JgrxU39sJke0beDq0dvTye/5yTQ6QwSf2Q6MdU00UfrmM5JJD81xfYWVWvEXL2wxAhUrnq13xeQ3ZNrsgnWCibufbUOvodStxdCetiSrKEvjy0EuEpblKNKftNqO1/SknLq/foRA46lrAO6p4A/Tg5fZ8nboe6eqZ00A7DpFe1hOcM5eEf2IYC+4V4wVkB9MBXpOS8iNR/sdsC3BvYgKywvzX0cpOa4N+m3FZTPt//6yyjY90HMq+OcyhjVS1xKg4ec/4pNhHe0Dq/F28U0vRXkaOJN2z3DEkKSYKCg2Dtk80N3hrvxFxP1zsCXa9yLhACsBTcXyFxSrhERQI3VI3uOl9Nc3H/QPmVN+AnkNoctYMiq0C+QtrTEg3vLU5XZ1w9uT2OYUzzr78X6TVeMZANraY5fp+MoxQ3bgTYXHJKnj5dYPK69u8VUonL30yL8/wnq8x5XpTbUn+uo9f0/4c48x7MuQppWwaLRxps8zNculdkWt5AAVuN5DZtZ8CoiH7HktUpKJFKI4fJy8yURhQ3lDS0YwOrmcOakJSydA8qLsxMBvB3D1esho/ydKLQu3iIZnWX4tqwPQH7GWOf9nK3iACXfezhE8n7uVCnWMDzD7rO/aOG1vgtZHGeWG0Egh0h4B2Y1Es9dQJsbPIUUhrya1p8g="}]}
+  },
+  "FINE_ONYX_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☠ Fine Onyx Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[278408631,1063008142,-1482755928,-356921900],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MTgzMjQ5NSwKICAicHJvZmlsZUlkIiA6ICJiZWNlZGU1YmRkODY0YTkwOTc3MTRmODk0ZWUxNmE3MCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTYW1hQ29tcG9zZXIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg3YTMyNjMzMWZlMjdmN2VlMDc0Zjk3NzI3NjA0YzQ5NWY5NWMzNzgxMjEzMDJlODc5ZTFmNDBiYTRkMjBhOCIKICAgIH0KICB9Cn0=","signature":"YIUw61GW9c0fgVgGttBFWoxy2dWa/B0A63IvZtZRYFBpJROu4H6qDYP4PGTsmLvfxPZNw8y7RIQC7b63LKCte1FqgrDuwbnR2/gOtTcjiGGFJk7HbiIEgt4J9psLqN+s4LLEvubPHFwn60ZxhOFZfkJMYNkEik/TXTTgu7j0LBNCGYPb8s0rRnM+M13TuthtfERTaqkREx3W1HL188C+KPTNGW9RKcj/wa+BDfPwWsPGrYi5E74f6SUmai39JqGB/jvf/bp2CtzjufcNHtCuIcCQLzTbo4dv4hzbTGPNucSbPwU75o6TM+qhFpElWDH6SnEwmMIS4O8P2N1QaBsxaDQamhu85f9UgQQF6xI5Fjx5D0AbxYxkF0sup8Arf8toghtxJCyZXZgmZsNL/KdlMhLgQwV1hv3/KdFZOxdMHtZvl8xfuMR/wSDhD180++bgFqsMnQ7wYeOOIpz8KpgrN0LNZ/lnhQ0fUi5Hjh8wX1mHILuWLI8tjdQrD7XLjCyw655cQffRgudltgF1N/xbmx864Sm3yqyGqr6T320cavZe3hfzCoaLNVMHwR3qdNwgQ/QZC+bzPgS2Ga1DzoK78mTrM8VLX1zMcl9cL9udSEDFVP0HDNfLiELxz+tKRIp0DVtEw10M6TQCulBH4NeL+9Z+SKHsCUgx/yTeWy6eH8k="}]}
+  },
+  "FINE_OPAL_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❂ Fine Opal Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-712425403,-1536542227,-1760285263,-1172165057],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcyMDA0MjA1MDI1OSwKICAicHJvZmlsZUlkIiA6ICI2YzdjZWFjNTdjM2Q0ZTdmYWI3MTc3YTRkMDhlMGU2MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNRzE0MSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hZDc5OGUyMGE0N2QyNTFhOWUzM2Q0MDMzMjk3M2M3MTg5YWMxNTUwNzYwYmEyNWM0Yjk1NmM5MTU5MzY0NTY4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=","signature":"m+wcLp7YSz1KQa8f8OvImraCtLwEvqlhUJFxs4IeQAioZnDAnnOPse6yBNCdWmWLedpOVuqOzenVnBJeTem26wgNx/0TLzbYB1ihLBYiAXPn1qs5Yq1Z3LdPxQ1+eHP1FQ64/2djIiuvsmueNG36Ptf8+nUbIrVcpqvH68PZdW8sYRWlpbP9zulgNHlFWopLGSht5n1h7847df3OBGx/IgRkU9Bb7KybaFRzRhqh2l//w0O3zErsJlrBluv0LTFuIkjLXhhqahKnJRwcjwM5cjzCQAQtK2OkY8lw4BMKfsz2L/NumlxfXCscNnZ5BEgu0Ctv/Ii2e/sq6Qksn8UY+90Mv+Ok1lhBc6o1uPJTGeobk/XM7DvW3GZgHvjsaxZ982wQdWOkDfVJjPGtXM+RPH2frjGDXsyUrsWZnLhCn2Il+hkK01CQ2hWLaU8ZymrEoryoJR2jBVGVKg/dvXRHrA0rloIPOwaPl9Viur+UE6MWdonDir3TxdpahAfRNMYthBdVVPGu388D2nGt64eRZkA/F7VDiN8zPK4KyixNMnRYnzdJyKN7et/AGYjBTRdEZFUMFCHbhDb/5Rgt95+7OWPT7hq0KJ//drSw3lOky/oejvUFh5kdDAGjG3DnkKF0g/sJG4p1vF+kPf0DyLbjsZjaqSuEH1obiwtosx9P5hM="}]}
+  },
+  "FINE_PERIDOT_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Fine Peridot Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1475558868,-978830761,-1841519736,-43373236],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MjMxMzU3NiwKICAicHJvZmlsZUlkIiA6ICJkZDNjZGJiOTE2M2Q0NzgyOGQ0YmZkODZmYWE4NGY5ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJFTFdhbEtlUkpBSkEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmNiYTdhZWZjMWM0ZjQxMjg2ODczOWUyZjJjMmU2NTFlZGViMWJlMjVkM2M3MTc1ZTY4YTA1YjY3NTA2YTFlZCIKICAgIH0KICB9Cn0=","signature":"wt1KpSliDgpyRFkgLlooERoPnOksrYBTpUuHpMZ42w7HPZQYvq8YdE8tGprToRkIbMLCYivRE5BLBMSqInXnq1HoOo5rIKo211Zob1WbYQTOqYkRSOoRZz8Zk4m5gptttKqhm4iaRFUylGlmcMqsK5NyaEjNfrLvNo0jIwQJarLD1C02R1ehS3t5Wni1kTz0BgCkImSoGMkzbLHaUPdjKxIz8wwoaVurpVuTJDh3dVw6EQnbY2GTLZzyiFD7rM/wuABm2Zl0VvrxhLvhcUoN0AbcfdI3U3X69Rgwn6qKX4oAmRpQIwdD/Lllm14N/VlOD2t6GBOk2EBtHFNC2vSvRaRHsVa+3cBb5Wi2dwQEdSQeTl6pD/rPHT7Z1ypgCDjMGKSv1ij44DLHOlRzMHWbs6vcpUkWH/4l67Xi8zCQCgOnRLzjLjLO1DHaCk3HM/Sdt6rbOK2mftRXkkQZQ4nMCXdl24CvmUrVP1Q4Kk/RI692yhBNd+zyXg0fLn4tNQzJkjM5aj5Mgwn6nnBjQCluCXT7k1bFNWuL8Uu+woIQ6Hh5AxIjtEDRR5rVmT9OunD9KRKX0KzpltqdVUc6qkZMAsbsEK15lBBZvGjJ09el10TeCXzj+HIljZEhCF5xNaWwDQdD/Lj34G8w3ytu2BBrbixS6WZ/GL9XHEJr5nneHuY="}]}
+  },
+  "FINE_RUBY_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❤ Fine Ruby Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-2065717760,-958448328,-1763501001,558082007],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4MzUyMzU5MywKICAicHJvZmlsZUlkIiA6ICJhNzdkNmQ2YmFjOWE0NzY3YTFhNzU1NjYxOTllYmY5MiIsCiAgInByb2ZpbGVOYW1lIiA6ICIwOEJFRDUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY3Mjk1OTAyOGYyNzRiMzc5ZDQzMGYwNjhmMGYxNWE0Zjc5M2VhYzEyYWZiOTRhZTBiNGU1MGNmODk1ZGYwZiIKICAgIH0KICB9Cn0=","signature":"iKgcxWTGDEtgCRqIl97HW3jY/Fd/94GM0V1NWExV+0mOPXN5bO3chy5EiLGZNEg0aw+k38h3/LwvvQkWGNqdy6BPRpLQF2XRfAjtBN9CGZlMKeO6JEIbq7HLFUv4mwEI9kXUTbSIDR1rIrv1Be1GpPA909CEZWDVZDctnKnyy73lGyjXMnBsGIKDn/xHaEa56Eb4hW8sBjLhDqRefuYBu4+gyv+a1pR9kevZyzIwZpUTT7anznH/8FsIXz92FTuH1z2MW5E4Z8+A5fvZdwtKAUNFzSu/r4rbV1qoSDIst9PKgsu0hHtnjeXCGv2drzjgQXU8IxWnq/FuYCuZcIL6fv9XpwKpShTrkAAX+GquH3fvlVkZIlKByYvleQz1vWMjhs/FlhYGP2zKeRG37cy/+4mdyBnwT5TlCJt+EQnWW7juab+q2zQ6lvEOOZgHYR4U1hj1xMmVz7hqUnFAhPv554ywc830f16aZHcT85dP8LtKxkkMhLep/YvXxDhFKzWuW/DY8cCnoqnlIA4F1QzN/HBE2kuuSUqiv5oQiVMhlvE6Miknok0U3mhQsd0R7f+rAr+pbBo8kMp05tfnRwsEP8G4yJqyCJTMMVzXnMRGSj2wLjg08or7+TNvDPgSeRHWANd7GCtFamVSGBZ2I1963nFIepoHao6y36cdPlnjQU0="}]}
+  },
+  "FINE_SAPPHIRE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"✎ Fine Sapphire Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1731890102,1912615636,-2077408205,114940956],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4MzkwNDYxNSwKICAicHJvZmlsZUlkIiA6ICJmMjU5MTFiOTZkZDU0MjJhYTcwNzNiOTBmOGI4MTUyMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJmYXJsb3VjaDEwMCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8zNjE2MWRhYTM1ODllYzljODE4NzQ1OWFjMzZmZDRkZDI2NDZjMDQwNjc4ZDNiZmFjYjcyYTIyMTBjNmM4MDFjIgogICAgfQogIH0KfQ==","signature":"CM08/yKiGH3wXmGbJYhcwVzeTg2tM/8KsSZyxaqYfnE2y7ZqHQwFWr9oIDaQH0i+IOUOnGz9hyYXxJsFRz7TFVeXfCqz4i+I9i4lpknINkNhnkWRvIlm9HqqufyRI+xn4hUWd0s+QLyuuXeaI1iqOrj2gmqyImB2sa6GWxGNba91iYg33KPMT/JHLX4iGMZAyTBHJzL2+zE0FlHghqNmTR4/Xnyi+olJ/Jq6qwonQe91JHYGJ2UrEsyInztluEPZdI93Yic/FKy6e+295OoaS7HlUcUmhq3uxOccng6fAixje0UYViSKAgIuO4EGOxvr/hdqlh2kzhVaFT6VNmZZWDLESsQnRbOUZJX2hbkopMwFVaBQjJB/+cQ7Te/Oq2H3fVAsrfGEEvrFWK5/CB9K7+2Ivy0/Gtq70ONH0zz//DsSgnFYcr0RbU9ph38Fqt+nemIZAohT6/qvTm5h6I/HQC8KPmay3rGSHsutAdpPc7HyXcjvI16b/GrCYAN5QIQjEpHdcISAoNPFx14KdcuCm8B/BRXsZiUKIohnNTlIOtTniXNDPXhvd2YqAPaVE2Pt7/aE4sp9w45q4JR6hcowXlx91ogoQ8/fdFE/FjpmdM/vn5yKq+qz9lXyYrKTEDUZEzJu9ofusehwz8XvF9f588QwynkJ9ZkU5LfuMsNDXpQ="}]}
+  },
+  "FINE_TOPAZ_GEM": {
+    "displayName": {"text":"","extra":[{"text":"✧ Fine Topaz Gemstone","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-2081972963,-1430310039,-1479494367,1603356601],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4MzkxOTUyNywKICAicHJvZmlsZUlkIiA6ICJjMGYzYjI3YTUwMDE0YzVhYjIxZDc5ZGRlMTAxZGZlMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJDVUNGTDEzIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzkyY2I2ZTUxYzQ2MWU3MzU5NTI2YmVhNWUwNjIwOWNkZGRlN2M2NDY5YTgxOWYzNDA1Y2YwYTAzOGMxNTk1MDIiCiAgICB9CiAgfQp9","signature":"vZU2CB6YO40eHqidV6+CLBsKKIjR3uJa5AOJWWo6boXb+F8ErwuL2BFyI7zI2QnxoUf355iOCRe04WC85olr3d9ttpy0hq9dkcmdQCWiiWoTRUfAIFhqGYYNLZwAHGPCN7XQQyhJQLgVt1NWJpCnchXGMQClSOwbNBHFoqNDP786xvYPIzlcMM/rbT8g96UxUUCvBBxLBjffEPtcboy4wjMb//FcCjJBMPuGJoh5fvUZUiaupostRH+oVv174oyzmNeSveDZG4uSd9VmF5f0VbbXkS2rpkj9otvaF6XljLXW8sOKToGHOjb49Fr9wJC5VhmGc3wmpGhXP10wjQXcCGstZBuU/GWcl9+DjqYgUkPAM1I5w+ZSdyQrf+rwIPQnvJ3HD145fSRUZL5mvnI/ZJ5DH8oelE7FO82EEttzO3fIvfChkve2uW7SJEaRqlMGlWn0RN2HkrRE/QxDiPOgPhqbYJ7yBT1ckWAgdLSmVDw9f8mTY0Adhrub9kSzkht1mPnmxbkE/uwhtnaR30GoEx/NUlrbLg564LJCx3fxAjfWZJablP8pOyoYmvGju0lKd8TfR+4fj/TmnOtySKxqHxuDaXJnlLae0tM+SeS1+qEDklkGvh9DuY390ftBZHcp1XwCbM6k9d5hzQHca8oVp8flbEacM9EZ2acn1xEBvHg="}]}
+  },
+  "FLAWED_AMBER_GEM": {
+    "displayName": {"text":"","extra":[{"text":"⸕ Flawed Amber Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1706491832,-868663343,-1246488349,163025067],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NTE0NTE4MywKICAicHJvZmlsZUlkIiA6ICIwYTUzMDU0MTM4YWI0YjIyOTVhMGNlZmJiMGU4MmFkYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJQX0hpc2lybyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xNzNiY2ZjMzllYjg1ZGYxODQ4NTM1OTg1MjE0MDYwYTFiZDFiM2JiNDdkZWZlNDIwMTQ3NmVkYzMxNjcxNzQ0IgogICAgfQogIH0KfQ==","signature":"ZmDHnvJzPAxrLgNXrInmqFQ28qjHz2o77Ni+sU6881MSU9GlH9bs03Wydi2jRlQu4v0cstNUotb6lBdPv/Bj5o57zeCyryJC2JMQjVfjrzztazmhbjjCVYtfU5fMeUzfoiIqYKS2WWsuFOAYVy+Q1s2W5Dy4ZU7+jLVQd+Fbyt8/iosB+13dl+96BBigyyktrMTUyHrG2YzFNNvrO3RZzD2xCDs+iEWnvoZe2UB87wQf2czJXkFhbx0jUlMvHwUHWiday9hMOHoxvloJ5oZ4mygPBXFRDzKYiJRW7WdA6JT6N1y3hMAEOsPUn7dyZjGWqpOL/au0y71F/ndoDVfJxNH+gX+lLQgD++Q2eF7PaD/Tkh4hadmpbIMKSque1fd5TZhjxnzOlyq4Mskc8tZ4+1qP7zO+vrC4BL6KBOhq959BRagUaNUSa7WQLhwr3xVEsXzx9LXOvOK8o3pRCDgjPT3m6rt+zTKBy9G4juOmpn3bBYPPeOKdZ49iD5sulgu1nyzStcaQdHArzgxZPoQQjEsb9cKE6qEIDhVS6YmptrFM47gdpb2xnHY4rRxs4t+5mIBA3S5kObOISeFIrlVVUL4co4I1U3pqRCdvM8ZhgK628iawqAh6JpiZXWpjp6xCbLE747BJ7tanlfeP6GhM5qBtjxzL8sNZ5mOecGEQC60="}]}
+  },
+  "FLAWED_AMETHYST_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❈ Flawed Amethyst Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[713114337,1118191453,-1464271233,-1533070006],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NTQzNDMwMSwKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS83MWRiNTkyNjA4OTU1NzhkMzdlNTk1MDU4ODA2MDJkZTk0MGIwODhlNWZmZjhkYTNlNjUyMDFkNzM5Yzg2ZTg0IgogICAgfQogIH0KfQ==","signature":"OvX16CV/N3Nl/pWsuBMTY9SD5Cr1pAtvMmgIwmkI4qqAasVbz4DKgU2/yMB80hihJ0rV0J2Rff28EtNhJgZtG76aA0mNfMW/Y8WEzA8olDCI5VRopYntj0oNM/gs+5DO37c39zi0hneSjIdqtL/1s1gjwjhnhugf737hBK2altv/P6JDrJ4TcrgiTF50+bhLZvGFTVPaV2SNRH2n/ZKGkUYu8DG1DBMSn7LyMtA8aI48r+MNAp4NzYPtwFXYdk79aAZUpDr7H1cH7VKjQJZVrafpd9rFsQi5CyvULNpIkU1N6yRVni6yuKVlPwoPJKpjSki110vt1k88D8kCn4RTgbDM0Sr1BZHBw55jolN1qDMQokq/hSM6v3ImMkOHoEjQeayYaihRf94qv3JF2QyEDzgzmipkj2eAIpQKNpUaT54cGs8UTWIGv/JzrOeQdX7xSuhnLPMvVwjQ4XC7IUbc5UunpqK59hkxs/jbKHUVWU4bpW5QXX6peiAyShyiEIWzTQD6uBv2e6TYaEesOmeaD4DA0vCr+BJum6JJv4zH0HvHnJny1sIumAgeA18QK+aWGN+9/Ob4WmwW1swfpKXadd3Eg98k/XL08WtHBiF82V7uRxykpyZcp/KmQ0VuY3G6UKlFcdN9Fkj5qEb/XWYtDAiedDy3Ss80fl3GWFze6tY="}]}
+  },
+  "FLAWED_AQUAMARINE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☂ Flawed Aquamarine Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[198546187,369505793,-1429442460,-2085273832],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MDU4NTkzNiwKICAicHJvZmlsZUlkIiA6ICI0NmNhODkyZTY4ODA0YThmYjFkYzkwYjg0ZTY5ZjVmZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJPbG8xNjA2IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2U0MTY2MjU0YWM4YjMyNGMxYjc4ZWFkYzdjMjQ5ODY2YzY3NDJjMTc1ODZhMzNhZWE2YTg5ZmUzNDZiMmFjZjAiCiAgICB9CiAgfQp9","signature":"PrewKDAcwwfUIEOdre/oilmmbUKvotVL5mcbr0UnkPr2pFUeapVXyopHwz/oS3l7EQ27ONWnKYEix9wgS3EZSRC5yV25KuABsMu2nkjlTofzee4DnP7iJknyySfc1YZ6OEpckcgd+k9gbMb/VDe5dWsYWHimafsISfN8TdmRomPOE34joPfUcg8AqbRz5vKyBuzHp/UDgFZkB3wRCgLng7lY97/LveSWkE1G8Q5+1iraFEu1RhY1/qpL8APvty2xI97DHchjTFdF4HOPGRnnRu5ClDe1aAnvwVV6SmX8dLVOpM/55eRVb+F5d/cetdB4vQD2E/eAPX+3nFLdYII1RaawCC3G2I1kQNWQodg79S6Dpnbd3JS/P8qoqZSKY59vQcdW6SHJmHa4UtqihUrrSx2C5nrK3Rp/lyOB3LwrBT44rNRhYs/ZXAwJOi8RAPwGRC3g4hr/X4kxUV+cZ/s7fJy9iaYivdLO3oaP8G/zsrFoT4M08KbPRZjTy3eWr5ubaWTZNkt5XOQirVgDuzv4pL47iNwSq7SayHLLvqGy9ApcJYHqaVwfeBNmnVI02PicEvWpSXvFgKEgXR6XtNu5S6OxjACPU+gw9l1+U5OFeKkwCknLrOrNKWiOiKtq+IDWVy4DoAofSvwTAzqDX/MTGgACSHztvfUAwQbee/h0K/k="}]}
+  },
+  "FLAWED_CITRINE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Flawed Citrine Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[416891003,-218680251,-1359823129,511310577],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwODQ3NzA4OTMwNSwKICAicHJvZmlsZUlkIiA6ICI2OGQyMTg3MDBlYmU0YTliYWU0OTcyNTg3ZDIzNzA4OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzbGVlcG5vdGZvcm1lIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2RjMGI4NDMzNTc5ZjQ4MGFkYzY4NTc0OGIyYmYyZWNjYzY5MjIxMTM3ZjcwNGJiYjkyMjYxNDE5MWY4MDFiMjYiCiAgICB9CiAgfQp9","signature":"bvhvTwq59WFs5GnmPXLZMEf09LR8Isp6Hn1J+Bn8ducLaCNhqEejs4jhAP7Vx1WkmjwB3A2wBA4iGXghc4NEwqVXp4QuXaN5dasbWRrrAzdTyY7wI94/O4VY+MEFXRfVbgVOecEPaul6cSAYk9T3jwj8YzLL1JXGah1dKjbkBMQSyQxTbgrPwTazsOzyemalMFqw7cYOoHCCoTWnGJyGWejNZtB35NynHuS2KdG5BZCNk60PifEJ2B2g7unGCFPIa8isi5bokjjXKE7U8SPNxFe5YqXk919RXpFjkcBILW6R08mp3+IgWYJ3Yq1Rn4n47MOURNgewJczFm00WwHYyENCHjkho9o/mdFWabrZnDWS+jl8O4PoUQ4GIKwWk6J9JEwFzjUsCcUOvLP1vyp8Z2yLu31HICGm6jZ+m5AGl4+4DrbN89YZmHwnFthhUqrIAdSxu7aK2yMpdt796m9CXy1ReKysgFMZ1PEm3uFvcl78NEF5LXHD9IKsXH3w0uN+MFhTIIRhJopqrF2lPeprgbvjtwTX1CjwxBIk/FSGU3WCTr3w10D9LuGCVth49Xj07sCOxyfNr4MkLTgCJPNTQ5jeQSEVBeOdAkfenVQV5M6s8ZdkaBpB1spkYb8ccJAuK0/33jHEezhIdFzkN/YiabJLOuU6Lq0v0fL12WX16f0="}]}
+  },
+  "FLAWED_JADE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Flawed Jade Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[2075954671,-1479525794,-1282150112,301946077],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NTYyMTA0NSwKICAicHJvZmlsZUlkIiA6ICI0ZWQ4MjMzNzFhMmU0YmI3YTVlYWJmY2ZmZGE4NDk1NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJGaXJlYnlyZDg4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzgyMjgyYzZiYjgzNDNlMGYwZDYxZWUwNzQ3ZGFkYTc1MzQ0ZjMzMmU5ZmYwYWNhYTNhZGNkZjA5MzIxZDNkZCIKICAgIH0KICB9Cn0=","signature":"UTnSTJQ6sONvF4aEK3pf2QnnbKoB/Po4jGY67iPRCWqoVyrV4ockSI4mrFwy1cvadF2HjWz2SuWoTa3MIWryKr/i1+9oqEYrb7ngJ/GoVAutBpFfzW6WcrOQz/R4TDN4iLPonWEbd3UfkgN7rhmeGYk9B2W/IiRoVzcDcoNw32ClkW7/rzKcpwqBheoxLp281DleH0983/qdlpCBnRPz06vn5+cOBNfVAzi1KOfuz71FogocZFawFZfEceaXGH6guXvvcSa6/o5HUZA4TRBp6IuTzz0etxW5QrZlq0wT1ZENDqvU1op0HA7kaIL0GEu1uEPd2amNEwFuQRACY21F3dSbEQFqUc320s75zz367O9/GIzEr6YSh0FCz4U6/cGHGq8xVDrFuHujZfBmNvH9h9csA0ijUYCxMqwwuHVCXnbku4evbLuezFF/6jZvpia17WBCaESZqex+CDnD/4VUxz1q6pmjxEHsVAUZblOfE+rJXwquYHqQUAewd6pTMsSyMgdBhXajIeCTqeDT5xw8QfpfzqlK9iWYwO17xfcjSdoxl4yaNmX84xSlD11MtwNMMLBVa41+MlEILE6AILEMat6wUF2FrImRarMrwy41JUk6oCQQzXJ3GULyE6jW2ORp3HUsI8JUlsNyLdB81klDsD8gDcGjH9EJXQQlc55Upow="}]}
+  },
+  "FLAWED_JASPER_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❁ Flawed Jasper Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1162169271,788414335,-1780178888,-1710845131],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NjAwMzU1NywKICAicHJvZmlsZUlkIiA6ICJmZDYwZjM2ZjU4NjE0ZjEyYjNjZDQ3YzJkODU1Mjk5YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJSZWFkIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2E3MzUxMWU1MDRjMzE2YjEzOWVkYjM1ZmViZTczZWY1OTFjMGY0NTVlOGNhZjllZTM1M2JjMTJiNmMxNGE5MjIiCiAgICB9CiAgfQp9","signature":"bOJJ/nbGOGB+0RVLRLMf0Vzvrl/GnoHKPtIpWKb3+/30eCRObGjKA7M2p+xA84MKFWxTf1lsMcRcz5ZsBJfGJgaYQskuB8WDZrzDWLjR6NfogdYeBwmWRcT8xw6KT2v3XB+DWH+8f0AlYqRk2V6tfeBK4MCaNj/tkTTV4g3kxBuCSNJoV7qCRgDT68sdA23mS1abvI17BZsGcUvFZR63Fk8niZY3Ui4VOjLtjCB2NZ53c0/Dj8a9T96CDxMAQ/LDFGQsFO/cRuS8SCD6CXe0eCE5gvI4owj3mkq6DUBizgwP6SEv6UTkcXO1YJdWQunGi1Jek+vC0HgLIIB98I0q2SCYFgJRez0yIOfYOkwCJDGBr65oJaLvHLASfYyMIhyvI/GT+iJvK8+Vb1PkeH7V+HF16AyZlTJNXkRymlqER272DiNzsl0NQKGwEWaDWoEaLc8pQ/HujrLyrBRSCEClScB70mrcBqXP7HA522cIb48PWrv9+vuiaco+lludnAuhd9mqgDvrK3pvpljJqZWAcAHlFvtK4EqOVuR0KnpIvqYIhRajxdOSB14RSG+Mb+NVGyvZ2QRmK1CmThKMKYVNM5wLbhsgQPGCknH0QIKRauSopuZpP9xxmEErWC0cX3KVTDT59h5HgokGop55MhinYdPZRcRoof9+5MHIowtqXqk="}]}
+  },
+  "FLAWED_ONYX_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☠ Flawed Onyx Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1196813167,-353355570,-1529535896,-1133133115],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MTgxNTY4MywKICAicHJvZmlsZUlkIiA6ICJjYTU4NzNhYmY0Y2U0YWUxODAxZmVmODgzNjhlMWExNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJEZXRocm9uZXMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzUyYTkxZjQ0YmNiYzc4ZDRjOWQwNDVlOTQxYTIzZjdiZGI0ZDk5NjA5ZTYwYmRjZWM4NDIzOTZmZWIzMTVhNyIKICAgIH0KICB9Cn0=","signature":"sqsdeWnm5CqrouML9niuueYDofzp0C2zPJz6lTcE1Nx9o5TBctcK2c+nMniGko/Ys0TK4vTbEAgcuEMvnDBxdwzA25GziR4OmEhiPbLNnQAev+A/mr6VAvTrv8/K9grdBdQNmVfZOw1KPO0VDW4+d1ZFvNSf17da815psDkJJHE//RsocYuPRNbaTf9pZG0eI3oUsARn3A4jmyXqxUsVYX8mgtxGUMsd9wkLsxpwX1GBiUyDJSow8gmjf/qt6Ni04kkwHqtPKHL8TiVSxwakbIHCuheSXv4UMLE8kcywxGJEhcYYy0QiL5tfUsJYHLWY+DD6nIYmchLvKxKJ/hdXIn1tEi1VZV4nGS+Z4G/763geOhc4pqiguBMqCef2oDLVz9cIz170t91AwGo511rIlqnH8XyezmhhmYn1Um9WcvbVglBZ/dDJ9xw+ue2Vxhysqv2+btRqAb4QQR5VI4ygXXAD7PQOsRCAeWtKt/XzC3B6WKADMNK/SQ6ub4PDyBYojuChXY9mAP/1HkeIi5jKDX48A4WxvLa7fxTJ5/Vo2yfKeGbeG9UG4QYZDICGwv/xu2bgJ56gTCkkrGSI8UY9hD8cm4oLkG6TtDxHACuap9fgEpop/IFZHDLEKaWTnUB979P3ik3UtCvzF+6Ko1Y1j11mGBC8QMBtCX81aKEEvdE="}]}
+  },
+  "FLAWED_OPAL_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❂ Flawed Opal Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1746479720,-384093462,-1435707578,-1690220453],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcyMDA0MTk4MzkyNCwKICAicHJvZmlsZUlkIiA6ICI4YjA2ZmU5ZGNjNjg0NDNmYWNmM2QzODA0NWNkNTMyNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJDYXN0aWVsY3ZyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2VhZGMzYmNkZDdjNzAxYjYzZjhiOGI0YTk2ZTQyOTMxNmEwODM4ODY2OWQ5YTk4YzFhOTg3OTE3MjliOTYxZGYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==","signature":"N8hqI/l5uYHoMsjhKNv5Fo7JPOIZ8q89Q+FaRUH4i7oBltRwf1fprOUJurQvRKV6oRiEw9ef/RBb90s1iq/QVuL9vz39gwVUfihO6X8HgknrrbJJ0o5vGKZeBSTxlS3Z+ElLSP9xhcyyGjbKcJbPSG8BCr9zU4XLVKL0YQqWcELdEeKqRKytYslym9L4hkssqGM3/7GiG7kUay8LNXJuvfDLBrC1JkKLrfZc9ZZYUfaHQ/WuZjCwv3ksKwtitRbEXUSiIFf5lhEiRNuEXzvK56asDxGLLjkRIb+VLD8JWR2Sf1fYiEswP6e+mqVh2NfK+OWE/sGxtRD0elEdH369Ion6bT5uGKt5ztPu+u8YQ2yN0T85HZ+AjjLCzfDxz5IgQAZtKUuHErzOhzPSdU2tkWSOp7FBbioLuTqd4ZGbTT2HsWd7YB61+7O+3/GYV/RsQEU0ntf8j9kXAgZ8NtOW2li0O7kSxwUf/pRWBLMqdb8InFdZ7P0+dqzVa+U+HH3UYwk6TcQgxFq4C0q9dYSgQ7gSAuGpWQSA3B7wuPulQhkVgWe8MGEXe2Z9kxOC2bplpb3Ng5an1fqVxeCobaBnsza6tb+Vwfi9tq96BWTyZkLMKzPu83GiswVFsL+cM4bmyl/k1Ty4ZbVYDk6jAM6jh/iSZy9VVR8fZ5R1/c5PFqI="}]}
+  },
+  "FLAWED_PERIDOT_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Flawed Peridot Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-628221490,2060399632,-1718708410,787444564],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MjI5NDU2MSwKICAicHJvZmlsZUlkIiA6ICJkZTU3MWExMDJjYjg0ODgwOGZlN2M5ZjQ0OTZlY2RhZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNSEZfTWluZXNraW4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzVkYTczNGU2M2FhMjIxMTZlNjQ3MDNiYjMzMjcxYzRmYmMzZDEzMzJhNmE2MGMyNGFmNDliODA0MTkzYmY0NiIKICAgIH0KICB9Cn0=","signature":"gWaYZueAnjj4EyxqbJ+Iu8eQO9UeyDvixFj8zpKh135kBBwDZ3xwxWtcZ3wAFD5zsCqGHoeELX17u7eS6+5N3toOwlvO8FEUAaDJ/Bd+HeoteXR81oWaOOccU5+HtqdwIr0YK58LrzKFCfKXGxg8idhzv4xWwrhYLeou9hIseCMjE9TGi/TJQlRlNVIrISwPuU20Wa7X7Cns06xsBV0RgVYOAHbbAWrrFUOtGmH0p3XK04BvJRwidhIcYPVlErLumU6W+9FM6TTsgGFoXLBxd+lya8lsAO3dFSohVwVfhPRntF4dUicAeGTeltz8MJ9Pflef+zqXUiFyw60enaJywNOzk0itnYlq6k99ivtbUieKathua8ettgqt2Fhl2aXCYakek+Dr+9gts9CisJ7ME8yYUTKG2cSS6I3HNIbkFjXSqpQBnn5vUmGvC8BslFRTnve3kNYiz7AmQYtLfM3ovRB/+X1GiRcfeI1yNDeKhVXHl4hbxYokx5vtNj+eeQXU1Ao7+PgM+18puXrFL7drG9vBNlukU1Xnwbo0ZHV5nZlZBkibRT6+LJobXilNujOCr7aaUJSFt5Fp3viMslj+r/phPq4RFAhEqm079nHt4ZV6sh2gXB3hFR+MRmiegJEDhzR7Gxt6jNJM3khJfVaZi2PjF4jcotOirA2yRmrlLrk="}]}
+  },
+  "FLAWED_RUBY_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❤ Flawed Ruby Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1151799336,439566113,-1358619726,494991448],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4MzU0NDYyMywKICAicHJvZmlsZUlkIiA6ICIxZDUyMzNkMzg4NjI0YmFmYjAwZTMxNTBhN2FhM2E4OSIsCiAgInByb2ZpbGVOYW1lIiA6ICIwMDAwMDAwMDAwMDAwMDBKIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ2ZDgxMDY4Y2JkZjRhMzY0MjMxYTI2NDUzZDZjZDY2MGEwMDk1ZjljZDg3OTUzMDdjNWJlNjY3NDI3NzEyZSIKICAgIH0KICB9Cn0=","signature":"YphJyLXOzu/8I7OdBg5tIoj/2aMi3jbcGDeo36EW5+N4SllXhstRdLvxHFsRZlrnKrXX2jLn4wq0dGslOCSTl++K7rqvIZW5FUkh4O9itV6iBzWPveTwZrMBWGgF0CfNPQ7iIB/jrhblhcBYiaLElWkI5OdmMdi6r9VuQYY3k+87q2yPgipm0QfetXEjRKcRrJZDtRO6DZgXFNwgp9R2h8BTi+Wg+wdG287ksgl8JYYtZnM0D+BPuR44lLgGVgUk6njhlrDzHeoV3HlReVnPYvkpcweXiueabhQrOpWyiQ0yh8q+mrx00xblDh/rfwwtNVqyATlOfw9x0IYX7L/9+GwaF8Cr1zLLKPw7lpzGOX5EBxB25LVKt9CjSXCvLPEvI06AnnWMaA0JDa0EjspOB0BEb0fCPITaHP1JLD3cEWlCTM9L3Z/51m2vUbqF4J0muw7nt32A4ltIoNj6GwoQCAPx5/vWbu0BNuibc1t1CuHcdfCjiLB71Q9XYFY1yfkKO3TMlPwoHRllB4XFAWOgvLlzOztOO8Qqeo8zYhEVeniQJQnhieRMKVvjO1vIe6tC2jJoEmX180QQnUXEcu3m75pVz4e9uLZM1D72vyAKRazh7COS5x8cbr2gcnAatPVPmkSGZ+u35xmrlwcvcfeOaRYWqdzByjA+tmcdCCi3Q8Y="}]}
+  },
+  "FLAWED_SAPPHIRE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"✎ Flawed Sapphire Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-2074948348,-1209451200,-1295302652,-1318881242],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NjIwMzYzNiwKICAicHJvZmlsZUlkIiA6ICI4OGU0YWNiYTQwOTc0YWZkYmE0ZDM1YjdlYzdmNmJmYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJKb2FvMDkxNSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84YTBhZjk5ZThkODcwMzE5NGE4NDdhNTUyNjhjZjVlZjRhYzRlYjNiMjRjMGVkODY1NTEzMzlkMTBiNjQ2NTI5IgogICAgfQogIH0KfQ==","signature":"x96ifXs440V5czJN9hlSYq+SIVKQjdKBSOuuplDFC+wIANfFQH7GC5a5Se9zryDAWIWhtvAKDH9SaPwjZZdaV8mDsqzijWgFqSUGM3vIrjx0B3igzuL8V/tvFXe6bfMBvn8U/MNIwSiZXJFAsv8GEHaStoKiC7hcCrpkaafK7PIOidSHF77loDj2X0EZ4FMh9pZt7hBzGes65rHEWis3zr5L6QxLnXjHGDUtvwtp1YTng5L+atpz3+QHeu/ZFjvVRdIkWD4EX5s7zKmuCFHRsjoPqnbuGyKVt6QqhqPIKYfullVJOVcWeDvVH1IacuAHwGB5l1YCQWGlMdsPcNc9u1yyxaabg3JfdHkoZN/r3o85zQ2INO/zMSt2H+ivTDUZgBNbbobA+m3VSWhFo8CRA9SXiVkQAP4s6DZ8NWL+dK9rHdaGP1JKLshtoeVlq4gvkV6sYdDTppso1q64ey/hoSk55B5B0k+R0BpO6Fw6YC9wMWRyp30pkM8tDal/t65jgVOvM3DMHUQJXd6T1w5LEJIyRM4fTX1xA9cvWi9z6ddwjIrMRFhCmoI0FfnTyLSs5JGc2cm+6/7i2T0V+LsmYA02XUb09WYJ0La3vYJYa0yiKFtjLtFInnDW3xxUHo/mBuOGXKv1fxTra/8h15BxRqU/ypZUeQs6bO71/QX0kRY="}]}
+  },
+  "FLAWED_TOPAZ_GEM": {
+    "displayName": {"text":"","extra":[{"text":"✧ Flawed Topaz Gemstone","color":"green"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1133914808,664222964,-1774901459,-2034935345],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NjM4MDM3MywKICAicHJvZmlsZUlkIiA6ICJmMGIzYmRkMjEwNDg0Y2VlYjZhNTQyYmZiOGEyNTdiMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBbm9uaW1ZVFQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjYzOTI3NzNkMTE0YmUzMGFlYjNjMDljOTBjYmU2OTFmZmVhY2ViMzk5YjUzMGZlNmZiNTNkZGMwY2VkMzcxNCIKICAgIH0KICB9Cn0=","signature":"kaI7OwQuBZoE0Cj5AkenY4x+cgBCx/qUG5DWrcFnqgWH6/dUWu0WqIkJClAaXiP7GL8V6BXRwZ7/tQXiMQMO6kAaQX7ysJwxaQsYqqeiuvST6S2l5y2kNcOCsR9cxSCAIPU50F142taO7GYONe6IrFOPAx+4z3YmVh64X0rX+1g/dugg+nvx7OHYQgzqFmQw13QQQZuTioqQaOBDYupVcVC6H/Mf6NhzEfLUQl+iTEmc0JUaLl31yCfo1k8nPYjtjK6g0TkLNbwVsQ6nYk1uV2hGcLT6ov3vtxGZACGAy/bOfHYXnY1PaCs1Oex9YgAi3wL+QBhgU4bJ40tvFR1RDlTwlnoWMHO0CoUEL8vaDiEIOmmLBU8chaw+VxrOvzP41W7uuii9EW6paC7EL6FCWXzD7Vw38a+oKLK5LmuqVx9y3AONOzl5heqlFXwzwGLhbAxn2ufEpyXmNXprvbuFt9/bPv4HRgmq8NRGlhb+E4j1gRZwYWJjOKSuVIj5NHWi80x368xixzaMDqONudynWWBruhBiIdZhB1O/FA08VQyXJsGOf1hxiW4jIw/T9+OjXEF5zUL0JftI6+ZYNwSG49MKf2omff0/FjkmqJIFcYehJM5ufP+yFpq+AHT4wBTR25bkRVts+8G9Gaso4itCDImhthQd5BAG+DqlmH5Xa8E="}]}
+  },
+  "FLAWLESS_AMBER_GEM": {
+    "displayName": {"text":"","extra":[{"text":"⸕ Flawless Amber Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1268782702,1599814993,-1657586852,-932565016],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NTE3NjQ5NiwKICAicHJvZmlsZUlkIiA6ICJiNWRkZTVmODJlYjM0OTkzYmMwN2Q0MGFiNWY2ODYyMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJsdXhlbWFuIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzlkY2U2MmY3MGFjMDQ2Yjg4MTExM2M2Y2Y4NjI5ODc3Mjc3NzRlMjY1ODg1NTAxYzlhMjQ1YjE4MGRiMDhjMGQiCiAgICB9CiAgfQp9","signature":"Jk1MIoOsvvDGy5CCId3IjUV6DepvlusFIq1Ow1fQ14FqfsO1idZlw/AZYUAtzoiVA7QETs6ikn7JEzxI3UqH5Oo1eMX+Q7Y5/7AcIy496WykZLZFd/WpZ1OpIuhnBpZo8zUs0zM8yK1z78bbw1pqgblT1bs/4nanfCBZFcpXszXGozs+zcgzFlBmilRtNJeaApF+TrCvWml41PKsOLpsC4Y2wml3Jpo4HoJevVKC5bD5NxAmphH5/Y85evPMhmDMeMHa8i1me1ROOiF4BL7RstiXjF7Mxwz0zDBivbdoZLR0Jehk1UypaYgncSuD4dO7gb/7BbZm8I9lC4BLRFFcqlDkWLRUC/bgtWpwTNP/3yWAXZyIMM7b808sA6kikdQkQ1rCahCWbsPbpZmRgWVYKfjOWI71bt6muMEv4WgQlaZm5k+buwAjaZ19R/TLEzS9Ds54vCfGdocUvLO6V/sUTepZFQojdu+Dsr2eZ32aY8P+FNdS/HkWh5B/tPhWu2ZG2bNnBLf//FfsJHPcf7NX8mrtNzZw5lUA3xd61TpnGu45bE1BUfh083ZPjAVbm9s8APMbIzXWod+YjBO8bR3m3UoGnKAEefuyeUH5MCxwmb8Qjixd1qRI80yhihTIeQfzxkyNJFRXYGURyLk7cbrGkaUhny311syOAF5m/v6d4Ho="}]}
+  },
+  "FLAWLESS_AMETHYST_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❈ Flawless Amethyst Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1677119445,1659386050,-1835591621,870245848],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NTQ2NjY1MiwKICAicHJvZmlsZUlkIiA6ICI2MWVhMDkyM2FhNDQ0OTEwYmNlZjViZmQ2ZDNjMGQ1NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGVEYXJ0aEZhdGhlciIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9kMzYyMzUyMWM4MTExYWQyOWU5ZGNmN2FjYzU2MDg1YTlhYjA3ZGE3MzJkMTUxODk3NmFlZTYxZDBiM2UzYmQ2IgogICAgfQogIH0KfQ==","signature":"gcpvM5BZlHYgQ8IKQ+CU3bR+Mt2clap25wMXt+7nSPtV43xMsizYQYaoPlF76lfMRADrdeA8SFmqMBvYRPWvsrNFlU0fCp+h9DZJ+pHHMtHrTbowwNTPZPbXIfFr77EMGTRv/LmkTOfkfPbM/HNdI6rDfcPz+05HV36c9E3vT8Z6bwpZDV9hcm0Tx4VCSLxGQUr/1XnmrMn+7haiW5ehvKSAdhTttzf5hvZ/F4YT+HPyQbs+fzjgauinstZ+JD/J3tZZYZURbdyGjTzLyxnRHApghAhfPhPEKE4qaJEGup36rxH0dDAJ9N899431Vof90YNX/c98afyRl8SICGEe7jK5hNl5S8E6uz58OtL2LP+VGeHNONfSx6i4XAi5Cq4I5M2hs5it8rgQ2b0QMoTwtZicgK3SWdQJKJnpiO/dYg0aE/YIO8zIC1NW5FWnnAckXT96BISFTs6bVHTtM2/JltVJsXa6Zckmxw+mbUHqQe9u8kxBeVCaNtUVGPwJ1urNJQjTrgj+cKI7o1SQMfz8ZcmjrnuxzWM6PDoJDHPvh33e6gOLv1MtCWhZOdukck6CGz2W+z4UT6HDHTHbT6hky7tRG/RV8vhctEkp7L/Oa47Tw2RDsR/GBPrXfEVpsFPLA/gMv4EWPx5cHymjFTK4nmraMWbKYXjrYDesltBtf+0="}]}
+  },
+  "FLAWLESS_AQUAMARINE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☂ Flawless Aquamarine Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1606460171,-1446036630,-1495983352,1914333800],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MDU2MjAxNiwKICAicHJvZmlsZUlkIiA6ICIyNjRkYzBlYjVlZGI0ZmI3OTgxNWIyZGY1NGY0OTgyNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNb2phbmdIYXNBU3R1ZGlvIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2QzNzY5OWJkZjhjYjQzZWZmMTQ3ZDljZTE5YjE0ODAyZjliYzg4YTIxZTYzYWQyOGI2Njk1MzBlOGEzYzBiNTciCiAgICB9CiAgfQp9","signature":"Au8+pW+eP+JNDVKa+dIvAPJDPMkfXzX1L2ruzzfWNZ3hTDmatS3kusl7jk+DLS4cCSJnZmIccKBm9acVPrz5cv4TBRDhDo/LYqE1Xeo2sPYeMscJpid0oWqWV7O0/xI8sJOu/XKHVWAhSi5/hwo/0KY2mUVPC8WnPfZ+koBm7SbU3kN7axRmJZP8jShAMMa4G3417Bf8R3l591kF2hs2rzk1Nr0GuxSMVVUN8yEyAnttdlJ7atipkEbMwSyQwKMILOSqX+fQUH5xFZrufGNy+fBObzZU1ZnvAzmsxRkNxDLlI/s5oFSiscap5yZHHSOnWx1ttMRP+ANKLHfPbxsi4imEhopJD6C5FCrhulFqidg+T1yxHGGCjH6Lqh2NXuowQgbgJUHqsoo5po6KAxP1n8s/5pbu+rnS7z7kTSyW4H7nFP2Q2gsOhzZAOfeZvdhWYZHLFwOj6FsnY7XKlRHY81qdY9LEQjwfaDi/MC5o7qVrglhlBd+EFWFDrz9tVqkQGQvAHU4wr8W/9ZDWM0mfa3XxwBo5VFkb31PfIPpV0E/ucHnMpjIWy1JAs/KxKwXgc+NJzuuHFETZIRsPZPu0yH/XYPjApyvg/Y+/aakYwV1qDqkSFQ572wprARnlq8mEA6NKl8X76zHkwkmHuCShpbQ4ONPZo3jEWd7osjPKPDg="}]}
+  },
+  "FLAWLESS_CITRINE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Flawless Citrine Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1833943429,-1448004032,-1380616859,1561481767],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwODQ3NzA2NTU2NywKICAicHJvZmlsZUlkIiA6ICJhYWZmMDUwYTExOTk0NzM1YjEyNDVlNDk0MGFlZjY4NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJMYXN0SW1tb3J0YWwiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjA2YjRmNjNkM2QzYTM5Yzk4NTY1YWY0ODU4YTUxMzViZTc3NGFkNjcyZWIyMzZiYjY1YWRmYzhjYjM0MjVlOCIKICAgIH0KICB9Cn0=","signature":"kb+pLRSP0dMnhuGeArExz/3B5osfdVsQriJExT2GPTEBLrjtedrWtYGV7bRgVwKou2m26VK9102xbEoOzEW9yqIV6x+Qt6aaX7nhz2XO/O5/WARbMi1B0jEXdZzaqK0emzt8NInjJB/70Q+aUvMvV9iG4wlK7CBG9rIDRvJJrzV4Rwc39f1hjiD0vx5B+MxwdF68pYa9SlAT5dr+QC6CCNKuCoq9DPTK+fubiK4Ld6tuZ1LJ59MWytSET+h+LdHVZbnJzKXmlcT8C/Gpyqy9FzSAJUC9gKGjrwgTmMFEBF9uFpYmRm07tffN1EQ83/aXsvggjQu/dicv4yJEbuJ2tSsDuRfcIO64uaqsWMxnzTjbUsUKhKd63b3Oo8bIfuusZwsekF449Wr/EZzVSYToSTRfv2SYdIkGcNCHEH0GMLFWjEaM1tlJNg112TISekapsqe3yyQQKp5/hmmu9SWs8hRrXfCWhpB83hVpv2OAEq01YLCyNriDWiCoxCbUFHcaL1jzXW9FB4IJ9uev1sS4owA76tlgQmi7JPAiAq6cvjAFnfTR5T5VnZmMzgvSSKbNcYRjAwOMrxO96fKFL1s5KriZ+cbPLH08OMh3roXuQHZV4Q8PbvSvPfmD0C+pthc2jd4eZ8UQra6/FeykeF3SIKaiEunPoF52SFl6Sp4/Fvc="}]}
+  },
+  "FLAWLESS_JADE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Flawless Jade Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[411111559,-296730997,-1950253286,1216640682],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NTY1NzA0NywKICAicHJvZmlsZUlkIiA6ICIxYWZhZjc2NWI1ZGY0NjA3YmY3ZjY1ZGYzYWIwODhhOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJMb3lfQmxvb2RBbmdlbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mODlmNzVlMGIwMDM3OGE1ODNkYmJhNzI4ZGNkYzZlOTM0NmYzMWRkNjAxZDQ0OGYzZDYwNjE1Yzc0NjVjYzNlIgogICAgfQogIH0KfQ==","signature":"ni9XYteoWSat1slZ1o46letrZ7OJ4AP29XpXsEJKu9V4mrFmwmHyMsCwra0AsSnp69QwuRACQoZ1S6qh92KBr0haVKYc925PeCtORQjQO/5OyNzjOT84v5EnULnJFFbucT2wndZynNBv7LN+HfSo+KtQb235LImPDgOXp97TgFPJBxxThOcWjdlryob4R7jTMOeDtcFbK2+fR8kYPRprgNb2cZXFk5QdOuLPJyOlrjbAeWV+9UnMDlcL7Op6CvegG+FtJoQSFJDcu+Yu+2Jre85Mk15GvJy68g0F7lNv/1GYjyHCp2rafJZzukK1qrAVAwmyY4w2LBHytxFtAGVBYqfOmheT9rH5Sey9rRVATVwGsQGPOQWsAmtGu8K/MmnHUlsi4+QgyOW55B77Tso+eAOSM+VAg5jxKBzXXYyWlpjQ1G1d3ivt9/bM8aXdyI4GMhl8I30OwSsffr8GqOQtS18cCvM3MfT37ZLwS+OCXl5h4mm7ufom+yg6l/ed5xLB8B/gKOsd1yCL0JTA1vYpCHNQ2hzyZKkSg/Q0vYK5mzGxLiN76arqKZSwCQsqHZOtImhI+R8aB0bQutGuBivt40x/1OY1hRKdM0/MYx+nJ4umJpdpnzrcq44b7yT/dZVWDWbV8a78uw1BWBPWuJilQZM8XAwbO0jgJq9CXmKaejM="}]}
+  },
+  "FLAWLESS_JASPER_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❁ Flawless Jasper Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1880789058,-1230425162,-1249920699,2052563815],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NjAzNDI0NywKICAicHJvZmlsZUlkIiA6ICJiMGQ3MzJmZTAwZjc0MDdlOWU3Zjc0NjMwMWNkOThjYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJPUHBscyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mZjk5M2QzYTQzZDQwNTk3YjQ3NDQ4NTk3NjE2MGQwY2Y1MmFjNjRkMTU3MzA3ZDNiMWM5NDFkYjIyNGQwYWM2IgogICAgfQogIH0KfQ==","signature":"AVqRnamYq+RIsWlrZXbzBDcQxE13vzjlWYysSIBbbVjsbFxf5sN/qFU6zThYv26M35pOReYwiOSOvvaLxrRHMd/l6ZrKcz5YENo/E5G2aW38ePR/tRaPgvlp1B9tZ0sin8VVuGadlpgbXwNjj7G15rX0yAFg8vwzfTb9rU0/V0iGvdIWUvH6pBqCuoh5JFSMzEq0ENxUzDlsJEsX39PnFSM2nRpMrrAtZlH/HHpFjWXL98zcFQO+FAsc4EWysrJgkE1bDsWnnehV0ugYSHc/+6njYguawn+/vQpZ1mwmnVST9VEKMkVbONepm8DqlSUPv2nD5TY6P728h5ez69bETrdoklueWHqbjrH8ZKYiW7iDXusV1QMjrTrRmHsPCkWTnkuLCrkLkLCSLJpw1ButvWY1cR7hz39nZXArts7/882L617HNE3hAJ5ujsFKmvwrqI4Ma1FIODFFVEuI4sJXPV+nOeBeysZDFsDuZzMM7dcnwHMxeQw278txoDBIlN5CMw31ankB5nSjzb28Mppd8umNzqA9QhM75ZR7QSDdr9V3zfxPTMH9P9bikh63q4st7Rrfh2Ix4W3fBjqvWUJNzLaIDwPdfMxBzg38d6JNacYbLSDRH5k+Y2EHqA8Q+ng/NSeHBOZw30+hMeUS+wcqpJkGDibOqgYXeRh6YZ6CxV8="}]}
+  },
+  "FLAWLESS_ONYX_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☠ Flawless Onyx Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1797681035,1609709636,-1527068951,-672256152],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MTg1MDQxOSwKICAicHJvZmlsZUlkIiA6ICI0NmNhODkyZTY4ODA0YThmYjFkYzkwYjg0ZTY5ZjVmZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJPbG8xNjA2IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzFjYTliMjg0MWY3MWJhNmZjNGQ2ZDJlOTdlODBjMTgwMWYzNmNhMzk1OGU1YTlhODFhNGY4Nzg1ZjY0MzQzNjciCiAgICB9CiAgfQp9","signature":"QLVaTko+9/A/bEwt6aDzN+OXAuUf/oI8rdmo7Ina4fr1aFJjFXSJnHXZg6ZQk09uSHyQZu36s+nE7kywDiQnA3DbqenxYkvrC0hz54kUWa3NL8lG2oZzc8+LiNcj/HbJ1h69+aGsNjkZMQAGNR4bh+jLqn0YoX4vbGgXdRIPNGTZKw/LjQVpq+WhB1X02cCFFoZ/9hfRFLMqyhFpr3dzQcB4mqnd16zzzyOqRJYI+wixKtxfgIUtm8JGGYX04ag5QSQFKkI1EiuQKn17zrK7ByfRtG5RkTHQmdVZTOKQAsCrb+9OvBfuBq3fS1lnLbrqu8vzRSPaNLoA7upOF5YyxNMHlu7E6XE+LoXXqzshml4wmmntYb6teHYb0PAHxNLl9PBBBEpFLB+/diT7h9g+L9SzSr7NDRPUeoZx1Ru65p7N01xsbwaEm9Atsqtbm77E3bTykw1Dz1aBXXbCC4AqPwJNjrr2cffsExPoIh/OfTCB8InBn87LAtpWlTiQE/YXWHkaE8iL10+66GdU7u5zX3DpLTG9fWeoBMDZXbR5Md0LQDluVSvHsMahUiUX6dOgxz1uOWGQNGgHYQweNLJIyvgtIieXEqkVOwE+7bTn31TWS63WPTeSQZx/o73Io9Q/jHKwxwBqOS4zzgn5oYJySdvhmgMm1O/sRYsfcpYBLCw="}]}
+  },
+  "FLAWLESS_OPAL_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❂ Flawless Opal Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[931447292,-1882704159,-1699789463,-1792027495],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcyMDA0MjA1OTQ4NywKICAicHJvZmlsZUlkIiA6ICI1ZTdmY2RjYTU5YzI0NjkwODAwNjg4OTNkODU1ODM3NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJKYWVsbGFyaSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81ZDE1ZWQ3MGU3MjAwNDBhZDczMTFlNjkzNTlkZmRmNWUxMTRlYWRkMmE0YzFmOTcxYTk1MDEzNDFhNDUyNjRiIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=","signature":"lft24c0fCYAB4oqTLeroviV3qH4AEVVeg0wjEQKuj/PyRyMOmmycFAFzjj9gDvm9LC7WoJjWdbVfF7JRHRY8J8/9Scp4Wzwa6jKNyWXvU3B3+rcHeeMowqKcLipU5xnvQb1WdVCg0vqv4E0coIEno7ddUlp8ZSyDB3Tno74pgEGorO56gFJ4GC/DZLhPQkKo8TOfDkzc1mR/t+Pm0sGN8BKOTAT99rEyiQbTJHbcs7w7PzBCDuM3sxGhyTNAOaCnDw8N0j9d2YDN1Cr4L7zRqxS+wftZWY2rpWCAhtEBb2VqUhWBtEebCjTbMp7Q53ap6zGk8dEPx4fjqu48oxwyTiBg18M6gNGKewCY/53b2a0LSA5Fqhbnt44vd2STUpfw7izi2dMtGSHXlWlAQfesQFTAEk/cLPMr2EUkz46C/dytmQpTwJgULCuA0a0rs7lH420afy9ZBk4wqJpDk/6JAwsAjVo2ckqgvmRAKyDZnJm1iTlZYjTEX+xWahnvXYm781V7XevuKcdx2hjwzix+7h0dV2di7kd4hr4MG10+X+mOmrLy+p+dpSdu+iRUGjSshRwri9MpwMS4CCpEIvhRqRdoHm6Y8TODyMDtRiwflFXuOMxnYsDqBdAs3Xl6Z0rQIrfJPXRlw9y9GIFzCkjr/baBtDsasRt/DLnMrUNUiMc="}]}
+  },
+  "FLAWLESS_PERIDOT_GEM": {
+    "displayName": {"text":"","extra":[{"text":"☘ Flawless Peridot Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[884531082,72300151,-1763582619,-2064360095],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwNzY0MjI2OTYzMSwKICAicHJvZmlsZUlkIiA6ICIxZDIyYmUxYmQ2YTM0NWQ0OTI0Nzc4YmM4YWFlMjYzMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNQVJTX0hYIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzE4ODRhOGRjYjcxMjgzNDFjZTA5Y2IzNjE2YzExYzNlNDZmODBkMDgzYTZmMmRiYjRkYmUwYmI5MzIzMThiMDkiCiAgICB9CiAgfQp9","signature":"f5SaFRdEhagoCGkZH9F8xVS4lICfDlHFY0D08wV2dNKwa5Pm+nTEq/38oKFITePNuUBDd6vvx4qyjWJ/lGchKRbDGUmMQUEashMRRX4pt0px3ytNAFPyhOw3thWw3pbdRCD9Avcu86twCfzJBBOMj2yj2cJ1dVDqukxbb6ehWWepEtpU+61Mp3gHrzDl5he/DzpJhaomoCZKDwpQpMp9cOmiNwT1h6AmtZ8lUnxhea/HyyIDRFvqI/PPyzLNNHQllQUa3FI5Ue1pqca9nzlunwLtk7PHb179dHwfTSNyBNgZ+SM/s6reG3Be+WJGRQioSTgHpEDxwThZAmD9Qo70RAGOTY/ll3eRLz031HuhannjaPdWY+OTIKIyrZxkjxSGDJdP80pDkLHseSKneu9fzEx76/vuoQpJV52cgzzlJN7tbo9ovtwYSwRNKL3MOa2T4boOx8ty86q8SEB1o942je3XD3wqA5rU9uoM2jzccZs7PeyAAF4U0sS/rcGRrP4kDhiQjXbPwV/ppF3F6YFLpoDYVOk+xoRImHIxd3/tvn9rKa//+Pwn2vj7yMWl8YyRSTJZERfd9chB5I/10GZ+knM9m0iEl1kFMAgMus//KicB/+RWtE9feGPNZZlXLbKOVyj1/YlKLmywzlXk2l2UJvQA0lR+JJ+fKunidXoCy+k="}]}
+  },
+  "FLAWLESS_RUBY_GEM": {
+    "displayName": {"text":"","extra":[{"text":"❤ Flawless Ruby Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1135111412,-848086566,-1547177034,-413061446],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4MzU3MzU0NywKICAicHJvZmlsZUlkIiA6ICJmZDQ3Y2I4YjgzNjQ0YmY3YWIyYmUxODZkYjI1ZmMwZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDVUNGTDEyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzkyNmEyNDhmYmJjMDZjZjA2ZTJjOTIwZWNhMWNhYzhhMmM5NjE2NGQzMjYwNDk0YmVkMTQyZDU1MzAyNmNjNiIKICAgIH0KICB9Cn0=","signature":"u6xQK0M7qBtKk9OQDrMIn933y620Y7oc5skJDo2i8N9h37yg0cObXTwYTLAwbOYOx8uQLoJzcmbSHBTlkbUT6Ptxpdg0dOb2gpYFphlk2TiswVM7wBSzRLuyysoc4k6+7o3rVIrWkaermsbxpNk7Iu8SPiyANnBMJTcZIwlBrPfKucV7NbEaB/Loy+37GBGt+pLADFmm+m09dVgOHDtfq8UM9aoyaZVwHfJI/7MXgFQpPGvEscWYRJKLVtPAB2VXP5M5shojl/6yn9QqCpe69MRMqpApbyakjZE9LRJdtFtLWju/fRE0R8EIC9QvM7wWEVMxuWoTmr9aE4g5DbGGznZNMCGquMpxeyw9mpANOlCIyZiHbJCiytwhAzsezpiyH1VzCQm29fFhd4iu7EwgDD/a8Y0Lo3YxtgAvTY1fJUUKPEDpW+4TKEqesgO4CazVYAcEYV947y8kH3YU9cGpEUQtRxEhKVkc1ezjxkMVf1BaeCrX5m+j7mV9gu4tnL5oPkWTlDAlIblrkcUlLwE0Cw/xk6BNeB74xJBHoNKZ18SVKxAB/JP2ujahJmqi7vGJo4f7zRr/WJV+4GBhN5Yb3fM0iMNNoar9eLLwY6s0G7PQ7n8XK+9+SUZbmJWaZW3yJbWk434nTh9I7ClUh9ifZ+Z7vBumdKcHvWwHdd371js="}]}
+  },
+  "FLAWLESS_SAPPHIRE_GEM": {
+    "displayName": {"text":"","extra":[{"text":"✎ Flawless Sapphire Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1855142615,1616589859,-1150344419,1010157280],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NjIzMjc2OSwKICAicHJvZmlsZUlkIiA6ICI5MWZlMTk2ODdjOTA0NjU2YWExZmMwNTk4NmRkM2ZlNyIsCiAgInByb2ZpbGVOYW1lIiA6ICJoaGphYnJpcyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS85NTdjZmE5Yzc1YmE1ODQ2NDVlZTJhZjZkOTg2N2Q3NjdkZGVhNDY2N2NkZmM3MmRjMTA2MWRkMTk3NWNhN2QwIgogICAgfQogIH0KfQ==","signature":"lPIMK4rRsOlNZX0Ac0Hc5bna32u7P5INVmSypNbgJcGw/J6VnnGSBVjHubSwxg83mLPaT9dZtprL4O2dk9AR0X39qqIzcKVKQnLm7g+1wYpQklbdv9iK3ZWkepwDdY3aSn5uSNhlZyfroZTPD0/z8S9ftUEOkhHXmFdzp70fvPwRPwYA1XpUVqhPiOuZDaMfanteHeWsjleJtwKkq1+idPaN18f341hxdyytu1hHi8GRErDJqnQFZqVsdw0Pnvk6AVEQ4/gW5TC8EYpJvDiNc2yIzWA8ALCNh/ngr/AbY+wf5j3Xu3jMUJz9tSdG0aQKuNpSRXrDDTR+o1ZqrvJY6DqPWL8NxfoWGXJjgpc16HRjk29SAJSN83Kxq++0gQW93X+J5pqtYhLzWqos9chpSHjALC2KNeM8MUS3HVEg7EwuxUKR1I6KjpE4be87z9H7uevQIgF3rRzYQpb3iK4hPRivk6lgqxjLWV0GLqTSsJ774yE5juzcfmS4eHpz71SJFVhouwzopJWfoTLR/aUvunPd76IV6rYb/xbWd5G438FcOs1Icd4l/esveWmkDqPvc3CqNgTYF1lLuVUN7SNJ6Uga9AGwLIw9puqLxJ52IN3niwEeBfgod27ehZCtFZ1YynIN+zPdJwFfS5vkYP6LSby+SJvF7HnOxewGoqXO2TE="}]}
+  },
+  "FLAWLESS_TOPAZ_GEM": {
+    "displayName": {"text":"","extra":[{"text":"✧ Flawless Topaz Gemstone","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-1407267564,1296053857,-1992093127,-1257053829],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTYxODA4NjQxMjI5MSwKICAicHJvZmlsZUlkIiA6ICI1N2IzZGZiNWY4YTY0OWUyOGI1NDRlNGZmYzYzMjU2ZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJYaWthcm8iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDEwOTY0ZjNjNDc5YWQ3ZDlhZmFmNjhhNDJjYWI3YzEwN2QyZDg4NGY1NzVjYWUyZjA3MGVjNmY5MzViM2JlIgogICAgfQogIH0KfQ==","signature":"axt8VwrBm3a9qXx8qDrJyxHfcf9Op1GxWLHgHG2uIniWtlaZWila45dkEQXWR2DL0dxlSkre0zk8G1GGy7ErEWbnWXDcbxUSCEii1mACD3sdUY2DJIm7wWrtvISPTc0uT0uoSqtO3x7SF+hnPTF1XrlWckbBl5m6xAWZKU2FE/jlc5fYOB5FB4uSMvnYVEeY+rD7ZaReptl/yWU7Gr8TOsa7RNTYUe8qTyiq/MolY/1pU272AF5lQcDdGh9cscSHMqbAwwW2cMfsayI8cEMaqOk7rR7w1CeeH+t+ESBwjal77GvtMCodgiBVUBj1pzTeDmvv7FKeMb1URIMX0wLuHsHMZRDaS9KJeKEX/woylvXKjS0KaP5Z6TjgbTmeOATCI1IameMwrx7tOAFHDdnioTi9Fx2SCg1gNTMCYgWbhUwxU8hEh3bx/VdY/PGyHLN9rbL3U0fr7TuxAyXe6qP0MRhqBlr8XIzwwOB6vSXfNvYtYqe8pHklNFTNG79tdGiqZvt5GkZ/rc5RSRS9Ejq7xHW1SO+fu7SlVBHYWhcwyK+d/3/UD+yc2T5iyv4zAHtCkDwIMmdnDYfCh0miRuW0HZvppmvKrIXFS0ToKC+ifFLLiiofLob+NhAsq65+CDy865Z+6GcmC3mSRTsrYO31tdWzPWOP1CoqoV8fRX1ehRs="}]}
+  },
+  "GLOWSTONE": {
+    "displayName": {"text":"","extra":[{"text":"Glowstone","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "glowstone"
+  },
+  "GOLD_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Block of Gold","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "gold_block"
+  },
+  "HAY_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Hay Bale","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "hay_block"
+  },
+  "HUGE_MUSHROOM_1": {
+    "displayName": {"text":"","extra":[{"text":"Brown Mushroom Block","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "brown_mushroom_block"
+  },
+  "HUGE_MUSHROOM_2": {
+    "displayName": {"text":"","extra":[{"text":"Red Mushroom Block","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "red_mushroom_block"
+  },
+  "IRON_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Block of Iron","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "iron_block"
+  },
+  "LAPIS_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Lapis Lazuli Block","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "lapis_block"
+  },
+  "MAGMA_FISH_DIAMOND": {
+    "displayName": {"text":"","extra":[{"text":"Diamond Magmafish","color":"light_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-613877044,-870826658,-2122602910,577564053],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY0MjQ4ODAyMTk3MiwKICAicHJvZmlsZUlkIiA6ICI2OTBkMDM2OGM2NTE0OGM5ODZjMzEwN2FjMmRjNjFlYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJ5emZyXzciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliMzkzZWI2YTViZDY1ZDczNWFhYTNiM2NmYTk5M2I1MGY1ZTUzNmQ3YTEzYjUzNTUxNGJkMDc0MGQ2MzM1MCIKICAgIH0KICB9Cn0=","signature":"NtUdiy/N14lCMp6JvX9PjfyQ8GR6WykO2M7fRSc9DsJp/gBG3+ytf/Z/xZotbJgpkBW11CxUIwt/SpJJ6D1KiRn813/gpnPbA+u8TQuyJK6oe571JtsPLZwDzjbURpntRvZUUBCunOFpbKYl5FLc0DNPYjvNq9Z4AsRDhuxVL975jMfUnLFbKlR14xEBMbLMpup2XO0WzCGJdymaDvQ0yimvbIG+CsSNLRTtzUmITx2KTEzE28DFOwz46HixXQsdT0Ljy9AIn4tmZY12v6xuMbRdd7VyhLYzYsnakV9JzipS6UP7zn1y9sAiZ6TGpksw8l7sNMbr03jSe0m3Y/zja7hLwisd182ulUc/ZwHGfMXCzDbogMXMDZVo/2qsqhHvWs0h+mY5/QvAyoqD2mAmY66Dqw/0GpFYXk9g14BYt07CF9d4IczEq0ToIn097diKY2LpwULebIfZ/ps+GMAGPcvT3+l+vNm0G9KuGd2dI/tTxtGJUdliqCEYKwKQVlZyy1K545KfgrS7y/Hz8PH/zWeN8KDs91MqS/8dGML8BYVIWRQ4ORxD7SeOBTFl/uh0cHce8zrwu8HkiZW2lW99I2tlyKyEv2qlzzUiXiatzYI7cL7AH1VJCb2ZHLTwr/kGN+ghbN2WRIaXdi80NuNmVePP0xNNk9NN6D1oxtk/zyA="}]}
+  },
+  "MAGMA_FISH_GOLD": {
+    "displayName": {"text":"","extra":[{"text":"Gold Magmafish","color":"gold"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1666394257,688665235,-1838863273,-1829334665],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY0MjQ4ODAzNzQ1NywKICAicHJvZmlsZUlkIiA6ICJmY2U2MjNhMDYwNWY0YzJmYTg0Zjk3Yjc3ODYwYTNjMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJQcnJpbnQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTMyNGVkYTZhZjg1ZTUwZjM1MTgwNjA3MzQxNzI4ZmY5MGZhZWExNDY1YmU1N2E2MjQyYzZkZWE2M2FhM2YyOCIKICAgIH0KICB9Cn0=","signature":"XK/rf+ZYlx03/yGtphZFHRtMyk0b7RADZ2Oye8AQYdK5GHGra4H7odYTVHQpAk7KsEj5EmSoVdI/p11vvvdp8wPbzrYmpsVgq2bs4ns/tNuOisFsUhVvO8Cf45MiUGK6sNWqnlf0qBFwpebWcNBNOrMYJuyrAdJftkoS8QwoPqTXS+UmTrT3LhCmG0lNpyLGjbBeM/veNinx/kH6STVm8mZsBtkdAWEtMoTMdijkn35WfY2RklrA4l6XDCI1/hlGR6DbajIaWw0m8W2LsDNzXcVmtmaRqqN0x2os9lsFlWIM9JZ54djvvKxsKugVAxvI1VpLngbEXL9cb+p/n1EKGn42VBgrebm18TR2gYUt66TJD4agXD1fTRatgvzF1iZ/cSLTE+kbpF89OaIdvxhW1k4BHeVRoh1VYd/QPgr6KTz91a2TnhDm5YPsCuwc9n4Pb7u1Bk6P5Mq3YQvtPDSv1H6CxjAb/EcRQnJRJjHMFKXwylS/89Ja1D0Pbf1OkXUfmqqdB4gRStDmImISewUkzcyovFD/y/R9C6Q4/OkzsiAd/ljAB6bMpRu65n0cf9CWczGLvirncXXVtltSEuzFC5eNOq8mL/41IumPw/QdEMSECINA8qDkz6QWfT6hZVn0ZEMyxRXhmVlDK8BEL+uGb9CAX27B+R/A2ZAHKoUNRZg="}]}
+  },
+  "MAGMA_FISH_SILVER": {
+    "displayName": {"text":"","extra":[{"text":"Silver Magmafish","color":"dark_purple"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[499085058,1142370674,-1574751000,820280994],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTY0MjQ4ODA1Mzg4MywKICAicHJvZmlsZUlkIiA6ICIzZjM4YmViZGYwMWQ0MjNkYWI4MjczZjUwNGFiNGEyNyIsCiAgInByb2ZpbGVOYW1lIiA6ICJjazM0Nzk0MjM1NzUzNzMxIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM1M2UxMGMwNzEyZmYyOGQ4NzdiOWNlZjk5MGQ2MTNiMjFkODQzNzMyNjYzZjRhYWMzODVkYzdkYjk3YWM1NGEiCiAgICB9CiAgfQp9","signature":"R6E0gPfDMxYNEDhzx3EFxMGnXbIUlBkvCAl1piOMBeOMGyvR6+3tpxUi7Ek9ceZduJeFdaKMMUDDaczGKbaGyoG8bkSIuF1J9N73ns3vYcnNcUtkNPqZQ7E6EMV1HpVLnnEMS+oyGT3VnT3A96EcO0F2G/EbHDjdKjCsVISThYl3YqWrIOisjB8bkGeL0h5o0KHEDkxtjNMUVox3vofX93dnlVrIUn51GOtlWbJKhesPMgEHKzXApgG4/4IbiKNKUQ32k/6RZEBPZAOWRz5mnsyL84QS/AjeETbL/gAi7oYMpVcyhBem8Vrbk6VGnRKZSE696H2mA537OhNfZLuxomSTmAbklyg0Tkwea/Fytx182updqKLGgnen5gxqjN/5z5+OyCfUzfWzkZvu7UNvRMlbe3Kb/HKMORzi1CJWSKc9cNpPryT1L62Wj+DqqQDyUIg/pnAmPj3pkyDIHmn3I40NaGkIr3Zya35DEoNBtJme/glMuB+COvCyXhunz9CE5fJ9MwqtyieMH3OQUzwh8A3aOGQV78NpGzL5SZebuxeelLMrDXjACfB+S3Zo9gT5oxF+WM4qYB3eJ/OAdmNmbmVXCwUEPB9a1TsKB6oaNrki8RbhtknJ48DTeYdD/BV9Kr+3fhh0cltw2A6OdaBXPOpOAHUMdn/DZgAiEEB1/lI="}]}
+  },
+  "MELON_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Melon","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "melon_block"
+  },
+  "MUTANT_NETHER_STALK": {
+    "displayName": {"text":"","extra":[{"text":"Mutant Nether Wart","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-542746425,-153471482,-1199018561,2031495101],"properties":[{"name":"textures","value":"eyJ0aW1lc3RhbXAiOjE1NzE3NzY3NDAzMzYsInByb2ZpbGVJZCI6ImVkNTNkZDgxNGY5ZDRhM2NiNGViNjUxZGNiYTc3ZTY2IiwicHJvZmlsZU5hbWUiOiJGb3J5eExPTCIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdlZmMyYmYzMjk3YmFkZTczOTFkZmJkNTBlZmY1NTZhNGU5ZDM5MjBkNTYxNWJlMjNiMjJkNjY3ZTA1MzMiLCJtZXRhZGF0YSI6eyJtb2RlbCI6InNsaW0ifX19fQ==","signature":"acggFaA4IOBP1zMxkW39ow6+MiZ1NXwK1QqbnErOlcYbox7ZTNNUqRbvSWsSuQwThLfoEN2f0Ex9lGb9ChpHvLOQYSZojd90BD45gKACfTu8RAac3IPXKRxVn2TO2REzG41DlKbIRViij2SiCYaz2IVkKyy1dk0ud0wNFK6mEJnZsKMSMo1r4itYFIgBdz+LS4KOFhmbMMrqWwGRQYivH/AGd8du8uZNfrkjj3o4/6JPPvx9HvNA2G9IsEgpxe0qHBrSaGRzOOK2WOsjOnDtfRw4L7iLNG/I2Yo74hZZOGKKPNwLd5WTHUZVAutGzh5LsI98OEgjTe81HAkv3MXo4FUJQUYgCHLzSVzX82zGxw8Lsz/b2hh2JFKH6YP+zxo/HduP0mFmvSB1+v+KoxLBTxvrt3rUH9YXbiADyxwbPK6EJgqTuGWs2vRWOroKqS9jY0R0EfOxx0Esqdwx45vpT/2jWaGeINOmiU4LQUZ6kmA+PPG+LX5a0bwWdTpffN5FV6GzLHguqybgWNhyfuokrUh+CXP+LfqrhPlw+7FrdU08rGArbM2tKyQxAVj3twByBbnXloja791p0zZRqO6DZdUjM2VHv8roE7g6Es/BFesFrC5c3J63R9fA9y1rV7c9PTVbrIlxDf8WL5MiD5uEBqXJ+U6dX1s4g8W9ffVqeNM="}]}
+  },
+  "OMEGA_EGG": {
+    "displayName": {"text":"","extra":[{"text":"Omega Enchanted Egg","color":"dark_purple"}],"italic":false},
+    "enchanted": true,
+    "material": "spawn_egg"
+  },
+  "PACKED_ICE": {
+    "displayName": {"text":"","extra":[{"text":"Packed Ice","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "packed_ice"
+  },
+  "POLISHED_PUMPKIN": {
+    "displayName": {"text":"","extra":[{"text":"Polished Pumpkin","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[646753541,330382467,-1168635490,-1054031786],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTcwODcwMzE3NzQ0MiwKICAicHJvZmlsZUlkIiA6ICJmN2QxOWQxNTZhY2I0NDE2OGQ4YTAxYThkNWYwMmEyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGVGbG9vZDQyNEsiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWFiYTAxNTI0OTUxYWRkMjFmYjUzZWZmODllOTk3NjU3NThhOWIyYjY1YTk3YzBlYmJhY2IzYWY1ZTA2MjQwZSIKICAgIH0KICB9Cn0=","signature":"adjpU4SnCKw/cOCbn5PjBuZqPIqBo5hisIdBDpaMHK88DCliWtPDlx4yYZIBIDw4G5lgrDoAFJlFbA8uVDrbIjUhDAfr2jYiIkH1E43kjSpI15YjfXOR3EIWJmvn4KeOZlJmwviKfGqPleb87Ofc2vF8AUF2Y0lwUep8DEQfhhkiE3DZsJpQiLNEpd0AWXqiUGkL7g8JYSG+5RD2Wpc+Y7sVvyGbyR+xvZOEUDJHoaYBw+w73ueLl6fQ9cY74UGS2RbYUg16/gRQJZ3G6+ynCf18Lk4Zu0T1UM5N6D5a13KiWGBgaLpqOsixLdHN6D0MTnvHTyUL2V8PI5Sc/h0iW2H3quD26eL0F4pnTQEreVk+XG/2iyTJPVOCZhyzQj8ao1N403w3PDUj8NEmt2rOEhjBepzSzOPjIy1dW2IccJIVPTgESasw9CMTtuJULmvr8iuqtbL3xfUjYU9i4n0G/PEg/Az3GNSkUsz4craq9of8L9EyvEZ6XqUE/Rfq74j5m8Xpt+oyd0t2jwKzEqlzrhNPXA9g+yEApyW+t2CUb+hTRBnLEJuU2Zp+eI7dDRvbVDDApY8WukR7xjBU15dzShTm3HpFZQ8tjFSpfquayuZfsNnV4HWtiXm48a57MsWs3D6BWtZjL8qNrOzs4PgnReFZ07MUb4OdTHlLTKROJXQ="}]}
+  },
+  "QUARTZ_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Block of Quartz","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "quartz_block"
+  },
+  "REDSTONE_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Block of Redstone","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "redstone_block"
+  },
+  "SLIME_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Slime Block","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "slime_block"
+  },
+  "SNOW_BLOCK": {
+    "displayName": {"text":"","extra":[{"text":"Snow Block","color":"white"}],"italic":false},
+    "enchanted": false,
+    "material": "snow_block"
+  },
+  "SUPER_EGG": {
+    "displayName": {"text":"","extra":[{"text":"Super Enchanted Egg","color":"blue"}],"italic":false},
+    "enchanted": true,
+    "material": "polar_bear_spawn_egg"
+  },
+  "TIGHTLY_TIED_HAY_BALE": {
+    "displayName": {"text":"","extra":[{"text":"Tightly-Tied Hay Bale","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-555823260,517223443,-2057369032,2023544382],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc0NjQwMjM4Mzk3MiwKICAicHJvZmlsZUlkIiA6ICI5ZDYzZjMxMGNiZWE0MWI1YmQ4YTM4ZmExYTBiMDI4MCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTa3libHVlZm94dGFpbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS82ZDI1YzVhNDhjZGFlZmVjOGRlZGQ1M2Y2NDNiYzMwYTIxMGY1MWE5ZTJmZjQwNTk3NWQwZjhiNDMyMTg4MzdhIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0","signature":"V6YoCqedFZbize0JWUc0o/RCx086fH3Z3s5/oJmT8DdPZYR4QL/zZXSAP6KoDAIRFQgtF/31E/vHgDlzFkwpqk1Y7hdShfvasdO975fhPL1VYENi3ue54eCpae68fEnsc5A0mwAWakevz+P8ChrRE9rOrjwg7OOdTGdcb5tSlrgEWJ4s6iaZSVs985S+KWDuhXMTeKf1TUHNznqyYIB0zU6UgdzYwUhODo1YYjLwyAmEGkob2a6JMu0THxnZTCys4ZEeSTFTcOv6Wzqt/8gLI6YqidxpQshzPEOOMvm0F1/ZGsQq04Kt7UjFn1guv5WeBnJ07JOQkLK/He7zJv/Vl+qW02RnVfvlxuskCZ2T2xAMgubzmidCP+Tx6CNHsmue+dYnD6g2WoMLjRqOPGtlxSCbUtHKSCnrkPl3QuXQecDhDyULWveWwfS/fciZyZWehh572YrVuEQpPWFevoKLvOQWxvGpMkSS6NN+PLpBhS7zxOGoRQCeZUt73ZMfGsi6zei03LL1qLPu4MecUoCRuCPOr1sd0LDA1h168orUVu9Tc9G4rlgpONRTFbE5nU97JlfcBPzpopUOYXcmfi+rFp7SkmH9t5envgGMVLpga58jE3Z08812sNLhtrEwOn3phEGH093k/gSF6gnsjZ2C9F1Ffdv5snRXC8H293/nEBA="}]}
+  }
+}

@@ -1,0 +1,715 @@
+{
+  "ALL_SKILLS_SUPER_BOOST": {
+    "displayName": "§fAll Skills Exp Super-Boost",
+    "enchanted": true,
+    "material": "diamond",
+    "rarity": "COMMON"
+  },
+  "ANTIQUE_REMEDIES": {
+    "displayName": "§5Antique Remedies",
+    "enchanted": true,
+    "material": "azure_bluet",
+    "rarity": "EPIC"
+  },
+  "BEJEWELED_COLLAR": {
+    "displayName": "§9Bejeweled Collar",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": {
+      "id": [
+        786261926,
+        1193097409,
+        -2001125048,
+        -749141144
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "hsfbHrf41jr8kfa3/CJo6JuV3on8/I69JtY2giIYkRwQ80CioCvinikAo40yodlX9M2O2bW4iGS20Mjriit3cwrX01bwi9QwuE2F+HPdC+j7r9268BRzxy/oLq2otclS/Icc1W5m/k5Itci4s6n0+sfmJL6Anp15tJL/SCcGjcNGBkW4H6ZDRB3xn1I1grM54naPjWaiRg7LyeJ9VBFwEBBds0tDgZgJip/jq3vxRwRNzJauL6z+5BOT8iuJ86CXVkLpAcLDR7RZr71TJrA1k1qBwaCcRVNeInaGMJhmouTlR+GWbHNtKDGANcLlfxe6klq++6aZtZ7BukCwWU7vbQOwcb9e2xlvGib9ZRNlqU1Qh+Nq6OBFrQ18RqezJE4qd5aOzLc9dCFDrJh3WQm8yzOA36Kl4H/gXHI5y5/8AcsVo7oMGOgQmbrlCx/jDzs9d4oBtcdmo7CkEUzjfgyi3CGzvoghJIfdtDGxOcj1M3mkXWca0uh7EK+In3se3RrNTa/38A7riel4h3TVICxE0h1Hp1YZvm2MgG9VkV1xbkgvTnkaElRTpQ2dLTmgoE5hz5PKglTcqPxmwSyQ4QcNulvSbX2WTkuR5jEAAvwsbErrE+QU2F39aKqcRUIzeOpYfVQi5pR2mzaGIu8vGdthfZgPVKp01Q67G2frt1jMRX4=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTY5MjI5MjA4MDgxMSwKICAicHJvZmlsZUlkIiA6ICJmMTYwZTMxMzJjYWM0YjRiOWM5OTk2NDQ1OGIxOWM0ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJGYWNrX1JvbiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS85Y2EyZmRhMDI5MDYyNmYzMzdlOTZhZGJiNTcwZmM0NzZkNTQwMzM0NGZiMzk1MzVhYTdkYWNmZTg1ZDAxNjQwIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "BIGGER_TEETH": {
+    "displayName": "§aBigger Teeth",
+    "enchanted": true,
+    "material": "ghast_tear",
+    "rarity": "UNCOMMON"
+  },
+  "BROWN_BANDANA": {
+    "displayName": "§9Brown Bandana",
+    "enchanted": false,
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": {
+      "id": [
+        2120157719,
+        1525035352,
+        -1132291386,
+        -1851177402
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "NwQ4DLA+lAP5jHfxA0vfKrUR7gMey283gGKpddRS0QSAALaZRWiXDX9VgXhjepQD9Hkx7hKDEkzjodC1gwkyGk0cPcs/ayRguxnQWqZZOV2nb+GodF0YXQyHEfKrNZjdn7IVBPWkkwffzffjCr+1/tIdYnsP0n+DqvUV/uUmjhsra/DxXsdicTzsYP++VFxyROhPasJ2LzA7g15L+aZY+J8Xsz5QV0Efc7DMawmhIidvpHqTdqjWuNxRipCt7P6kbx2tE6eWuaaDtd49lax74HrHnTUfZW3R/9Xy1GPkop35/VH+fykbX517GszlHm8aZDWeIiEF+DELkNyPX210fW/5NEvdwSByjKO/jLHQ0CbK/umXH8cUqcdhhmQKX0IcG3U643FD+3vBQS4NgA1ctTu43A8EazX9Q/2T5wEGubyMyM1T8EPuxsTqIsUTgB1igGjZKCZiKrDMEh4qCI9F1g17FfdZnE989qR7XG+mVMV7vUqhvINavRoUY6UAhIdfcCYZixk4US4jO33IfCJQ14SaFIRDO9zb/4OzhyYCxX+8ky1UpZHRtsy2TRopwEPFDomSZj02nzM4FcLn356sYKhWRbkvr5lnSsnFlTMOAwp2NcuptKUo+a+udPwFX0ilZoD4eMKDGkKMxcSEb9VhnA+XnaRwqyG+OkYsYDJJMPc=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTcyMDA1MjkwMjA1NiwKICAicHJvZmlsZUlkIiA6ICJhNTdmZDE5MGZmM2U0YjBkYTEzMmY2OGUzOTU3ZjViMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4SGFubmFoNyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS82NzRlMDYxZTZkODUzODIyYmJhZDU2ZDA3OTM1N2MyNDhjOWE0MGRlNDk0ZjIwZWFlMDA3OGEwYTAyZWYwZGE3IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "BURNT_TEXTS": {
+    "displayName": "§6Burnt Texts",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": "2d03788c-6ce3-3daf-be8f-ff5b6482b828",
+    "texture": "78bd1889bf8a635ec71fc05b1ed548763778e3d371926d39a62c29d350c48b49"
+  },
+  "CROCHET_TIGER_PLUSHIE": {
+    "displayName": "§5Crochet Tiger Plushie",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {
+      "id": [
+        448008946,
+        -1407371852,
+        -1313100283,
+        1136172710
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "CyEUP14QhXTwIeB8RsU+PyQVucvnlP+0mJ/ffDShXkTWVygRTxNgPKtpCAXlClKGw9hX8X0Fq/T+CdV99gok98lpyhAHKPm/EeUS2A8Wg9gDoUJUAbgNd31/7YQiePjO7MnVL0duYifILrKU4i2/TO0DjIwpt9F6BSfwGbp4lVXRUCdh1SEcaXU2m5JI97RGlIZORyxVNZKhHuoc7yrr2zcnf9pIrMbIjlWaIWnKUViMDshwggct8SFqaInxKwYeLnIj7KiifhVwcq2AZ2dTbVPQNk3peVz0E4qF87ePzlzzZ0A7rQV+PVTCfzW4z1Vbc+17uQJrwm0xIbRuksOifWZ2I+5pJ2mvgpZ0gHGVmsZSy7B0dM77dm5xUk+zgltEZvjdXDfn9+lD3OQ0ulKCd0TduRE6CIqFJl7e9mEP+MwXCxrCV5LiRfJJ5H4pL7rBJU8A31mFFvrpnMzNDLSBACv5vrhgxO8/PdOdpMorCiW75mkRt0TIPBLRS2iTtNXNd/1MP9UxCVIC4Dhuv97LT+74uRcU6+7BPaAnpE9bIbGbHitvr2zYpLuZ3ElSG+1Y+F6XvjSV2ext1hxlNurzcMmDF0HyUyH7qL5Dn3bZbyR/kQ+x0Z2sX2d9wjfo8OsFqA6tkWAi2TDni/v6+bryLcsEmbTLqk1UlxB6jSledIQ=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTU5MDcxNDc3MjE0NiwKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mNjZmYjRkOWU2YWUwYzVlNjFlYzZiOTEzMWUwMTVmYjg5NzkyODUyZTE5NWU5Njg2NDY2MmJhNDIyZWYyNmUyIgogICAgfQogIH0KfQ=="
+        }
+      ]
+    }
+  },
+  "DEAD_CAT_FOOD": {
+    "displayName": "§9Dead Cat Food",
+    "material": "cooked_cod",
+    "rarity": "RARE"
+  },
+  "DWARF_TURTLE_SHELMET": {
+    "displayName": "§9Dwarf Turtle Shelmet",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": {
+      "id": [
+        1489096766,
+        1277968102,
+        -2102467395,
+        -486750625
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "iyv3qKGcozM3LSU0lxeRrw1WBG3+SoC+nqOkyztnE2W6R+po5ZLecC3moHyLR1Fm1OUrZhQhwwDDVKeEOId7g1lsNpQx6Ckf2AxZuhDW0/0tuVBdPrAgo/84LQKd8FCxva+cUG4sMI3uBHi3aIizkCeOdpvSFxJOm+W/AWY9BgNtZ+OBZYLoBnuMBLki56NlcjHX+g+X07j99hv+K2WfPBRngt7feTQk6L7qQK6dVCamn4B28vrdzMxFe7KYOtsC87xaG7QVTKWZ2QfhDJyuxvaYN11nLYxjmcohegGGBHClJH9ldAcVeNP9FmdyrgQ+MixlT5eL0YQMfwN5eXydW3SWVBBRcZkd42LVcj121gXj7tGorGepE+FoCu2d4lPT4h9ptuSX1Lgu0XvZ5uDmMohIfgzGzwrtr9ncCO/bBElbDoFC0Degh+LdW0pt+Is+TOUTJWhZxx2wwqkDxk/HaO9fCpCwSNMg+gxRD95mYsEBDtMB7fWC/UL+pbCjJaZSj7606dLJN9dnLpF8/O5/VXJ09i5o8WbvF6eyqX+ZgWEn+t5sGmR6dWr3bexKTN9d/NPenMD9xcWq8lLXg8KVHGcIPlS+AsUHRNlwtmIZOFECNV64XrO6SABefpzln3t9ybFFO6r2KR++1D7b9XIK+s06SLB7iAsukETs8/RiHD4=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTcwODcyMzE0MDkwMiwKICAicHJvZmlsZUlkIiA6ICI5NDczNjdlMTE1N2Q0ZjQzYTZmYmY0MGQwOTY3MjY3MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJ2ZXJzeXNtYXN0ZXIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFjMTUxMDYxMGQ1MDQ0M2ZkOTdmMzRhNmU5NGUyMWQwYjkzZDVjNzUyOWYzZDk1YzE4MTZjZTI0YTEzZGM4NCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "EDIBLE_SEAWEED": {
+    "displayName": "§9Edible Seaweed",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": {
+      "id": [
+        -1621757036,
+        -1588449182,
+        -1144610907,
+        777476326
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "jiKjjtnQXToF6nDvD84ZL5Gw1ACXelqCxoFqwxiCc2FORM195dkZdTwwIY+9ERDIXA8jTpVXwiaROac3Vblk3hHk4mccNySQUrA9tNI4Bd5r9/VmWgzuv19iHDovrpiESc3ZxRVKOK7xHPvDwBYYZdU4ny97httSBFHLl6VrfRQweqWWT3wsh85H/n3VcXadtbDNmnWBhZ5QKOMxbUvzCQXaYo2lZ9zKof1Eimq17wf+CJY56fcWmAsKRwkkzSBrLbV2Gdk/9VyuZ/nX7E7p/OcC/kgZI7EBnZVva+67b8HNBveZ7Y0BCNBde4XcGqZrdpPRQ9Tlkf6Pni1iWRjtr0i8xF6D7vkt6k7l2GG0142bYcgy2+ALwhuq7FQmWbrdDPOAy5n6L30LUSlFG59kTQjRqKpTORaRHsYqVKX+ClsFbMfBKQ5ciPCBcWgJZFK81Mayp8gMiGhiEsh5lC54Ek7KzDF+f7Tv3FkoU098ZAYL9m81ziIc5IujNkt5Y2cmOkKJyny2UJ2BUMNU9UhIDETylq2Kr6LHOOoTvPOYI5muzzbCgTJX2Fxyc7cXUODT8cPFsxLiaFnr2d05/dHtfiPlvndMzUsJUTmypR0HgUjiWyjWE1p86Qlq8H4wpEcjgbTunK8Z9mWK9kN4e2D7Gz1tca0llgpgyyACumiJfqQ=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc0MDMyMTg4NzE4NCwKICAicHJvZmlsZUlkIiA6ICIyZDUxZmI0ZmJjM2Y0MjJjOTMyYzIzMDg5NGU2YmM1MiIsCiAgInByb2ZpbGVOYW1lIiA6ICJGR0ZTX3N0dWRpbyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9lZjc3MzQ2ZjU4OTRjZjBmNWVmZjJhNGMwNmNiOWI2ZWFiMGJmMzlkNzg5MTkxYjcwY2Y3YzA4ZDM2ZmRhMjQ4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "FOUR_EYED_FISH": {
+    "displayName": "§5Four-Eyed Fish",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {
+      "id": [
+        -1710720682,
+        -1691012326,
+        -1213838217,
+        -299945914
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "CIeWKN+sbEch2F6ktfWG4XJJUK2azv0F6fPSuCNfqIfIUNtFekqDv6RKB6QT2grmiTkL0u8UCyrBWSjRjO13JrVGt+MtI+bC63rmuqi9kI9ZCM1Jm/qXkY0C54R9TDCkYkDoauexo8czZGr/fm2S+NK+qDopSB0XRsXnzsjFAEkLzXRPLfhWAb0F3dUA6vrdwoGFQUQJ0CzH8ie9nmvI9LeUv3sMwNCY1rYI1mR/oIfVaYPROe9wUcvWvcbX0zH/cbxx00GhvktPPPhRFFhp/j2/85c+M5eBxIzTZIAeiKC7BMRTPB9Sn/aeyvbYn4uIDDHzabgZfy/BarYRNQ4BZKREqYbtJlPBPO/Def0sDhKgCTfrCWLP6419o5pUxxzqcw+Uh3bhDp+RYeu9hU/JTfFqP2SyePfg8kSJzS8D4rn/gNW1hWz9ZZNz3DeolbIAHXXuNGUw3YNoyYQ+KWxriGOrvz7nVV1EVvLur9BSgZZvZKSEHnDhAevWRRzjw/jiChCGxHtDEjpTPuhZkVeZjlKrNQLPtXWuXxR0pq2ZujWJCQGZmNC33lXKVa7PObXd08cWksdUjMj9aTCFL1NosY3Vb7o3o6yhW1J9gl/ysB+rmZaqtdIXRy1dk2UkwwRSqDc8jCQcmUTta2f8RLu6QmEHNj9ewjcXxeoJRqByBCQ=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTY4MDIxNzQ3ODIwMSwKICAicHJvZmlsZUlkIiA6ICJhNWVmNzE3YWI0MjA0MTQ4ODlhOTI5ZDA5OTA0MzcwMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJkZXBsZXRpbmciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliOWY0M2I1MWJkNDViZWRmMDllNDU4MmQ3NjJkMjZjMDMxODQ3ZmM4ZjMwZDI1MzA1NzkyYzU3NDE4MWQzZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "GOLD_CLAWS": {
+    "displayName": "§aGold Claws",
+    "enchanted": true,
+    "material": "gold_ingot",
+    "rarity": "UNCOMMON"
+  },
+  "GRANDMAS_KNITTING_NEEDLE": {
+    "displayName": "§9Grandma's Knitting Needle",
+    "enchanted": true,
+    "material": "stick",
+    "rarity": "RARE"
+  },
+  "GREEN_BANDANA": {
+    "displayName": "§5Green Bandana",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {
+      "id": [
+        17597418,
+        -1287899324,
+        -1900957356,
+        1052201523
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "NntVoicQ/Pp4ZLiLbafid3hwAB0PE+apWt+mEid6uWAs4YzsMwYKw0SBZxYRC74uuu18bCTHkYo62ybxQW5WIziXsmSFlSGMmuamigQXfA4Rsz5fgbh/libH+Bcj16YAOuekuPYzLXRSnvjrPs3iQn/j3E7GtnNVjUTDif6yT0/OOKiS1ZdAOg+RkhimjmA60HcSkYxLztQMxQoq6SkH6hAyM5EjsC0Bdfvd9bAhzzbeXIHq561vXZNpM3LYnLVu/d3pBRlEvBYN3PberXgpreSFFj1vdBuCSUgmVBK4Z+E7BkYk5CwyWnPtv+7uGgmIxbUS+bs8hF0s6LKlbXosSCjVxQV0xCn/VZjgFwDVi95XoaGiNKFjlfD6drPL40UsPVZkkV1+zuPqVQ6ZU9ZCvC4XlYLQwG75KYEOuglb39Bjw8xnMt7hSUJr7CBjfgcEllmvvfr/HzTNrRlwVQH4exI4GIPj0EBit/Fz8KILNUTeLIGjaIapzNPBuplH2ZTt4wQHA8jNQQI5qCKqLvIt3xM0lBOLMxAx47lzi21b18x49BJ38GEpE756T8wM3Tf2mUS5ywV2N0r5UfaiapBoUaLSeWHGIUJ/0fUww1AS5ti5Ax3kZf8zO0tMXKWYRoRd9tqeUr0KZCHhQdVj0bvF2MhW32Puzdeg1nS/pQWpPZ4=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTY3ODgyMjE0MTY3OCwKICAicHJvZmlsZUlkIiA6ICIyMzFmNmU0NWQ3YTc0ZTFlYWU3NGFhMWU5NmZlNDVlMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJXaW5zdHJlYWtlcnMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzUyMWNjY2RiYjg5MmRmZjE4M2Q5N2JiZGIxMmYyNjcxZTBjZDEyYjk0NWI4ZmNhMjExYTcwNjUzNTlhMDNhNSIKICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "MINOS_RELIC": {
+    "displayName": "§5Minos Relic",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {
+      "id": [
+        -1019656308,
+        -1406389829,
+        -1652544533,
+        -1894441320
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "wr/FdNcfx+SRbLLs7mbq04X0HWqh7VFcOPzDVZNYAtc5SBPpUThTH5a7m8mArw2qvoEL7vdmcmO2X7xF8+mPoiL2cRHZhSHRda2/fBmDxaV08PfjdB+4MKiRjyp/Jg5UHAeba6iWOltUcaNkl+ad+vUOgtokZG2+8G6rbDR/1vMRA+/BVypp2cVORLxG/l/CWZqQ13IyTTk9QiVBFTfhGqbt6r37GhAuZxsvFg7h3vniEeKFQGwiOn4N4wDb/SclkNNQaPFaxyDHQfDOl2ZCKwX5/9uFOTpapIM9nd8B7QrePUg/xPQQvIjM3s1Z+TC5yheCEJV798NsRW+UMCQJdjFnpkhjzgpF0R3EX1Gu2Pj7yyv14nCa7qHVHiz2YGthUAWoD9LVmgYRuhakbOS878DzvV6J/uP7isTGXDTj/aFWd6JcSSX1pVORM2Iw69KuVy40/nXFvdskkO44npmF5dIHSxYIeK2GotTfwisWBGVJN/ZF6Io4KiJzx2bfV7V1x+6xr8F6su0ZivXK6vBakt3iPoHHSMwkMJkrkFCj6DuOwBqm7fgzYwNK5a1L0zSEPL7DL9GkpFo37iYX63pyWoSPJHQ2ne9i7AkhhNmk7+ZoJ5OUVuI85TLizmLuymXcJ03S+57inSW99Khz0jQwzuZvVcB5Sru556JnJQMcZ/I=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTcxOTQyMTgxMTI0MiwKICAicHJvZmlsZUlkIiA6ICIyMDZlMWZkYjI5Yzk0NGYxOTQ5OTg4NzAwNTQxMGQ2NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJoNHlsMzMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDBiNDY0OGNiZDgxN2M3YjVmYzY1NGM5YzA1NGUzNjBkODFiYmZlMWEwMGYyMTQ2NTdhMTc0ZTNlMGQwN2QyMSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "PET_ITEM_ALL_SKILLS_BOOST_COMMON": {
+    "displayName": "§fAll Skills Exp Boost",
+    "enchanted": true,
+    "material": "diamond",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_ALL_SKILLS_BOOST_EPIC": {
+    "displayName": "§5All Skills Exp Boost",
+    "enchanted": true,
+    "material": "diamond",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_ALL_SKILLS_BOOST_LEGENDARY": {
+    "displayName": "§6All Skills Exp Boost",
+    "enchanted": true,
+    "material": "diamond",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_ALL_SKILLS_BOOST_RARE": {
+    "displayName": "§9All Skills Exp Boost",
+    "enchanted": true,
+    "material": "diamond",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_ALL_SKILLS_BOOST_UNCOMMON": {
+    "displayName": "§aAll Skills Exp Boost",
+    "enchanted": true,
+    "material": "diamond",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_BIG_TEETH_COMMON": {
+    "displayName": "§fBig Teeth",
+    "enchanted": true,
+    "material": "ghast_tear",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_BIG_TEETH_EPIC": {
+    "displayName": "§5Big Teeth",
+    "enchanted": true,
+    "material": "ghast_tear",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_BIG_TEETH_LEGENDARY": {
+    "displayName": "§6Big Teeth",
+    "enchanted": true,
+    "material": "ghast_tear",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_BIG_TEETH_RARE": {
+    "displayName": "§9Big Teeth",
+    "enchanted": true,
+    "material": "ghast_tear",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_BIG_TEETH_UNCOMMON": {
+    "displayName": "§aBig Teeth",
+    "enchanted": true,
+    "material": "ghast_tear",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_BUBBLEGUM": {
+    "displayName": "§9Bubblegum",
+    "enchanted": true,
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": {
+      "id": [
+        1936494275,
+        522139928,
+        -1533368637,
+        -1578423101
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "VGbloSziA2w/ODq3QtbELYaGxehFrUvu26/EctIIVjP0+Vj5VcdxZojY4J+vM0HHcGVNVFsjsiRc5qnnv0ThKjo9JC5k/366Jd/QhrVjF83LSVZSD0muUcKUycTkG38VQBa1GnL9oUXhiK5CLEY7R3Q56KvOs0oPbgSSv6j9EjPs6bDLRFDpDiff+FkrB00AE0DupwkPLcMsK3xF84qc2v2bKySDCaiwxmyLvXaLwfM5oNBRJ7J2HLZ2Ag47+TDAPpZPAI0vcEsYSKNwLcKH9QEizKfErJ+oXxl5NHCyehgmgaJkjvqgSJDlG7vBDUGFr2/ryYzF94TpYHRdONUWIvNKaIXG5cUANPkHO1xoR5U7HsuQWIxdYkprvvPVI3DHy1MgVPtHjfDehLTgKUDg970d0DHDFjSz7Hso3ijurFivMDya7FO2walFkKjuYqVF1+nOyxKM4N/yQf0nCeqy4/aX4Wku/nqFPGgSkKpyyJTFVDceU0ij8r3l2IlzmPAzuE62QXQ6pnVSFng6R5UCiMDLXVHgVpgnsm++aPXvI8Jyr5nFb9LUEAY7Y47PCbMhevdXLyXdXQwauTvtYQQbEWW1/OHA21H9ktR13a1fmSZMrgmSoGgEixB2vyWqLc61rsoFaOjJHk82HL9ct8hU4yDGWsDSJ/cWOXmLvf1lYRU=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTYyMzA3NDI5ODE3OSwKICAicHJvZmlsZUlkIiA6ICJiMGQ3MzJmZTAwZjc0MDdlOWU3Zjc0NjMwMWNkOThjYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJPUHBscyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9kMDU1ODRjNTM5NGViOTBmZjVmYmQxYjI1OTA5MzcxMjU4YjE1MjZlNmE0N2Y3MjQ1NWEzZjg0ZGQ3NjAzYThjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "PET_ITEM_COMBAT_SKILL_BOOST_COMMON": {
+    "displayName": "§fCombat Exp Boost",
+    "enchanted": true,
+    "material": "iron_sword",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_COMBAT_SKILL_BOOST_EPIC": {
+    "displayName": "§5Combat Exp Boost",
+    "enchanted": true,
+    "material": "iron_sword",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_COMBAT_SKILL_BOOST_LEGENDARY": {
+    "displayName": "§6Combat Exp Boost",
+    "enchanted": true,
+    "material": "iron_sword",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_COMBAT_SKILL_BOOST_RARE": {
+    "displayName": "§9Combat Exp Boost",
+    "enchanted": true,
+    "material": "iron_sword",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_COMBAT_SKILL_BOOST_UNCOMMON": {
+    "displayName": "§aCombat Exp Boost",
+    "enchanted": true,
+    "material": "iron_sword",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_EXP_SHARE": {
+    "displayName": "§5Exp Share",
+    "enchanted": true,
+    "material": "dandelion",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_FARMING_SKILL_BOOST_COMMON": {
+    "displayName": "§fFarming Exp Boost",
+    "enchanted": true,
+    "material": "iron_hoe",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_FARMING_SKILL_BOOST_EPIC": {
+    "displayName": "§5Farming Exp Boost",
+    "enchanted": true,
+    "material": "iron_hoe",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_FARMING_SKILL_BOOST_LEGENDARY": {
+    "displayName": "§6Farming Exp Boost",
+    "enchanted": true,
+    "material": "iron_hoe",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_FARMING_SKILL_BOOST_RARE": {
+    "displayName": "§9Farming Exp Boost",
+    "enchanted": true,
+    "material": "iron_hoe",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_FARMING_SKILL_BOOST_UNCOMMON": {
+    "displayName": "§aFarming Exp Boost",
+    "enchanted": true,
+    "material": "iron_hoe",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_FISHING_SKILL_BOOST_COMMON": {
+    "displayName": "§fFishing Exp Boost",
+    "enchanted": true,
+    "material": "cod",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_FISHING_SKILL_BOOST_EPIC": {
+    "displayName": "§5Fishing Exp Boost",
+    "enchanted": true,
+    "material": "cod",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_FISHING_SKILL_BOOST_LEGENDARY": {
+    "displayName": "§6Fishing Exp Boost",
+    "enchanted": true,
+    "material": "cod",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_FISHING_SKILL_BOOST_RARE": {
+    "displayName": "§9Fishing Exp Boost",
+    "enchanted": true,
+    "material": "cod",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_FISHING_SKILL_BOOST_UNCOMMON": {
+    "displayName": "§aFishing Exp Boost",
+    "enchanted": true,
+    "material": "cod",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_FLYING_PIG": {
+    "displayName": "§aFlying Pig",
+    "enchanted": true,
+    "material": "feather",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_FORAGING_SKILL_BOOST_COMMON": {
+    "displayName": "§fForaging Exp Boost",
+    "enchanted": true,
+    "material": "iron_axe",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_FORAGING_SKILL_BOOST_EPIC": {
+    "displayName": "§5Foraging Exp Boost",
+    "enchanted": true,
+    "material": "iron_axe",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_FORAGING_SKILL_BOOST_LEGENDARY": {
+    "displayName": "§6Foraging Exp Boost",
+    "enchanted": true,
+    "material": "iron_axe",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_FORAGING_SKILL_BOOST_RARE": {
+    "displayName": "§9Foraging Exp Boost",
+    "enchanted": true,
+    "material": "iron_axe",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_FORAGING_SKILL_BOOST_UNCOMMON": {
+    "displayName": "§aForaging Exp Boost",
+    "enchanted": true,
+    "material": "iron_axe",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_HARDENED_SCALES_COMMON": {
+    "displayName": "§fHardened Scales",
+    "enchanted": true,
+    "material": "prismarine_crystals",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_HARDENED_SCALES_EPIC": {
+    "displayName": "§5Hardened Scales",
+    "enchanted": true,
+    "material": "prismarine_crystals",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_HARDENED_SCALES_LEGENDARY": {
+    "displayName": "§6Hardened Scales",
+    "enchanted": true,
+    "material": "prismarine_crystals",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_HARDENED_SCALES_RARE": {
+    "displayName": "§9Hardened Scales",
+    "enchanted": true,
+    "material": "prismarine_crystals",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_HARDENED_SCALES_UNCOMMON": {
+    "displayName": "§aHardened Scales",
+    "enchanted": true,
+    "material": "prismarine_crystals",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_IRON_CLAWS_COMMON": {
+    "displayName": "§fIron Claws",
+    "enchanted": true,
+    "material": "iron_ingot",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_IRON_CLAWS_EPIC": {
+    "displayName": "§5Iron Claws",
+    "enchanted": true,
+    "material": "iron_ingot",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_IRON_CLAWS_LEGENDARY": {
+    "displayName": "§6Iron Claws",
+    "enchanted": true,
+    "material": "iron_ingot",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_IRON_CLAWS_RARE": {
+    "displayName": "§9Iron Claws",
+    "enchanted": true,
+    "material": "iron_ingot",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_IRON_CLAWS_UNCOMMON": {
+    "displayName": "§aIron Claws",
+    "enchanted": true,
+    "material": "iron_ingot",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_LUCKY_CLOVER": {
+    "displayName": "§5Lucky Clover",
+    "enchanted": true,
+    "material": "lily_pad",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_MINING_SKILL_BOOST_COMMON": {
+    "displayName": "§fMining Exp Boost",
+    "enchanted": true,
+    "material": "iron_pickaxe",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_MINING_SKILL_BOOST_EPIC": {
+    "displayName": "§5Mining Exp Boost",
+    "enchanted": true,
+    "material": "iron_pickaxe",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_MINING_SKILL_BOOST_LEGENDARY": {
+    "displayName": "§6Mining Exp Boost",
+    "enchanted": true,
+    "material": "iron_pickaxe",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_MINING_SKILL_BOOST_RARE": {
+    "displayName": "§9Mining Exp Boost",
+    "enchanted": true,
+    "material": "iron_pickaxe",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_MINING_SKILL_BOOST_UNCOMMON": {
+    "displayName": "§aMining Exp Boost",
+    "enchanted": true,
+    "material": "iron_pickaxe",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_QUICK_CLAW": {
+    "displayName": "§5Quick Claw",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {
+      "id": [
+        1225744421,
+        2134979114,
+        -1669685988,
+        -115416914
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "jVSRfNjGMmW92rIu173wUWePEWXSzx7y+6AMDGuUjKG8mXN2DLfINzrYuABovc7v3+dG//duti8X3KhqUQiMIKjK+EPUryU3jSZ8pb4EX1SLBTDX6KpxWDXsEteq6XobfmdOQ1bW5DIvvtsnOLQ7kMiONRZjqGYkfnekju9dPX9RlC5D0XVu5whRCKlZ7Vm1vpdPxFWwDpQD4U9okcJKiCnedMRN8IzY9898d5Vh+acTLW3Y3zlQs3YpHJ9+14gozIWrEfp51EVhj1cXBOFwDjAlJwgbtvvujSIqLe0qKpi7idikO4oRg8wPOC93PGWBMYJ8vNTirXTkq/mkSkc2GnV7ABM4U6EgckpugVEECDjT5klJCf+7y749roy7nyMBaCNqYs409O8JWTD42DHZQ+YkESPdfJCNkG6VlDDrCOSe/trYLGzBz7C4ZbM2owWUzNdR/+5oQLch+/4sjim8deSNIEy4mQWc8DsSu2vcTDMqTWNMB8uz7JXD+QeDDFnR4BdQNRyN/Zq9VSaTim2qZh8dhr2nW4Tn09aX8eR1L3jbl86BaaV47i3bkhzWgc69lgJWqsS/s4GsEMtpU2XvIkYrxuIW2Ifv3X9s0UGHFaelP6jPZqqD/9gmHtsjBwYSThRIZ0638fPMxUDEfOYorueXaUg7jBxvabT3EX5D/SU=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTcyMDA0MjcwODkzOCwKICAicHJvZmlsZUlkIiA6ICI4ZjE5NjJmYzE4NzY0MDU3ODYxMmIxMzNjODE4YmY5OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJOaW9uXzkiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjMxMmE1YTEyZWNiMjRkNjg1MmRiMzg4ZTZhMzQ3MjFjYzY3ZjUyMmNjZGU3ZTgyNGI5Zjc1ZTk1MDM2YWM5MyIKICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "PET_ITEM_SADDLE": {
+    "displayName": "§aSaddle",
+    "enchanted": true,
+    "material": "saddle",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_SHARPENED_CLAWS_COMMON": {
+    "displayName": "§fSharpened Claws",
+    "enchanted": true,
+    "material": "prismarine_shard",
+    "rarity": "COMMON"
+  },
+  "PET_ITEM_SHARPENED_CLAWS_EPIC": {
+    "displayName": "§5Sharpened Claws",
+    "enchanted": true,
+    "material": "prismarine_shard",
+    "rarity": "EPIC"
+  },
+  "PET_ITEM_SHARPENED_CLAWS_LEGENDARY": {
+    "displayName": "§6Sharpened Claws",
+    "enchanted": true,
+    "material": "prismarine_shard",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_SHARPENED_CLAWS_RARE": {
+    "displayName": "§9Sharpened Claws",
+    "enchanted": true,
+    "material": "prismarine_shard",
+    "rarity": "RARE"
+  },
+  "PET_ITEM_SHARPENED_CLAWS_UNCOMMON": {
+    "displayName": "§aSharpened Claws",
+    "enchanted": true,
+    "material": "prismarine_shard",
+    "rarity": "UNCOMMON"
+  },
+  "PET_ITEM_SPOOKY_CUPCAKE": {
+    "displayName": "§aSpooky Cupcake",
+    "material": "skull_item",
+    "rarity": "UNCOMMON",
+    "resolvableProfile": {
+      "id": [
+        -1730672169,
+        100020890,
+        -1280279579,
+        -1996548652
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "vTDx1NJ8HehosFJS7y+KGL+qhbx3qei26aamakWNdH/Mi1GGBlYiHIIRk6fC5g4xDQG1fHiu6ZlThBJ6XYDX3Jn56dIyhAtihSAJLc3hr+NQpImz6/hsgprPqTVKue9gMoIxADDQqGNnY6AW9lVxjJIghL63t4YfMNgi2agsGHRir5UpDZHWSDIiklqkdUqdCQ978FEmSFFvpxd+KG0mkDSXKgJtsYCxxoj50/yaCbwq3OaIMNyF1R86Hb0rOhPTegi4SgS+O4ouvAlWPKOtZdDJSXm+fweNGRvpTwJUj6jKIrorqlSN6Lghp9r5OuwGsTzMlHVYe0ZqKhD/tRw5kpCOIFqKIwOadRwnh7/PnwLQWswYJQ83wnWP2Bi88BphLG4RRoZr2+WNDxWLq6AhKPG1yTQMjvg/sNR4l7w/la6FjTxfUPexv/Jt7qz09D/vjmTOlkfqfOu8n7yvm2Y3pOE+88jdZL07/YqGu637IThyoEPw/03A2Cf3mSbAyCa7y+2r8xdl0i9KSqG8CMqwp2JgQf8favR+ixB7EWPg9EJcI119fUJj0rZKFPj3+INzQshi4Yo0+85Q+a+RnWMhiU0IJlSNCYXpOo0jDkehwwkckEOkFA4ecD5zAwMW9m8C5rYPgFwb0JFbACWFjsGRyhc8/uLhTEqXkw7ssBNW2v8=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTY2NTIxOTY0ODAxNSwKICAicHJvZmlsZUlkIiA6ICI2NmI0ZDRlMTFlNmE0YjhjYTFkN2Q5YzliZTBhNjQ5OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJBcmFzdG9vWXNmIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ5N2FkOTlkNTNhYWNjZTZiN2E4NGQ4NzRlNjdiOGM1NmZhZGVkZmRmNmEyNTY1Yzc2MjZjZWZiZmMzMGMzNTEiCiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "PET_ITEM_TEXTBOOK": {
+    "displayName": "§6Textbook",
+    "enchanted": true,
+    "material": "book",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_TIER_BOOST": {
+    "displayName": "§6Tier Boost",
+    "enchanted": true,
+    "material": "hopper",
+    "rarity": "LEGENDARY"
+  },
+  "PET_ITEM_TITANIUM_MINECART": {
+    "displayName": "§9Titanium Minecart",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": {
+      "id": [
+        2088012737,
+        -1417398204,
+        -2103968487,
+        -779640016
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "MwmyBMQGQC+6sV90nJ8CPeazPrMhZaCpz1iV5pZMxwpBdnLR+34BwDVGFpaZzH5JTGeNg0PQJ3RZQJHhkGVRUyuH10iUZhoqvj5IS0ciozfqILw/F6/ugs7ZHVbzI4saRkFeL3QP06IoXPZezr/q5ICTdMZvb3yf48k7i/9WFjLmZhp46wpCIE0fYQ0gXgt/evkzvsiGuuqzu3wAQeeDmlpLC+AscEzCMSk0rUYhWN1RTZUUcALP7JJt/C6fJXWu0kBc3uxwh4Pb1DGw/GL3WMtv+FAU2LMHDXrVyhIrvMLzfhL5BBS/klyr5WJWM4B/SZCa8d2NaifDkNRnoPB91xv6NdEKnkVi4Y2tLsfFO8U3YvkalW044/Nd5Yf8ha+wD9dKCcCd/9Gqzh7xYLtZjEffIkgzHnxD+5jEFhXMlMO+z1qboQNy4p17R76j05tEOOfFEu494aaj5xZLtZXJ73C9v+/HGVsUsseOdx0Zsn7mm2J/QyxlazwIZ3h+2emycGwooGoU82UWaIiVC7t/KmmxfA/m5JZaR/raJUiiTuMcERntrEeGDYyIo8AXjTK4J/drKiyhT1jK4YIWN/52MWDVXEXNVPAymenykTMiREuqMvzvF29ZI5Ap7aJ1g08J1RRi/FbJwloY0hpstoZ9PchI14J3VW+JtsrYwZntjHs=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTcyMDA1NDE4MDgxMSwKICAicHJvZmlsZUlkIiA6ICIzY2I3YTA3YWY3ZjM0ZWZiYTlkNGI4ODQ3NDM4Mzc0ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNckthaWxldCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jYWUwZDE1NTBmZGE2OTgzM2M2YWI4ODQ3NDZkMDM5YmQ3NTJhNGYyZTQ0NDcyY2MwYTNiMDVjNjk0ZjgwNTliIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "REAPER_GEM": {
+    "displayName": "§6Reaper Gem",
+    "enchanted": true,
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        1439093638,
+        -1781911026,
+        -1929918270,
+        -1009768623
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "VANetSOoyPYkbAXV6af7QcCAdB0jf+pLdRJsVlKwfBYggx3aunNrQ/AHVkjX1wsl+Dec3PBLLW+0f44HJwXUKz/pkoGIvsTczIEQqzN91I6vC7j8hd95DBWKqwtcAPO1yu7xcuy8+ah42YJs240404TVZW0CH09E9Wxql643XDgeheKbjcCAQfd6+kVB182PLSE0BYIsXkhwwbGcHhCxwMefqXssUsC4THeAEL16p2aMvt1V1s42y1ceq//cH900mHpKYFBilQ4YrWTQJ1u21tPd2F5qqOaoRr8k1ULM437YlFhr6dL4BPTjDyc8QWaN+RTZYwCylWr8y5SCei6GGxAXhYmuPn76u4iBW55Zw13bB9w/7ZXpK7xvuF1/pYxx49uvBz8Pl40l0YZyKDeNV17jBdSTRxuW/dB/YZRLMc/xEoDxp8nfELYIXSHRD9j3dvLN9Inn/6viGLcHd37RMYz7GK22/rEr+0k8Lkc478h/uJ29I/Cmox7cQMNr2Ji4wwQ1s43+/abw5rVqUjP3NTQGuxRCSFUFCaW+iQ5tc/gka2wUrFldcPeGWYIXeyrZFTa81N6fQB0pRYG3qigP9QVLVDjkcBCwdIBKG3pbhrjj5X+yiXi6EJAyfv7nCD4UJDPWgOF4P8Z2uCLdMxBFvUUb/BYTi/AA87o7iA+bSis=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTYwNzg1MjU5NjMwNCwKICAicHJvZmlsZUlkIiA6ICJlZDUzZGQ4MTRmOWQ0YTNjYjRlYjY1MWRjYmE3N2U2NiIsCiAgInByb2ZpbGVOYW1lIiA6ICI0MTQxNDE0MWgiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmIwNTVjODEwYmRkZmQxNjI2NGVjOGQ0MzljNDMyODNlMzViY2E3MWE1MDk4M2UxNWUzNjRjZDhhYjdjNjY4ZiIKICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "REINFORCED_SCALES": {
+    "displayName": "§9Reinforced Scales",
+    "enchanted": true,
+    "material": "prismarine_crystals",
+    "rarity": "RARE"
+  },
+  "SERRATED_CLAWS": {
+    "displayName": "§9Serrated Claws",
+    "enchanted": true,
+    "material": "prismarine_shard",
+    "rarity": "RARE"
+  },
+  "UNCOMMON_PARTY_HAT": {
+    "displayName": "§aUncommon Party Hat",
+    "material": "skull_item",
+    "rarity": "UNCOMMON",
+    "resolvableProfile": {
+      "id": [
+        -815406180,
+        -240632214,
+        -1630854321,
+        1946095071
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "kwXAWBDfZOkfna2XZ7V0kXkKmVp0q+G+TP422m5Lp4id3/w2Skha4M6VI96c91yhNOvpzIOzCPHX8TboVA6buT+EICgBY32VeY/E5gUwyIfhbTfkXFJakyccBY9mF4Rpoa+zIFV8+tRHjsupFpkeEP8MhsvGDKNdVK5QfQIm1m4lLWo80hE9ORHe70LlUxqk2va3oDu3uGlLZYARrPk80uWanbLvVMSxw+KmPiej+zk6xzAOxb1+8ynkZfQz+aaGvwhzUc+GsiIeJG+MNeaEXCBsFA0wQwdFzLKC0oTXjBBd4gmi84qRf+xVUTqWewQIEdjnnf/NSaJPn2GG9jNTsRHOCV3eFBc420b9qEM9im0SqzoY/znFru3wQytKTtRUZVAuk6XhffNqjREiTP6H+U7+hPX33VbYExv75VG4hUngUzmAN3y3x5u1dzd0K5I7mXR4uQvP9LwVZgAJ0osq7oYNTT5Dp1skigly0WMoygFZlTPl/l3sCPhLaWbABrWOoDA2cwvNIhU6nUYFyd6iG4goutOO1/wXDOCDR97TUzoKEwIh6K3ivSQAv9ja7NdT0vxa2Or4cmi6SXS690LwncoYyKaSR8+WkA6JE9iS6dUWLDTYxSZGV3TeDFku6Bylo7knANX3Y72FqUMD3CAN3ZADyjFR5CFlRjims51pBkY=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTY5MzcxNjc5MjU0NiwKICAicHJvZmlsZUlkIiA6ICJjMGIwZmRiZTJmNzU0ZmI1YmQ3NjJlOTIwOWVmN2YwOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJKYW5DYW90aWMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzhmMTI0NzBjMzY1YjJmMWYzYzgwZGYxYTYwNjg1OGE5ZGFmN2RjZDZlYmUwYzlhNGE2YzY4NGY2MmQyMWJjZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "WASHED_UP_SOUVENIR": {
+    "displayName": "§6Washed-up Souvenir",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        -2061505657,
+        -1286979929,
+        -1846995368,
+        -1771257934
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "gOqGvKMe3qS/jyW2youB/vjccSwRizGA7dua2XsBcOxhpnxr7SfiQ7qrlPZ8u8ivWfbNle3crhgtgWGSKbqeuCL1bM1Iy+seSOwQ88AVUueKLtK0R9YBVTOmA/33N1X+FChS5MdSnWKeTwuTIgB83bxXjcjiNb9a5gH9KSpjmLY1SmALvVVWEtERAM5NZh5ZjdyzzO8JoCDkv7AUePECECq4EGCh4UgJeeiX20Pn6U2nz765njmhjWPSbtAC94sDkHd2ew6XTErSKhd5+4c5Q9HetEo3JqpvWS9g8mM8u0MhE0oGpnbS4GUh+TpAn3CfpDa/4kiMhI1cv+b/UIfBvICatyLqdwzg8klQbnDyckax90oTkbutjyU2sezFUX5/84V4oybH66iy7WeOwd+G9oaipkXQQJmfA1RnxsU0tLgyXBSj+LGDCCHgZzsCEx/Z+XeorMu/qU+GB/nnoU0EfjOKMxjGK1BEiLlA+9EClwvDOtA9B1dUHQS6uqxo4phOk9RKzirHcBrIpdMcGN+8rQOHXINnqW01TtemybumcSRj/g3dkKaV2ua5AqdX5lUnF7L5fOj8RY1WNLHPO85D1q6JMTpui+zAV7rcn5SxlXDhEy95Sh2kKwrq+jqHcFM8ky8G6uKj3NKwUIoKpbJlied5nHA+XoUij9VvFtPKFHI=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTcxOTQyMTg2Njk5MywKICAicHJvZmlsZUlkIiA6ICI3MzE4MWQxZDRjYWQ0ZmU0YTcxNWNjNmUxOGNjYzVkNyIsCiAgInByb2ZpbGVOYW1lIiA6ICJaZmVybjRuZGl0byIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8zNzc3ZjA0NjQ0ZGVjNWY4MGJmZWFhNzQwMWFjZmJiYzE1MGViMjVkM2ZmOGJlNDIyMGU3YzM0NDI2Y2Q3MjdjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "YELLOW_BANDANA": {
+    "displayName": "§9Yellow Bandana",
+    "material": "skull_item",
+    "rarity": "RARE",
+    "resolvableProfile": {
+      "id": [
+        -1356240549,
+        -1833488290,
+        -1772188272,
+        1872343874
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "uz5d4UsIcS+T7duc6nw0/dA3/JQbD16nyHvzNYBKqHBsHfQITdXUnClxR7WaYOiJxP4o6aeSP5jM5HvEL6LklRTtE8bFgbNgOoskUbnUjgWPcKnrGqzSYmvMGlUqkVZzW2Ha3NwAy1T6FDRtQsLZos7Ff7IfujAalEQ/Bjb7igb21pDH82n8DLSPIDvobLwOmnCMfB0z6RUnDVi7EwADkFBAG0Bylr9/UasGWbOYFs3fOcepC3Op4Ogp1CjT+06N6oYAgoC7i6ZpfE7OLUBeW3D3ELnD+7mm5xdP1ORcc8MUAne90Z5I9QR1U+KSs+ki4kkXXo8Z1dIDpPNRJN3CwBVrP4Ev6kdNkrpkIfNrB7z05rvocd0mCQ050RGTcUd+vds/G8QVpmC9otvcIF01ahLOuU4DrbIkimGewqt9VaczohGVAqheDTwSeLzST/MSQRRVH2zVhs2wxz5aI+KiB3OFDD6HITVAvvXOoIklnUlMk+MZdqNs5EquZ5bG82WPJVl6nflpvJviHbbxy0AV6gadZnzIBZoNbAETo15WUrYwPcEh9Wt0sVa79FM0KDuoxpS+eow/teMiZwA5Qq3WifHCMXWC3aUIFEeuya1ue79oj6rKP1b9Sb+DKk7Ec+m7056Vti4vfSg2Mnv3zOrdOUT3Tx30Il6WZLgmWeL/kt0=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTY3ODgyMjE1OTcwMSwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJHYXl0b3duIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzc5OWQxNjczN2I0ZjI2MzNmOWU3YzQ1Mzg5OTIxMTVjMTA3OTI4YTlhMDFhYmZmNDA3YzAyOTcxOTRiZDY4NjciCiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  }
+}
