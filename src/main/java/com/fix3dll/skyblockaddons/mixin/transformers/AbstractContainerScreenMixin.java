@@ -111,10 +111,11 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
                 int color = backpackColor.getInventoryTextColor();
                 guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, color, false);
                 guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, color, false);
+                return;
             }
-        } else {
-            original.call(guiGraphics, mouseX, mouseY);
         }
+
+        original.call(guiGraphics, mouseX, mouseY);
     }
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)

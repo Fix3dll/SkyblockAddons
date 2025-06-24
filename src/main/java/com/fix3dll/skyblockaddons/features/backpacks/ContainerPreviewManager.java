@@ -467,7 +467,7 @@ public class ContainerPreviewManager {
             if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE) {
                 String storageKey = null;
 
-                if (m.groupCount() != 0) {
+                if (m.hasMatch()) {
                     int enderChestPage = Integer.parseInt(m.group("page"));
                     storageKey = InventoryType.ENDER_CHEST.getInventoryName() + enderChestPage;
                 } else if ((m = BACKPACK_STORAGE_PATTERN.matcher(hoverName)).matches()) {
