@@ -89,11 +89,6 @@ public class ContainerPreviewManager {
     private static boolean frozen;
 
     /**
-     * The last (epoch) time we toggled the freeze button
-     */
-    private static long lastToggleFreezeTime;
-
-    /**
      * True when we are drawing an {@code ItemStack}'s tooltip while {@link #isFrozen()} is true
      */
     private static boolean drawingFrozenItemTooltip;
@@ -445,7 +440,7 @@ public class ContainerPreviewManager {
             return true;
         }
 
-        if (!Feature.SHOW_BACKPACK_PREVIEW.isEnabled()) {
+        if (Feature.SHOW_BACKPACK_PREVIEW.isDisabled()) {
             return false;
         }
 
@@ -455,30 +450,13 @@ public class ContainerPreviewManager {
         if (backpackPreview.isEnabled(FeatureSetting.SHOW_ONLY_WHEN_HOLDING_SHIFT) && !Screen.hasShiftDown()) {
             return false;
         }
-        // Don't render the preview the item represents a crafting recipe or the result of one.
-        if (ItemUtils.isMenuItem(itemStack)) {
-            return false;
-        }
-
-        UUID newUuid = ItemUtils.getUuid(itemStack);
-        Component strippedNameComponent = itemStack.getCustomName();
-        String strippedName;
-        if (strippedNameComponent == null) {
-            return false;
-        } else {
-            strippedName = strippedNameComponent.getString();
-        }
-
-        Matcher m = ENDERCHEST_STORAGE_PATTERN.matcher(strippedName);
-        boolean enderChestMatched = false;
 
         // Do not waste resources to process non-UUID items (except Ender Chests cus icons doesn't have UUID)
-        if (newUuid == null) {
-            if (backpackPreview.isEnabled(FeatureSetting.ENDER_CHEST_PREVIEW) && m.matches()) {
-                enderChestMatched = true;
-            } else {
-                return false;
-            }
+        UUID newUuid = ItemUtils.getUuid(itemStack);
+        String hoverName = itemStack.getHoverName().getString();
+        Matcher m = ENDERCHEST_STORAGE_PATTERN.matcher(hoverName);
+        if (newUuid == null && !m.find()) {
+            return false;
         }
 
         if (cachedBackpackUuid == null || !cachedBackpackUuid.equals(newUuid)) {
@@ -489,10 +467,10 @@ public class ContainerPreviewManager {
             if (main.getInventoryUtils().getInventoryType() == InventoryType.STORAGE) {
                 String storageKey = null;
 
-                if (enderChestMatched) {
+                if (m.groupCount() != 0) {
                     int enderChestPage = Integer.parseInt(m.group("page"));
                     storageKey = InventoryType.ENDER_CHEST.getInventoryName() + enderChestPage;
-                } else if ((m = BACKPACK_STORAGE_PATTERN.matcher(strippedName)).matches()) {
+                } else if ((m = BACKPACK_STORAGE_PATTERN.matcher(hoverName)).matches()) {
                     int pageNum = Integer.parseInt(m.group("slot"));
                     storageKey = InventoryType.STORAGE_BACKPACK.getInventoryName() + pageNum;
                 }

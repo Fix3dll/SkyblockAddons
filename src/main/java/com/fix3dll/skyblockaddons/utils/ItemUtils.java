@@ -438,15 +438,10 @@ public class ItemUtils {
         if (itemStack == null) {
             throw new NullPointerException("Item stack cannot be null!");
         }
-
         CustomData extraAttributes = getExtraAttributes(itemStack);
-        if (extraAttributes != null) {
-            // If this item stack is a menu item, it won't have this key.
-            Optional<String> uuid = extraAttributes.read(Codec.STRING.fieldOf("uuid")).result();
-            return uuid.isEmpty();
-        } else {
-            return false;
-        }
+
+        // If this item stack is a menu item, it won't have this key.
+        return extraAttributes != null && !extraAttributes.contains("uuid");
     }
 
     /**
