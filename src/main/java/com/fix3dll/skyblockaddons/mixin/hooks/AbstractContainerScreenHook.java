@@ -238,7 +238,7 @@ public class AbstractContainerScreenHook {
     }
 
     public static void onRenderLabels(AbstractContainerScreen<?> screen, GuiGraphics graphics) {
-        if (!SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
+        if (!main.getUtils().isOnSkyblock()) {
             return; // don't draw any overlays outside SkyBlock
         }
 
@@ -297,7 +297,7 @@ public class AbstractContainerScreenHook {
      * @return true if ContainerScreen rendering should be bypassed
      */
     public static boolean drawScreenIslands(AbstractContainerScreen<?> instance, GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (MC.player == null || !SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
+        if (MC.player == null || !main.getUtils().isOnSkyblock()) {
             return false; // don't draw any overlays outside SkyBlock
         }
 
@@ -329,11 +329,11 @@ public class AbstractContainerScreenHook {
     }
 
     public static void renderLast(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int leftPos, int topPos) {
-        if (!SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
+        if (!main.getUtils().isOnSkyblock()) {
             return; // don't draw any overlays outside SkyBlock
         }
 
-        InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().getInventoryType();
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         // Essences from TabListParser#parseSections
         if (Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isEnabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)
@@ -343,7 +343,7 @@ public class AbstractContainerScreenHook {
             float x = leftPos - 117 - 5;
             float y = topPos + ySize / 2F - 72 / 2F;
 
-            SkyblockAddons.getInstance().getRenderListener().drawCollectedEssences(graphics, x, y, false, true);
+            main.getRenderListener().drawCollectedEssences(graphics, x, y, false, true);
         }
 
         if (Feature.REFORGE_FILTER.isEnabled()
@@ -394,7 +394,7 @@ public class AbstractContainerScreenHook {
             return; // don't draw any overlays outside SkyBlock
         }
 
-        InventoryType inventoryType = SkyblockAddons.getInstance().getInventoryUtils().getInventoryType();
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         if (inventoryType != null) {
             if (Feature.REFORGE_FILTER.isEnabled()
@@ -423,7 +423,7 @@ public class AbstractContainerScreenHook {
                 yPos = yPos + typeEnchantmentsHeight + separateEnchantmentsHeight + enchantsToIncludeHeight;
                 textFieldMatches = new EditBox(MC.font, xPos, yPos, textFieldWidth, textFieldHeight, Component.empty());
                 textFieldMatches.setMaxLength(500);
-                List<String> reforgeMatches = SkyblockAddons.getInstance().getUtils().getReforgeMatches();
+                List<String> reforgeMatches = main.getUtils().getReforgeMatches();
                 StringBuilder reforgeBuilder = new StringBuilder();
 
                 for (int i = 0; i < reforgeMatches.size(); i++) {
@@ -441,7 +441,7 @@ public class AbstractContainerScreenHook {
                 yPos = yPos + textFieldHeight + textFieldSpacing;
                 textFieldExclusions = new EditBox(MC.font, xPos, yPos, textFieldWidth, textFieldHeight, Component.empty());
                 textFieldExclusions.setMaxLength(500);
-                List<String> reforgeExclusions = SkyblockAddons.getInstance().getUtils().getReforgeExclusions();
+                List<String> reforgeExclusions = main.getUtils().getReforgeExclusions();
                 reforgeBuilder = new StringBuilder();
 
                 for (int i = 0; i < reforgeExclusions.size(); i++) {

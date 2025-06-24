@@ -36,6 +36,7 @@ public class NPCUtils {
 
         final int playerInventorySize =  MC.player.getInventory().getContainerSize() - 5; // - 4 armor - offhand
         final int sellSlot = inventory.size() - playerInventorySize  - 4 - 1;
+        if (sellSlot >= inventory.size() || sellSlot < 0) return false;
         ItemStack itemStack = inventory.get(sellSlot).getItem();
 
         if (itemStack != ItemStack.EMPTY && itemStack.getCustomName() != null) {
