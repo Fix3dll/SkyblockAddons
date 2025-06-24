@@ -12,7 +12,7 @@
 		"sources": "https://github.com/Fix3dll/SkyblockAddons/",
 		"issues": "https://github.com/Fix3dll/SkyblockAddons/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "LGPL-3.0",
 	"icon": "assets/skyblockaddons/logo.png",
 	"environment": "*",
 	"accessWidener" : "skyblockaddons.accesswidener",

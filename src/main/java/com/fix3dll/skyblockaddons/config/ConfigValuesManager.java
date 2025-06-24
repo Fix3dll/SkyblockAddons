@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AnchorPoint;
+import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -78,10 +79,7 @@ public class ConfigValuesManager {
             try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("defaults.json");
                  InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
                 DEFAULT_FEATURE_DATA.putAll(
-                        gson.fromJson(
-                                inputStreamReader,
-                                new TypeToken<EnumMap<Feature, FeatureData<?>>>() {}.getType()
-                        )
+                        gson.fromJson(inputStreamReader, new TypeToken<EnumMap<Feature, FeatureData<?>>>() {}.getType())
                 );
             } catch (Exception ex) {
                 CrashReport crashReport = CrashReport.forThrowable(ex, "Reading default settings file");
@@ -226,7 +224,7 @@ public class ConfigValuesManager {
             } catch (Exception ex) {
                 LOGGER.error("Error saving configurations file!", ex);
                 if (Minecraft.getInstance().player != null) {
-                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                    Utils.sendErrorMessage(
                             "Error saving configurations file! Check log for more detail."
                     );
                 }
@@ -310,9 +308,9 @@ public class ConfigValuesManager {
     }
 
     private void putDefaultCoordinates(Feature feature) {
-        Pair<Float, Float> coords = DEFAULT_FEATURE_DATA.get(feature).getCoords().clonePair();
+        Pair<Float, Float> coords = DEFAULT_FEATURE_DATA.get(feature).getCoords();
         if (coords != null) {
-            feature.getFeatureData().setCoords(coords);
+            feature.getFeatureData().setCoords(coords.clonePair());
         }
     }
 
@@ -347,11 +345,7 @@ public class ConfigValuesManager {
         } else {
             putDefaultCoordinates(feature);
             coords = feature.getFeatureData().getCoords();
-            if (coords != null) {
-                return coords;
-            } else {
-                return new Pair<>(0F, 0F);
-            }
+            return Objects.requireNonNullElseGet(coords, () -> new Pair<>(0F, 0F));
         }
     }
 
