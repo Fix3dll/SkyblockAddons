@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Language;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
@@ -132,7 +133,7 @@ public class FeatureBase extends ButtonFeature {
         if (feature == Feature.LANGUAGE) {
             try {
                 ResourceLocation langSprite = main.getUtils().isHalloween()
-                        ? ResourceLocation.fromNamespaceAndPath("skyblockaddons", "flags/halloween.png")
+                        ? SkyblockAddons.resourceLocation("flags/halloween.png")
                         : ((Language) Feature.LANGUAGE.getValue()).getIdentifier();
                 graphics.blit(RenderType::guiTextured, langSprite, (int) (getX() + width / 2F - 20), getY() + 20, 0, 0, 38, 30, 38, 30, -1);
             } catch (Exception ex) {
@@ -140,7 +141,7 @@ public class FeatureBase extends ButtonFeature {
             }
         } else if (feature == Feature.EDIT_LOCATIONS) {
             try {
-                graphics.blit(RenderType::guiTextured, ResourceLocation.fromNamespaceAndPath("skyblockaddons", "gui/move.png"), (int) (getX() + width / 2F - 12), getY() + 22, 0, 0, 25, 25, 25, 25, -1);
+                graphics.blit(RenderType::guiTextured, SkyblockAddons.resourceLocation("gui/move.png"), (int) (getX() + width / 2F - 12), getY() + 22, 0, 0, 25, 25, 25, 25, -1);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

@@ -125,19 +125,19 @@ public class RenderListener {
 
     private static final ItemStack BONE_ITEM = new ItemStack(Items.BONE);
     private static final ResourceLocation ARMOR = ResourceLocation.withDefaultNamespace("hud/armor_full");
-    private static final ResourceLocation BARS = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "bars_v2.png");
-    private static final ResourceLocation DEFENCE_VANILLA = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "defence.png");
-    private static final ResourceLocation TICKER_SYMBOL = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "ticker.png");
-    private static final ResourceLocation ENDERMAN_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/enderman.png");
-    private static final ResourceLocation ENDERMAN_GROUP_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/endermangroup.png");
-    private static final ResourceLocation SIRIUS_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/sirius.png");
-    private static final ResourceLocation SUMMONING_EYE_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/summoningeye.png");
-    private static final ResourceLocation ZEALOTS_PER_EYE_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/zealotspereye.png");
-    private static final ResourceLocation SLASH_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/slash.png");
-    private static final ResourceLocation IRON_GOLEM_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/irongolem.png");
-    private static final ResourceLocation FARM_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/farm.png");
-    private static final ResourceLocation RIFTSTALKER_BLOODFIEND = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "vampire.png");
-    private static final ResourceLocation MORT_ICON = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "icons/mort.png");
+    private static final ResourceLocation BARS = SkyblockAddons.resourceLocation("bars_v2.png");
+    private static final ResourceLocation DEFENCE_VANILLA = SkyblockAddons.resourceLocation("defence.png");
+    private static final ResourceLocation TICKER_SYMBOL = SkyblockAddons.resourceLocation("ticker.png");
+    private static final ResourceLocation ENDERMAN_ICON = SkyblockAddons.resourceLocation("icons/enderman.png");
+    private static final ResourceLocation ENDERMAN_GROUP_ICON = SkyblockAddons.resourceLocation("icons/endermangroup.png");
+    private static final ResourceLocation SIRIUS_ICON = SkyblockAddons.resourceLocation("icons/sirius.png");
+    private static final ResourceLocation SUMMONING_EYE_ICON = SkyblockAddons.resourceLocation("icons/summoningeye.png");
+    private static final ResourceLocation ZEALOTS_PER_EYE_ICON = SkyblockAddons.resourceLocation("icons/zealotspereye.png");
+    private static final ResourceLocation SLASH_ICON = SkyblockAddons.resourceLocation("icons/slash.png");
+    private static final ResourceLocation IRON_GOLEM_ICON = SkyblockAddons.resourceLocation("icons/irongolem.png");
+    private static final ResourceLocation FARM_ICON = SkyblockAddons.resourceLocation("icons/farm.png");
+    private static final ResourceLocation RIFTSTALKER_BLOODFIEND = SkyblockAddons.resourceLocation("vampire.png");
+    private static final ResourceLocation MORT_ICON = SkyblockAddons.resourceLocation("icons/mort.png");
 
     private static final ItemStack WATER_BUCKET = Items.WATER_BUCKET.getDefaultInstance();
     private static final ItemStack CHEST = Blocks.CHEST.asItem().getDefaultInstance();

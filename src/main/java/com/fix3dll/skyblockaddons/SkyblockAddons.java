@@ -47,6 +47,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,9 +69,9 @@ import java.util.regex.Pattern;
 
 @Getter
 public class SkyblockAddons implements ClientModInitializer {
+
 	public static final String MOD_ID = "skyblockaddons";
 	public static final ModMetadata METADATA = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow().getMetadata();
-
 	private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(METADATA.getName()));
 	private static final ThreadPoolExecutor THREAD_EXECUTOR = new ThreadPoolExecutor(
 			0,
@@ -80,6 +81,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			new LinkedBlockingQueue<>(),
 			new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.METADATA.getName() + " - #%d").build()
 	);
+
 	@Getter
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static final Gson gson = new GsonBuilder()
@@ -219,4 +221,9 @@ public class SkyblockAddons implements ClientModInitializer {
 	public static void runAsync(Runnable runnable) {
 		THREAD_EXECUTOR.execute(runnable);
 	}
+
+	public static ResourceLocation resourceLocation(String location) {
+		return ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, location);
+	}
+
 }

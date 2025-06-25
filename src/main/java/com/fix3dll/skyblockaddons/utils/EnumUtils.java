@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.utils;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerBoss;
@@ -323,7 +324,7 @@ public class EnumUtils {
         private URI url;
 
         Social(String resourcePath, String url) {
-            this.resourceLocation = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "gui/" + resourcePath + ".png");
+            this.resourceLocation = SkyblockAddons.resourceLocation("gui/" + resourcePath + ".png");
             try {
                 this.url = new URI(url);
             } catch (URISyntaxException e) {

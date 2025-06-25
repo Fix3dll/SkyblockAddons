@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.core;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
@@ -22,7 +23,7 @@ public enum EssenceType {
 
     EssenceType() {
         niceName = this.name().charAt(0) + this.name().substring(1).toLowerCase(Locale.ENGLISH);
-        resourceLocation = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "essences/" + this.name().toLowerCase(Locale.US) + ".png");
+        resourceLocation = SkyblockAddons.resourceLocation("essences/" + this.name().toLowerCase(Locale.US) + ".png");
     }
 
     public static EssenceType fromName(String name) {

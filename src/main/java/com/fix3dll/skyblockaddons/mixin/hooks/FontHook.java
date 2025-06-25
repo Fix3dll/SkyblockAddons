@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.mixin.hooks;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.chroma.ChromaRenderType;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -28,11 +29,11 @@ import java.util.function.Function;
 public class FontHook {
 
     private static final RenderPipeline CHROMA_TEXT = RenderPipeline.builder(RenderPipelines.MATRICES_SNIPPET)
-            .withLocation(ResourceLocation.fromNamespaceAndPath("skyblockaddons", "sba_chroma_text"))
+            .withLocation(SkyblockAddons.resourceLocation("sba_chroma_text"))
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
             .withBlend(BlendFunction.TRANSLUCENT)
-            .withVertexShader(ResourceLocation.fromNamespaceAndPath("skyblockaddons", "chroma_textured"))
-            .withFragmentShader(ResourceLocation.fromNamespaceAndPath("skyblockaddons", "chroma_textured"))
+            .withVertexShader(SkyblockAddons.resourceLocation("chroma_textured"))
+            .withFragmentShader(SkyblockAddons.resourceLocation("chroma_textured"))
             .withSampler("Sampler0")
             .withUniform("chromaSize", UniformType.FLOAT)
             .withUniform("timeOffset", UniformType.FLOAT)

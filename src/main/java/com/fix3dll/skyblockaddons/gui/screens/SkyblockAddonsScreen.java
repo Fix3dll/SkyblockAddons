@@ -27,10 +27,10 @@ public abstract class SkyblockAddonsScreen extends Screen {
     protected static final Minecraft MC = Minecraft.getInstance();
     protected static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    public static final ResourceLocation LOGO = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "logo.png");
-    public static final ResourceLocation LOGO_GLOW = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "logoglow.png");
+    public static final ResourceLocation LOGO = SkyblockAddons.resourceLocation("logo.png");
+    public static final ResourceLocation LOGO_GLOW = SkyblockAddons.resourceLocation("logoglow.png");
     private static final String FORMATTED_VERSION = "v" + SkyblockAddons.METADATA.getVersion().toString()
-//            .replace("+" + SkyblockAddons.BUILD_NUMBER, "")
+            .replaceAll("\\+\\d+(?:\\.\\d+)?", "") // BUILD NUMBER
             .replace("alpha", "a")
             .replace("beta", "b") + " reborn";
     private static final int FADE_MILLIS = 500;

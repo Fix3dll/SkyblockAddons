@@ -58,7 +58,7 @@ public class DungeonManager {
     private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("§.\\[(?<classLetter>.)] (?<name>[\\w§]+) §(?<healthColor>.)(?:§l)?(?<health>[\\w,§]+)(?:[§c❤]{0,3})?");
     private static final Pattern PATTERN_PLAYER_LIST_INFO_DEATHS = Pattern.compile("Team Deaths: (?<deaths>\\d+)");
     private static final Pattern PATTERN_STRIP_FORMAT = Pattern.compile("§.?");
-    private static final ResourceLocation CRITICAL = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "critical.png");
+    private static final ResourceLocation CRITICAL = SkyblockAddons.resourceLocation("critical.png");
     private static final int CRITICAL_ICON_SIZE = 25;
 
     /** The last dungeon server the player played on */

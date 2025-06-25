@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 public class EndermanRendererHook {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final ResourceLocation BLANK_ENDERMAN_TEXTURE = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "blankenderman.png");
+    private static final ResourceLocation BLANK_ENDERMAN_TEXTURE = SkyblockAddons.resourceLocation("blankenderman.png");
 
     public static int getEndermanColor() {
         if (main.getUtils().isOnSkyblock()

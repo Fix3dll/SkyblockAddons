@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.gui.elements;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
@@ -12,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 
 public class CheckBox {
-    private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "gui/checkbox.png");
+    private static final ResourceLocation ICONS = SkyblockAddons.resourceLocation("gui/checkbox.png");
 
     @FunctionalInterface
     public interface OnToggleListener {

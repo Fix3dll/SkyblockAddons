@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.features.deployable;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
@@ -65,7 +66,7 @@ public enum Deployable {
     /**
      * Resource location to the icon used when displaying the deployable
      */
-    private ResourceLocation resourceLocation = null;
+    private final ResourceLocation resourceLocation;
     /**
      * Entity textureId for detect Flares
      */
@@ -85,7 +86,7 @@ public enum Deployable {
         this.vitality = vitality;
         this.mending = mending;
         this.rangeSquared = rangeSquared;
-        this.resourceLocation = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "deployables/"+resourcePath+".png");
+        this.resourceLocation = SkyblockAddons.resourceLocation("deployables/"+resourcePath+".png");
     }
 
     // Flares
@@ -96,7 +97,7 @@ public enum Deployable {
         this.ferocity = ferocity;
         this.bonusAttackSpeed = bonusAttackSpeed;
         this.rangeSquared = rangeSquared;
-        this.resourceLocation = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "deployables/"+resourcePath+".png");
+        this.resourceLocation = SkyblockAddons.resourceLocation("deployables/"+resourcePath+".png");
         this.textureId = textureId;
     }
 
@@ -105,7 +106,7 @@ public enum Deployable {
         this.display = display;
         this.trophyFishChance = trophyFishChance;
         this.rangeSquared = rangeSquared;
-        this.resourceLocation = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "deployables/"+resourcePath+".png");
+        this.resourceLocation = SkyblockAddons.resourceLocation("deployables/"+resourcePath+".png");
     }
 
     /**

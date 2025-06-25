@@ -55,7 +55,7 @@ public class AbstractContainerScreenHook {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
 
-    private static final ResourceLocation LOCK = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "lock.png");
+    private static final ResourceLocation LOCK = SkyblockAddons.resourceLocation("lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
     /** (slotId, clickedButton) */
     @Getter @Setter private static Pair<Integer, Integer> lastClickedButtonOnPetsMenu = new Pair<>(-46, -1);

@@ -61,7 +61,7 @@ public class ContainerPreviewManager {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    private static final ResourceLocation CHEST_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "containerpreview.png");
+    private static final ResourceLocation CHEST_GUI_TEXTURE = SkyblockAddons.resourceLocation("containerpreview.png");
     private static final Pattern BACKPACK_STORAGE_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
     private static final Pattern ENDERCHEST_STORAGE_PATTERN = Pattern.compile("Ender Chest Page (?<page>\\d+)");
 

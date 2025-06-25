@@ -59,7 +59,7 @@ public class TrevorTrapperTracker {
     private static final Pattern TREVOR_FIND_ANIMAL_PATTERN = Pattern.compile("\\[NPC] Trevor: You can find your (?<rarity>[A-Z]+) animal near the [a-zA-Z ]+\\.");
     private static final Pattern ANIMAL_DIED_PATTERN = Pattern.compile("Your mob died randomly, you are rewarded [0-9]+ pelts?\\.");
     private static final Pattern ANIMAL_KILLED_PATTERN = Pattern.compile("Killing the animal rewarded you [0-9]+ pelts?\\.");
-    private static final ResourceLocation TICKER_SYMBOL = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "tracker.png");
+    private static final ResourceLocation TICKER_SYMBOL = SkyblockAddons.resourceLocation("tracker.png");
 
     private static TrackerRarity trackingAnimalRarity = null;
     private static TrackedEntity entityToOutline = null;

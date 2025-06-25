@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.utils;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.chroma.ChromaRenderType;
 import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
@@ -33,10 +34,10 @@ public class DrawUtils {
     private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(?i)§[0-9A-F]");
     private static final double HALF_PI = Math.PI / 2D;
     private static final RenderPipeline CHROMA_STANDART_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_SNIPPET)
-            .withLocation(ResourceLocation.fromNamespaceAndPath("skyblockaddons", "sba_chroma_standard"))
+            .withLocation(SkyblockAddons.resourceLocation("sba_chroma_standard"))
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-            .withVertexShader(ResourceLocation.fromNamespaceAndPath("skyblockaddons", "chroma_standard"))
-            .withFragmentShader(ResourceLocation.fromNamespaceAndPath("skyblockaddons", "chroma_standard"))
+            .withVertexShader(SkyblockAddons.resourceLocation("chroma_standard"))
+            .withFragmentShader(SkyblockAddons.resourceLocation("chroma_standard"))
             .withUniform("chromaSize", UniformType.FLOAT)
             .withUniform("timeOffset", UniformType.FLOAT)
             .withUniform("saturation", UniformType.FLOAT)

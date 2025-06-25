@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ChestSpecialRendererHook {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final ResourceLocation BLANK_ENDERCHEST = ResourceLocation.fromNamespaceAndPath("skyblockaddons", "blankenderchest.png");
+    private static final ResourceLocation BLANK_ENDERCHEST = SkyblockAddons.resourceLocation("blankenderchest.png");
 
     /**
      * @return false if default behavior is to be overridden
