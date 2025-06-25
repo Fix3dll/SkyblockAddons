@@ -37,6 +37,7 @@
     "ConnectionMixin",
     "InventoryMixin",
     "ItemMixin",
+    "libautoupdateMixin",
     "LivingEntityMixin",
     "PauseScreenMixin",
     "SimpleContainerMixin",
