@@ -9,6 +9,27 @@ plugins {
     id("io.freefair.lombok") version ("8.11")
 }
 
+ext {
+    if (project.hasProperty("runningOnCi")) {
+        val nf = NumberFormat.getIntegerInstance(Locale.US)
+        val buildNumber = project.property("buildNumber")
+        val runAttempt = project.property("runAttempt")
+        val includeRunAttempt = nf.parse(runAttempt as String).toInt() > 1
+
+        try {
+            if (includeRunAttempt) {
+                project.setProperty("buildNumber", "${buildNumber}.${nf.parse(runAttempt).toInt() - 1}")
+            }
+            set("formattedVersion", "${project.version}+" + project.property("buildNumber"))
+        } catch (e: ParseException) {
+            set("formattedVersion", project.version)
+            throw InvalidUserDataException("Build number could not be parsed (${e.message})", e)
+        }
+    } else {
+        set("formattedVersion", project.version)
+    }
+}
+
 base {
     archivesName.set(project.name)
 }
@@ -91,32 +112,16 @@ tasks.withType(JavaCompile::class).configureEach {
 
 tasks.remapJar {
     input = tasks.shadowJar.get().archiveFile
-    archiveFileName = "${project.name}-${version}-for-MC-${properties["minecraft_version"]}.jar"
+    archiveFileName = "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar"
 }
 
 tasks.processResources {
     dependsOn("copyLicenses")
 
-    if (project.hasProperty("runningOnCi")) {
-        val nf = NumberFormat.getIntegerInstance(Locale.US)
-        val buildNumber = project.property("buildNumber")
-        val runAttempt = project.property("runAttempt")
-        val includeRunAttempt = nf.parse(runAttempt as String).toInt() > 1
-
-        try {
-            if (includeRunAttempt) {
-                project.setProperty("buildNumber", "${buildNumber}.${nf.parse(runAttempt).toInt() - 1}")
-            }
-            project.version = "${project.version}+" + project.property("buildNumber")
-        } catch (e: ParseException) {
-            throw InvalidUserDataException("Build number could not be parsed (${e.message})", e)
-        }
-    }
-
-    inputs.property("version", project.version)
+    inputs.property("version", ext.get("formattedVersion"))
 
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version))
+        expand(mapOf("version" to ext.get("formattedVersion")))
     }
 }
 
