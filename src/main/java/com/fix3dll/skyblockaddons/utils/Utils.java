@@ -670,7 +670,6 @@ public class Utils {
 
     /**
      * Checks if the given reforge is similar to any reforges on the desired/exclusions lists from the reforge filter feature.
-     *
      * @param reforge the reforge to check
      * @return {@code true} if the given reforge is similar to a desired reforge and dissimilar to all excluded reforges,
      * {@code false} otherwise
@@ -698,23 +697,19 @@ public class Utils {
 
     /**
      * Returns the folder that SkyblockAddons is located in.
-     *
      * @return the folder the SkyblockAddons jar is located in
      */
     public File getSBAFolder() {
-        Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(SkyblockAddons.MOD_ID);
-
-        if (container.isPresent()) {
-            List<Path> paths = container.get().getRootPaths();
-            return paths.getFirst().toFile();
+        Path container = FabricLoader.getInstance().getConfigDir();
+        try {
+            return container.resolve(SkyblockAddons.MOD_ID).toFile();
+        } catch (Exception ignored) {
+            return container.toFile();
         }
-
-        return FabricLoader.getInstance().getGameDir().toFile();
     }
 
     /**
      * Checks if it is currently Halloween according to the system calendar.
-     *
      * @return {@code true} if it is Halloween, {@code false} otherwise
      */
     public boolean isHalloween() {
@@ -746,40 +741,12 @@ public class Utils {
     private int blendFunctionSrcFactor;
     private int blendFunctionDstFactor;
 
-//    public void enableStandardGLOptions() { TODO
-//        depthEnabled = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
-//        blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
-//        alphaEnabled = GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
-//        blendFunctionSrcFactor = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-//        blendFunctionDstFactor = GL11.glGetInteger(GL11.GL_BLEND_DST);
-//
-//        GlStateManager.disableDepth();
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-//        GlStateManager.enableAlpha();
-//        GlStateManager.color(1, 1, 1, 1);
-//    }
-//
-//    public void restoreGLOptions() {
-//        if (depthEnabled) {
-//            GlStateManager.enableDepth();
-//        }
-//        if (!alphaEnabled) {
-//            GlStateManager.disableAlpha();
-//        }
-//        if (!blendEnabled) {
-//            GlStateManager.disableBlend();
-//        }
-//        GlStateManager.blendFunc(blendFunctionSrcFactor, blendFunctionDstFactor);
-//    }
-
     public boolean isModLoaded(String modId) {
         return isModLoaded(modId, null);
     }
 
     /**
      * Check if another mod is loaded.
-     *
      * @param modId   The modid to check.
      * @param version The version of the mod to match (optional).
      */
