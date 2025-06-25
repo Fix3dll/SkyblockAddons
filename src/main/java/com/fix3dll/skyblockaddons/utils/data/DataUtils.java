@@ -311,7 +311,7 @@ public class DataUtils {
 
                         if (!fallbackCDNUsed) {
                             if (Minecraft.getInstance().player != null) {
-                                main.getUtils().sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
+                                Utils.sendMessage(Translations.getMessage("messages.fallbackCdnUsed"));
                             } else {
                                 LOGGER.warn(Translations.getMessage("messages.fallbackCdnUsed"));
                             }
@@ -414,7 +414,7 @@ public class DataUtils {
             );
             failureMessageComponent.append("\n").append(buttonRowComponent);
 
-            main.getUtils().sendMessage(failureMessageComponent, false);
+            Utils.sendMessage(failureMessageComponent, false);
             failureMessageShown = true;
             failedRequests.clear();
         }

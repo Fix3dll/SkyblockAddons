@@ -691,12 +691,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             // mouseX/Y for devs. parameters contains half of current position of mouseX/Y
             if (Feature.DEVELOPER_MODE.isEnabled()) {
                 String mouse = String.format("mouseX: %.0f, mouseY: %.0f", MC.mouseHandler.xpos(), MC.mouseHandler.ypos());
-                graphics.drawString(
-                        MC.font,
+                DrawUtils.drawText(
+                        graphics,
                         mouse,
                         (int) (x - MC.font.width(mouse) / 2F),
                         (int) (y - boxCount * BOX_HEIGHT - 37),
-                        ColorCode.RED.getColor()
+                        ColorCode.RED.getColor(),
+                        true
                 );
             }
 
@@ -708,12 +709,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                 featureName += " (" + lastHoveredButtonFeature.getId() + ")";
             }
 
-            graphics.drawString(
-                    MC.font,
+            DrawUtils.drawText(
+                    graphics,
                     featureName,
                     (int) (x - MC.font.width(featureName) / 2F),
                     (int) (y - boxCount * BOX_HEIGHT - 25),
-                    ColorCode.AQUA.getColor()
+                    ColorCode.AQUA.getColor(),
+                    true
             );
             String info = String.format(
                     "x=%.0f, y=%.0f, scale=%.2f",
@@ -721,12 +723,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     MC.mouseHandler.ypos(),
                     lastHoveredButton.getScale()
             );
-            graphics.drawString(
-                    MC.font,
+            DrawUtils.drawText(
+                    graphics,
                     info,
                     (int) (x - MC.font.width(info) / 2F),
                     (int) (y - boxCount * BOX_HEIGHT - 12),
-                    ColorCode.YELLOW.getColor()
+                    ColorCode.YELLOW.getColor(),
+                    true
             );
             if (lastHoveredButtonFeature.isGuiFeature()) {
                 FeatureGuiData guiFeatureData = lastHoveredButtonFeature.getFeatureGuiData();
@@ -736,12 +739,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                             lastHoveredButton.getScaleX(),
                             lastHoveredButton.getScaleY()
                     );
-                    graphics.drawString(
-                            MC.font,
+                    DrawUtils.drawText(
+                            graphics,
                             barScales,
                             (int) (x - MC.font.width(barScales) / 2F),
                             (int) (y - boxCount * BOX_HEIGHT),
-                            ColorCode.YELLOW.getColor()
+                            ColorCode.YELLOW.getColor(),
+                            true
                     );
                 }
             }

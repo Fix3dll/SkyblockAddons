@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
+import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import com.fix3dll.skyblockaddons.utils.Utils;
@@ -120,6 +121,7 @@ public class ConfigValuesManager {
 
         // Post load
         Feature.TURN_ALL_FEATURES_CHROMA.setEnabled(ColorUtils.areAllFeaturesChroma()); // also setEnabled saves config
+        FontHook.setAllTextChroma(Feature.TURN_ALL_TEXTS_CHROMA.isChroma());
     }
 
     private void addDefaultsAndSave() {

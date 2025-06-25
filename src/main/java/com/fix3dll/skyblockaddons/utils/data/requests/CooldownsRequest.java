@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class CooldownsRequest extends RemoteFileRequest<HashMap<String, Integer>> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public CooldownsRequest() {

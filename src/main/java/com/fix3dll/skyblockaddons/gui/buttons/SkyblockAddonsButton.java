@@ -76,14 +76,13 @@ public abstract class SkyblockAddonsButton extends AbstractWidget {
         poseStack.pushPose();
         poseStack.scale(scale, scale, 1);
         //noinspection IntegerDivisionInFloatingPointContext
-        graphics.drawSpecial(source -> DrawUtils.drawCenteredText(
+        DrawUtils.drawCenteredText(
                 graphics,
-                source,
                 message.getString(),
                 ((x + width / 2) / scale),
                 ((y + (height - (8 * scale)) / 2) / scale),
                 fontColor
-        ));
+        );
         poseStack.popPose();
     }
 }

@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.Utils;
 import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.Slot;
@@ -186,11 +187,11 @@ public class ItemDropChecker {
 
         if (attemptsRequiredToConfirm >= 2) {
             String multipleAttemptsRequiredMessage = Translations.getMessage("messages.clickMoreTimes", Integer.toString(attemptsRequiredToConfirm));
-            main.getUtils().sendMessage(colorCode + multipleAttemptsRequiredMessage);
+            Utils.sendMessage(colorCode + multipleAttemptsRequiredMessage);
 
         } else {
             String oneMoreAttemptRequiredMessage = Translations.getMessage("messages.clickOneMoreTime");
-            main.getUtils().sendMessage(colorCode + oneMoreAttemptRequiredMessage);
+            Utils.sendMessage(colorCode + oneMoreAttemptRequiredMessage);
         }
         playAlert();
         attemptsRequiredToConfirm--;

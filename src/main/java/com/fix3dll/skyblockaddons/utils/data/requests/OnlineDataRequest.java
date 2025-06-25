@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.Objects;
 
 public class OnlineDataRequest extends RemoteFileRequest<OnlineData> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public OnlineDataRequest() {
@@ -36,5 +37,6 @@ public class OnlineDataRequest extends RemoteFileRequest<OnlineData> {
             main.setOnlineData(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
             main.getUpdater().checkForUpdate();
         }
+
     }
 }

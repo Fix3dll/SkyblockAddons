@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SeaCreaturesRequest extends RemoteFileRequest<Map<String, SeaCreature>> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public SeaCreaturesRequest() {

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.Date;
 
 public class MayorRequest extends RemoteFileRequest<ElectionData> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 

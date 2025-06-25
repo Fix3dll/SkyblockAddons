@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.Objects;
 
 public class SkillXpRequest extends RemoteFileRequest<SkillXpManager.JsonInput> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public SkillXpRequest() {

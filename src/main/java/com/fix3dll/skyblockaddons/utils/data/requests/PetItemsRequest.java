@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class PetItemsRequest extends RemoteFileRequest<HashMap<String, PetItem>> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public PetItemsRequest() {

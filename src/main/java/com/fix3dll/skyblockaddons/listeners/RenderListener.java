@@ -661,7 +661,7 @@ public class RenderListener {
     public void drawSkeletonBar(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
         float x = main.getConfigValuesManager().getActualX(Feature.SKELETON_BAR);
         float y = main.getConfigValuesManager().getActualY(Feature.SKELETON_BAR);
-        int bones = 0;
+        int bones;
         if (!(MC.screen instanceof LocationEditGui) && MC.level != null && MC.player != null) {
              List<ItemEntity> bonesEntityList = MC.level.getEntitiesOfClass(
                     ItemEntity.class,
@@ -753,6 +753,7 @@ public class RenderListener {
     /**
      * This renders all the different types gui text elements.
      */
+    @SuppressWarnings("RedundantLabeledSwitchRuleCodeBlock")
     public void drawText(GuiGraphics graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
         String text;
         boolean onRift = main.getUtils().isOnRift();
@@ -1812,14 +1813,12 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
             for (SlayerDrop drop : slayerBoss.getDrops()) {
                 longestSlayerDropLineWidth = Math.max(
-                        longestSlayerDropLineWidth
-                        , MC.font.width(drop.getDisplayName())
+                        longestSlayerDropLineWidth,
+                        MC.font.width(drop.getDisplayName())
                 );
                 longestCount = Math.max(
-                        longestCount
-                        , MC.font.width(
-                                String.valueOf(SlayerTracker.getInstance().getDropCount(drop))
-                        )
+                        longestCount,
+                        MC.font.width(String.valueOf(SlayerTracker.getInstance().getDropCount(drop)))
                 );
                 lines++;
             }
@@ -1843,18 +1842,9 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
             for (SlayerDrop slayerDrop : slayerBoss.getDrops()) {
 
-                int currentColor = color;
-                if (colorByRarity) {
-                    currentColor = slayerDrop.getRarity().getColorCode().getColor();
-                } else {
+                int currentColor = colorByRarity ? slayerDrop.getRarity().getColorCode().getColor() : color;
 
-                }
-
-                DrawUtils.drawText(graphics, slayerDrop.getDisplayName(), x, y, currentColor);
-
-                if (!colorByRarity) {
-
-                }
+                DrawUtils.drawText(graphics, slayerDrop.getDisplayName(), x, y, currentColor, colorByRarity);
 
                 text = String.valueOf(SlayerTracker.getInstance().getDropCount(slayerDrop));
                 DrawUtils.drawText(graphics, text, x + width - MC.font.width(text), y, currentColor);
@@ -1864,38 +1854,36 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
         } else {
             int entityRenderY;
-            int textCenterX;
-
-            switch (feature) {
-                case REVENANT_SLAYER_TRACKER:
+            int textCenterX = switch (feature) {
+                case REVENANT_SLAYER_TRACKER -> {
                     entityRenderY = 30;
-                    textCenterX = 15;
-                    break;
-                case TARANTULA_SLAYER_TRACKER:
+                    yield 15;
+                }
+                case TARANTULA_SLAYER_TRACKER -> {
                     entityRenderY = 36;
-                    textCenterX = 28;
-                    break;
-                case SVEN_SLAYER_TRACKER:
+                    yield 28;
+                }
+                case SVEN_SLAYER_TRACKER -> {
                     entityRenderY = 25;
-                    textCenterX = 20;
-                    break;
-                case VOIDGLOOM_SLAYER_TRACKER:
+                    yield 20;
+                }
+                case VOIDGLOOM_SLAYER_TRACKER -> {
                     entityRenderY = 24;
-                    textCenterX = 20;
-                    break;
-                case INFERNO_SLAYER_TRACKER:
+                    yield 20;
+                }
+                case INFERNO_SLAYER_TRACKER -> {
                     entityRenderY = 35;
-                    textCenterX = 20;
-                    break;
-                case RIFTSTALKER_SLAYER_TRACKER:
+                    yield 20;
+                }
+                case RIFTSTALKER_SLAYER_TRACKER -> {
                     entityRenderY = 40;
-                    textCenterX = 15;
-                    break;
-                default:
+                    yield 15;
+                }
+                default -> {
                     entityRenderY = 36;
-                    textCenterX = 15;
-                    break;
-            }
+                    yield 15;
+                }
+            };
 
             int iconWidth = 16;
 
@@ -2017,25 +2005,16 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
                 renderItem(graphics, slayerDrop.getItemStack(), currentX, currentY);
 
-//                GlStateManager.disableDepth();
-
-                int currentColor = color;
-                if (colorByRarity) {
-                    currentColor = slayerDrop.getRarity().getColorCode().getColor();
-                } else {
-
-                }
+                int currentColor = colorByRarity ? slayerDrop.getRarity().getColorCode().getColor() : color;
 
                 DrawUtils.drawText(
                         graphics,
                         TextUtils.abbreviate(SlayerTracker.getInstance().getDropCount(slayerDrop)),
                         currentX + iconWidth + iconTextOffset,
                         currentY + 8,
-                        currentColor
+                        currentColor,
+                        colorByRarity
                 );
-                if (!colorByRarity) {
-
-                }
 
                 column++;
                 if (column == maxItemsPerRow) {
@@ -2089,8 +2068,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
             spacers++;
             longestLineWidth = Math.max(
-                    longestLineWidth
-                    , MC.font.width(Translations.getMessage("dragonTracker.dragonsSince"))
+                    longestLineWidth,
+                    MC.font.width(Translations.getMessage("dragonTracker.dragonsSince"))
             );
             lines++;
             spacers++;
@@ -2139,42 +2118,23 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             y += 8 + spacerHeight;
 
             for (DragonType dragon : recentDragons) {
-                int currentColor = color;
-                if (colorByRarity) {
-                    currentColor = dragon.getColor().getColor();
-                } else {
-//                    //FontRendererHook.setupFeatureFont(Feature.DRAGON_STATS_TRACKER);
-                }
+                int currentColor = colorByRarity ? dragon.getColor().getColor() : color;
 
-                DrawUtils.drawText(graphics, dragon.getDisplayName(), x, y, currentColor);
-
-                if (!colorByRarity) {
-
-                }
+                DrawUtils.drawText(graphics, dragon.getDisplayName(), x, y, currentColor, colorByRarity);
 
                 y += 8;
             }
             y += spacerHeight;
 
-//            //FontRendererHook.setupFeatureFont(Feature.DRAGON_STATS_TRACKER);
             color = feature.getColor();
             DrawUtils.drawText(graphics, Translations.getMessage("dragonTracker.dragonsSince"), x, y, color);
             y += 8 + spacerHeight;
 
             for (DragonsSince dragonsSince : DragonsSince.values()) {
 
-                int currentColor = color;
-                if (colorByRarity) {
-                    currentColor = dragonsSince.getItemRarity().getColorCode().getColor();
-                } else {
-//                    //FontRendererHook.setupFeatureFont(Feature.DRAGON_STATS_TRACKER);
-                }
+                int currentColor = colorByRarity ? dragonsSince.getItemRarity().getColorCode().getColor() : color;
 
-                DrawUtils.drawText(graphics, dragonsSince.getDisplayName(), x, y, currentColor);
-
-                if (!colorByRarity) {
-
-                }
+                DrawUtils.drawText(graphics, dragonsSince.getDisplayName(), x, y, currentColor, colorByRarity);
 
 //                //FontRendererHook.setupFeatureFont(Feature.DRAGON_STATS_TRACKER);
                 int dragonsSinceValue = DragonTracker.getInstance().getDragsSince(dragonsSince);

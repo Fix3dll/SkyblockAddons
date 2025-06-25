@@ -565,6 +565,7 @@ public class DevUtils {
                             Utils.sendMessageOrElseLog(
                                     Translations.getMessage("messages.resourcesReloaded"), LOGGER, false
                             );
+                            scheduledTask.cancel();
                         } else {
                             Utils.sendMessageOrElseLog(
                                     throwable.getMessage(), LOGGER, false

@@ -21,6 +21,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StringUtil;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -254,17 +255,15 @@ public class Updater {
 
         Utils.sendMessage(Component.literal("§7§m----------------§7[ §b§lSkyblockAddons §7]§7§m----------------"), false);
 
-        Component newUpdate = Component.literal(
+        MutableComponent newUpdate = Component.literal(
                 String.format("§b%s\n", Translations.getMessage("messages.updateChecker.newUpdateAvailable", targetVersion))
         );
-        /*
-        Text viewChangelog = Component.literal(
-                String.format("§b%s\n", getMessage("messages.updateChecker.wantToViewPatchNotes", targetVersion)));
-        Text joinDiscord = Component.literal(
-                String.format("§b%s\n", getMessage("messages.updateChecker.joinDiscord", targetVersion))
-        );
-        newUpdate.append(viewChangelog).append(joinDiscord);
-        */
+
+        if (!StringUtil.isNullOrEmpty(note)) {
+            MutableComponent versionNote = Component.literal("\n" + ColorCode.RED + note + "\n");
+            newUpdate.append(versionNote);
+        }
+
         Utils.sendMessage(newUpdate, false);
 
         MutableComponent autoDownloadButton;
@@ -282,8 +281,7 @@ public class Updater {
             if (cachedPotentialUpdate == null) {
                 autoDownloadButton = Component.literal(
                         String.format("§8§m[%s]§r", Translations.getMessage("messages.updateChecker.autoDownloadButton"))
-                );
-                autoDownloadButton.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal(
+                ).withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal(
                         "§7" + Translations.getMessage("messages.updateChecker.autoUpdateTargetNotFound")
 
                 ))));
@@ -291,8 +289,7 @@ public class Updater {
             } else if (!main.getOnlineData().getUpdateData(autoUpdateMode.name()).getVersionNumber().getAsString().contains(targetVersion)) {
                 autoDownloadButton = Component.literal(
                         String.format("§8§m[%s]§r", Translations.getMessage("messages.updateChecker.autoDownloadButton"))
-                );
-                autoDownloadButton.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal(
+                ).withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal(
                         "§7" + Translations.getMessage("messages.updateChecker.autoUpdateTargetIsNotUpToDate")
                 ))));
                 autoDownloadButton.append(" ");
@@ -320,7 +317,7 @@ public class Updater {
                 String.format("§b[%s]", Translations.getMessage("messages.updateChecker.downloadButton"))
         );
 
-        if (downloadLink != null && !downloadLink.isEmpty()) {
+        if (!StringUtil.isNullOrEmpty(downloadLink)) {
             downloadButton.withStyle(style -> style.withClickEvent(
                     new ClickEvent.OpenUrl(URI.create(downloadLink))
             ).withHoverEvent(new HoverEvent.ShowText(Component.literal(
@@ -335,19 +332,17 @@ public class Updater {
 
         openModsFolderButton = Component.literal(
                 String.format("§e[%s]", Translations.getMessage("messages.updateChecker.openModFolderButton"))
-        );
-        openModsFolderButton.withStyle(style -> style.withClickEvent(
+        ).withStyle(style -> style.withClickEvent(
                 new ClickEvent.RunCommand("/sba folder")
         ).withHoverEvent(
                 new HoverEvent.ShowText(Component.literal("§7" + Translations.getMessage("messages.clickToOpenFolder")
         ))));
         autoDownloadButton.append(openModsFolderButton).append(" ");
 
-        if (changelogLink != null && !changelogLink.isEmpty()) {
+        if (!StringUtil.isNullOrEmpty(changelogLink)) {
             changelogButton = Component.literal(
-                    String.format(" §9§l[%s]", Translations.getMessage("messages.updateChecker.changelogButton"))
-            );
-            changelogButton.withStyle(style -> style.withClickEvent(
+                    String.format(" §9[%s]", Translations.getMessage("messages.updateChecker.changelogButton"))
+            ).withStyle(style -> style.withClickEvent(
                     new ClickEvent.OpenUrl(URI.create(changelogLink))
             ).withHoverEvent(new HoverEvent.ShowText(
                     Component.literal("§7" + Translations.getMessage("messages.clickToOpenLink"))
@@ -355,7 +350,7 @@ public class Updater {
             autoDownloadButton.append(changelogButton).append(" ");
         }
 
-        Utils.sendMessage(downloadButton, false);
+        Utils.sendMessage(autoDownloadButton, false);
         Utils.sendMessage(Component.literal("§7§m--------------------------------------------------"), false);
 
         sentUpdateMessage = true;

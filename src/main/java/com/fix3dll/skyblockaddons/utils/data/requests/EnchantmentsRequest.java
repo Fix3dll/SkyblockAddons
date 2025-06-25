@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.Objects;
 
 public class EnchantmentsRequest extends RemoteFileRequest<EnchantmentsData> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EnchantmentsRequest() {

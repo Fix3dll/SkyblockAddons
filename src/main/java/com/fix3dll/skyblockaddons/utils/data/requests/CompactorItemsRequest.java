@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.Objects;
 
 public class CompactorItemsRequest extends RemoteFileRequest<Object2ObjectOpenHashMap<String, CompactorItem>> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public CompactorItemsRequest() {

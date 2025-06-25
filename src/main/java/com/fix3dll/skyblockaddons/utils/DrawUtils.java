@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.chroma.ChromaRenderType;
 import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.UniformType;
@@ -12,7 +13,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import lombok.NonNull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -182,7 +183,7 @@ public class DrawUtils {
         vertexConsumer.addVertex(matrix4f, maxX, minY, 0).setColor(color);
     }
 
-    public static void drawCenteredText(GuiGraphics graphics, MultiBufferSource source, String text, float x, float y, int color) {
+    public static void drawCenteredText(GuiGraphics graphics, String text, float x, float y, int color) {
         drawText(graphics, text, x - Minecraft.getInstance().font.width(text) / 2F, y, color);
     }
 
@@ -193,13 +194,34 @@ public class DrawUtils {
      * @param y the y-coordinate of the text.
      * @param color the color to fill the text with.
      */
-    public static void drawText(GuiGraphics graphics, @NonNull String text, float x, float y, int color) {
-        if (text.isEmpty()) return;
+    public static void drawText(GuiGraphics graphics, String text, float x, float y, int color) {
+        drawText(graphics, text, x, y, color, false);
+    }
+
+    /**
+     * Draws an absolute text with the specified parameters. Use black color while drawing legacy formatting texts.
+     * @param text the text.
+     * @param x the x-coordinate of the text.
+     * @param y the y-coordinate of the text.
+     * @param color the color to fill the text with.
+     * @param chromaDisabled if true overrides chroma
+     */
+    public static void drawText(GuiGraphics graphics, String text, float x, float y, int color, boolean chromaDisabled) {
+        if (StringUtil.isNullOrEmpty(text)) return;
+
+        boolean isChroma = !chromaDisabled && color == ManualChromaManager.getChromaColor(0, 0, ARGB.alpha(color));
+        boolean styleTwo = Feature.TEXT_STYLE.getValue() == EnumUtils.TextStyle.STYLE_TWO;
+
+        String strippedText;
+        if (styleTwo || isChroma) {
+            strippedText  = "§r" + COLOR_CODE_PATTERN.matcher(text).replaceAll("§r");
+        } else {
+            strippedText = text;
+        }
 
         Component component;
-        if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE
-                && color == ManualChromaManager.getChromaColor(0, 0, ARGB.alpha(color))) {
-            component = Component.literal(text).withStyle(style ->
+        if (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+            component = Component.literal(strippedText).withStyle(style ->
                style.withColor(new TextColor(ColorCode.CHROMA.getColor(), "chroma"))
             );
         } else {
@@ -207,15 +229,16 @@ public class DrawUtils {
         }
 
         Font font = Minecraft.getInstance().font;
-        if (Feature.TEXT_STYLE.getValue() == EnumUtils.TextStyle.STYLE_TWO) {
+        if (styleTwo) {
             // FIXME alpha on legacy format
             int colorAlpha = Math.max(ARGB.alpha(color), 4);
             int colorBlack = ARGB.color(colorAlpha, 0, 0, 0);
-            String blackedText = "§r" + COLOR_CODE_PATTERN.matcher(text).replaceAll("§r");
-            graphics.drawSpecial(source -> font.drawInBatch(blackedText, x + 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
-            graphics.drawSpecial(source -> font.drawInBatch(blackedText, x - 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
-            graphics.drawSpecial(source -> font.drawInBatch(blackedText, x, y + 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
-            graphics.drawSpecial(source -> font.drawInBatch(blackedText, x, y - 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            FontHook.setHaltChroma(true);
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x + 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x - 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x, y + 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x, y - 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            FontHook.setHaltChroma(false);
             graphics.drawSpecial(source -> font.drawInBatch(component, x, y, color, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
         } else {
             graphics.drawSpecial(source -> font.drawInBatch(component, x, y , color, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class LocationsRequest extends RemoteFileRequest<HashMap<String, LocationData>> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public LocationsRequest() {

@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.Objects;
 
 public class ContainersRequest extends RemoteFileRequest<Object2ObjectOpenHashMap<String, ContainerData>> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public ContainersRequest() {

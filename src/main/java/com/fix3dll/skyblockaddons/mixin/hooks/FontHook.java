@@ -53,8 +53,9 @@ public class FontHook {
     );
     private static final TextColor textColor = new TextColor(0xFFFFFF, "chroma");
     private static final TextColor textColorOffWhite = new TextColor(0xFFFFFE, "chroma");
+    @Getter @Setter private static boolean allTextChroma = false;
     @Getter private static boolean glyphChroma = false;
-    @Setter private static boolean allTextChroma = false;
+    @Setter private static boolean haltChroma = false;
 
     public static RenderType getChromaTextured(ResourceLocation identifier) {
         return CHROMA_TEXTURED.apply(identifier);
@@ -72,12 +73,12 @@ public class FontHook {
         return style;
     }
 
-    public static TextColor forceWhiteTextColorForChroma(TextColor textColor) {
-        if (allTextChroma) {
+    public static TextColor forceWhiteTextColorForChroma(TextColor color) {
+        if (allTextChroma && !haltChroma) {
             return textColor;
         }
 
-        return textColor;
+        return color;
     }
 
     public static Style forceChromaStyleIfNecessary(Style style) {

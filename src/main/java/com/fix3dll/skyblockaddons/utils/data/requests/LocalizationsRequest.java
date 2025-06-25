@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class LocalizationsRequest extends RemoteFileRequest<JsonObject> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public LocalizationsRequest(@NonNull Language language) {
