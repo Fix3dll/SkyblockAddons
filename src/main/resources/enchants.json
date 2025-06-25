@@ -18,6 +18,12 @@
       "maxLevel": 1,
       "nbtName": "aqua_affinity"
     },
+    "arcane": {
+      "goodLevel": 0,
+      "loreName": "Arcane",
+      "maxLevel": 5,
+      "nbtName": "arcane"
+    },
     "bane of arthropods": {
       "goodLevel": 5,
       "loreName": "Bane of Arthropods",
@@ -132,6 +138,12 @@
       "maxLevel": 5,
       "nbtName": "aiming"
     },
+    "drain": {
+      "goodLevel": 3,
+      "loreName": "Drain",
+      "maxLevel": 5,
+      "nbtName": "syphon"
+    },
     "efficiency": {
       "goodLevel": 5,
       "loreName": "Efficiency",
@@ -191,6 +203,12 @@
       "loreName": "Flame",
       "maxLevel": 2,
       "nbtName": "flame"
+    },
+    "forest pledge": {
+      "goodLevel": 2,
+      "loreName": "Forest Pledge",
+      "maxLevel": 5,
+      "nbtName": "forest_pledge"
     },
     "fortune": {
       "goodLevel": 3,
@@ -441,7 +459,7 @@
     "respiration": {
       "goodLevel": 3,
       "loreName": "Respiration",
-      "maxLevel": 3,
+      "maxLevel": 4,
       "nbtName": "respiration"
     },
     "respite": {
@@ -455,6 +473,12 @@
       "loreName": "Scavenger",
       "maxLevel": 6,
       "nbtName": "scavenger"
+    },
+    "scuba": {
+      "goodLevel": 0,
+      "loreName": "Scuba",
+      "maxLevel": 5,
+      "nbtName": "scuba"
     },
     "sharpness": {
       "goodLevel": 5,
@@ -510,6 +534,12 @@
       "maxLevel": 7,
       "nbtName": "spiked_hook"
     },
+    "stealth": {
+      "goodLevel": 0,
+      "loreName": "Stealth",
+      "maxLevel": 1,
+      "nbtName": "stealth"
+    },
     "strong mana": {
       "goodLevel": 10,
       "loreName": "Strong Mana",
@@ -527,12 +557,6 @@
       "loreName": "Sunder",
       "maxLevel": 6,
       "nbtName": "sunder"
-    },
-    "drain": {
-      "goodLevel": 3,
-      "loreName": "Drain",
-      "maxLevel": 5,
-      "nbtName": "syphon"
     },
     "tabasco": {
       "goodLevel": 0,
@@ -668,6 +692,26 @@
     }
   },
   "STACKING": {
+    "absorb": {
+      "goodLevel": 0,
+      "loreName": "Absorb",
+      "maxLevel": 10,
+      "nbtName": "absorb",
+      "nbtNum": "absorb_logs_chopped",
+      "stackLevel": [
+        0,
+        1000,
+        5000,
+        25000,
+        100000,
+        300000,
+        1500000,
+        5000000,
+        20000000,
+        100000000
+      ],
+      "statLabel": "absorbLogsChopped"
+    },
     "champion": {
       "goodLevel": 0,
       "loreName": "Champion",
@@ -826,6 +870,12 @@
       "maxLevel": 5,
       "nbtName": "ultimate_fatal_tempo"
     },
+    "first impression": {
+      "goodLevel": 0,
+      "loreName": "First Impression",
+      "maxLevel": 5,
+      "nbtName": "ultimate_first_impression"
+    },
     "flash": {
       "goodLevel": 0,
       "loreName": "Flash",
@@ -861,6 +911,12 @@
       "loreName": "Legion",
       "maxLevel": 5,
       "nbtName": "ultimate_legion"
+    },
+    "missile": {
+      "goodLevel": 0,
+      "loreName": "Missile",
+      "maxLevel": 5,
+      "nbtName": "ultimate_missile"
     },
     "no pain no gain": {
       "goodLevel": 0,

@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.utils.data.requests;
 
+import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
+import java.util.Objects;
 
 public class EnchantmentsRequest extends RemoteFileRequest<EnchantmentsData> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -30,7 +32,7 @@ public class EnchantmentsRequest extends RemoteFileRequest<EnchantmentsData> {
         @Override
         public void completed(EnchantmentsData result) {
             super.completed(result);
-//            EnchantManager.setEnchants(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR)); FIXME
+            EnchantManager.setEnchants(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
         }
     }
 }
