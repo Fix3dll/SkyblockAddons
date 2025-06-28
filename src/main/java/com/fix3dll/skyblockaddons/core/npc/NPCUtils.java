@@ -57,7 +57,6 @@ public class NPCUtils {
 
     /**
      * Checks if a given entity is near any NPC.
-     *
      * @param entityToCheck The entity to check
      * @return {@code true} if the entity is near an NPC, {@code false} otherwise
      */
@@ -73,7 +72,6 @@ public class NPCUtils {
 
     /**
      * Checks if the given entity is an NPC
-     *
      * @param entity the entity to check
      * @return {@code true} if the entity is an NPC, {@code false} otherwise
      */
@@ -84,4 +82,5 @@ public class NPCUtils {
 
         return entity.getUUID().version() == 2 && remotePlayer.getHealth() == 20.0F && !remotePlayer.isSleeping();
     }
+
 }

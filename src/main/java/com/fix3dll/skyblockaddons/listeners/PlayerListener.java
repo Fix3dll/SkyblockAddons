@@ -51,6 +51,7 @@ import lombok.Setter;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
@@ -195,6 +196,9 @@ public class PlayerListener {
     private String cachedChatRunCommand;
     @Setter private boolean savePersistentFlag = false;
 
+    public static final ResourceLocation SBA_FIRST_PHASE = SkyblockAddons.resourceLocation("first");
+    public static final ResourceLocation SBA_LAST_PHASE = SkyblockAddons.resourceLocation("last");
+
     public PlayerListener() {
         ClientTickEvents.START_CLIENT_TICK.register(this::onTickStart);
 
@@ -208,7 +212,10 @@ public class PlayerListener {
         ClientReceiveMessageEvents.MODIFY_GAME.register(this::onChatModify);
 
         UseItemCallback.EVENT.register(this::onRightClickBlock);
-        ItemTooltipCallback.EVENT.register(this::onGetComponent);
+        ItemTooltipCallback.EVENT.addPhaseOrdering(SBA_FIRST_PHASE, Event.DEFAULT_PHASE);
+        ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, SBA_LAST_PHASE);
+        ItemTooltipCallback.EVENT.register(SBA_FIRST_PHASE, this::onGetComponentFirst);
+        ItemTooltipCallback.EVENT.register(SBA_LAST_PHASE, this::onGetComponentLast);
 
         SkyblockEvents.DUNGEON_PLAYER_DEATH.register(this::onDungeonPlayerDeath);
         SkyblockEvents.DUNGEON_PLAYER_REVIVE.register(this::onDungeonPlayerRevive);
@@ -746,10 +753,10 @@ public class PlayerListener {
         }
     }
 
-    private void onGetComponent(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
-        // First
+    private void onGetComponentFirst(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
         if (components.isEmpty() || !main.getUtils().isOnSkyblock()) return;
 
+        // First
         int insertAt = components.size() - 1; // 1 line for the rarity
         if (tooltipFlag.isAdvanced()) {
             insertAt -= 2; // 1 line for the item name, and 1 line for the nbt
@@ -791,6 +798,10 @@ public class PlayerListener {
                 components.add(insertAt, Component.literal("§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor)));
             }
         }
+    }
+
+    private void onGetComponentLast(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
+        if (components.isEmpty() || !main.getUtils().isOnSkyblock()) return;
 
         // Last
         if (Feature.ENCHANTMENT_LORE_PARSING.isEnabled()) {
@@ -826,14 +837,13 @@ public class PlayerListener {
             Component tooltipLine = Component.literal(ColorCode.DARK_GRAY + "skyblock:" + itemId);
 
             if (itemId != null) {
-                if (MC.options.advancedItemTooltips) {
+                if (tooltipFlag.isAdvanced()) {
                     for (int i = components.size(); i-- > 0; ) {
                         if (TextUtils.getFormattedText(components.get(i)).startsWith(ColorCode.DARK_GRAY + "minecraft:")) {
                             components.add(i + 1, tooltipLine);
                             break;
                         }
                     }
-
                 } else {
                     components.add(tooltipLine);
                 }

@@ -97,7 +97,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.awt.*;
@@ -818,15 +817,15 @@ public class RenderListener {
             case DRILL_FUEL_TEXT -> {
                 boolean heldDrill = MC.player != null && ItemUtils.isDrill(MC.player.getMainHandItem());
 
-                if (heldDrill) {
-                    text = TextUtils.formatNumber(PlayerStat.FUEL.getValue()) + "/";
+                if (heldDrill || buttonLocation != null) {
+                    float fuel = heldDrill ? PlayerStat.FUEL.getValue() : 3000;
+                    float maxFuel = heldDrill ? PlayerStat.MAX_FUEL.getValue(): 3000;
+                    text = TextUtils.formatNumber(fuel) + "/";
                     if (feature.isEnabled(FeatureSetting.ABBREVIATE_DRILL_FUEL_DENOMINATOR)) {
-                        text += TextUtils.abbreviate((int) PlayerStat.MAX_FUEL.getValue());
+                        text += TextUtils.abbreviate(maxFuel);
                     } else {
-                        text += TextUtils.formatNumber(PlayerStat.MAX_FUEL.getValue());
+                        text += TextUtils.formatNumber(maxFuel);
                     }
-                } else if (buttonLocation != null) {
-                    text = TextUtils.formatNumber(3000) + "/" + TextUtils.formatNumber(3000);
                 } else {
                     return;
                 }
@@ -1982,7 +1981,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                     if (riftstalker == null) {
                         riftstalker = new RemotePlayer(MC.level /*Utils.getDummyWorld()*/, new GameProfile(UUID.randomUUID(), "Riftstalker")) {
                             @Override
-                            public @NotNull PlayerSkin getSkin() {
+                            public PlayerSkin getSkin() {
                                 return new PlayerSkin(RIFTSTALKER_BLOODFIEND, null, null, null, PlayerSkin.Model.WIDE, true);
                             }
                         };

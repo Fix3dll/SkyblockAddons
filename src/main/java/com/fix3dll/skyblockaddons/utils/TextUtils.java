@@ -49,11 +49,12 @@ public class TextUtils {
     private static final Pattern MAGNITUDE_PATTERN = Pattern.compile("(\\d[\\d,.]*\\d*)+([kKmMbBtT])");
     private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s?:\\s?\".+/(?<textureId>\\w+)\"");
 
-    private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
+    private static final NavigableMap<Long, String> SUFFIXES = new TreeMap<>();
     static {
-        suffixes.put(1_000L, "k");
-        suffixes.put(1_000_000L, "M");
-        suffixes.put(1_000_000_000L, "B");
+        SUFFIXES.put(1_000L, "k");
+        SUFFIXES.put(1_000_000L, "M");
+        SUFFIXES.put(1_000_000_000L, "B");
+        SUFFIXES.put(1_000_000_000_000L, "T");
         NUMBER_FORMAT.setMaximumFractionDigits(2);
         NUMBER_FORMAT_NO_GROUPING.setMaximumFractionDigits(2);
         NUMBER_FORMAT_NO_GROUPING.setGroupingUsed(false);
@@ -335,14 +336,13 @@ public class TextUtils {
             return Long.toString(longValue);
         }
 
-        Map.Entry<Long, String> entry = suffixes.floorEntry(longValue);
+        Map.Entry<Long, String> entry = SUFFIXES.floorEntry(longValue);
         Long divideBy = entry.getKey();
         String suffix = entry.getValue();
 
-        long truncated = longValue / (divideBy / 10); //the number part of the output times 10
-        //noinspection IntegerDivisionInFloatingPointContext
-        boolean hasDecimal = truncated < 100 && (truncated / 10d) != (truncated / 10);
-        return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
+        long truncated = longValue / (divideBy / 10); // the number part of the output times 10
+        boolean hasDecimal = (truncated % 10) != 0;
+        return hasDecimal ? (truncated / 10D) + suffix : (truncated / 10) + suffix;
     }
 
 

@@ -16,7 +16,6 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 public class EntityRendererHook {
 
@@ -26,14 +25,14 @@ public class EntityRendererHook {
     private static final int HIDE_RADIUS_SQUARED = 7 * 7;
     private static final String HAUNTED_SKULL_TEXTURE = ItemUtils.getSkullTexture(ItemUtils.getTexturedHead("HAUNTED_SKULL"));
 
-    public static void shouldRender(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
+    public static boolean shouldRender(Entity entityIn) {
         if (main.getUtils().isOnSkyblock()) {
             Island currentMap = main.getUtils().getMap();
 
             if (Feature.HIDE_BONES.isEnabled() && main.getInventoryUtils().isWearingSkeletonHelmet()) {
                 if (entityIn instanceof ItemEntity itemEntity && entityIn.getVehicle() instanceof ArmorStand && entityIn.getVehicle().isInvisible()) {
                     if (itemEntity.getItem().getItem().equals(Items.BONE)) {
-                        cir.cancel();
+                        return false;
                     }
                 }
             }
@@ -41,37 +40,38 @@ public class EntityRendererHook {
                 if (entityIn instanceof ArmorStand armorStand && armorStand.isInvisible()) {
                     String skullID = ItemUtils.getSkullTexture(armorStand.getItemBySlot(EquipmentSlot.HEAD));
                     if (HAUNTED_SKULL_TEXTURE.equals(skullID)) {
-                        cir.cancel();
+                        return false;
                     }
                 }
             }
             if (MC.level != null && Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled() && !main.getUtils().isGuest()
                     && currentMap != Island.DUNGEON) {
                 if (entityIn instanceof RemotePlayer && !NPCUtils.isNPC(entityIn) && NPCUtils.isNearNPC(entityIn)) {
-                    cir.cancel();
+                    return false;
                 }
             }
             if (Feature.HIDE_SPAWN_POINT_PLAYERS.isEnabled()) {
                 if (entityIn instanceof Player && LocationUtils.isOn("Village")
-                        && entityIn.getX() == -2
-                        && entityIn.getY() == 70
-                        && entityIn.getZ() == -69) {
-                    cir.cancel();
+                        && entityIn.getX() == -2.5D
+                        && entityIn.getY() == 70.0D
+                        && entityIn.getZ() == -69.5D) {
+                    return false;
                 }
             }
             if (Feature.HIDE_PLAYERS_IN_LOBBY.isEnabled() && LocationUtils.isOn("Village", "Auction House", "Bank")) {
                 if ((entityIn instanceof RemotePlayer || entityIn instanceof ItemFrame)
                         && !NPCUtils.isNPC(entityIn) && entityIn.distanceToSqr(MC.player) > HIDE_RADIUS_SQUARED) {
-                    cir.cancel();
+                    return false;
                 }
             }
             if (Feature.HIDE_OTHER_PLAYERS_PRESENTS.isEnabled()) {
                 JerryPresent present = JerryPresent.getJerryPresents().get(entityIn.getUUID());
                 if (present != null && present.shouldHide()) {
-                    cir.cancel();
+                    return false;
                 }
             }
         }
+        return true;
     }
 
 }

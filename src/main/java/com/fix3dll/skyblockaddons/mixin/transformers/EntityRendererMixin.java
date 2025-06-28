@@ -20,7 +20,9 @@ public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> 
 
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
     public void sba$shouldRender(T livingEntity, Frustum camera, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
-        EntityRendererHook.shouldRender(livingEntity, cir);
+        if (!EntityRendererHook.shouldRender(livingEntity)) {
+            cir.setReturnValue(false);
+        }
     }
 
     @Inject(method = "renderNameTag", at = @At("HEAD"), cancellable = true)
