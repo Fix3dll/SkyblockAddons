@@ -24,7 +24,8 @@ public class ChatScreenMixin {
 
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;getComponentStyleAt(DD)Lnet/minecraft/network/chat/Style;"))
     public void sba$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir, @Local ChatComponent chatComponent) {
-        if (button != 0 && Feature.DEVELOPER_MODE.isDisabled()
+        if (button != 0) return;
+        if (Feature.DEVELOPER_MODE.isDisabled()
                 && (Feature.CHAT_MESSAGE_COPYING.isDisabled() || !SkyblockAddons.getInstance().getUtils().isOnSkyblock())) {
             return;
         }
