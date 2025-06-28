@@ -14,7 +14,6 @@ import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.serialization.Codec;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +46,7 @@ public class EnchantManager {
     /**
      * Parse through enchantments, update the item's nbt, and cache the result for future queries
      * @param loreList the current item lore (which may be processed by enchants)
-     * @param item
+     * @param item item
      */
     public static void parseEnchants(List<Component> loreList, ItemStack item) {
         Map<String, Integer> enchantments = ItemUtils.getEnchantments(item);
@@ -162,7 +162,7 @@ public class EnchantManager {
                 // Check if there will be overflow on this line. This will never happen for a single enchant on a line
                 if (sum + enchant.getRenderLength() > maxTooltipWidth) {
                     builder.delete(builder.length() - comma.length(), builder.length());
-                    addStyledComponent(insertEnchants, builder.toString());
+                    insertEnchants.add(CREATE_STYLED_COMPONENT.apply(builder.toString()));
                     builder = new StringBuilder(maxTooltipWidth);
                     sum = 0;
                 }
@@ -173,7 +173,7 @@ public class EnchantManager {
             // Flush any remaining enchants
             if (builder.length() >= comma.length()) {
                 builder.delete(builder.length() - comma.length(), builder.length());
-                addStyledComponent(insertEnchants, builder.toString());
+                insertEnchants.add(CREATE_STYLED_COMPONENT.apply(builder.toString()));
             }
         }
         // Print 2 enchants per line, separated by a comma, with no enchant lore (typical hypixel behavior)
@@ -198,7 +198,7 @@ public class EnchantManager {
                 }
                 // Create a new line
                 else {
-                    addStyledComponent(insertEnchants, builder.toString());
+                    insertEnchants.add(CREATE_STYLED_COMPONENT.apply(builder.toString()));
                     builder = new StringBuilder(maxTooltipWidth);
                 }
                 i++;
@@ -206,7 +206,7 @@ public class EnchantManager {
             // Flush any remaining enchants
             if (builder.length() >= comma.length()) {
                 builder.delete(builder.length() - comma.length(), builder.length());
-                addStyledComponent(insertEnchants, builder.toString());
+                insertEnchants.add(CREATE_STYLED_COMPONENT.apply(builder.toString()));
             }
         }
         // Prints each enchantment out on a separate line. Also adds the lore if need be
@@ -216,7 +216,7 @@ public class EnchantManager {
                 insertEnchants = new ArrayList<>((hasLore ? 3 : 1) * numEnchants);
                 for (FormattedEnchant enchant : orderedEnchants) {
                     // Add enchant
-                    addStyledComponent(insertEnchants, enchant.getFormattedString());
+                    insertEnchants.add(CREATE_STYLED_COMPONENT.apply(enchant.getFormattedString()));
                     // Add the enchant lore (if any)
                     insertEnchants.addAll(enchant.getLore());
                 }
@@ -225,7 +225,7 @@ public class EnchantManager {
                 insertEnchants = new ArrayList<>(numEnchants);
                 for (FormattedEnchant enchant : orderedEnchants) {
                     // Add enchant
-                    addStyledComponent(insertEnchants, enchant.getFormattedString());
+                    insertEnchants.add(CREATE_STYLED_COMPONENT.apply(enchant.getFormattedString()));
                 }
             }
         }
@@ -348,7 +348,11 @@ public class EnchantManager {
 
     private static final Pattern ENCHANT_SPLITTER = Pattern.compile("§.(?:§.)?[^§]*");
 
-    private static void addStyledComponent(@NonNull List<Component> list, String enchantString) {
+    public static void markCacheDirty() {
+        LORE_CACHE.configChanged = true;
+    }
+
+    public static Function<String, MutableComponent> CREATE_STYLED_COMPONENT = enchantString -> {
         MutableComponent component = Component.empty();
         Matcher m = ENCHANT_SPLITTER.matcher(enchantString);
 
@@ -363,12 +367,8 @@ public class EnchantManager {
             }
         }
 
-        list.add(component);
-    }
-
-    public static void markCacheDirty() {
-        LORE_CACHE.configChanged = true;
-    }
+        return component.getSiblings().isEmpty() ? Component.literal(enchantString) : component;
+    };
 
     static class Cache {
         @Getter ArrayList<Component> cachedAfter = new ArrayList<>();

@@ -161,7 +161,6 @@ public class PlayerListener {
     private long lastBal = -1;
     private int lastBalEntityId = -1;
     private long lastBroodmother = -1;
-    private int balTick = -1;
     private int timerTick = 1;
     private long lastMinionSound = -1;
     private long lastFishingAlert = 0;
@@ -195,8 +194,6 @@ public class PlayerListener {
     private boolean doubleHook = false;
     private String cachedChatRunCommand;
     @Setter private boolean savePersistentFlag = false;
-
-    static Level lastWorld = null;
 
     public PlayerListener() {
         ClientTickEvents.START_CLIENT_TICK.register(this::onTickStart);
@@ -548,7 +545,7 @@ public class PlayerListener {
             }
 
 
-            if (ABILITY_CHAT_PATTERN.matcher(formattedText).matches()) {
+            if (ABILITY_CHAT_PATTERN.matcher(formattedText).matches() && MC.player != null) {
                 CooldownManager.put(MC.player.getMainHandItem());
 
             } else if ((matcher = PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
@@ -676,7 +673,7 @@ public class PlayerListener {
                 }
             }
         }
-        if (Feature.BAL_BOSS_ALERT.isEnabled() && LocationUtils.isOn(Island.CRYSTAL_HOLLOWS)) {
+        if (Feature.BAL_BOSS_ALERT.isEnabled() && LocationUtils.isOn(Island.CRYSTAL_HOLLOWS) && MC.level != null) {
             if (lastBal == -1 || System.currentTimeMillis() - lastBal > 60000) {
                 for (Entity cubes : MC.level.entitiesForRendering()) {
                     if (cubes instanceof MagmaCube magmaCube) {
@@ -806,11 +803,21 @@ public class PlayerListener {
             );
             int startIndex = replaceItemName ? 1 : 0;
 
+            // TODO clean this shit + EnchantManager
             for (int i = startIndex; i < components.size(); i++) {
-                String parsedFormattedText = RomanNumeralParser.replaceNumeralsWithIntegers(
-                        TextUtils.getFormattedText(components.get(i))
-                );
-                components.set(i, Component.literal(parsedFormattedText));
+                String line = components.get(i).getString();
+                boolean legacy = line.contains("§");
+                if (!legacy) {
+                    line = TextUtils.getFormattedText(components.get(i));
+                }
+
+                String parsedFormattedText = RomanNumeralParser.replaceNumeralsWithIntegers(line);
+
+                if (legacy) {
+                    components.set(i, EnchantManager.CREATE_STYLED_COMPONENT.apply(parsedFormattedText));
+                } else {
+                    components.set(i, Component.literal(parsedFormattedText));
+                }
             }
         }
 
@@ -904,8 +911,8 @@ public class PlayerListener {
             }
         }
 
-        if (Feature.STOP_BONZO_STAFF_SOUNDS.isEnabled()
-                && BONZO_STAFF_SOUNDS.contains(soundInstance.getLocation())) {
+        if (Feature.STOP_BONZO_STAFF_SOUNDS.isEnabled() && BONZO_STAFF_SOUNDS.contains(soundInstance.getLocation())
+                && MC.player != null) {
             String skyblockId = ItemUtils.getSkyblockItemID(MC.player.getMainHandItem());
             if (skyblockId != null && skyblockId.endsWith("BONZO_STAFF")) {
                 ci.cancel();
@@ -1241,7 +1248,7 @@ public class PlayerListener {
                 // No milestone items in new profiles
                 if (lore.isEmpty()) return;
 
-                String milestoneProgress = TextUtils.stripColor(lore.get(lore.size() - 1));
+                String milestoneProgress = TextUtils.stripColor(lore.getLast());
 
                 Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
                 int total = -1;

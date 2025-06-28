@@ -645,13 +645,15 @@ public class TextUtils {
         } else {
             if (style.getColor() != null) {
                 TextColor textColor = style.getColor();
-                String colorName = textColor.serialize();
-                if (colorName.charAt(0) != '#') {
-                    sb.append(ChatFormatting.getByName(colorName));
-                } else if (textColor.name == null) {
-                    ColorCode color = ColorCode.getByARGB(0xFF000000 | (textColor.getValue() & 0x00FFFFFF));
-                    if (color != null) {
-                        sb.append(color);
+                String colorName = textColor.name;
+                if (colorName != null) {
+                    if (colorName.charAt(0) != '#') {
+                        ColorCode color = ColorCode.getByARGB(0xFF000000 | (textColor.getValue() & 0x00FFFFFF));
+                        if (color != null) {
+                            sb.append(color);
+                        }
+                    } else if (colorName.equalsIgnoreCase("chroma")) {
+                        sb.append(ColorCode.CHROMA);
                     }
                 }
             }
