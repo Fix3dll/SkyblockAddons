@@ -26,7 +26,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.5",
-		"minecraft": "~1.21.1",
+		"minecraft": "~1.21.5",
 		"java": ">=21",
 		"fabric-api": "*",
 		"hypixel-mod-api": ">=1.0.1"
@@ -38,9 +38,6 @@
 			"links": {
 				"modmenu.modrinth": "https://modrinth.com/mod/skyblockaddons-unofficial",
 				"modmenu.donate": "https://buymeacoffee.com/fix3dll"
-			},
-			"parent": {
-				"icon": "assets/skyblockaddons/logo.png"
 			}
 		}
 	}

@@ -555,8 +555,8 @@ public class DevUtils {
         DataUtils.registerNewRemoteRequests();
         DataUtils.readLocalAndFetchOnline();
         main.getPersistentValuesManager().loadValues();
-        SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
-            if (DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
+        main.getScheduler().scheduleAsyncTask(scheduledTask -> {
+            if (!scheduledTask.isCanceled() && DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
                 DataUtils.onSkyblockJoined();
                 PackRepository packs = MC.getResourcePackRepository();
                 if (packs.isAvailable(SkyblockAddons.MOD_ID) && packs.getSelectedIds().contains(SkyblockAddons.MOD_ID)) {
@@ -565,7 +565,6 @@ public class DevUtils {
                             Utils.sendMessageOrElseLog(
                                     Translations.getMessage("messages.resourcesReloaded"), LOGGER, false
                             );
-                            scheduledTask.cancel();
                         } else {
                             Utils.sendMessageOrElseLog(
                                     throwable.getMessage(), LOGGER, false
