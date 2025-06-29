@@ -16,15 +16,14 @@ public enum SkillType {
     ALCHEMY("Alchemy", Items.BREWING_STAND, false),
     CARPENTRY("Carpentry", Items.CRAFTING_TABLE.asItem(), false),
     RUNECRAFTING("Runecrafting", Items.MAGMA_CREAM, true),
-    TAMING("Taming", Items.GHAST_SPAWN_EGG, false),
+    TAMING("Taming", Items.POLAR_BEAR_SPAWN_EGG, false),
     DUNGEONEERING("Dungeoneering", Blocks.DEAD_BUSH.asItem(), false),
-    SOCIAL("Social", Items.CAKE, true);
+    SOCIAL("Social", Items.CAKE, true),
+    HUNTING("Hunting", Items.LEAD, false);
 
     private final String skillName;
-    @Getter
-    private final ItemStack item;
-    @Getter
-    private final boolean cosmetic;
+    @Getter private final ItemStack item;
+    @Getter private final boolean cosmetic;
 
     SkillType(String skillName, Item item, boolean isCosmetic) {
         this.skillName = skillName;
