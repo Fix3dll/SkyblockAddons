@@ -23,3 +23,6 @@ extendable class net/minecraft/client/renderer/RenderType$CompositeRenderType
 accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType <init> (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/RenderType$CompositeState;)V
 accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType state Lnet/minecraft/client/renderer/RenderType$CompositeState;
 accessible field net/minecraft/client/renderer/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
+accessible field net/minecraft/client/player/LocalPlayer xLast D
+accessible field net/minecraft/client/player/LocalPlayer zLast D
+accessible field net/minecraft/world/level/saveddata/maps/MapItemSavedData decorations Ljava/util/Map;

@@ -27,6 +27,7 @@ import com.fix3dll.skyblockaddons.features.deployable.DeployableManager;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTracker;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonType;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonsSince;
+import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonClass;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonMilestone;
 import com.fix3dll.skyblockaddons.features.TrevorTrapperTracker;
@@ -407,7 +408,7 @@ public class RenderListener {
                 case DEPLOYABLE_DISPLAY -> main.getRenderListener().drawDeployableStatus(graphics, scale, buttonLocation);
                 case TICKER -> main.getRenderListener().drawScorpionFoilTicker(graphics, scale, buttonLocation);
                 case BAIT_LIST_DISPLAY -> main.getRenderListener().drawBaitList(graphics, scale, buttonLocation);
-//                case DUNGEONS_MAP -> DungeonMapManager.drawDungeonsMap(scale, buttonLocation);
+                case DUNGEONS_MAP -> DungeonMapManager.drawDungeonsMap(graphics, scale, buttonLocation);
                 case SLAYER_TRACKERS -> main.getRenderListener().drawSlayerTrackers(graphics, feature, scale, buttonLocation);
                 case DRAGON_STATS_TRACKER -> main.getRenderListener().drawDragonTrackers(graphics, scale, buttonLocation);
                 case PROXIMITY_INDICATOR -> TrevorTrapperTracker.drawTrackerLocationIndicator(graphics, scale, buttonLocation);
@@ -552,7 +553,6 @@ public class RenderListener {
         int barHeight = 5;
         float barWidth = 71 * widthScale;
         float barFill = barWidth * fill;
-//        MC.getTextureManager().getTexture(BARS).bind(); 1.21.5
         int color;
         if (skyblockColor.getColor() == ColorCode.BLACK.getColor()) { // too dark normally
             color = ARGB.colorFromFloat(ARGB.alpha(skyblockColor.getColor()) / 255F, 0.25F, 0.25F, 0.25F);
@@ -565,12 +565,12 @@ public class RenderListener {
             color = ARGB.colorFromFloat(1F, 0.5F, 0.5F, 0.5F);
             renderType = FontHook.getChromaTextured(BARS);
         } else {
-            renderType = null;
+            renderType = RenderType.guiTextured(BARS);
         }
 
         // Empty bar first
         int emptyBarColor = color;
-        graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, renderType, BARS, x, y, 1, 1, barWidth, barHeight, 80, 50, emptyBarColor));
+        graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, renderType, x, y, 1, 1, barWidth, barHeight, 80, 50, emptyBarColor));
 
         if (skyblockColor.drawMulticolorUsingShader()) {
             color = ARGB.white(1F);
@@ -580,7 +580,7 @@ public class RenderListener {
 
         // Filled bar next
         if (fill != 0) {
-            graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, renderType, BARS, x, y, 1, 7, barFill, barHeight, 80, 50, finalColor));
+            graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, renderType, x, y, 1, 7, barFill, barHeight, 80, 50, finalColor));
         }
 
         // Overlay absorption health if needed

@@ -293,7 +293,7 @@ public class DungeonManager {
             LocalPlayer playerEntity = MC.player;
 
             // This is inconsistent, don't add the playerEntity themselves...
-            if (playerEntity == null || name.equals(playerEntity.getName().getString())) {
+            if (playerEntity == null || name.equals(playerEntity.getGameProfile().getName())) {
                 return;
             }
 
@@ -446,7 +446,7 @@ public class DungeonManager {
                 String profileName = dungeonPlayer.getName();
 
                 if (criticalOverlayEnabled && !dungeonPlayer.isGhost() && (dungeonPlayer.isCritical() || dungeonPlayer.isLow())) {
-                    DrawUtils.blitAbsolute(poseStack, source, RenderType.guiTexturedOverlay(CRITICAL), CRITICAL, -CRITICAL_ICON_SIZE / 2F, -CRITICAL_ICON_SIZE, 0, 0, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, -1);
+                    DrawUtils.blitAbsolute(poseStack, source, RenderType.guiTexturedOverlay(CRITICAL), -CRITICAL_ICON_SIZE / 2F, -CRITICAL_ICON_SIZE, 0, 0, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, -1);
 
                     String text;
                     if (dungeonPlayer.isLow()) {

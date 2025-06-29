@@ -65,7 +65,7 @@ public class ButtonLocation extends ButtonFeature {
         this.isHovered = isMouseOver(doubleMouseX, doubleMouseY);
         int boxAlpha = this.isHovered ? 120 : 70;
         int boxColor = ColorCode.GRAY.getColor(boxAlpha);
-        graphics.drawSpecial(source -> DrawUtils.fillAbsolute(graphics, source, boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor));
+        DrawUtils.fillAbsolute(graphics, boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor);
     }
 
     @Override

@@ -150,7 +150,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             int color = lastHoveredFeature != null && main.getConfigValuesManager().getAnchorPoint(lastHoveredFeature) == anchorPoint
                     ? ColorCode.RED.getColor(127)
                     : ColorCode.YELLOW.getColor(127);
-            graphics.drawSpecial(source -> DrawUtils.fillAbsolute(graphics, source, x -4, y - 4, x + 4, y + 4, color));
+            DrawUtils.fillAbsolute(graphics, x -4, y - 4, x + 4, y + 4, color);
         }
         super.render(graphics, mouseX, mouseY, partialTick); // Draw buttons.
 
@@ -173,17 +173,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                         bottom = averageY + 0.25F;
                     }
 
-                    final float finalLeft = left;
-                    final float finalTop = top;
-                    final float finalRight = right;
-                    final float finalBottom = bottom;
                     final int color;
                     if ((right - left) == 0.5 || (bottom - top) == 0.5) {
                         color = 0xFF00FF00;
                     } else {
                         color = 0xFFFF0000;
                     }
-                    graphics.drawSpecial(source -> DrawUtils.fillAbsolute(graphics, source, finalLeft, finalTop, finalRight, finalBottom, color));
+                    DrawUtils.fillAbsolute(graphics, left, top, right, bottom, color);
                 }
             }
         }
@@ -405,7 +401,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                             if (thisSnap.getHeight() < SNAPPING_RADIUS) {
                                 if (horizontalSnap == null || thisSnap.getHeight() < horizontalSnap.getHeight()) {
                                     if (Feature.DEVELOPER_MODE.isEnabled() && guiGraphics != null) {
-                                        guiGraphics.drawSpecial(source -> DrawUtils.fillAbsolute(guiGraphics, source, snapX - 0.5F, 0, snapX + 0.5F, MC.getWindow().getHeight(), 0xFF0000FF));
+                                        DrawUtils.fillAbsolute(guiGraphics, snapX - 0.5F, 0, snapX + 0.5F, MC.getWindow().getHeight(), 0xFF0000FF);
                                     }
                                     horizontalSnap = thisSnap;
                                 }
@@ -437,7 +433,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                             if (thisSnap.getWidth() < SNAPPING_RADIUS) {
                                 if (verticalSnap == null || thisSnap.getWidth() < verticalSnap.getWidth()) {
                                     if (Feature.DEVELOPER_MODE.isEnabled() && guiGraphics != null) {
-                                        guiGraphics.drawSpecial(source -> DrawUtils.fillAbsolute(guiGraphics, source, 0, snapY - 0.5F, MC.getWindow().getWidth(), snapY + 0.5F, 0xFF0000FF));
+                                        DrawUtils.fillAbsolute(guiGraphics, 0, snapY - 0.5F, MC.getWindow().getWidth(), snapY + 0.5F, 0xFF0000FF);
                                     }
                                     verticalSnap = thisSnap;
                                 }
@@ -719,8 +715,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             );
             String info = String.format(
                     "x=%.0f, y=%.0f, scale=%.2f",
-                    MC.mouseHandler.xpos(),
-                    MC.mouseHandler.ypos(),
+                    main.getConfigValuesManager().getActualX(lastHoveredButtonFeature) * 2,
+                    main.getConfigValuesManager().getActualY(lastHoveredButtonFeature) * 2,
                     lastHoveredButton.getScale()
             );
             DrawUtils.drawText(
@@ -827,6 +823,14 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             this.isMiddlePressed = true;
         }
 
+        if (Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
+            if (SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.isDown()) {
+                DungeonMapManager.decreaseZoomByStep();
+            } else if (SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.isDown()) {
+                DungeonMapManager.increaseZoomByStep();
+            }
+        }
+
         Optional<GuiEventListener> optional = this.getChildAt(mouseX, mouseY);
         if (optional.isEmpty()) {
             return false;
@@ -869,7 +873,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             );
         }
 
-        if (Feature.DUNGEONS_MAP_DISPLAY.isDisabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
+        if (Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.CHANGE_DUNGEON_MAP_ZOOM_WITH_KEYBOARD)) {
             if (keyCode == SkyblockKeyBinding.DECREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {
                 DungeonMapManager.decreaseZoomByStep();
             } else if (keyCode == SkyblockKeyBinding.INCREASE_DUNGEON_MAP_ZOOM.getKeyCode()) {

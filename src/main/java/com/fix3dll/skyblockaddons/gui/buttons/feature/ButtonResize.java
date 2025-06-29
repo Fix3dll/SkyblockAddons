@@ -33,7 +33,7 @@ public class ButtonResize extends ButtonFeature {
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
         poseStack.scale(scale, scale, 1);
-        graphics.drawSpecial(source -> DrawUtils.fillAbsolute(graphics, source, resizeX - SIZE, resizeY - SIZE, resizeX + SIZE, resizeY + SIZE, color));
+        DrawUtils.fillAbsolute(graphics, resizeX - SIZE, resizeY - SIZE, resizeX + SIZE, resizeY + SIZE, color);
         poseStack.popPose();
     }
 

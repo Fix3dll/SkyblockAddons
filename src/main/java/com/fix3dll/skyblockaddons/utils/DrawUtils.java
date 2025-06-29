@@ -68,17 +68,20 @@ public class DrawUtils {
 //    );
 
 
-    public static void drawRoundedRect(GuiGraphics graphics, MultiBufferSource source, int x, int y, int width, int height, int radius, int color) {
+    public static void drawRoundedRect(GuiGraphics graphics, int x, int y, int width, int height, int radius, int color) {
         radius = Math.min(radius, Math.min(width, height) / 2);
 
         graphics.fill(x + radius, y, x + width - radius, y + height, color); // Main vertical rectangle
         graphics.fill(x, y + radius, x + radius, y + height - radius, color); // Left rectangle
         graphics.fill(x + width - radius, y + radius, x + width, y + height - radius, color); // Right rectangle
 
-        drawCorner(graphics, source, x + radius, y + radius, radius, RoundedRectCorner.TOP_LEFT, color);
-        drawCorner(graphics, source, x + width - radius, y + radius, radius, RoundedRectCorner.TOP_RIGHT, color);
-        drawCorner(graphics, source, x + width - radius, y + height - radius, radius, RoundedRectCorner.BOTTOM_LEFT, color);
-        drawCorner(graphics, source, x + radius, y + height - radius, radius, RoundedRectCorner.BOTTOM_RIGHT, color);
+        int finalRadius = radius;
+        graphics.drawSpecial(source -> {
+            drawCorner(graphics, source, x + finalRadius, y + finalRadius, finalRadius, RoundedRectCorner.TOP_LEFT, color);
+            drawCorner(graphics, source, x + width - finalRadius, y + finalRadius, finalRadius, RoundedRectCorner.TOP_RIGHT, color);
+            drawCorner(graphics, source, x + width - finalRadius, y + height - finalRadius, finalRadius, RoundedRectCorner.BOTTOM_LEFT, color);
+            drawCorner(graphics, source, x + finalRadius, y + height - finalRadius, finalRadius, RoundedRectCorner.BOTTOM_RIGHT, color);
+        });
     }
 
     private static void drawCorner(GuiGraphics graphics, MultiBufferSource source, float x, float y, float radius, RoundedRectCorner corner, int color) {
@@ -162,7 +165,10 @@ public class DrawUtils {
      * @param maxY the maximum y-coordinate of the rectangle.
      * @param color the color to fill the rectangle with.
      */
-    public static void fillAbsolute(GuiGraphics graphics, MultiBufferSource source, float minX, float minY, float maxX, float maxY, int color) {
+    public static void fillAbsolute(GuiGraphics graphics, float minX, float minY, float maxX, float maxY, int color) {
+        fillAbsolute(graphics, RenderType.gui(), minX,minY, maxX, maxY, color);
+    }
+    public static void fillAbsolute(GuiGraphics graphics, RenderType renderType, float minX, float minY, float maxX, float maxY, int color) {
         Matrix4f matrix4f = graphics.pose().last().pose();
         if (minX < maxX) {
             float i = minX;
@@ -176,11 +182,33 @@ public class DrawUtils {
             maxY = i;
         }
 
-        VertexConsumer vertexConsumer = source.getBuffer(RenderType.gui());
-        vertexConsumer.addVertex(matrix4f, minX, minY, 0).setColor(color);
-        vertexConsumer.addVertex(matrix4f, minX, maxY, 0).setColor(color);
-        vertexConsumer.addVertex(matrix4f, maxX, maxY, 0).setColor(color);
-        vertexConsumer.addVertex(matrix4f, maxX, minY, 0).setColor(color);
+        float finalMinX = minX, finalMinY = minY, finalMaxX = maxX, finalMaxY = maxY;
+        graphics.drawSpecial(source -> {
+            VertexConsumer vertexConsumer = source.getBuffer(renderType);
+            vertexConsumer.addVertex(matrix4f, finalMinX, finalMinY, 0).setColor(color);
+            vertexConsumer.addVertex(matrix4f, finalMinX, finalMaxY, 0).setColor(color);
+            vertexConsumer.addVertex(matrix4f, finalMaxX, finalMaxY, 0).setColor(color);
+            vertexConsumer.addVertex(matrix4f, finalMaxX, finalMinY, 0).setColor(color);
+        });
+    }
+
+    /**
+     * Renders an outline rectangle on the screen with the specified color.
+     * @param x the x-coordinate of the top-left corner of the rectangle.
+     * @param y the y-coordinate of the top-left corner of the rectangle.
+     * @param width the width of the blitted portion.
+     * @param height the height of the rectangle.
+     * @param color the color of the outline.
+     */
+    public static void renderOutlineAbsolute(GuiGraphics graphics, float x, float y, float width, float height, int thickness, int color) {
+        renderOutlineAbsolute(graphics, RenderType.gui(), x, y, width, height, thickness, color);
+    }
+
+    public static void renderOutlineAbsolute(GuiGraphics graphics, RenderType renderType, float x, float y, float width, float height, int thickness, int color) {
+        fillAbsolute(graphics, renderType, x - thickness, y, x, y + height, color);
+        fillAbsolute(graphics, renderType, x - thickness, y - thickness, x + width + thickness, y, color);
+        fillAbsolute(graphics, renderType, x + width, y, x + width + thickness, y + height, color);
+        fillAbsolute(graphics, renderType, x - thickness, y + height, x - thickness + width + thickness * 2, y + height + thickness, color);
     }
 
     public static void drawCenteredText(GuiGraphics graphics, String text, float x, float y, int color) {
@@ -258,14 +286,13 @@ public class DrawUtils {
             float textureHeight,
             int color
     ) {
-        blitAbsolute(poseStack, source, null, atlasLocation, x, y, uOffset, vOffset, uWidth, vHeight, textureWidth, textureHeight, color);
+        blitAbsolute(poseStack, source, RenderType.guiTextured(atlasLocation), x, y, uOffset, vOffset, uWidth, vHeight, textureWidth, textureHeight, color);
     }
 
     public static void blitAbsolute(
             PoseStack poseStack,
             MultiBufferSource source,
             RenderType renderType,
-            ResourceLocation atlasLocation,
             float x,
             float y,
             float uOffset,
@@ -283,9 +310,8 @@ public class DrawUtils {
         float minV = (vOffset + 0.0F) / textureHeight;
         float maxV = (vOffset + vHeight) / textureHeight;
 
-        RenderType options = renderType == null ? RenderType.guiTextured(atlasLocation) : renderType;
         Matrix4f matrix4f = poseStack.last().pose();
-        VertexConsumer vertexConsumer = source.getBuffer(options);
+        VertexConsumer vertexConsumer = source.getBuffer(renderType);
         vertexConsumer.addVertex(matrix4f, x, y, 0.0F).setUv(minU, minV).setColor(color);
         vertexConsumer.addVertex(matrix4f, x, y2, 0.0F).setUv(minU, maxV).setColor(color);
         vertexConsumer.addVertex(matrix4f, x2, y2, 0.0F).setUv(maxU, maxV).setColor(color);

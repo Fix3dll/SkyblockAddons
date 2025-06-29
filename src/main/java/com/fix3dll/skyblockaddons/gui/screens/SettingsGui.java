@@ -19,7 +19,6 @@ import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -154,16 +153,9 @@ public class SettingsGui extends SkyblockAddonsScreen {
             int height = (int) (getRowHeightSetting(numberOfRow) - 70);
             int y = (int) getRowHeight(1);
             this.maxScrollValue = height - 35; // - 35 because we don't want it to be completely invisible
-            final int finalWidth = width;
-            graphics.drawSpecial(source -> DrawUtils.drawRoundedRect(graphics, source, x, y, finalWidth, height, 4, ARGB.color(230, 28, 29, 41)));
+            DrawUtils.drawRoundedRect(graphics, x, y, width, height, 4, ARGB.color(230, 28, 29, 41));
             // Scroll ability with scissor
-            int scaleFactor = (int) MC.getWindow().getGuiScale();
-            RenderSystem.enableScissor(
-                    x * scaleFactor,
-                    (MC.getWindow().getGuiScaledHeight() - (y + height)) * scaleFactor,
-                    width * scaleFactor,
-                    height * scaleFactor
-            );
+            graphics.enableScissor(x, y, x + width, y + height);
             scissorEnabled = true;
             drawScaledString(graphics, this, Translations.getMessage("settings.settings"), (int) (110 + scrollValue), defaultBlue, 1.5F, 0);
             final double finalScroll = scroll;
@@ -175,7 +167,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
             });
         }
         this.drawSettingsScreen(graphics, mouseX, mouseY, partialTick); // Draw buttons.
-        if (scissorEnabled) RenderSystem.disableScissor();
+        if (scissorEnabled) graphics.disableScissor();
         scrollIgnoredButtons.forEach(renderable -> renderable.render(graphics, mouseX, mouseY, partialTick));
     }
 

@@ -61,7 +61,7 @@ public class FeatureBase extends ButtonFeature {
             fontColor = ColorUtils.getDefaultBlue(alpha);
         }
 
-        graphics.drawSpecial(source -> DrawUtils.drawRoundedRect(graphics, source, getX(), getY(), width, height, 4, ARGB.color(230, 27, 29, 41)));
+        DrawUtils.drawRoundedRect(graphics, getX(), getY(), width, height, 4, ARGB.color(230, 27, 29, 41));
 //            DrawUtils.drawRect(xPosition, yPosition, width, height, ColorUtils.getDummySkyblockColor(27, 29, 41, 230), 4);
 
         EnumUtils.FeatureCredit creditFeature = EnumUtils.FeatureCredit.fromFeature(feature);

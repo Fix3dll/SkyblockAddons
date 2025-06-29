@@ -39,7 +39,7 @@ public class ButtonLanguage extends SkyblockAddonsButton {
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isHovered(mouseX, mouseY);
 
-        graphics.drawSpecial(source -> DrawUtils.drawRoundedRect(graphics, source, getX(), getY(), width, height, 4, ARGB.color(230, 28, 29, 41)));
+        DrawUtils.drawRoundedRect(graphics, getX(), getY(), width, height, 4, ARGB.color(230, 28, 29, 41));
 //            DrawUtils.drawRect(xPosition, yPosition, width, height,  ColorUtils.getDummySkyblockColor(28, 29, 41, 230), 4);
 
         int color = ARGB.white(1F);
