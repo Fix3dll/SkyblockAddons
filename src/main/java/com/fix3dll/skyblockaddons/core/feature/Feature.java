@@ -158,6 +158,8 @@ public enum Feature {
     HIDE_HAUNTED_SKULLS(241, "settings.hideHauntedSkulls", null),
     THUNDER_BOTTLE_DISPLAY(242, "settings.thunderBottleDisplay", new FeatureGuiData(DrawType.TEXT, ColorCode.DARK_PURPLE)),
     PET_DISPLAY(246, "settings.petDisplay", new FeatureGuiData(DrawType.PET_DISPLAY, ColorCode.GOLD)),
+    PRESSURE_BAR(260, "settings.pressureBar.title", new FeatureGuiData(DrawType.BAR, ColorCode.BLUE)),
+    PRESSURE_TEXT(261, "settings.pressureText.title", new FeatureGuiData(DrawType.TEXT, ColorCode.BLUE)),
 
 
     WARNING_TIME(-2, "settings.warningDuration"),

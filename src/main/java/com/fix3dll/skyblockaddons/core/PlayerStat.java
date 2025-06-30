@@ -1,32 +1,28 @@
 package com.fix3dll.skyblockaddons.core;
 
-import org.apache.commons.lang3.mutable.MutableFloat;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Contains a player's stats. This includes health, mana and defence...
  */
 public enum PlayerStat {
-    DEFENCE(new MutableFloat(0)),
-    HEALTH(new MutableFloat(100)),
-    MAX_HEALTH(new MutableFloat(100)),
-    MAX_RIFT_HEALTH(new MutableFloat(0)),
-    MANA(new MutableFloat(100)),
-    MAX_MANA(new MutableFloat(100)),
-    FUEL(new MutableFloat(3000)),
-    MAX_FUEL(new MutableFloat(3000)),
-    OVERFLOW_MANA(new MutableFloat(20));
+    DEFENCE(0),
+    HEALTH(100),
+    MAX_HEALTH(100),
+    MAX_RIFT_HEALTH(0),
+    MANA(100),
+    MAX_MANA(100),
+    FUEL(3000),
+    MAX_FUEL(3000),
+    OVERFLOW_MANA(20),
+    PRESSURE(-1) // -1 is not in water
+    ;
 
-    private final MutableFloat mutableValue;
+    @Getter @Setter private float value;
 
-    PlayerStat(MutableFloat defaultValue) {
-        this.mutableValue = defaultValue;
+    PlayerStat(float defaultValue) {
+        this.value = defaultValue;
     }
 
-    public float getValue() {
-        return mutableValue.getValue();
-    }
-
-    public void setValue(final float value) {
-        mutableValue.setValue(value);
-    }
 }

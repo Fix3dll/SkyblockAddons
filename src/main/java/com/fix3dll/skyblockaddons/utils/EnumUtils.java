@@ -15,8 +15,11 @@ import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Set;
 
+import static com.fix3dll.skyblockaddons.core.feature.Feature.*;
+
 public class EnumUtils {
 
+    @SuppressWarnings("unused")
     @Getter
     public enum AnchorPoint implements RegistrableEnum {
         TOP_LEFT(0),
@@ -32,7 +35,6 @@ public class EnumUtils {
             this.id = id;
         }
 
-        @SuppressWarnings("unused") // Accessed by reflection...
         public static AnchorPoint fromId(int id) {
             for (AnchorPoint feature : values()) {
                 if (feature.getId() == id) {
@@ -229,47 +231,43 @@ public class EnumUtils {
 
     public enum FeatureCredit {
         // If you make a feature, feel free to add your name here with an associated website of your choice.
-        ORCHID_ALLOY("orchidalloy", "github.com/orchidalloy", Feature.SUMMONING_EYE_ALERT,
-                Feature.FISHING_SOUND_INDICATOR, Feature.ENCHANTMENT_LORE_PARSING),
-        HIGH_CRIT("HighCrit", "github.com/HighCrit", Feature.PREVENT_MOVEMENT_ON_DEATH),
-        MOULBERRY("Moulberry", "github.com/Moulberry", Feature.DONT_RESET_CURSOR_INVENTORY),
-        TOMOCRAFTER("tomocrafter", "github.com/tomocrafter", Feature.AVOID_BLINKING_NIGHT_VISION,
-                Feature.SLAYER_ARMOR_PROGRESS, Feature.NO_ARROWS_LEFT_ALERT, Feature.BOSS_APPROACH_ALERT),
-        DAPIGGUY("DaPigGuy", "github.com/DaPigGuy", Feature.MINION_DISABLE_LOCATION_WARNING),
-        KEAGEL("Keagel", "github.com/Keagel", Feature.DISABLE_MAGICAL_SOUP_MESSAGES),
-        SUPERHIZE("SuperHiZe", "github.com/superhize", Feature.SPECIAL_ZEALOT_ALERT),
-        DIDI_SKYWALKER("DidiSkywalker", "twitter.com/didiskywalker", Feature.ITEM_PICKUP_LOG,
-                Feature.HEALTH_UPDATES, Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS),
-        P0KE("P0ke", "p0ke.dev", Feature.ZEALOT_COUNTER),
-        DJTHEREDSTONER("DJtheRedstoner", "github.com/DJtheRedstoner", Feature.LEGENDARY_SEA_CREATURE_WARNING,
-                Feature.HIDE_SVEN_PUP_NAMETAGS),
-        CHARZARD("Charzard4261", "github.com/Charzard4261", Feature.DISABLE_TELEPORT_PAD_MESSAGES,
-                Feature.BAIT_LIST, Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE, Feature.SHOW_ITEM_DUNGEON_FLOOR,
-                Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE, Feature.REVENANT_SLAYER_TRACKER, Feature.TARANTULA_SLAYER_TRACKER,
-                Feature.SVEN_SLAYER_TRACKER, Feature.DRAGON_STATS_TRACKER, Feature.SHOW_STACKING_ENCHANT_PROGRESS,
-                Feature.STOP_BONZO_STAFF_SOUNDS, Feature.DISABLE_MORT_MESSAGES, Feature.DISABLE_BOSS_MESSAGES),
-        IHDEVELOPER("iHDeveloper", "github.com/iHDeveloper", Feature.SHOW_DUNGEON_MILESTONE,
-                Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY, Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY,
-                Feature.DUNGEONS_SECRETS_DISPLAY, Feature.SHOW_SWORD_KILLS),
-        TIRELESS_TRAVELER("TirelessTraveler", "github.com/ILikePlayingGames", Feature.DUNGEON_DEATH_COUNTER),
-        KAASBROODJU("kaasbroodju", "github.com/kaasbroodju", Feature.SKILL_PROGRESS_BAR),
-        PHOUBE("Phoube", "github.com/Phoube", Feature.HIDE_OTHER_PLAYERS_PRESENTS,
-                Feature.SHOW_EXPERIMENTATION_TABLE_TOOLTIPS, Feature.DRILL_FUEL_BAR, Feature.DRILL_FUEL_TEXT,
-                Feature.FISHING_PARTICLE_OVERLAY),
-        PEDRO9558("Pedro9558", "github.com/Pedro9558", Feature.TREVOR_THE_TRAPPER_FEATURES,
-                Feature.FETCHUR_TODAY, Feature.STOP_RAT_SOUNDS),
-        ROBOTHANZO("RobotHanzo", "robothanzo.dev", Feature.HIDE_SPAWN_POINT_PLAYERS),
-        IRONM00N("IRONM00N", "github.com/IRONM00N", Feature.FARM_EVENT_TIMER),
-        SKYCATMINEPOKIE("skycatminepokie", "github.com/skycatminepokie", Feature.OUTBID_ALERT_SOUND),
-        TIMOLOB("TimoLob", "github.com/TimoLob", Feature.BROOD_MOTHER_ALERT),
-        NOPOTHEGAMER("NopoTheGamer", "twitch.tv/nopothegamer", Feature.BAL_BOSS_ALERT),
-        CATFACE("CatFace","github.com/CattoFace",Feature.PLAYER_SYMBOLS_IN_CHAT),
-        HANNIBAL2("Hannibal2", "github.com/hannibal00212", Feature.CRIMSON_ARMOR_ABILITY_STACKS,
-                Feature.HIDE_TRUE_DEFENSE),
-        JASON54("jason54jg", "github.com/jason54jg", Feature.INFERNO_SLAYER_TRACKER),
-        GLACIALVITALITY("GlacialVitality", "github.com/glacialvitality", Feature.RIFTSTALKER_SLAYER_TRACKER),
-        FIX3DLL("Fix3dll", "github.com/Fix3dll", Feature.FIRE_FREEZE_TIMER, Feature.HIDE_HAUNTED_SKULLS,
-                Feature.THUNDER_BOTTLE_DISPLAY, Feature.PET_DISPLAY);
+        ORCHID_ALLOY("orchidalloy", "github.com/orchidalloy", SUMMONING_EYE_ALERT, FISHING_SOUND_INDICATOR,
+                ENCHANTMENT_LORE_PARSING),
+        HIGH_CRIT("HighCrit", "github.com/HighCrit", PREVENT_MOVEMENT_ON_DEATH),
+        MOULBERRY("Moulberry", "github.com/Moulberry", DONT_RESET_CURSOR_INVENTORY),
+        TOMOCRAFTER("tomocrafter", "github.com/tomocrafter", AVOID_BLINKING_NIGHT_VISION, SLAYER_ARMOR_PROGRESS,
+                NO_ARROWS_LEFT_ALERT, BOSS_APPROACH_ALERT),
+        DAPIGGUY("DaPigGuy", "github.com/DaPigGuy", MINION_DISABLE_LOCATION_WARNING),
+        KEAGEL("Keagel", "github.com/Keagel", DISABLE_MAGICAL_SOUP_MESSAGES),
+        SUPERHIZE("SuperHiZe", "github.com/superhize", SPECIAL_ZEALOT_ALERT),
+        DIDI_SKYWALKER("DidiSkywalker", "twitter.com/didiskywalker", ITEM_PICKUP_LOG, HEALTH_UPDATES,
+                REPLACE_ROMAN_NUMERALS_WITH_NUMBERS),
+        P0KE("P0ke", "p0ke.dev", ZEALOT_COUNTER),
+        DJTHEREDSTONER("DJtheRedstoner", "github.com/DJtheRedstoner", LEGENDARY_SEA_CREATURE_WARNING,
+                HIDE_SVEN_PUP_NAMETAGS),
+        CHARZARD("Charzard4261", "github.com/Charzard4261", DISABLE_TELEPORT_PAD_MESSAGES, BAIT_LIST,
+                SHOW_BASE_STAT_BOOST_PERCENTAGE, SHOW_ITEM_DUNGEON_FLOOR, SHOW_BASE_STAT_BOOST_PERCENTAGE,
+                REVENANT_SLAYER_TRACKER, TARANTULA_SLAYER_TRACKER, SVEN_SLAYER_TRACKER, DRAGON_STATS_TRACKER,
+                SHOW_STACKING_ENCHANT_PROGRESS, STOP_BONZO_STAFF_SOUNDS, DISABLE_MORT_MESSAGES, DISABLE_BOSS_MESSAGES),
+        IHDEVELOPER("iHDeveloper", "github.com/iHDeveloper", SHOW_DUNGEON_MILESTONE,
+                DUNGEONS_COLLECTED_ESSENCES_DISPLAY, SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY, DUNGEONS_SECRETS_DISPLAY,
+                SHOW_SWORD_KILLS),
+        TIRELESS_TRAVELER("TirelessTraveler", "github.com/ILikePlayingGames", DUNGEON_DEATH_COUNTER),
+        KAASBROODJU("kaasbroodju", "github.com/kaasbroodju", SKILL_PROGRESS_BAR),
+        PHOUBE("Phoube", "github.com/Phoube", HIDE_OTHER_PLAYERS_PRESENTS, SHOW_EXPERIMENTATION_TABLE_TOOLTIPS,
+                DRILL_FUEL_BAR, DRILL_FUEL_TEXT, FISHING_PARTICLE_OVERLAY),
+        PEDRO9558("Pedro9558", "github.com/Pedro9558", TREVOR_THE_TRAPPER_FEATURES, FETCHUR_TODAY, STOP_RAT_SOUNDS),
+        ROBOTHANZO("RobotHanzo", "robothanzo.dev", HIDE_SPAWN_POINT_PLAYERS),
+        IRONM00N("IRONM00N", "github.com/IRONM00N", FARM_EVENT_TIMER),
+        SKYCATMINEPOKIE("skycatminepokie", "github.com/skycatminepokie", OUTBID_ALERT_SOUND),
+        TIMOLOB("TimoLob", "github.com/TimoLob", BROOD_MOTHER_ALERT),
+        NOPOTHEGAMER("NopoTheGamer", "twitch.tv/nopothegamer", BAL_BOSS_ALERT),
+        CATFACE("CatFace","github.com/CattoFace", PLAYER_SYMBOLS_IN_CHAT),
+        HANNIBAL2("Hannibal2", "github.com/hannibal00212", CRIMSON_ARMOR_ABILITY_STACKS, HIDE_TRUE_DEFENSE),
+        JASON54("jason54jg", "github.com/jason54jg", INFERNO_SLAYER_TRACKER),
+        GLACIALVITALITY("GlacialVitality", "github.com/glacialvitality", RIFTSTALKER_SLAYER_TRACKER),
+        FIX3DLL("Fix3dll", "github.com/Fix3dll", FIRE_FREEZE_TIMER, HIDE_HAUNTED_SKULLS, THUNDER_BOTTLE_DISPLAY,
+                PET_DISPLAY, PRESSURE_BAR, PRESSURE_TEXT);
 
         private final Set<Feature> features;
         private final String author;

@@ -115,6 +115,10 @@ public class ActionBarParser {
         if (actionBar.contains("❤") && !actionBar.contains("❈") && splitMessage.length == 2) {
             PlayerStat.DEFENCE.setValue(0);
         }
+        // If there is no pressure section on the bar, set pressure to -1.
+        if (!actionBar.contains("❍")) {
+            PlayerStat.PRESSURE.setValue(-1);
+        }
 
         for (String section : splitMessage) {
             try {
@@ -169,6 +173,8 @@ public class ActionBarParser {
 
                 // ❤ indicates a health section
                 return parseHealth(section);
+            } else if (section.contains("❍")) {
+                return parsePressure(section);
             } else if (section.contains("❈")) {
                 // ❈ indicates a defense section
                 return parseDefense(section);
@@ -309,6 +315,32 @@ public class ActionBarParser {
             }
         }
         return manaSection;
+    }
+
+    /**
+     * Example:
+     * </p>
+     * §63,938/3,837❤     §9Pressure: ❍38%     §b858/858✎ Mana
+     * @param pressureSection Pressure section of the action bar
+     * @return null or {@code pressureSection} if neither pressure bar nor pressure text are enabled
+     */
+    private String parsePressure(String pressureSection) {
+        int left  = pressureSection.indexOf('❍');
+        int right = pressureSection.indexOf('%', left);
+
+        if (left == -1 || right == -1 || right <= left + 1) {
+            LOGGER.warn("Invalid pressure section: {}", pressureSection);
+        }
+        try {
+            PlayerStat.PRESSURE.setValue(parseFloat(pressureSection.substring(left + 1, right)));
+        } catch (IndexOutOfBoundsException ex) {
+            LOGGER.error("Invalid pressure section: {}", pressureSection, ex);
+        }
+        if (Feature.PRESSURE_BAR.isEnabled() || Feature.PRESSURE_TEXT.isEnabled()) {
+            return null;
+        }
+
+        return pressureSection;
     }
 
     /**

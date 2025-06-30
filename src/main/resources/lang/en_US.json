@@ -282,7 +282,16 @@
       }
     },
     "fullAutoUpdate": "Full Auto Update",
-    "chatMessageCopying": "Chat Message Copying"
+    "chatMessageCopying": "Chat Message Copying",
+    "pressureBar": {
+      "title": "Pressure Bar",
+      "alert": "Alert by changing color when pressure exceeds 90%"
+    },
+    "pressureText": {
+      "title": "Pressure Text",
+      "alert": "Alert by changing color when pressure exceeds 90%",
+      "icon": "Show Pressure Icon"
+    }
   },
   "messages": {
     "enchants": "Enchants",

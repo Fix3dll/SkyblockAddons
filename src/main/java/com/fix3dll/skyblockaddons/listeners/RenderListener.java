@@ -457,6 +457,11 @@ public class RenderListener {
                     return;
                 fill = PlayerStat.HEALTH.getValue() / PlayerStat.MAX_HEALTH.getValue();
                 break;
+            case PRESSURE_BAR:
+                float pressure = buttonLocation != null ? 50 : PlayerStat.PRESSURE.getValue();
+                if (pressure == -1) return;
+                fill = pressure / 100.0F;
+                break;
             default:
                 return;
         }
@@ -528,6 +533,12 @@ public class RenderListener {
                     if (Float.isNaN(widthScale)) {
                         widthScale = 1.0F;
                     }
+                }
+                break;
+            case PRESSURE_BAR:
+                float pressure = PlayerStat.PRESSURE.getValue();
+                if (pressure >= 90.0F && main.getScheduler().getTotalTicks() % 40 >= 20) {
+                    color = ColorUtils.getDummySkyblockColor(ColorCode.RED.getColor(), feature.isChroma());
                 }
                 break;
         }
@@ -1136,6 +1147,12 @@ public class RenderListener {
                     text = TextUtils.formatNumber(42440) + "/" + capacity;
                 }
             }
+            case PRESSURE_TEXT -> {
+                float pressure = buttonLocation != null ? 50.0F : PlayerStat.PRESSURE.getValue();
+                if (pressure == -1) return;
+                boolean icon = feature.isEnabled(FeatureSetting.PRESSURE_TEXT_ICON);
+                text = (icon ? "❍" : "") + TextUtils.formatNumber(pressure) + "%";
+            }
             default -> {
                 return;
             }
@@ -1550,7 +1567,6 @@ public class RenderListener {
                 renderItem(graphics, Blocks.DANDELION.asItem().getDefaultInstance(), x, y - 3);
 
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
-
             }
             case THUNDER_BOTTLE_DISPLAY -> {
                 ThunderBottle displayBottle = ThunderBottle.getDisplayBottle();
@@ -1562,10 +1578,16 @@ public class RenderListener {
                 }
 
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+            }
+            case PRESSURE_TEXT -> {
+                float pressure = PlayerStat.PRESSURE.getValue();
+                if (pressure >= 90.0F && main.getScheduler().getTotalTicks() % 40 >= 20) {
+                    color = ColorCode.RED.getColor();
+                }
 
+                DrawUtils.drawText(graphics, text, x, y, color);
             }
             default -> {
-
                 DrawUtils.drawText(graphics, text, x, y, color);
 
             }

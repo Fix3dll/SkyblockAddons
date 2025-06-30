@@ -923,6 +923,31 @@
       "PET_ITEM_STYLE": "SHOW_ITEM"
     }
   },
+  "PRESSURE_BAR": {
+    "value": true,
+    "anchorPoint": "BOTTOM_MIDDLE",
+    "coords": [
+      0.0,
+      -117.5
+    ],
+    "color": -11184641,
+    "settings": {
+      "PRESSURE_BAR_ALERT": true
+    }
+  },
+  "PRESSURE_TEXT": {
+    "value": true,
+    "anchorPoint": "BOTTOM_MIDDLE",
+    "coords": [
+      0.0,
+      -123.5
+    ],
+    "color": -11184641,
+    "settings": {
+      "PRESSURE_TEXT_ALERT":  true,
+      "PRESSURE_TEXT_ICON": true
+    }
+  },
   "WARNING_TIME": {
     "value": 4
   },

@@ -134,6 +134,9 @@ public enum FeatureSetting {
     ARCHER_COLOR("settings.archerColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
     TANK_COLOR("settings.tankColor", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
     DOUBLE_WARP("settings.doubleWarp", Feature.FANCY_WARP_MENU),
+    PRESSURE_BAR_ALERT("settings.pressureBar.alert", Feature.PRESSURE_BAR),
+    PRESSURE_TEXT_ALERT("settings.pressureText.alert", Feature.PRESSURE_TEXT),
+    PRESSURE_TEXT_ICON("settings.pressureText.icon", Feature.PRESSURE_TEXT),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),

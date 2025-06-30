@@ -99,6 +99,9 @@ public class SkyblockAddons implements ClientModInitializer {
 			.registerTypeAdapter(ConfigValues.class, new ConfigValuesAdapter())
 			.create();
 
+	private boolean immediatelyFastLoaded = false;
+	private boolean entityCullingLoaded = false;
+
 	@Getter private static final ZoneId hypixelZoneId = ZoneId.of("America/New_York");
 	@Getter private static SkyblockAddons instance;
 	@Getter private boolean fullyInitialized = false;
@@ -183,6 +186,9 @@ public class SkyblockAddons implements ClientModInitializer {
 
 			DevUtils.resetEntityNamesToDefault(); // initialize class
 			NetworkListener.setupModAPI();
+
+			immediatelyFastLoaded = FabricLoader.getInstance().isModLoaded("immediatelyfast");
+			entityCullingLoaded = FabricLoader.getInstance().isModLoaded("entityculling");
 			fullyInitialized = true;
 		});
 
