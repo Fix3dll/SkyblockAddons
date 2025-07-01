@@ -291,7 +291,8 @@
       "title": "Pressure Text",
       "alert": "Alert by changing color when pressure exceeds 90%",
       "icon": "Show Pressure Icon"
-    }
+    },
+    "hideEffectsHud": "Hide Effects HUD"
   },
   "messages": {
     "enchants": "Enchants",

@@ -67,4 +67,13 @@ public class GuiMixin {
         }
     }
 
+    @Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
+    public void sba$renderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        GuiHook.renderEffectsHud = Feature.HIDE_EFFECTS_HUD.isDisabled();
+
+        if (GuiHook.isOnSkyblock() && !GuiHook.renderEffectsHud) {
+            ci.cancel();
+        }
+    }
+
 }

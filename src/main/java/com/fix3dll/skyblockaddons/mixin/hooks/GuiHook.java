@@ -12,6 +12,7 @@ public class GuiHook {
     public static boolean renderArmor = true;
     public static boolean renderFood = true;
     public static boolean renderVehicleHealth = true;
+    public static boolean renderEffectsHud = true;
 
     public static boolean isOnSkyblock() {
         return main.isFullyInitialized() && main.getUtils().isOnSkyblock();

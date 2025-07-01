@@ -160,6 +160,7 @@ public enum Feature {
     PET_DISPLAY(246, "settings.petDisplay", new FeatureGuiData(DrawType.PET_DISPLAY, ColorCode.GOLD)),
     PRESSURE_BAR(260, "settings.pressureBar.title", new FeatureGuiData(DrawType.BAR, ColorCode.BLUE)),
     PRESSURE_TEXT(261, "settings.pressureText.title", new FeatureGuiData(DrawType.TEXT, ColorCode.BLUE)),
+    HIDE_EFFECTS_HUD(262, "settings.hideEffectsHud", null),
 
 
     WARNING_TIME(-2, "settings.warningDuration"),

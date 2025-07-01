@@ -536,9 +536,11 @@ public class RenderListener {
                 }
                 break;
             case PRESSURE_BAR:
-                float pressure = PlayerStat.PRESSURE.getValue();
-                if (pressure >= 90.0F && main.getScheduler().getTotalTicks() % 40 >= 20) {
-                    color = ColorUtils.getDummySkyblockColor(ColorCode.RED.getColor(), feature.isChroma());
+                if (Feature.PRESSURE_BAR.isEnabled(FeatureSetting.PRESSURE_BAR_ALERT)) {
+                    float pressure = PlayerStat.PRESSURE.getValue();
+                    if (pressure >= 90.0F && main.getScheduler().getTotalTicks() % 40 >= 20) {
+                        color = ColorUtils.getDummySkyblockColor(ColorCode.RED.getColor(), feature.isChroma());
+                    }
                 }
                 break;
         }
@@ -1580,9 +1582,11 @@ public class RenderListener {
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
             }
             case PRESSURE_TEXT -> {
-                float pressure = PlayerStat.PRESSURE.getValue();
-                if (pressure >= 90.0F && main.getScheduler().getTotalTicks() % 40 >= 20) {
-                    color = ColorCode.RED.getColor();
+                if (Feature.PRESSURE_TEXT.isEnabled(FeatureSetting.PRESSURE_TEXT_ALERT)) {
+                    float pressure = PlayerStat.PRESSURE.getValue();
+                    if (pressure >= 90.0F && main.getScheduler().getTotalTicks() % 40 >= 20) {
+                        color = ColorCode.RED.getColor();
+                    }
                 }
 
                 DrawUtils.drawText(graphics, text, x, y, color);

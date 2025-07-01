@@ -948,6 +948,9 @@
       "PRESSURE_TEXT_ICON": true
     }
   },
+  "HIDE_EFFECTS_HUD": {
+    "value": true
+  },
   "WARNING_TIME": {
     "value": 4
   },
