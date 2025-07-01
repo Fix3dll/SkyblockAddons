@@ -33,45 +33,45 @@ public class GuiMixin {
 
     @Inject(method = "renderHearts", at = @At("HEAD"), cancellable = true)
     public void sba$renderHearts(GuiGraphics guiGraphics, Player player, int x, int y, int height, int offsetHeartIndex, float maxHealth, int currentHealth, int displayHealth, int absorptionAmount, boolean renderHighlight, CallbackInfo ci) {
-        GuiHook.renderHearts = GuiHook.isHideOnlyOutsideRiftEnabled(); // FIXME
+        GuiHook.renderHearts = !GuiHook.isOnSkyblock() || GuiHook.isHideOnlyOutsideRiftEnabled();
 
-        if (GuiHook.isOnSkyblock() && !GuiHook.renderHearts) {
+        if (!GuiHook.renderHearts) {
             ci.cancel();
         }
     }
 
     @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
     private static void sba$renderArmor(GuiGraphics guiGraphics, Player player, int y, int heartRows, int height, int x, CallbackInfo ci) {
-        GuiHook.renderArmor = Feature.HIDE_FOOD_ARMOR_BAR.isDisabled();
+        GuiHook.renderArmor = !GuiHook.isOnSkyblock() || Feature.HIDE_FOOD_ARMOR_BAR.isDisabled();
 
-        if (GuiHook.isOnSkyblock() && !GuiHook.renderArmor) {
+        if (!GuiHook.renderArmor) {
             ci.cancel();
         }
     }
 
     @Inject(method = "renderFood", at = @At("HEAD"), cancellable = true)
     public void sba$renderFood(GuiGraphics guiGraphics, Player player, int y, int x, CallbackInfo ci) {
-        GuiHook.renderFood = Feature.HIDE_FOOD_ARMOR_BAR.isDisabled();
+        GuiHook.renderFood = !GuiHook.isOnSkyblock() || Feature.HIDE_FOOD_ARMOR_BAR.isDisabled();
 
-        if (GuiHook.isOnSkyblock() && !GuiHook.renderFood) {
+        if (!GuiHook.renderFood) {
             ci.cancel();
         }
     }
 
     @Inject(method = "renderVehicleHealth", at = @At("HEAD"), cancellable = true)
     public void sba$renderVehicleHealth(GuiGraphics guiGraphics, CallbackInfo ci) {
-        GuiHook.renderVehicleHealth = Feature.HIDE_PET_HEALTH_BAR.isDisabled();
+        GuiHook.renderVehicleHealth = !GuiHook.isOnSkyblock() || Feature.HIDE_PET_HEALTH_BAR.isDisabled();
 
-        if (GuiHook.isOnSkyblock() && !GuiHook.renderVehicleHealth) {
+        if (!GuiHook.renderVehicleHealth) {
             ci.cancel();
         }
     }
 
     @Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
     public void sba$renderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        GuiHook.renderEffectsHud = Feature.HIDE_EFFECTS_HUD.isDisabled();
+        GuiHook.renderEffectsHud = !GuiHook.isOnSkyblock() || Feature.HIDE_EFFECTS_HUD.isDisabled();
 
-        if (GuiHook.isOnSkyblock() && !GuiHook.renderEffectsHud) {
+        if (!GuiHook.renderEffectsHud) {
             ci.cancel();
         }
     }
