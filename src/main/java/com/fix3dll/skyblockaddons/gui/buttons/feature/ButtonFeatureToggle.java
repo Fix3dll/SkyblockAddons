@@ -86,7 +86,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered && this.feature != null && !this.feature.isRemoteDisabled()) {
+        if (this.feature != null && !this.feature.isRemoteDisabled()) {
             if (feature.isDisabled()) {
                 feature.setEnabled(true);
                 switch (feature) {

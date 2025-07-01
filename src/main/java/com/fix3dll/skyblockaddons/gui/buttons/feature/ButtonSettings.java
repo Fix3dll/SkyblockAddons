@@ -38,7 +38,7 @@ public class ButtonSettings extends ButtonFeature {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered && MC.screen instanceof SkyblockAddonsGui gui) {
+        if (MC.screen instanceof SkyblockAddonsGui gui) {
             main.getUtils().setFadingIn(false);
             if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {
                 MC.setScreen(new EnchantmentSettingsGui(0, gui.getPage(), gui.getTab()));

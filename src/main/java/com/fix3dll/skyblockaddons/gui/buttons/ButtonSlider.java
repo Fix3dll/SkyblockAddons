@@ -72,12 +72,10 @@ public class ButtonSlider extends SkyblockAddonsButton {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered) {
-            this.normalizedValue = (float) (mouseX - (getX() + 4)) / (float) (this.width - 8);
-            this.normalizedValue = Mth.clamp(this.normalizedValue, 0.0F, 1.0F);
-            this.dragging = true;
-            onUpdate();
-        }
+        this.normalizedValue = (float) (mouseX - (getX() + 4)) / (float) (this.width - 8);
+        this.normalizedValue = Mth.clamp(this.normalizedValue, 0.0F, 1.0F);
+        this.dragging = true;
+        onUpdate();
     }
 
     public ButtonSlider setPrefix(String text) {

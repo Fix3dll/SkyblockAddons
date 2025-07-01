@@ -48,11 +48,9 @@ public class ButtonColorWheel extends ButtonFeature {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered) {
-            if (MC.screen instanceof LocationEditGui gui) {
-                gui.setClosing(true);
-                MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));
-            }
+        if (MC.screen instanceof LocationEditGui gui) {
+            gui.setClosing(true);
+            MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));
         }
     }
 }

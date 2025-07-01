@@ -40,8 +40,6 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
 
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.isHovered = isHovered(mouseX, mouseY);
-
         int color = ARGB.color(255, 30, 37, 46);
         graphics.blit(RenderType::guiTextured, TOGGLE_BORDER, getX(), getY(), 0, 0, width, height, width, height, color);
 
@@ -92,9 +90,7 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered) {
-            this.animationButtonClicked = System.currentTimeMillis();
-            this.onClickRunnable.run();
-        }
+        this.animationButtonClicked = System.currentTimeMillis();
+        this.onClickRunnable.run();
     }
 }

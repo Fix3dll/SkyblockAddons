@@ -17,6 +17,7 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -159,10 +160,21 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         }
 
-        int i = (int)MC.mouseHandler.getScaledXPos(MC.getWindow());
-        int j = (int)MC.mouseHandler.getScaledYPos(MC.getWindow());
-        Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation(i, j);
-        return super.mouseClicked(scaledMouseLocations.getLeft(), scaledMouseLocations.getRight(), button);
+        Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation((int) mouseX, (int) mouseY);
+        for (GuiEventListener guiEventListener : this.children()) {
+            if (guiEventListener.isMouseOver(scaledMouseLocations.getLeft(), scaledMouseLocations.getRight())) {
+                if (guiEventListener.mouseClicked(scaledMouseLocations.getLeft(), scaledMouseLocations.getRight(), button)) {
+                    this.setFocused(guiEventListener);
+                    if (button == 0) {
+                        this.setDragging(true);
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void detectClosestMarker(int mouseX, int mouseY) {
@@ -173,7 +185,6 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         for (Renderable button : this.renderables) {
             if (button instanceof IslandButton islandButton) {
-
                 for (IslandMarkerButton marker : islandButton.getMarkerButtons()) {
                     double distance = marker.getDistance(
                             scaledMouseLocations.getLeft(), // x

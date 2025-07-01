@@ -45,7 +45,7 @@ public class ButtonCredit extends ButtonFeature {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered && !feature.isRemoteDisabled()) {
+        if (!feature.isRemoteDisabled()) {
             try {
                 Util.getPlatform().openUri(credit.getUrl());
             } catch (Exception ignored) {}

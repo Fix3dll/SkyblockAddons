@@ -35,8 +35,6 @@ public class ButtonSocial extends SkyblockAddonsButton {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered) {
-            Util.getPlatform().openUri(social.getUrl());
-        }
+        Util.getPlatform().openUri(social.getUrl());
     }
 }

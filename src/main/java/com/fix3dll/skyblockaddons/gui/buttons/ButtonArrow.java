@@ -47,7 +47,7 @@ public class ButtonArrow extends SkyblockAddonsButton {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered && !this.max) {
+        if (!this.max) {
             main.getUtils().setFadingIn(false);
 
             if (MC.screen instanceof SkyblockAddonsGui gui) {

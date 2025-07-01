@@ -72,14 +72,12 @@ public class ButtonOpenColorMenu extends ButtonFeature {
      */
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (this.isHovered && this.feature != null) {
-            if (MC.screen instanceof SettingsGui gui) {
-                gui.setClosingGui(true);
-                if (this.setting != null) {
-                    MC.setScreen(new ColorSelectionGui(setting, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
-                } else {
-                    MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
-                }
+        if (this.feature != null && MC.screen instanceof SettingsGui gui) {
+            gui.setClosingGui(true);
+            if (this.setting != null) {
+                MC.setScreen(new ColorSelectionGui(setting, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
+            } else {
+                MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
             }
         }
     }
