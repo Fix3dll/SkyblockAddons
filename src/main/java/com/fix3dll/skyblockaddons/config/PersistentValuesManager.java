@@ -1,11 +1,14 @@
 package com.fix3dll.skyblockaddons.config;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
+import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTrackerData;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerTrackerData;
+import com.fix3dll.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -50,6 +53,7 @@ public class PersistentValuesManager {
 
         private final Map<String, CompressedStorage> storageCache = new HashMap<>();
         private final Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
+        private CompressedStorage equipments = new CompressedStorage();
 
         private int oresMined = 0;
         private int seaCreaturesKilled = 0;
@@ -83,7 +87,8 @@ public class PersistentValuesManager {
         } else {
             saveValues();
         }
-        FetchurManager.getInstance().postPersistentConfigLoad(this.persistentValues.lastTimeFetchur);
+        FetchurManager.getInstance().postPersistentConfigLoad(persistentValues.lastTimeFetchur);
+        SkyblockEquipment.initialize(ContainerPreviewManager.decompressItems(persistentValues.equipments.getStorage()));
     }
 
     /**
@@ -116,7 +121,7 @@ public class PersistentValuesManager {
             } catch (Exception ex) {
                 LOGGER.error("Error saving persistent values!", ex);
                 if (Minecraft.getInstance().player != null) {
-                    SkyblockAddons.getInstance().getUtils().sendErrorMessage(
+                    Utils.sendErrorMessage(
                             "Error saving persistent values! Check log for more detail."
                     );
                 }

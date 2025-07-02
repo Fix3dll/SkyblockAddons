@@ -951,6 +951,10 @@
   "HIDE_EFFECTS_HUD": {
     "value": true
   },
+  "EQUIPMENTS_IN_INVENTORY": {
+    "value": true,
+    "color": -1
+  },
   "WARNING_TIME": {
     "value": 4
   },

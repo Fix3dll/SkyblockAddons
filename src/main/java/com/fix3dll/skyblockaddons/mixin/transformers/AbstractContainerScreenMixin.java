@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
@@ -12,9 +13,11 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -76,7 +79,14 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     @Inject(method = "render", at = @At("RETURN"))
     public void sba$drawBackpacks(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         //noinspection unchecked
-        ContainerPreviewManager.drawContainerPreviews(graphics, (AbstractContainerScreen<T>) (Object) this, mouseX, mouseY);
+        AbstractContainerScreen<T> instance = (AbstractContainerScreen<T>) (Object) this;
+        ContainerPreviewManager.drawContainerPreviews(graphics, instance, mouseX, mouseY);
+        // Draw items for Feature.EQUIPMENTS_IN_INVENTORY
+        if (SkyblockEquipment.equipmentsInInventory() && instance instanceof InventoryScreen) {
+            for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
+                equipment.render(graphics, mouseX, mouseY, this.leftPos, this.topPos);
+            }
+        }
     }
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
@@ -140,6 +150,11 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     public void sba$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
         if (AbstractContainerScreenHook.mouseClicked(mouseX, mouseY, button)) {
             cir.cancel();
+        }
+        if (SkyblockEquipment.equipmentsInInventory() && Minecraft.getInstance().screen instanceof InventoryScreen) {
+            for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
+                equipment.onClick(button);
+            }
         }
     }
 

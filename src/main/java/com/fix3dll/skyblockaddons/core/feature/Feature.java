@@ -7,10 +7,8 @@ import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
-import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.DrawType;
-import com.fix3dll.skyblockaddons.utils.SkyblockColor;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 import lombok.NonNull;
@@ -161,6 +159,7 @@ public enum Feature {
     PRESSURE_BAR(260, "settings.pressureBar.title", new FeatureGuiData(DrawType.BAR, ColorCode.BLUE)),
     PRESSURE_TEXT(261, "settings.pressureText.title", new FeatureGuiData(DrawType.TEXT, ColorCode.BLUE)),
     HIDE_EFFECTS_HUD(262, "settings.hideEffectsHud", null),
+    EQUIPMENTS_IN_INVENTORY(263, "settings.equipmentsInInventory", new FeatureGuiData(ColorCode.WHITE)),
 
 
     WARNING_TIME(-2, "settings.warningDuration"),
@@ -312,25 +311,16 @@ public enum Feature {
     public boolean couldBeXAllignment() {
         if (!this.isGuiFeature() || featureGuiData.getDrawType() == null) return false;
 
-        switch (featureGuiData.getDrawType()) {
-            case TEXT:
-            case SLAYER_ARMOR_PROGRESS:
-            case DEPLOYABLE_DISPLAY:
-            case BAIT_LIST_DISPLAY:
-            case SLAYER_TRACKERS:
-            case DRAGON_STATS_TRACKER:
-            case PET_DISPLAY:
-                return true;
-            case SKELETON_BAR:
-            case BAR:
-            case PICKUP_LOG:
-            case TICKER:
-            case DUNGEONS_MAP:
-            case PROXIMITY_INDICATOR:
-            case DEFENCE_ICON:
-            default:
-                return false;
-        }
+        return switch (featureGuiData.getDrawType()) {
+            case TEXT,
+                 SLAYER_ARMOR_PROGRESS,
+                 DEPLOYABLE_DISPLAY,
+                 BAIT_LIST_DISPLAY,
+                 SLAYER_TRACKERS,
+                 DRAGON_STATS_TRACKER,
+                 PET_DISPLAY -> true;
+            default -> false;
+        };
     }
 
     public ColorCode getDefaultColor() {
@@ -478,20 +468,6 @@ public enum Feature {
         }
 
         return this.getDefaultColor();
-    }
-
-    /**
-     * Return skyblock color compatible with new shaders. Can bind the color (white) unconditionally
-     * @return the color
-     */
-    // TODO merge with ColorCode
-    public SkyblockColor getSkyblockColor() {
-        SkyblockColor color = ColorUtils.getDummySkyblockColor(this.getColor(), this.isChroma());
-        // If chroma is enabled, and we are using shaders, set color to white
-        if (color.drawMulticolorUsingShader()) {
-            color.setColor(0xFFFFFFFF);
-        }
-        return color;
     }
 
     public boolean isChroma() {

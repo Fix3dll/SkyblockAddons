@@ -32,6 +32,7 @@
     "MultiPlayerGameModeMixin",
     "ParticleEngineMixin",
     "PlayerRendererMixin",
+    "RecipeBookComponentMixin",
     "SoundEngineMixin"
   ],
   "mixins": [

@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.config.PersistentValuesManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.InventoryType;
@@ -11,6 +12,7 @@ import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.npc.NPCUtils;
 import com.fix3dll.skyblockaddons.features.ItemDropChecker;
+import com.fix3dll.skyblockaddons.features.PetManager.Pet;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
@@ -49,6 +51,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class AbstractContainerScreenHook {
     
@@ -229,6 +233,21 @@ public class AbstractContainerScreenHook {
             ItemStack petBone = container.getItem(4);
             if (petBone != ItemStack.EMPTY && petBone.getItem() == Items.BONE && !Screen.hasShiftDown()) {
                 lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
+                if (slot != null) {
+                    ItemStack slotItem = slot.getItem();
+                    SkyblockEquipment equipment = SkyblockEquipment.PET;
+                    Pet currentPet = main.getPetCacheManager().getCurrentPet();
+                    UUID currentPetUuid = currentPet == null ? null : currentPet.getPetInfo().getUuid();
+
+                    // Pet removed
+                    if (Objects.equals(ItemUtils.getUuid(slotItem), currentPetUuid)) {
+                        equipment.setItemStack(equipment.getEmptyStack());
+                        SkyblockEquipment.saveEquipments();
+                    } else if (slotItem.is(Items.PLAYER_HEAD)) {
+                        equipment.setItemStack(slotItem.copy());
+                        SkyblockEquipment.saveEquipments();
+                    }
+                }
             }
         }
 

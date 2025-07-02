@@ -267,7 +267,7 @@ public class EnumUtils {
         JASON54("jason54jg", "github.com/jason54jg", INFERNO_SLAYER_TRACKER),
         GLACIALVITALITY("GlacialVitality", "github.com/glacialvitality", RIFTSTALKER_SLAYER_TRACKER),
         FIX3DLL("Fix3dll", "github.com/Fix3dll", FIRE_FREEZE_TIMER, HIDE_HAUNTED_SKULLS, THUNDER_BOTTLE_DISPLAY,
-                PET_DISPLAY, PRESSURE_BAR, PRESSURE_TEXT, HIDE_EFFECTS_HUD);
+                PET_DISPLAY, PRESSURE_BAR, PRESSURE_TEXT, HIDE_EFFECTS_HUD, EQUIPMENTS_IN_INVENTORY);
 
         private final Set<Feature> features;
         private final String author;

@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.listeners;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.InventoryType;
@@ -10,6 +11,7 @@ import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.events.SkyblockAddonsEvents;
 import com.fix3dll.skyblockaddons.features.PetManager;
+import com.fix3dll.skyblockaddons.features.PetManager.Pet;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
@@ -23,6 +25,7 @@ import com.fix3dll.skyblockaddons.utils.data.requests.MayorRequest;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -152,9 +155,24 @@ public class ScreenListener {
         Screen oldGuiScreen = MC.screen;
 
         // Closing a container
-        if (screen == null && oldGuiScreen instanceof ContainerScreen || oldGuiScreen instanceof SkyblockAddonsScreen) {
-            lastContainerCloseMs = System.currentTimeMillis();
-            main.getInventoryUtils().setInventoryType(null);
+        if (screen == null) {
+            boolean closed;
+
+            if (oldGuiScreen instanceof ContainerScreen containerScreen) {
+                if (main.getInventoryUtils().getInventoryType() == InventoryType.EQUIPMENT) {
+                    // Set eqs after close eq menu
+                    this.setEquipments(containerScreen.getMenu());
+                }
+                closed = true;
+            } else {
+                // Set lastContainerCloseMs on SkyblockAddonsScreen for shouldResetMouse()
+                closed = oldGuiScreen instanceof SkyblockAddonsScreen;
+            }
+
+            if (closed) {
+                lastContainerCloseMs = System.currentTimeMillis();
+                main.getInventoryUtils().setInventoryType(null);
+            }
         }
 
         // Closing or switching to a different GuiChest
@@ -164,7 +182,6 @@ public class ScreenListener {
             }
 
             ContainerPreviewManager.onContainerClose();
-//            GuiChestHook.onGuiClosed();
             setCurrentPet(containerScreen);
         }
 
@@ -242,6 +259,8 @@ public class ScreenListener {
                         }
                     }
                 }
+            } else if (inventoryType == InventoryType.EQUIPMENT) {
+                this.setEquipments(chestMenu);
             }
 
         }
@@ -372,7 +391,7 @@ public class ScreenListener {
         ).matches();
         if (!isClosedGuiPets) return;
 
-        Int2ObjectOpenHashMap<PetManager.Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
+        Int2ObjectOpenHashMap<Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
         Pair<Integer, Integer> clickedButton = AbstractContainerScreenHook.getLastClickedButtonOnPetsMenu();
         if (clickedButton == null) return;
 
@@ -381,7 +400,7 @@ public class ScreenListener {
         int index = clickedButton.getLeft() + 45 * (pageNum == 0 ? 0 : pageNum -1);
 
         if (petMap.containsKey(index)) {
-            PetManager.Pet pet = petMap.get(index);
+            Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
                 main.getPetCacheManager().setCurrentPet(null);
             } else if (clickedButton.getRight() != 1 /*right click*/) {
@@ -391,4 +410,35 @@ public class ScreenListener {
             AbstractContainerScreenHook.setLastClickedButtonOnPetsMenu(null);
         }
     }
+
+    private void setEquipments(ChestMenu chestMenu) {
+        SkyblockEquipment.NECKLACE.setItemStack(chestMenu.getSlot(10).getItem());
+        SkyblockEquipment.CLOAK.setItemStack(chestMenu.getSlot(19).getItem());
+        SkyblockEquipment.BELT.setItemStack(chestMenu.getSlot(28).getItem());
+        SkyblockEquipment.GLOVES_BRACELET.setItemStack(chestMenu.getSlot(37).getItem());
+
+        ItemStack petItem = chestMenu.getSlot(47).getItem();
+        SkyblockEquipment.PET.setItemStack(petItem);
+
+        // Be sure current pet is same on cache
+        if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS)) {
+            main.getPetCacheManager().setCurrentPet(null);
+        } else if (petItem.is(Items.PLAYER_HEAD)) {
+            Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
+            Int2ObjectOpenHashMap<Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
+
+            for (Int2ObjectMap.Entry<Pet> entry : petMap.int2ObjectEntrySet()) {
+                int entryKey = entry.getIntKey();
+                Pet entryValue = petMap.get(entryKey);
+
+                if (newPet.getPetInfo().getUniqueId().equals(entryValue.getPetInfo().getUniqueId())) {
+                    petMap.put(entryKey, newPet);
+                    main.getPetCacheManager().saveValues();
+                    break;
+                }
+            }
+        }
+        SkyblockEquipment.saveEquipments();
+    }
+
 }

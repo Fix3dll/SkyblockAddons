@@ -22,6 +22,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
@@ -185,7 +186,7 @@ public class ContainerPreviewManager {
         storageKey = main.getInventoryUtils().getInventoryKey();
     }
 
-    private static List<ItemStack> decompressItems(byte[] bytes) {
+    public static List<ItemStack> decompressItems(byte[] bytes) {
         List<ItemStack> items = null;
         try {
             CompoundTag decompressedData = NbtIo.readCompressed(new ByteArrayInputStream(bytes), NbtAccounter.unlimitedHeap());
@@ -197,7 +198,7 @@ public class ContainerPreviewManager {
             items = new ArrayList<>(size);
 
             for (int i = 0; i < size; i++) {
-                CompoundTag itemTag = list.getCompoundOrEmpty(i); // 1.21.5
+                CompoundTag itemTag = list.getCompoundOrEmpty(i);
                 // This fixes an issue in Hypixel where enchanted potatoes have the wrong id (potato block instead of item).
                 short itemID = itemTag.getShort("id").orElse((short) 0);
                 if (itemID == 142) { // Potato Block -> Potato Item
@@ -209,6 +210,9 @@ public class ContainerPreviewManager {
                     items.add(ItemStack.EMPTY);
                 } else if (Minecraft.getInstance().level != null) {
                     Optional<ItemStack> itemStack = ItemStack.parse(Minecraft.getInstance().level.registryAccess(), itemTag);
+                    items.add(itemStack.orElse(ItemStack.EMPTY));
+                } else {
+                    Optional<ItemStack> itemStack = ItemStack.parse(RegistryAccess.EMPTY, itemTag);
                     items.add(itemStack.orElse(ItemStack.EMPTY));
                 }
             }

@@ -96,7 +96,7 @@ public class PetManager {
     }
 
     /**
-     * When Autopet messages came to chat it will trigger {@link com.fix3dll.skyblockaddons.listeners.PlayerListener#AUTOPET_PATTERN}
+     * When Autopet messages came to chat it will trigger {@code PlayerListener.AUTOPET_PATTERN}
      * We will get groups from that Pattern, and we will set current pet from these groups values.
      * @param levelString level string
      * @param rarityColor rarity color string
@@ -117,7 +117,7 @@ public class PetManager {
     }
 
     /**
-     * When levelled up messages came to chat it will trigger {@link com.fix3dll.skyblockaddons.listeners.PlayerListener#PET_LEVELED_UP_PATTERN}
+     * When levelled up messages came to chat it will trigger {@code PlayerListener.PET_LEVELED_UP_PATTERN}
      * We will get groups from that Pattern, and we will update petCache and set current pet from these groups values.
      * @param newLevelString level string
      * @param rarityColor rarity color string
@@ -185,7 +185,7 @@ public class PetManager {
      * @see PetInfo
      * @author Fix3dll
      */
-    private Pet getPetFromItemStack(ItemStack itemStack) {
+    public Pet getPetFromItemStack(ItemStack itemStack) {
         String displayName;
         if (itemStack.getCustomName() != null) {
             displayName = FAVORITE_PATTERN.matcher(

@@ -292,7 +292,8 @@
       "alert": "Alert by changing color when pressure exceeds 90%",
       "icon": "Show Pressure Icon"
     },
-    "hideEffectsHud": "Hide Effects HUD"
+    "hideEffectsHud": "Hide Effects HUD",
+    "equipmentsInInventory": "Equipment and Pet Panel in Inventory"
   },
   "messages": {
     "enchants": "Enchants",
