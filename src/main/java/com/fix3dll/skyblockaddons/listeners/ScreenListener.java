@@ -421,7 +421,7 @@ public class ScreenListener {
         SkyblockEquipment.PET.setItemStack(petItem);
 
         // Be sure current pet is same on cache
-        if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS)) {
+        if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS_PANE)) {
             main.getPetCacheManager().setCurrentPet(null);
         } else if (petItem.is(Items.PLAYER_HEAD)) {
             Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
