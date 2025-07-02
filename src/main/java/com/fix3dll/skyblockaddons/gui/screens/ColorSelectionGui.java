@@ -319,6 +319,9 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (hexColorField.isFocused()) {
             hexColorField.keyPressed(keyCode, scanCode, modifiers);
+            if (!this.parseColor()) {
+                return false;
+            }
         } else {
             hexColorField.setFocused(true);
         }
@@ -330,22 +333,8 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     public boolean charTyped(char codePoint, int modifiers) {
         if (hexColorField.isFocused()) {
             hexColorField.charTyped(codePoint, modifiers);
-            String text = hexColorField.getValue();
-            if (text.startsWith("#")) { // Get rid of the #.
-                text = text.substring(1);
-            }
-
-            if (text.length() == 6) {
-                int typedColor;
-                try {
-                    // Try to read the hex value and put it in an integer.
-                    typedColor = (0xFF << 24) | Integer.parseInt(text, 16);
-                } catch (NumberFormatException ex) {
-                    // This just means it wasn't in the format of a hex number that's fine!
-                    ex.printStackTrace();
-                    return false;
-                }
-                setColor.accept(typedColor);
+            if (!this.parseColor()) {
+                return false;
             }
         } else {
             hexColorField.setFocused(true);
@@ -386,6 +375,28 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                 1,
                 Feature.CHROMA_SIZE::setValue
         ));
+    }
+
+    private boolean parseColor() {
+        String text = hexColorField.getValue();
+        if (text.startsWith("#")) { // Get rid of the #.
+            text = text.substring(1);
+        }
+
+        if (text.length() == 6) {
+            int typedColor;
+            try {
+                // Try to read the hex value and put it in an integer.
+                typedColor = (0xFF << 24) | Integer.parseInt(text, 16);
+            } catch (NumberFormatException ex) {
+                // This just means it wasn't in the format of a hex number that's fine!
+                ex.printStackTrace();
+                return false;
+            }
+            setColor.accept(typedColor);
+        }
+
+        return true;
     }
 
     private static NativeImage loadColorPicker() {
