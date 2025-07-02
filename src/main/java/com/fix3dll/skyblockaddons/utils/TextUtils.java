@@ -646,14 +646,13 @@ public class TextUtils {
             if (style.getColor() != null) {
                 TextColor textColor = style.getColor();
                 String colorName = textColor.name;
-                if (colorName != null) {
-                    if (colorName.charAt(0) != '#') {
-                        ColorCode color = ColorCode.getByARGB(0xFF000000 | (textColor.getValue() & 0x00FFFFFF));
-                        if (color != null) {
-                            sb.append(color);
-                        }
-                    } else if (colorName.equalsIgnoreCase("chroma")) {
-                        sb.append(ColorCode.CHROMA);
+
+                if (colorName != null && colorName.equalsIgnoreCase("chroma")) {
+                    sb.append(ColorCode.CHROMA);
+                } else {
+                    ColorCode color = ColorCode.getByARGB(0xFF000000 | (textColor.getValue() & 0x00FFFFFF));
+                    if (color != null) {
+                        sb.append(color);
                     }
                 }
             }
