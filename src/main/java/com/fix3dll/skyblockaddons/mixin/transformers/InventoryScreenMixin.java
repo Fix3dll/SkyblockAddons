@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.mixin.transformers;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.mixin.hooks.GuiHook;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
@@ -29,6 +30,8 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
 
     @Unique
     private static final ResourceLocation sba$equipmentPanel = SkyblockAddons.resourceLocation("equipmentpanel.png");
+    @Unique
+    private static final ResourceLocation sba$petPanel = SkyblockAddons.resourceLocation("petpanel.png");
 
     public InventoryScreenMixin(InventoryMenu menu, RecipeBookComponent<?> recipeBookComponent, Inventory playerInventory, Component title) {
         super(menu, recipeBookComponent, playerInventory, title);
@@ -46,7 +49,10 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
             Function<ResourceLocation, RenderType> renderType = resourceLocation -> feature.isChroma()
                     ? FontHook.getChromaTextured(resourceLocation)
                     : RenderType.guiTextured(resourceLocation);
-            guiGraphics.blit(renderType, sba$equipmentPanel, this.leftPos - 23, this.topPos, 0.0F, 0.0F, 28, 108, 256, 256, Feature.EQUIPMENTS_IN_INVENTORY.getColor());
+            guiGraphics.blit(renderType, sba$equipmentPanel, this.leftPos - 23, this.topPos, 0.0F, 0.0F, 28, 86, 256, 256, feature.getColor());
+            if (feature.isEnabled(FeatureSetting.PET_PANEL)) {
+                guiGraphics.blit(renderType, sba$petPanel, this.leftPos - 23, this.topPos + 83, 0.0F, 0.0F, 28, 25, 256, 256, feature.getColor());
+            }
         }
     }
 

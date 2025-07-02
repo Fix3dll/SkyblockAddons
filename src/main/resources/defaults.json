@@ -953,7 +953,10 @@
   },
   "EQUIPMENTS_IN_INVENTORY": {
     "value": true,
-    "color": -1
+    "color": -1,
+    "settings": {
+      "PET_PANEL":  true
+    }
   },
   "WARNING_TIME": {
     "value": 4

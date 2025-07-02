@@ -293,7 +293,10 @@
       "icon": "Show Pressure Icon"
     },
     "hideEffectsHud": "Hide Effects HUD",
-    "equipmentsInInventory": "Equipment and Pet Panel in Inventory"
+    "equipmentsInInventory": {
+      "title": "Equipment and Pet Panel in Inventory",
+      "petPanel": "Show Pet Panel"
+    }
   },
   "messages": {
     "enchants": "Enchants",

@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.core;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -56,6 +57,8 @@ public enum SkyblockEquipment {
     }
 
     public void render(GuiGraphics graphics, int mouseX, int mouseY, int leftPos, int topPos) {
+        if (this == PET && Feature.EQUIPMENTS_IN_INVENTORY.isDisabled(FeatureSetting.PET_PANEL)) return;
+
         int x = -15;
         int y = 8 + this.ordinal() * 18 + (this == PET ? 4 : 0);
         int seed = x + y * 176;
@@ -86,7 +89,7 @@ public enum SkyblockEquipment {
         LocalPlayer player = MC.player;
         if (player == null || !isHovered || button != 0) return;
 
-        if (this == PET) {
+        if (this == PET && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled(FeatureSetting.PET_PANEL)) {
             player.connection.sendChat("/petsmenu");
         } else {
             player.connection.sendChat("/equipment");

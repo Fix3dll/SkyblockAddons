@@ -159,7 +159,7 @@ public enum Feature {
     PRESSURE_BAR(260, "settings.pressureBar.title", new FeatureGuiData(DrawType.BAR, ColorCode.BLUE)),
     PRESSURE_TEXT(261, "settings.pressureText.title", new FeatureGuiData(DrawType.TEXT, ColorCode.BLUE)),
     HIDE_EFFECTS_HUD(262, "settings.hideEffectsHud", null),
-    EQUIPMENTS_IN_INVENTORY(263, "settings.equipmentsInInventory", new FeatureGuiData(ColorCode.WHITE)),
+    EQUIPMENTS_IN_INVENTORY(263, "settings.equipmentsInInventory.title", new FeatureGuiData(ColorCode.WHITE)),
 
 
     WARNING_TIME(-2, "settings.warningDuration"),

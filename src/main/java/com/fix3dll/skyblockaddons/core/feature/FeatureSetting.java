@@ -137,6 +137,7 @@ public enum FeatureSetting {
     PRESSURE_BAR_ALERT("settings.pressureBar.alert", Feature.PRESSURE_BAR),
     PRESSURE_TEXT_ALERT("settings.pressureText.alert", Feature.PRESSURE_TEXT),
     PRESSURE_TEXT_ICON("settings.pressureText.icon", Feature.PRESSURE_TEXT),
+    PET_PANEL("settings.equipmentsInInventory.petPanel", Feature.EQUIPMENTS_IN_INVENTORY),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
