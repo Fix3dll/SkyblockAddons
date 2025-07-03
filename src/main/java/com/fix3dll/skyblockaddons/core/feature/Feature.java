@@ -338,7 +338,7 @@ public enum Feature {
         Object value = this.getValue();
 
         if (value instanceof Boolean bool) {
-            return bool;
+            return bool && !isRemoteDisabled();
         }
         SkyblockAddons.getInstance().getConfigValuesManager().restoreFeatureDefaultValue(this);
         throw new IllegalStateException(this + " is not a boolean! Type: " + value);
@@ -347,6 +347,8 @@ public enum Feature {
     public boolean isDisabled() {
         return !this.isEnabled();
     }
+
+    private static final String VERSION_X_Y_Z = SkyblockAddons.METADATA.getVersion().toString().split("-")[0];
 
     /**
      * Checks the received {@code OnlineData} to determine if the given feature should be disabled.This method checks
@@ -358,11 +360,10 @@ public enum Feature {
         HashMap<String, List<Integer>> disabledFeatures = SkyblockAddons.getInstance().getOnlineData().getDisabledFeatures();
 
         if (disabledFeatures.containsKey("all")) {
-            if (disabledFeatures.get("all") != null) {
-                if (disabledFeatures.get("all").contains(this.getId())) {
-                    return true;
-                }
-            } else {
+            List<Integer> allList = disabledFeatures.get("all");
+            if (allList != null && allList.contains(this.getId())) {
+                return true;
+            } else if (allList == null) {
                 LOGGER.error("\"all\" key in disabled features map has value of null. Please fix online data.");
             }
         }
@@ -372,15 +373,12 @@ public enum Feature {
         list for their release version. For example, the version {@code 1.6.0-beta.10} will adhere to the list
         for version {@code 1.6.0}
          */
-        String version = SkyblockAddons.METADATA.getVersion().toString();
-        if (version.contains("-")) {
-            version = version.split("-")[0];
-        }
-        if (disabledFeatures.containsKey(version)) {
-            if (disabledFeatures.get(version) != null) {
-                return disabledFeatures.get(version).contains(this.getId());
-            } else {
-                LOGGER.error("\"{}\" key in disabled features map has value of null. Please fix online data.", version);
+        if (disabledFeatures.containsKey(VERSION_X_Y_Z)) {
+            List<Integer> versionList = disabledFeatures.get(VERSION_X_Y_Z);
+            if (versionList != null && versionList.contains(this.getId())) {
+                return true;
+            } else if (versionList == null) {
+                LOGGER.error("\"{}\" key in disabled features map has value of null. Please fix online data.", VERSION_X_Y_Z);
             }
         }
 

@@ -95,8 +95,6 @@ public class AbstractContainerScreenHook {
             GuiGraphics graphics,
             int x,
             int y,
-            int width,
-            int height,
             Slot hoveredSlot
     ) {
         if (ContainerPreviewManager.isFrozen()) {
@@ -109,13 +107,15 @@ public class AbstractContainerScreenHook {
                 return false;
             }
 
+            final int widthHeight = 24;
+
             AbstractContainerMenu container = MC.player.containerMenu;
             int slotNum = hoveredSlot.index + main.getInventoryUtils().getSlotDifference(container);
             main.getUtils().setLastHoveredSlot(slotNum);
             if (main.getUtils().isOnSkyblock() && Feature.LOCK_SLOTS.isEnabled()
                     && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof InventoryMenu && slotNum >= 5)) {
-                graphics.fill(x + 4, y + 4, x + width - 4, y + height - 4, OVERLAY_RED);
+                graphics.fill(x + 4, y + 4, x + widthHeight - 4, y + widthHeight - 4, OVERLAY_RED);
                 graphics.blit(RenderType::guiTexturedOverlay, LOCK, hoveredSlot.x, hoveredSlot.y, 0, 0, 16, 16, 256, 256, ARGB.white(0.4F));
                 return false;
             }
