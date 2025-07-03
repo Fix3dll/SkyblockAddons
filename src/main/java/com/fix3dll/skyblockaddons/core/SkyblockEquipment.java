@@ -18,6 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public enum SkyblockEquipment {
@@ -29,6 +30,15 @@ public enum SkyblockEquipment {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
+    private static final ItemStack NULL =  Items.BARRIER.getDefaultInstance();
+
+    static {
+        NULL.set(DataComponents.CUSTOM_NAME, Component.literal("ERROR").withColor(ColorCode.RED.getColor()));
+        NULL.set(DataComponents.LORE, new ItemLore(Collections.singletonList(
+                Component.literal("You have to update equipments and pets from '/petsmenu' and '/equipment'!")
+                        .withColor(ColorCode.GRAY.getColor())
+        )));
+    }
 
     @Getter @Setter private ItemStack itemStack;
     @Getter private final ItemStack emptyStack;
@@ -58,6 +68,7 @@ public enum SkyblockEquipment {
 
     public void render(GuiGraphics graphics, int mouseX, int mouseY, int leftPos, int topPos) {
         if (this == PET && Feature.EQUIPMENTS_IN_INVENTORY.isDisabled(FeatureSetting.PET_PANEL)) return;
+        if (this.itemStack == null) this.itemStack = NULL;
 
         int x = -15;
         int y = 8 + this.ordinal() * 18 + (this == PET ? 4 : 0);

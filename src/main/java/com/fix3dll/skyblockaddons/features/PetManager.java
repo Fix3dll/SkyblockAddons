@@ -4,27 +4,28 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.PetInfo;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
+import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
+import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.Expose;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -83,7 +84,7 @@ public class PetManager {
 
                     Pet oldPet = main.getPetCacheManager().getPet(sbaPetIndex);
 
-                    if (oldPet == null || !oldPet.displayName.equals(pet.displayName) || !oldPet.petInfo.equals(pet.petInfo)) {
+                    if (oldPet == null || oldPet.getItemStack() == null || !oldPet.displayName.equals(pet.displayName) || !oldPet.petInfo.equals(pet.petInfo)) {
                         main.getPetCacheManager().putPet(sbaPetIndex, pet);
                         petsUpdated = true;
                     }
@@ -112,6 +113,7 @@ public class PetManager {
                     && pet.petLevel == level
                     && pet.petInfo.getPetRarity() == rarity) {
                 main.getPetCacheManager().setCurrentPet(pet);
+                SkyblockEquipment.PET.setItemStack(pet.getItemStack());
             }
         }
     }
@@ -155,6 +157,7 @@ public class PetManager {
                     main.getPetCacheManager().saveValues();
                     if (isCurrentPet) {
                         main.getPetCacheManager().setCurrentPet(pet);
+                        SkyblockEquipment.PET.setItemStack(pet.getItemStack());
                     }
                 }
             }
@@ -210,7 +213,6 @@ public class PetManager {
 
             if (petInfoStr.isEmpty()) return null;
 
-
             JsonObject petInfoJson = JsonParser.parseString(petInfoStr.get()).getAsJsonObject();
             PetInfo petInfo = SkyblockAddons.getGson().fromJson(petInfoJson, PetInfo.class);
 
@@ -218,8 +220,9 @@ public class PetManager {
             Pet newPet = new Pet(itemStack, displayName, petLevel, petInfo);
 
             if (petInfo.isActive()) {
-                if (oldPet == null || !oldPet.displayName.equals(displayName) || !oldPet.petInfo.equals(petInfo)) {
+                if (oldPet == null || oldPet.getItemStack() == null || !oldPet.displayName.equals(displayName) || !oldPet.petInfo.equals(petInfo)) {
                     main.getPetCacheManager().setCurrentPet(newPet);
+                    SkyblockEquipment.PET.setItemStack(itemStack);
                 }
             }
 
@@ -270,16 +273,27 @@ public class PetManager {
         private String displayName;
         private int petLevel;
         private PetInfo petInfo;
-        // for create skull
-        private JsonElement resolvableProfile;
+        private CompressedStorage compressedStorage = new CompressedStorage(); // compressed ItemStack
+        @Expose(serialize = false, deserialize = false)
+        private ItemStack itemStack;
 
         public Pet(ItemStack stack, String displayName, int petLevel, PetInfo petInfo) {
             this.displayName = displayName;
             this.petLevel = petLevel;
             this.petInfo = petInfo;
-            this.resolvableProfile = ResolvableProfile.CODEC.encodeStart(
-                    JsonOps.INSTANCE, stack.get(DataComponents.PROFILE)
-            ).ifError(LOGGER::error).result().orElse(null);
+            this.compressedStorage.setStorage(ItemUtils.getCompressedNBT(new ItemStack[]{stack}).getAsByteArray());
+            this.itemStack = stack;
+        }
+
+        public ItemStack getItemStack() {
+            if (this.itemStack == null && this.compressedStorage != null) {
+                List<ItemStack> list = ContainerPreviewManager.decompressItems(this.compressedStorage.getStorage());
+                if (!list.isEmpty()) {
+                    this.itemStack = list.getFirst();
+                }
+            }
+            return this.itemStack;
         }
     }
+
 }

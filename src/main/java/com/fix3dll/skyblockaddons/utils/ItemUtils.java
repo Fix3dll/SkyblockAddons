@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.ItemType;
 import com.fix3dll.skyblockaddons.core.PetInfo;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
@@ -73,10 +74,10 @@ public class ItemUtils {
     public static @NonNull ItemStack getTexturedHead(String identifier) {
         if (texturedHeads != null) {
             TexturedHead texturedHead = texturedHeads.get(identifier);
-            return texturedHead == null ? Items.STONE.getDefaultInstance() : texturedHead.getItemStack();
+            return texturedHead == null ? Items.BARRIER.getDefaultInstance() : texturedHead.getItemStack();
         }
 
-        return Items.STONE.getDefaultInstance();
+        return Items.BARRIER.getDefaultInstance();
     }
 
     /**
@@ -117,13 +118,20 @@ public class ItemUtils {
      */
     public static ItemStack getPersonalCompactorItemStack(String personalCompactorSkyblockID) {
         CompactorItem compactorItem = compactorItems.get(personalCompactorSkyblockID);
-        return compactorItem != null ? compactorItem.getItemStack() : Items.STONE.getDefaultInstance()/*ItemUtils.createSkullItemStack(
-                ChatFormatting.GOLD + personalCompactorSkyblockID,
-                Collections.singletonList(Component.nullToEmpty("§cSBA cannot found this item!")),
-                personalCompactorSkyblockID,
-                "577218c5-279a-4c2b-9afe-2dbd419e7937",
-                "ecc58cb55b1a11e6d88c2d4d1a6366c23887dee26304bda412c4a51825f199"
-        )*/;
+        if (compactorItem != null) {
+            return compactorItem.getItemStack();
+        } else {
+            ItemStack unknown = ItemUtils.createItemStack(
+                    Items.BARRIER, ColorCode.GOLD + personalCompactorSkyblockID, personalCompactorSkyblockID, false
+            );
+            ItemUtils.setItemLore(
+                    unknown,
+                    Collections.singletonList(
+                            Component.literal("SBA cannot found this item!").withColor(ColorCode.RED.getColor())
+                    )
+            );
+            return unknown;
+        }
     }
 
     /**
@@ -454,15 +462,11 @@ public class ItemUtils {
      * @return a new {@code ItemStack} instance with the given item and a fake enchantment if applicable
      */
     public static ItemStack createItemStack(Item item, boolean enchanted) {
-        return createItemStack(item, 0, null, null, enchanted);
+        return createItemStack(item, null, null, enchanted);
     }
 
     public static ItemStack createItemStack(Item item, String name, String skyblockID, boolean enchanted) {
-        return createItemStack(item, 0, name, skyblockID, enchanted);
-    }
-
-    public static ItemStack createItemStack(Item item, int meta, String name, String skyblockID, boolean enchanted) {
-        ItemStack stack = new ItemStack(item, 1/*, meta*/); // FIXME meta
+        ItemStack stack = item.getDefaultInstance();
 
         if (name != null) {
             stack.set(DataComponents.ITEM_NAME, Component.literal(  name));

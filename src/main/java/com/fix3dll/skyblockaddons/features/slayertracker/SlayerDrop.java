@@ -16,7 +16,7 @@ public enum SlayerDrop {
 
     // Revenant Drops
     REVENANT_FLESH(Items.ROTTEN_FLESH, "Revenant Flesh", "REVENANT_FLESH", SkyblockRarity.UNCOMMON, true),
-    FOUL_FLESH(Items.COAL, 1, "Foul Flesh", "FOUL_FLESH", SkyblockRarity.RARE),
+    FOUL_FLESH(Items.COAL, "Foul Flesh", "FOUL_FLESH", SkyblockRarity.RARE),
     PESTILENCE_RUNE("PESTILENCE_RUNE", "ZOMBIE_SLAYER", SkyblockRarity.RARE),
     UNDEAD_CATALYST("UNDEAD_CATALYST", SkyblockRarity.RARE),
     SMITE_SIX("Enchanted Book", "ENCHANTED_BOOK", SkyblockRarity.RARE, "smite", 6),
@@ -31,7 +31,7 @@ public enum SlayerDrop {
 
     // Tarantula Drops
     TARANTULA_WEB(Items.STRING, "Tarantula Web", "TARANTULA_WEB", SkyblockRarity.UNCOMMON, true),
-    TOXIC_ARROW_POISON(Items.LIME_DYE, 10, "Toxic Arrow Poison", "TOXIC_ARROW_POISON", SkyblockRarity.RARE),
+    TOXIC_ARROW_POISON(Items.LIME_DYE, "Toxic Arrow Poison", "TOXIC_ARROW_POISON", SkyblockRarity.RARE),
     SPIDER_CATALYST("SPIDER_CATALYST", SkyblockRarity.RARE),
     BANE_OF_ARTHROPODS_SIX("Enchanted Book", "ENCHANTED_BOOK", SkyblockRarity.RARE, "bane_of_arthropods", 6),
     BITE_RUNE("BITE_RUNE", "BITE", SkyblockRarity.EPIC),
@@ -48,11 +48,11 @@ public enum SlayerDrop {
     RED_CLAW_EGG(Items.MOOSHROOM_SPAWN_EGG, "Red Claw Egg", "RED_CLAW_EGG", SkyblockRarity.EPIC),
     COUTURE_RUNE("COUTURE_RUNE", "COUTURE", SkyblockRarity.LEGENDARY),
     OVERFLUX_CAPACITOR(Items.QUARTZ, "Overflux Capacitor", "OVERFLUX_CAPACITOR", SkyblockRarity.EPIC),
-    GRIZZLY_BAIT(Items.COD, 1, "Grizzly Bait", "GRIZZLY_BAIT", SkyblockRarity.RARE),
+    GRIZZLY_BAIT(Items.COD, "Grizzly Bait", "GRIZZLY_BAIT", SkyblockRarity.RARE),
 
     // Enderman Drops
     NULL_SPHERE(Items.FIREWORK_STAR, "Null Sphere", "NULL_SPHERE", SkyblockRarity.UNCOMMON, true),
-    TWILIGHT_ARROW_POISON(Items.PURPLE_DYE, 5, "Twilight Arrow Poison", "TWILIGHT_ARROW_POISON", SkyblockRarity.UNCOMMON),
+    TWILIGHT_ARROW_POISON(Items.PURPLE_DYE, "Twilight Arrow Poison", "TWILIGHT_ARROW_POISON", SkyblockRarity.UNCOMMON),
     ENDERSNAKE_RUNE("ENDERSNAKE_RUNE", "ENDERSNAKE", SkyblockRarity.LEGENDARY),
     SUMMONING_EYE("SUMMONING_EYE", SkyblockRarity.EPIC),
     MANA_STEAL_ONE("Enchanted Book", "ENCHANTED_BOOK", SkyblockRarity.RARE, "mana_steal", 1),
@@ -111,13 +111,6 @@ public enum SlayerDrop {
     private String runeID;
 
     /**
-     * Creates a slayer drop with an item, display name, skyblock id, and item rarity
-     */
-    SlayerDrop(Item item, String name, String skyblockID, SkyblockRarity rarity) {
-        this(item, name, skyblockID, rarity, false);
-    }
-
-    /**
      * Creates an enchanted book slayer drop with a display name, skyblock id, item rarity,
      * skyblock enchant name, and enchant level.
      */
@@ -128,24 +121,17 @@ public enum SlayerDrop {
     }
 
     /**
-     * Creates a slayer drop with an item, display name, skyblock id, item rarity, and enchanted state
-     */
-    SlayerDrop(Item item, String name, String skyblockID, SkyblockRarity rarity, boolean enchanted) {
-        this(item, 0, name, skyblockID, rarity, enchanted);
-    }
-
-    /**
      * Creates a slayer drop with an item, item meta, display name, skyblock id, and item rarity
      */
-    SlayerDrop(Item item, int meta, String name, String skyblockID, SkyblockRarity rarity) {
-        this(item, meta, name, skyblockID, rarity, false);
+    SlayerDrop(Item item, String name, String skyblockID, SkyblockRarity rarity) {
+        this(item, name, skyblockID, rarity, false);
     }
 
     /**
      * Creates a slayer drop with an item, item meta, display name, skyblock id, item rarity, and enchanted state
      */
-    SlayerDrop(Item item, int meta, String name, String skyblockID, SkyblockRarity rarity, boolean enchanted) {
-        this.itemStack = ItemUtils.createItemStack(item, meta, name, skyblockID, enchanted);
+    SlayerDrop(Item item, String name, String skyblockID, SkyblockRarity rarity, boolean enchanted) {
+        this.itemStack = ItemUtils.createItemStack(item, name, skyblockID, enchanted);
         this.skyblockID = skyblockID;
         this.rarity = rarity;
     }

@@ -1,9 +1,10 @@
 package com.fix3dll.skyblockaddons.features;
 
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -15,9 +16,7 @@ import java.util.Map;
  */
 public class BaitManager {
 
-    /**
-     * The BaitListManager instance.
-     */
+    /** The BaitListManager instance. */
     @Getter private static final BaitManager instance = new BaitManager();
     private static final int NUMBER_OF_BAITS = 27;
 
@@ -29,10 +28,8 @@ public class BaitManager {
         DUMMY_BAITS.put(ItemUtils.getTexturedHead("WHALE_BAIT"), 3);
     }
 
-    /**
-     * A map of all baits in the inventory and their count
-     */
-    @Getter private final Object2ObjectOpenHashMap<ItemStack, Integer> baitsInInventory = new Object2ObjectOpenHashMap<>(NUMBER_OF_BAITS);
+    /** A map of all baits in the inventory and their count */
+    @Getter private final Object2IntOpenHashMap<ItemStack> baitsInInventory = new Object2IntOpenHashMap<>(NUMBER_OF_BAITS);
 
     /**
      * Re-count all baits in the inventory
@@ -42,11 +39,13 @@ public class BaitManager {
 
         for (ItemStack itemStack : player.getInventory().getNonEquipmentItems()) {
             String skyblockID = ItemUtils.getSkyblockItemID(itemStack);
-            ItemStack bait = ItemUtils.getTexturedHead(skyblockID);
-
-            if (bait.getItem() == Items.STONE) continue;
-
-            baitsInInventory.put(bait, baitsInInventory.getOrDefault(bait, 0) + itemStack.getCount());
+            if (!StringUtil.isNullOrEmpty(skyblockID) && (skyblockID.endsWith("_BAIT")
+                    || skyblockID.startsWith("OBFUSCATED_FISH_1") || skyblockID.startsWith("OBFUSCATED_FISH_2"))) {
+                ItemStack bait = ItemUtils.getTexturedHead(skyblockID);
+                if (bait.getItem() == Items.BARRIER) continue;
+                baitsInInventory.put(bait, baitsInInventory.getOrDefault(bait, 0) + itemStack.getCount());
+            }
         }
     }
+
 }

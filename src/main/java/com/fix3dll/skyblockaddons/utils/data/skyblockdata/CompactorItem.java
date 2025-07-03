@@ -59,7 +59,7 @@ public class CompactorItem implements GsonInitializable {
                         if (block != Blocks.AIR) {
                             itemStack = block.asItem().getDefaultInstance();
                         } else {
-                            itemStack = Items.STONE.getDefaultInstance(); // Item not found
+                            itemStack = Items.BARRIER.getDefaultInstance(); // Item not found
                         }
                     }
 
@@ -73,7 +73,7 @@ public class CompactorItem implements GsonInitializable {
                 }
             }
         } catch (Exception ex) {
-            itemStack = ItemUtils.createItemStack(Blocks.STONE.asItem(), "ERROR", "ERROR", false);
+            itemStack = ItemUtils.createItemStack(Blocks.BARRIER.asItem(), "ERROR", "ERROR", false);
             LOGGER.error(
                     "An error occurred while making an ItemStack with ID {} and name {}.\n{}",
                     material, displayName, ex

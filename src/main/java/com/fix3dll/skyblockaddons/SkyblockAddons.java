@@ -29,6 +29,7 @@ import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.gson.ConfigValuesAdapter;
+import com.fix3dll.skyblockaddons.utils.gson.CustomExposeStrategy;
 import com.fix3dll.skyblockaddons.utils.gson.FeatureDataAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.GsonInitializableTypeAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.PatternAdapter;
@@ -86,6 +87,8 @@ public class SkyblockAddons implements ClientModInitializer {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static final Gson gson = new GsonBuilder()
 			.setPrettyPrinting()
+			.addSerializationExclusionStrategy (new CustomExposeStrategy(true))
+			.addDeserializationExclusionStrategy(new CustomExposeStrategy(false))
 			.registerTypeAdapter(EnumMap.class, (InstanceCreator<EnumMap>) type -> {
 				Type[] types = (((ParameterizedType) type).getActualTypeArguments());
 				return new EnumMap((Class<?>) types[0]);

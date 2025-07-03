@@ -6,8 +6,6 @@ import com.fix3dll.skyblockaddons.utils.gson.GsonInitializable;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 public class TexturedHead implements GsonInitializable {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createLookup();
 
     @SerializedName("profile")
     private JsonElement profile;
@@ -35,7 +32,7 @@ public class TexturedHead implements GsonInitializable {
         try {
             itemStack = ItemUtils.createSkullItemStack(profile, customName, skyblockId);
         } catch (Exception ex) {
-            itemStack = Items.STONE.getDefaultInstance();
+            itemStack = Items.BARRIER.getDefaultInstance();
             LOGGER.error(
                     "An error occurred while making an ItemStack with ID {}.\n{}", skyblockId, ex
             );

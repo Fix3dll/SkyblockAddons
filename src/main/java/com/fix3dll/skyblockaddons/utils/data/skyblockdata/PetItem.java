@@ -53,7 +53,7 @@ public class PetItem implements GsonInitializable {
                         if (block != Blocks.AIR) {
                             itemStack = block.asItem().getDefaultInstance();
                         } else {
-                            itemStack = Items.STONE.getDefaultInstance(); // Item not found
+                            itemStack = Items.BARRIER.getDefaultInstance(); // Item not found
                         }
                     }
 
@@ -63,7 +63,7 @@ public class PetItem implements GsonInitializable {
                 }
             }
         } catch (Exception ex) {
-            itemStack = Items.STONE.getDefaultInstance();
+            itemStack = Items.BARRIER.getDefaultInstance();
             LOGGER.error(
                     "An error occurred while making an ItemStack with ID {} and name {}.\n{}",
                     material, displayName, ex

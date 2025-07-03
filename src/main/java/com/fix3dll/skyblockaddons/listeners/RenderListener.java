@@ -2240,7 +2240,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             return;
         } else if (pet != newPet) {
             pet = newPet;
-            petSkull = ItemUtils.createSkullItemStack(pet.getResolvableProfile(), null,  "PET");
+            petSkull = newPet.getItemStack();
         }
 
         String text = pet.getDisplayName();
@@ -2313,6 +2313,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
      * The main purpose is scale the item for make it compatible for add new lines e.g. scale with two for add 2nd line
      */
     private void renderItem(GuiGraphics graphics, ItemStack item, float x, float y, float scale) {
+        if (item == null || item.isEmpty()) return;
+
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
         if (scale != 1) {
@@ -2328,6 +2330,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
     }
 
     public static void renderItemAndOverlay(GuiGraphics graphics, ItemStack item, String name, float x, float y, float z) {
+        if (item == null || item.isEmpty()) return;
+
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
         poseStack.translate(x, y, z);
