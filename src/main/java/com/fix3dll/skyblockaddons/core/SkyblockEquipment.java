@@ -11,8 +11,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
@@ -30,6 +32,7 @@ public enum SkyblockEquipment {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
+    private static final ResourceLocation SLOT_HIGHLIGHT_FRONT_SPRITE = ResourceLocation.withDefaultNamespace("container/slot_highlight_front");
     private static final ItemStack NULL =  Items.BARRIER.getDefaultInstance();
 
     static {
@@ -75,24 +78,25 @@ public enum SkyblockEquipment {
         int seed = x + y * 176;
         Font font = MC.font;
 
+        int translatedMouseX = mouseX - leftPos;
+        int translatedMouseY = mouseY - topPos;
+        this.isHovered = translatedMouseX >= x - 1 && translatedMouseX < x + 16 + 1
+                      && translatedMouseY >= y - 1 && translatedMouseY < y + 16 + 1;
+
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
         poseStack.translate((float)leftPos, (float)topPos, 100.0F);
         graphics.renderItem(this.itemStack, x, y, seed);
         graphics.renderItemDecorations(font, this.itemStack, x, y);
+        if (this.isHovered) graphics.blitSprite(RenderType::guiTexturedOverlay, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
         poseStack.popPose();
 
-        int translatedMouseX = mouseX - leftPos;
-        int translatedMouseY = mouseY - topPos;
-        if (translatedMouseX >= x - 1 && translatedMouseX < x + 16 + 1
-                && translatedMouseY >= y - 1 && translatedMouseY < y + 16 + 1) {
+
+        if (this.isHovered) {
             poseStack.pushPose();
             poseStack.translate(0, 0, 302);
             graphics.renderTooltip(font, this.itemStack, mouseX, mouseY);
             poseStack.popPose();
-            isHovered = true;
-        } else {
-            isHovered = false;
         }
     }
 
