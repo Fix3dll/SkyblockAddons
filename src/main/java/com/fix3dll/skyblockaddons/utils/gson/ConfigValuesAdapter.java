@@ -32,7 +32,7 @@ public class ConfigValuesAdapter implements JsonDeserializer<ConfigValues> {
         try {
             jsonObject = json.getAsJsonObject();
         } catch (JsonParseException | IllegalStateException e) {
-            SkyblockAddons.getInstance().getConfigValuesManager().backupConfig();
+            SkyblockAddons.getInstance().getConfigValuesManager().backupConfig(true);
             LOGGER.error("configurations.json is corrupted! It will be restored to default settings.", e);
             return null;
         }
@@ -60,7 +60,7 @@ public class ConfigValuesAdapter implements JsonDeserializer<ConfigValues> {
                 featuresObject = jsonObject.getAsJsonObject("features");
             } catch (Exception e) {
                 featuresObject = new JsonObject();
-                SkyblockAddons.getInstance().getConfigValuesManager().backupConfig();
+                SkyblockAddons.getInstance().getConfigValuesManager().backupConfig(true);
                 LOGGER.error("Error while parsing 'features'! It will be restored to defaults. Error:", e);
             }
             EnumMap<Feature, FeatureData<?>> features = new EnumMap<>(Feature.class);

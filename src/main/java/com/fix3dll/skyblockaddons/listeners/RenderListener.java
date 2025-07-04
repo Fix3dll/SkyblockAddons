@@ -468,8 +468,8 @@ public class RenderListener {
 
         if (fill > 1) fill = 1;
 
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
         float scaleX = feature.getFeatureData().getSizesX();
         float scaleY = feature.getFeatureData().getSizesY();
         graphics.pose().scale(scaleX, scaleY, 1);
@@ -671,8 +671,8 @@ public class RenderListener {
      * This renders a bar for the skeleton hat bones bar.
      */
     public void drawSkeletonBar(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
-        float x = main.getConfigValuesManager().getActualX(Feature.SKELETON_BAR);
-        float y = main.getConfigValuesManager().getActualY(Feature.SKELETON_BAR);
+        float x = Feature.SKELETON_BAR.getActualX();
+        float y = Feature.SKELETON_BAR.getActualY();
         int bones;
         if (!(MC.screen instanceof LocationEditGui) && MC.level != null && MC.player != null) {
              List<ItemEntity> bonesEntityList = MC.level.getEntitiesOfClass(
@@ -709,8 +709,8 @@ public class RenderListener {
      */
     public void drawScorpionFoilTicker(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
         if (buttonLocation != null || main.getPlayerListener().getTickers() != -1) {
-            float x = main.getConfigValuesManager().getActualX(Feature.TICKER_CHARGES_DISPLAY);
-            float y = main.getConfigValuesManager().getActualY(Feature.TICKER_CHARGES_DISPLAY);
+            float x = Feature.TICKER_CHARGES_DISPLAY.getActualX();
+            float y = Feature.TICKER_CHARGES_DISPLAY.getActualY();
 
             int height = 9;
             int width = 3 * 11 + 9;
@@ -746,8 +746,8 @@ public class RenderListener {
         if (main.getUtils().isOnRift()) return;
 
         // The height and width of this element (box not included)
-        float x = main.getConfigValuesManager().getActualX(Feature.DEFENCE_ICON);
-        float y = main.getConfigValuesManager().getActualY(Feature.DEFENCE_ICON);
+        float x = Feature.DEFENCE_ICON.getActualX();
+        float y = Feature.DEFENCE_ICON.getActualY();
         x = transformX(x, 9, scale, false);
         y = transformY(y, 9, scale);
 
@@ -1160,8 +1160,8 @@ public class RenderListener {
             }
         }
 
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         int height = 7;
         int width = MC.font.width(text);
@@ -1701,8 +1701,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
 
         Feature feature = Feature.BAIT_LIST;
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         int spacing = 1;
         int iconSize = 16;
@@ -1812,8 +1812,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 return;
         }
 
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
         int color = feature.getColor();
 
         if (textMode) {
@@ -2126,8 +2126,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             height = 100;
         }
 
-        float x = main.getConfigValuesManager().getActualX(Feature.DRAGON_STATS_TRACKER);
-        float y = main.getConfigValuesManager().getActualY(Feature.DRAGON_STATS_TRACKER);
+        float x = Feature.DRAGON_STATS_TRACKER.getActualX();
+        float y = Feature.DRAGON_STATS_TRACKER.getActualY();
         x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
         y = transformY(y, height, scale);
 
@@ -2172,8 +2172,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
     }
 
     public void drawSlayerArmorProgress(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
-        float x = main.getConfigValuesManager().getActualX(Feature.SLAYER_ARMOR_PROGRESS);
-        float y = main.getConfigValuesManager().getActualY(Feature.SLAYER_ARMOR_PROGRESS);
+        float x = Feature.SLAYER_ARMOR_PROGRESS.getActualX();
+        float y = Feature.SLAYER_ARMOR_PROGRESS.getActualY();
         Feature feature = Feature.SLAYER_ARMOR_PROGRESS;
 
         int longest = -1;
@@ -2199,7 +2199,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
         }
 
-        boolean downwards = main.getConfigValuesManager().getAnchorPoint(Feature.SLAYER_ARMOR_PROGRESS).isOnTop();
+        boolean downwards = Feature.SLAYER_ARMOR_PROGRESS.getAnchorPoint().isOnTop();
 
         int color = feature.getColor();
 
@@ -2245,8 +2245,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
         String text = pet.getDisplayName();
 
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         int height = 7 + MC.font.lineHeight;
         int width = MC.font.width(text) + 18; // + ItemStack width
@@ -2343,8 +2343,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     public void drawItemPickupLog(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
         Feature feature = Feature.ITEM_PICKUP_LOG;
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         boolean downwards = feature.getAnchorPoint().isOnTop();
         boolean renderItemStack = feature.isEnabled(FeatureSetting.RENDER_ITEM_ON_LOG);
@@ -2435,8 +2435,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
      */
     private void drawCompactDeployableStatus(GuiGraphics graphics, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
         Feature feature = Feature.DEPLOYABLE_STATUS_DISPLAY;
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         String secondsString = String.format("§e%ss", seconds);
         int spacing = 1;
@@ -2486,8 +2486,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
      */
     private void drawDetailedDeployableStatus(GuiGraphics graphics, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
         Feature feature = Feature.DEPLOYABLE_STATUS_DISPLAY;
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         List<String> display = new LinkedList<>();
         // Counts already long strings

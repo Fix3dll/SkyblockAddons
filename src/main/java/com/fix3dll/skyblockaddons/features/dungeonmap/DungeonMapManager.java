@@ -116,8 +116,8 @@ public class DungeonMapManager {
             isScoreSummary = false;
         }
 
-        float x = main.getConfigValuesManager().getActualX(Feature.DUNGEONS_MAP_DISPLAY);
-        float y = main.getConfigValuesManager().getActualY(Feature.DUNGEONS_MAP_DISPLAY);
+        float x = Feature.DUNGEONS_MAP_DISPLAY.getActualX();
+        float y = Feature.DUNGEONS_MAP_DISPLAY.getActualY();
 
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();

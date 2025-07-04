@@ -9,13 +9,16 @@ import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.DrawType;
+import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
+import com.mojang.blaze3d.platform.Window;
 import lombok.Getter;
 import lombok.NonNull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ARGB;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -408,7 +411,60 @@ public enum Feature {
     }
 
     public AnchorPoint getAnchorPoint() {
-        return this.featureData.getAnchorPoint();
+        AnchorPoint anchorPoints = this.featureData.getAnchorPoint();
+        if (anchorPoints != null) {
+            return anchorPoints;
+        } else {
+            anchorPoints = ConfigValuesManager.DEFAULT_FEATURE_DATA.get(this).getAnchorPoint();
+            return anchorPoints == null ? AnchorPoint.BOTTOM_MIDDLE : anchorPoints;
+        }
+    }
+
+    public void setClosestAnchorPoint() {
+        float x1 = this.getActualX();
+        float y1 = this.getActualY();
+        Window window = Minecraft.getInstance().getWindow();
+        int maxX = window.getGuiScaledWidth();
+        int maxY = window.getGuiScaledHeight();
+        double shortestDistance = -1;
+        AnchorPoint closestAnchorPoint = AnchorPoint.BOTTOM_MIDDLE; // default
+        for (AnchorPoint point : AnchorPoint.values()) {
+            double distance = Point2D.distance(x1, y1, point.getX(maxX), point.getY(maxY));
+            if (shortestDistance == -1 || distance < shortestDistance) {
+                closestAnchorPoint = point;
+                shortestDistance = distance;
+            }
+        }
+        if (this.getAnchorPoint() == closestAnchorPoint) {
+            return;
+        }
+        float targetX = this.getActualX();
+        float targetY = this.getActualY();
+        float x = targetX-closestAnchorPoint.getX(maxX);
+        float y = targetY-closestAnchorPoint.getY(maxY);
+        this.featureData.setAnchorPoint(closestAnchorPoint);
+        this.featureData.setCoords(x, y);
+    }
+
+    public float getActualX() {
+        int maxX = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        return this.getAnchorPoint().getX(maxX) + this.getRelativeCoords().getLeft();
+    }
+
+    public float getActualY() {
+        int maxY = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+        return this.getAnchorPoint().getY(maxY) + this.getRelativeCoords().getRight();
+    }
+
+    public Pair<Float, Float> getRelativeCoords() {
+        Pair<Float, Float> coords = this.featureData.getCoords();
+        if (coords != null) {
+            return coords;
+        } else {
+            SkyblockAddons.getInstance().getConfigValuesManager().putDefaultCoordinates(this);
+            coords = this.featureData.getCoords();
+            return coords == null ? new Pair<>(0F, 0F) : coords;
+        }
     }
 
     public float getGuiScale() {
