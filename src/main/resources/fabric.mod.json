@@ -39,6 +39,9 @@
 				"modmenu.modrinth": "https://modrinth.com/mod/skyblockaddons-unofficial",
 				"modmenu.donate": "https://buymeacoffee.com/fix3dll"
 			}
+		},
+		"skyblockaddons": {
+			"sbaJarName": "${sbaJarName}"
 		}
 	}
 }

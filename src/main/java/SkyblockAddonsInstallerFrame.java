@@ -18,7 +18,7 @@ import java.util.zip.ZipEntry;
 
 public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListener, MouseListener {
 
-    private static final Pattern IN_MODS_SUBFOLDER = Pattern.compile("1\\.8\\.9[/\\\\]?$");
+    private static final Pattern IN_MODS_SUBFOLDER = Pattern.compile("1\\.21\\.5[/\\\\]?$");
 
     private JLabel logo = null;
     private JLabel versionInfo = null;
@@ -155,7 +155,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 versionInfo.setFont(new Font(Font.DIALOG, Font.BOLD, 14));
                 versionInfo.setHorizontalAlignment(SwingConstants.CENTER);
                 versionInfo.setPreferredSize(new Dimension(w, h));
-                versionInfo.setText("v"+getVersionFromMcmodInfo()+" reborn by Fix3dll - for Minecraft 1.21.5");
+                versionInfo.setText("v"+ this.getStringFieldFromModInfo("version")+" reborn by Fix3dll - for Minecraft 1.21.5");
 
                 y += h;
             } catch (Throwable ivjExc) {
@@ -174,8 +174,10 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 descriptionText = new JTextArea();
                 descriptionText.setName("TextArea");
                 setTextAreaProperties(descriptionText);
-                descriptionText.setText("This installer will copy SkyblockAddons into your forge mods folder for you, and replace any old versions that already exist. " +
-                        "Close this if you prefer to do this yourself!");
+                descriptionText.setText(
+                        "This installer will copy SkyblockAddons into your forge mods folder for you, and replace any old versions that already exist. " +
+                        "Close this if you prefer to do this yourself!"
+                );
                 descriptionText.setWrapStyleWord(true);
 
                 y += h;
@@ -206,7 +208,10 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 forgeDescriptionText = new JTextArea();
                 forgeDescriptionText.setName("TextAreaForge");
                 setTextAreaProperties(forgeDescriptionText);
-                forgeDescriptionText.setText("However, you still need to install Fabric client in order to be able to run this mod. Click here to visit the download page for FabricMC!");
+                forgeDescriptionText.setText(
+                        "However, you still need to install Fabric client in order to be able to run this mod. " +
+                                "Click here to visit the download page for FabricMC!"
+                );
                 forgeDescriptionText.setForeground(Color.BLUE.darker());
                 forgeDescriptionText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 forgeDescriptionText.setWrapStyleWord(true);
@@ -269,8 +274,10 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
             x += 10; // Padding
 
             try {
-                BufferedImage myPicture = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader()
-                        .getResourceAsStream("assets/skyblockaddons/gui/folder.png"), "Folder icon not found."));
+                BufferedImage myPicture = ImageIO.read(Objects.requireNonNull(
+                        getClass().getClassLoader().getResourceAsStream("assets/skyblockaddons/gui/folder.png"),
+                        "Folder icon not found."
+                ));
                 Image scaled = myPicture.getScaledInstance(w-8, h-6, Image.SCALE_SMOOTH);
                 buttonChooseFolder = new JButton(new ImageIcon(scaled));
                 buttonChooseFolder.setName("ButtonFolder");
@@ -413,7 +420,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
         if (thisFile != null) {
             boolean inSubFolder = IN_MODS_SUBFOLDER.matcher(modsFolder.getPath()).find();
 
-            File newFile = new File(modsFolder, "SkyblockAddons-1.8.9-"+getVersionFromMcmodInfo()+".jar");
+            File newFile = new File(modsFolder, this.getStringFieldFromModInfo("sbaJarName"));
             if (thisFile.equals(newFile)) {
                 showErrorMessage("You are opening this file from where the file should be installed... there's nothing to be done!");
                 return;
@@ -424,13 +431,13 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 boolean failed = findSkyblockAddonsAndDelete(modsFolder.listFiles());
                 if (failed) deletingFailure = true;
             }
-            if (inSubFolder) { // We are in the 1.8.9 folder, delete in the parent folder as well.
+            if (inSubFolder) { // We are in the 1.21.5 folder, delete in the parent folder as well.
                 if (modsFolder.getParentFile().isDirectory()) {
                     boolean failed = findSkyblockAddonsAndDelete(modsFolder.getParentFile().listFiles());
                     if (failed) deletingFailure = true;
                 }
-            } else { // We are in the main mods folder, but the 1.8.9 subfolder exists... delete in there too.
-                File subFolder = new File(modsFolder, "1.8.9");
+            } else { // We are in the main mods folder, but the 1.21.5 subfolder exists... delete in there too.
+                File subFolder = new File(modsFolder, "1.21.5");
                 if (subFolder.exists() && subFolder.isDirectory()) {
                     boolean failed = findSkyblockAddonsAndDelete(subFolder.listFiles());
                     if (failed) deletingFailure = true;
@@ -464,10 +471,9 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
             if (!file.isDirectory() && file.getPath().endsWith(".jar")) {
                 try {
                     JarFile jarFile = new JarFile(file);
-                    ZipEntry mcModInfo = jarFile.getEntry("mcmod.info");
+                    ZipEntry mcModInfo = jarFile.getEntry("fabric.mod.json");
                     if (mcModInfo != null) {
-                        InputStream inputStream = jarFile.getInputStream(mcModInfo);
-                        String modID = getModIDFromInputStream(inputStream);
+                        String modID = this.getStringFieldFromModInfo("id");
                         if (modID.equals("skyblockaddons")) {
                             jarFile.close();
                             try {
@@ -477,9 +483,11 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                                 }
                             } catch (Exception ex) {
                                 ex.printStackTrace();
-                                showErrorMessage("Was not able to delete the other SkyblockAddons files found in your mods folder!" + System.lineSeparator() +
+                                showErrorMessage(
+                                        "Was not able to delete the other SkyblockAddons files found in your mods folder!" + System.lineSeparator() +
                                         "Please make sure that your minecraft is currently closed and try again, or feel" + System.lineSeparator() +
-                                        "free to open your mods folder and delete those files manually.");
+                                        "free to open your mods folder and delete those files manually."
+                                );
                                 return true;
                             }
                             continue;
@@ -505,7 +513,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
     public File getModsFolder() {
         String userHome = System.getProperty("user.home", ".");
 
-        File modsFolder = getFile(userHome, "minecraft/mods/1.8.9");
+        File modsFolder = getFile(userHome, "minecraft/mods/1.21.5");
         if (!modsFolder.exists()) {
             modsFolder = getFile(userHome, "minecraft/mods");
         }
@@ -613,41 +621,6 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
         JOptionPane.showMessageDialog(null, errorScrollPane, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    private String getVersionFromMcmodInfo() {
-        String version = "";
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().
-                    getClassLoader().getResourceAsStream("fabric.mod.json"), "fabric.mod.jsonnot found.")));
-            while ((version = bufferedReader.readLine()) != null) {
-                if (version.contains("\"version\": \"")) {
-                    version = version.split(Pattern.quote("\"version\": \""))[1];
-                    version = version.substring(0, version.length() - 2);
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            // It's okay, I guess just don't use the version lol.
-        }
-        return version;
-    }
-
-    private String getModIDFromInputStream(InputStream inputStream) {
-        String version = "";
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            while ((version = bufferedReader.readLine()) != null) {
-                if (version.contains("\"modid\": \"")) {
-                    version = version.split(Pattern.quote("\"modid\": \""))[1];
-                    version = version.substring(0, version.length() - 2);
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            // RIP, couldn't find the modid...
-        }
-        return version;
-    }
-
     private File getThisFile() {
         try {
             return new File(SkyblockAddonsInstallerFrame.class.getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -655,6 +628,25 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
             showErrorPopup(ex);
         }
         return null;
+    }
+
+    private String getStringFieldFromModInfo(String fieldName) {
+        String version = "";
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(
+                    getClass().getClassLoader().getResourceAsStream("fabric.mod.json"),
+                    "fabric.mod.json not found."
+            )));
+            while ((version = bufferedReader.readLine()) != null) {
+                if (version.contains("\"" + fieldName + "\": \"")) {
+                    version = version.split(Pattern.quote("\"" + fieldName + "\": \""))[1];
+                    boolean endsWithComma = version.contains(",");
+                    version = version.substring(0, version.length() - (endsWithComma ? 2 : 1));
+                    break;
+                }
+            }
+        } catch (Exception ignored) {} // Not found
+        return version;
     }
 
     @Override

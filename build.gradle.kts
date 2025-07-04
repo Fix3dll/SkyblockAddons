@@ -121,7 +121,10 @@ tasks.processResources {
     inputs.property("version", ext.get("formattedVersion"))
 
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to ext.get("formattedVersion")))
+        expand(mapOf(
+            "version" to ext.get("formattedVersion"),
+            "sbaJarName" to "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar"
+        ))
     }
 }
 
