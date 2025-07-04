@@ -9,6 +9,7 @@ import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.DrawType;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import com.mojang.blaze3d.platform.Window;
@@ -360,7 +361,10 @@ public enum Feature {
      * @return {@code true} if the feature should be disabled, {@code false} otherwise
      */
     public boolean isRemoteDisabled() {
-        HashMap<String, List<Integer>> disabledFeatures = SkyblockAddons.getInstance().getOnlineData().getDisabledFeatures();
+        OnlineData onlineData = SkyblockAddons.getInstance().getOnlineData();
+        if (onlineData == null) return false; // It may not yet have been initialized.
+
+        HashMap<String, List<Integer>> disabledFeatures = onlineData.getDisabledFeatures();
 
         if (disabledFeatures.containsKey("all")) {
             List<Integer> allList = disabledFeatures.get("all");
