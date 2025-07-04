@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 
 public class ColorSelectionGui extends SkyblockAddonsScreen {
 
-    private static final ResourceLocation COLOR_PICKER = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/colorpicker.png");
+    private static final ResourceLocation COLOR_PICKER = SkyblockAddons.resourceLocation("gui/colorpicker.png");
     private static NativeImage COLOR_PICKER_IMAGE = loadColorPicker();
 
     // The feature that this color is for.
@@ -410,4 +410,5 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         }
         return null;
     }
+
 }

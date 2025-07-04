@@ -42,7 +42,6 @@ public class ButtonArrow extends SkyblockAddonsButton {
         }
 
         graphics.blit(RenderType::guiTextured, arrowType.identifier, getX(), getY(), 0, 0, width, height, width, height, color);
-//            drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height);
     }
 
     @Override
@@ -80,8 +79,8 @@ public class ButtonArrow extends SkyblockAddonsButton {
         final ResourceLocation identifier;
 
         ArrowType(String path) {
-            this.identifier = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, path);
-
+            this.identifier = SkyblockAddons.resourceLocation(path);
         }
     }
+
 }

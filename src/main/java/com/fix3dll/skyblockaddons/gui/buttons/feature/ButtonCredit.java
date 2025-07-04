@@ -15,7 +15,7 @@ import net.minecraft.util.ARGB;
 @Getter
 public class ButtonCredit extends ButtonFeature {
 
-    private static final ResourceLocation WEB = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/web.png");
+    private static final ResourceLocation WEB = SkyblockAddons.resourceLocation("gui/web.png");
 
     private final EnumUtils.FeatureCredit credit;
 

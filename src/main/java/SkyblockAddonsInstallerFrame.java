@@ -155,7 +155,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 versionInfo.setFont(new Font(Font.DIALOG, Font.BOLD, 14));
                 versionInfo.setHorizontalAlignment(SwingConstants.CENTER);
                 versionInfo.setPreferredSize(new Dimension(w, h));
-                versionInfo.setText("v"+getVersionFromMcmodInfo()+" reborn by Fix3dll - for Minecraft 1.8.9");
+                versionInfo.setText("v"+getVersionFromMcmodInfo()+" reborn by Fix3dll - for Minecraft 1.21.5");
 
                 y += h;
             } catch (Throwable ivjExc) {
@@ -206,7 +206,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 forgeDescriptionText = new JTextArea();
                 forgeDescriptionText.setName("TextAreaForge");
                 setTextAreaProperties(forgeDescriptionText);
-                forgeDescriptionText.setText("However, you still need to install Forge client in order to be able to run this mod. Click here to visit the download page for Forge 1.8.9!");
+                forgeDescriptionText.setText("However, you still need to install Fabric client in order to be able to run this mod. Click here to visit the download page for FabricMC!");
                 forgeDescriptionText.setForeground(Color.BLUE.darker());
                 forgeDescriptionText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 forgeDescriptionText.setWrapStyleWord(true);
@@ -383,7 +383,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == getForgeTextArea()) {
             try {
-                Desktop.getDesktop().browse(new URI("https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.8.9.html"));
+                Desktop.getDesktop().browse(new URI("https://fabricmc.net/use/installer/"));
             } catch (IOException | URISyntaxException ex) {
                 showErrorPopup(ex);
             }

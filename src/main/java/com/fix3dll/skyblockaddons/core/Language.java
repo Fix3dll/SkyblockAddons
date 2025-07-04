@@ -5,6 +5,8 @@ import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Locale;
+
 @Getter
 public enum Language implements RegistrableEnum {
 
@@ -60,7 +62,7 @@ public enum Language implements RegistrableEnum {
 
     Language(String path) {
         this.path = path;
-        this.identifier = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID , "flags/" + path.toLowerCase() + ".png");
+        this.identifier = SkyblockAddons.resourceLocation("flags/" + path.toLowerCase(Locale.ENGLISH) + ".png");
     }
 
     /**
@@ -79,4 +81,5 @@ public enum Language implements RegistrableEnum {
         }
         return null;
     }
+
 }

@@ -14,7 +14,7 @@ import net.minecraft.util.ARGB;
 
 public class ButtonColorWheel extends ButtonFeature {
 
-    private static final ResourceLocation COLOR_WHEEL = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/colorwheel.png");
+    private static final ResourceLocation COLOR_WHEEL = SkyblockAddons.resourceLocation("gui/colorwheel.png");
     public static final int SIZE = 10;
 
     public float colorWheelX;
@@ -53,4 +53,5 @@ public class ButtonColorWheel extends ButtonFeature {
             MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));
         }
     }
+
 }

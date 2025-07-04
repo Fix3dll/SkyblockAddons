@@ -13,9 +13,9 @@ import java.util.function.Supplier;
 
 public class ButtonFeatureToggle extends ButtonFeature {
 
-    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/toggleinsidecircle.png");
-    private static final ResourceLocation TOGGLE_BORDER = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/toggleborder.png");
-    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/toggleinsidebackground.png");
+    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = SkyblockAddons.resourceLocation("gui/toggleinsidecircle.png");
+    private static final ResourceLocation TOGGLE_BORDER = SkyblockAddons.resourceLocation("gui/toggleborder.png");
+    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = SkyblockAddons.resourceLocation("gui/toggleinsidebackground.png");
 
     private static final int CIRCLE_PADDING_LEFT = 5;
     private static final int ANIMATION_SLIDE_DISTANCE = 12;
@@ -38,11 +38,8 @@ public class ButtonFeatureToggle extends ButtonFeature {
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isHovered(mouseX, mouseY);
 
-//        ColorUtils.bindColor(0xFF1E252E); // RGBA(30, 37, 46, 255)
         int color = ARGB.color(30, 37, 46, 255);
         graphics.blit(RenderType::guiTextured, TOGGLE_BORDER, getX(), getY(), 0, 0, width, height, width, height, color);
-//        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0,width,height,width,height, true);
-
         boolean enabled = isEnabled == null ? feature.isEnabled() : isEnabled.get();
         boolean remoteDisabled = feature.isRemoteDisabled();
 
@@ -52,7 +49,6 @@ public class ButtonFeatureToggle extends ButtonFeature {
             color = ARGB.color(remoteDisabled ? 25 : 255, 222, 68, 76); // Red
         }
         graphics.blit(RenderType::guiTextured, TOGGLE_INSIDE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height, color);
-//        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition,0,0, width, height, width, height, true);
 
         int startingX = getStartingPosition(enabled);
         int slideAnimationOffset = 0;
@@ -73,7 +69,6 @@ public class ButtonFeatureToggle extends ButtonFeature {
 
         color = ARGB.white(1F);
         graphics.blit(RenderType::guiTextured, TOGGLE_INSIDE_CIRCLE, startingX, getY() + 3, 0, 0, 9, 9, 9, 9, color);
-//        DrawUtils.drawModalRectWithCustomSizedTexture(startingX, yPosition+3,0,0,9,9,9,9, true);
     }
 
     private int getStartingPosition(boolean enabled) {
@@ -131,4 +126,5 @@ public class ButtonFeatureToggle extends ButtonFeature {
             this.animationButtonClicked = System.currentTimeMillis();
         }
     }
+
 }

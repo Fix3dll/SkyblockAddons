@@ -6,6 +6,7 @@ import net.minecraft.util.ARGB;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Color;
+import java.util.Locale;
 
 public enum ColorCode implements RegistrableEnum {
     BLACK('0', 0xFF000000),
@@ -34,11 +35,10 @@ public enum ColorCode implements RegistrableEnum {
 
     public static final char COLOR_CHAR = '§';
     @Getter private final char code;
-    @Getter
-    private final boolean isFormat;
+    @Getter private final boolean isFormat;
     @Getter private final String jsonName;
-    private final String toString;
     @Getter private final int color;
+    private final String toString;
 
     ColorCode(char code) {
         this(code, -1);
@@ -63,14 +63,13 @@ public enum ColorCode implements RegistrableEnum {
     ColorCode(char code, boolean isFormat, String jsonName, int rgb) {
         this.code = code;
         this.isFormat = isFormat;
-        this.jsonName = StringUtils.isEmpty(jsonName) ? this.name().toLowerCase() : jsonName;
-        this.toString = new String(new char[] { COLOR_CHAR, code });
+        this.jsonName = StringUtils.isEmpty(jsonName) ? this.name().toLowerCase(Locale.ENGLISH) : jsonName;
         this.color = rgb;
+        this.toString = new String(new char[] { COLOR_CHAR, code });
     }
 
     /**
      * Get the color represented by the specified code.
-     *
      * @param code The code to search for.
      * @return The mapped color, or null if non exists.
      */
@@ -108,4 +107,5 @@ public enum ColorCode implements RegistrableEnum {
     public String toString() {
         return this.toString;
     }
+
 }

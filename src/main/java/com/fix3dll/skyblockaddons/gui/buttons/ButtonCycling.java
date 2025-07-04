@@ -17,8 +17,8 @@ import java.util.function.Consumer;
  */
 public class ButtonCycling extends SkyblockAddonsButton {
 
-    private static final ResourceLocation ARROW_LEFT = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/flatarrowleft.png");
-    private static final ResourceLocation ARROW_RIGHT = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/flatarrowright.png");
+    private static final ResourceLocation ARROW_LEFT = SkyblockAddons.resourceLocation("gui/flatarrowleft.png");
+    private static final ResourceLocation ARROW_RIGHT = SkyblockAddons.resourceLocation("gui/flatarrowright.png");
 
     /**
      * Item that can be used in this Select button

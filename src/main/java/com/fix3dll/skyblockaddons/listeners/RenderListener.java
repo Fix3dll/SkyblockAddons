@@ -121,7 +121,7 @@ public class RenderListener {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
-    public static final ResourceLocation SBA_RENDER_LAYER = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "hud_layer");
+    public static final ResourceLocation SBA_RENDER_LAYER = SkyblockAddons.resourceLocation("hud_layer");
 
     private static final ItemStack BONE_ITEM = new ItemStack(Items.BONE);
     private static final ResourceLocation ARMOR = ResourceLocation.withDefaultNamespace("hud/armor_full");

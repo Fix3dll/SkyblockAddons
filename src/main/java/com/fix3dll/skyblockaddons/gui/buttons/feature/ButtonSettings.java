@@ -14,7 +14,7 @@ import net.minecraft.util.ARGB;
 
 public class ButtonSettings extends ButtonFeature {
 
-    private static final ResourceLocation GEAR = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/gear.png");
+    private static final ResourceLocation GEAR = SkyblockAddons.resourceLocation("gui/gear.png");
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
@@ -33,7 +33,6 @@ public class ButtonSettings extends ButtonFeature {
         this.isHovered = isHovered(mouseX, mouseY);
 
         graphics.blit(RenderType::guiTextured, GEAR, getX(), getY(), 0, 0, width, height, width, height, color);
-//            DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, width, height, width, height, true);
     }
 
     @Override
@@ -47,4 +46,5 @@ public class ButtonSettings extends ButtonFeature {
             }
         }
     }
+
 }

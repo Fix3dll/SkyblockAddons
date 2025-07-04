@@ -11,9 +11,9 @@ import java.util.function.Supplier;
 
 public class ButtonCustomToggle extends SkyblockAddonsButton {
 
-    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/toggleinsidecircle.png");
-    private static final ResourceLocation TOGGLE_BORDER = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/toggleborder.png");
-    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "gui/toggleinsidebackground.png");
+    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = SkyblockAddons.resourceLocation("gui/toggleinsidecircle.png");
+    private static final ResourceLocation TOGGLE_BORDER = SkyblockAddons.resourceLocation("gui/toggleborder.png");
+    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = SkyblockAddons.resourceLocation("gui/toggleinsidebackground.png");
     private static final int animationSlideTime = 150;
 
     private final int circlePaddingLeft;
@@ -93,4 +93,5 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
         this.animationButtonClicked = System.currentTimeMillis();
         this.onClickRunnable.run();
     }
+
 }

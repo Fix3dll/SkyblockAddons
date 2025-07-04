@@ -40,12 +40,10 @@ public class ButtonLanguage extends SkyblockAddonsButton {
         this.isHovered = isHovered(mouseX, mouseY);
 
         DrawUtils.drawRoundedRect(graphics, getX(), getY(), width, height, 4, ARGB.color(230, 28, 29, 41));
-//            DrawUtils.drawRect(xPosition, yPosition, width, height,  ColorUtils.getDummySkyblockColor(28, 29, 41, 230), 4);
 
         int color = ARGB.white(1F);
         try {
             graphics.blit(RenderType::guiTextured, language.getIdentifier(), getX() + width - 32, getY(), 0, 0, 30, 26, 30, 26, color);
-//                DrawUtils.drawModalRectWithCustomSizedTexture(xPosition+width-32, yPosition, 0, 0, 30, 26, 30, 26, true);
         } catch (Exception ex) {
             if (!flagResourceExceptionTriggered) {
                 flagResourceExceptionTriggered = true;
@@ -54,14 +52,6 @@ public class ButtonLanguage extends SkyblockAddonsButton {
         }
         color = this.isHovered ? ARGB.color(255, 255, 255, 160) : ColorUtils.getDefaultBlue(255);
         graphics.drawString(MC.font, languageName, getX() + 5, getY() + 10, color, true);
-//            drawString(
-//                    mc.fontRendererObj,
-//                    languageName,
-//                    xPosition + 5,
-//                    yPosition+10,
-//                    hovered ? new Color(255, 255, 160, 255).getRGB()
-//                            : main.getUtils().getDefaultBlue(255)
-//            );
     }
 
     @Override

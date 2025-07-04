@@ -17,7 +17,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
 
     public static final int MAX_SELECT_RADIUS = 90;
 
-    private static final ResourceLocation PORTAL_ICON = ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, "portal.png");
+    private static final ResourceLocation PORTAL_ICON = SkyblockAddons.resourceLocation("portal.png");
 
     @Getter private final IslandWarpGui.Marker marker;
 
@@ -80,4 +80,5 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return false;
     }
+
 }
