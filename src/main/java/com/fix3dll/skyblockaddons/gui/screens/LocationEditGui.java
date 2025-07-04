@@ -636,6 +636,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                 }
             }
 
+            draggedFeature.getFeatureData().setCoords(x, y);
             draggedFeature.setClosestAnchorPoint();
             switch (draggedFeature) {
                 case HEALTH_BAR:
