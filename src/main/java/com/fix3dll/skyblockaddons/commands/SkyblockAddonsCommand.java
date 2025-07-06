@@ -284,7 +284,7 @@ public class SkyblockAddonsCommand {
             DevUtils.setCopyMode(DevUtils.CopyMode.ENTITY);
             DevUtils.resetEntityCopyRadiusToDefault();
             DevUtils.resetEntityNamesToDefault();
-            DevUtils.copyEntityData();
+            DevUtils.copyData();
             return 1;
         }).then(argument("entityType", StringArgumentType.word()).suggests((ctx, suggestionsBuilder) -> {
             String remaining = suggestionsBuilder.getRemaining();
@@ -298,40 +298,40 @@ public class SkyblockAddonsCommand {
             DevUtils.setCopyMode(DevUtils.CopyMode.ENTITY);
             DevUtils.setEntityNamesFromString(ctx.getArgument("entityType", String.class));
             DevUtils.resetEntityCopyRadiusToDefault();
-            DevUtils.copyEntityData();
+            DevUtils.copyData();
             return 1;
         }).then(argument("radius", IntegerArgumentType.integer()).executes(ctx -> {
             DevUtils.setCopyMode(DevUtils.CopyMode.ENTITY);
             DevUtils.setEntityNamesFromString(ctx.getArgument("entityType", String.class));
             DevUtils.setEntityCopyRadius(ctx.getArgument("radius", Integer.class));
-            DevUtils.copyEntityData();
+            DevUtils.copyData();
             return 1;
         }))));
 
         // COPY_SIDEBAR
         builder.then(literal("copySidebar").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
             DevUtils.setCopyMode(DevUtils.CopyMode.SIDEBAR);
-            DevUtils.copyScoreboardSideBar();
+            DevUtils.copyData();
             return 1;
         }).then(argument("formatted", BoolArgumentType.bool()).executes(ctx -> {
             boolean formatted = BoolArgumentType.getBool(ctx, "formatted");
             DevUtils.setSidebarFormatted(formatted);
-            DevUtils.setCopyMode(DevUtils.CopyMode.TAB_LIST);
-            DevUtils.copyTabListHeaderAndFooter();
+            DevUtils.setCopyMode(DevUtils.CopyMode.SIDEBAR);
+            DevUtils.copyData();
             return 1;
         })));
 
         // COPY_TAB_LIST
         builder.then(literal("copyTabList").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
             DevUtils.setCopyMode(DevUtils.CopyMode.TAB_LIST);
-            DevUtils.copyTabListHeaderAndFooter();
+            DevUtils.copyData();
             return 1;
         }));
 
         // COPY_BLOCK
         builder.then(literal("copyBlock").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
             DevUtils.setCopyMode(DevUtils.CopyMode.BLOCK);
-            DevUtils.copyBlockData();
+            DevUtils.copyData();
             return 1;
         }));
 

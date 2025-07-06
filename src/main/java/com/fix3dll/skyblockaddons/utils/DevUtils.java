@@ -118,7 +118,10 @@ public class DevUtils {
             return;
         }
 
-        StringBuilder stringBuilder = new StringBuilder(sideBarObjective.getDisplayName().getString()).append("\n");
+        String title = stripControlCodes
+                ? sideBarObjective.getDisplayName().getString()
+                : TextUtils.getFormattedText(sideBarObjective.getDisplayName(), true);
+        StringBuilder stringBuilder = new StringBuilder(title).append("\n");
 
         scoreboard.listPlayerScores(sideBarObjective).stream()
                 .filter(scoreboardEntry -> !scoreboardEntry.isHidden())
@@ -132,7 +135,10 @@ public class DevUtils {
                     Component decoratedName = PlayerTeam.formatNameForTeam(team, name);
 
                     // return fixed name
-                    stringBuilder.append(decoratedName.getString().replace(owner, ""));
+                    String text = stripControlCodes
+                            ? decoratedName.getString()
+                            : TextUtils.getFormattedText(decoratedName, true);
+                    stringBuilder.append(text.replace(owner, ""));
 
                     if (!stripControlCodes) {
                         stringBuilder.append(" [").append(scoreboardEntry.value()).append("]");
