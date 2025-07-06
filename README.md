@@ -11,7 +11,8 @@
 </div>
 
 SkyblockAddons has reached end of life. This fork contains updates from me. You can reach latest builds from GitHub Actions.
-If you are looking for a stable version, you can check the [Modrinth](https://modrinth.com/mod/skyblockaddons-unofficial) page.
+If you are looking for a stable version, you can check the [Modrinth](https://modrinth.com/mod/skyblockaddons-unofficial) page.  
+It is also recommended to follow the [Modrinth changelog page](https://modrinth.com/mod/skyblockaddons-unofficial/changelog) for announcements and notes.
 
 Thanks to Our Translators
 ------
