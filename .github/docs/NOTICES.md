@@ -136,7 +136,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Hypixel Skyblock Wiki Images
 This project includes images sourced from the [Hypixel Skyblock Wiki](http://hypixel-skyblock.fandom.com/wiki/Hypixel_SkyBlock_Wiki), hosted on Fandom.  
-All original image content from the Hypixel Wiki is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA 3.0)](https://creativecommons.org/licenses/by-sa/3.0/).  
+All original image content from the Hypixel Skyblock Wiki is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA 3.0)](https://creativecommons.org/licenses/by-sa/3.0/).  
 The images used in this project may have been modified (e.g., resized) but remain under the CC BY-SA 3.0 license.  
-Credit belongs to the original Hypixel Wiki contributors. No ownership is claimed over their original work. Redistribution or reuse of these images must comply with the CC BY-SA 3.0 license terms.  
-
+Credit belongs to the original Hypixel Skyblock Wiki contributors. No ownership is claimed over their original work. Redistribution or reuse of these images must comply with the CC BY-SA 3.0 license terms.  
