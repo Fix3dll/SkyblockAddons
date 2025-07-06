@@ -398,7 +398,7 @@ public class DungeonMapManager {
                     graphics.blit(RenderType::guiTexturedOverlay, skin, -4, -4, 40.0F, 8, 8, 8, 8, 8, 64, 64, color);
                 }
                 poseStack.popPose();
-            } else if (showPlayerHead && mapData.decorations.containsKey(marker.getMapMarkerName())) {
+            } else if (mapData.decorations.containsKey(marker.getMapMarkerName())) {
                 poseStack.translate(-0.125F, 0.125F, 0.0F);
                 TextureAtlasSprite textureAtlasSprite = MC.getMapDecorationTextures().get(mapData.decorations.get(marker.getMapMarkerName()));
                 if (textureAtlasSprite.atlasLocation() != MissingTextureAtlasSprite.getLocation()) {
