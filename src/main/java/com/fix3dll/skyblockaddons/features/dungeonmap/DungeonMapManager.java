@@ -24,7 +24,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -64,9 +63,9 @@ public class DungeonMapManager {
         boolean firstIsNull = first.getMapMarkerName() == null;
         boolean secondIsNull = second.getMapMarkerName() == null;
 
-        if (!Objects.equals(first.getIconType(), second.getIconType())) {
-            int firstId = BuiltInRegistries.MAP_DECORATION_TYPE.getId(first.getIconType());
-            int secondId = BuiltInRegistries.MAP_DECORATION_TYPE.getId(second.getIconType());
+        if (!Objects.equals(first.getDecorationType(), second.getDecorationType())) {
+            int firstId = BuiltInRegistries.MAP_DECORATION_TYPE.getId(first.getDecorationType());
+            int secondId = BuiltInRegistries.MAP_DECORATION_TYPE.getId(second.getDecorationType());
             return Integer.compare(firstId, secondId);
         }
 
@@ -291,7 +290,7 @@ public class DungeonMapManager {
         // Grab all the teammates and try to correlate them to the map
         Object2ObjectOpenHashMap<String, DungeonPlayer> teammates = main.getDungeonManager().getTeammates();
         ObjectIterator<DungeonPlayer> iterator = teammates.values().iterator();
-        while (true) {
+        while (MC.level != null) {
             DungeonPlayer teammate;
             if (iterator.hasNext()) {
                 teammate = iterator.next();
@@ -300,8 +299,7 @@ public class DungeonMapManager {
             }
 
             MapMarker playerMarker;
-            if (teammate != null) {
-                Player player = MC.level.getPlayerByUUID(teammate.getEntityId());
+            if (teammate != null && MC.level.getPlayerByUUID(teammate.getEntityId()) instanceof Player player) {
                 playerMarker = getMapMarkerForPlayer(teammate, player);
             } else {
                 playerMarker = getMapMarkerForPlayer(null, MC.player);
@@ -398,10 +396,16 @@ public class DungeonMapManager {
                     graphics.blit(RenderType::guiTexturedOverlay, skin, -4, -4, 40.0F, 8, 8, 8, 8, 8, 64, 64, color);
                 }
                 poseStack.popPose();
-            } else if (mapData.decorations.containsKey(marker.getMapMarkerName())) {
+            } else {
                 poseStack.translate(-0.125F, 0.125F, 0.0F);
-                TextureAtlasSprite textureAtlasSprite = MC.getMapDecorationTextures().get(mapData.decorations.get(marker.getMapMarkerName()));
-                if (textureAtlasSprite.atlasLocation() != MissingTextureAtlasSprite.getLocation()) {
+                TextureAtlasSprite textureAtlasSprite;
+                if (marker.getDecorationType() != null) {
+                    textureAtlasSprite = MC.getMapDecorationTextures().getSprite(marker.getDecorationType().assetId());
+                } else {
+                    textureAtlasSprite = null;
+                }
+
+                if (textureAtlasSprite != null) {
                     VertexConsumer vertexConsumer2 = bufferSource.getBuffer(RenderType.textSeeThrough(textureAtlasSprite.atlasLocation()));
                     Matrix4f matrix4f2 = poseStack.last().pose();
                     vertexConsumer2.addVertex(matrix4f2, -1.0F, 1.0F, decorationCount * -0.001F)
@@ -447,7 +451,7 @@ public class DungeonMapManager {
         Map.Entry<String, MapDecoration> duplicate = null;
         for (Map.Entry<String, MapDecoration> decoration : savedMapDecorations.entrySet()) {
             MapDecoration mapDecoration = decoration.getValue();
-            if (mapDecoration.type().value() == mapMarker.getIconType() &&
+            if (mapDecoration.type().value() == mapMarker.getDecorationType() &&
                     Math.abs(mapDecoration.x() - mapMarker.getX()) <= 5 &&
                     Math.abs(mapDecoration.y() - mapMarker.getY()) <= 5) {
                 duplicates++;

@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.features.dungeonmap;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 public class MapMarker {
 
     /** The icon type of this map marker (https://minecraft.fandom.com/wiki/Map#Map_icons) */
-    private MapDecorationType iconType;
+    private MapDecorationType decorationType;
     private float x;
     private float y;
     private float rotation;
@@ -25,20 +26,20 @@ public class MapMarker {
     @Setter private String mapMarkerName;
     private boolean wearingHat;
 
-    public MapMarker(Player player) {
+    public MapMarker(@NonNull Player player) {
         this.playerName = player.getGameProfile().getName();
         this.wearingHat = player.isModelPartShown(PlayerModelPart.HAT);
 
         if (player == Minecraft.getInstance().player) {
-            iconType = MapDecorationTypes.FRAME.value();
+            decorationType = MapDecorationTypes.FRAME.value();
         } else {
-            iconType = MapDecorationTypes.BLUE_MARKER.value();
+            decorationType = MapDecorationTypes.BLUE_MARKER.value();
         }
         updateXZRot(player);
     }
 
-    public MapMarker(MapDecorationType iconType, float x, float y, float rotation) {
-        this.iconType = iconType;
+    public MapMarker(MapDecorationType decorationType, float x, float y, float rotation) {
+        this.decorationType = decorationType;
         this.x = x;
         this.y = y;
         this.rotation = rotation;
@@ -56,8 +57,7 @@ public class MapMarker {
         return null;
     }
 
-    public void updateXZRot(Player player) {
-        if (player == null) return;
+    public void updateXZRot(@NonNull Player player) {
         x = DungeonMapManager.toMapCoordinate(player.getX(), DungeonMapManager.getMarkerOffsetX());
         y = DungeonMapManager.toMapCoordinate(player.getZ(), DungeonMapManager.getMarkerOffsetZ());
         rotation = Mth.wrapDegrees(player.getYRot()) / 360F * 16F;
