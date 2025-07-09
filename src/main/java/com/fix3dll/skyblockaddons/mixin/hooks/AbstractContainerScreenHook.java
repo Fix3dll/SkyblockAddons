@@ -477,30 +477,24 @@ public class AbstractContainerScreenHook {
         }
     }
 
-    // return whether to continue (super.keyTyped(typedChar, keyCode);)
+    /**
+     * @return true if keyPressed will be canceled
+     */
     public static boolean keyPressed_reforgeFilter(int keyCode, int scanCode, int modifiers) {
         if (main.getUtils().isOnSkyblock() && Feature.REFORGE_FILTER.isEnabled()) {
             InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
             if (inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING) {
-                if (keyCode != MC.options.keyInventory.key.getValue() ||
-                        (!textFieldMatches.isFocused() && !textFieldExclusions.isFocused())) {
-                    textFieldMatches.keyPressed(keyCode, scanCode, modifiers);
-                    textFieldExclusions.keyPressed(keyCode, scanCode, modifiers);
-                    return true;
-                }
                 textFieldMatches.keyPressed(keyCode, scanCode, modifiers);
                 textFieldExclusions.keyPressed(keyCode, scanCode, modifiers);
-            } else {
-                return true;
+                return keyCode == MC.options.keyInventory.key.getValue()
+                        && (textFieldMatches.isFocused() || textFieldExclusions.isFocused());
             }
-            return false;
-        } else {
-            return true;
         }
+        return false;
     }
 
-    public static boolean charTyped_reforgeFilter(char codePoint, int modifiers) {
+    public static void charTyped_reforgeFilter(char codePoint, int modifiers) {
         if (main.getUtils().isOnSkyblock() && Feature.REFORGE_FILTER.isEnabled() && textFieldMatches != null) {
             InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
@@ -511,11 +505,8 @@ public class AbstractContainerScreenHook {
                 main.getUtils().setReforgeMatches(reforges);
                 reforges = new LinkedList<>(Arrays.asList(textFieldExclusions.getValue().split(",")));
                 main.getUtils().setReforgeExclusions(reforges);
-                return true;
             }
-            return false;
         }
-        return false;
     }
 
     /**

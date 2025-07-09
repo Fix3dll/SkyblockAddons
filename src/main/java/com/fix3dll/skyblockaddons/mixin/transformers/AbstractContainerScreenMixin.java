@@ -91,7 +91,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     public void sba$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-        if (!AbstractContainerScreenHook.keyPressed_reforgeFilter(keyCode, scanCode, modifiers)) {
+        if (AbstractContainerScreenHook.keyPressed_reforgeFilter(keyCode, scanCode, modifiers)) {
             cir.cancel();
         } else {
             AbstractContainerScreenHook.keyPressed(this.hoveredSlot, keyCode, cir);
@@ -172,12 +172,10 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    // TODO move to screen mixin, dont use overwrite
+    // TODO dont use overwrite
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        if (AbstractContainerScreenHook.charTyped_reforgeFilter(codePoint, modifiers)) {
-            return super.charTyped(codePoint, modifiers);
-        }
-        return false;
+        AbstractContainerScreenHook.charTyped_reforgeFilter(codePoint, modifiers);
+        return super.charTyped(codePoint, modifiers);
     }
 }
