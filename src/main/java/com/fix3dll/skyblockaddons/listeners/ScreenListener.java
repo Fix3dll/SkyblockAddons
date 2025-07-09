@@ -159,9 +159,12 @@ public class ScreenListener {
             boolean closed;
 
             if (oldGuiScreen instanceof ContainerScreen containerScreen) {
-                if (main.getInventoryUtils().getInventoryType() == InventoryType.EQUIPMENT) {
+                InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+                if (inventoryType == InventoryType.EQUIPMENT) {
                     // Set eqs after close eq menu
                     this.setEquipments(containerScreen.getMenu());
+                } else if (inventoryType == InventoryType.SKYBLOCK_MENU && main.getUtils().isOnRift()) {
+                    this.setRiftPet(containerScreen.getMenu());
                 }
                 closed = true;
             } else {
@@ -261,6 +264,10 @@ public class ScreenListener {
                 }
             } else if (inventoryType == InventoryType.EQUIPMENT) {
                 this.setEquipments(chestMenu);
+            } else if (inventoryType == InventoryType.SKYBLOCK_MENU) {
+                if (main.getUtils().isOnRift()) {
+                    this.setRiftPet(chestMenu);
+                }
             }
 
         }
@@ -418,11 +425,11 @@ public class ScreenListener {
         SkyblockEquipment.GLOVES_BRACELET.setItemStack(chestMenu.getSlot(37).getItem());
 
         ItemStack petItem = chestMenu.getSlot(47).getItem();
-        SkyblockEquipment.PET.setItemStack(petItem);
 
-        // Be sure current pet is same on cache
         if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS_PANE)) {
+            // Be sure current pet is same on cache
             main.getPetCacheManager().setCurrentPet(null);
+            SkyblockEquipment.PET.setItemStack(petItem);
         } else if (petItem.is(Items.PLAYER_HEAD)) {
             Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
             Int2ObjectOpenHashMap<Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
@@ -437,8 +444,17 @@ public class ScreenListener {
                     break;
                 }
             }
+            SkyblockEquipment.PET.setItemStack(petItem);
         }
         SkyblockEquipment.saveEquipments();
+    }
+
+    private void setRiftPet(ChestMenu chestMenu) {
+        ItemStack riftPet = chestMenu.getSlot(30).getItem();
+        if (riftPet.is(Items.PLAYER_HEAD)) {
+            SkyblockEquipment.PET.setItemStack(riftPet);
+            SkyblockEquipment.saveEquipments();
+        }
     }
 
 }

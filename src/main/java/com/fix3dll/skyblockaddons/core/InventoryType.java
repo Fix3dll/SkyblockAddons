@@ -22,7 +22,8 @@ public enum InventoryType {
     MAYOR("Mayor", "Mayor (?<mayor>.*)"),
     CALENDAR("Calendar", "Calendar and Events"),
     PETS("Pets","Pets( \\((?<page>\\d+)/\\d+\\) )?"), // "Pets (1/3) "
-    EQUIPMENT("Your Equipment and Stats", "Your Equipment and Stats");
+    EQUIPMENT("Your Equipment and Stats", "Your Equipment and Stats"),
+    SKYBLOCK_MENU("SkyBlock Menu", "SkyBlock Menu");
 
     private final String inventoryName;
     private final Pattern inventoryPattern;

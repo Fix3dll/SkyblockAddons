@@ -5,13 +5,13 @@ import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
-import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTrackerData;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerTrackerData;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.StringUtil;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -53,7 +53,7 @@ public class PersistentValuesManager {
 
         private final Map<String, CompressedStorage> storageCache = new HashMap<>();
         private final Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
-        private CompressedStorage equipments = new CompressedStorage();
+        private final Map<String, CompressedStorage> equipmentCache = new HashMap<>();
 
         private int oresMined = 0;
         private int seaCreaturesKilled = 0;
@@ -88,7 +88,7 @@ public class PersistentValuesManager {
             saveValues();
         }
         FetchurManager.getInstance().postPersistentConfigLoad(persistentValues.lastTimeFetchur);
-        SkyblockEquipment.initialize(ContainerPreviewManager.decompressItems(persistentValues.equipments.getStorage()));
+        SkyblockEquipment.loadEquipments(SkyblockEquipment.Type.MAIN);
     }
 
     /**
@@ -202,6 +202,14 @@ public class PersistentValuesManager {
         }
 
         return persistentValues.profileLockedSlots.get(profile);
+    }
+
+    public CompressedStorage getCompressedEquipments(String levelKey) {
+        if (StringUtil.isNullOrEmpty(levelKey)) {
+            return null;
+        } else {
+            return persistentValues.equipmentCache.getOrDefault(levelKey, null);
+        }
     }
 
 }

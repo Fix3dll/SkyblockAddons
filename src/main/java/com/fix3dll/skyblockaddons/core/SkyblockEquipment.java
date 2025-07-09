@@ -3,8 +3,11 @@ package com.fix3dll.skyblockaddons.core;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
+import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
+import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -43,6 +46,8 @@ public enum SkyblockEquipment {
         )));
     }
 
+    private static Type currentType;
+
     @Getter @Setter private ItemStack itemStack;
     @Getter private final ItemStack emptyStack;
     private boolean isHovered = false;
@@ -58,13 +63,36 @@ public enum SkyblockEquipment {
         this.itemStack = emptyStack;
     }
 
-    public static void initialize(List<ItemStack> items) {
-        if (items == null) return;
+    public static void loadEquipments(Type equipmentType) {
+        if (equipmentType != null && currentType != equipmentType) {
+            currentType = equipmentType;
+        } else {
+            return;
+        }
 
-        int itemListSize = items.size();
-        for (int i = 0; i < values().length; i++) {
-            if (itemListSize > i) {
-                values()[i].itemStack = items.get(i);
+        CompressedStorage compressedStorage = main.getPersistentValuesManager().getCompressedEquipments(currentType.getLevelKey());
+        if (compressedStorage != null) {
+            List <ItemStack> list = ContainerPreviewManager.decompressItems(compressedStorage.getStorage());
+            if (list != null) {
+                int listSize = list.size();
+                // If there is another null while the list is decompressed, fill it too.
+                for (int i = 0; i < values().length; i++) {
+                    if (listSize > i) {
+                        values()[i].itemStack = list.get(i);
+                    } else {
+                        values()[i].itemStack = values()[i].getEmptyStack();
+                    }
+                }
+            } else {
+                // Fill with empty stacks if not decompressed
+                for (SkyblockEquipment equipment : values()) {
+                    equipment.itemStack = equipment.emptyStack;
+                }
+            }
+        } else {
+            // Fill with empty stacks if there is no cache
+            for (SkyblockEquipment equipment : values()) {
+                equipment.itemStack = equipment.emptyStack;
             }
         }
     }
@@ -105,7 +133,11 @@ public enum SkyblockEquipment {
         if (player == null || !isHovered || button != 0) return;
 
         if (this == PET && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled(FeatureSetting.PET_PANEL)) {
-            player.connection.sendChat("/petsmenu");
+            if (main.getUtils().isOnRift()) {
+                player.connection.sendChat("/sbmenu");
+            } else {
+                player.connection.sendChat("/petsmenu");
+            }
         } else {
             player.connection.sendChat("/equipment");
         }
@@ -122,12 +154,13 @@ public enum SkyblockEquipment {
         int length = values().length;
         ItemStack[] list = new ItemStack[length];
         for (int slotNumber = 0; slotNumber < length; slotNumber++) {
-            ItemStack itemStack = values()[slotNumber].getItemStack();
+            ItemStack itemStack = values()[slotNumber].itemStack;
             list[slotNumber] = itemStack == ItemStack.EMPTY ? values()[slotNumber].getEmptyStack() : itemStack;
         }
 
-        main.getPersistentValuesManager().getPersistentValues().getEquipments().setStorage(
-                ItemUtils.getCompressedNBT(list).getAsByteArray()
+        main.getPersistentValuesManager().getPersistentValues().getEquipmentCache().put(
+                main.getUtils().isOnRift() ? Type.RIFT.getLevelKey() : Type.MAIN.getLevelKey(),
+                new CompressedStorage(ItemUtils.getCompressedNBT(list).getAsByteArray())
         );
         main.getPersistentValuesManager().saveValues();
     }
@@ -142,6 +175,14 @@ public enum SkyblockEquipment {
             list.add(Component.literal(string));
         }
         return list;
+    }
+
+    @AllArgsConstructor @Getter
+    public enum Type {
+        MAIN("main"),
+        RIFT("rift");
+
+        public final String levelKey;
     }
 
 }

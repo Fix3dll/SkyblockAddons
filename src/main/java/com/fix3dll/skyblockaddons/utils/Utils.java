@@ -2,6 +2,8 @@ package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment.Type;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.SkyblockDate;
@@ -48,8 +50,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Getter
-@Setter
+@Getter @Setter
 public class Utils {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
@@ -398,6 +399,7 @@ public class Utils {
                     if (lineNumber < 6) {
                         if (!foundLocation && (strippedLine.contains("⏣") || strippedLine.contains("ф"))) {
                             onRift = strippedLine.contains("ф");
+                            SkyblockEquipment.loadEquipments(onRift ? Type.RIFT : Type.MAIN);
                             location = strippedLine.substring(strippedLine.indexOf(' ') + 1).trim();
 
                             if (map == Island.KUUDRA || map == Island.DUNGEON) {
