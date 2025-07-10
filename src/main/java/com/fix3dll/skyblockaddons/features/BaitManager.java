@@ -18,7 +18,7 @@ public class BaitManager {
 
     /** The BaitListManager instance. */
     @Getter private static final BaitManager instance = new BaitManager();
-    private static final int NUMBER_OF_BAITS = 27;
+    private static final int NUMBER_OF_BAITS = 28;
 
     public static final Map<ItemStack, Integer> DUMMY_BAITS = new HashMap<>();
 
