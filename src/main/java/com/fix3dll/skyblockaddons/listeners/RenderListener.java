@@ -1153,7 +1153,8 @@ public class RenderListener {
                 float pressure = buttonLocation != null ? 50.0F : PlayerStat.PRESSURE.getValue();
                 if (pressure == -1) return;
                 boolean icon = feature.isEnabled(FeatureSetting.PRESSURE_TEXT_ICON);
-                text = (icon ? "❍" : "") + TextUtils.formatNumber(pressure) + "%";
+                boolean lastRemembered = main.getPlayerListener().getActionBarParser().isUseLastRememberedPressure();
+                text = (icon ? "❍" : "") + (lastRemembered ? "~" : "") + TextUtils.formatNumber(pressure) + "%";
             }
             default -> {
                 return;

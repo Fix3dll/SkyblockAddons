@@ -10,6 +10,7 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.SkillXpManager;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
@@ -86,6 +87,13 @@ public class ActionBarParser {
     private String lastSkillProgressString;
     /** The skill type parsed from the last action bar message */
     private SkillType lastSkillType;
+    /**
+     * If the player is still in the water but the action bar shows no pressure due to mana consumption etc., the last
+     * remembered value is shown.
+     * </p>
+     * TODO: a system like the predictMana system with the formula
+     */
+    private boolean useLastRememberedPressure;
 
     private final LinkedList<String> stringsToRemove = new LinkedList<>();
 
@@ -115,9 +123,16 @@ public class ActionBarParser {
         if (actionBar.contains("❤") && !actionBar.contains("❈") && splitMessage.length == 2) {
             PlayerStat.DEFENCE.setValue(0);
         }
-        // If there is no pressure section on the bar, set pressure to -1.
+        // If there is no pressure section on the bar and the player is not in the water, set the pressure to -1.
         if (!actionBar.contains("❍")) {
-            PlayerStat.PRESSURE.setValue(-1);
+            if (Minecraft.getInstance().player.isUnderWater()) {
+                useLastRememberedPressure = true;
+            } else {
+                PlayerStat.PRESSURE.setValue(-1);
+                useLastRememberedPressure = false;
+            }
+        } else {
+            useLastRememberedPressure = false;
         }
 
         for (String section : splitMessage) {
