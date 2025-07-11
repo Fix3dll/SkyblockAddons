@@ -28,6 +28,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -301,7 +302,7 @@ public class AbstractContainerScreenHook {
                                 graphics.pose().pushPose();
                                 graphics.pose().translate(0, 0, 401);
                                 MC.font.drawInBatch(
-                                        reforge, renderX, renderY, color, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880
+                                        reforge, renderX, renderY, color, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT
                                 );
                                 graphics.pose().popPose();
                             });

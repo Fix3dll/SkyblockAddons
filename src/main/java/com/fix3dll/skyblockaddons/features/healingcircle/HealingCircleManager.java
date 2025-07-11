@@ -15,7 +15,6 @@ import lombok.Getter;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
 import java.awt.geom.Point2D;
@@ -28,7 +27,7 @@ public class HealingCircleManager {
 
     public static final RenderPipeline HEALING_CIRCLE_PIPELINE = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
-                    .withLocation("pipeline/healing_circle")
+                    .withLocation("sba_healing_circle")
                     .withVertexShader("core/position_color")
                     .withFragmentShader("core/position_color")
                     .withBlend(BlendFunction.TRANSLUCENT)
@@ -39,14 +38,12 @@ public class HealingCircleManager {
     );
 
     private static final RenderType HEALING_CIRCLE = RenderType.create(
-            "healing_circle",
-            256,
+            "sba_healing_circle",
+            RenderType.SMALL_BUFFER_SIZE,
             true,
             true,
             HEALING_CIRCLE_PIPELINE,
             RenderType.CompositeState.builder()
-                    .setTextureState(RenderStateShard.NO_TEXTURE)
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
                     .setOutputState(RenderType.TRANSLUCENT_TARGET)
                     .createCompositeState(false)
     );
@@ -97,20 +94,7 @@ public class HealingCircleManager {
                     PoseStack poseStack = worldRenderContext.matrixStack();
                     MultiBufferSource source = worldRenderContext.consumers();
                     if (poseStack == null || source == null) continue;
-//                    poseStack.pushPose();
-//                    GL11.glNormal3f(0.0F, 1.0F, 0.0F);
 
-//                    GlStateManager.disableLighting();
-//                    GlStateManager.depthMask(false);
-//                    GlStateManager.enableDepth();
-//                    GlStateManager.enableBlend();
-//                    GlStateManager.depthFunc(GL11.GL_LEQUAL);
-//                    GlStateManager.disableCull();
-//                    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-//                    GlStateManager.enableAlpha();
-//                    GlStateManager.disableTexture2D();
-
-                    boolean chroma = feature.isChroma();
                     int color = feature.getColor(
                             ColorUtils.getAlphaIntFromFloat(
                                     MathUtils.clamp(
@@ -118,16 +102,16 @@ public class HealingCircleManager {
                                     )
                             )
                     );
-                    DrawUtils.drawCylinder(poseStack, source.getBuffer(HEALING_CIRCLE), circleCenter.getX(), 0, circleCenter.getY(), HealingCircle.getRadius(), 255, ColorUtils.getDummySkyblockColor(color, chroma));
-
-//                    GlStateManager.enableCull();
-//                    GlStateManager.enableTexture2D();
-//                    GlStateManager.enableDepth();
-//                    GlStateManager.depthMask(true);
-//                    GlStateManager.enableLighting();
-//                    GlStateManager.disableBlend();
-//                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-//                    poseStack.popPose();
+                    DrawUtils.drawCylinder(
+                            poseStack,
+                            source.getBuffer(HEALING_CIRCLE),
+                            circleCenter.getX(),
+                            0,
+                            circleCenter.getY(),
+                            HealingCircle.getRadius(),
+                            255,
+                            ColorUtils.getDummySkyblockColor(color, feature.isChroma())
+                    );
                 }
             }
         }

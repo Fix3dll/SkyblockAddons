@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -164,7 +165,7 @@ public class IslandButton extends SkyblockAddonsButton {
                     source,
                     Font.DisplayMode.NORMAL,
                     0,
-                    15728880
+                    LightTexture.FULL_BRIGHT
             ));
             poseStack.popPose();
         }

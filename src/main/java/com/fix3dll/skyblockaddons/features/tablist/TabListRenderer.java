@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.renderer.LightTexture;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +75,7 @@ public class TabListRenderer {
             final int fTW = totalWidth;
             for (String line : header) {
                 final int fHY = headerY;
-                graphics.drawSpecial(source -> FONT.drawInBatch(line, x + fTW / 2F - mc.font.width(line) / 2F, fHY, -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+                graphics.drawSpecial(source -> FONT.drawInBatch(line, x + fTW / 2F - mc.font.width(line) / 2F, fHY, -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
                 headerY += 8 + 1;
             }
             headerY += PADDING;
@@ -107,9 +108,9 @@ public class TabListRenderer {
 
                 final int fX = middleX, fY = middleY;
                 if (tabLine.type() == TabStringType.TITLE) {
-                    graphics.drawSpecial(source -> FONT.drawInBatch(tabLine.text(), (fX + renderColumn.getMaxWidth() / 2F - tabLine.getWidth() / 2F), fY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+                    graphics.drawSpecial(source -> FONT.drawInBatch(tabLine.text(), (fX + renderColumn.getMaxWidth() / 2F - tabLine.getWidth() / 2F), fY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
                 } else {
-                    graphics.drawSpecial(source -> FONT.drawInBatch(tabLine.text(), fX, fY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+                    graphics.drawSpecial(source -> FONT.drawInBatch(tabLine.text(), fX, fY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
                 }
                 middleY += LINE_HEIGHT;
                 middleX = savedX;
@@ -124,7 +125,7 @@ public class TabListRenderer {
             final int fTW = totalWidth;
             for (String line : footer) {
                 final int fFY = footerY;
-                graphics.drawSpecial(source -> FONT.drawInBatch(line, x + fTW / 2F - mc.font.width(line) / 2F, fFY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+                graphics.drawSpecial(source -> FONT.drawInBatch(line, x + fTW / 2F - mc.font.width(line) / 2F, fFY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
                 footerY += LINE_HEIGHT;
             }
         }

@@ -74,6 +74,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.resources.PlayerSkin;
@@ -202,7 +203,6 @@ public class RenderListener {
                 this::onRenderHud
         ));
         RenderEvents.LIVING_NAME.register(this::shouldRenderLivingName);
-//        RenderEvents.LEVEL_LAST.register(this::onRenderLevelLast);
         WorldRenderEvents.LAST.register(this::onRenderWorld);
     }
 
@@ -2679,10 +2679,6 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
-
-//        GlStateManager.enableDepth();
-//        GlStateManager.enableColorMaterial();
-
         poseStack.translate(x + 12.5F, y + 50F, 50F);
         poseStack.scale(-25F, 25F, 25F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
@@ -2692,8 +2688,6 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         poseStack.mulPose(Axis.XP.rotationDegrees(22.0F));
 
         EntityRenderDispatcher renderDispatcher = MC.getEntityRenderDispatcher();
-//        renderDispatcher.setPlayerViewY(180.0F);
-//        boolean shadowsEnabled = renderDispatcher.isRenderShadow();
         renderDispatcher.setRenderShadow(false);
 
         deployableArmorStand.setInvisible(true);
@@ -2701,7 +2695,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         deployableArmorStand.yBodyRot = yaw;
         deployableArmorStand.yBodyRotO = yaw;
 
-        graphics.drawSpecial(source -> renderDispatcher.render(deployableArmorStand, 0.0D, 0.0D, 0.0D, 1.0F, poseStack, source, 15728880));
+        graphics.drawSpecial(source -> renderDispatcher.render(deployableArmorStand, 0.0D, 0.0D, 0.0D, 1.0F, poseStack, source, LightTexture.FULL_BRIGHT));
         renderDispatcher.setRenderShadow(true);
 
         Lighting.setupForFlatItems();
@@ -2714,14 +2708,11 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
     private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float yaw) {
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
-
-//        GlStateManager.enableDepth();
         poseStack.translate(x, y, 50.0F);
         poseStack.scale(-25.0F, 25.0F, 25.0F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
         poseStack.mulPose(Axis.XP.rotationDegrees(15.0F));
-        Lighting.setupForEntityInInventory(); // FIXME not sure
-//        RenderHelper.enableGUIStandardItemLighting();
+        Lighting.setupForEntityInInventory();
 
         entity.setYRot(yaw);
         entity.yRotO = yaw;
@@ -2729,18 +2720,11 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         entity.yHeadRotO = yaw;
 
         EntityRenderDispatcher renderDispatcher = MC.getEntityRenderDispatcher();
-//        renderDispatcher.setPlayerViewY(180.0f);
         renderDispatcher.overrideCameraOrientation(Axis.YN.rotationDegrees(-180.0F));
-//        boolean shadowsEnabled = renderDispatcher.isRenderShadow();
         renderDispatcher.setRenderShadow(false);
-        graphics.drawSpecial(source -> renderDispatcher.render(entity, 0.0D, 0.0D, 0.0D, 1.0F, poseStack, source, 15728880));
+        graphics.drawSpecial(source -> renderDispatcher.render(entity, 0.0D, 0.0D, 0.0D, 1.0F, poseStack, source, LightTexture.FULL_BRIGHT));
         renderDispatcher.setRenderShadow(true);
 
-//        RenderHelper.disableStandardItemLighting();
-//        GlStateManager.disableRescaleNormal();
-//        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-//        GlStateManager.disableTexture2D();
-//        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
         poseStack.popPose();
     }
 

@@ -24,6 +24,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -459,7 +460,7 @@ public class DungeonManager {
 
                     if (text != null) {
                         font.drawInBatch(
-                                text, -font.width(text) / 2.0F, CRITICAL_ICON_SIZE / 2F - 9, -1, true, matrix4f, source, Font.DisplayMode.SEE_THROUGH, 0, 15728880
+                                text, -font.width(text) / 2.0F, CRITICAL_ICON_SIZE / 2F - 9, -1, true, matrix4f, source, Font.DisplayMode.SEE_THROUGH, 0, LightTexture.FULL_BRIGHT
                         );
                     }
                     canceled = true;
@@ -472,19 +473,19 @@ public class DungeonManager {
                     float nameX = font.width(dungeonClass.concat(profileName)) / 2F;
                     float nameY = CRITICAL_ICON_SIZE / 2F + 2;
                     font.drawInBatch(
-                            dungeonClass, -nameX, nameY, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, 15728880
+                            dungeonClass, -nameX, nameY, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
                     );
                     int classColor = dungeonPlayer.getDungeonClass().getColor();
                     if (classColor == ColorCode.CHROMA.getColor()) {
                         classColor = ManualChromaManager.getChromaColor(0, 0, 255);
                     }
                     font.drawInBatch(
-                            profileName, -nameX + font.width(dungeonClass), nameY, classColor, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, 15728880
+                            profileName, -nameX + font.width(dungeonClass), nameY, classColor, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
                     );
 
                     String health = dungeonPlayer.getHealth() + " " + ColorCode.RED + "❤";
                     font.drawInBatch(
-                            health, -font.width(health) / 2F, CRITICAL_ICON_SIZE / 2F + 13, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, 15728880
+                            health, -font.width(health) / 2F, CRITICAL_ICON_SIZE / 2F + 13, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
                     );
 
                     canceled = true;

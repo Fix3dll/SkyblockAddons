@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import lombok.AllArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -109,7 +110,6 @@ public class DrawUtils {
         vertexConsumer.addVertex(matrix4f, prevX, prevY, 0.0F).setColor(color);
     }
 
-    // FIXME there are spikes sometimes
     public static void drawCylinder(PoseStack poseStack,
                                     VertexConsumer vc,
                                     double x, double y, double z,
@@ -124,7 +124,7 @@ public class DrawUtils {
         Matrix4f pose = poseStack.last().pose();
 
         // Full‑bright lightmap
-        final int packed = LightTexture.pack(15, 15);
+        final int packed = LightTexture.FULL_BRIGHT;
         int lu = packed & 0xFFFF;
         int lv = packed >>> 16;
 
@@ -262,14 +262,14 @@ public class DrawUtils {
             int colorAlpha = Math.max(ARGB.alpha(color), 4);
             int colorBlack = ARGB.color(colorAlpha, 0, 0, 0);
             FontHook.setHaltChroma(true);
-            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x + 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
-            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x - 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
-            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x, y + 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
-            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x, y - 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x + 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x - 1, y, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x, y + 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
+            graphics.drawSpecial(source -> font.drawInBatch(strippedText, x, y - 1, colorBlack, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
             FontHook.setHaltChroma(false);
-            graphics.drawSpecial(source -> font.drawInBatch(component, x, y, color, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            graphics.drawSpecial(source -> font.drawInBatch(component, x, y, color, false, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
         } else {
-            graphics.drawSpecial(source -> font.drawInBatch(component, x, y , color, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880));
+            graphics.drawSpecial(source -> font.drawInBatch(component, x, y , color, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
         }
     }
     public static void blitAbsolute(
@@ -318,19 +318,6 @@ public class DrawUtils {
         vertexConsumer.addVertex(matrix4f, x2, y, 0.0F).setUv(maxU, minV).setColor(color);
     }
 
-    private enum RoundedRectCorner {
-        TOP_LEFT(-HALF_PI),
-        TOP_RIGHT(0),
-        BOTTOM_LEFT(HALF_PI),
-        BOTTOM_RIGHT(Math.PI);
-
-        private final double startAngle;
-
-        RoundedRectCorner(double startAngle) {
-            this.startAngle = startAngle;
-        }
-    }
-
     private static void addQuad(VertexConsumer vc,
                                 Matrix4f pose,
                                 double ang0, double ang1,
@@ -374,6 +361,16 @@ public class DrawUtils {
                 .setUv(0, 0)
                 .setUv2(lu, lv)
                 .setNormal(0, 1, 0);
+    }
+
+    @AllArgsConstructor
+    private enum RoundedRectCorner {
+        TOP_LEFT(-HALF_PI),
+        TOP_RIGHT(0),
+        BOTTOM_LEFT(HALF_PI),
+        BOTTOM_RIGHT(Math.PI);
+
+        private final double startAngle;
     }
 
 }

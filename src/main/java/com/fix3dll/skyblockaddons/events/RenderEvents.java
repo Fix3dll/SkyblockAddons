@@ -5,7 +5,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
@@ -17,12 +16,6 @@ public class RenderEvents {
     public static final Event<RenderLivingName> LIVING_NAME = EventFactory.createArrayBacked(RenderLivingName.class, callbacks -> (livingEntity, d, cir) -> {
         for (RenderLivingName callback : callbacks) {
             callback.shouldRenderLivingName(livingEntity, d, cir);
-        }
-    });
-
-    public static final Event<RenderLevelLast> LEVEL_LAST = EventFactory.createArrayBacked(RenderLevelLast.class, callbacks -> (deltaTracker) -> {
-        for (RenderLevelLast callback : callbacks) {
-            callback.onRenderLevelLast(deltaTracker);
         }
     });
 
@@ -40,12 +33,6 @@ public class RenderEvents {
     @FunctionalInterface
     public interface RenderLivingName {
         void shouldRenderLivingName(LivingEntity livingEntity, double d, CallbackInfoReturnable<Boolean> cir);
-    }
-
-    @Environment(EnvType.CLIENT)
-    @FunctionalInterface
-    public interface RenderLevelLast {
-        void onRenderLevelLast(DeltaTracker deltaTracker);
     }
 
     @Environment(EnvType.CLIENT)

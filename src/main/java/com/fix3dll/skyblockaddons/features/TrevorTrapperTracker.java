@@ -255,7 +255,7 @@ public class TrevorTrapperTracker {
                 Matrix4f matrix4f = poseStack.last().pose();
                 int j = (int) (Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
                 font.drawInBatch(
-                        nameTag, -font.width(nameTag) / 2.0F, 0, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, 15728880
+                        nameTag, -font.width(nameTag) / 2.0F, 0, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
                 );
                 poseStack.popPose();
                 return true;
