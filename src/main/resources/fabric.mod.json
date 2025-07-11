@@ -8,7 +8,7 @@
 		"Fix3dll"
 	],
 	"contact": {
-		"homepage": "https://modrinth.com/mod/skyblockaddons-unofficial/",
+		"homepage": "https://modrinth.com/project/F35D4vTL",
 		"sources": "https://github.com/Fix3dll/SkyblockAddons/",
 		"issues": "https://github.com/Fix3dll/SkyblockAddons/issues"
 	},
@@ -36,9 +36,10 @@
 	"custom": {
 		"modmenu": {
 			"links": {
-				"modmenu.modrinth": "https://modrinth.com/mod/skyblockaddons-unofficial",
+				"modmenu.modrinth": "https://modrinth.com/project/F35D4vTL",
 				"modmenu.donate": "https://buymeacoffee.com/fix3dll"
-			}
+			},
+			"update_checker": true
 		},
 		"skyblockaddons": {
 			"sbaJarName": "${sbaJarName}"

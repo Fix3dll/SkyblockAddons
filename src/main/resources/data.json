@@ -3,12 +3,12 @@
   "bannerLink": null,
   "updateInfo": {
     "latestRelease": "1.10.9",
-    "releaseDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
-    "releaseChangelog": "https://modrinth.com/mod/skyblockaddons-unofficial/changelog",
+    "releaseDownload": "https://modrinth.com/project/F35D4vTL/versions",
+    "releaseChangelog": "https://modrinth.com/project/F35D4vTL/changelog",
     "releaseNote": "",
     "latestBeta": "2.0.0-alpha.11",
-    "betaDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
-    "betaChangelog": "https://modrinth.com/mod/skyblockaddons-unofficial/changelog",
+    "betaDownload": "https://modrinth.com/project/F35D4vTL/versions",
+    "betaChangelog": "https://modrinth.com/project/F35D4vTL/changelog",
     "betaNote": ""
   },
   "languageJSONFormat": "https://raw.githubusercontent.com/Fix3dll/SkyblockAddons/main/src/main/resources/lang/%s.json",

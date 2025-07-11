@@ -5,14 +5,14 @@
   <a href="https://github.com/Fix3dll/SkyblockAddons/blob/main/LICENSE" target="_blank">
     <img alt="license" src="https://img.shields.io/github/license/Fix3dll/SkyblockAddons" />
   </a>
-  <a href="https://modrinth.com/mod/skyblockaddons-unofficial" target="_blank">
-    <img alt="modrinth" src="https://img.shields.io/modrinth/dt/skyblockaddons-unofficial?color=00AF5C&label=Download&labelColor=cecece00AF5C&logo=modrinth" />
+  <a href="https://modrinth.com/project/F35D4vTL" target="_blank">
+    <img alt="modrinth" src="https://img.shields.io/modrinth/dt/F35D4vTL?color=00AF5C&label=Download&labelColor=cecece00AF5C&logo=modrinth" />
   </a>
 </div>
 
 SkyblockAddons has reached end of life. This fork contains updates from me. You can reach latest builds from GitHub Actions.
-If you are looking for a stable version, you can check the [Modrinth](https://modrinth.com/mod/skyblockaddons-unofficial) page.  
-It is also recommended to follow the [Modrinth changelog page](https://modrinth.com/mod/skyblockaddons-unofficial/changelog) for announcements and notes.
+If you are looking for a stable version, you can check the [Modrinth](https://modrinth.com/project/F35D4vTL) page.  
+It is also recommended to follow the [Modrinth changelog page](https://modrinth.com/project/F35D4vTL/changelog) for announcements and notes.
 
 Thanks to Our Translators
 ------

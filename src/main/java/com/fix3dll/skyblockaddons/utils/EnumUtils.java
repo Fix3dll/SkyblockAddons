@@ -315,7 +315,7 @@ public class EnumUtils {
     @Getter
     public enum Social {
         GITHUB("github", "https://github.com/Fix3dll/SkyblockAddons"),
-        MODRINTH("modrinth", "https://modrinth.com/mod/skyblockaddons-unofficial"),
+        MODRINTH("modrinth", "https://modrinth.com/project/F35D4vTL"),
         BUYMEACOFFEE("buymeacoffee", "https://www.buymeacoffee.com/fix3dll");
 
         private final ResourceLocation resourceLocation;
