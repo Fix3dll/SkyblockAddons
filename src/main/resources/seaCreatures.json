@@ -102,7 +102,7 @@
   "LORD_JAWBUS": {
     "name": "Lord Jawbus",
     "rarity": "MYTHIC",
-    "spawnMessage": "You have angered a legendary creature... Lord Jawbus has arrived"
+    "spawnMessage": "You have angered a legendary creature... Lord Jawbus has arrived."
   },
   "MAGMA_SLUG": {
     "name": "Magma Slug",
@@ -161,7 +161,7 @@
   },
   "PLHLEGBLAST": {
     "name": "Plhlegblast",
-    "rarity": "LEGENDARY",
+    "rarity": "MYTHIC",
     "spawnMessage": "WOAH! A Plhlegblast appeared."
   },
   "POISONED_WATER_WORM": {
@@ -194,10 +194,10 @@
     "rarity": "UNCOMMON",
     "spawnMessage": "You reeled in a Sea Archer."
   },
-  "SEA_EMPEROR": {
-    "name": "Sea Emperor",
+  "THE_LOCH_EMPEROR": {
+    "name": "The Loch Emperor",
     "rarity": "LEGENDARY",
-    "spawnMessage": "The Sea Emperor arises from the depths."
+    "spawnMessage": "The Loch Emperor arises from the depths."
   },
   "SEA_GUARDIAN": {
     "name": "Sea Guardian",
@@ -297,7 +297,7 @@
   "TITANOBOA": {
     "name": "Titanoboa",
     "rarity": "MYTHIC",
-    "spawnMessage": "A massive Titanoboa surfaces. It's body stretches as far as the eye can see."
+    "spawnMessage": "A massive Titanoboa surfaces. Its body stretches as far as the eye can see."
   },
   "BLUE_RINGED_OCTOPUS": {
     "name": "Blue Ringed Octopus",
@@ -328,5 +328,25 @@
     "name": "Ragnarok",
     "rarity": "MYTHIC",
     "spawnMessage": "The sky darkens and the air thickens. The end times are upon us: Ragnarok is here."
+  },
+  "WETWING": {
+    "name": "Wetwing",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "Look! A Wetwing emerges!"
+  },
+  "TADGANG": {
+    "name": "Tadgang",
+    "rarity": "RARE",
+    "spawnMessage": "A gang of Liltads!"
+  },
+  "STRIDERSURFER": {
+    "name": "Stridersurfer",
+    "rarity": "RARE",
+    "spawnMessage": "You caught a Stridersurfer."
+  },
+  "ENT": {
+    "name": "Ent",
+    "rarity": "EPIC",
+    "spawnMessage": "You've hooked an Ent, as ancient as the forest itself."
   }
 }
