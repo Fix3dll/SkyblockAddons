@@ -19,6 +19,9 @@
 	"entrypoints": {
 		"client": [
 			"com.fix3dll.skyblockaddons.SkyblockAddons"
+		],
+		"modmenu": [
+			"com.fix3dll.skyblockaddons.compat.ModMenuCompat"
 		]
 	},
 	"mixins": [

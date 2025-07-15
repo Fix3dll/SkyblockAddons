@@ -69,6 +69,7 @@ repositories {
         }
     }
     maven("https://maven.parchmentmc.org")
+    maven("https://maven.terraformersmc.com/")
 }
 
 val bundle : Configuration by configurations.creating {
@@ -89,6 +90,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
+    modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1")
     implementation ("net.hypixel:mod-api:1.0.1")

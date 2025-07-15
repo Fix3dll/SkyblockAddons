@@ -588,6 +588,10 @@ public class PlayerListener {
     private void onTickStart(Minecraft mc) {
         timerTick++;
         ScoreboardManager.tick();
+        if (mc.level == null) {
+            // To be able to change the gui when the level is not loaded. For modmenu etc.
+            main.getRenderListener().setGui();
+        }
 
         if (actionBarParser.getHealthUpdate() != null && System.currentTimeMillis() - actionBarParser.getLastHealthUpdate() > 3000) {
             actionBarParser.setHealthUpdate(null);

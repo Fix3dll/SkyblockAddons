@@ -52,6 +52,8 @@ import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AutoUpdateMode;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.DeployableDisplayStyle;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.GUIType;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.GuiTab;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.PetItemStyle;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
@@ -101,7 +103,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
@@ -185,9 +186,9 @@ public class RenderListener {
     @Setter private SkillType skill;
     @Setter private String skillText;
 
-    @Setter private EnumUtils.GUIType guiToOpen;
+    @Setter private GUIType guiToOpen;
     private int guiPageToOpen = 1;
-    private EnumUtils.GuiTab guiTabToOpen = EnumUtils.GuiTab.MAIN;
+    private GuiTab guiTabToOpen = GuiTab.MAIN;
     private Feature guiFeatureToOpen;
 
     @Setter private float maxRiftHealth = 0.0F;
@@ -217,7 +218,7 @@ public class RenderListener {
             renderTimersOnly(graphics);
         }
         drawUpdateMessage(graphics);
-        onRender();
+        setGui();
     }
 
     private void shouldRenderLivingName(LivingEntity entity, double d, CallbackInfoReturnable<Boolean> cir) {
@@ -1416,7 +1417,7 @@ public class RenderListener {
                         r = (1 - percent) * 0.66F + 0.33F;
                         g = 1;
                     }
-                    int secretsColor = new Color(Math.min(1, r), g, 0.33F).getRGB();
+                    int secretsColor = ARGB.colorFromFloat(1.0F, Math.min(1, r), g, 0.33F);
 
                     float secretsWidth = MC.font.width(String.valueOf(secrets));
                     float slashWidth = MC.font.width("/");
@@ -2619,32 +2620,32 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
     }
 
-    public void onRender() {
-        if (guiToOpen == EnumUtils.GUIType.MAIN) {
-            MC.setScreen(new SkyblockAddonsGui(guiPageToOpen, guiTabToOpen));
-        } else if (guiToOpen == EnumUtils.GUIType.EDIT_LOCATIONS) {
-            MC.setScreen(new LocationEditGui(guiPageToOpen, guiTabToOpen));
-        } else if (guiToOpen == EnumUtils.GUIType.SETTINGS) {
+    public void setGui() {
+        if (this.guiToOpen == GUIType.MAIN) {
+            MC.setScreen(new SkyblockAddonsGui(this.guiPageToOpen, this.guiTabToOpen));
+        } else if (this.guiToOpen == GUIType.EDIT_LOCATIONS) {
+            MC.setScreen(new LocationEditGui(this.guiPageToOpen, this.guiTabToOpen));
+        } else if (this.guiToOpen == GUIType.SETTINGS) {
             if (guiFeatureToOpen == Feature.ENCHANTMENT_LORE_PARSING) {
-                MC.setScreen(new EnchantmentSettingsGui(1, guiPageToOpen, guiTabToOpen));
+                MC.setScreen(new EnchantmentSettingsGui(1, this.guiPageToOpen, this.guiTabToOpen));
             } else {
-                MC.setScreen(new SettingsGui(guiFeatureToOpen, 1, guiPageToOpen, guiTabToOpen, null));
+                MC.setScreen(new SettingsGui(this.guiFeatureToOpen, 1, this.guiPageToOpen, this.guiTabToOpen, null));
             }
-        } else if (guiToOpen == EnumUtils.GUIType.WARP) {
+        } else if (this.guiToOpen == GUIType.WARP) {
             MC.setScreen(new IslandWarpGui());
         }
-        guiToOpen = null;
+        this.guiToOpen = null;
     }
 
-    public void setGuiToOpen(EnumUtils.GUIType guiToOpen, int page, EnumUtils.GuiTab tab) {
+    public void setGuiToOpen(GUIType guiToOpen, int page, GuiTab tab) {
         this.guiToOpen = guiToOpen;
-        guiPageToOpen = page;
-        guiTabToOpen = tab;
+        this.guiPageToOpen = page;
+        this.guiTabToOpen = tab;
     }
 
-    public void setGuiToOpen(EnumUtils.GUIType guiToOpen, int page, EnumUtils.GuiTab tab, Feature feature) {
+    public void setGuiToOpen(GUIType guiToOpen, int page, GuiTab tab, Feature feature) {
         setGuiToOpen(guiToOpen, page, tab);
-        guiFeatureToOpen = feature;
+        this.guiFeatureToOpen = feature;
     }
 
     // TODO improve xAllignment
