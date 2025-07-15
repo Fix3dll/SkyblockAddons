@@ -332,7 +332,8 @@
         "patchAvailable": "A new patch update (%version%) is available! Look in chat for download options!"
       },
       "autoUpdateTargetIsNotUpToDate": "Auto Update target is not up to date!",
-      "autoUpdateTargetNotFound": "Auto Update target not found!"
+      "autoUpdateTargetNotFound": "Auto Update target not found!",
+      "targetIsNotForCurrentMinecraft": "Auto Update target is not for Minecraft %version%!"
     },
     "slotLocked": "This slot is locked!",
     "summoningEyeFound": "Summoning Eye!",

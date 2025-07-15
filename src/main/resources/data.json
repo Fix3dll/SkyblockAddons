@@ -5,13 +5,14 @@
     "latestRelease": "1.10.9",
     "releaseDownload": "https://modrinth.com/project/F35D4vTL/versions",
     "releaseChangelog": "https://modrinth.com/project/F35D4vTL/changelog",
-    "releaseNote": "",
     "latestBeta": "2.0.0-alpha.11",
     "betaDownload": "https://modrinth.com/project/F35D4vTL/versions",
     "betaChangelog": "https://modrinth.com/project/F35D4vTL/changelog",
-    "betaNote": ""
+    "updateNotes": {
+      "619": ""
+    }
   },
-  "languageJSONFormat": "https://raw.githubusercontent.com/Fix3dll/SkyblockAddons/main/src/main/resources/lang/%s.json",
+  "languageJSONFormat": "https://raw.githubusercontent.com/Fix3dll/SkyblockAddons/1.21.5/src/main/resources/lang/%s.json",
   "disabledFeatures": {
     "all": []
   },

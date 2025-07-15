@@ -7,16 +7,19 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AutoUpdateMode;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
+import com.google.gson.JsonElement;
 import lombok.Getter;
 import moe.nea.libautoupdate.CurrentVersion;
 import moe.nea.libautoupdate.PotentialUpdate;
 import moe.nea.libautoupdate.UpdateContext;
+import moe.nea.libautoupdate.UpdateData;
 import moe.nea.libautoupdate.UpdateTarget;
 import moe.nea.libautoupdate.UpdateUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
+import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -26,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -49,7 +53,7 @@ public class Updater {
     @Getter private String messageToRender;
     private String downloadLink;
     private String changelogLink;
-    private String note;
+    private String note = "";
 
     private boolean hasUpdate = false;
     private boolean isPatch = false;
@@ -200,6 +204,19 @@ public class Updater {
                         LOGGER.catching(throwable);
                     } else if (potentialUpdate.isUpdateAvailable()) {
                         cachedPotentialUpdate = potentialUpdate;
+                        // Get related notes between target version and current version
+                        int versionNumber = Optional.of(cachedPotentialUpdate.getUpdate())
+                                .map(UpdateData::getVersionNumber)
+                                .map(JsonElement::getAsInt)
+                                .orElse(0);
+                        if (versionNumber != 0) {
+                            note = "";
+                            updateInfo.getUpdateNotes().headMap(versionNumber, true).forEach((key, value) -> {
+                                int buildNumber = Integer.parseInt(SkyblockAddons.BUILD_NUMBER.split("\\.")[0]);
+                                if (StringUtil.isNullOrEmpty(value) || buildNumber >= key) return;
+                                note += "• " + value + "\n";
+                            });
+                        }
                     }
                 });
             }
@@ -210,11 +227,9 @@ public class Updater {
             if (status == Status.OUTDATED) {
                 downloadLink = updateInfo.getReleaseDownload();
                 changelogLink = updateInfo.getReleaseChangelog();
-                note = updateInfo.getReleaseNote();
             } else {
                 downloadLink = updateInfo.getBetaDownload();
                 changelogLink = updateInfo.getBetaChangelog();
-                note = updateInfo.getBetaNote();
             }
 
             // It's a patch if the major & minor numbers are the same & the player isn't upgrading from a beta.
@@ -259,8 +274,8 @@ public class Updater {
                 String.format("§b%s\n", Translations.getMessage("messages.updateChecker.newUpdateAvailable", targetVersion))
         );
 
-        if (!StringUtil.isNullOrEmpty(note)) {
-            MutableComponent versionNote = Component.literal("\n" + ColorCode.RED + note + "\n");
+        if (!note.isEmpty()) {
+            MutableComponent versionNote = Component.literal("\n" + ColorCode.RED + note);
             newUpdate.append(versionNote);
         }
 
@@ -278,6 +293,7 @@ public class Updater {
         Object autoUpdateValue = Feature.AUTO_UPDATE.getValue();
         if (autoUpdateValue == AutoUpdateMode.STABLE || autoUpdateValue == AutoUpdateMode.LATEST) {
             AutoUpdateMode autoUpdateMode = (AutoUpdateMode) autoUpdateValue;
+            UpdateData currentUpdateData = main.getOnlineData().getUpdateData(autoUpdateMode.name());
             if (cachedPotentialUpdate == null) {
                 autoDownloadButton = Component.literal(
                         String.format("§8§m[%s]§r", Translations.getMessage("messages.updateChecker.autoDownloadButton"))
@@ -286,7 +302,9 @@ public class Updater {
 
                 ))));
                 autoDownloadButton.append(" ");
-            } else if (!main.getOnlineData().getUpdateData(autoUpdateMode.name()).getVersionNumber().getAsString().contains(targetVersion)) {
+            } else if (currentUpdateData != null
+                    && !StringUtil.isNullOrEmpty(currentUpdateData.getVersionName())
+                    && !currentUpdateData.getVersionName().contains(targetVersion)) {
                 autoDownloadButton = Component.literal(
                         String.format("§8§m[%s]§r", Translations.getMessage("messages.updateChecker.autoDownloadButton"))
                 ).withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal(
@@ -294,7 +312,18 @@ public class Updater {
                 ))));
                 autoDownloadButton.append(" ");
             } else {
-                if (Feature.FULL_AUTO_UPDATE.isEnabled()) {
+                String targetVersionName = cachedPotentialUpdate.getUpdate() == null
+                        ? null
+                        : cachedPotentialUpdate.getUpdate().getVersionName();
+                String mcVersionXYZ = SharedConstants.getCurrentVersion().getName().split("-")[0];
+                if (!StringUtil.isNullOrEmpty(targetVersionName) && !targetVersionName.contains(mcVersionXYZ)) {
+                    autoDownloadButton = Component.literal(
+                            String.format("§8§m[%s]§r", Translations.getMessage("messages.updateChecker.autoDownloadButton"))
+                    ).withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal(
+                            "§7" + Translations.getMessage("messages.updateChecker.targetIsNotForCurrentMinecraft", mcVersionXYZ)
+                    ))));
+                    autoDownloadButton.append(" ");
+                } else if (Feature.FULL_AUTO_UPDATE.isEnabled()) {
                     if (!updateLaunched) {
                         Utils.sendMessage(ColorCode.YELLOW + Translations.getMessage("messages.updateChecker.autoDownloadStarted") + "\n", false);
                         launchAutoUpdate(cachedPotentialUpdate);

@@ -73,6 +73,11 @@ public class SkyblockAddons implements ClientModInitializer {
 
 	public static final String MOD_ID = "skyblockaddons";
 	public static final ModMetadata METADATA = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow().getMetadata();
+	/**
+	 * See {@code build.gradle.kts} for more. If {@code runAttempt} is greater than 0, a dot and itself is appended at
+	 * the end.
+	 */
+	public static final String BUILD_NUMBER = SkyblockAddons.METADATA.getCustomValue(SkyblockAddons.MOD_ID).getAsObject().get("buildNumber").getAsString();
 	private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(METADATA.getName()));
 	private static final ThreadPoolExecutor THREAD_EXECUTOR = new ThreadPoolExecutor(
 			0,

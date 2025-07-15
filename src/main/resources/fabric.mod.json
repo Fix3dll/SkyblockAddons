@@ -42,7 +42,8 @@
 			"update_checker": true
 		},
 		"skyblockaddons": {
-			"sbaJarName": "${sbaJarName}"
+			"sbaJarName": "${sbaJarName}",
+			"buildNumber": "${sbaBuildNumber}"
 		}
 	}
 }

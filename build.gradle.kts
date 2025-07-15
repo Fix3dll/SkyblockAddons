@@ -123,7 +123,8 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(mapOf(
             "version" to ext.get("formattedVersion"),
-            "sbaJarName" to "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar"
+            "sbaJarName" to "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar",
+            "sbaBuildNumber" to project.property("buildNumber")
         ))
     }
 }
