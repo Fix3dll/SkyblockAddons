@@ -703,14 +703,16 @@ public class PlayerListener {
             }
         }
 
-        if (livingEntity.tickCount < 5) {
+        if (livingEntity.tickCount < 20) {
             if (Feature.HIDE_OTHER_PLAYERS_PRESENTS.isEnabled()) {
                 JerryPresent.detectJerryPresent(livingEntity);
             }
 
-            if (livingEntity instanceof RemotePlayer remotePlayer && Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled()
-                    && !main.getUtils().isGuest() && !LocationUtils.isOn(Island.DUNGEON)) {
-                float health = remotePlayer.getHealth();
+            if (/*Feature.HIDE_PLAYERS_NEAR_NPCS.isEnabled() && */
+                    livingEntity instanceof RemotePlayer
+                    && !main.getUtils().isGuest()
+                    && !LocationUtils.isOn(Island.DUNGEON)) {
+                float health = livingEntity.getHealth();
 
                 if (NPCUtils.getNpcLocations().containsKey(livingEntity.getId())) {
                     if (health != 20.0F) {

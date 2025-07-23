@@ -44,6 +44,9 @@ public enum ItemType {
     DUNGEON_ITEM("DUNGEON ITEM"),
     HATCESSORY("HATCESSORY"),
     POWER_STONE("POWER STONE"),
+    COMBAT_SHARD("COMBAT SHARD"),
+    FOREST_SHARD("FOREST SHARD"),
+    WATER_SHARD("WATER SHARD"),
     /** Used when the item has only a rarity and no item type */
     OTHER("");
 
@@ -53,4 +56,5 @@ public enum ItemType {
     ItemType(String loreName) {
         this.loreName = loreName;
     }
+
 }

@@ -64,8 +64,7 @@ public class ItemUtils {
      * This expression matches the line with a Skyblock item's rarity and item type that's at the end of its lore.
      * <p><i>Recombobulated Special items have exception for rarity pattern.<i/></p>
      */
-    // TODO remove (?:§r)?
-    private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("§l(?<rarity>[A-Z]+(?: SPECIAL)?) ?(?<type>[A-Z ]+)?(?:§[0-9a-f]§l§ka)?(?:§r)?$");
+    private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("§l(?<rarity>[A-Z]+(?: SPECIAL)?) ?(?<type>[A-Z ]+)?(?:§[0-9a-f]§l§ka)?(?:§8\\(ID (?<id>[A-Z]+\\d+)\\))?$");
     private static final Pattern BACKPACK_SLOT_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
     @Getter @Setter private static Object2ObjectOpenHashMap<String, CompactorItem> compactorItems;
     @Setter private static Object2ObjectOpenHashMap<String, ContainerData> containers;
@@ -469,7 +468,7 @@ public class ItemUtils {
         ItemStack stack = item.getDefaultInstance();
 
         if (name != null) {
-            stack.set(DataComponents.ITEM_NAME, Component.literal(  name));
+            stack.set(DataComponents.ITEM_NAME, Component.literal(name));
         }
 
         if (enchanted) {
@@ -483,8 +482,9 @@ public class ItemUtils {
         return stack;
     }
 
-    public static ItemStack createEnchantedBook(String name, String skyblockID, String enchantName, int enchantLevel) {
-        ItemStack stack = createItemStack(Items.ENCHANTED_BOOK, name, skyblockID, false);
+    public static ItemStack createEnchantedBook(SkyblockRarity rarity, String enchantName, int enchantLevel) {
+        String name = rarity == null ? "Enchanted Book" : rarity.getColorCode() + "Enchanted Book";
+        ItemStack stack = createItemStack(Items.ENCHANTED_BOOK, name, "ENCHANTED_BOOK", false);
 
         CompoundTag enchantments = new CompoundTag();
         enchantments.putInt(enchantName, enchantLevel);
@@ -572,10 +572,7 @@ public class ItemUtils {
         ResolvableProfile profile = skull.get(DataComponents.PROFILE);
 
         if (profile != null) {
-            GameProfile gameProfile = profile.gameProfile();
-            if (gameProfile != null) {
-                return gameProfile.getId().toString();
-            }
+            return profile.gameProfile().getId().toString();
         }
 
         return null;
@@ -708,8 +705,9 @@ public class ItemUtils {
                 String type = itemTypeMatcher.group("type");
 
                 if (type != null) {
+                    type = type.trim();
                     for (ItemType itemType : ItemType.values()) {
-                        if (itemType.getLoreName().startsWith(type.trim())) {
+                        if (itemType.getLoreName().startsWith(type)) {
                             return itemType;
                         }
                     }

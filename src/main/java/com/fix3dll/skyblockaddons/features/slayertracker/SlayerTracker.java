@@ -115,11 +115,6 @@ public class SlayerTracker {
         throw new IllegalArgumentException(Translations.getMessage("commandUsage.sba.slayer.invalidStat", boss));
     }
 
-    public void setKillCount(SlayerBoss slayerBoss, int kills) {
-        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
-        slayerTrackerData.getSlayerKills().put(slayerBoss, kills);
-    }
-
     // TODO dont count dropped items by player again
     public void addToTrackerData(CustomData ea, int amount, EnumUtils.SlayerQuest activeQuest) {
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
@@ -128,8 +123,14 @@ public class SlayerTracker {
             if (!drop.getSkyblockID().equals(ItemUtils.getSkyblockItemID(ea))) continue;
 
             // If this is a rune, and it doesn't match, continue
-            SkyblockRune rune = ItemUtils.getRuneData(ea);
-            if (drop.getRuneID() != null && (rune == null || rune.getType() == null || !rune.getType().equals(drop.getRuneID()))) {
+            if (drop.getRuneID() != null) {
+                SkyblockRune rune = ItemUtils.getRuneData(ea);
+                if (rune == null || rune.getType() == null || !rune.getType().equals(drop.getRuneID())) {
+                    continue;
+                }
+            }
+            // If this is a attribute shard, and it doesn't match, continue
+            if (drop.getAttributeNbtKey() != null && !ItemUtils.getAttributes(ea).containsKey(drop.getAttributeNbtKey())) {
                 continue;
             }
             // If this is a book and it doesn't match, continue
