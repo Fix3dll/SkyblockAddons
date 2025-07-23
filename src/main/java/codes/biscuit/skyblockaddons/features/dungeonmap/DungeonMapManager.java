@@ -107,8 +107,8 @@ public class DungeonMapManager {
             }
         }
 
-        float x = main.getConfigValuesManager().getActualX(Feature.DUNGEONS_MAP_DISPLAY);
-        float y = main.getConfigValuesManager().getActualY(Feature.DUNGEONS_MAP_DISPLAY);
+        float x = Feature.DUNGEONS_MAP_DISPLAY.getActualX();
+        float y = Feature.DUNGEONS_MAP_DISPLAY.getActualY();
 
         GlStateManager.pushMatrix();
 

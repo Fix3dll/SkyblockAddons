@@ -11,11 +11,16 @@ import codes.biscuit.skyblockaddons.utils.ColorUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import codes.biscuit.skyblockaddons.utils.EnumUtils.DrawType;
 import codes.biscuit.skyblockaddons.utils.SkyblockColor;
+import codes.biscuit.skyblockaddons.utils.data.skyblockdata.OnlineData;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 import lombok.NonNull;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -343,7 +348,7 @@ public enum Feature {
         Object value = this.getValue();
 
         if (value instanceof Boolean) {
-            return (boolean) value;
+            return (boolean) value && !isRemoteDisabled();
         }
         SkyblockAddons.getInstance().getConfigValuesManager().restoreFeatureDefaultValue(this);
         throw new IllegalStateException(this + " is not a boolean! Type: " + value);
@@ -353,6 +358,8 @@ public enum Feature {
         return !this.isEnabled();
     }
 
+    private static final String VERSION_X_Y_Z = SkyblockAddons.VERSION.split("-")[0];
+
     /**
      * Checks the received {@code OnlineData} to determine if the given feature should be disabled.This method checks
      * the list of features to be disabled for all versions first and then checks the list of features that should be
@@ -360,14 +367,16 @@ public enum Feature {
      * @return {@code true} if the feature should be disabled, {@code false} otherwise
      */
     public boolean isRemoteDisabled() {
-        HashMap<String, List<Integer>> disabledFeatures = SkyblockAddons.getInstance().getOnlineData().getDisabledFeatures();
+        OnlineData onlineData = SkyblockAddons.getInstance().getOnlineData();
+        if (onlineData == null) return false; // It may not yet have been initialized.
+
+        HashMap<String, List<Integer>> disabledFeatures = onlineData.getDisabledFeatures();
 
         if (disabledFeatures.containsKey("all")) {
-            if (disabledFeatures.get("all") != null) {
-                if (disabledFeatures.get("all").contains(this.getId())) {
-                    return true;
-                }
-            } else {
+            List<Integer> allList = disabledFeatures.get("all");
+            if (allList != null && allList.contains(this.getId())) {
+                return true;
+            } else if (allList == null) {
                 LOGGER.error("\"all\" key in disabled features map has value of null. Please fix online data.");
             }
         }
@@ -377,15 +386,12 @@ public enum Feature {
         list for their release version. For example, the version {@code 1.6.0-beta.10} will adhere to the list
         for version {@code 1.6.0}
          */
-        String version = SkyblockAddons.VERSION;
-        if (version.contains("-")) {
-            version = version.split("-")[0];
-        }
-        if (disabledFeatures.containsKey(version)) {
-            if (disabledFeatures.get(version) != null) {
-                return disabledFeatures.get(version).contains(this.getId());
-            } else {
-                LOGGER.error("\"{}\" key in disabled features map has value of null. Please fix online data.", version);
+        if (disabledFeatures.containsKey(VERSION_X_Y_Z)) {
+            List<Integer> versionList = disabledFeatures.get(VERSION_X_Y_Z);
+            if (versionList != null && versionList.contains(this.getId())) {
+                return true;
+            } else if (versionList == null) {
+                LOGGER.error("\"{}\" key in disabled features map has value of null. Please fix online data.", VERSION_X_Y_Z);
             }
         }
 
@@ -415,7 +421,61 @@ public enum Feature {
     }
 
     public AnchorPoint getAnchorPoint() {
-        return this.featureData.getAnchorPoint();
+        AnchorPoint anchorPoints = this.featureData.getAnchorPoint();
+        if (anchorPoints != null) {
+            return anchorPoints;
+        } else {
+            anchorPoints = ConfigValuesManager.DEFAULT_FEATURE_DATA.get(this).getAnchorPoint();
+            return anchorPoints == null ? AnchorPoint.BOTTOM_MIDDLE : anchorPoints;
+        }
+    }
+
+
+    public void setClosestAnchorPoint() {
+        float x1 = this.getActualX();
+        float y1 = this.getActualY();
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        int maxX = sr.getScaledWidth();
+        int maxY = sr.getScaledHeight();
+        double shortestDistance = -1;
+        AnchorPoint closestAnchorPoint = AnchorPoint.BOTTOM_MIDDLE; // default
+        for (AnchorPoint point : AnchorPoint.values()) {
+            double distance = Point2D.distance(x1, y1, point.getX(maxX), point.getY(maxY));
+            if (shortestDistance == -1 || distance < shortestDistance) {
+                closestAnchorPoint = point;
+                shortestDistance = distance;
+            }
+        }
+        if (this.getAnchorPoint() == closestAnchorPoint) {
+            return;
+        }
+        float targetX = this.getActualX();
+        float targetY = this.getActualY();
+        float x = targetX-closestAnchorPoint.getX(maxX);
+        float y = targetY-closestAnchorPoint.getY(maxY);
+        this.featureData.setAnchorPoint(closestAnchorPoint);
+        this.featureData.setCoords(x, y);
+    }
+
+    public float getActualX() {
+        int maxX = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
+        return this.getAnchorPoint().getX(maxX) + this.getRelativeCoords().getLeft();
+    }
+
+    public float getActualY() {
+        int maxY = new ScaledResolution(Minecraft.getMinecraft()).getScaledHeight();
+        return this.getAnchorPoint().getY(maxY) + this.getRelativeCoords().getRight();
+    }
+
+    public Pair<Float, Float> getRelativeCoords() {
+        Pair<Float, Float> coords = this.featureData.getCoords();
+        if (coords != null) {
+            return coords;
+        } else {
+            SkyblockAddons.getInstance().getConfigValuesManager().putDefaultCoordinates(this);
+            coords = this.featureData.getCoords();
+            return coords == null ? new Pair<>(0F, 0F) : coords;
+        }
     }
 
     public float getGuiScale() {

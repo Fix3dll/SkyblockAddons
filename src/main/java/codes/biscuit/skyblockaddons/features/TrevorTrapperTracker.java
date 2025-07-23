@@ -65,8 +65,8 @@ public class TrevorTrapperTracker {
         Feature feature = Feature.TREVOR_THE_TRAPPER_FEATURES;
         if ((feature.isEnabled(FeatureSetting.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
                 && main.getUtils().isTrackingAnimal()) || buttonLocation != null) {
-            float x = main.getConfigValuesManager().getActualX(feature);
-            float y = main.getConfigValuesManager().getActualY(feature);
+            float x = feature.getActualX();
+            float y = feature.getActualY();
 
             int height = 9;
             int width = 3 * 11 + 9;

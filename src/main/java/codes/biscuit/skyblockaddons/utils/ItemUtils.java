@@ -156,7 +156,7 @@ public class ItemUtils {
      * @return the item's {@code attributes} compound tag or {@code null} if the item doesn't have one
      */
     public static NBTTagCompound getAttributes(NBTTagCompound extraAttributes) {
-        return extraAttributes == null ? null : extraAttributes.getCompoundTag("attributes");
+        return extraAttributes == null ? new NBTTagCompound() : extraAttributes.getCompoundTag("attributes");
     }
 
     /**
@@ -433,12 +433,8 @@ public class ItemUtils {
         }
 
         NBTTagCompound extraAttributes = getExtraAttributes(itemStack);
-        if (extraAttributes != null) {
-            // If this item stack is a menu item, it won't have this key.
-            return !extraAttributes.hasKey("uuid");
-        } else {
-            return false;
-        }
+        // If this item stack is a menu item, it won't have this key.
+        return extraAttributes != null && !extraAttributes.hasKey("uuid");
     }
 
     /**
@@ -476,8 +472,9 @@ public class ItemUtils {
         return stack;
     }
 
-    public static ItemStack createEnchantedBook(String name, String skyblockID, String enchantName, int enchantLevel) {
-        ItemStack stack = createItemStack(Items.enchanted_book, name, skyblockID, false);
+    public static ItemStack createEnchantedBook(SkyblockRarity rarity, String enchantName, int enchantLevel) {
+        String name = rarity == null ? "Enchanted Book" : rarity.getColorCode() + "Enchanted Book";
+        ItemStack stack = createItemStack(Items.enchanted_book, name, "ENCHANTED_BOOK", false);
 
         NBTTagCompound enchantments = new NBTTagCompound();
         enchantments.setInteger(enchantName, enchantLevel);

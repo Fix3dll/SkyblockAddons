@@ -13,6 +13,7 @@ import codes.biscuit.skyblockaddons.utils.ColorCode;
 import codes.biscuit.skyblockaddons.utils.DrawUtils;
 import codes.biscuit.skyblockaddons.utils.EnumUtils;
 import codes.biscuit.skyblockaddons.utils.Utils;
+import codes.biscuit.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
@@ -174,7 +175,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             float y = boxYOne + (boxYTwo - boxYOne) / 2F - ButtonColorWheel.SIZE / 2F;
             float x;
 
-            if (main.getConfigValuesManager().getAnchorPoint(feature).isOnLeft()) {
+            if (feature.getAnchorPoint().isOnLeft()) {
                 x = boxXTwo + 2;
             } else {
                 x = boxXOne - ButtonColorWheel.SIZE - 2;
@@ -273,7 +274,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                 float y = boxYOne + (boxYTwo - boxYOne) / 2F - ButtonColorWheel.SIZE / 2F;
                 float x;
 
-                if (main.getConfigValuesManager().getAnchorPoint(feature).isOnLeft()) {
+                if (feature.getAnchorPoint().isOnLeft()) {
                     x = boxXTwo + 2;
                 } else {
                     x = boxXOne - ButtonColorWheel.SIZE - 2;
@@ -306,7 +307,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             int x = anchorPoint.getX(sr.getScaledWidth());
             int y = anchorPoint.getY(sr.getScaledHeight());
             int color = ColorCode.RED.getColor(127);
-            if (lastHoveredFeature != null && main.getConfigValuesManager().getAnchorPoint(lastHoveredFeature) == anchorPoint) {
+            if (lastHoveredFeature != null && lastHoveredFeature.getAnchorPoint() == anchorPoint) {
                 color = ColorCode.YELLOW.getColor(127);
             }
             DrawUtils.drawRectAbsolute(x-4, y-4, x+4, y+4, color);
@@ -620,15 +621,16 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             }
 
             if (xSnapped || ySnapped) {
-                float xChange = Math.abs(main.getConfigValuesManager().getRelativeCoords(draggedFeature).getLeft() - x);
-                float yChange = Math.abs(main.getConfigValuesManager().getRelativeCoords(draggedFeature).getRight() - y);
+                Pair<Float, Float> relativeCoords = draggedFeature.getRelativeCoords();
+                float xChange = Math.abs(relativeCoords.getLeft() - x);
+                float yChange = Math.abs(relativeCoords.getRight() - y);
                 if (xChange < 0.001 && yChange < 0.001) {
                     return;
                 }
             }
 
             draggedFeature.getFeatureData().setCoords(x, y);
-            main.getConfigValuesManager().setClosestAnchorPoint(draggedFeature);
+            draggedFeature.setClosestAnchorPoint();
             switch (draggedFeature) {
                 case HEALTH_BAR:
                 case MANA_BAR:
@@ -704,8 +706,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     "x=%.0f, y=%.0f, scale=%.2f",
 //                    lastHoveredButton.getBoxXOne() * lastHoveredButton.getScale() * 2,
 //                    lastHoveredButton.getBoxYOne() * lastHoveredButton.getScale() * 2,
-                    main.getConfigValuesManager().getActualX(lastHoveredButtonFeature) * 2,
-                    main.getConfigValuesManager().getActualY(lastHoveredButtonFeature) * 2,
+                    lastHoveredButtonFeature.getActualX() * 2,
+                    lastHoveredButtonFeature.getActualY() * 2,
                     lastHoveredButton.getScale()
             );
             mc.fontRendererObj.drawStringWithShadow(
@@ -743,13 +745,15 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             ButtonLocation buttonLocation = (ButtonLocation) abstractButton;
             draggedFeature = buttonLocation.getFeature();
 
-            ScaledResolution sr = new ScaledResolution(mc);
-            float minecraftScale = sr.getScaleFactor();
-            float floatMouseX = Mouse.getX() / minecraftScale;
-            float floatMouseY = (mc.displayHeight - Mouse.getY()) / minecraftScale;
+            if (draggedFeature != null) {
+                ScaledResolution sr = new ScaledResolution(mc);
+                float minecraftScale = sr.getScaleFactor();
+                float floatMouseX = Mouse.getX() / minecraftScale;
+                float floatMouseY = (mc.displayHeight - Mouse.getY()) / minecraftScale;
 
-            xOffset = floatMouseX - main.getConfigValuesManager().getActualX(buttonLocation.getFeature());
-            yOffset = floatMouseY - main.getConfigValuesManager().getActualY(buttonLocation.getFeature());
+                xOffset = floatMouseX - draggedFeature.getActualX();
+                yOffset = floatMouseY - draggedFeature.getActualY();
+            }
         } else if (abstractButton instanceof ButtonSolid) {
             ButtonSolid buttonSolid = (ButtonSolid) abstractButton;
             Feature feature = buttonSolid.getFeature();
@@ -860,9 +864,10 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             } else if (keyCode == Keyboard.KEY_S) {
                 yOffset+= 10;
             }
+            Pair<Float, Float> relativeCoords = hoveredFeature.getRelativeCoords();
             hoveredFeature.getFeatureData().setCoords(
-                    main.getConfigValuesManager().getRelativeCoords(hoveredFeature).getLeft() + xOffset,
-                    main.getConfigValuesManager().getRelativeCoords(hoveredFeature).getRight() + yOffset
+                    relativeCoords.getLeft() + xOffset,
+                    relativeCoords.getRight() + yOffset
             );
         }
 

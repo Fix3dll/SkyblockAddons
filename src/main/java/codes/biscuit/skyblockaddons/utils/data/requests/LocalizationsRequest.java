@@ -22,13 +22,13 @@ public class LocalizationsRequest extends RemoteFileRequest<JsonObject> {
         //TODO: Fix this so it runs after getting language manifest
         super(
                 String.format(
-                        "https://distributions.crowdin.net/d7578b29286a48bcaf7fec87zgb/content/main/src/main/resources/lang/%s.json",
+                        "https://cdn.jsdelivr.net/gh/Fix3dll/SkyblockAddons@main/src/main/resources/lang/%s.json",
                         language.getPath()
                 ),
                 new JSONResponseHandler<>(JsonObject.class),
                 new LocalizationsCallback(
                         String.format(
-                                "https://distributions.crowdin.net/d7578b29286a48bcaf7fec87zgb/content/main/src/main/resources/lang/%s.json",
+                                "https://cdn.jsdelivr.net/gh/Fix3dll/SkyblockAddons@main/src/main/resources/lang/%s.json",
                                 language.getPath()
                         )
                 ),

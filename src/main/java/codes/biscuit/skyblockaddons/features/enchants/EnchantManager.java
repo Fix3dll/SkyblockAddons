@@ -278,7 +278,7 @@ public class EnchantManager {
         while (m.find()) {
             EnchantmentsData.Enchant enchant = enchants.getFromLore(m.group("enchant"));
             if (enchantNBT == null || enchantNBT.hasKey(enchant.getNbtName())) {
-                if (attributesNBT == null || !attributesNBT.hasKey(enchant.getNbtName())) {
+                if (attributesNBT.hasNoTags() || !attributesNBT.hasKey(enchant.getNbtName())) {
                     return true;
                 }
             }

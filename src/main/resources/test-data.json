@@ -4,16 +4,16 @@
 
   "updateInfo": {
     "latestRelease": "1.6.0",
-    "releaseDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
-    "releaseChangelog": "https://github.com/Fix3dll/SkyblockAddons/commits/main",
+    "releaseDownload": "https://modrinth.com/project/F35D4vTL/versions",
+    "releaseChangelog": "https://modrinth.com/project/F35D4vTL/changelog",
     "releaseShowcase": "",
     "latestBeta": "1.6.0-beta.14f",
-    "betaDownload": "https://modrinth.com/mod/skyblockaddons-unofficial/versions",
-    "betaChangelog": "https://github.com/Fix3dll/SkyblockAddons/commits/main",
+    "betaDownload": "https://modrinth.com/project/F35D4vTL/versions",
+    "betaChangelog": "https://modrinth.com/project/F35D4vTL/changelog",
     "betaShowcase": ""
   },
 
-  "languageJSONFormat": "https://raw.githubusercontent.com/BiscuitDevelopment/SkyblockAddons/development/src/main/resources/lang/%s.json",
+  "languageJSONFormat": "https://raw.githubusercontent.com/Fix3dll/SkyblockAddons/main/src/main/resources/lang/%s.json",
 
   "disabledFeatures": {
     "all": [2, 12, 16, 30, 31, 32, 35, 41, 44, 47, 51, 56, 59, 86, 89, 151, 154, 159],

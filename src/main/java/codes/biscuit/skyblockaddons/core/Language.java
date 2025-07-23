@@ -4,6 +4,8 @@ import codes.biscuit.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Locale;
+
 @Getter
 public enum Language implements RegistrableEnum {
     // listed by popularity
@@ -58,7 +60,7 @@ public enum Language implements RegistrableEnum {
 
     Language(String path) {
         this.path = path;
-        this.resourceLocation = new ResourceLocation("skyblockaddons", "flags/" + path.toLowerCase() + ".png");
+        this.resourceLocation = new ResourceLocation("skyblockaddons", "flags/" + path.toLowerCase(Locale.ENGLISH) + ".png");
     }
 
     /**

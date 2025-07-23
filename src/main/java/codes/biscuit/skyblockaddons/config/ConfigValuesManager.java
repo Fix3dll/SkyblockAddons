@@ -23,12 +23,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -65,7 +63,7 @@ public class ConfigValuesManager {
     @Deprecated private final File legacyConfigFile; // TODO remove in future
 
     /** Do not make direct changes! If you are using mutable objects, make a deep copy. */
-    private final EnumMap<Feature, FeatureData<?>> DEFAULT_FEATURE_DATA = new EnumMap<>(Feature.class);
+    public static final EnumMap<Feature, FeatureData<?>> DEFAULT_FEATURE_DATA = new EnumMap<>(Feature.class);
 
     @Setter private boolean firstLoad = true;
 
@@ -480,7 +478,7 @@ public class ConfigValuesManager {
 //                    DataUtils.getFailedRequests().put("configurations.json", ex); // TODO in-game error alerts
 
                     // Backup then restore defaults.
-                    backupConfig();
+                    backupConfig(true);
                     addDefaultsAndSave();
                 } else {
                     LOGGER.error("Error loading configuration values!", ex);
@@ -680,7 +678,7 @@ public class ConfigValuesManager {
         }
     }
 
-    private void putDefaultCoordinates(Feature feature) {
+    public void putDefaultCoordinates(Feature feature) {
         Pair<Float, Float> coords = DEFAULT_FEATURE_DATA.get(feature).getCoords().clonePair();
         if (coords != null) {
             feature.getFeatureData().setCoords(coords);
@@ -701,67 +699,6 @@ public class ConfigValuesManager {
         feature.setGuiScale(defaultScale);
     }
 
-    public float getActualX(Feature feature) {
-        int maxX = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
-        return getAnchorPoint(feature).getX(maxX) + getRelativeCoords(feature).getLeft();
-    }
-
-    public float getActualY(Feature feature) {
-        int maxY = new ScaledResolution(Minecraft.getMinecraft()).getScaledHeight();
-        return getAnchorPoint(feature).getY(maxY) + getRelativeCoords(feature).getRight();
-    }
-
-    public Pair<Float, Float> getRelativeCoords(Feature feature) {
-        Pair<Float, Float> coords = feature.getFeatureData().getCoords();
-        if (coords != null) {
-            return coords;
-        } else {
-            putDefaultCoordinates(feature);
-            coords = feature.getFeatureData().getCoords();
-            if (coords != null) {
-                return coords;
-            } else {
-                return new Pair<>(0F, 0F);
-            }
-        }
-    }
-
-    public void setClosestAnchorPoint(Feature feature) {
-        float x1 = getActualX(feature);
-        float y1 = getActualY(feature);
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-        int maxX = sr.getScaledWidth();
-        int maxY = sr.getScaledHeight();
-        double shortestDistance = -1;
-        AnchorPoint closestAnchorPoint = AnchorPoint.BOTTOM_MIDDLE; // default
-        for (AnchorPoint point : AnchorPoint.values()) {
-            double distance = Point2D.distance(x1, y1, point.getX(maxX), point.getY(maxY));
-            if (shortestDistance == -1 || distance < shortestDistance) {
-                closestAnchorPoint = point;
-                shortestDistance = distance;
-            }
-        }
-        if (this.getAnchorPoint(feature) == closestAnchorPoint) {
-            return;
-        }
-        float targetX = getActualX(feature);
-        float targetY = getActualY(feature);
-        float x = targetX-closestAnchorPoint.getX(maxX);
-        float y = targetY-closestAnchorPoint.getY(maxY);
-        feature.getFeatureData().setAnchorPoint(closestAnchorPoint);
-        feature.getFeatureData().setCoords(x, y);
-    }
-
-    public AnchorPoint getAnchorPoint(Feature feature) {
-        AnchorPoint anchorPoints = feature.getFeatureData().getAnchorPoint();
-        if (anchorPoints != null) {
-            return anchorPoints;
-        } else {
-            anchorPoints = DEFAULT_FEATURE_DATA.get(feature).getAnchorPoint();
-            return anchorPoints == null ? AnchorPoint.BOTTOM_MIDDLE : anchorPoints;
-        }
-    }
-
     /**
      * @return deep copy of {@code DEFAULT_FEATURE_DATA}
      */
@@ -774,7 +711,7 @@ public class ConfigValuesManager {
     /**
      * Creates backup of 'configurations.json'
      */
-    public void backupConfig() {
+    public void backupConfig(boolean corrupted) {
         if (!settingsConfigFile.exists()) {
             LOGGER.warn("configurations.json file for backup is not exist!");
             return;
@@ -782,7 +719,8 @@ public class ConfigValuesManager {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
             String formattedDate = ZonedDateTime.now().format(formatter);
-            String backupFileName = "configurations.json." + formattedDate + ".backup";
+            String extension = corrupted ? ".corrupted" : ".backup";
+            String backupFileName = "configurations.json." + formattedDate + extension;
 
             File backupFile = new File(configFile, "/skyblockaddons/backup/" + backupFileName);
             Files.createDirectories(backupFile.getParentFile().toPath());

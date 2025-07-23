@@ -158,6 +158,12 @@
     "material": "ghast_tear",
     "rarity": "UNCOMMON"
   },
+  "PET_ITEM_BINGO_BOOSTER": {
+    "displayName": "§5Bingo Booster",
+    "enchanted": true,
+    "material": "rabbit_foot",
+    "rarity": "EPIC"
+  },
   "PET_ITEM_BUBBLEGUM": {
     "displayName": "§9Bubblegum",
     "enchanted": true,

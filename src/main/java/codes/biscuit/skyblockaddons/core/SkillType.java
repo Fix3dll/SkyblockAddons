@@ -18,7 +18,8 @@ public enum SkillType {
     RUNECRAFTING("Runecrafting", Items.magma_cream, true),
     TAMING("Taming", Items.spawn_egg, false),
     DUNGEONEERING("Dungeoneering", Item.getItemFromBlock(Blocks.deadbush), false),
-    SOCIAL("Social", Items.cake, true);
+    SOCIAL("Social", Items.cake, true),
+    HUNTING("Hunting", Items.lead, false);
 
     private final String skillName;
     @Getter private final ItemStack item;

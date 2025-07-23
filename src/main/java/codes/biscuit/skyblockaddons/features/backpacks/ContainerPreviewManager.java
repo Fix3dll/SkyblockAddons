@@ -435,23 +435,14 @@ public class ContainerPreviewManager {
         if (backpackPreview.isEnabled(FeatureSetting.SHOW_ONLY_WHEN_HOLDING_SHIFT) && !GuiScreen.isShiftKeyDown()) {
             return false;
         }
-        // Don't render the preview the item represents a crafting recipe or the result of one.
-        if (ItemUtils.isMenuItem(itemStack)) {
-            return false;
-        }
-
-        UUID newUuid = ItemUtils.getUuid(itemStack);
-        String strippedName = TextUtils.stripColor(itemStack.getDisplayName());
-        Matcher m = ENDERCHEST_STORAGE_PATTERN.matcher(strippedName);
-        boolean enderChestMatched = false;
 
         // Do not waste resources to process non-UUID items (except Ender Chests cus icons doesn't have UUID)
-        if (newUuid == null) {
-            if (backpackPreview.isEnabled(FeatureSetting.ENDER_CHEST_PREVIEW) && m.matches()) {
-                enderChestMatched = true;
-            } else {
-                return false;
-            }
+        UUID newUuid = ItemUtils.getUuid(itemStack);
+        String strippedDisplayName = TextUtils.stripColor(itemStack.getDisplayName());
+        Matcher m = ENDERCHEST_STORAGE_PATTERN.matcher(strippedDisplayName);
+        boolean enderChestMatched = false;
+        if (newUuid == null && !(enderChestMatched = m.find())) {
+            return false;
         }
 
         if (cachedBackpackUuid == null || !cachedBackpackUuid.equals(newUuid)) {
@@ -465,7 +456,7 @@ public class ContainerPreviewManager {
                 if (enderChestMatched) {
                     int enderChestPage = Integer.parseInt(m.group("page"));
                     storageKey = InventoryType.ENDER_CHEST.getInventoryName() + enderChestPage;
-                } else if ((m = BACKPACK_STORAGE_PATTERN.matcher(strippedName)).matches()) {
+                } else if ((m = BACKPACK_STORAGE_PATTERN.matcher(strippedDisplayName)).matches()) {
                     int pageNum = Integer.parseInt(m.group("slot"));
                     storageKey = InventoryType.STORAGE_BACKPACK.getInventoryName() + pageNum;
                 }

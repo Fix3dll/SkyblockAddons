@@ -242,7 +242,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         DUNGEON_HUB("Dungeon Hub", 1500, 1100),
         JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150),
         THE_RIFT("The Rift", 1720, 1050),
-        BACKWATER_BAYOU("Backwater Bayou", 960, 1275);
+        BACKWATER_BAYOU("Backwater Bayou", 960, 1275),
+        GALATEA("Galatea", -250, 220);
 
         private final String label;
         private final int x;
@@ -320,6 +321,10 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         HOWLING_CAVE("howl", "Howling Cave", Island.THE_PARK, 254, 202),
         THE_PARK_JUNGLE("jungle", "Jungle", Island.THE_PARK, 194, 82),
 
+        // https://hypixel-skyblock.fandom.com/wiki/Galatea?file=Galatea.png
+        GALATEA("galatea", getMessage("warpMenu.spawn"), Island.GALATEA, 160, 260),
+        MURKWATER_LOCH("murkwater", "Murkwater Loch", Island.GALATEA, 220, 140),
+
         THE_END("end", getMessage("warpMenu.spawn"), Island.THE_END, 440, 291),
         DRAGONS_NEST("drag", "Dragon's Nest", Island.THE_END, 260, 248),
         VOID_SEPULTURE("void", "Void Sepulture", Island.THE_END, 370, 227),
@@ -361,4 +366,5 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             this.y = y;
         }
     }
+
 }

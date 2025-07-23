@@ -531,8 +531,8 @@ public class RenderListener {
 
         if (fill > 1) fill = 1;
 
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
         float scaleX = feature.getFeatureData().getSizesX();
         float scaleY = feature.getFeatureData().getSizesY();
         GlStateManager.scale(scaleX, scaleY, 1);
@@ -733,8 +733,8 @@ public class RenderListener {
      * This renders a bar for the skeleton hat bones bar.
      */
     public void drawSkeletonBar(float scale, ButtonLocation buttonLocation) {
-        float x = main.getConfigValuesManager().getActualX(Feature.SKELETON_BAR);
-        float y = main.getConfigValuesManager().getActualY(Feature.SKELETON_BAR);
+        float x = Feature.SKELETON_BAR.getActualX();
+        float y = Feature.SKELETON_BAR.getActualY();
         int bones = 0;
         if (!(MC.currentScreen instanceof LocationEditGui)) {
             for (Entity listEntity : MC.theWorld.loadedEntityList) {
@@ -775,8 +775,8 @@ public class RenderListener {
      */
     public void drawScorpionFoilTicker(float scale, ButtonLocation buttonLocation) {
         if (buttonLocation != null || main.getPlayerListener().getTickers() != -1) {
-            float x = main.getConfigValuesManager().getActualX(Feature.TICKER_CHARGES_DISPLAY);
-            float y = main.getConfigValuesManager().getActualY(Feature.TICKER_CHARGES_DISPLAY);
+            float x = Feature.TICKER_CHARGES_DISPLAY.getActualX();
+            float y = Feature.TICKER_CHARGES_DISPLAY.getActualY();
 
             int height = 9;
             int width = 3 * 11 + 9;
@@ -822,8 +822,8 @@ public class RenderListener {
         // The height and width of this element (box not included)
         int height = 9;
         int width = 9;
-        float x = main.getConfigValuesManager().getActualX(Feature.DEFENCE_ICON);
-        float y = main.getConfigValuesManager().getActualY(Feature.DEFENCE_ICON);
+        float x = Feature.DEFENCE_ICON.getActualX();
+        float y = Feature.DEFENCE_ICON.getActualY();
         x = transformX(x, width, scale, false);
         y = transformY(y, height, scale);
 
@@ -1260,8 +1260,8 @@ public class RenderListener {
                 return;
         }
 
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         int height = 7;
         int width = MC.fontRendererObj.getStringWidth(text);
@@ -1841,8 +1841,8 @@ public class RenderListener {
             );
         }
 
-        float x = main.getConfigValuesManager().getActualX(Feature.BAIT_LIST);
-        float y = main.getConfigValuesManager().getActualY(Feature.BAIT_LIST);
+        float x = Feature.BAIT_LIST.getActualX();
+        float y = Feature.BAIT_LIST.getActualY();
 
         int spacing = 1;
         int iconSize = 16;
@@ -1957,8 +1957,8 @@ public class RenderListener {
                 return;
         }
 
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
         int color = feature.getColor();
 
         if (textMode) {
@@ -2314,8 +2314,8 @@ public class RenderListener {
             height = 100;
         }
 
-        float x = main.getConfigValuesManager().getActualX(Feature.DRAGON_STATS_TRACKER);
-        float y = main.getConfigValuesManager().getActualY(Feature.DRAGON_STATS_TRACKER);
+        float x = Feature.DRAGON_STATS_TRACKER.getActualX();
+        float y = Feature.DRAGON_STATS_TRACKER.getActualY();
         x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
         y = transformY(y, height, scale);
 
@@ -2387,8 +2387,8 @@ public class RenderListener {
 
     public void drawSlayerArmorProgress(float scale, ButtonLocation buttonLocation) {
         Feature feature = Feature.SLAYER_ARMOR_PROGRESS;
-        float x = main.getConfigValuesManager().getActualX(Feature.SLAYER_ARMOR_PROGRESS);
-        float y = main.getConfigValuesManager().getActualY(Feature.SLAYER_ARMOR_PROGRESS);
+        float x = Feature.SLAYER_ARMOR_PROGRESS.getActualX();
+        float y = Feature.SLAYER_ARMOR_PROGRESS.getActualY();
 
         int longest = -1;
         SlayerArmorProgress[] progresses = main.getInventoryUtils().getSlayerArmorProgresses();
@@ -2465,8 +2465,8 @@ public class RenderListener {
 
         String text = pet.getDisplayName();
 
-        float x = main.getConfigValuesManager().getActualX(Feature.PET_DISPLAY);
-        float y = main.getConfigValuesManager().getActualY(Feature.PET_DISPLAY);
+        float x = Feature.PET_DISPLAY.getActualX();
+        float y = Feature.PET_DISPLAY.getActualY();
 
         int height = 7 + MC.fontRendererObj.FONT_HEIGHT;
         int width = MC.fontRendererObj.getStringWidth(text) + 18; // + ItemStack width
@@ -2574,8 +2574,8 @@ public class RenderListener {
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     public void drawItemPickupLog(float scale, ButtonLocation buttonLocation) {
         Feature feature = Feature.ITEM_PICKUP_LOG;
-        float x = main.getConfigValuesManager().getActualX(feature);
-        float y = main.getConfigValuesManager().getActualY(feature);
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         boolean downwards = feature.getAnchorPoint().isOnTop();
         boolean renderItemStack = feature.isEnabled(FeatureSetting.RENDER_ITEM_ON_LOG);
@@ -2668,9 +2668,9 @@ public class RenderListener {
      * ----
      */
     private void drawCompactDeployableStatus(float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
-        float x = main.getConfigValuesManager().getActualX(Feature.DEPLOYABLE_STATUS_DISPLAY);
-        float y = main.getConfigValuesManager().getActualY(Feature.DEPLOYABLE_STATUS_DISPLAY);
         Feature feature = Feature.DEPLOYABLE_STATUS_DISPLAY;
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         String secondsString = String.format("§e%ss", seconds);
         int spacing = 1;
@@ -2724,9 +2724,9 @@ public class RenderListener {
      * XXs
      */
     private void drawDetailedDeployableStatus(float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
-        float x = main.getConfigValuesManager().getActualX(Feature.DEPLOYABLE_STATUS_DISPLAY);
-        float y = main.getConfigValuesManager().getActualY(Feature.DEPLOYABLE_STATUS_DISPLAY);
         Feature feature = Feature.DEPLOYABLE_STATUS_DISPLAY;
+        float x = feature.getActualX();
+        float y = feature.getActualY();
 
         List<String> display = new LinkedList<>();
         // Counts already long strings
