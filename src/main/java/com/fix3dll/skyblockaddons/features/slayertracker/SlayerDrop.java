@@ -211,6 +211,7 @@ public enum SlayerDrop {
         internalItemTranslations.put(BITE_RUNE, "◆ Bite Rune");
         internalItemTranslations.put(DARKNESS_WITHIN_RUNE, "◆ Darkness Within Rune");
         internalItemTranslations.put(SPIDER_CATALYST, "Spider Catalyst");
+        internalItemTranslations.put(TARANTULA_SILK, "Tarantula Silk");
         internalItemTranslations.put(BANE_OF_ARTHROPODS_SIX, "Bane Of Arthropods 6");
         internalItemTranslations.put(TARANTULA_CATALYST, "Tarantula Catalyst");
         internalItemTranslations.put(FLY_SWATTER, "Fly Swatter");
@@ -307,6 +308,7 @@ public enum SlayerDrop {
                 displayName = this.name();
             }
         }
+        System.out.println(displayName);
 
         return displayName;
     }
