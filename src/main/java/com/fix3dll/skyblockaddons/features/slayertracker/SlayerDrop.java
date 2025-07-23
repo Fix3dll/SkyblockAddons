@@ -308,7 +308,6 @@ public enum SlayerDrop {
                 displayName = this.name();
             }
         }
-        System.out.println(displayName);
 
         return displayName;
     }
