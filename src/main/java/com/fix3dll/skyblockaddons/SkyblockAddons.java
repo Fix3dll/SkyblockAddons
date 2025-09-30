@@ -23,6 +23,7 @@ import com.fix3dll.skyblockaddons.listeners.ScreenListener;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.InventoryUtils;
 import com.fix3dll.skyblockaddons.utils.SkyblockAddonsMessageFactory;
+import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ElectionData;
@@ -198,6 +199,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			immediatelyFastLoaded = FabricLoader.getInstance().isModLoaded("immediatelyfast");
 			entityCullingLoaded = FabricLoader.getInstance().isModLoaded("entityculling");
 			fullyInitialized = true;
+            TextUtils.setInstanceLoaded(true);
 		});
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {

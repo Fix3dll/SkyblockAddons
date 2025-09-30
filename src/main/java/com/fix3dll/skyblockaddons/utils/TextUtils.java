@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.google.gson.JsonObject;
 import lombok.NonNull;
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -60,6 +61,9 @@ public class TextUtils {
         NUMBER_FORMAT_NO_GROUPING.setGroupingUsed(false);
     }
 
+    /** For test environment */
+    @Setter private static boolean isInstanceLoaded = false;
+
     /**
      * Formats a number to look better with commas every 3 digits (if the {@code NUMBER_SEPARATORS} mod feature is enabled)
      * and up to two decimal places.
@@ -69,8 +73,8 @@ public class TextUtils {
      * @return Formatted string
      */
     public static String formatNumber(Number number) {
-        // This null check is here for TextUtilsTests
-        if (SkyblockAddons.getInstance() == null || Feature.NUMBER_SEPARATORS.isEnabled()) {
+        // This check for TextUtilsTests cus we don't want to mess with load other classes on test time
+        if (!isInstanceLoaded || Feature.NUMBER_SEPARATORS.isEnabled()) {
             return NUMBER_FORMAT.format(number);
         } else {
             return NUMBER_FORMAT_NO_GROUPING.format(number);

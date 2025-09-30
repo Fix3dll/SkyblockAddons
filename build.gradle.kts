@@ -4,9 +4,9 @@ import java.text.ParseException
 
 plugins {
     java
-    id("fabric-loom") version ("1.10-SNAPSHOT")
-    id("com.gradleup.shadow") version ("8.3.1")
-    id("io.freefair.lombok") version ("8.11")
+    id("fabric-loom") version ("1.11-SNAPSHOT")
+    id("com.gradleup.shadow") version ("8.3.9")
+    id("io.freefair.lombok") version ("9.0.0")
 }
 
 ext {
@@ -97,13 +97,15 @@ dependencies {
     //bundle("moe.nea:libautoupdate:1.3.1")
     bundle("com.github.nea89o:libautoupdate:841d9f7e78")
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
-    bundle("io.github.cdagaming:DiscordIPC:0.10.5") {
+    bundle("io.github.cdagaming:DiscordIPC:0.10.6") {
         exclude(module = "log4j")
         because("Different version conflicts with Minecraft's Log4J")
         exclude(module = "gson")
         because("Different version conflicts with Minecraft's GSON")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter:5.13.1")
+    val junitVersion = "6.0.0"
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitVersion")
 }
 
 tasks.withType(JavaCompile::class).configureEach {
@@ -165,6 +167,13 @@ tasks.shadowJar {
     relocate("com.jagrosh.discordipc", "${basePackage}.discordipc")
 //	relocate("net.hypixel.modapi", "${basePackage}.modapi")
     relocate("moe.nea.libautoupdate", "${basePackage}.libautoupdate")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)
