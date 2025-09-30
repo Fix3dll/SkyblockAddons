@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -39,9 +40,22 @@ public class JerryPresent {
         this.fromLineStand = fromLine;
         this.toLineStand = toLine;
 
-        Matcher matcher = FROM_TO_PATTERN.matcher(TextUtils.stripColor(fromLine.getCustomName().getString()));
-        this.isFromPlayer = matcher.matches() && Minecraft.getInstance().player.getName().equals(matcher.group("name"));
-        this.isForPlayer = "CLICK TO OPEN".equals(TextUtils.stripColor(toLine.getCustomName().getString()));
+        Component fromLineComponent = fromLine.getCustomName();
+        if (fromLineComponent != null) {
+            String playerName = Minecraft.getInstance().player.getName().getString();
+            Matcher matcher = FROM_TO_PATTERN.matcher(TextUtils.stripColor(fromLineComponent.getString()));
+            this.isFromPlayer = matcher.matches() && playerName.equals(matcher.group("name"));
+        } else {
+            this.isFromPlayer = false;
+        }
+
+        Component toLineComponent = toLine.getCustomName();
+        if (toLineComponent != null) {
+            this.isForPlayer = "CLICK TO OPEN".equals(TextUtils.stripColor(toLineComponent.getString()));
+        } else {
+            this.isForPlayer = false;
+        }
+
         this.presentType = color;
     }
 
