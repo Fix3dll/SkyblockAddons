@@ -27,3 +27,4 @@ accessible field net/minecraft/client/player/LocalPlayer xLast D
 accessible field net/minecraft/client/player/LocalPlayer zLast D
 accessible field net/minecraft/world/level/saveddata/maps/MapItemSavedData decorations Ljava/util/Map;
 accessible method net/minecraft/client/resources/TextureAtlasHolder getSprite (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;
+accessible field net/minecraft/client/particle/Particle yo D

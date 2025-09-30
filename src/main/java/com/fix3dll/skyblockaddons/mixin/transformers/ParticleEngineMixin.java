@@ -1,8 +1,10 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.mixin.hooks.ParticleEngineHook;
+import net.minecraft.client.Camera;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,6 +16,16 @@ public class ParticleEngineMixin {
     @Inject(method = "add", at = @At("HEAD"))
     private void sba$addEffect(Particle effect, CallbackInfo ci) {
         ParticleEngineHook.onAddParticle(effect);
+    }
+
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V"))
+    public void sba$render(Camera camera, float partialTick, MultiBufferSource.BufferSource bufferSource, CallbackInfo ci) {
+        ParticleEngineHook.renderParticleOverlays(camera, partialTick, bufferSource);
+    }
+
+    @Inject(method = "tick", at = @At("RETURN"))
+    public void sba$tick(CallbackInfo ci) {
+        ParticleEngineHook.tickParticleOverlays();
     }
 
 }

@@ -348,5 +348,10 @@
     "name": "Ent",
     "rarity": "EPIC",
     "spawnMessage": "You've hooked an Ent, as ancient as the forest itself."
+  },
+  "BOGGED": {
+    "name": "Bogged",
+    "rarity": "COMMON",
+    "spawnMessage": "You've hooked a Bogged!"
   }
 }
