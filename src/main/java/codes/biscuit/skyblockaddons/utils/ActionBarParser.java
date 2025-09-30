@@ -184,12 +184,16 @@ public class ActionBarParser {
                 if (section.contains("Ⓞ") || section.contains("ⓩ")) {
                     String[] split = splitManaAndTicker(section);
                     String manaSection = parseMana(split[0]);
-                    section = section.replace(split[0], manaSection == null ? "" : manaSection);
-                    String tickerSection = parseTickers(split[1]);
-                    section = section.replace(split[1], tickerSection == null ? "" : tickerSection);
-                    if (section.isEmpty()) {
-                        return null;
+                    if (manaSection == null) {
+                        stringsToRemove.add(split[0]);
+                        section = section.replace(split[0], "");
                     }
+                    String tickerSection = parseTickers(split[1]);
+                    if (tickerSection == null) {
+                        stringsToRemove.add(split[1]);
+                        section = section.replace(split[1], "");
+                    }
+                    return section.isEmpty() ? null : section;
                 } else {
                     return parseMana(section);
                 }
@@ -202,7 +206,7 @@ public class ActionBarParser {
             }
         } catch (ParseException e) {
             LOGGER.error("The section \"{}\" will be skipped due to an error during number parsing.", section);
-            LOGGER.error("Failed to parse number at offset " + e.getErrorOffset() + " in string \"" + e.getMessage() + "\".", e);
+            LOGGER.error("Failed to parse number at offset {} in string \"{}\".", e.getErrorOffset(), e.getMessage(), e);
             return section;
         }
 
