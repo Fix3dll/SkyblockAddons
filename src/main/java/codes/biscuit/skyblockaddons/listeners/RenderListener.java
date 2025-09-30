@@ -65,6 +65,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -2460,7 +2461,13 @@ public class RenderListener {
             return;
         } else if (pet != newPet) {
             pet = newPet;
-            petSkull = ItemUtils.createSkullItemStack(null, null, newPet.getSkullId(), newPet.getTextureURL());
+            String skullId = newPet.getSkullId();
+            String textureUrl = newPet.getTextureURL();
+            if (StringUtils.isNullOrEmpty(skullId) || StringUtils.isNullOrEmpty(textureUrl)) {
+                petSkull = null;
+            } else {
+                petSkull = ItemUtils.createSkullItemStack(null, null, skullId, textureUrl);
+            }
         }
 
         String text = pet.getDisplayName();
@@ -2536,6 +2543,8 @@ public class RenderListener {
     }
 
     public static void renderItem(ItemStack item, float x, float y, float scale) {
+        if (item == null) return;
+
         GlStateManager.enableDepth();
         GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();

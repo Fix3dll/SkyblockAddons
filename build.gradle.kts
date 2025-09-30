@@ -8,8 +8,8 @@ plugins {
     java
     id("gg.essential.loom") version ("1.6.21")
     id("dev.architectury.architectury-pack200") version ("0.1.3")
-    id("io.freefair.lombok") version ("8.11")
-    id("com.gradleup.shadow") version ("8.3.0")
+    id("io.freefair.lombok") version ("9.0.0")
+    id("com.gradleup.shadow") version ("8.3.9")
     id("net.kyori.blossom") version ("1.3.1")
 }
 
@@ -127,7 +127,8 @@ dependencies {
         exclude(module = "gson")
         because("Different version conflicts with Minecraft's GSON")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.14.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.14.0")
 }
 
 tasks.withType(JavaCompile::class).configureEach {

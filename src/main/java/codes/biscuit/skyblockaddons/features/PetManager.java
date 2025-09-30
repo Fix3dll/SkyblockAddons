@@ -79,7 +79,8 @@ public class PetManager {
 
                     Pet oldPet = main.getPetCacheManager().getPet(sbaPetIndex);
 
-                    if (oldPet == null || !oldPet.displayName.equals(pet.displayName) || !oldPet.petInfo.equals(pet.petInfo)) {
+                    if (oldPet == null || oldPet.skullId == null || oldPet.textureURL == null
+                            || !oldPet.displayName.equals(pet.displayName) || !oldPet.petInfo.equals(pet.petInfo)) {
                         main.getPetCacheManager().putPet(sbaPetIndex, pet);
                         petsUpdated = true;
                     }

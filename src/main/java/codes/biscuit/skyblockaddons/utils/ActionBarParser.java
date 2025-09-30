@@ -180,7 +180,19 @@ public class ActionBarParser {
             } else if (section.endsWith("§f❂ True Defense")) {
                 return parseTrueDefence(section);
             } else if (section.contains("✎")) {
-                return parseMana(section);
+                // tf are u doing hypixel §b692/736✎ Mana§e§lⓩⓩⓩ§6§lⓄⓄ
+                if (section.contains("Ⓞ") || section.contains("ⓩ")) {
+                    String[] split = splitManaAndTicker(section);
+                    String manaSection = parseMana(split[0]);
+                    section = section.replace(split[0], manaSection == null ? "" : manaSection);
+                    String tickerSection = parseTickers(split[1]);
+                    section = section.replace(split[1], tickerSection == null ? "" : tickerSection);
+                    if (section.isEmpty()) {
+                        return null;
+                    }
+                } else {
+                    return parseMana(section);
+                }
             } else if (section.contains("(")) {
                 return parseSkill(convertMag);
             } else if (section.contains("Ⓞ") || section.contains("ⓩ")) {
@@ -528,6 +540,37 @@ public class ActionBarParser {
         } catch (ParseException e) {
             return -1;
         }
+    }
+
+    /**
+     * Splits the input string into two parts based on the word "Mana":
+     * 1. The prefix, including "Mana" (e.g., §b692/736✎ Mana)
+     * 2. The suffix, after "Mana" (e.g., §e§lⓩⓩⓩ§6§lⓄⓄ)
+     * @param inputString The string to be split.
+     * @return A String[] containing the two parts.
+     */
+    public static String[] splitManaAndTicker(String inputString) {
+        final String searchWord = "Mana";
+
+        // Find the index right after the word "Mana" ends.
+        int manaStartIndex = inputString.indexOf(searchWord);
+
+        // If "Mana" is not found in the string, return the original string and an empty string.
+        if (manaStartIndex == -1) {
+            return new String[]{inputString, ""};
+        }
+
+        // Calculate the end index for the first part (where "Mana" finishes).
+        int manaEndIndex = manaStartIndex + searchWord.length();
+
+        // Part 1: Prefix including "Mana"
+        String partBeforeAndMana = inputString.substring(0, manaEndIndex);
+
+        // Part 2: Suffix after "Mana"
+        String partAfter = inputString.substring(manaEndIndex);
+
+        // Return the list containing the two resulting strings.
+        return new String[]{partBeforeAndMana, partAfter};
     }
 
 }

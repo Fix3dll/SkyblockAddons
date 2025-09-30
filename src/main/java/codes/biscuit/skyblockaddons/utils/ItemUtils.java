@@ -8,6 +8,7 @@ import codes.biscuit.skyblockaddons.features.backpacks.BackpackColor;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import codes.biscuit.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import codes.biscuit.skyblockaddons.core.Rune;
+import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Items;
@@ -489,7 +490,7 @@ public class ItemUtils {
         return createSkullItemStack(name, Collections.emptyList(), skyblockID, skullID, textureURL);
     }
 
-    public static ItemStack createSkullItemStack(String name, List<String> lore, String skyblockID, String skullID, String textureURL) {
+    public static ItemStack createSkullItemStack(String name, List<String> lore, String skyblockID, @NonNull String skullID, String textureURL) {
         ItemStack stack = new ItemStack(Items.skull, 1, 3);
 
         NBTTagCompound texture = new NBTTagCompound();
