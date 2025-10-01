@@ -144,20 +144,13 @@ public class ContainerPreviewManager {
             // Get the container color
             BackpackColor color = ItemUtils.getBackpackColor(stack);
             ContainerType type = containerData.getType();
-            String name = null;
-            if (type != null) {
-                switch (containerData.getType()) {
-                    case PERSONAL_COMPACTOR:
-                    case PERSONAL_DELETOR:
-                        break;
-                    default:
-                        // If type is not null and name is not ignored
-                        Component customName = stack.getCustomName();
-                        if (customName != null) {
-                            name = TextUtils.stripColor(customName.getString());
-                        }
-                        break;
-                }
+
+            String name;
+            if (type == ContainerType.PERSONAL_COMPACTOR || type == ContainerType.PERSONAL_DELETOR) {
+                name = null;
+            } else { // If type is not null and name is not ignored
+                Component customName = stack.getCustomName();
+                name = customName == null ? null : TextUtils.stripColor(customName.getString());
             }
 
             boolean active = extraAttributes.read(Codec.BOOL.fieldOf("PERSONAL_DELETOR_ACTIVE")).result().orElse(false);
