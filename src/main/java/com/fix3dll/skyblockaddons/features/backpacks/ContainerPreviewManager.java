@@ -12,6 +12,7 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData.ContainerType;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LegacyIdItemMapData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 import lombok.Getter;
@@ -29,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -38,6 +40,7 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -174,6 +177,7 @@ public class ContainerPreviewManager {
             saveStorageContainerInventory();
             main.getInventoryUtils().setInventoryPageNum(0);
         }
+        frozen = false;
     }
 
     /**
@@ -200,20 +204,50 @@ public class ContainerPreviewManager {
             for (int i = 0; i < size; i++) {
                 CompoundTag itemTag = list.getCompoundOrEmpty(i);
                 // This fixes an issue in Hypixel where enchanted potatoes have the wrong id (potato block instead of item).
-                short itemID = itemTag.getShort("id").orElse((short) 0);
+                short itemID = itemTag.getShortOr("id", (short) 0);
                 if (itemID == 142) { // Potato Block -> Potato Item
                     itemTag.putShort("id", (short) 392);
                 } else if (itemID == 141) { // Carrot Block -> Carrot Item
                     itemTag.putShort("id", (short) 391);
                 }
-                if (itemTag.isEmpty()) {
-                    items.add(ItemStack.EMPTY);
+
+                // 1.8.9 NBT to 1.21.5 CustomData
+                if (itemTag.contains("tag") && itemID != 0) {
+                    String legacyId = String.valueOf(itemID);
+                    short meta = itemTag.getShortOr("Damage", (short) 0);
+                    if (meta != 0) legacyId += ":" + meta;
+
+                    ItemStack modernItem = LegacyIdItemMapData.getItemStack(
+                            legacyId, itemTag.getShortOr("Count", (short) 1)
+                    );
+
+                    CompoundTag nbt = itemTag.getCompoundOrEmpty("tag");
+                    CustomData extraAttributes = CustomData.of(
+                            nbt.getCompoundOrEmpty("ExtraAttributes")
+                    );
+                    modernItem.set(DataComponents.CUSTOM_DATA, extraAttributes);
+
+                    CompoundTag display = nbt.getCompoundOrEmpty("display");
+                    display.getString("Name").ifPresent(
+                            s -> modernItem.set(DataComponents.CUSTOM_NAME, Component.literal(s))
+                    );
+                    Optional<ListTag> lore = display.getList("Lore");
+                    if (lore.isPresent()) {
+                        ListTag loreTag = lore.get();
+                        List<Component> loreCompound = new ArrayList<>(loreTag.size());
+                        for (Tag item : loreTag) {
+                            item.asString().ifPresent(s -> loreCompound.add(Component.literal(s)));
+                        }
+                        modernItem.set(DataComponents.LORE, new ItemLore(loreCompound));
+                    }
+
+                    items.add(i, modernItem);
                 } else if (Minecraft.getInstance().level != null) {
                     Optional<ItemStack> itemStack = ItemStack.parse(Minecraft.getInstance().level.registryAccess(), itemTag);
-                    items.add(itemStack.orElse(ItemStack.EMPTY));
+                    items.add(i, itemStack.orElse(ItemStack.EMPTY));
                 } else {
                     Optional<ItemStack> itemStack = ItemStack.parse(RegistryAccess.EMPTY, itemTag);
-                    items.add(itemStack.orElse(ItemStack.EMPTY));
+                    items.add(i, itemStack.orElse(ItemStack.EMPTY));
                 }
             }
         } catch (Exception ex) {
@@ -238,7 +272,7 @@ public class ContainerPreviewManager {
 
         int screenHeight = guiContainer.height;
 
-        ItemStack tooltipItem = null;
+        ItemStack tooltipItem = ItemStack.EMPTY;
 
         PoseStack poseStack = graphics.pose();
 
@@ -363,7 +397,7 @@ public class ContainerPreviewManager {
                 }
             }
         }
-        if (tooltipItem != null) {
+        if (!tooltipItem.isEmpty()) {
             // Translate up to fix patcher glitch
             poseStack.pushPose();
             poseStack.translate(0, 0, 302);

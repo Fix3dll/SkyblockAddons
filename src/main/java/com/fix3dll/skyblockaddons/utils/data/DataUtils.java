@@ -32,6 +32,7 @@ import com.fix3dll.skyblockaddons.utils.data.requests.SlayerLocationsRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LegacyIdItemMapData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LocationData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
@@ -50,6 +51,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.Items;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -294,6 +296,10 @@ public class DataUtils {
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
+
+        if (LegacyIdItemMapData.getItemStack("175:4").getItem() == Items.ROSE_BUSH) {
+            LOGGER.info("roses are red and violets are blue");
+        }
     }
 
     /*
@@ -469,13 +475,12 @@ public class DataUtils {
      * @param filePath the path to the file that caused the exception
      * @param exception the exception that occurred
      */
-    private static void handleLocalFileReadException(String filePath, Throwable exception) {
+    public static void handleLocalFileReadException(String filePath, Throwable exception) {
         if (ClientEvents.ClientInitialization.AFTER_INITIALIZE.isTrue()) {
             throw new DataLoadingException(filePath, exception);
         } else {
             CrashReport crashReport = CrashReport.forThrowable(
-                    exception,
-                    String.format("Loading data file at %s", filePath)
+                    exception, "[SkyblockAddons] Loading data file at %s".formatted(filePath)
             );
             throw new ReportedException(crashReport);
         }
