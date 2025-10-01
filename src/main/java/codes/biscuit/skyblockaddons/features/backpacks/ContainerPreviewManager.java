@@ -166,6 +166,7 @@ public class ContainerPreviewManager {
             saveStorageContainerInventory();
             main.getInventoryUtils().setInventoryPageNum(0);
         }
+        frozen = false;
     }
 
     /**
