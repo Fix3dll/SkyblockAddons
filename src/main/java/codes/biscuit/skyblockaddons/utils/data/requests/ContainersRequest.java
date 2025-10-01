@@ -18,9 +18,9 @@ public class ContainersRequest extends RemoteFileRequest<HashMap<String, Contain
 
     public ContainersRequest() {
         super(
-                "skyblock/containersData.json",
+                "skyblock/containers.json",
                 new JSONResponseHandler<>(new TypeToken<HashMap<String, ContainerData>>() {}.getType()),
-                new ContainerCallback(getCDNBaseURL() + "skyblock/containersData.json")
+                new ContainerCallback(getCDNBaseURL() + "skyblock/containers.json")
         );
     }
 
