@@ -29,6 +29,7 @@ import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonMilestone;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonPlayer;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
+import com.fix3dll.skyblockaddons.features.fishParticles.FishParticleManager;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerTracker;
 import com.fix3dll.skyblockaddons.features.tablist.TabListParser;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
@@ -238,7 +239,7 @@ public class PlayerListener {
 
             NPCUtils.getNpcLocations().clear();
             JerryPresent.getJerryPresents().clear();
-//            FishParticleManager.clearParticleCache();
+            FishParticleManager.clearParticleCache();
             main.getRenderListener().setMaxRiftHealth(0.0F);
             PlayerStat.MAX_RIFT_HEALTH.setValue(0);
         }
@@ -390,8 +391,11 @@ public class PlayerListener {
                 main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
 
                 // TODO: Seems like leg warning and num sc killed should be separate features
-            } else if (SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
-                int spawned = unformattedText.contains("Magma Slug") || unformattedText.contains("Bayou Sludge") ? 4 : 1;
+            } else if (isSeaCreatureMessage(strippedText)) {
+                int spawned = unformattedText.contains("Magma Slug")
+                           || unformattedText.contains("Bayou Sludge")
+                           || unformattedText.contains("Liltads") ? 4 : 1;
+
                 if (doubleHook) {
                     spawned *= 2;
                     doubleHook = false;
@@ -1322,6 +1326,12 @@ public class PlayerListener {
         }
     }
 
-    private record RatSound(ResourceLocation location, float volume, float pitch) {
+    private record RatSound(ResourceLocation location, float volume, float pitch) {}
+
+    // SkyHanni sents modified chat message instead of original one.
+    private boolean isSeaCreatureMessage(String chatMessage) {
+        return !chatMessage.isBlank() && SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages()
+                .stream().anyMatch(chatMessage::endsWith);
     }
+
 }
