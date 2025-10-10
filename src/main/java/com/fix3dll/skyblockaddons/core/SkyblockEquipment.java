@@ -143,6 +143,10 @@ public enum SkyblockEquipment {
         }
     }
 
+    public boolean isEmpty() {
+        return ItemStack.matches(itemStack, emptyStack) || ItemStack.isSameItem(itemStack, NULL);
+    }
+
     public static boolean equipmentsInInventory() {
         return main.getUtils().isOnSkyblock() && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled();
     }

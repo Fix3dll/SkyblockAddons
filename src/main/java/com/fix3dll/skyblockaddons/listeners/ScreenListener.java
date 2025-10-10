@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.listeners;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.config.PetCacheManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.Translations;
@@ -46,9 +47,12 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -268,6 +272,22 @@ public class ScreenListener {
                 if (main.getUtils().isOnRift()) {
                     this.setRiftPet(chestMenu);
                 }
+            } else if (inventoryType == InventoryType.PETS) {
+                ItemStack petMenuBone = chestMenu.getSlot(4).getItem();
+                if (petMenuBone.getItem() == Items.BONE
+                        && (main.getPetCacheManager().getCurrentPet() != null || !SkyblockEquipment.PET.isEmpty())) {
+                    ItemLore itemLore = petMenuBone.get(DataComponents.LORE);
+                    boolean currentPetIsNone = Optional.ofNullable(itemLore)
+                            .map(ItemLore::lines)
+                            .map(List::getLast)
+                            .map(Component::getString)
+                            .map(s -> s.contains("None"))
+                            .orElse(false);
+                    if (currentPetIsNone) {
+                        main.getPetCacheManager().setCurrentPet(null);
+                        SkyblockEquipment.PET.setItemStack(SkyblockEquipment.PET.getEmptyStack());
+                    }
+                }
             }
 
         }
@@ -398,7 +418,9 @@ public class ScreenListener {
         ).matches();
         if (!isClosedGuiPets) return;
 
-        Int2ObjectOpenHashMap<Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
+        PetCacheManager petCacheManager = main.getPetCacheManager();
+        Int2ObjectOpenHashMap<Pet> petMap = petCacheManager.getPetCache().getPetMap();
+
         Pair<Integer, Integer> clickedButton = AbstractContainerScreenHook.getLastClickedButtonOnPetsMenu();
         if (clickedButton == null) return;
 
@@ -409,9 +431,15 @@ public class ScreenListener {
         if (petMap.containsKey(index)) {
             Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
-                main.getPetCacheManager().setCurrentPet(null);
+                petCacheManager.setCurrentPet(null);
+                // Guarantee
+                SkyblockEquipment petEq = SkyblockEquipment.PET;
+                if (!petEq.isEmpty()) {
+                    petEq.setItemStack(petEq.getEmptyStack());
+                    SkyblockEquipment.saveEquipments();
+                }
             } else if (clickedButton.getRight() != 1 /*right click*/) {
-                main.getPetCacheManager().setCurrentPet(pet);
+                petCacheManager.setCurrentPet(pet);
             }
             // lastClickedButton has completed its task, time to clean up
             AbstractContainerScreenHook.setLastClickedButtonOnPetsMenu(null);
