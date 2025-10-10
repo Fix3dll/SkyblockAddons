@@ -44,7 +44,7 @@ public class ScoreboardManager {
 
         // Update titles
         scoreboardTitle = TextUtils.getFormattedText(sidebarObjective.getDisplayName(), true);
-        strippedScoreboardTitle = sidebarObjective.getDisplayName().getString();
+        strippedScoreboardTitle = TextUtils.stripColor(sidebarObjective.getDisplayName().getString());
 
         // Update score lines
         Collection<String> lines = scoreboard.listPlayerScores(sidebarObjective).stream()

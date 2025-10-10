@@ -119,7 +119,7 @@ public class DevUtils {
         }
 
         String title = stripControlCodes
-                ? sideBarObjective.getDisplayName().getString()
+                ? TextUtils.stripColor(sideBarObjective.getDisplayName().getString())
                 : TextUtils.getFormattedText(sideBarObjective.getDisplayName(), true);
         StringBuilder stringBuilder = new StringBuilder(title).append("\n");
 
@@ -136,7 +136,7 @@ public class DevUtils {
 
                     // return fixed name
                     String text = stripControlCodes
-                            ? decoratedName.getString()
+                            ? TextUtils.stripColor(decoratedName.getString())
                             : TextUtils.getFormattedText(decoratedName, true);
                     stringBuilder.append(text.replace(owner, ""));
 
