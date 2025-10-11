@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.config;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.PetInfo;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.PetManager;
 import com.fix3dll.skyblockaddons.utils.Utils;
@@ -9,6 +10,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -110,8 +112,26 @@ public class PetCacheManager {
     }
 
     public void setCurrentPet(PetManager.Pet pet) {
-        petCache.currentPet = pet;
-        saveValues();
+        setCurrentPet(pet, true);
+    }
+
+    public void setCurrentPet(PetManager.Pet pet, boolean updateEquipment) {
+        if (petCache.currentPet != pet) {
+            petCache.currentPet = pet;
+            saveValues();
+        }
+
+        if (updateEquipment) {
+            SkyblockEquipment eq = SkyblockEquipment.PET;
+
+            if (pet == null && !eq.isEmpty()) {
+                eq.setItemStack(eq.getEmptyStack());
+                SkyblockEquipment.saveEquipments();
+            } else if (pet != null && !ItemStack.isSameItemSameComponents(pet.getItemStack(), eq.getItemStack())) {
+                eq.setItemStack(pet.getItemStack());
+                SkyblockEquipment.saveEquipments();
+            }
+        }
     }
 
     public PetManager.Pet getPet(int index) {

@@ -4,7 +4,6 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.PetInfo;
-import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
@@ -113,7 +112,6 @@ public class PetManager {
                     && pet.petLevel == level
                     && pet.petInfo.getPetRarity() == rarity) {
                 main.getPetCacheManager().setCurrentPet(pet);
-                SkyblockEquipment.PET.setItemStack(pet.getItemStack());
             }
         }
     }
@@ -157,7 +155,6 @@ public class PetManager {
                     main.getPetCacheManager().saveValues();
                     if (isCurrentPet) {
                         main.getPetCacheManager().setCurrentPet(pet);
-                        SkyblockEquipment.PET.setItemStack(pet.getItemStack());
                     }
                 }
             }
@@ -222,7 +219,6 @@ public class PetManager {
             if (petInfo.isActive()) {
                 if (oldPet == null || oldPet.getItemStack() == null || !oldPet.displayName.equals(displayName) || !oldPet.petInfo.equals(petInfo)) {
                     main.getPetCacheManager().setCurrentPet(newPet);
-                    SkyblockEquipment.PET.setItemStack(itemStack);
                 }
             }
 

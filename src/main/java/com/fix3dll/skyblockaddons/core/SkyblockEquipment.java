@@ -9,7 +9,6 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +48,7 @@ public enum SkyblockEquipment {
 
     private static Type currentType;
 
-    @Getter @Setter private ItemStack itemStack;
+    @Getter private ItemStack itemStack;
     @Getter private final ItemStack emptyStack;
     private boolean isHovered = false;
 
@@ -63,37 +63,11 @@ public enum SkyblockEquipment {
         this.itemStack = emptyStack;
     }
 
-    public static void loadEquipments(Type equipmentType) {
-        if (equipmentType != null && currentType != equipmentType) {
-            currentType = equipmentType;
+    public void setItemStack(ItemStack itemStack) {
+        if (itemStack == null || itemStack.isEmpty()) {
+            this.itemStack = emptyStack;
         } else {
-            return;
-        }
-
-        CompressedStorage compressedStorage = main.getPersistentValuesManager().getCompressedEquipments(currentType.getLevelKey());
-        if (compressedStorage != null) {
-            List <ItemStack> list = ContainerPreviewManager.decompressItems(compressedStorage.getStorage());
-            if (list != null) {
-                int listSize = list.size();
-                // If there is another null while the list is decompressed, fill it too.
-                for (int i = 0; i < values().length; i++) {
-                    if (listSize > i) {
-                        values()[i].itemStack = list.get(i);
-                    } else {
-                        values()[i].itemStack = values()[i].getEmptyStack();
-                    }
-                }
-            } else {
-                // Fill with empty stacks if not decompressed
-                for (SkyblockEquipment equipment : values()) {
-                    equipment.itemStack = equipment.emptyStack;
-                }
-            }
-        } else {
-            // Fill with empty stacks if there is no cache
-            for (SkyblockEquipment equipment : values()) {
-                equipment.itemStack = equipment.emptyStack;
-            }
+            this.itemStack = itemStack;
         }
     }
 
@@ -151,17 +125,46 @@ public enum SkyblockEquipment {
         return main.getUtils().isOnSkyblock() && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled();
     }
 
+    public static void loadEquipments(Type equipmentType) {
+        if (equipmentType != null && currentType != equipmentType) {
+            currentType = equipmentType;
+        } else {
+            return;
+        }
+
+        CompressedStorage compressedStorage = main.getPersistentValuesManager().getCompressedEquipments(currentType.getLevelKey());
+        if (compressedStorage != null) {
+            List <ItemStack> list = ContainerPreviewManager.decompressItems(compressedStorage.getStorage());
+            if (list != null) {
+                SkyblockEquipment[] equipments = values();
+                int listSize = list.size();
+                // If there is another null while the list is decompressed, fill it too.
+                for (int i = 0; i < equipments.length; i++) {
+                    if (i < listSize) {
+                        equipments[i].setItemStack(list.get(i));
+                    } else {
+                        equipments[i].itemStack = equipments[i].getEmptyStack();
+                    }
+                }
+            } else {
+                // Fill with empty stacks if not decompressed
+                for (SkyblockEquipment equipment : values()) {
+                    equipment.itemStack = equipment.emptyStack;
+                }
+            }
+        } else {
+            // Fill with empty stacks if there is no cache
+            for (SkyblockEquipment equipment : values()) {
+                equipment.itemStack = equipment.emptyStack;
+            }
+        }
+    }
+
     /**
      * Save equipments to persistent values
      */
     public static void saveEquipments() {
-        int length = values().length;
-        ItemStack[] list = new ItemStack[length];
-        for (int slotNumber = 0; slotNumber < length; slotNumber++) {
-            ItemStack itemStack = values()[slotNumber].itemStack;
-            list[slotNumber] = itemStack == ItemStack.EMPTY ? values()[slotNumber].getEmptyStack() : itemStack;
-        }
-
+        ItemStack[] list = Arrays.stream(values()).map(SkyblockEquipment::getItemStack).toArray(ItemStack[]::new);
         main.getPersistentValuesManager().getPersistentValues().getEquipmentCache().put(
                 main.getUtils().isOnRift() ? Type.RIFT.getLevelKey() : Type.MAIN.getLevelKey(),
                 new CompressedStorage(ItemUtils.getCompressedNBT(list).getAsByteArray())

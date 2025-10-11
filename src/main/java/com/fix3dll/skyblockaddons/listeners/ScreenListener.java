@@ -3,11 +3,11 @@ package com.fix3dll.skyblockaddons.listeners;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
+import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.InventoryType;
-import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.events.SkyblockAddonsEvents;
@@ -51,8 +51,6 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -274,18 +272,50 @@ public class ScreenListener {
                 }
             } else if (inventoryType == InventoryType.PETS) {
                 ItemStack petMenuBone = chestMenu.getSlot(4).getItem();
-                if (petMenuBone.getItem() == Items.BONE
-                        && (main.getPetCacheManager().getCurrentPet() != null || !SkyblockEquipment.PET.isEmpty())) {
+
+                if (petMenuBone.getItem() == Items.BONE) {
                     ItemLore itemLore = petMenuBone.get(DataComponents.LORE);
-                    boolean currentPetIsNone = Optional.ofNullable(itemLore)
-                            .map(ItemLore::lines)
-                            .map(List::getLast)
-                            .map(Component::getString)
-                            .map(s -> s.contains("None"))
-                            .orElse(false);
-                    if (currentPetIsNone) {
-                        main.getPetCacheManager().setCurrentPet(null);
-                        SkyblockEquipment.PET.setItemStack(SkyblockEquipment.PET.getEmptyStack());
+
+                    if (itemLore != null) {
+                        String selectedPet = null;
+                        for (Component line : itemLore.lines()) {
+                            String lineString = line.getString();
+                            if (lineString.contains("Selected pet:")) {
+                                int colonIndex = lineString.indexOf(':');
+                                if (colonIndex != -1) {
+                                    selectedPet = lineString.substring(colonIndex + 2); // +1 space
+                                }
+                                break;
+                            }
+                        }
+
+                        if (selectedPet != null) {
+                            PetCacheManager petCacheManager = main.getPetCacheManager();
+                            Pet currentPet = petCacheManager.getCurrentPet();
+
+                            if (selectedPet.contains("None")) {
+                                petCacheManager.setCurrentPet(null);
+                            } else if (currentPet != null && !currentPet.getDisplayName().endsWith(selectedPet)) {
+                                Pet petToSet = null;
+                                for (Pet pet : petCacheManager.getPetCache().getPetMap().values()) {
+                                    if (pet.getDisplayName().endsWith(selectedPet)) {
+                                        // If a similar pet is found, set the ‘petToSet’,
+                                        // but continue searching for similarities.
+                                        if (petToSet == null) {
+                                            petToSet = pet;
+                                        }
+                                        // Otherwise, if there are more than one pet similarities, do not touch.
+                                        else {
+                                            petToSet = null;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (petToSet != null) {
+                                    petCacheManager.setCurrentPet(petToSet);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -422,7 +452,7 @@ public class ScreenListener {
         Int2ObjectOpenHashMap<Pet> petMap = petCacheManager.getPetCache().getPetMap();
 
         Pair<Integer, Integer> clickedButton = AbstractContainerScreenHook.getLastClickedButtonOnPetsMenu();
-        if (clickedButton == null) return;
+        if (clickedButton == null || clickedButton.getLeft() >= 54) return;
 
         int pageNum = main.getInventoryUtils().getInventoryPageNum();
         // If pageNum == 0, there is no page indicator in the title, there is only 1 pet page.
@@ -432,12 +462,6 @@ public class ScreenListener {
             Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
                 petCacheManager.setCurrentPet(null);
-                // Guarantee
-                SkyblockEquipment petEq = SkyblockEquipment.PET;
-                if (!petEq.isEmpty()) {
-                    petEq.setItemStack(petEq.getEmptyStack());
-                    SkyblockEquipment.saveEquipments();
-                }
             } else if (clickedButton.getRight() != 1 /*right click*/) {
                 petCacheManager.setCurrentPet(pet);
             }
@@ -456,20 +480,22 @@ public class ScreenListener {
 
         if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS_PANE)) {
             // Be sure current pet is same on cache
-            main.getPetCacheManager().setCurrentPet(null);
+            main.getPetCacheManager().setCurrentPet(null, false);
             SkyblockEquipment.PET.setItemStack(petItem);
         } else if (petItem.is(Items.PLAYER_HEAD)) {
             Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
             Int2ObjectOpenHashMap<Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
 
-            for (Int2ObjectMap.Entry<Pet> entry : petMap.int2ObjectEntrySet()) {
-                int entryKey = entry.getIntKey();
-                Pet entryValue = petMap.get(entryKey);
+            if (newPet != null) {
+                for (Int2ObjectMap.Entry<Pet> entry : petMap.int2ObjectEntrySet()) {
+                    int entryKey = entry.getIntKey();
+                    Pet entryValue = petMap.get(entryKey);
 
-                if (newPet.getPetInfo().getUniqueId().equals(entryValue.getPetInfo().getUniqueId())) {
-                    petMap.put(entryKey, newPet);
-                    main.getPetCacheManager().saveValues();
-                    break;
+                    if (newPet.getPetInfo().getUniqueId().equals(entryValue.getPetInfo().getUniqueId())) {
+                        petMap.put(entryKey, newPet);
+                        main.getPetCacheManager().saveValues();
+                        break;
+                    }
                 }
             }
             SkyblockEquipment.PET.setItemStack(petItem);
