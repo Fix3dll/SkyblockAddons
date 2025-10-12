@@ -347,13 +347,18 @@ public class PlayerListener {
                 );
 
             } else if ((matcher = PET_LEVELED_UP_PATTERN.matcher(formattedText)).find()) {
+                int newLevel = Integer.parseInt(matcher.group("newLevel"));
                 String petName = matcher.group("name");
                 String petCosmetic = matcher.group("cosmetic");
-                if (!StringUtil.isNullOrEmpty(petCosmetic)) {
+
+                // The ✦ of skins with cosmetic level feature is not at the end: '[Lvl 200] [2✦] Golden Dragon'
+                // §aYour §r§6Golden Dragon§r§4 ✦ §r§aleveled up to level §r§6§l202§r§a!§r
+                if (!StringUtil.isNullOrEmpty(petCosmetic) && newLevel <= 200) {
                     petName += petCosmetic.replace("§r", "");
                 }
+
                 PetManager.getInstance().updateAndSetCurrentLevelledPet(
-                        matcher.group("newLevel"), matcher.group("rarityColor"), petName
+                        newLevel, matcher.group("rarityColor"), petName
                 );
 
             } else if ((matcher = PET_ITEM_PATTERN.matcher(formattedText)).find()) {

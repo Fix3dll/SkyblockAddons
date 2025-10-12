@@ -119,12 +119,11 @@ public class PetManager {
     /**
      * When levelled up messages came to chat it will trigger {@code PlayerListener.PET_LEVELED_UP_PATTERN}
      * We will get groups from that Pattern, and we will update petCache and set current pet from these groups values.
-     * @param newLevelString level string
+     * @param newLevel pet's new level as an integer
      * @param rarityColor rarity color string
      * @param petName petName string
      */
-    public void updateAndSetCurrentLevelledPet(String newLevelString, String rarityColor, String petName) {
-        int newLevel = Integer.parseInt(newLevelString);
+    public void updateAndSetCurrentLevelledPet(int newLevel, String rarityColor, String petName) {
         ColorCode color = ColorCode.getByChar(rarityColor.charAt(0));
         SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
@@ -145,7 +144,7 @@ public class PetManager {
                             pet.displayName = m.group(1) + m.group(2) + m.group(3) + m.group(4) + cosmeticLevel + m.group(6);
                         } else {
                             pet.petLevel = newLevel;
-                            pet.displayName = m.group(1) + newLevelString + m.group(3) + m.group(6);
+                            pet.displayName = m.group(1) + newLevel + m.group(3) + m.group(6);
                         }
                     } else {
                         continue;
