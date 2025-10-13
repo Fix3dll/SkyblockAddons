@@ -237,6 +237,10 @@ public class ScreenListener {
                             LOGGER.info("Mayor changed to {}", mayorName);
                         }
 
+                        if (mayorName.contains("Jerry")) {
+                            main.getMayorJerryData().parseMayorJerryPerkpocalypse(item);
+                        }
+
                         break;
                     }
                 }
