@@ -383,21 +383,10 @@ public class ItemUtils {
      * @return A {@link PetInfo} or {@code null} if it isn't a pet
      */
     public static PetInfo getPetInfo(CustomData extraAttributes) {
-        if (extraAttributes != null) {
-            String itemId = getSkyblockItemID(extraAttributes);
-
-            if (!itemId.equals("PET")) {
-                return null;
-            }
-
-            Optional<String> petInfo = extraAttributes.read(Codec.STRING.fieldOf("petInfo")).result();
-
-            if (petInfo.isPresent()) {
-                return SkyblockAddons.getGson().fromJson(petInfo.get(), PetInfo.class);
-            }
-        }
-
-        return null;
+        if (extraAttributes == null) return null;
+        return  extraAttributes.read(Codec.STRING.fieldOf("petInfo")).result()
+                .map(str -> SkyblockAddons.getGson().fromJson(str, PetInfo.class))
+                .orElse(null);
     }
 
     /**

@@ -4,8 +4,6 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.CrimsonArmorAbilityStack;
 import com.fix3dll.skyblockaddons.core.EssenceType;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.ItemDiff;
@@ -15,13 +13,16 @@ import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.SlayerArmorProgress;
 import com.fix3dll.skyblockaddons.core.ThunderBottle;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
-import com.fix3dll.skyblockaddons.events.RenderEvents;
+import com.fix3dll.skyblockaddons.core.updater.Updater;
 import com.fix3dll.skyblockaddons.features.BaitManager;
 import com.fix3dll.skyblockaddons.features.EndstoneProtectorManager;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.PetManager;
+import com.fix3dll.skyblockaddons.features.TrevorTrapperTracker;
 import com.fix3dll.skyblockaddons.features.deployable.Deployable;
 import com.fix3dll.skyblockaddons.features.deployable.DeployableManager;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTracker;
@@ -30,7 +31,6 @@ import com.fix3dll.skyblockaddons.features.dragontracker.DragonsSince;
 import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonClass;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonMilestone;
-import com.fix3dll.skyblockaddons.features.TrevorTrapperTracker;
 import com.fix3dll.skyblockaddons.features.healingcircle.HealingCircleManager;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerBoss;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerDrop;
@@ -44,7 +44,6 @@ import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.gui.screens.LocationEditGui;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
-import com.fix3dll.skyblockaddons.core.updater.Updater;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.ActionBarParser;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
@@ -101,7 +100,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -203,7 +201,6 @@ public class RenderListener {
                 SBA_RENDER_LAYER,
                 this::onRenderHud
         ));
-        RenderEvents.LIVING_NAME.register(this::shouldRenderLivingName);
         WorldRenderEvents.LAST.register(this::onRenderWorld);
     }
 
@@ -219,38 +216,6 @@ public class RenderListener {
         }
         drawUpdateMessage(graphics);
         setGui();
-    }
-
-    private void shouldRenderLivingName(LivingEntity entity, double d, CallbackInfoReturnable<Boolean> cir) {
-        Component customName = entity.getCustomName();
-        if (customName != null) {
-            String formattedText = TextUtils.getFormattedText(customName);
-            if (Feature.MINION_DISABLE_LOCATION_WARNING.isEnabled()) {
-                if (formattedText.startsWith("§cThis location isn't perfect! :(")) {
-                    cir.cancel();
-                    return;
-                }
-                if (customName.getString().startsWith("§c/!\\") && MC.level != null) {
-                    for (Entity listEntity : MC.level.entitiesForRendering()) {
-                        if (listEntity.hasCustomName()
-                                && formattedText.startsWith("§cThis location isn't perfect! :(")
-                                && listEntity.getX() == entity.getX()
-                                && listEntity.getZ() == entity.getZ()
-                                && listEntity.getY() + 0.375 == entity.getY()) {
-                            cir.cancel();
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (Feature.HIDE_SVEN_PUP_NAMETAGS.isEnabled() && entity instanceof ArmorStand) {
-                if (customName.getString().contains("Sven Pup")) {
-                    cir.cancel();
-                    return;
-                }
-            }
-        }
     }
 
     /**
