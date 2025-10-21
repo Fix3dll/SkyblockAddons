@@ -2,15 +2,18 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.gui.screens.ColorSelectionGui;
 import com.fix3dll.skyblockaddons.gui.screens.LocationEditGui;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
+import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import org.joml.Matrix3x2fStack;
 
 public class ButtonColorWheel extends ButtonFeature {
 
@@ -35,10 +38,13 @@ public class ButtonColorWheel extends ButtonFeature {
         this.isHovered = isMouseOver(mouseX, mouseY);
         int color = ARGB.white(this.isHovered ? 1F : 0.5F);
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, 1F);
-        graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, COLOR_WHEEL, colorWheelX, colorWheelY, 0, 0, 10, 10, 10, 10, color));poseStack.popPose();
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.scale(scale, scale);
+        graphics.guiRenderState.submitGuiElement(
+                new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(COLOR_WHEEL), graphics.pose(), colorWheelX, colorWheelY, 0, 0, 10, 10, 10, 10, color, graphics.scissorStack.peek())
+        );
+        poseStack.popMatrix();
     }
 
     @Override
@@ -47,7 +53,7 @@ public class ButtonColorWheel extends ButtonFeature {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (MC.screen instanceof LocationEditGui gui) {
             gui.setClosing(true);
             MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));

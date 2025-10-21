@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.features.tablist;
 
+import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -7,7 +8,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,10 +75,11 @@ public class TabListRenderer {
         // Draw header
         int headerY = y;
         if (header != null) {
-            final int fTW = totalWidth;
             for (String line : header) {
-                final int fHY = headerY;
-                graphics.drawSpecial(source -> FONT.drawInBatch(line, x + fTW / 2F - mc.font.width(line) / 2F, fHY, -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
+                FormattedCharSequence lineFcs = Language.getInstance().getVisualOrder(FormattedText.of(line));
+                graphics.guiRenderState.submitText(
+                        new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, headerY, -1, 0, true, graphics.scissorStack.peek())
+                );
                 headerY += 8 + 1;
             }
             headerY += PADDING;
@@ -106,11 +110,15 @@ public class TabListRenderer {
                     middleX += 8 + 2;
                 }
 
-                final int fX = middleX, fY = middleY;
+                FormattedCharSequence tabLineTextFcs = Language.getInstance().getVisualOrder(FormattedText.of(tabLine.text()));
                 if (tabLine.type() == TabStringType.TITLE) {
-                    graphics.drawSpecial(source -> FONT.drawInBatch(tabLine.text(), (fX + renderColumn.getMaxWidth() / 2F - tabLine.getWidth() / 2F), fY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
+                    graphics.guiRenderState.submitText(
+                            new SbaTextRenderState(tabLineTextFcs, graphics.pose(), (middleX + renderColumn.getMaxWidth() / 2F - tabLine.getWidth() / 2F), middleY, -1, 0, true, graphics.scissorStack.peek())
+                    );
                 } else {
-                    graphics.drawSpecial(source -> FONT.drawInBatch(tabLine.text(), fX, fY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
+                    graphics.guiRenderState.submitText(
+                            new SbaTextRenderState(tabLineTextFcs, graphics.pose(), middleX, middleY, -1, 0, true, graphics.scissorStack.peek())
+                    );
                 }
                 middleY += LINE_HEIGHT;
                 middleX = savedX;
@@ -122,12 +130,14 @@ public class TabListRenderer {
         // Draw the footer
         if (footer != null) {
             int footerY = y + totalHeight - footer.size() * LINE_HEIGHT;
-            final int fTW = totalWidth;
             for (String line : footer) {
-                final int fFY = footerY;
-                graphics.drawSpecial(source -> FONT.drawInBatch(line, x + fTW / 2F - mc.font.width(line) / 2F, fFY , -1, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT));
+                FormattedCharSequence lineFcs = Language.getInstance().getVisualOrder(FormattedText.of(line));
+                graphics.guiRenderState.submitText(
+                        new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, footerY, -1, 0, true, graphics.scissorStack.peek())
+                );
                 footerY += LINE_HEIGHT;
             }
         }
     }
+
 }

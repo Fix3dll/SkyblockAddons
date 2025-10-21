@@ -15,7 +15,7 @@ import java.util.List;
 @Mixin(SimpleContainer.class)
 public class SimpleContainerMixin {
 
-    @Shadow private @Nullable List<ContainerListener> listeners;
+    @Shadow @Nullable public List<ContainerListener> listeners;
 
     // FIXME is it really needed?
     @Inject(method = "setChanged", at = @At("HEAD"), cancellable = true)

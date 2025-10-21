@@ -3,14 +3,15 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import org.apache.logging.log4j.Logger;
+import org.joml.Matrix3x2fStack;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -82,19 +83,19 @@ public class ButtonBanner extends SkyblockAddonsButton {
             this.isHovered = mouseX >= getX() && mouseX < getX() + WIDTH
                     && mouseY >= getY() && mouseY < getY() + bannerImage.getHeight() * scale;
 
-            PoseStack poseStack = graphics.pose();
-            poseStack.pushPose();
-            poseStack.scale(scale, scale, 1);
+            Matrix3x2fStack poseStack = graphics.pose();
+            poseStack.pushMatrix();
+            poseStack.scale(scale, scale);
             int x = Math.round(getX() / scale);
             int y = Math.round(getY() / scale);
-            graphics.blit(RenderType::guiTextured, banner, x, y, 0, 0, width, height, width, height, color);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, banner, x, y, 0, 0, width, height, width, height, color);
 //            drawModalRectWithCustomSizedTexture(Math.round(xPosition / scale), Math.round(xPosition / scale), 0, 0, width, height, width, height);
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (this.isHovered) {
             String link = main.getOnlineData().getBannerLink();
             if (link != null && !link.isEmpty()) {

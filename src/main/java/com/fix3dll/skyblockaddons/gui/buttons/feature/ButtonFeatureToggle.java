@@ -4,7 +4,8 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -39,7 +40,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
         this.isHovered = isHovered(mouseX, mouseY);
 
         int color = ARGB.color(30, 37, 46, 255);
-        graphics.blit(RenderType::guiTextured, TOGGLE_BORDER, getX(), getY(), 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TOGGLE_BORDER, getX(), getY(), 0, 0, width, height, width, height, color);
         boolean enabled = isEnabled == null ? feature.isEnabled() : isEnabled.get();
         boolean remoteDisabled = feature.isRemoteDisabled();
 
@@ -48,7 +49,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
         } else {
             color = ARGB.color(remoteDisabled ? 25 : 255, 222, 68, 76); // Red
         }
-        graphics.blit(RenderType::guiTextured, TOGGLE_INSIDE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TOGGLE_INSIDE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height, color);
 
         int startingX = getStartingPosition(enabled);
         int slideAnimationOffset = 0;
@@ -68,7 +69,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
         startingX += enabled ? slideAnimationOffset : -slideAnimationOffset;
 
         color = ARGB.white(1F);
-        graphics.blit(RenderType::guiTextured, TOGGLE_INSIDE_CIRCLE, startingX, getY() + 3, 0, 0, 9, 9, 9, 9, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TOGGLE_INSIDE_CIRCLE, startingX, getY() + 3, 0, 0, 9, 9, 9, 9, color);
     }
 
     private int getStartingPosition(boolean enabled) {
@@ -80,7 +81,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (this.feature != null && !this.feature.isRemoteDisabled()) {
             if (feature.isDisabled()) {
                 feature.setEnabled(true);

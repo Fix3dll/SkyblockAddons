@@ -1,16 +1,18 @@
 package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
+import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import lombok.Getter;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import org.joml.Matrix3x2fStack;
 
 import java.awt.geom.Point2D;
 
@@ -49,26 +51,28 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
 
         int color = ARGB.white(hovered ? 1F : 0.6F);
 
-        PoseStack poseStack = graphics.pose();
-        graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, PORTAL_ICON, x, y, 0, 0, width, height, width, height, color));
+        Matrix3x2fStack poseStack = graphics.pose();
+        graphics.guiRenderState.submitGuiElement(
+                new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(PORTAL_ICON), graphics.pose(), x, y, 0, 0, width, height, width, height, color, graphics.scissorStack.peek())
+        );
 
         if (hovered) {
-            poseStack.pushPose();
+            poseStack.pushMatrix();
             float textScale = 2.5F * expansion;
-            poseStack.scale(textScale, textScale, 1);
-            graphics.drawSpecial(source -> MC.font.drawInBatch(
-                    getMessage(),
-                    (x + (width / 2)) / textScale - MC.font.width(getMessage()) / 2F,
-                    (y - 20) / textScale,
-                    color,
-                    true,
-                    graphics.pose().last().pose(),
-                    source,
-                    Font.DisplayMode.NORMAL,
-                    0,
-                    LightTexture.FULL_BRIGHT
-            ));
-            poseStack.popPose();
+            poseStack.scale(textScale, textScale);
+            graphics.guiRenderState.submitText(
+                    new SbaTextRenderState(
+                            getMessage().getVisualOrderText(),
+                            graphics.pose(),
+                            (x + (width / 2)) / textScale - MC.font.width(getMessage()) / 2F,
+                            (y - 20) / textScale,
+                            color,
+                            0,
+                            true,
+                            graphics.scissorStack.peek()
+                    )
+            );
+            poseStack.popMatrix();
         }
     }
 
@@ -78,7 +82,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         return false;
     }
 

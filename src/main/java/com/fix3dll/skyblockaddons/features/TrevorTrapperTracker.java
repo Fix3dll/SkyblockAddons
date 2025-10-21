@@ -2,16 +2,17 @@ package com.fix3dll.skyblockaddons.features;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
+import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.events.RenderEntityOutlineEvent;
 import com.fix3dll.skyblockaddons.events.RenderEvents;
 import com.fix3dll.skyblockaddons.features.cooldowns.CooldownManager;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonLocation;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
+import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
@@ -20,11 +21,13 @@ import lombok.Getter;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
@@ -40,7 +43,7 @@ import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Locale;
@@ -70,7 +73,7 @@ public class TrevorTrapperTracker {
         ClientEvents.LIVING_ENTITY_TICK.register(this::onEntityEvent);
         ClientReceiveMessageEvents.GAME_CANCELED.register(this::onChatReceived);
         ClientReceiveMessageEvents.ALLOW_GAME.register(this::onChatReceived);
-        RenderEvents.RENDER_ENTITY_NAME_TAG.register(this::onRenderEntityNameTag);
+        RenderEvents.SUBMIT_ENTITY_NAME_TAG.register(this::onSubmitEntityNameTag);
         RenderEntityOutlineEvent.EVENT.register(this::onRenderEntityOutlines);
     }
 
@@ -117,15 +120,13 @@ public class TrevorTrapperTracker {
             } else {
                 fullTickers = getFlashingTickers();
             }
-            final float fX = x, fY = y;
+            TextureSetup textureSetup = RenderListener.textureSetup(TICKER_SYMBOL);
             // Draw the indicator
             for (int tickers = 0; tickers < maxTickers; tickers++) {
-                final int fT = tickers;
-                if (tickers < fullTickers) {
-                    graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, TICKER_SYMBOL, fX + fT * 11, fY, 0, 0, 9, 9, 18, 9, -1 ));
-                } else {
-                    graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, TICKER_SYMBOL, fX + fT * 11, fY, 9, 0, 9, 9, 18, 9, -1 ));
-                }
+                float uOffset= tickers < fullTickers ? 0 : 9;
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + tickers * 11, y, uOffset, 0, 9, 9, 18, 9, -1, graphics.scissorStack.peek())
+                );
             }
         }
     }
@@ -231,13 +232,13 @@ public class TrevorTrapperTracker {
         }
     }
 
-    private boolean onRenderEntityNameTag(EntityRenderState state, Component nameTag, PoseStack poseStack, MultiBufferSource source, int packedLight) {
+    private boolean onSubmitEntityNameTag(EntityRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
         Vec3 vec3 = state.nameTagAttachment;
+        Component nameTag = state.nameTag;
         if (nameTag == null || vec3 == null || !isTrackerConditionsMet()) {
             return false;
         }
 
-        Font font = MC.font;
         Feature feature = Feature.TREVOR_THE_TRAPPER_FEATURES;
 
         if (feature.isEnabled(FeatureSetting.TREVOR_BETTER_NAMETAG)) {
@@ -249,14 +250,7 @@ public class TrevorTrapperTracker {
 
                 poseStack.pushPose();
                 poseStack.scale(distanceScale, distanceScale, distanceScale);
-                poseStack.translate(vec3.x, vec3.y + 0.5, vec3.z);
-                poseStack.mulPose(MC.getEntityRenderDispatcher().cameraOrientation());
-                poseStack.scale(0.025F, -0.025F, 0.025F);
-                Matrix4f matrix4f = poseStack.last().pose();
-                int j = (int) (Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
-                font.drawInBatch(
-                        nameTag, -font.width(nameTag) / 2.0F, 0, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
-                );
+                nodeCollector.submitNameTag(poseStack, vec3, 0, nameTag, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                 poseStack.popPose();
                 return true;
             }
@@ -270,18 +264,8 @@ public class TrevorTrapperTracker {
                         CooldownManager.getRemainingCooldown("TREVOR_THE_TRAPPER_RETURN") / 1000
                 );
                 poseStack.pushPose();
-                poseStack.translate(vec3.x, vec3.y + .75, vec3.z);
-                poseStack.mulPose(MC.getEntityRenderDispatcher().cameraOrientation());
-                poseStack.scale(0.025F, -0.025F, 0.025F);
-                Matrix4f matrix4f = poseStack.last().pose();
-                float f = -font.width(str) / 2.0F;
-                int j = (int)(Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
-                font.drawInBatch(
-                        str, f, 0, -2130706433, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, packedLight
-                );
-                font.drawInBatch(
-                        str, f, 0, -1, false, matrix4f, source, Font.DisplayMode.NORMAL, 0, LightTexture.lightCoordsWithEmission(packedLight, 2)
-                );
+                poseStack.translate(0.0F, 9.0F * 1.15F * 0.025F, 0.0F);
+                nodeCollector.submitNameTag(poseStack, vec3, 0, Component.literal(str), true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                 poseStack.popPose();
             }
         }
@@ -398,4 +382,5 @@ public class TrevorTrapperTracker {
             }
         }
     }
+
 }

@@ -12,7 +12,8 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SuspendedTownParticle;
 import net.minecraft.client.particle.WakeParticle;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.ParticlesRenderState;
 
 import java.util.HashSet;
 
@@ -49,9 +50,9 @@ public class ParticleEngineHook {
     /**
      * Called every frame directly after particle rendering to overlay modified particles to the screen.
      */
-    public static void renderParticleOverlays(Camera camera, float partialTick, MultiBufferSource.BufferSource bufferSource) {
+    public static void extractParticleOverlays(ParticlesRenderState reusedState, Frustum frustum, Camera camera, float partialTick) {
         for (OverlayParticleEngine renderer : effectRenderers) {
-            renderer.render(camera, partialTick, bufferSource);
+            renderer.extract(reusedState, frustum, camera, partialTick);
         }
     }
 

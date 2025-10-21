@@ -7,7 +7,8 @@ import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -41,11 +42,11 @@ public class ButtonArrow extends SkyblockAddonsButton {
             color = ARGB.white(this.isHovered ? 1F : alphaMultiplier * 0.7F);
         }
 
-        graphics.blit(RenderType::guiTextured, arrowType.identifier, getX(), getY(), 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, arrowType.identifier, getX(), getY(), 0, 0, width, height, width, height, color);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (!this.max) {
             main.getUtils().setFadingIn(false);
 

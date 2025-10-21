@@ -1,12 +1,12 @@
 package com.fix3dll.skyblockaddons.utils.data.requests;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.features.cooldowns.CooldownManager;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class CooldownsRequest extends RemoteFileRequest<HashMap<String, Integer>> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public CooldownsRequest() {
         super(
@@ -41,4 +41,5 @@ public class CooldownsRequest extends RemoteFileRequest<HashMap<String, Integer>
             CooldownManager.setItemCooldowns(cooldowns);
         }
     }
+
 }

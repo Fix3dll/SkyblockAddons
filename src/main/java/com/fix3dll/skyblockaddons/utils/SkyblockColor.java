@@ -1,6 +1,6 @@
 package com.fix3dll.skyblockaddons.utils;
 
-import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
+import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import lombok.Getter;
 import lombok.Setter;

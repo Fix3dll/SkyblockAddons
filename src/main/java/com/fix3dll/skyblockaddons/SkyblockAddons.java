@@ -48,6 +48,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -79,7 +80,10 @@ public class SkyblockAddons implements ClientModInitializer {
 	 * the end.
 	 */
 	public static final String BUILD_NUMBER = SkyblockAddons.METADATA.getCustomValue(SkyblockAddons.MOD_ID).getAsObject().get("buildNumber").getAsString();
-	private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(METADATA.getName()));
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(
+            SkyblockAddons.resourceLocation(MOD_ID)
+    );
+    private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(METADATA.getName()));
 	private static final ThreadPoolExecutor THREAD_EXECUTOR = new ThreadPoolExecutor(
 			0,
 			1,

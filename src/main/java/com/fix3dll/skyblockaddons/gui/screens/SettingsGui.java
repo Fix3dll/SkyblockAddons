@@ -1,9 +1,9 @@
 package com.fix3dll.skyblockaddons.gui.screens;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Language;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordStatus;
 import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
@@ -11,10 +11,10 @@ import com.fix3dll.skyblockaddons.gui.buttons.ButtonArrow;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonInputFieldWrapper;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonLanguage;
-import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonSettingToggle;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonSlider;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonText;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonOpenColorMenu;
+import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonSettingToggle;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
@@ -26,6 +26,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -461,9 +462,9 @@ public class SettingsGui extends SkyblockAddonsScreen {
     }
 
     // Call mouseClicked in each case to update the focus of the ButtonInputFieldWrappers
-    private void updateButtonInputFields(double mouseX, double mouseY, int button) {
+    private void updateButtonInputFields(MouseButtonEvent event, boolean isDoubleClick) {
         for (GuiEventListener guiEventListener : this.children()) {
-            if (guiEventListener instanceof ButtonInputFieldWrapper bif && bif.mouseClicked(mouseX, mouseY, button)) {
+            if (guiEventListener instanceof ButtonInputFieldWrapper bif && bif.mouseClicked(event, isDoubleClick)) {
                 bif.playDownSound(MC.getSoundManager());
             }
         }
@@ -484,9 +485,9 @@ public class SettingsGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean consumed =  super.mouseClicked(mouseX, mouseY, button);
-        updateButtonInputFields(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        boolean consumed =  super.mouseClicked(event, isDoubleClick);
+        updateButtonInputFields(event, isDoubleClick);
         return consumed;
     }
 

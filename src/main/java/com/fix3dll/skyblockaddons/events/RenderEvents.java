@@ -6,9 +6,11 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.LivingEntity;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 public class RenderEvents {
@@ -19,14 +21,20 @@ public class RenderEvents {
         }
     });
 
-    public static final Event<RenderEntityNameTag<EntityRenderState>> RENDER_ENTITY_NAME_TAG = EventFactory.createArrayBacked(RenderEntityNameTag.class, callbacks -> (renderState,  displayName,  poseStack,  bufferSource, packedLight) -> {
+    public static final Event<SubmitEntityNameTag<EntityRenderState>> SUBMIT_ENTITY_NAME_TAG = EventFactory.createArrayBacked(SubmitEntityNameTag.class, callbacks -> (renderState, poseStack, nodeCollector, cameraRenderState, ci) -> {
         boolean canceled = false;
 
-        for (RenderEntityNameTag<EntityRenderState> callback : callbacks) {
-            canceled = callback.onRenderEntityNameTag(renderState,  displayName,  poseStack,  bufferSource, packedLight);
+        for (SubmitEntityNameTag<EntityRenderState> callback : callbacks) {
+            canceled = callback.onSubmitEntityNameTag(renderState, poseStack, nodeCollector, cameraRenderState, ci);
         }
 
         return canceled;
+    });
+
+    public static final Event<RenderLevelLast> LEVEL_LAST = EventFactory.createArrayBacked(RenderLevelLast.class, callbacks -> (source, poseStack) -> {
+        for (RenderLevelLast callback : callbacks) {
+            callback.onRenderLevelLast(source, poseStack);
+        }
     });
 
     @Environment(EnvType.CLIENT)
@@ -37,11 +45,17 @@ public class RenderEvents {
 
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
-    public interface RenderEntityNameTag<S extends EntityRenderState> {
+    public interface SubmitEntityNameTag<S extends EntityRenderState> {
         /**
          * @return true if name tag rendering will be canceled
          */
-        boolean onRenderEntityNameTag(S renderState, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight);
+        boolean onSubmitEntityNameTag(S renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @FunctionalInterface
+    public interface RenderLevelLast {
+        void onRenderLevelLast(MultiBufferSource.BufferSource source, PoseStack poseStack);
     }
 
 }

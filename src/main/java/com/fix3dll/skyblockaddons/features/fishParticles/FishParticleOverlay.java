@@ -5,8 +5,8 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.ParticlesRenderState;
 
 // TODO: change particle texture with blank texture for RGB
 public class FishParticleOverlay extends OverlayParticleEngine {
@@ -26,9 +26,9 @@ public class FishParticleOverlay extends OverlayParticleEngine {
     }
 
     @Override
-    public void render(Camera camera, float partialTick, MultiBufferSource.BufferSource bufferSource) {
+    public void extract(ParticlesRenderState reusedState, Frustum frustum, Camera camera, float partialTick) {
         if (feature.isDisabled()) return;
-        super.render(camera, partialTick, bufferSource);
+        super.extract(reusedState, frustum, camera, partialTick);
     }
 
     /**
@@ -45,14 +45,9 @@ public class FishParticleOverlay extends OverlayParticleEngine {
      */
     @Override
     public void setupRenderEffect(Particle particle) {
-        int color = feature.getColor();
-        particle.setColor(ARGB.red(color), ARGB.green(color), ARGB.blue(color));
-
         biggerWakeCache = feature.isEnabled(FeatureSetting.BIGGER_WAKE);
         if (biggerWakeCache) {
             particle.scale(2.0F);
-            particle.y += .1;
-            particle.yo += .1;
         }
     }
 

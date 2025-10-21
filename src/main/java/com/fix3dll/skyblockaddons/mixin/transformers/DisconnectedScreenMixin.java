@@ -1,6 +1,6 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
-import com.fix3dll.skyblockaddons.mixin.hooks.DisconnectedScreenHook;
+import com.fix3dll.skyblockaddons.mixin.hooks.MinecraftHook;
 import net.minecraft.client.gui.screens.DisconnectedScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.DisconnectionDetails;
@@ -15,7 +15,7 @@ public class DisconnectedScreenMixin {
 
     @Inject(method = "<init>(Lnet/minecraft/client/gui/screens/Screen;Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/DisconnectionDetails;Lnet/minecraft/network/chat/Component;)V", at = @At("RETURN"))
     private void sba$onDisconnected(Screen parent, Component title, DisconnectionDetails details, Component buttonText, CallbackInfo ci) {
-        DisconnectedScreenHook.onDisconnect();
+        MinecraftHook.onDisconnectFromWorld();
     }
 
 }

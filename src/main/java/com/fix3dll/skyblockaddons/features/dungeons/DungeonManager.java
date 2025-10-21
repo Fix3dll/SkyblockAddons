@@ -3,13 +3,14 @@ package com.fix3dll.skyblockaddons.features.dungeons;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.EssenceType;
-import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
+import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.events.RenderEntityOutlineEvent;
 import com.fix3dll.skyblockaddons.features.healingcircle.HealingCircle;
 import com.fix3dll.skyblockaddons.features.tablist.TabStringType;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -17,7 +18,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -25,15 +25,18 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
-import org.joml.Matrix4f;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.text.ParseException;
 import java.util.EnumMap;
@@ -115,7 +118,7 @@ public class DungeonManager {
     private static final Function<Entity, Integer> OUTLINE_COLOR = e -> {
         // Only accept other player entities
         if (e instanceof RemotePlayer remotePlayer && main.getUtils().isInDungeon()) {
-            String profileName = remotePlayer.getGameProfile().getName();
+            String profileName = remotePlayer.getGameProfile().name();
             DungeonPlayer teammate = SkyblockAddons.getInstance().getDungeonManager().getDungeonPlayerByName(profileName);
 
             if (teammate != null) {
@@ -294,7 +297,7 @@ public class DungeonManager {
             LocalPlayer playerEntity = MC.player;
 
             // This is inconsistent, don't add the playerEntity themselves...
-            if (playerEntity == null || name.equals(playerEntity.getGameProfile().getName())) {
+            if (playerEntity == null || name.equals(playerEntity.getGameProfile().name())) {
                 return;
             }
 
@@ -331,10 +334,10 @@ public class DungeonManager {
             if (networkHandler == null) return;
 
             for (PlayerInfo playerListEntry : networkHandler.getOnlinePlayers()) {
-                String profileName = playerListEntry.getProfile().getName();
+                String profileName = playerListEntry.getProfile().name();
 
                 if (profileName.startsWith(name)) {
-                    teammates.put(profileName, new DungeonPlayer(profileName, dungeonClass, healthColor, health, playerListEntry.getProfile().getId()));
+                    teammates.put(profileName, new DungeonPlayer(profileName, dungeonClass, healthColor, health, playerListEntry.getProfile().id()));
                 }
             }
         }
@@ -396,7 +399,7 @@ public class DungeonManager {
 
         List<PlayerInfo> networkPlayerInfoList = networkHandler.getOnlinePlayers().stream().limit(10).toList();
         for (PlayerInfo networkPlayerInfo : networkPlayerInfoList) {
-            String username = networkPlayerInfo.getProfile().getName();
+            String username = networkPlayerInfo.getProfile().name();
             if (username.startsWith("!")) {
                 return true;
             }
@@ -405,10 +408,15 @@ public class DungeonManager {
         return false;
     }
 
-    public boolean onRenderNameTag(EntityRenderState state, Component nameTag, PoseStack poseStack, MultiBufferSource source) {
+    public boolean onRenderNameTag(AvatarRenderState state,
+                                   PoseStack poseStack,
+                                   SubmitNodeCollector submitNodeCollector,
+                                   CameraRenderState cameraRenderState,
+                                   CallbackInfo ci) {
         Vec3 vec3 = state.nameTagAttachment;
+        Component nameTag = state.nameTag;
         if (nameTag == null || vec3 == null || MC.player == null || TabStringType.usernameFromLine(nameTag.getString())
-                .equals(MC.player.getGameProfile().getName())) {
+                .equals(MC.player.getGameProfile().name())) {
             return false;
         }
 
@@ -434,20 +442,25 @@ public class DungeonManager {
 
             if (cameraEntity != null && cameraEntity != player && dungeonPlayer != null) {
                 boolean canceled = false;
-                float distanceScale = Math.max(1.5F, (float) cameraEntity.position().distanceTo(player.position()) / 15F);
+                float distanceScale = Math.max(1.0F, (float) cameraEntity.position().distanceTo(player.position()) / 5F);
+                // 9.0F == MC.font.lineHeight
 
                 poseStack.pushPose();
                 poseStack.scale(distanceScale, distanceScale, distanceScale);
-                poseStack.translate(vec3.x, vec3.y + Math.sqrt(distanceScale), vec3.z);
-                poseStack.mulPose(MC.getEntityRenderDispatcher().cameraOrientation());
-                poseStack.scale(0.025F, -0.025F, 0.025F);
-                poseStack.scale(distanceScale, distanceScale, distanceScale);
-                Matrix4f matrix4f = poseStack.last().pose();
-                Font font = MC.font;
-                String profileName = dungeonPlayer.getName();
+                poseStack.translate(0, -vec3.y + 1.8F / distanceScale, 0);
 
                 if (criticalOverlayEnabled && !dungeonPlayer.isGhost() && (dungeonPlayer.isCritical() || dungeonPlayer.isLow())) {
-                    DrawUtils.blitAbsolute(poseStack, source, RenderType.guiTexturedOverlay(CRITICAL), -CRITICAL_ICON_SIZE / 2F, -CRITICAL_ICON_SIZE, 0, 0, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, -1);
+                    poseStack.pushPose();
+                    poseStack.translate(0, (CRITICAL_ICON_SIZE + 18.0F) * 1.15F * 0.025F, 0);
+                    poseStack.translate(vec3.x, vec3.y + 0.5, vec3.z);
+                    poseStack.mulPose(cameraRenderState.orientation);
+                    poseStack.scale(0.025F, -0.025F, 0.025F);
+                    submitNodeCollector.submitCustomGeometry(
+                            poseStack,
+                            RenderType.blockScreenEffect(CRITICAL),
+                            (pose, vertexConsumer) -> DrawUtils.blitAbsolute(pose, vertexConsumer, -CRITICAL_ICON_SIZE / 2F, 0, 0, 0, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, -1)
+                    );
+                    poseStack.popPose();
 
                     String text;
                     if (dungeonPlayer.isLow()) {
@@ -459,35 +472,38 @@ public class DungeonManager {
                     }
 
                     if (text != null) {
-                        font.drawInBatch(
-                                text, -font.width(text) / 2.0F, CRITICAL_ICON_SIZE / 2F - 9, -1, true, matrix4f, source, Font.DisplayMode.SEE_THROUGH, 0, LightTexture.FULL_BRIGHT
-                        );
+                        poseStack.pushPose();
+                        poseStack.translate(0, 18.0F * 1.15F * 0.025F, 0); // 18.0F == 2 * lineHeight
+                        submitNodeCollector.submitNameTag(poseStack, vec3, 0, Component.literal(text), true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                        poseStack.popPose();
                     }
                     canceled = true;
                 }
 
                 if (!dungeonPlayer.isGhost() && dungeonPlayer.getDungeonClass() != null && nameOverlayEnabled) {
-                    int j = (int)(MC.options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
-
-                    String dungeonClass = ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] ";
-                    float nameX = font.width(dungeonClass.concat(profileName)) / 2F;
-                    float nameY = CRITICAL_ICON_SIZE / 2F + 2;
-                    font.drawInBatch(
-                            dungeonClass, -nameX, nameY, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
-                    );
+                    MutableComponent playerName = Component.literal(dungeonPlayer.getName());
                     int classColor = dungeonPlayer.getDungeonClass().getColor();
                     if (classColor == ColorCode.CHROMA.getColor()) {
-                        classColor = ManualChromaManager.getChromaColor(0, 0, 255);
+                        if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                            playerName.withStyle(style -> style
+                                    .withColor(new TextColor(ColorCode.CHROMA.getColor(), "chroma"))
+                            );
+                        } else {
+                            playerName.withColor(ManualChromaManager.getChromaColor(0, 0, 255));
+                        }
+                    } else {
+                        playerName.withColor(classColor);
                     }
-                    font.drawInBatch(
-                            profileName, -nameX + font.width(dungeonClass), nameY, classColor, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
-                    );
 
+                    String dungeonClass = ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] ";
+                    MutableComponent playerNameTag = Component.literal(dungeonClass).append(playerName);
+
+                    poseStack.pushPose();
                     String health = dungeonPlayer.getHealth() + " " + ColorCode.RED + "❤";
-                    font.drawInBatch(
-                            health, -font.width(health) / 2F, CRITICAL_ICON_SIZE / 2F + 13, -1, false, matrix4f, source, Font.DisplayMode.SEE_THROUGH, j, LightTexture.FULL_BRIGHT
-                    );
-
+                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, Component.literal(health), true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                    poseStack.translate(0, 9.0F * 1.15F * 0.025F, 0);
+                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, playerNameTag, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                    poseStack.popPose();
                     canceled = true;
                 }
                 poseStack.popPose();
@@ -508,4 +524,5 @@ public class DungeonManager {
             e.queueEntitiesToOutline(OUTLINE_COLOR);
         }
     }
+
 }

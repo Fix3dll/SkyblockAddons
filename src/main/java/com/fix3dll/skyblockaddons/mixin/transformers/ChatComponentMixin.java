@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.mixin.extensions.GuiMessageLineExtension;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,12 +19,12 @@ public abstract class ChatComponentMixin implements ChatComponentExtension {
     @Shadow protected abstract double screenToChatX(double x);
     @Shadow protected abstract double screenToChatY(double y);
     @Shadow protected abstract int getMessageLineIndexAt(double mouseX, double mouseY);
-    @Shadow @Final private List<GuiMessage.Line> trimmedMessages;
+    @Shadow @Final public List<GuiMessage.Line> trimmedMessages;
 
     @Override
-    public GuiMessageLineExtension sba$getGuiMessageLineAt(double mouseX, double mouseY) {
-        double d = this.screenToChatX(mouseX);
-        double e = this.screenToChatY(mouseY);
+    public GuiMessageLineExtension sba$getGuiMessageLineAt(MouseButtonEvent event, boolean isDoubleClick) {
+        double d = this.screenToChatX(event.x());
+        double e = this.screenToChatY(event.y());
         int i = this.getMessageLineIndexAt(d, e);
         if (i >= 0 && i < this.trimmedMessages.size()) {
             return (GuiMessageLineExtension) (Object) this.trimmedMessages.get(i);

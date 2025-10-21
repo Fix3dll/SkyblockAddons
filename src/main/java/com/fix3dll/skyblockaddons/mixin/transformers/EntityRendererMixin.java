@@ -1,13 +1,14 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.events.RenderEvents;
+import com.fix3dll.skyblockaddons.mixin.extensions.EntityRenderStateExtension;
 import com.fix3dll.skyblockaddons.mixin.hooks.EntityRendererHook;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,11 +26,17 @@ public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> 
         }
     }
 
-    @Inject(method = "renderNameTag", at = @At("HEAD"), cancellable = true)
-    public void sba$onRenderNameTag(S renderState, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, CallbackInfo ci) {
-        if (RenderEvents.RENDER_ENTITY_NAME_TAG.invoker().onRenderEntityNameTag(renderState, displayName, poseStack, bufferSource, packedLight)) {
+    @Inject(method = "submitNameTag", at = @At("HEAD"), cancellable = true)
+    public void sba$onsubmitNameTag(S renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
+        if (RenderEvents.SUBMIT_ENTITY_NAME_TAG.invoker().onSubmitEntityNameTag(renderState, poseStack, nodeCollector, cameraRenderState, ci)) {
             ci.cancel();
         }
+    }
+
+    @Inject(method = "extractRenderState", at = @At("HEAD"))
+    public void sba$setEntityId(T entity, S reusedState, float partialTick, CallbackInfo ci) {
+        EntityRenderStateExtension entityRenderStateExtension = (EntityRenderStateExtension) reusedState;
+        entityRenderStateExtension.sba$setEntityId(entity.getId());
     }
 
 }

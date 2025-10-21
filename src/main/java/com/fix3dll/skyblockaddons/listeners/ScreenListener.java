@@ -20,6 +20,7 @@ import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsScreen;
 import com.fix3dll.skyblockaddons.mixin.hooks.AbstractContainerScreenHook;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.MayorRequest;
@@ -37,7 +38,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -118,12 +120,12 @@ public class ScreenListener {
         return;
     }
 
-    private void beforeKeyPress(Screen screen, int key, int scancode, int modifiers) {
+    private void beforeKeyPress(Screen screen, KeyEvent event) {
         if (main.getUtils().isOnSkyblock()) {
-            ContainerPreviewManager.onContainerKeyTyped(key);
+            ContainerPreviewManager.onContainerKeyTyped(event.key());
         }
 
-        if (Feature.DEVELOPER_MODE.isEnabled() && key == SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode()) {
+        if (Feature.DEVELOPER_MODE.isEnabled() && event.key() == SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode()) {
             // Copy Item NBT, check if the player is in an inventory.
             if (MC.screen instanceof AbstractContainerScreen<?> containerScreen) {
                 Slot currentSlot = containerScreen.hoveredSlot;
@@ -136,12 +138,12 @@ public class ScreenListener {
                         ).result().ifPresent(LOGGER::info);
                     }
                     if (currentSlot.getItem().has(DataComponents.CUSTOM_NAME)) {
-                        LOGGER.info(Component.Serializer.toJson(
-                                currentSlot.getItem().getCustomName(), RegistryAccess.EMPTY
+                        LOGGER.info(TextUtils.componentToJson(
+                                currentSlot.getItem().getCustomName()
                         ));
                     }
                     DevUtils.copyNBTTagToClipboard(
-                            currentSlot.getItem().save(MC.level.registryAccess()),
+                            ItemUtils.encodeItemStack(currentSlot.getItem()),
                             ColorCode.GREEN + "Item data was copied to clipboard!"
                     );
                 }
@@ -327,7 +329,7 @@ public class ScreenListener {
         }
     }
 
-    public boolean allowMouseClick(Screen screen, double mouseX, double mouseY, int button) {
+    public boolean allowMouseClick(Screen screen, MouseButtonEvent event) {
         if (!main.getUtils().isOnSkyblock()) {
             return true;
         }
@@ -342,7 +344,7 @@ public class ScreenListener {
             This prevents swapping items in/out of locked hotbar slots when using a hotbar key binding that is bound
             to a mouse button.
              */
-            InputConstants.Key clickKey = InputConstants.Type.MOUSE.getOrCreate(button);
+            InputConstants.Key clickKey = InputConstants.Type.MOUSE.getOrCreate(event.button());
             KeyMapping[] hotbarKeys = MC.options.keyHotbarSlots;
             for (int i = 0; i < 9; i++) {
                 if (!hotbarKeys[i].key.equals(clickKey)) continue;
@@ -368,7 +370,7 @@ public class ScreenListener {
         }
 
         if (main.getUtils().isOnSkyblock()) {
-            ContainerPreviewManager.onContainerKeyTyped(button);
+            ContainerPreviewManager.onContainerKeyTyped(event.button());
         }
 
         return true;

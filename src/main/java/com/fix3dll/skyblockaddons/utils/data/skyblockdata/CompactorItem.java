@@ -2,15 +2,13 @@ package com.fix3dll.skyblockaddons.utils.data.skyblockdata;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.gson.GsonInitializable;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.registries.VanillaRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -27,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 public class CompactorItem implements GsonInitializable {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createLookup();
 
     @SerializedName("material")
     private String material;
@@ -66,7 +63,7 @@ public class CompactorItem implements GsonInitializable {
                     if (enchanted) {
                         itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
                     }
-                    MutableComponent component = Component.Serializer.fromJson(displayName, LOOKUP);
+                    MutableComponent component = TextUtils.componentFromJson(displayName);
                     if (component != null) {
                         itemStack.set(DataComponents.CUSTOM_NAME, component);
                     }
@@ -80,4 +77,5 @@ public class CompactorItem implements GsonInitializable {
             );
         }
     }
+
 }

@@ -70,7 +70,7 @@ public enum TabStringType {
         SkyblockAddons main = SkyblockAddons.getInstance();
         Pair<DungeonClass, Integer> thePlayerClass = main.getDungeonManager().getThePlayerClass();
         LocalPlayer player = Minecraft.getInstance().player;
-        if (thePlayerClass == null && player != null && tabUsername.equals(player.getGameProfile().getName())) {
+        if (thePlayerClass == null && player != null && tabUsername.equals(player.getGameProfile().name())) {
             String dungeonClassString = matcher.group("class");
             if (!StringUtil.isNullOrEmpty(dungeonClassString)) {
                 DungeonClass dungeonClass = DungeonClass.fromFirstLetter(dungeonClassString.charAt(0));
@@ -89,4 +89,5 @@ public enum TabStringType {
             }
         }
     }
+
 }

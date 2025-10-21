@@ -6,6 +6,7 @@ import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.mojang.blaze3d.platform.GLX;
+import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,12 +26,14 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.scores.DisplaySlot;
@@ -59,6 +62,7 @@ public class DevUtils {
     private static final Minecraft MC = Minecraft.getInstance();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final org.slf4j.Logger slf4jLogger = LogUtils.getLogger();
 
     public static final Object2ObjectOpenHashMap<String, Class<? extends Entity>> ALL_ENTITIES = new Object2ObjectOpenHashMap<>();
 
@@ -168,7 +172,6 @@ public class DevUtils {
         // Copy the NBT data from the loaded entities.
         while (loadedEntitiesCopyIterator.hasNext()) {
             Entity entity = loadedEntitiesCopyIterator.next();
-            CompoundTag entityData = new CompoundTag();
             boolean isPartOfIncludedClasses = false;
 
             // Checks to ignore entities if they're irrelevant
@@ -186,7 +189,12 @@ public class DevUtils {
                 continue;
             }
 
-            entity.saveWithoutId(entityData);
+            CompoundTag entityData;
+            try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(slf4jLogger)) {
+                TagValueOutput tagValueOutput = TagValueOutput.createWithContext(scopedCollector, entity.registryAccess());
+                entity.saveWithoutId(tagValueOutput);
+                entityData = tagValueOutput.buildResult();
+            }
 
             // Add spacing before each new entry.
             if (!stringBuilder.isEmpty()) {

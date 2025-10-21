@@ -10,23 +10,17 @@ import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
-import com.mojang.serialization.Codec;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Blocks;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +32,6 @@ public class PetManager {
     /** The PetManager instance.*/
     @Getter private static final PetManager instance = new PetManager();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     @Setter private static Map<String, PetItem> petItems;
 
@@ -197,21 +190,8 @@ public class PetManager {
         int petLevel = TextUtils.getPetLevelFromDisplayName(displayName);
         if (petLevel == -1) return null;
 
-        CustomData ea = ItemUtils.getExtraAttributes(itemStack);
-        if (ea != null && ea.contains("petInfo")) {
-            Optional<String> petInfoStr = ea.read(Codec.STRING.fieldOf("petInfo")).ifError(error ->
-                    LOGGER.warn(
-                            "Failed to get modifier from {}'s ItemStack! Error: {}",
-                            itemStack.getCustomName() != null ? itemStack.getCustomName().getString() : itemStack.getItemName(),
-                            error.message()
-                    )
-            ).result();
-
-            if (petInfoStr.isEmpty()) return null;
-
-            JsonObject petInfoJson = JsonParser.parseString(petInfoStr.get()).getAsJsonObject();
-            PetInfo petInfo = SkyblockAddons.getGson().fromJson(petInfoJson, PetInfo.class);
-
+        PetInfo petInfo = ItemUtils.getPetInfo(itemStack);
+        if (petInfo != null) {
             Pet oldPet = main.getPetCacheManager().getCurrentPet();
             Pet newPet = new Pet(itemStack, displayName, petLevel, petInfo);
 

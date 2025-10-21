@@ -2,7 +2,6 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -10,6 +9,7 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix3x2fStack;
 
 public abstract class SkyblockAddonsButton extends AbstractWidget {
 
@@ -72,9 +72,9 @@ public abstract class SkyblockAddonsButton extends AbstractWidget {
 
     public void drawButtonBoxAndText(GuiGraphics graphics, Component message, int x, int y, int width, int height, int boxColor, float scale, int fontColor) {
         ButtonColorBox.drawColorRect(graphics, x, y, x + width, y + height, boxColor);
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, 1);
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.scale(scale);
         //noinspection IntegerDivisionInFloatingPointContext
         DrawUtils.drawCenteredText(
                 graphics,
@@ -83,6 +83,7 @@ public abstract class SkyblockAddonsButton extends AbstractWidget {
                 ((y + (height - (8 * scale)) / 2) / scale),
                 fontColor
         );
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
+
 }

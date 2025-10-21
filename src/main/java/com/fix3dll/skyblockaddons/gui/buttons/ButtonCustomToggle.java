@@ -2,7 +2,8 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -41,7 +42,7 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         int color = ARGB.color(255, 30, 37, 46);
-        graphics.blit(RenderType::guiTextured, TOGGLE_BORDER, getX(), getY(), 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TOGGLE_BORDER, getX(), getY(), 0, 0, width, height, width, height, color);
 
         boolean enabled = enabledSupplier.get();
         if (enabled) {
@@ -50,7 +51,7 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
             color = ARGB.color(255, 222, 68, 76); // Red
         }
 
-        graphics.blit(RenderType::guiTextured, TOGGLE_INSIDE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TOGGLE_INSIDE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height, color);
 
         int startingX = getButtonStartingX(enabled);
         int slideAnimationOffset = 0;
@@ -72,7 +73,7 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
         int circleSize = Math.round(height * 0.6F); // 60% of the height.
         int y = Math.round(getY() + (height * 0.2F)); // 20% OF the height.
 
-        graphics.blit(RenderType::guiTextured, TOGGLE_INSIDE_CIRCLE, startingX,y, 0, 0, circleSize, circleSize, circleSize, circleSize, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TOGGLE_INSIDE_CIRCLE, startingX,y, 0, 0, circleSize, circleSize, circleSize, circleSize, color);
     }
 
     /**
@@ -89,7 +90,7 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         this.animationButtonClicked = System.currentTimeMillis();
         this.onClickRunnable.run();
     }

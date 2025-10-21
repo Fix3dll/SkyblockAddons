@@ -1,18 +1,20 @@
 package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
+import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
+import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
-import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import org.joml.Matrix3x2fStack;
 
 public class IslandButton extends SkyblockAddonsButton {
 
@@ -144,35 +146,37 @@ public class IslandButton extends SkyblockAddonsButton {
                 color = ARGB.colorFromFloat(1F, 0.9F, 0.9F, 0.9F);
             }
 
-            PoseStack poseStack = graphics.pose();
-            final float fX = x, fY = y, fW = w, fH = h;
-            graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, island.getResourceLocation(), fX, fY, 0, 0, fW, fH, fW, fH, color));
+            Matrix3x2fStack poseStack = graphics.pose();
+            graphics.guiRenderState.submitGuiElement(
+                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(island.getResourceLocation()), graphics.pose(), x, y, 0, 0, w, h, w, h, color, graphics.scissorStack.peek())
+            );
 
             for (IslandMarkerButton marker : markerButtons) {
                 marker.drawButton(graphics, x, y, expansion, hovered);
             }
 
-            poseStack.pushPose();
+            poseStack.pushMatrix();
             float textScale = 3F * expansion;
-            poseStack.scale(textScale, textScale, 1);
-            graphics.drawSpecial(source -> MC.font.drawInBatch(
-                    getMessage(),
-                    centerX / textScale - MC.font.width(getMessage()) / 2F,
-                    centerY / textScale,
-                    ColorCode.WHITE.getColor(),
-                    true,
-                    graphics.pose().last().pose(),
-                    source,
-                    Font.DisplayMode.NORMAL,
-                    0,
-                    LightTexture.FULL_BRIGHT
-            ));
-            poseStack.popPose();
+            poseStack.scale(textScale);
+
+            graphics.guiRenderState.submitText(
+                    new SbaTextRenderState(
+                            getMessage().getVisualOrderText(),
+                            graphics.pose(),
+                            centerX / textScale - MC.font.width(getMessage()) / 2F,
+                            centerY / textScale,
+                            ColorCode.WHITE.getColor(),
+                            0,
+                            true,
+                            graphics.scissorStack.peek()
+                    )
+            );
+            poseStack.popMatrix();
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
 //        int minecraftScale = Minecraft.getMinecraft().gameSettings.guiScale;
 //        float islandGuiScale = ISLAND_SCALE;
 //
@@ -198,4 +202,5 @@ public class IslandButton extends SkyblockAddonsButton {
     private boolean isStoppingHovering() {
         return stoppedHover != -1;
     }
+
 }

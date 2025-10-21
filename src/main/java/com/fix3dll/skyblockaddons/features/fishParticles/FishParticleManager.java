@@ -246,7 +246,7 @@ public class FishParticleManager {
                 long mask = 1L << (63 - i);
                 if ((trailHeadTracker & mask) == 0 && currTick - particleTime[i] < 5) {
                     for (Particle particle : particleList[i]) {
-                        overlay.addParticle(particle);
+                        overlay.add(particle);
                     }
                 }
                 // Keep track of all particles that linked to this particle.

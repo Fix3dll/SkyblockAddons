@@ -7,7 +7,8 @@ import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -32,11 +33,11 @@ public class ButtonSettings extends ButtonFeature {
         int color = ARGB.white(this.isHovered ? 1F : alphaMultiplier * 0.7F);
         this.isHovered = isHovered(mouseX, mouseY);
 
-        graphics.blit(RenderType::guiTextured, GEAR, getX(), getY(), 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GEAR, getX(), getY(), 0, 0, width, height, width, height, color);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (MC.screen instanceof SkyblockAddonsGui gui) {
             main.getUtils().setFadingIn(false);
             if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {

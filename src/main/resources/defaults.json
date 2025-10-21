@@ -681,7 +681,6 @@
   "FISHING_PARTICLE_OVERLAY": {
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
-    "color": -1,
     "settings": {
       "BIGGER_WAKE": true
     }

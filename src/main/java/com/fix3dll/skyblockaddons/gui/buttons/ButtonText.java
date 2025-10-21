@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.gui.buttons;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class ButtonText extends SkyblockAddonsButton {
@@ -27,7 +28,7 @@ public class ButtonText extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         return false;
     }
 

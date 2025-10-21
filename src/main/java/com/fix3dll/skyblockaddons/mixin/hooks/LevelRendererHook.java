@@ -2,9 +2,15 @@ package com.fix3dll.skyblockaddons.mixin.hooks;
 
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 
 public class LevelRendererHook {
+
+    @Getter @Setter
+    private static Frustum cullingFrustum;
 
     public static void onAddBlockBreakParticle(int breakerId, BlockPos pos, int progress) {
         // On public islands, hypixel sends a progress = 10 update once it registers the start of block breaking

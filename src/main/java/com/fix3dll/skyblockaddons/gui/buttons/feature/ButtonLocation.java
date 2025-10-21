@@ -2,9 +2,12 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
+import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 @Getter
@@ -65,12 +68,14 @@ public class ButtonLocation extends ButtonFeature {
         this.isHovered = isMouseOver(doubleMouseX, doubleMouseY);
         int boxAlpha = this.isHovered ? 120 : 70;
         int boxColor = ColorCode.GRAY.getColor(boxAlpha);
-        DrawUtils.fillAbsolute(graphics, boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor);
+        graphics.guiRenderState.submitGuiElement(
+                new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor, graphics.scissorStack.peek())
+        );
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return this.active && this.visible && this.isHovered && this.isValidClickButton(button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        return this.active && this.visible && this.isHovered && this.isValidClickButton(event.buttonInfo());
     }
 
     @Override

@@ -1,12 +1,14 @@
 package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import org.joml.Matrix3x2fStack;
 
 @Getter
 public class ButtonResize extends ButtonFeature {
@@ -30,11 +32,13 @@ public class ButtonResize extends ButtonFeature {
         this.isHovered = isMouseOver(mouseX, mouseY);
         int color = ARGB.white(this.isHovered ? 1F : 0.25F);
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, 1);
-        DrawUtils.fillAbsolute(graphics, resizeX - SIZE, resizeY - SIZE, resizeX + SIZE, resizeY + SIZE, color);
-        poseStack.popPose();
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.scale(scale, scale);
+        graphics.guiRenderState.submitGuiElement(
+                new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), resizeX - SIZE, resizeY - SIZE, resizeX + SIZE, resizeY + SIZE, color, graphics.scissorStack.peek())
+        );
+        poseStack.popMatrix();
     }
 
     @Override
@@ -50,4 +54,5 @@ public class ButtonResize extends ButtonFeature {
         BOTTOM_RIGHT,
         BOTTOM_LEFT
     }
+
 }

@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class ButtonSettingToggle extends ButtonFeatureToggle {
@@ -30,7 +31,7 @@ public class ButtonSettingToggle extends ButtonFeatureToggle {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (this.isHovered && this.feature != null) {
             if (feature.isDisabled(setting)) {
                 feature.set(setting, true);
@@ -43,4 +44,5 @@ public class ButtonSettingToggle extends ButtonFeatureToggle {
             this.animationButtonClicked = System.currentTimeMillis();
         }
     }
+
 }

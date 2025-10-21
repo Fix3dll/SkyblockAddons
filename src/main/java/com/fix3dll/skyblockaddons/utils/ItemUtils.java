@@ -13,22 +13,20 @@ import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
 import com.google.gson.JsonElement;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.ItemTags;
@@ -44,6 +42,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +58,6 @@ public class ItemUtils {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final Minecraft MC = Minecraft.getInstance();
-    private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createLookup();
     /**
      * This expression matches the line with a Skyblock item's rarity and item type that's at the end of its lore.
      * <p><i>Recombobulated Special items have exception for rarity pattern.<i/></p>
@@ -149,11 +147,12 @@ public class ItemUtils {
      * @param item the item to get the tag from
      * @return the item's {@code ExtraAttributes} compound tag or {@code null} if the item doesn't have one
      */
-    public static CustomData getExtraAttributes(ItemStack item) {
+    public static CompoundTag getExtraAttributes(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
         }
-        return item.get(DataComponents.CUSTOM_DATA);
+        CustomData customData = item.get(DataComponents.CUSTOM_DATA);
+        return customData == null ? null : customData.copyTag();
     }
 
     /**
@@ -162,7 +161,7 @@ public class ItemUtils {
      * @return {@code enchantments} tag as map or {@code null} if the itemStack doesn't have one
      */
     public static Map<String, Integer> getEnchantments(ItemStack itemStack) {
-        CustomData extraAttributes = getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
         return extraAttributes == null ? Collections.emptyMap() : getEnchantments(extraAttributes);
     }
 
@@ -171,14 +170,17 @@ public class ItemUtils {
      * @param extraAttributes the extraAttributes tag
      * @return {@code enchantments} tag as map or {@code null} if the extraAttributes doesn't have one
      */
-    public static Map<String, Integer> getEnchantments(CustomData extraAttributes) {
+    public static Map<String, Integer> getEnchantments(CompoundTag extraAttributes) {
         if (extraAttributes == null) return Collections.emptyMap();
 
-        Optional<Map<String, Integer>> enchantments = extraAttributes.read(
-                Codec.unboundedMap(Codec.STRING, Codec.INT).fieldOf("enchantments")
-        ).result();
+        HashMap<String, Integer> enchantmentsMap = new HashMap<>();
+        extraAttributes.getCompound("enchantments").ifPresent(enchantments -> enchantments
+                .entrySet().forEach(entry ->
+                        enchantmentsMap.put(entry.getKey(), entry.getValue().asInt().orElse(0))
+            )
+        );
 
-        return enchantments.orElse(Collections.emptyMap());
+        return enchantmentsMap;
     }
 
     /**
@@ -187,7 +189,7 @@ public class ItemUtils {
      * @return {@code attributes} tag as map or {@code null} if the itemStack doesn't have one
      */
     public static Map<String, Integer> getAttributes(ItemStack itemStack) {
-        CustomData extraAttributes = getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
         return extraAttributes == null ? Collections.emptyMap() : getAttributes(extraAttributes);
     }
 
@@ -196,14 +198,17 @@ public class ItemUtils {
      * @param extraAttributes the extraAttributes tag
      * @return {@code attributes} tag as map or {@code null} if the extraAttributes doesn't have one
      */
-    public static Map<String, Integer> getAttributes(CustomData extraAttributes) {
+    public static Map<String, Integer> getAttributes(CompoundTag extraAttributes) {
         if (extraAttributes == null) return Collections.emptyMap();
 
-        Optional<Map<String, Integer>> attributes = extraAttributes.read(
-                Codec.unboundedMap(Codec.STRING, Codec.INT).fieldOf("attributes")
-        ).result();
+        HashMap<String, Integer> attributesMap = new HashMap<>();
+        extraAttributes.getCompound("attributes").ifPresent(attributes -> attributes
+                .entrySet().forEach(entry ->
+                        attributesMap.put(entry.getKey(), entry.getValue().asInt().orElse(0))
+                )
+        );
 
-        return attributes.orElse(Collections.emptyMap());
+        return attributesMap;
     }
 
     /**
@@ -211,16 +216,10 @@ public class ItemUtils {
      * @return The Skyblock reforge of a given itemstack
      */
     public static String getReforge(ItemStack itemStack) {
-        CustomData extraAttributes = getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
         if (extraAttributes == null) return null;
 
-        Optional<String> modifier = extraAttributes.read(Codec.STRING.fieldOf("modifier")).ifError(error ->
-                LOGGER.warn(
-                        "Failed to get modifier from {}'s ItemStack! Error: {}",
-                        itemStack.getCustomName() != null ? itemStack.getCustomName().getString() : itemStack.getItemName(),
-                        error.message()
-                )
-        ).result();
+        Optional<String> modifier = extraAttributes.getString("modifier");
 
         if (modifier.isPresent()) {
             String reforge = WordUtils.capitalizeFully(modifier.get());
@@ -275,9 +274,9 @@ public class ItemUtils {
             return false;
         }
 
-        CustomData extraAttributes = getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
 
-        return extraAttributes != null && extraAttributes.read(Codec.INT.fieldOf("drill_fuel")).hasResultOrPartial();
+        return extraAttributes != null && extraAttributes.contains("drill_fuel");
     }
 
     /**
@@ -286,7 +285,7 @@ public class ItemUtils {
      * @return the Skyblock Item ID of this item or {@code null} if this isn't a valid Skyblock item
      */
     public static String getSkyblockItemID(ItemStack itemStack) {
-        CustomData extraAttributes = getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
         return getSkyblockItemID(extraAttributes);
     }
 
@@ -295,16 +294,8 @@ public class ItemUtils {
      * @param extraAttributes the CustomData to check
      * @return the Skyblock Item ID of this item or {@code null} if this isn't a valid Skyblock NBT
      */
-    public static String getSkyblockItemID(CustomData extraAttributes) {
-        if (extraAttributes != null) {
-            Optional<String> id = extraAttributes.read(Codec.STRING.fieldOf("id")).result();
-
-            if (id.isPresent()) {
-                return id.get();
-            }
-        }
-
-        return null;
+    public static String getSkyblockItemID(CompoundTag extraAttributes) {
+        return extraAttributes == null ? null : extraAttributes.getString("id").orElse(null);
     }
 
     /**
@@ -313,10 +304,10 @@ public class ItemUtils {
      * @return The color of the backpack; or {@code WHITE} if there is no color
      */
     public static BackpackColor getBackpackColor(ItemStack stack) {
-        CustomData extraAttributes = getExtraAttributes(stack);
+        CompoundTag extraAttributes = getExtraAttributes(stack);
 
         if (extraAttributes != null) {
-            Optional<String> backpack_color = extraAttributes.read(Codec.STRING.fieldOf("backpack_color")).result();
+            Optional<String> backpack_color = extraAttributes.getString("backpack_color");
 
             if (backpack_color.isPresent()) {
                 try {
@@ -352,15 +343,15 @@ public class ItemUtils {
      * @param extraAttributes the Skyblock Data to check
      * @return A {@link SkyblockRune} or {@code null} if it doesn't have it
      */
-    public static SkyblockRune getRuneData(CustomData extraAttributes) {
+    public static SkyblockRune getRuneData(CompoundTag extraAttributes) {
         if (extraAttributes != null) {
-            Optional<Map<String, Integer>> runes = extraAttributes.read(
-                    Codec.unboundedMap(Codec.STRING, Codec.INT).fieldOf("runes")
-            ).result();
-
-            if (runes.isPresent()) {
-                return new SkyblockRune(runes.get());
-            }
+            HashMap<String, Integer> runesMap = new HashMap<>();
+            extraAttributes.getCompound("runes").ifPresent(runes -> runes
+                    .entrySet().forEach(entry ->
+                            runesMap.put(entry.getKey(), entry.getValue().asInt().orElse(0))
+                    )
+            );
+            return new SkyblockRune(runesMap);
         }
 
         return null;
@@ -372,7 +363,7 @@ public class ItemUtils {
      * @return A {@link PetInfo} or {@code null} if it isn't a pet
      */
     public static PetInfo getPetInfo(ItemStack itemStack) {
-        CustomData extraAttributes = getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
         return getPetInfo(extraAttributes);
     }
 
@@ -382,22 +373,12 @@ public class ItemUtils {
      * @param extraAttributes the Skyblock Data to check
      * @return A {@link PetInfo} or {@code null} if it isn't a pet
      */
-    public static PetInfo getPetInfo(CustomData extraAttributes) {
-        if (extraAttributes != null) {
-            String itemId = getSkyblockItemID(extraAttributes);
+    public static PetInfo getPetInfo(CompoundTag extraAttributes) {
+        if (extraAttributes == null) return null;
+        return extraAttributes.getString("petInfo")
+                .map(str -> SkyblockAddons.getGson().fromJson(str, PetInfo.class))
+                .orElse(null);
 
-            if (!itemId.equals("PET")) {
-                return null;
-            }
-
-            Optional<String> petInfo = extraAttributes.read(Codec.STRING.fieldOf("petInfo")).result();
-
-            if (petInfo.isPresent()) {
-                return SkyblockAddons.getGson().fromJson(petInfo.get(), PetInfo.class);
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -445,7 +426,7 @@ public class ItemUtils {
         if (itemStack == null) {
             throw new NullPointerException("Item stack cannot be null!");
         }
-        CustomData extraAttributes = getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
 
         // If this item stack is a menu item, it won't have this key.
         return extraAttributes != null && !extraAttributes.contains("uuid");
@@ -501,7 +482,10 @@ public class ItemUtils {
                 resolvableProfile -> stack.set(DataComponents.PROFILE, resolvableProfile)
         );
 
-        MutableComponent component = Component.Serializer.fromJson(customName, LOOKUP);
+        MutableComponent component = null;
+        if (customName != null) {
+            component = TextUtils.componentFromJson(customName);
+        }
         if (component != null) {
             stack.set(DataComponents.CUSTOM_NAME, component);
         }
@@ -513,52 +497,17 @@ public class ItemUtils {
         return stack;
     }
 
-    public static ItemStack createSkullItemStack(@NonNull String skullID, @NonNull String encodedTexture) {
-        return createSkullItemStack("", Collections.emptyList(), "", skullID, encodedTexture);
-    }
-
-    public static ItemStack createSkullItemStack(
-            @NonNull String name,
-            @NonNull List<Component> lore,
-            @NonNull String skyblockID,
-            @NonNull String skullID,
-            @NonNull String encodedTexture
-    ) {
-        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-
-        PropertyMap properties = new PropertyMap();
-        properties.put("textures", new Property("textures", encodedTexture, ""));
-
-        stack.set(
-                DataComponents.PROFILE,
-                new ResolvableProfile(
-                        Optional.of("profileName"),
-                        Optional.of(UUID.fromString(skullID)),
-                        properties
-                )
-        );
-
-        if (!name.isEmpty()) {
-            stack.set(DataComponents.ITEM_NAME, Component.literal(name));
-        }
-
-        if (!lore.isEmpty()) {
-            stack.set(DataComponents.LORE, new ItemLore(lore));
-        }
-
-        if (!skyblockID.isEmpty()) {
-            setItemStackSkyblockID(stack, skyblockID);
-        }
-
-        return stack;
-    }
-
     public static void setItemStackSkyblockID(ItemStack itemStack, String skyblockID) {
-        CustomData ea = getExtraAttributes(itemStack);
-        CompoundTag eaNbt = ea == null ? new CompoundTag() : ea.copyTag();
+        CompoundTag ea = getExtraAttributes(itemStack);
+        CustomData customData;
+        if (ea != null) {
+            ea.putString("id", skyblockID);
+            customData = CustomData.of(ea);
+        } else {
+            customData = CustomData.of(new CompoundTag());
+        }
 
-        eaNbt.putString("id", skyblockID);
-        itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(eaNbt));
+        itemStack.set(DataComponents.CUSTOM_DATA, customData);
     }
 
     /**
@@ -572,7 +521,7 @@ public class ItemUtils {
         ResolvableProfile profile = skull.get(DataComponents.PROFILE);
 
         if (profile != null) {
-            return profile.gameProfile().getId().toString();
+            return profile.partialProfile().id().toString();
         }
 
         return null;
@@ -589,8 +538,8 @@ public class ItemUtils {
         ResolvableProfile profile = skull.get(DataComponents.PROFILE);
 
         if (profile != null) {
-            GameProfile gameProfile = profile.gameProfile();
-            Iterator<Property> textures = gameProfile.getProperties().get("textures").iterator();
+            GameProfile gameProfile = profile.partialProfile();
+            Iterator<Property> textures = gameProfile.properties().get("textures").iterator();
 
             if (textures.hasNext()) {
                 return textures.next().value();
@@ -601,18 +550,14 @@ public class ItemUtils {
     }
 
     public static ByteArrayTag getCompressedNBT(ItemStack[] items) {
-        ClientLevel world = MC.level;
-        if (items == null || world == null) {
-            return null;
-        }
-
         // Add each item's nbt to a tag list
         ListTag list = new ListTag();
         for (ItemStack item : items) {
             if (item == null || item == ItemStack.EMPTY) {
                 list.add(new CompoundTag()/*ItemStack.EMPTY.save(world.registryAccess())*/);
             } else {
-                list.add(item.save(world.registryAccess()));
+                Tag listTag = encodeItemStack(item);
+                list.add(listTag);
             }
         }
 
@@ -628,36 +573,40 @@ public class ItemUtils {
         return new ByteArrayTag(stream.toByteArray());
     }
 
+    public static Tag encodeItemStack(ItemStack itemStack) {
+        RegistryAccess registryAccess = Utils.registryAccess();
+
+        return ItemStack.CODEC.encodeStart(
+                registryAccess.createSerializationContext(NbtOps.INSTANCE), itemStack
+        ).getOrThrow();
+    }
+
+    public static Optional<ItemStack> parseTag(Tag tag) {
+        RegistryAccess registryAccess = Utils.registryAccess();
+
+        return ItemStack.CODEC.parse(
+                registryAccess.createSerializationContext(NbtOps.INSTANCE), tag
+        ).resultOrPartial(string -> LOGGER.error("Tried to load invalid item: '{}'", string));
+    }
+
     /**
      * Returns the integer thunder charge amount of Thunder Bottle
      * @param bottle Empty Thunder Bottle ItemStack
      * @return thunder charge amount
      */
     public static int getThunderCharge(ItemStack bottle) {
-        CustomData ea = getExtraAttributes(bottle);
-        if (ea == null) return 0;
-
-        Optional<Integer> thunderCharge = ea.read(Codec.INT.fieldOf("thunder_charge")).result();
-
-        return thunderCharge.orElse(0);
+        CompoundTag ea = getExtraAttributes(bottle);
+        return ea == null ? 0 : ea.getIntOr("thunder_charge", 0);
     }
 
     public static UUID getUuid(ItemStack itemStack) {
-        CustomData extraAttributes = getExtraAttributes(itemStack);
-        if (extraAttributes == null) return null;
-
-        Optional<String> uuid = extraAttributes.read(Codec.STRING.fieldOf("uuid")).result();
-
-        return uuid.map(UUID::fromString).orElse(null);
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
+        return extraAttributes == null ? null : extraAttributes.getString("uuid").map(UUID::fromString).orElse(null);
     }
 
     public static boolean isQuiverArrow(ItemStack itemStack) {
-        CustomData ea = getExtraAttributes(itemStack);
-        if (ea == null) return false;
-
-        Optional<Boolean> isQuiverArrow = ea.read(Codec.BOOL.fieldOf("quiver_arrow")).result();
-
-        return isQuiverArrow.orElse(false);
+        CompoundTag ea = getExtraAttributes(itemStack);
+        return ea != null && ea.getBooleanOr("quiver_arrow", false);
     }
 
     /**
@@ -717,4 +666,5 @@ public class ItemUtils {
 
         return null;
     }
+
 }

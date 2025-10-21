@@ -3,12 +3,20 @@ package com.fix3dll.skyblockaddons.utils;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
 import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.PlainTextContents;
@@ -16,7 +24,12 @@ import net.minecraft.network.chat.contents.PlainTextContents;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Base64;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -63,6 +76,8 @@ public class TextUtils {
 
     /** For test environment */
     @Setter private static boolean isInstanceLoaded = false;
+
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     /**
      * Formats a number to look better with commas every 3 digits (if the {@code NUMBER_SEPARATORS} mod feature is enabled)
@@ -582,6 +597,26 @@ public class TextUtils {
     public static String stripPetName(String displayName) {
         Matcher matcher = STRIP_PET_DISPLAY_NAME.matcher(displayName);
         return matcher.find() ? matcher.group(1) : displayName;
+    }
+
+    public static MutableComponent componentFromJson(JsonElement customName) {
+        return componentFromJson(customName, Utils.registryAccess());
+    }
+
+    public static MutableComponent componentFromJson(JsonElement customName, HolderLookup.Provider provider) {
+        return (MutableComponent) ComponentSerialization.CODEC.parse(
+                provider.createSerializationContext(JsonOps.INSTANCE), customName
+            ).getOrThrow(JsonParseException::new);
+    }
+
+    public static String componentToJson(Component component) {
+        return componentToJson(component, Utils.registryAccess());
+    }
+
+    public static String componentToJson(Component component, HolderLookup.Provider provider) {
+        return GSON.toJson(ComponentSerialization.CODEC
+                .encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), component)
+                .getOrThrow(JsonParseException::new));
     }
 
     /**

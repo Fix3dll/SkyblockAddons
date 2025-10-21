@@ -26,7 +26,6 @@ public class DiscordRPCManager implements IPCListener {
     private static final long APPLICATION_ID = 653443797182578707L;
     private static final long UPDATE_PERIOD = 4200L;
 
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     private IPCClient client;
@@ -53,12 +52,10 @@ public class DiscordRPCManager implements IPCListener {
                 try {
                     client.connect();
                 } catch (Exception ex) {
-                    LOGGER.warn("Failed to connect to Discord RPC!");
-                    LOGGER.catching(ex);
+                    LOGGER.error("Failed to connect to Discord RPC!", ex);
                 }
             } catch (Throwable ex) {
-                LOGGER.error("Discord RPC has thrown an unexpected error while trying to start...");
-                LOGGER.catching(ex);
+                LOGGER.error("Discord RPC has thrown an unexpected error while trying to start...", ex);
             }
         });
     }
@@ -169,4 +166,5 @@ public class DiscordRPCManager implements IPCListener {
     public void onActivityJoinRequest(IPCClient client, String secret, User user) {
 
     }
+
 }

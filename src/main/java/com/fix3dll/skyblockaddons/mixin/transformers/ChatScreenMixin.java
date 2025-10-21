@@ -10,9 +10,12 @@ import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,21 +26,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ChatScreenMixin {
 
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;getComponentStyleAt(DD)Lnet/minecraft/network/chat/Style;"))
-    public void sba$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir, @Local ChatComponent chatComponent) {
-        if (button != 0) return;
+    public void sba$mouseClicked(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir, @Local ChatComponent chatComponent) {
+        if (event.button() != 0) return;
         if (Feature.DEVELOPER_MODE.isDisabled()
                 && (Feature.CHAT_MESSAGE_COPYING.isDisabled() || !SkyblockAddons.getInstance().getUtils().isOnSkyblock())) {
             return;
         }
 
-        long handle = Minecraft.getInstance().getWindow().getWindow();
-        boolean isLeftControlDown = Minecraft.ON_OSX
+        Window handle = Minecraft.getInstance().getWindow();
+        boolean isLeftControlDown = Util.getPlatform() == Util.OS.OSX
                 ? InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SUPER)
                 : InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL);
 
         if (isLeftControlDown) {
             ChatComponentExtension extendedChatComponent = (ChatComponentExtension) (Object) chatComponent;
-            GuiMessageLineExtension extendedLine = extendedChatComponent.sba$getGuiMessageLineAt(mouseX, mouseY);
+            GuiMessageLineExtension extendedLine = extendedChatComponent.sba$getGuiMessageLineAt(event, isDoubleClick);
 
             if (extendedLine != null) {
                 boolean isLeftShiftDown = InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT);

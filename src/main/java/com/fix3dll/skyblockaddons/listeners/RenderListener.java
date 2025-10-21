@@ -4,8 +4,6 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.CrimsonArmorAbilityStack;
 import com.fix3dll.skyblockaddons.core.EssenceType;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.ItemDiff;
@@ -15,13 +13,18 @@ import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.SlayerArmorProgress;
 import com.fix3dll.skyblockaddons.core.ThunderBottle;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
+import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
+import com.fix3dll.skyblockaddons.core.updater.Updater;
 import com.fix3dll.skyblockaddons.events.RenderEvents;
 import com.fix3dll.skyblockaddons.features.BaitManager;
 import com.fix3dll.skyblockaddons.features.EndstoneProtectorManager;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.PetManager;
+import com.fix3dll.skyblockaddons.features.TrevorTrapperTracker;
 import com.fix3dll.skyblockaddons.features.deployable.Deployable;
 import com.fix3dll.skyblockaddons.features.deployable.DeployableManager;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTracker;
@@ -30,7 +33,6 @@ import com.fix3dll.skyblockaddons.features.dragontracker.DragonsSince;
 import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonClass;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonMilestone;
-import com.fix3dll.skyblockaddons.features.TrevorTrapperTracker;
 import com.fix3dll.skyblockaddons.features.healingcircle.HealingCircleManager;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerBoss;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerDrop;
@@ -44,8 +46,6 @@ import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.gui.screens.LocationEditGui;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
-import com.fix3dll.skyblockaddons.core.updater.Updater;
-import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.ActionBarParser;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
@@ -61,25 +61,25 @@ import com.fix3dll.skyblockaddons.utils.SkyblockColor;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -98,10 +98,14 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.joml.Matrix3x2fStack;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -198,13 +202,12 @@ public class RenderListener {
     private ItemStack petSkull = null;
 
     public RenderListener() {
-        HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerAfter(
-                IdentifiedLayer.HOTBAR_AND_BARS,
+        HudElementRegistryImpl.attachElementAfter(
+                VanillaHudElements.INFO_BAR,
                 SBA_RENDER_LAYER,
                 this::onRenderHud
-        ));
-        RenderEvents.LIVING_NAME.register(this::shouldRenderLivingName);
-        WorldRenderEvents.LAST.register(this::onRenderWorld);
+        );
+        RenderEvents.LEVEL_LAST.register(this::onRenderWorld);
     }
 
     /**
@@ -221,38 +224,6 @@ public class RenderListener {
         setGui();
     }
 
-    private void shouldRenderLivingName(LivingEntity entity, double d, CallbackInfoReturnable<Boolean> cir) {
-        Component customName = entity.getCustomName();
-        if (customName != null) {
-            String formattedText = TextUtils.getFormattedText(customName);
-            if (Feature.MINION_DISABLE_LOCATION_WARNING.isEnabled()) {
-                if (formattedText.startsWith("§cThis location isn't perfect! :(")) {
-                    cir.cancel();
-                    return;
-                }
-                if (customName.getString().startsWith("§c/!\\") && MC.level != null) {
-                    for (Entity listEntity : MC.level.entitiesForRendering()) {
-                        if (listEntity.hasCustomName()
-                                && formattedText.startsWith("§cThis location isn't perfect! :(")
-                                && listEntity.getX() == entity.getX()
-                                && listEntity.getZ() == entity.getZ()
-                                && listEntity.getY() + 0.375 == entity.getY()) {
-                            cir.cancel();
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (Feature.HIDE_SVEN_PUP_NAMETAGS.isEnabled() && entity instanceof ArmorStand) {
-                if (customName.getString().contains("Sven Pup")) {
-                    cir.cancel();
-                    return;
-                }
-            }
-        }
-    }
-
     /**
      * I have an option so you can see dark auction timer and farm event timer in other games so that's why.
      */
@@ -260,19 +231,19 @@ public class RenderListener {
         if (!(MC.screen instanceof LocationEditGui) /*&& !(MC.screen instanceof GuiNotification)*/) {
             if (Feature.DARK_AUCTION_TIMER.isEnabled(FeatureSetting.DARK_AUCTION_TIMER_IN_OTHER_GAMES)) {
                 float scale = Feature.DARK_AUCTION_TIMER.getGuiScale();
-                PoseStack poseStack = graphics.pose();
-                poseStack.pushPose();
-                poseStack.scale(scale, scale, 1);
+                Matrix3x2fStack poseStack = graphics.pose();
+                poseStack.pushMatrix();
+                poseStack.scale(scale);
                 drawText(graphics, Feature.DARK_AUCTION_TIMER, scale, null);
-                poseStack.popPose();
+                poseStack.popMatrix();
             }
             if (Feature.FARM_EVENT_TIMER.isEnabled(FeatureSetting.FARM_EVENT_TIMER_IN_OTHER_GAMES)) {
                 float scale = Feature.FARM_EVENT_TIMER.getGuiScale();
-                PoseStack poseStack = graphics.pose();
-                poseStack.pushPose();
-                poseStack.scale(scale, scale, 1);
+                Matrix3x2fStack poseStack = graphics.pose();
+                poseStack.pushMatrix();
+                poseStack.scale(scale);
                 drawText(graphics, Feature.FARM_EVENT_TIMER, scale, null);
-                poseStack.popPose();
+                poseStack.popMatrix();
             }
         }
     }
@@ -309,11 +280,11 @@ public class RenderListener {
                     scale = (scaledWidth * 0.9F) / (float) stringWidth;
                 }
 
-                PoseStack poseStack = graphics.pose();
-                poseStack.pushPose();
-                poseStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2), 0.0F);
-                poseStack.pushPose();
-                poseStack.scale(scale, scale, scale); // TODO Check if changing this scale breaks anything...
+                Matrix3x2fStack poseStack = graphics.pose();
+                poseStack.pushMatrix();
+                poseStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2));
+                poseStack.pushMatrix();
+                poseStack.scale(scale); // TODO Check if changing this scale breaks anything...
 
 //                //FontRendererHook.setupFeatureFont(titleFeature);
                 DrawUtils.drawText(
@@ -324,8 +295,8 @@ public class RenderListener {
                         titleFeature.getColor()
                 );
 
-                poseStack.popPose();
-                poseStack.popPose();
+                poseStack.popMatrix();
+                poseStack.popMatrix();
             }
         }
         if (subtitleFeature != null) {
@@ -354,11 +325,11 @@ public class RenderListener {
                     scale = (scaledWidth * 0.9F) / (float) stringWidth;
                 }
 
-                PoseStack poseStack = graphics.pose();
-                poseStack.pushPose();
-                poseStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2), 0.0F);
-                poseStack.pushPose();
-                poseStack.scale(scale, scale, scale);  // TODO Check if changing this scale breaks anything...
+                Matrix3x2fStack poseStack = graphics.pose();
+                poseStack.pushMatrix();
+                poseStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2));
+                poseStack.pushMatrix();
+                poseStack.scale(scale);  // TODO Check if changing this scale breaks anything...
 
 //                //FontRendererHook.setupFeatureFont(subtitleFeature);
                 DrawUtils.drawText(
@@ -369,8 +340,8 @@ public class RenderListener {
                         subtitleFeature.getColor()
                 );
 
-                poseStack.popPose();
-                poseStack.popPose();
+                poseStack.popMatrix();
+                poseStack.popMatrix();
             }
         }
     }
@@ -396,9 +367,9 @@ public class RenderListener {
     public void drawFeature(GuiGraphics graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
         FeatureGuiData guiFeatureData = feature.getFeatureGuiData();
         if (guiFeatureData != null && guiFeatureData.getDrawType() != null) {
-            PoseStack poseStack = graphics.pose();
-            poseStack.pushPose();
-            poseStack.scale(scale, scale, 1);
+            Matrix3x2fStack poseStack = graphics.pose();
+            poseStack.pushMatrix();
+            poseStack.scale(scale);
             switch (guiFeatureData.getDrawType()) {
                 case SKELETON_BAR -> main.getRenderListener().drawSkeletonBar(graphics, scale, buttonLocation);
                 case BAR -> main.getRenderListener().drawBar(graphics, feature, scale, buttonLocation);
@@ -415,7 +386,7 @@ public class RenderListener {
                 case PROXIMITY_INDICATOR -> TrevorTrapperTracker.drawTrackerLocationIndicator(graphics, scale, buttonLocation);
                 case PET_DISPLAY -> drawPetDisplay(graphics, scale, buttonLocation);
             }
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
     }
 
@@ -473,7 +444,7 @@ public class RenderListener {
         float y = feature.getActualY();
         float scaleX = feature.getFeatureData().getSizesX();
         float scaleY = feature.getFeatureData().getSizesY();
-        graphics.pose().scale(scaleX, scaleY, 1);
+        graphics.pose().scale(scaleX, scaleY);
 
         x = transformX(x, 71, scale * scaleX, false);
         y = transformY(y, 5, scale * scaleY);
@@ -573,33 +544,38 @@ public class RenderListener {
         } else { // A little darker for contrast...
             color = ARGB.color(230 , skyblockColor.getColor());
         }
-        RenderType renderType;
+        RenderPipeline renderPipeline;
         // If chroma, draw the empty bar much darker than the filled bar
         if (skyblockColor.drawMulticolorUsingShader()) {
             color = ARGB.colorFromFloat(1F, 0.5F, 0.5F, 0.5F);
-            renderType = FontHook.getChromaTextured(BARS);
+            renderPipeline = DrawUtils.CHROMA_TEXT;
         } else {
-            renderType = RenderType.guiTextured(BARS);
+            renderPipeline = RenderPipelines.GUI_TEXTURED;
         }
 
         // Empty bar first
         int emptyBarColor = color;
-        graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, renderType, x, y, 1, 1, barWidth, barHeight, 80, 50, emptyBarColor));
+        final TextureSetup textureSetup = textureSetup(BARS);
+        graphics.guiRenderState.submitGuiElement(
+                new BlitAbsoluteRenderState(renderPipeline, textureSetup(BARS), graphics.pose(), x, y, 1, 1, barWidth, barHeight, 80, 50, emptyBarColor, graphics.scissorStack.peek())
+        );
 
         if (skyblockColor.drawMulticolorUsingShader()) {
             color = ARGB.white(1F);
         }
 
-        int finalColor = color;
-
         // Filled bar next
         if (fill != 0) {
-            graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, renderType, x, y, 1, 7, barFill, barHeight, 80, 50, finalColor));
+            graphics.guiRenderState.submitGuiElement(
+                    new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x, y, 1, 7, barFill, barHeight, 80, 50, color, graphics.scissorStack.peek())
+            );
         }
 
         // Overlay absorption health if needed
         if (hasAbsorption) {
-            graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, BARS, x + barFill, y, 1 + barFill, 7, barWidth - barFill, barHeight, 80, 50, ColorCode.GOLD.getColor()));
+            graphics.guiRenderState.submitGuiElement(
+                    new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x + barFill, y, 1 + barFill, 7, barWidth - barFill, barHeight, 80, 50, ColorCode.GOLD.getColor(), graphics.scissorStack.peek())
+            );
         }
 
         // Overlay uncolored progress indicator next (texture packs can use this to overlay their own static bar colors)
@@ -615,10 +591,14 @@ public class RenderListener {
             float startTexX = Math.max(padding, oneSide - barFill);
             // End texture at x <= barWidth and 4 <= startTexX + endTexX (total width of overlay texture). Cut off for large fill values.
             float endTexX = Math.min(2 * oneSide - startTexX, barWidth - barFill + oneSide);
-            graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, BARS, x + startX, y, 1 + startTexX, 24, endTexX, barHeight, 80, 50, finalColor));
+            graphics.guiRenderState.submitGuiElement(
+                    new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x + startX, y, 1 + startTexX, 24, endTexX, barHeight, 80, 50, color, graphics.scissorStack.peek())
+            );
         }
         // Overlay uncolored bar display next (texture packs can use this to overlay their own static bar colors)
-        graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, BARS, x, y, 1, 13, barWidth, barHeight, 80, 50, finalColor));
+        graphics.guiRenderState.submitGuiElement(
+                new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x, y, 1, 13, barWidth, barHeight, 80, 50, color, graphics.scissorStack.peek())
+        );
     }
 
     /**
@@ -642,12 +622,12 @@ public class RenderListener {
                         ColorUtils.getDefaultBlue(140)
                 );
                 String title = SkyblockAddons.METADATA.getName();
-                PoseStack poseStack = graphics.pose();
-                poseStack.pushPose();
+                Matrix3x2fStack poseStack = graphics.pose();
+                poseStack.pushMatrix();
                 float scale = 1.5F;
-                poseStack.scale(scale, scale, 1);
+                poseStack.scale(scale);
                 graphics.drawCenteredString(MC.font, Component.literal(title), (int) (halfWidth / scale), (int) (30 / scale), ColorCode.WHITE.getColor());
-                poseStack.popPose();
+                poseStack.popMatrix();
                 int y = 45;
                 for (String line : textList) {
                     graphics.drawCenteredString(MC.font, Component.literal(line), halfWidth, y, ColorCode.WHITE.getColor());
@@ -723,18 +703,17 @@ public class RenderListener {
                 buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
             }
 
+            final TextureSetup textureSetup = textureSetup(TICKER_SYMBOL);
             int maxTickers = (buttonLocation == null) ? main.getPlayerListener().getMaxTickers() : 4;
             for (int tickers = 0; tickers < maxTickers; tickers++) {
-//                MC.getTextureManager().bindTexture(TICKER_SYMBOL);
 //                GlStateManager.enableAlpha();
-                float finalX = x + tickers * 11;
-                float finalY = y;
 
-                if (tickers < (buttonLocation == null ? main.getPlayerListener().getTickers() : 3)) {
-                    graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, TICKER_SYMBOL, finalX, finalY, 0, 0, 9, 9, 18, 9, -1));
-                } else {
-                    graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, TICKER_SYMBOL, finalX, finalY, 9, 0, 9, 9, 18, 9, -1));
-                }
+                float uOffset = tickers < (buttonLocation == null ? main.getPlayerListener().getTickers() : 3)
+                        ? 0
+                        : 9;
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + tickers * 11, y, uOffset, 0, 9, 9, 18, 9, -1, graphics.scissorStack.peek())
+                );
             }
         }
     }
@@ -756,10 +735,11 @@ public class RenderListener {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + 9, y, y + 9, scale);
         }
         if (Feature.DEFENCE_ICON.isEnabled(FeatureSetting.USE_VANILLA_TEXTURE)) {
-            final float finalX = x, finalY = y;
-            graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, DEFENCE_VANILLA, finalX, finalY, 0, 0, 9, 9, 9, 9, -1));
+            graphics.guiRenderState.submitGuiElement(
+                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(DEFENCE_VANILLA), graphics.pose(), x, y, 0, 0, 9, 9, 9, 9, -1, graphics.scissorStack.peek())
+            );
         } else {
-            graphics.blitSprite(RenderType::guiTextured, ARMOR, (int) x, (int) y, 9, 9);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR, (int) x, (int) y, 9, 9);
         }
     }
 
@@ -1254,46 +1234,50 @@ public class RenderListener {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
         }
 
-        PoseStack poseStack = graphics.pose();
-        final float fX = x, fY = y;
+        Matrix3x2fStack poseStack = graphics.pose();
         switch (feature) {
             case DARK_AUCTION_TIMER -> {
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, SIRIUS_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SIRIUS_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
             }
             case FARM_EVENT_TIMER -> {
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, FARM_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(FARM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
             }
             case ZEALOT_COUNTER -> {
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, ENDERMAN_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
             }
             case SHOW_TOTAL_ZEALOT_COUNT -> {
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, ENDERMAN_GROUP_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_GROUP_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
             }
             case SHOW_SUMMONING_EYE_COUNT -> {
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, SUMMONING_EYE_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SUMMONING_EYE_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
             }
             case SHOW_AVERAGE_ZEALOTS_PER_EYE -> {
-                final int finalColor = color;
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, ZEALOTS_PER_EYE_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, SLASH_ICON, fX, fY, 0, 0, 16, 16, 16, 16, finalColor));
-                // TODO true?
-//                DrawUtils.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16, true);
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ZEALOTS_PER_EYE_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SLASH_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, color, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
             }
@@ -1311,17 +1295,18 @@ public class RenderListener {
 
             }
             case ENDSTONE_PROTECTOR_DISPLAY -> {
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, IRON_GOLEM_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(IRON_GOLEM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
                 x += 16 + 2 + MC.font.width(text) + 2;
 
-                final float fX2 = x;
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, ENDERMAN_GROUP_ICON, fX2, fY, 0, 0, 16, 16, 16, 16, -1));
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_GROUP_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
 
                 int count = EndstoneProtectorManager.getZealotCount();
-
                 DrawUtils.drawText(graphics, TextUtils.formatNumber(count), x + 16 + 2, y + 4, color);
 
             }
@@ -1355,8 +1340,9 @@ public class RenderListener {
                 this.drawCollectedEssences(graphics, x, y, buttonLocation != null, true);
             }
             case DUNGEON_DEATH_COUNTER -> {
-                graphics.drawSpecial(source -> DrawUtils.blitAbsolute(poseStack, source, MORT_ICON, fX, fY, 0, 0, 16, 16, 16, 16, -1));
-
+                graphics.guiRenderState.submitGuiElement(
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(MORT_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                );
                 DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
 
             }
@@ -1672,8 +1658,9 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
         currentY = y + row * 18;
 
-        final float fX = currentX, fY = currentY;
-        graphics.drawSpecial(source -> DrawUtils.blitAbsolute(graphics.pose(), source, essenceType.getResourceLocation(), fX, fY, 0, 0, 16, 16, 16, 16, -1));
+        graphics.guiRenderState.submitGuiElement(
+                new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(essenceType.getResourceLocation()), graphics.pose(), currentX, currentY, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+        );
 
 //        FontRendererHook.setupFeatureFont(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
         DrawUtils.drawText(graphics, TextUtils.formatNumber(value), currentX + 18 + 2, currentY + 5, color);
@@ -1963,59 +1950,58 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                         revenant.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHead("REAPER_MASK"));
                     }
                     revenant.tickCount = (int) main.getScheduler().getTotalTicks();
-                    drawEntity(graphics, revenant, x + 15, y + 53, -15); // left is 35
+                    drawEntity(graphics, revenant, x, y, entityWidth, height, -15); // left is 35
                     break;
 
                 case TARANTULA_SLAYER_TRACKER:
                     if (tarantula == null) {
                         tarantula = new Spider(EntityType.SPIDER, MC.level /*Utils.getDummyWorld()*/);
                         caveSpider = new CaveSpider(EntityType.CAVE_SPIDER, MC.level /*Utils.getDummyWorld()*/);
-                        caveSpider.startRiding(tarantula, true);
+                        caveSpider.startRiding(tarantula, true, false); // TODO: test
                     }
-                    drawEntity(graphics, tarantula, x + 28, y + 38, -30);
-                    drawEntity(graphics, caveSpider, x + 25, y + 23, -30);
+                    drawEntity(graphics, tarantula, x + 3, y + 15, entityWidth, height, -30);
+                    drawEntity(graphics, caveSpider, x, y, entityWidth, height, -30);
                     break;
 
                 case SVEN_SLAYER_TRACKER:
                     if (sven == null) {
-                        sven = new Wolf(EntityType.WOLF, MC.level /*Utils.getDummyWorld()*/);
+                        sven = new Wolf(EntityType.WOLF, MC.level);
                         sven.setRemainingPersistentAngerTime(Integer.MAX_VALUE);
                     }
-                    drawEntity(graphics, sven, x + 17, y + 38, -35);
+                    drawEntity(graphics, sven, x, y, entityWidth, height, -35);
                     break;
 
                 case VOIDGLOOM_SLAYER_TRACKER:
                     if (enderman == null) {
-                        enderman = new EnderMan(EntityType.ENDERMAN, MC.level /*Utils.getDummyWorld()*/);
+                        enderman = new EnderMan(EntityType.ENDERMAN, MC.level);
                         enderman.setCarriedBlock(Blocks.BEACON.defaultBlockState());
                     }
 //                    GlStateManager.color(1, 1, 1, 1);
                     enderman.tickCount = (int) main.getScheduler().getTotalTicks();
-                    graphics.pose().scale(0.7F, 0.7F, 1F);
-                    drawEntity(graphics, enderman, (x + 15.0F) / 0.7F, (y + 51.0F) / 0.7F, -30.0F);
-                    graphics.pose().scale(1.0F / 0.7F, 1.0F / 0.7F, 1.0F);
+                    drawEntity(graphics, enderman, x, y + (height * 0.15F), entityWidth, height * 1.3F, -30.0F);
                     break;
 
                 case INFERNO_SLAYER_TRACKER:
                     if (inferno == null) {
-                        inferno = new Blaze(EntityType.BLAZE, MC.level /*Utils.getDummyWorld()*/);
+                        inferno = new Blaze(EntityType.BLAZE, MC.level);
                         inferno.setCharged(true);
                     }
                     inferno.tickCount = (int) main.getScheduler().getTotalTicks();
-                    drawEntity(graphics, inferno, x + 15, y + 53, -15);
+                    drawEntity(graphics, inferno, x, y, entityWidth, height, -15);
                     break;
 
                 case RIFTSTALKER_SLAYER_TRACKER:
                     if (riftstalker == null) {
-                        riftstalker = new RemotePlayer(MC.level /*Utils.getDummyWorld()*/, new GameProfile(UUID.randomUUID(), "Riftstalker")) {
+                        riftstalker = new RemotePlayer(MC.level, new GameProfile(UUID.randomUUID(), "Riftstalker")) {
                             @Override
                             public PlayerSkin getSkin() {
-                                return new PlayerSkin(RIFTSTALKER_BLOODFIEND, null, null, null, PlayerSkin.Model.WIDE, true);
+                                var bodySkin = new ClientAsset.ResourceTexture(RIFTSTALKER_BLOODFIEND, RIFTSTALKER_BLOODFIEND);
+                                return new PlayerSkin(bodySkin, null, null, PlayerModelType.WIDE, true);
                             }
                         };
                         riftstalker.setCustomNameVisible(false);
                     }
-                    drawEntity(graphics, riftstalker, x + 15, y + 53, -15);
+                    drawEntity(graphics, riftstalker, x, y, entityWidth, height, -15);
                     break;
             }
 
@@ -2317,29 +2303,25 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
     private void renderItem(GuiGraphics graphics, ItemStack item, float x, float y, float scale) {
         if (item == null || item.isEmpty()) return;
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
         if (scale != 1) {
-            poseStack.scale(scale, scale, 1F);
+            poseStack.scale(scale);
         }
-        poseStack.translate(x / scale, y / scale, 0);
+        poseStack.translate(x / scale, y / scale);
         graphics.renderItem(item, 0, 0);
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     public static void renderItemAndOverlay(GuiGraphics graphics, ItemStack item, String name, float x, float y) {
-        renderItemAndOverlay(graphics, item, name, x, y, 0);
-    }
-
-    public static void renderItemAndOverlay(GuiGraphics graphics, ItemStack item, String name, float x, float y, float z) {
         if (item == null || item.isEmpty()) return;
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.translate(x, y, z);
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.translate(x, y);
         graphics.renderItem(item, 0, 0);
         graphics.renderItemDecorations(MC.font, item, 0, 0, name);
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
@@ -2464,9 +2446,9 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
 
         if (entity instanceof ArmorStand armorStand) {
-            drawDeployableArmorStand(graphics, armorStand, x + 1, y + 4);
+            drawDeployableArmorStand(graphics, armorStand, x, y, iconSize + spacing, y + iconSize);
         } else {
-            graphics.blit(RenderType::guiTextured, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
         DrawUtils.drawText(
@@ -2474,7 +2456,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 secondsString,
                 x + spacing + iconSize,
                 y + (iconSize / 2F) - (8 / 2F),
-                ColorCode.WHITE.getColor(255)
+                ColorCode.WHITE.getColor()
         );
     }
 
@@ -2595,9 +2577,9 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
 
         if (entity instanceof ArmorStand armorStand) {
-            drawDeployableArmorStand(graphics, armorStand, x + 1, y + 4);
+            drawDeployableArmorStand(graphics, armorStand, x, y, iconSize + 2, height);
         } else {
-            graphics.blit(RenderType::guiTextured, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
         String secondsString = String.format("§e%ss", seconds);
@@ -2606,16 +2588,17 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 secondsString,
                 Math.round(x + (iconSize / 2F) - (MC.font.width(secondsString) / 2F)),
                 y + iconSize,
-                ColorCode.WHITE.getColor(255)
+                ColorCode.WHITE.getColor()
         );
 
+        float displayTextX = x + iconSize + 2;
         for (int i = 0; i < display.size(); i++) {
             DrawUtils.drawText(
                     graphics,
                     display.get(i),
-                    x + iconSize + 2,
+                    displayTextX,
                     startY + (i * (MC.font.lineHeight + spacingBetweenLines)),
-                    ColorCode.WHITE.getColor(255)
+                    ColorCode.WHITE.getColor()
             );
         }
     }
@@ -2669,64 +2652,63 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         return y / scale;
     }
 
-    public void onRenderWorld(WorldRenderContext worldRenderContext) {
-        HealingCircleManager.renderHealingCircleOverlays(worldRenderContext);
+    public void onRenderWorld(MultiBufferSource.BufferSource source, PoseStack poseStack) {
+        HealingCircleManager.renderHealingCircleOverlays(source, poseStack);
     }
 
-    // FIXME
-    private void drawDeployableArmorStand(GuiGraphics graphics, ArmorStand deployableArmorStand, float x, float y) {
+    private void drawDeployableArmorStand(GuiGraphics graphics, ArmorStand deployableArmorStand, float x, float y, float width, float height) {
         float prevRenderYawOffset = deployableArmorStand.yBodyRot;
         float prevPrevRenderYawOffset = deployableArmorStand.yBodyRotO;
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.translate(x + 12.5F, y + 50F, 50F);
-        poseStack.scale(-25F, 25F, 25F);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-        poseStack.mulPose(Axis.YP.rotationDegrees(135.0F));
-        Lighting.setupFor3DItems();
-        poseStack.mulPose(Axis.YP.rotationDegrees(-135.0F));
-        poseStack.mulPose(Axis.XP.rotationDegrees(22.0F));
+        Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
+        Quaternionf rotation2 = Axis.YP.rotationDegrees(135.0F);
+        Quaternionf rotation3 = Axis.YP.rotationDegrees(-135.0F);
+        Quaternionf rotation4 = Axis.XP.rotationDegrees(22.0F);
+        rotation.mul(rotation2);
+        rotation.mul(rotation3);
+        rotation.mul(rotation4);
 
-        EntityRenderDispatcher renderDispatcher = MC.getEntityRenderDispatcher();
-        renderDispatcher.setRenderShadow(false);
-
-        deployableArmorStand.setInvisible(true);
         float yaw = System.currentTimeMillis() % 1750 / 1750F * 360F;
         deployableArmorStand.yBodyRot = yaw;
         deployableArmorStand.yBodyRotO = yaw;
+        deployableArmorStand.setInvisible(true);
 
-        graphics.drawSpecial(source -> renderDispatcher.render(deployableArmorStand, 0.0D, 0.0D, 0.0D, 1.0F, poseStack, source, LightTexture.FULL_BRIGHT));
-        renderDispatcher.setRenderShadow(true);
-
-        Lighting.setupForFlatItems();
-        poseStack.popPose();
+        Vector3f translation = new Vector3f(0.0F, deployableArmorStand.getBbHeight() / 2.0F + 0.0625F * deployableArmorStand.getScale(), 0.0F);
+        int finalX = Math.round(x);
+        int finalY = Math.round(y);
+        InventoryScreen.renderEntityInInventory(graphics, finalX, finalY, Math.round(finalX + width), Math.round(finalY + height), 25.0F / deployableArmorStand.getScale(), translation, rotation, null, deployableArmorStand);
 
         deployableArmorStand.yBodyRot = prevRenderYawOffset;
         deployableArmorStand.yBodyRotO = prevPrevRenderYawOffset;
     }
 
-    private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float yaw) {
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.translate(x, y, 50.0F);
-        poseStack.scale(-25.0F, 25.0F, 25.0F);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-        poseStack.mulPose(Axis.XP.rotationDegrees(15.0F));
-        Lighting.setupForEntityInInventory();
+    private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float width, float height, float yaw) {
+        Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
+        Quaternionf rotation2 = Axis.XP.rotationDegrees(15.0F);
+        rotation.mul(rotation2);
+        Quaternionf overrideCameraAngel = Axis.YN.rotationDegrees(-180.0F);
 
+        // save values
+        float oYRot = entity.getYRot();
+        float oBodyRot = entity.yBodyRot;
+        float oyHeadRotO = entity.yHeadRotO;
+        float oyHeadRot = entity.yHeadRot;
+
+        // set values
+        yaw -= 180;
         entity.setYRot(yaw);
-        entity.yRotO = yaw;
+        entity.yBodyRot = yaw;
         entity.yHeadRot = yaw;
         entity.yHeadRotO = yaw;
 
-        EntityRenderDispatcher renderDispatcher = MC.getEntityRenderDispatcher();
-        renderDispatcher.overrideCameraOrientation(Axis.YN.rotationDegrees(-180.0F));
-        renderDispatcher.setRenderShadow(false);
-        graphics.drawSpecial(source -> renderDispatcher.render(entity, 0.0D, 0.0D, 0.0D, 1.0F, poseStack, source, LightTexture.FULL_BRIGHT));
-        renderDispatcher.setRenderShadow(true);
+        Vector3f translation = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + 0.0625F * entity.getScale(), 0.0F);
+        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height), 25.0F / entity.getScale(), translation, rotation, overrideCameraAngel, entity);
 
-        poseStack.popPose();
+        // rollback after rendering
+        entity.setYRot(oYRot);
+        entity.yBodyRot = oBodyRot;
+        entity.yHeadRot = oyHeadRotO;
+        entity.yHeadRotO = oyHeadRot;
     }
 
     public void setTitleFeature(Feature feature) {
@@ -2761,6 +2743,11 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                     false
             );
         }
+    }
+
+    public static TextureSetup textureSetup(ResourceLocation location) {
+        GpuTextureView gpuTextureView = MC.getTextureManager().getTexture(location).getTextureView();
+        return TextureSetup.singleTexture(gpuTextureView);
     }
 
     private enum DamageDisplayItem {

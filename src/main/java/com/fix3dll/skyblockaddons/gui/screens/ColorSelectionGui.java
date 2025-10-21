@@ -2,8 +2,8 @@ package com.fix3dll.skyblockaddons.gui.screens;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonColorBox;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonSlider;
@@ -17,7 +17,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -229,7 +232,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                     color = ARGB.white(1F);
                 }
 
-                graphics.blit(RenderType::guiTextured, COLOR_PICKER, imageX, imageY, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight, color);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, COLOR_PICKER, imageX, imageY, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight, color);
 
                 drawScaledString(graphics, this, Translations.getMessage("messages.selectedColor"), 120, defaultBlue, 1.5F, 75);
 
@@ -257,10 +260,10 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (!isRestricted && !this.isChroma.get()) {
-            int xPixel = (int) mouseX - imageX;
-            int yPixel = (int) mouseY - imageY;
+            int xPixel = (int) event.x() - imageX;
+            int yPixel = (int) event.y() - imageY;
 
             // If the mouse is over the color picker.
             if (xPixel > 0 && xPixel < COLOR_PICKER_IMAGE.getWidth()
@@ -277,25 +280,25 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                 }
             }
 
-            hexColorField.mouseClicked(mouseX, mouseY, button);
+            hexColorField.mouseClicked(event, isDoubleClick);
             hexColorField.setFocused(hexColorField.isHovered());
         }
 
-        if (chromaCheckbox != null) chromaCheckbox.onMouseClick((int) mouseX, (int) mouseY, button);
+        if (chromaCheckbox != null) chromaCheckbox.onMouseClick(event, isDoubleClick);
 
-        Optional<GuiEventListener> optional = this.getChildAt(mouseX, mouseY);
+        Optional<GuiEventListener> optional = this.getChildAt(event.x(), event.y());
         if (optional.isEmpty()) {
             return false;
         } else {
-            GuiEventListener guiEventListener = (GuiEventListener) optional.get();
+            GuiEventListener guiEventListener = optional.get();
 
             if (guiEventListener instanceof ButtonColorBox colorBox) {
                 setChroma.accept(colorBox.getColor() == ColorCode.CHROMA);
                 setColor.accept(colorBox.getColor().getColor());
                 MC.setScreen(null);
-            } else if (guiEventListener.mouseClicked(mouseX, mouseY, button)) {
+            } else if (guiEventListener.mouseClicked(event, isDoubleClick)) {
                 this.setFocused(guiEventListener);
-                if (button == 0) {
+                if (event.button() == 0) {
                     this.setDragging(true);
                 }
             }
@@ -316,9 +319,9 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (hexColorField.isFocused()) {
-            hexColorField.keyPressed(keyCode, scanCode, modifiers);
+            hexColorField.keyPressed(event);
             if (!this.parseColor()) {
                 return false;
             }
@@ -326,13 +329,13 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
             hexColorField.setFocused(true);
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         if (hexColorField.isFocused()) {
-            hexColorField.charTyped(codePoint, modifiers);
+            hexColorField.charTyped(event);
             if (!this.parseColor()) {
                 return false;
             }
@@ -340,7 +343,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
             hexColorField.setFocused(true);
         }
 
-        return super.charTyped(codePoint, modifiers);
+        return super.charTyped(event);
     }
 
     @Override

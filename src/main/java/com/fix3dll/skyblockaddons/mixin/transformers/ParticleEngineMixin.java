@@ -4,7 +4,8 @@ import com.fix3dll.skyblockaddons.mixin.hooks.ParticleEngineHook;
 import net.minecraft.client.Camera;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.ParticlesRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,9 +19,9 @@ public class ParticleEngineMixin {
         ParticleEngineHook.onAddParticle(effect);
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V"))
-    public void sba$render(Camera camera, float partialTick, MultiBufferSource.BufferSource bufferSource, CallbackInfo ci) {
-        ParticleEngineHook.renderParticleOverlays(camera, partialTick, bufferSource);
+    @Inject(method = "extract", at = @At("RETURN"))
+    public void sba$extract(ParticlesRenderState reusedState, Frustum frustum, Camera camera, float partialTick, CallbackInfo ci) {
+        ParticleEngineHook.extractParticleOverlays(reusedState, frustum, camera, partialTick);
     }
 
     @Inject(method = "tick", at = @At("RETURN"))

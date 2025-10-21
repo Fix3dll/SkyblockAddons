@@ -3,14 +3,15 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import org.joml.Matrix3x2fStack;
 
 @Getter
 public class ButtonCredit extends ButtonFeature {
@@ -36,15 +37,15 @@ public class ButtonCredit extends ButtonFeature {
             color = ARGB.colorFromFloat(0.7F, 0.3F, 0.3F, 0.3F);
         }
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, 1);
-        graphics.blit(RenderType::guiTextured, WEB, getX(), getY(), 0, 0, 12, 12, 12, 12, color);
-        poseStack.popPose();
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.scale(scale, scale);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, WEB, getX(), getY(), 0, 0, 12, 12, 12, 12, color);
+        poseStack.popMatrix();
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (!feature.isRemoteDisabled()) {
             try {
                 Util.getPlatform().openUri(credit.getUrl());

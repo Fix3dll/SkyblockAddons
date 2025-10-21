@@ -45,7 +45,6 @@ import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.MayorRequest;
-import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
@@ -64,8 +63,10 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -89,12 +90,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -781,10 +782,10 @@ public class PlayerListener {
         }
         insertAt = Math.max(0, insertAt);
 
-        CustomData extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+        CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
         if (extraAttributes != null) {
             if (Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.isEnabled() && extraAttributes.contains("baseStatBoostPercentage")) {
-                int baseStatBoost = extraAttributes.read(Codec.INT.fieldOf("baseStatBoostPercentage")).result().orElse(0);
+                int baseStatBoost = extraAttributes.getIntOr("baseStatBoostPercentage", 0);
 
                 ColorCode colorCode = Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.getRestrictedColor();
                 if (Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.isEnabled(FeatureSetting.BASE_STAT_COLOR_BY_RARITY)) {
@@ -803,12 +804,12 @@ public class PlayerListener {
 
             if (Feature.SHOW_SWORD_KILLS.isEnabled() && extraAttributes.contains("sword_kills")) {
                 ColorCode colorCode = Feature.SHOW_SWORD_KILLS.getRestrictedColor();
-                int swordKills = extraAttributes.read(Codec.INT.fieldOf("sword_kills")).result().orElse(0);
+                int swordKills = extraAttributes.getIntOr("sword_kills", 0);
                 components.add(insertAt++, Component.literal("§7Sword Kills: " + colorCode + swordKills));
             }
 
             if (Feature.SHOW_ITEM_DUNGEON_FLOOR.isEnabled() && extraAttributes.contains("item_tier")) {
-                int floor = extraAttributes.read(Codec.INT.fieldOf("item_tier")).result().orElse(0);
+                int floor = extraAttributes.getIntOr("item_tier", 0);
                 ColorCode colorCode = Feature.SHOW_ITEM_DUNGEON_FLOOR.getRestrictedColor();
                 components.add(insertAt, Component.literal("§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor)));
             }
@@ -899,7 +900,7 @@ public class PlayerListener {
         }
     }
 
-    public void onPlaySound(SoundInstance soundInstance, CallbackInfo ci) {
+    public void onPlaySound(SoundInstance soundInstance, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
 //        LOGGER.info(
 //                "location: {}, pitch: {}, volume: {}, isRelative: {}",
 //                soundInstance.getLocation(), soundInstance.getPitch(), soundInstance.getVolume(), soundInstance.isRelative()
@@ -915,7 +916,7 @@ public class PlayerListener {
             );
             if (isRatSound && (Feature.STOP_RAT_SOUNDS.isDisabled(FeatureSetting.STOP_ONLY_RAT_SQUEAK)
                     || soundInstance.getLocation().equals(SoundEvents.BAT_AMBIENT.location()))) {
-                ci.cancel();
+                cir.cancel();
                 return;
             }
         }
@@ -931,7 +932,7 @@ public class PlayerListener {
                     Math.round(soundInstance.getX()) == player.position().x() &&
                     Math.round(soundInstance.getY()) == player.position().y() &&
                     Math.round(soundInstance.getZ()) == player.position().z()) {
-                ci.cancel();
+                cir.cancel();
                 return;
             }
         }
@@ -940,7 +941,8 @@ public class PlayerListener {
                 && MC.player != null) {
             String skyblockId = ItemUtils.getSkyblockItemID(MC.player.getMainHandItem());
             if (skyblockId != null && skyblockId.endsWith("BONZO_STAFF")) {
-                ci.cancel();
+                cir.cancel();
+                return;
             }
         }
     }
@@ -1190,8 +1192,10 @@ public class PlayerListener {
         // Search in tablist
         Collection<PlayerInfo> networkPlayerInfos = localPlayer.connection.getListedOnlinePlayers();
         Optional<PlayerInfo> result = networkPlayerInfos.stream()
-                .filter(pi -> pi.getProfile().getName() != null)
-                .filter(pi -> pi.getProfile().getName().equals(finalUsername))
+                .filter(pi -> {
+                    String profileName = pi.getProfile().name();
+                    return profileName!= null && profileName.equals(finalUsername);
+                })
                 .findAny();
 
         // Put in cache if found

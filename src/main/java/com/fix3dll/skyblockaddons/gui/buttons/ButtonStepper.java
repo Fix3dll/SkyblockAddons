@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -75,17 +76,17 @@ public class ButtonStepper extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
-            if (isOverSubtractButton(mouseX, mouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.button() == 0) {
+            if (isOverSubtractButton(event.x(), event.y())) {
                 callback.accept(Modifier.SUBTRACT);
-                if (!hitMaximum(Modifier.SUBTRACT, mouseX, mouseY)) {
+                if (!hitMaximum(Modifier.SUBTRACT, event.x(), event.y())) {
                     this.playDownSound(MC.getSoundManager());
                 }
                 return true;
-            } else if (isOverAddButton(mouseX, mouseY)) {
+            } else if (isOverAddButton(event.x(), event.y())) {
                 callback.accept(Modifier.ADD);
-                if (!hitMaximum(Modifier.ADD, mouseX, mouseY)) {
+                if (!hitMaximum(Modifier.ADD, event.x(), event.y())) {
                     this.playDownSound(MC.getSoundManager());
                 }
                 return true;
@@ -132,4 +133,5 @@ public class ButtonStepper extends SkyblockAddonsButton {
             this.message = Component.literal(message);
         }
     }
+
 }

@@ -7,8 +7,10 @@ import com.fix3dll.skyblockaddons.core.npc.NPCUtils;
 import com.fix3dll.skyblockaddons.features.JerryPresent;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -68,6 +70,31 @@ public class EntityRendererHook {
                 JerryPresent present = JerryPresent.getJerryPresents().get(entityIn.getUUID());
                 if (present != null && present.shouldHide()) {
                     return false;
+                }
+            }
+
+            Component customNameComponent = entityIn.getCustomName();
+            if (customNameComponent != null) {
+                String formattedText = TextUtils.getFormattedText(customNameComponent);
+                if (Feature.MINION_DISABLE_LOCATION_WARNING.isEnabled()) {
+                    if (formattedText.startsWith("§cThis location isn't perfect! :(")) {
+                        return false;
+                    }
+                    if (customNameComponent.getString().startsWith("§c/!\\") && MC.level != null) {
+                        for (Entity listEntity : MC.level.entitiesForRendering()) {
+                            if (listEntity.hasCustomName()
+                                    && formattedText.startsWith("§cThis location isn't perfect! :(")
+                                    && listEntity.getX() == entityIn.getX()
+                                    && listEntity.getZ() == entityIn.getZ()
+                                    && listEntity.getY() + 0.375 == entityIn.getY()) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                if (Feature.HIDE_SVEN_PUP_NAMETAGS.isEnabled() && entityIn instanceof ArmorStand) {
+                    return !customNameComponent.getString().contains("Sven Pup");
                 }
             }
         }

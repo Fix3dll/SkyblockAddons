@@ -16,7 +16,7 @@ import java.util.Objects;
 public class KeyBindsListMixin {
 
     // Fixes translation issues on keybindings
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;", ordinal = 1))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;"))
     public MutableComponent sba$setKeyTranslation(String key) {
         if (key.contains(SkyblockAddons.MOD_ID)) {
             for (SkyblockKeyBinding binding : SkyblockKeyBinding.values()) {

@@ -1,8 +1,8 @@
 package com.fix3dll.skyblockaddons.gui.screens;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonArrow;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
@@ -27,6 +27,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -225,7 +228,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         // Warning for trying to open "Edit GUI Locations" menu from outside
         if (showWarning) {
             String warning = Translations.getMessage("settings.editLocationFromOutsideWarning");
-            graphics.renderTooltip(
+            graphics.setTooltipForNextFrame(
                     MC.font,
                     Component.literal(warning),
                     width / 2 - MC.font.width(warning) / 2,
@@ -429,17 +432,16 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (parent != null) {
-            long handle = MC.getWindow().getWindow();
-            if (InputConstants.isKeyDown(handle, keyCode) && keyCode == InputConstants.KEY_ESCAPE) {
+            if (InputConstants.isKeyDown(MC.getWindow(), event.key()) && event.key() == InputConstants.KEY_ESCAPE) {
                 MC.setScreen(parent);
                 return true;
             }
         }
         if (featureSearchBar.isFocused()) {
-            featureSearchBar.keyPressed(keyCode, scanCode, modifiers);
-            if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
+            featureSearchBar.keyPressed(event);
+            if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
                 searchString = featureSearchBar.getValue();
 
                 main.getUtils().setFadingIn(false);
@@ -452,13 +454,13 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             featureSearchBar.setFocused(true);
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         if (featureSearchBar.isFocused()) {
-            featureSearchBar.charTyped(codePoint, modifiers);
+            featureSearchBar.charTyped(event);
             searchString = featureSearchBar.getValue();
 
             main.getUtils().setFadingIn(false);
@@ -468,15 +470,15 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             init();
         }
 
-        return super.charTyped(codePoint, modifiers);
+        return super.charTyped(event);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        featureSearchBar.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        featureSearchBar.mouseClicked(event, isDoubleClick);
         featureSearchBar.setFocused(featureSearchBar.isHovered());
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     // Each row is spaced 0.08 apart, starting at 0.17.

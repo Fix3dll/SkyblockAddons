@@ -1,4 +1,4 @@
-package com.fix3dll.skyblockaddons.core.chroma;
+package com.fix3dll.skyblockaddons.core.render.chroma;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
@@ -94,4 +94,5 @@ public class ManualChromaManager {
         coloringTextChroma = false;
         featureScale = 1;
     }
+
 }

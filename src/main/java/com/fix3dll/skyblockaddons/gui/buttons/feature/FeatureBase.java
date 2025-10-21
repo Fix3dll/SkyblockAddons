@@ -2,24 +2,30 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Language;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import org.apache.logging.log4j.Logger;
+import org.joml.Matrix3x2fStack;
 
 import java.util.function.Consumer;
 
 public class FeatureBase extends ButtonFeature {
+
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final ResourceLocation GUI_MOVE = SkyblockAddons.resourceLocation("gui/move.png");
+    private static final ResourceLocation HALLOWEEN = SkyblockAddons.resourceLocation("flags/halloween.png");
 
     private final Consumer<FeatureBase> consumer;
 
@@ -62,7 +68,6 @@ public class FeatureBase extends ButtonFeature {
         }
 
         DrawUtils.drawRoundedRect(graphics, getX(), getY(), width, height, 4, ARGB.color(230, 27, 29, 41));
-//            DrawUtils.drawRect(xPosition, yPosition, width, height, ColorUtils.getDummySkyblockColor(27, 29, 41, 230), 4);
 
         EnumUtils.FeatureCredit creditFeature = EnumUtils.FeatureCredit.fromFeature(feature);
 
@@ -84,7 +89,7 @@ public class FeatureBase extends ButtonFeature {
         int textY = getY();
 
         boolean multiline = wrappedString.length > 1;
-        PoseStack poseStack = graphics.pose();
+        Matrix3x2fStack poseStack = graphics.pose();
 
         for (int i = 0; i < wrappedString.length; i++) {
             String line = wrappedString[i];
@@ -100,14 +105,14 @@ public class FeatureBase extends ButtonFeature {
             }
             if (feature == Feature.GENERAL_SETTINGS) textY -= 5;
 
-            poseStack.pushPose();
-            poseStack.scale(scale, scale, 1);
+            poseStack.pushMatrix();
+            poseStack.scale(scale, scale);
             int offset = 9;
             if (creditFeature != null) offset -= 4;
             // If the scale is small gotta move it down a bit or else it's too mushed with the above line.
             offset += (10 - 10 * scale);
             graphics.drawCenteredString(MC.font, line, (int) (textX / scale), (int) ((textY / scale) + offset), fontColor);
-            poseStack.popPose();
+            poseStack.popMatrix();
 
             // If it's not the last line, add to the Y.
             if (multiline && i == 0) {
@@ -124,27 +129,23 @@ public class FeatureBase extends ButtonFeature {
                 creditsY += 3; // Since its smaller the scale is wierd to move it down a tiny bit.
             }
 
-            poseStack.pushPose();
-            poseStack.scale(scale, scale, 1);
+            poseStack.pushMatrix();
+            poseStack.scale(scale, scale);
             graphics.drawCenteredString(MC.font, creditFeature.getAuthor(), (int) (textX / scale), (int) creditsY, fontColor);
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
 
         if (feature == Feature.LANGUAGE) {
             try {
                 ResourceLocation langSprite = main.getUtils().isHalloween()
-                        ? SkyblockAddons.resourceLocation("flags/halloween.png")
+                        ? HALLOWEEN
                         : ((Language) Feature.LANGUAGE.getValue()).getIdentifier();
-                graphics.blit(RenderType::guiTextured, langSprite, (int) (getX() + width / 2F - 20), getY() + 20, 0, 0, 38, 30, 38, 30, -1);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, langSprite, (int) (getX() + width / 2F - 20), getY() + 20, 0, 0, 38, 30, 38, 30, -1);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.catching(ex);
             }
         } else if (feature == Feature.EDIT_LOCATIONS) {
-            try {
-                graphics.blit(RenderType::guiTextured, SkyblockAddons.resourceLocation("gui/move.png"), (int) (getX() + width / 2F - 12), getY() + 22, 0, 0, 25, 25, 25, 25, -1);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            graphics.blit(RenderPipelines.GUI_TEXTURED, GUI_MOVE, (int) (getX() + width / 2F - 12), getY() + 22, 0, 0, 25, 25, 25, 25, -1);
         }
 
         if (feature.isRemoteDisabled()) {
@@ -189,13 +190,14 @@ public class FeatureBase extends ButtonFeature {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (this.isHovered && this.consumer != null) {
             this.consumer.accept(this);
         }
         return switch (feature) {
-            case LANGUAGE, EDIT_LOCATIONS, GENERAL_SETTINGS -> super.mouseClicked(mouseX, mouseY, button);
+            case LANGUAGE, EDIT_LOCATIONS, GENERAL_SETTINGS -> super.mouseClicked(event, isDoubleClick);
             default -> false;
         };
     }
+
 }

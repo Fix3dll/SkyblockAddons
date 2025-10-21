@@ -27,11 +27,14 @@
 	"mixins": [
 		"skyblockaddons.mixins.json"
 	],
+    "mixinextras": {
+        "minVersion": "0.5.0"
+    },
 	"depends": {
-		"fabricloader": ">=0.16.5",
-		"minecraft": "~1.21.5",
+		"fabricloader": ">=0.17.3",
+		"minecraft": "~1.21.10",
 		"java": ">=21",
-		"fabric-api": "*",
+		"fabric-api": ">=0.136.0+1.21.10",
 		"hypixel-mod-api": ">=1.0.1"
 	},
 	"suggests": {

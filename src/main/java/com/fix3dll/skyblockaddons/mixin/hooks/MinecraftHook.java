@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.features.ItemDropChecker;
+import com.fix3dll.skyblockaddons.features.discordrpc.DiscordRPCManager;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -104,6 +105,13 @@ public class MinecraftHook {
         if (returnValue.isCancelled() && MC.gameMode != null) {
             MC.gameMode.stopDestroyBlock();
             MC.gameMode.destroyBlockPos = new BlockPos(-1, -1, -1);
+        }
+    }
+
+    public static void onDisconnectFromWorld() {
+        DiscordRPCManager discordRPCManager = SkyblockAddons.getInstance().getDiscordRPCManager();
+        if (discordRPCManager.isActive()) {
+            discordRPCManager.stop();
         }
     }
 

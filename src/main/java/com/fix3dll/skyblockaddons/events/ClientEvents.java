@@ -7,10 +7,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 public class ClientEvents {
     public static final Event<ClientInitialization> AFTER_INITIALIZATION = EventFactory.createArrayBacked(ClientInitialization.class, callbacks -> (minecraftClient) -> {
@@ -48,9 +50,9 @@ public class ClientEvents {
         }
     });
 
-    public static final Event<PlaySound> PLAY_SOUND = EventFactory.createArrayBacked(PlaySound.class, callbacks -> (sound, ci) -> {
+    public static final Event<PlaySound> PLAY_SOUND = EventFactory.createArrayBacked(PlaySound.class, callbacks -> (sound, cir) -> {
         for (PlaySound callback : callbacks) {
-            callback.onPlaySound(sound, ci);
+            callback.onPlaySound(sound, cir);
         }
     });
 
@@ -92,7 +94,7 @@ public class ClientEvents {
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface PlaySound {
-        void onPlaySound(SoundInstance sound, CallbackInfo ci);
+        void onPlaySound(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> ci);
     }
 
 }

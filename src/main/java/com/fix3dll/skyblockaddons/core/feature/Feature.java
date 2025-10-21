@@ -5,7 +5,7 @@ import com.fix3dll.skyblockaddons.config.ConfigValuesManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
-import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
+import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.DrawType;
@@ -126,7 +126,7 @@ public enum Feature {
     SHOW_EXPERIMENTATION_TABLE_TOOLTIPS(158, "settings.showExperimentationTableTooltips", null),
     DRILL_FUEL_BAR(160, "settings.drillFuelBar", new FeatureGuiData(DrawType.BAR, ColorCode.DARK_GREEN)),
     DRILL_FUEL_TEXT(161, "settings.drillFuelNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.DARK_GREEN)),
-    FISHING_PARTICLE_OVERLAY(162, "settings.fishingParticleOverlay", new FeatureGuiData(ColorCode.WHITE)),
+    FISHING_PARTICLE_OVERLAY(162, "settings.fishingParticleOverlay", null),
     REFORGE_FILTER(172, "settings.reforgeFilter", null),
     TREVOR_THE_TRAPPER_FEATURES(177, "settings.trevorTheTrapper.title", new FeatureGuiData(DrawType.PROXIMITY_INDICATOR)),
     FETCHUR_TODAY(178, "settings.fetchurToday", new FeatureGuiData(DrawType.TEXT, ColorCode.GREEN)),

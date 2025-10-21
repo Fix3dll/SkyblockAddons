@@ -6,20 +6,20 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+import org.joml.Matrix3x2fStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,20 +85,18 @@ public enum SkyblockEquipment {
         this.isHovered = translatedMouseX >= x - 1 && translatedMouseX < x + 16 + 1
                       && translatedMouseY >= y - 1 && translatedMouseY < y + 16 + 1;
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.translate((float)leftPos, (float)topPos, 100.0F);
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.translate((float)leftPos, (float)topPos);
         graphics.renderItem(this.itemStack, x, y, seed);
         graphics.renderItemDecorations(font, this.itemStack, x, y);
-        if (this.isHovered) graphics.blitSprite(RenderType::guiTexturedOverlay, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
-        poseStack.popPose();
+        if (this.isHovered) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
+        poseStack.popMatrix();
 
 
         if (this.isHovered) {
-            poseStack.pushPose();
-            poseStack.translate(0, 0, 302);
-            graphics.renderTooltip(font, this.itemStack, mouseX, mouseY);
-            poseStack.popPose();
+            graphics.nextStratum();
+            graphics.setTooltipForNextFrame(font, this.itemStack, mouseX, mouseY);
         }
     }
 

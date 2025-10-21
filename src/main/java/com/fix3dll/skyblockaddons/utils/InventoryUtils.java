@@ -3,11 +3,11 @@ package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.ItemDiff;
 import com.fix3dll.skyblockaddons.core.SlayerArmorProgress;
 import com.fix3dll.skyblockaddons.core.ThunderBottle;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTracker;
@@ -524,7 +524,7 @@ public class InventoryUtils {
             if ("ENCHANTED_BOOK".equals(skyblockId) || "ATTRIBUTE_SHARD".equals(skyblockId)) {
                 List<String> lore = ItemUtils.getItemLore(itemStack);
                 if (!lore.isEmpty()) {
-                    displayName = lore.get(0);
+                    displayName = lore.getFirst();
                 }
             } else if (main.getUtils().isInDungeon() && itemStack.getItem() == Items.GRAY_DYE && StringUtils.isBlank(displayName)) {
                 // Ignore Archer's ghost abilities cooldown

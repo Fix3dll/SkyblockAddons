@@ -5,7 +5,8 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -105,10 +106,10 @@ public class ButtonCycling extends SkyblockAddonsButton {
 
         // Arrow buttons are square so width = height
         //noinspection SuspiciousNameCombination
-        graphics.blit(RenderType::guiTextured, ARROW_LEFT, getX(), getY(), 0, 0, height, height, height, height, -1);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ARROW_LEFT, getX(), getY(), 0, 0, height, height, height, height, -1);
 
         //noinspection SuspiciousNameCombination
-        graphics.blit(RenderType::guiTextured, ARROW_RIGHT, getX() + width - height, getY(), 0, 0, height, height, height, height, -1);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ARROW_RIGHT, getX() + width - height, getY(), 0, 0, height, height, height, height, -1);
 
         if (!name.equals(trimmedName)) {
             if (isOverText(mouseX, mouseY)) {
@@ -128,19 +129,19 @@ public class ButtonCycling extends SkyblockAddonsButton {
             if (isSettingsGui) {
                graphics.drawCenteredString(MC.font, description, getX() + width / 2, getY() + height + 2, ColorCode.GRAY.getColor());
             } else if (isOverText(mouseX, mouseY)) {
-                graphics.renderTooltip(MC.font, Component.literal(description), mouseX, mouseY);
+                graphics.setTooltipForNextFrame(MC.font, Component.literal(description), mouseX, mouseY);
             }
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isOverLeftButton(mouseX, mouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (isOverLeftButton(event.x(), event.y())) {
             index = index == itemList.size() - 1 ? 0 : index + 1;
             callback.accept(index);
             this.playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
-        } else if (isOverRightButton(mouseX, mouseY)) {
+        } else if (isOverRightButton(event.x(), event.y())) {
             index = index == 0 ? itemList.size() - 1 : index - 1;
             callback.accept(index);
             this.playDownSound(Minecraft.getInstance().getSoundManager());

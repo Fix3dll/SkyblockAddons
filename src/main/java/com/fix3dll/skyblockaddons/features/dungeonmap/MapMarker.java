@@ -13,11 +13,13 @@ import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 
-
 @Getter @Setter @ToString
 public class MapMarker {
 
-    /** The icon type of this map marker (https://minecraft.fandom.com/wiki/Map#Map_icons) */
+    /** The icon type of this map marker:
+     * <a href="https://minecraft.fandom.com/wiki/Map#Map_icons">
+     * https://minecraft.fandom.com/wiki/Map#Map_icons
+     * </a> */
     private MapDecorationType decorationType;
     private float x;
     private float y;
@@ -27,7 +29,7 @@ public class MapMarker {
     private boolean wearingHat;
 
     public MapMarker(@NonNull Player player) {
-        this.playerName = player.getGameProfile().getName();
+        this.playerName = player.getGameProfile().name();
         this.wearingHat = player.isModelPartShown(PlayerModelPart.HAT);
 
         if (player == Minecraft.getInstance().player) {
@@ -49,7 +51,7 @@ public class MapMarker {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
             for (AbstractClientPlayer player : world.players()) {
-                if (player.getGameProfile().getName().equals(playerName)) {
+                if (player.getGameProfile().name().equals(playerName)) {
                     return player;
                 }
             }

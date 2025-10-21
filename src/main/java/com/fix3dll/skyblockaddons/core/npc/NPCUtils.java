@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -34,7 +35,7 @@ public class NPCUtils {
         //TODO Fix for Hypixel localization
         if (MC.player == null) return false;
 
-        final int playerInventorySize =  MC.player.getInventory().getContainerSize() - 5; // - 4 armor - offhand
+        final int playerInventorySize =  MC.player.getInventory().getContainerSize() - Inventory.EQUIPMENT_SLOT_MAPPING.size();
         final int sellSlot = inventory.size() - playerInventorySize  - 4 - 1;
         if (sellSlot >= inventory.size() || sellSlot < 0) return false;
         ItemStack itemStack = inventory.get(sellSlot).getItem();

@@ -4,7 +4,8 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -29,12 +30,12 @@ public class ButtonSocial extends SkyblockAddonsButton {
         this.isHovered = isHovered(mouseX, mouseY);
         int color = ARGB.white(alphaMultiplier * (this.isHovered ? 1F : 0.7F));
 
-        graphics.blit(RenderType::guiTextured, social.getResourceLocation(), getX(), getY(), 0, 0, width, height, width, height, color);
-//        DrawUtils.drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, width, height, width, height, true);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, social.getResourceLocation(), getX(), getY(), 0, 0, width, height, width, height, color);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         Util.getPlatform().openUri(social.getUrl());
     }
+
 }

@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
+import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.Font;
@@ -28,7 +29,7 @@ public class GlyphRenderTypesMixin {
     @Inject(method = "select", at = @At("HEAD"), cancellable = true)
     public void sba$select(Font.DisplayMode displayMode, CallbackInfoReturnable<RenderType> cir) {
         if (FontHook.isGlyphChroma()) {
-            cir.setReturnValue(FontHook.getChromaTextured(sba$identifier));
+            cir.setReturnValue(DrawUtils.getChromaTextured(sba$identifier));
         }
     }
 

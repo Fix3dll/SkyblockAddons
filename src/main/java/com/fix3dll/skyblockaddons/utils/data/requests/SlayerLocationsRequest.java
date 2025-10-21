@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class SlayerLocationsRequest extends RemoteFileRequest<HashMap<String, Set<String>>> {
+
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public SlayerLocationsRequest() {
@@ -36,4 +37,5 @@ public class SlayerLocationsRequest extends RemoteFileRequest<HashMap<String, Se
             LocationUtils.setSlayerLocations(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
         }
     }
+
 }

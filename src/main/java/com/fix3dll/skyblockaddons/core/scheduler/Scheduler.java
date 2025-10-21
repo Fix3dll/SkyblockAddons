@@ -6,10 +6,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.Consumer;
 
 public class Scheduler {
+
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     private final ObjectArrayList<ScheduledTask> queuedTasks;
     private final ObjectArrayList<ScheduledTask> pendingTasks;
@@ -55,7 +58,7 @@ public class Scheduler {
                     }
                 }
             } catch (Throwable ex) {
-                SkyblockAddons.getLogger().error("Scheduler ticking error: ", ex);
+                LOGGER.error("Scheduler ticking error: ", ex);
             }
         }
         profilerFiller.pop();
@@ -128,4 +131,5 @@ public class Scheduler {
         }
         return scheduledTask;
     }
+
 }

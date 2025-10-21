@@ -1,9 +1,9 @@
 package com.fix3dll.skyblockaddons.gui.screens;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.SkyblockDate;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonCustomToggle;
 import com.fix3dll.skyblockaddons.gui.buttons.IslandButton;
@@ -11,16 +11,17 @@ import com.fix3dll.skyblockaddons.gui.buttons.IslandMarkerButton;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import org.joml.Matrix3x2fStack;
 
 import java.io.IOException;
 import java.time.Month;
@@ -30,6 +31,8 @@ import java.util.Optional;
 public class IslandWarpGui extends SkyblockAddonsScreen {
 
     @Getter @Setter private static Marker doubleWarpMarker;
+
+    private static final Window WINDOW = MC.getWindow();
 
     private static int TOTAL_WIDTH;
     private static int TOTAL_HEIGHT;
@@ -83,25 +86,24 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        final Window window = MC.getWindow();
-
+        graphics.nextStratum();
         drawGradientBackground(graphics, Math.round(255/3F), Math.round(255/2F));
 
-        graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.click"), window.getGuiScaledWidth() / 2, 10, -1);
-        graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.mustUnlock"), window.getGuiScaledWidth() / 2, 20, -1);
+        graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.click"), WINDOW.getGuiScaledWidth() / 2, 10, -1);
+        graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.mustUnlock"), WINDOW.getGuiScaledWidth() / 2, 20, -1);
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        ISLAND_SCALE = 0.7F / 1080 * window.getHeight();
-        poseStack.scale((float) (1F / window.getGuiScale()), (float) (1F / window.getGuiScale()), 1);
-        poseStack.scale(ISLAND_SCALE, ISLAND_SCALE, 1);
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        ISLAND_SCALE = 0.7F / 1080 * WINDOW.getHeight();
+        poseStack.scale(1F / WINDOW.getGuiScale());
+        poseStack.scale(ISLAND_SCALE);
 
         float totalWidth = TOTAL_WIDTH * ISLAND_SCALE;
         float totalHeight = TOTAL_HEIGHT * ISLAND_SCALE;
 
-        SHIFT_LEFT = (window.getWidth() / 2F - totalWidth / 2F) / ISLAND_SCALE;
-        SHIFT_TOP = (window.getHeight() / 2F - totalHeight / 2F) / ISLAND_SCALE;
-        poseStack.translate(SHIFT_LEFT, SHIFT_TOP, 0);
+        SHIFT_LEFT = (WINDOW.getWidth() / 2F - totalWidth / 2F) / ISLAND_SCALE;
+        SHIFT_TOP = (WINDOW.getHeight() / 2F - totalHeight / 2F) / ISLAND_SCALE;
+        poseStack.translate(SHIFT_LEFT, SHIFT_TOP);
 
         IslandButton lastHoveredButton = null;
 
@@ -123,16 +125,16 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             renderable.render(graphics, mouseX, mouseY, partialTick);
         }
 
-        int x = Math.round(window.getWidth() / ISLAND_SCALE - SHIFT_LEFT - 500);
-        int y = Math.round(window.getHeight() / ISLAND_SCALE - SHIFT_TOP);
-        poseStack.pushPose();
+        int x = Math.round(WINDOW.getWidth() / ISLAND_SCALE - SHIFT_LEFT - 500);
+        int y = Math.round(WINDOW.getHeight() / ISLAND_SCALE - SHIFT_TOP);
+        poseStack.pushMatrix();
         float textScale = 3F;
-        poseStack.scale(textScale, textScale, 1);
+        poseStack.scale(textScale);
         graphics.drawString(MC.font, Feature.FANCY_WARP_MENU.getMessage(), (int) (x / textScale + 50), (int) ((y - 30 - 60 * 2) / textScale + 5), -1);
         graphics.drawString(MC.font, FeatureSetting.DOUBLE_WARP.getMessage(), (int) (x / textScale + 50), (int) ((y - 30 - 60) / textScale + 5), -1);
-        poseStack.popPose();
+        poseStack.popMatrix();
 
-        poseStack.popPose();
+        poseStack.popMatrix();
 
         detectClosestMarker(mouseX, mouseY);
     }
@@ -140,8 +142,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     public static float IMAGE_SCALED_DOWN_FACTOR = 0.75F;
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0 && selectedMarker != null) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.button() == 0 && selectedMarker != null) {
             MC.setScreen(null);
 
             if (Feature.FANCY_WARP_MENU.isEnabled(FeatureSetting.DOUBLE_WARP)) {
@@ -160,12 +162,15 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         }
 
-        Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation((int) mouseX, (int) mouseY);
+        Pair<Integer, Integer> scaledMouseLocations = getScaledMouseLocation((int) event.x(), (int) event.y());
+        MouseButtonEvent mouseButtonEvent = new MouseButtonEvent(
+                scaledMouseLocations.getLeft(), scaledMouseLocations.getRight(), event.buttonInfo()
+        );
         for (GuiEventListener guiEventListener : this.children()) {
             if (guiEventListener.isMouseOver(scaledMouseLocations.getLeft(), scaledMouseLocations.getRight())) {
-                if (guiEventListener.mouseClicked(scaledMouseLocations.getLeft(), scaledMouseLocations.getRight(), button)) {
+                if (guiEventListener.mouseClicked(mouseButtonEvent, isDoubleClick)) {
                     this.setFocused(guiEventListener);
-                    if (button == 0) {
+                    if (event.button() == 0) {
                         this.setDragging(true);
                     }
                 }
@@ -376,4 +381,5 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             this.advanced = advanced;
         }
     }
+
 }

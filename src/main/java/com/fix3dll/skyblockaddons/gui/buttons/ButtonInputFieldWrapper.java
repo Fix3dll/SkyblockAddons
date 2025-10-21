@@ -3,6 +3,9 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
 
@@ -31,15 +34,15 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        editBox.setFocused(this.isMouseOver(mouseX, mouseY));
-        return editBox.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        editBox.setFocused(this.isMouseOver(event.x(), event.y()));
+        return editBox.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         if (editBox.isFocused()) {
-            boolean consumed = editBox.charTyped(codePoint, modifiers);
+            boolean consumed = editBox.charTyped(event);
             textUpdated.onUpdate(editBox.getValue());
             return consumed;
         }
@@ -47,9 +50,9 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (editBox.isFocused()) {
-            return editBox.keyPressed(keyCode, scanCode, modifiers);
+            return editBox.keyPressed(event);
         }
         return false;
     }

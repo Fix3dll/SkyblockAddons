@@ -1,7 +1,7 @@
 package com.fix3dll.skyblockaddons.gui.screens;
 
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantLayout;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonArrow;

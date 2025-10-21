@@ -6,6 +6,7 @@ import com.fix3dll.skyblockaddons.mixin.hooks.MinecraftHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -59,9 +60,14 @@ public class MinecraftMixin {
 
     @Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
     public void sba$shouldEntityAppearGlowing(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (EntityOutlineRenderer.shouldRenderEntityOutlines(entity)) {
+        if (EntityOutlineRenderer.shouldRenderEntityOutlines(entity.getId())) {
             cir.setReturnValue(true);
         }
+    }
+
+    @Inject(method = "disconnectFromWorld", at = @At("HEAD"))
+    public void sba$disconnectFromWorld(Component reason, CallbackInfo ci) {
+        MinecraftHook.onDisconnectFromWorld();
     }
 
 }

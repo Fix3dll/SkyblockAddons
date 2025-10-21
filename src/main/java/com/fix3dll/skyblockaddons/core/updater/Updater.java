@@ -315,7 +315,7 @@ public class Updater {
                 String targetVersionName = cachedPotentialUpdate.getUpdate() == null
                         ? null
                         : cachedPotentialUpdate.getUpdate().getVersionName();
-                String mcVersionXYZ = SharedConstants.getCurrentVersion().getName().split("-")[0];
+                String mcVersionXYZ = SharedConstants.getCurrentVersion().name().split("-")[0];
                 if (!StringUtil.isNullOrEmpty(targetVersionName) && !targetVersionName.contains(mcVersionXYZ)) {
                     autoDownloadButton = Component.literal(
                             String.format("§8§m[%s]§r", Translations.getMessage("messages.updateChecker.autoDownloadButton"))
@@ -426,4 +426,5 @@ public class Updater {
         AHEAD,
         BETA_OUTDATED
     }
+
 }

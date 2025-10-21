@@ -2,11 +2,11 @@ package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.SkyblockDate;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment.Type;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.Island;
-import com.fix3dll.skyblockaddons.core.SkyblockDate;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -42,11 +43,18 @@ import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -789,7 +797,7 @@ public class Utils {
         ClientLevel level = Minecraft.getInstance().level;
         if (level != null) {
             for (Player player : level.players()) {
-                if (name.equals(player.getGameProfile().getName())) {
+                if (name.equals(player.getGameProfile().name())) {
                     return player;
                 }
             }
@@ -838,6 +846,15 @@ public class Utils {
         }
 
         return null;
+    }
+
+    public static RegistryAccess registryAccess() {
+        ClientLevel world = Minecraft.getInstance().level;
+        if (world == null) {
+            return RegistryAccess.EMPTY;
+        } else {
+            return world.registryAccess();
+        }
     }
 
 }

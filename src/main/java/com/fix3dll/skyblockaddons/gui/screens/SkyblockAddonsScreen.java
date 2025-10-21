@@ -6,17 +6,17 @@ import com.fix3dll.skyblockaddons.gui.buttons.SkyblockAddonsButton;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
 import java.util.List;
 import java.util.Optional;
@@ -100,7 +100,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
         int width = height*2;
         Window window = MC.getWindow();
 
-        graphics.blit(RenderType::guiTextured, LOGO, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height);
 
         float glowAlpha;
         glowAlpha = System.currentTimeMillis() % TITLE_ANIMATION_MILLIS;
@@ -111,7 +111,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
         }
 
         int color = ARGB.white(glowAlpha);
-        graphics.blit(RenderType::guiTextured, LOGO_GLOW, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO_GLOW, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height, color);
 
         drawScaledString(graphics, screen, FORMATTED_VERSION, 55, defaultBlue, 1.3F, 170 - MC.font.width(FORMATTED_VERSION), false);
     }
@@ -150,9 +150,9 @@ public abstract class SkyblockAddonsScreen extends Screen {
      * @param xOffset The offset from the center x that the text should be drawn at.
      */
     static void drawScaledString(GuiGraphics graphics, Screen screen, String text, int y, int color, float scale, int xOffset, boolean centered) {
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, 1);
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.scale(scale);
         if (centered) {
             graphics.drawCenteredString(
                     MC.font,
@@ -171,7 +171,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
                     true
             );
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     public void addSocials(Consumer<AbstractWidget> adder) {

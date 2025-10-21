@@ -12,7 +12,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
@@ -26,7 +25,7 @@ import static com.fix3dll.skyblockaddons.core.feature.FeatureSetting.HEALING_CIR
 public class HealingCircleManager {
 
     public static final RenderPipeline HEALING_CIRCLE_PIPELINE = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+            RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
                     .withLocation("sba_healing_circle")
                     .withVertexShader("core/position_color")
                     .withFragmentShader("core/position_color")
@@ -39,12 +38,11 @@ public class HealingCircleManager {
 
     private static final RenderType HEALING_CIRCLE = RenderType.create(
             "sba_healing_circle",
-            RenderType.SMALL_BUFFER_SIZE,
+            RenderType.TRANSIENT_BUFFER_SIZE,
             true,
             true,
             HEALING_CIRCLE_PIPELINE,
             RenderType.CompositeState.builder()
-                    .setOutputState(RenderType.TRANSLUCENT_TARGET)
                     .createCompositeState(false)
     );
 
@@ -75,7 +73,7 @@ public class HealingCircleManager {
         }
     }
 
-    public static void renderHealingCircleOverlays(WorldRenderContext worldRenderContext) {
+    public static void renderHealingCircleOverlays(MultiBufferSource.BufferSource source, PoseStack poseStack) {
         Feature feature = Feature.SHOW_HEALING_CIRCLE_WALL;
         if (main.getUtils().isOnSkyblock() && feature.isEnabled()) {
 
@@ -91,8 +89,6 @@ public class HealingCircleManager {
 
                 Point2D.Double circleCenter = healingCircle.getCircleCenter();
                 if (circleCenter != null && !Double.isNaN(circleCenter.getX()) && !Double.isNaN(circleCenter.getY())) {
-                    PoseStack poseStack = worldRenderContext.matrixStack();
-                    MultiBufferSource source = worldRenderContext.consumers();
                     if (poseStack == null || source == null) continue;
 
                     int color = feature.getColor(
@@ -116,4 +112,5 @@ public class HealingCircleManager {
             }
         }
     }
+
 }

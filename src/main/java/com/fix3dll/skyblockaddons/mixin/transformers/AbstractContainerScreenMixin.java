@@ -13,13 +13,16 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -36,12 +39,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.function.Function;
-
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMenu> extends Screen implements MenuAccess<T> {
 
-    @Shadow @Nullable public Slot hoveredSlot;
+    @Shadow @Nullable protected Slot hoveredSlot;
     @Shadow protected int titleLabelX;
     @Shadow protected int titleLabelY;
     @Shadow @Final protected Component playerInventoryTitle;
@@ -54,20 +55,25 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         super(title);
     }
 
-    @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/ResourceLocation;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    public void sba$onRenderTooltip(GuiGraphics graphics, int x, int y, CallbackInfo ci, ItemStack itemStack) {
+    @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/ResourceLocation;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void sba$onRenderTooltip(GuiGraphics guiGraphics, int x, int y, CallbackInfo ci, ItemStack itemStack) {
         if (ScreenHook.onRenderTooltip(itemStack, x, y)) {
             ci.cancel();
         }
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlightFront(Lnet/minecraft/client/gui/GuiGraphics;)V"))
+    @Inject(method = "renderContents", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix3x2fStack;popMatrix()Lorg/joml/Matrix3x2fStack;"))
+    public void sba$renderContentsLast(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+        AbstractContainerScreenHook.renderReforgeTooltip((AbstractContainerScreen<?>) (Object) this, graphics);
+    }
+
+    @Inject(method = "renderContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlightFront(Lnet/minecraft/client/gui/GuiGraphics;)V"))
     public void sba$setLastSlot(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         SkyblockAddons.getInstance().getUtils().setLastHoveredSlot(-1);
     }
 
-    @WrapWithCondition(method = "renderSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Ljava/util/function/Function;Lnet/minecraft/resources/ResourceLocation;IIII)V"))
-    public boolean sba$renderSlotHighlightFront(GuiGraphics graphics, Function<ResourceLocation, RenderType> renderTypeGetter, ResourceLocation sprite, int x, int y, int width, int height) {
+    @WrapWithCondition(method = "renderSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/ResourceLocation;IIII)V"))
+    public boolean sba$renderSlotHighlightFront(GuiGraphics graphics, RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height) {
         return AbstractContainerScreenHook.renderSlotHighlightFront(graphics, x, y, this.hoveredSlot);
     }
 
@@ -81,20 +87,14 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         //noinspection unchecked
         AbstractContainerScreen<T> instance = (AbstractContainerScreen<T>) (Object) this;
         ContainerPreviewManager.drawContainerPreviews(graphics, instance, mouseX, mouseY);
-        // Draw items for Feature.EQUIPMENTS_IN_INVENTORY
-        if (SkyblockEquipment.equipmentsInInventory() && instance instanceof InventoryScreen) {
-            for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
-                equipment.render(graphics, mouseX, mouseY, this.leftPos, this.topPos);
-            }
-        }
     }
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-    public void sba$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-        if (AbstractContainerScreenHook.keyPressed_reforgeFilter(keyCode, scanCode, modifiers)) {
+    public void sba$keyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+        if (AbstractContainerScreenHook.keyPressed_reforgeFilter(event)) {
             cir.cancel();
         } else {
-            AbstractContainerScreenHook.keyPressed(this.hoveredSlot, keyCode, cir);
+            AbstractContainerScreenHook.keyPressed(this.hoveredSlot, event.key(), cir);
         }
 
     }
@@ -108,10 +108,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @WrapMethod(method = "renderLabels")
-    public void sba$renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY, Operation<Void> original) {
+    public void sba$renderLabels(GuiGraphics graphics, int mouseX, int mouseY, Operation<Void> original) {
         SkyblockAddons main = SkyblockAddons.getInstance();
-
-        AbstractContainerScreenHook.onRenderLabels((AbstractContainerScreen<?>) (Object) this, guiGraphics);
 
         if (main.getUtils().isOnSkyblock() && Feature.SHOW_BACKPACK_PREVIEW.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
             BackpackColor backpackColor = BackpackInventoryManager.getBackpackColor().get(
@@ -119,26 +117,18 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
             );
             if (backpackColor != null) {
                 int color = backpackColor.getInventoryTextColor();
-                guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, color, false);
-                guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, color, false);
+                graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, color, false);
+                graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, color, false);
                 return;
             }
         }
 
-        original.call(guiGraphics, mouseX, mouseY);
-    }
-
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    public void sba$renderHead(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        //noinspection unchecked
-        if (AbstractContainerScreenHook.drawScreenIslands((AbstractContainerScreen<T>) (Object) this, guiGraphics, mouseX, mouseY, partialTick)) {
-            ci.cancel();
-        }
+        original.call(graphics, mouseX, mouseY);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
-    public void sba$renderLast(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        AbstractContainerScreenHook.renderLast(guiGraphics, mouseX, mouseY, partialTick, this.leftPos, this.topPos);
+    public void sba$renderLast(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+        AbstractContainerScreenHook.renderLast(graphics, mouseX, mouseY, partialTick, this.leftPos, this.topPos);
     }
 
     @Inject(method = "init", at = @At("RETURN"))
@@ -147,35 +137,35 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Inject(method = "mouseClicked", at= @At("HEAD"), cancellable = true)
-    public void sba$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (AbstractContainerScreenHook.mouseClicked(mouseX, mouseY, button)) {
+    public void sba$mouseClicked(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
+        if (AbstractContainerScreenHook.mouseClicked(event, isDoubleClick)) {
             cir.cancel();
         }
         if (SkyblockEquipment.equipmentsInInventory() && Minecraft.getInstance().screen instanceof InventoryScreen) {
             for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
-                equipment.onClick(button);
+                equipment.onClick(event.button());
             }
         }
     }
 
     @Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
-    public void sba$mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    public void sba$mouseReleased(MouseButtonEvent event, CallbackInfoReturnable<Boolean> cir) {
         if (AbstractContainerScreenHook.mouseReleased()) {
             cir.cancel();
         }
     }
 
     @Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
-    public void sba$mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY, CallbackInfoReturnable<Boolean> cir) {
+    public void sba$mouseDragged(MouseButtonEvent event, double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
         if (AbstractContainerScreenHook.mouseDragged()) {
             cir.cancel();
         }
     }
 
-    // TODO dont use overwrite
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        AbstractContainerScreenHook.charTyped_reforgeFilter(codePoint, modifiers);
-        return super.charTyped(codePoint, modifiers);
+    public boolean charTyped(CharacterEvent event) {
+        AbstractContainerScreenHook.charTyped_reforgeFilter(event);
+        return super.charTyped(event);
     }
+
 }

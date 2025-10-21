@@ -8,6 +8,7 @@ import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -71,7 +72,7 @@ public class ButtonOpenColorMenu extends ButtonFeature {
      * Code to perform the button toggles, openings of other gui's/pages, and language changes.
      */
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (this.feature != null && MC.screen instanceof SettingsGui gui) {
             gui.setClosingGui(true);
             if (this.setting != null) {
@@ -81,4 +82,5 @@ public class ButtonOpenColorMenu extends ButtonFeature {
             }
         }
     }
+
 }

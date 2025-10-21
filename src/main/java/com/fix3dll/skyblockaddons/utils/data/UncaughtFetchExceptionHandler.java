@@ -1,6 +1,6 @@
 package com.fix3dll.skyblockaddons.utils.data;
 
-import org.apache.logging.log4j.LogManager;
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -9,10 +9,11 @@ import org.apache.logging.log4j.Logger;
  * {@link DataUtils} throws an uncaught exception.
  */
 public class UncaughtFetchExceptionHandler implements Thread.UncaughtExceptionHandler {
+
     private final Logger logger;
 
     public UncaughtFetchExceptionHandler() {
-        this.logger = LogManager.getLogger();
+        this.logger = SkyblockAddons.getLogger();
     }
 
     @Override
@@ -20,4 +21,5 @@ public class UncaughtFetchExceptionHandler implements Thread.UncaughtExceptionHa
         logger.error("Exception in thread \"{}\"", t.getName());
         logger.error(e.getMessage());
     }
+
 }

@@ -10,9 +10,9 @@ import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.npc.NPCUtils;
+import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.features.ItemDropChecker;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
-import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
@@ -20,16 +20,18 @@ import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
@@ -82,8 +84,6 @@ public class AbstractContainerScreenHook {
     private static int enchantsToIncludeHeight;
     private static int enchantsToExcludeHeight;
 
-    @Getter private static IslandWarpGui islandWarpGui = null;
-
     /**
      * @return true for render default
      */
@@ -112,7 +112,7 @@ public class AbstractContainerScreenHook {
                     && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof InventoryMenu && slotNum >= 5)) {
                 graphics.fill(x + 4, y + 4, x + widthHeight - 4, y + widthHeight - 4, OVERLAY_RED);
-                graphics.blit(RenderType::guiTexturedOverlay, LOCK, hoveredSlot.x, hoveredSlot.y, 0, 0, 16, 16, 256, 256, ARGB.white(0.4F));
+                graphics.blit(RenderPipelines.GUI_TEXTURED, LOCK, hoveredSlot.x, hoveredSlot.y, 0, 0, 16, 16, 256, 256, ARGB.white(0.4F));
                 return false;
             }
         }
@@ -127,7 +127,7 @@ public class AbstractContainerScreenHook {
             int slotNum = slot.index + main.getInventoryUtils().getSlotDifference(container);
             if (main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
                     && (slotNum >= 9 || container instanceof InventoryMenu && slotNum >= 5)) {
-                graphics.blit(RenderType::guiTexturedOverlay, LOCK, slot.x, slot.y, 0, 0, 16, 16, 256, 256, ARGB.white(0.4F));
+                graphics.blit(RenderPipelines.GUI_TEXTURED, LOCK, slot.x, slot.y, 0, 0, 16, 16, 256, 256, ARGB.white(0.4F));
             }
         }
     }
@@ -225,7 +225,7 @@ public class AbstractContainerScreenHook {
         // Saves clicks in Pets menu
         if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS
                 && screen.getMenu() instanceof ChestMenu
-                && !Screen.hasShiftDown()) {
+                && !MC.hasShiftDown()) {
             lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
         }
 
@@ -234,7 +234,7 @@ public class AbstractContainerScreenHook {
                 && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
     }
 
-    public static void onRenderLabels(AbstractContainerScreen<?> screen, GuiGraphics graphics) {
+    public static void renderReforgeTooltip(AbstractContainerScreen<?> screen, GuiGraphics graphics) {
         if (!main.getUtils().isOnSkyblock()) {
             return; // don't draw any overlays outside SkyBlock
         }
@@ -274,55 +274,16 @@ public class AbstractContainerScreenHook {
                             float renderX = x - 28 - stringWidth / 2F;
                             int renderY = y + 22;
 
-                            TooltipRenderUtil.renderTooltipBackground(graphics, (int) renderX, renderY, stringWidth, 7, 400, null);
-                            graphics.drawSpecial(source -> {
-                                graphics.pose().pushPose();
-                                graphics.pose().translate(0, 0, 401);
-                                MC.font.drawInBatch(
-                                        reforge, renderX, renderY, color, true, graphics.pose().last().pose(), source, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT
-                                );
-                                graphics.pose().popPose();
-                            });
+                            TooltipRenderUtil.renderTooltipBackground(graphics, (int) renderX, renderY, stringWidth, 7, null);
+                            FormattedCharSequence strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(reforge));
+                            graphics.guiRenderState.submitText(
+                                    new SbaTextRenderState(strippedFcs, graphics.pose(), renderX, renderY, color, 0, true, graphics.scissorStack.peek())
+                            );
                         }
                     }
                 }
             }
         }
-    }
-
-    /**
-     * @return true if ContainerScreen rendering should be bypassed
-     */
-    public static boolean drawScreenIslands(AbstractContainerScreen<?> instance, GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (MC.player == null || !main.getUtils().isOnSkyblock()) {
-            return false; // don't draw any overlays outside SkyBlock
-        }
-
-        if (Feature.FANCY_WARP_MENU.isEnabled()) {
-            Component titleComponent = instance.getTitle();
-            if (titleComponent == null) return false;
-            String title = titleComponent.getString();
-            if (title.equals("Fast Travel")) {
-                if (islandWarpGui == null) {
-                    islandWarpGui = new IslandWarpGui();
-                    islandWarpGui.init(MC, MC.getWindow().getGuiScaledWidth(), MC.getWindow().getGuiScaledHeight());
-                }
-
-                try {
-                    islandWarpGui.render(graphics, mouseX, mouseY, partialTick);
-                } catch (Throwable ex) {
-                    ex.printStackTrace();
-                }
-
-                return true;
-            } else {
-                islandWarpGui = null;
-            }
-        } else {
-            islandWarpGui = null;
-        }
-
-        return false;
     }
 
     public static void renderLast(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int leftPos, int topPos) {
@@ -458,27 +419,27 @@ public class AbstractContainerScreenHook {
     /**
      * @return true if keyPressed will be canceled
      */
-    public static boolean keyPressed_reforgeFilter(int keyCode, int scanCode, int modifiers) {
+    public static boolean keyPressed_reforgeFilter(KeyEvent event) {
         if (main.getUtils().isOnSkyblock() && Feature.REFORGE_FILTER.isEnabled()) {
             InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
             if (inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING) {
-                textFieldMatches.keyPressed(keyCode, scanCode, modifiers);
-                textFieldExclusions.keyPressed(keyCode, scanCode, modifiers);
-                return keyCode == MC.options.keyInventory.key.getValue()
+                textFieldMatches.keyPressed(event);
+                textFieldExclusions.keyPressed(event);
+                return event.key() == MC.options.keyInventory.key.getValue()
                         && (textFieldMatches.isFocused() || textFieldExclusions.isFocused());
             }
         }
         return false;
     }
 
-    public static void charTyped_reforgeFilter(char codePoint, int modifiers) {
+    public static void charTyped_reforgeFilter(CharacterEvent event) {
         if (main.getUtils().isOnSkyblock() && Feature.REFORGE_FILTER.isEnabled() && textFieldMatches != null) {
             InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
             if (inventoryType == InventoryType.BASIC_REFORGING || inventoryType == InventoryType.HEX_REFORGING) {
-                textFieldMatches.charTyped(codePoint, modifiers);
-                textFieldExclusions.charTyped(codePoint, modifiers);
+                textFieldMatches.charTyped(event);
+                textFieldExclusions.charTyped(event);
                 LinkedList<String> reforges = new LinkedList<>(Arrays.asList(textFieldMatches.getValue().split(",")));
                 main.getUtils().setReforgeMatches(reforges);
                 reforges = new LinkedList<>(Arrays.asList(textFieldExclusions.getValue().split(",")));
@@ -489,21 +450,19 @@ public class AbstractContainerScreenHook {
 
     /**
      * Handles mouse clicks for the Fancy Warp GUI and the Reforge Filter text fields.
-     * @param mouseX x coordinate of the mouse pointer
-     * @param mouseY y coordinate of the mouse pointer
-     * @param button mouse button that was clicked
+     * @param event MouseButtonEvent
      * @return true if click should be bypassed
      */
-    public static boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (islandWarpGui != null) { // TODO is it still necessary?
-            islandWarpGui.mouseClicked(mouseX, mouseY, button);
+    public static boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (ScreenHook.islandWarpGui != null) { // TODO is it still necessary?
+            ScreenHook.islandWarpGui.mouseClicked(event, isDoubleClick);
             return true;
         }
 
         if (textFieldMatches != null) {
-            textFieldMatches.mouseClicked(mouseX, mouseY, button);
+            textFieldMatches.mouseClicked(event, isDoubleClick);
             textFieldMatches.setFocused(textFieldMatches.isHovered());
-            textFieldExclusions.mouseClicked(mouseX, mouseY, button);
+            textFieldExclusions.mouseClicked(event, isDoubleClick);
             textFieldExclusions.setFocused(textFieldExclusions.isHovered());
         }
 
@@ -511,11 +470,11 @@ public class AbstractContainerScreenHook {
     }
 
     public static boolean mouseReleased() {
-        return islandWarpGui != null;
+        return ScreenHook.islandWarpGui != null;
     }
 
     public static boolean mouseDragged() {
-        return islandWarpGui != null;
+        return ScreenHook.islandWarpGui != null;
     }
 
     private static void drawSplitString(GuiGraphics graphics, String text, int x, int y, int wrapWidth, int color) {

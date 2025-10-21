@@ -30,14 +30,9 @@ public class LivingEntityRendererMixin<T extends LivingEntity, S extends LivingE
         }
     }
 
-    @ModifyExpressionValue(method = "isEntityUpsideDown", at = @At(value = "INVOKE", target = "Ljava/lang/String;equals(Ljava/lang/Object;)Z", ordinal = 0))
-    private static boolean sba$isCoolPerson(boolean original, @Local String string) {
-        return LivingEntityRendererHook.isCoolPerson(string) || original;
-    }
-
-    @ModifyExpressionValue(method = "isEntityUpsideDown", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isModelPartShown(Lnet/minecraft/world/entity/player/PlayerModelPart;)Z"))
-    private static boolean sba$isWearing(boolean original, @Local String string) {
-        return LivingEntityRendererHook.isCoolPerson || original;
+    @ModifyExpressionValue(method = "isUpsideDownName", at = @At(value = "INVOKE", target = "Ljava/lang/String;equals(Ljava/lang/Object;)Z", ordinal = 0))
+    private static boolean sba$isCoolPerson(boolean original, @Local(argsOnly = true) String name) {
+        return LivingEntityRendererHook.isCoolPerson(name) || original;
     }
 
 }

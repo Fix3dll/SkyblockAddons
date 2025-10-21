@@ -2,9 +2,9 @@ package com.fix3dll.skyblockaddons.features.tablist;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.EssenceType;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.SkillType;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.spooky.SpookyEventManager;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
@@ -59,7 +59,7 @@ public class TabListParser {
 
         ClientPacketListener connection = mc.player.connection;
         List<PlayerInfo> fullList = connection.getListedOnlinePlayers().stream()
-                .sorted(Comparator.comparing(playerInfo -> playerInfo.getProfile().getName()))
+                .sorted(Comparator.comparing(playerInfo -> playerInfo.getProfile().name()))
                 .toList();
         if (fullList.size() < 80) {
             renderColumns = null;

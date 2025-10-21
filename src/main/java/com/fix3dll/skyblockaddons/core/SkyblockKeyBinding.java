@@ -8,13 +8,15 @@ import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.input.KeyEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+
+import static com.fix3dll.skyblockaddons.SkyblockAddons.CATEGORY;
 
 @Getter
 public enum SkyblockKeyBinding {
@@ -42,10 +44,10 @@ public enum SkyblockKeyBinding {
     private InputConstants.Key previousKey = InputConstants.UNKNOWN;
 
     SkyblockKeyBinding(int defaultKeyCode, String translationKey) {
-        this.defaultKey = InputConstants.getKey(defaultKeyCode, -1);
+        this.defaultKey = InputConstants.getKey(new KeyEvent(defaultKeyCode, -1, -1));
         this.translationKey = translationKey;
         String key = "key.skyblockaddons." + this.name().toLowerCase(Locale.US);
-        this.keyBinding = new KeyMapping(key, defaultKeyCode, SkyblockAddons.METADATA.getName());
+        this.keyBinding = new KeyMapping(key, defaultKeyCode, CATEGORY);
     }
 
     /**
@@ -134,7 +136,7 @@ public enum SkyblockKeyBinding {
      * Registers the all keybindings.
      */
     public static void registerAllKeyBindings(Options options) {
-        addCategory(SkyblockAddons.METADATA.getName());
+        addCategory();
         for (SkyblockKeyBinding keybinding: SkyblockKeyBinding.values()) {
             if (keybinding.isFirstRegistration()) {
                 keybinding.register(options);
@@ -142,16 +144,12 @@ public enum SkyblockKeyBinding {
         }
     }
 
-    private static void addCategory(String categoryTranslationKey) {
-        Map<String, Integer> map = KeyMapping.CATEGORY_SORT_ORDER;
+    private static void addCategory() {
+        List<KeyMapping.Category> sortOrder = KeyMapping.Category.SORT_ORDER;
 
-        if (map.containsKey(categoryTranslationKey)) {
-            return;
+        if (!sortOrder.contains(CATEGORY)) {
+            sortOrder.addLast(CATEGORY);
         }
-
-        Optional<Integer> largest = map.values().stream().max(Integer::compareTo);
-        int largestInt = largest.orElse(0);
-        map.put(categoryTranslationKey, largestInt + 1);
     }
 
 }

@@ -50,7 +50,7 @@ public enum  BackpackColor {
             BackpackColor.GREY);
 
     public int getInventoryTextColor() {
-        int rgb = 4210752; // Default inventory grey.
+        int rgb = -12566464; // Default inventory grey.
 
         if (darkColors.contains(this)) { // Dark colors need a contrasting lighter white color.
             rgb = ARGB.color(255, 219, 219, 219);

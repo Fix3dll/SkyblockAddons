@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.features.outline;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.events.RenderEntityOutlineEvent;
+import com.fix3dll.skyblockaddons.mixin.extensions.EntityRenderStateExtension;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -10,12 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import static com.fix3dll.skyblockaddons.events.RenderEntityOutlineEvent.Type.NO_XRAY;
@@ -31,13 +29,8 @@ public class EntityOutlineRenderer {
 
     @Getter private static final EntityOutlineRenderer instance = new EntityOutlineRenderer();
 
-    private static Minecraft MC = Minecraft.getInstance();
-    private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final Minecraft MC = Minecraft.getInstance();
     private static final CachedInfo entityRenderCache = new CachedInfo();
-    private static boolean stopLookingForOptifine = false;
-    private static Method isFastRender = null;
-    private static Method isShaders = null;
-    private static Method isAntialiasing = null;
 
     public EntityOutlineRenderer() {
         ClientTickEvents.START_CLIENT_TICK.register(this::onTickStart);
@@ -47,18 +40,16 @@ public class EntityOutlineRenderer {
     /**
      * Colors xray and no-xray entity outlines.
      */
-    public static void colorSkyblockEntityOutlines(Args args, Entity entity) {
-        if (shouldRenderEntityOutlines(entity)) {
+    public static void colorSkyblockEntityOutlines(EntityRenderState entityRenderState) {
+        int entityId = ((EntityRenderStateExtension) entityRenderState).sba$getEntityId();
+        if (shouldRenderEntityOutlines(entityId)) {
             RenderTarget outlineRenderTarget = MC.levelRenderer.entityOutlineTarget();
             if (outlineRenderTarget == null) return;
 
             // Render x-ray outlines first, ignoring the depth buffer bit
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getXrayCache().object2IntEntrySet()) {
-                if (entityAndColor.getKey().getId() == entity.getId()) {
-                    int color = entityAndColor.getValue();
-                    args.set(0, ARGB.red(color));
-                    args.set(1, ARGB.green(color));
-                    args.set(2, ARGB.blue(color));
+                if (entityAndColor.getKey().getId() == entityId) {
+                    entityRenderState.outlineColor = entityAndColor.getValue();
                     return;
                 }
             }
@@ -66,11 +57,8 @@ public class EntityOutlineRenderer {
             // Xray disabled by re-enabling traditional depth testing
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getNoXrayCache().object2IntEntrySet()) {
                 // Test if the entity should render, given the player's instantaneous camera position
-                if (entityAndColor.getKey().getId() == entity.getId()) {
-                    int color = entityAndColor.getValue();
-                    args.set(0, ARGB.red(color));
-                    args.set(1, ARGB.green(color));
-                    args.set(2, ARGB.blue(color));
+                if (entityAndColor.getKey().getId() == entityId) {
+                    entityRenderState.outlineColor = entityAndColor.getValue();
                     return;
                 }
             }
@@ -89,17 +77,13 @@ public class EntityOutlineRenderer {
         }
 
         // Main toggle for outlines features
-        if (Feature.ENTITY_OUTLINES.isDisabled()) {
-            return false;
-        }
-
-        return true;
+        return Feature.ENTITY_OUTLINES.isEnabled();
     }
 
     /**
      * @return {@code true} if outlines should be rendered
      */
-    public static boolean shouldRenderEntityOutlines(Entity entity) {
+    public static boolean shouldRenderEntityOutlines(int entityId) {
         if (!isRenderEntityOutlinesConditionsMet()) {
             return false;
         }
@@ -108,7 +92,7 @@ public class EntityOutlineRenderer {
         if (!isXrayCacheEmpty()) {
             // Xray is enabled by disabling depth testing
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getXrayCache().object2IntEntrySet()) {
-                if (entityAndColor.getKey().getId() == entity.getId()) {
+                if (entityAndColor.getKey().getId() == entityId) {
                     return true;
                 }
             }
@@ -119,45 +103,15 @@ public class EntityOutlineRenderer {
             // Xray disabled by re-enabling traditional depth testing
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getNoXrayCache().object2IntEntrySet()) {
                 // Test if the entity should render, given the player's instantaneous camera position
-                if (entityAndColor.getKey().getId() == entity.getId() && !entity.isInvisible()
-                        // TODO could be used depth? **RenderType
-                        && MC.player != null && MC.player.hasLineOfSight(entity)) {
-                    return true;
+                if (entityAndColor.getKey().getId() == entityId && MC.level != null) {
+                    Entity entity = MC.level.getEntity(entityId);
+                    // TODO could be used depth? **RenderType
+                    if (entity != null && !entity.isInvisible() && MC.player != null && MC.player.hasLineOfSight(entity)) {
+                        return true;
+                    }
                 }
             }
         }
-
-//        // Optifine Conditions
-//        if (!stopLookingForOptifine && isFastRender == null) {
-//            try {
-//                Class<?> config = Class.forName("Config");
-//
-//                try {
-//                    isFastRender = config.getMethod("isFastRender");
-//                    isShaders = config.getMethod("isShaders");
-//                    isAntialiasing = config.getMethod("isAntialiasing");
-//                } catch (Exception ex) {
-//                    LOGGER.warn("Couldn't find Optifine methods for entity outlines.");
-//                    stopLookingForOptifine = true;
-//                }
-//            } catch (Exception ex) {
-//                LOGGER.info("Couldn't find Optifine for entity outlines.");
-//                stopLookingForOptifine = true;
-//            }
-//        }
-//
-//        boolean isFastRenderValue = false;
-//        boolean isShadersValue = false;
-//        boolean isAntialiasingValue = false;
-//        if (isFastRender != null) {
-//            try {
-//                isFastRenderValue = (boolean) isFastRender.invoke(null);
-//                isShadersValue = (boolean) isShaders.invoke(null);
-//                isAntialiasingValue = (boolean) isAntialiasing.invoke(null);
-//            } catch (IllegalAccessException | InvocationTargetException ex) {
-//                LOGGER.warn("An error occurred while calling Optifine methods for entity outlines...", ex);
-//            }
-//        }
 
         return false;
     }

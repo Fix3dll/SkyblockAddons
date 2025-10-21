@@ -3,7 +3,8 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import com.fix3dll.skyblockaddons.utils.MathUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -53,7 +54,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
             }
 
             graphics.blitSprite(
-                    RenderType::guiTextured,
+                    RenderPipelines.GUI_TEXTURED,
                     SPRITES.get(this.active, this.isHovered),
                     getX() + (int) (this.normalizedValue * (float) (this.width - 8)) + 1,
                     this.getY(),
@@ -61,18 +62,17 @@ public class ButtonSlider extends SkyblockAddonsButton {
                     this.getHeight(),
                     ARGB.white(this.alpha)
             );
-            //graphics.fill(getX() + (int) (this.normalizedValue * (float) (this.width - 8)) + 1, getY(), getX() + (int) (this.normalizedValue * (float) (this.width - 8))+7, getY() + this.height, ColorCode.GRAY.getColor());
         }
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
+    public void onRelease(MouseButtonEvent event) {
         this.dragging = false;
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        this.normalizedValue = (float) (mouseX - (getX() + 4)) / (float) (this.width - 8);
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+        this.normalizedValue = (float) (event.x() - (getX() + 4)) / (float) (this.width - 8);
         this.normalizedValue = Mth.clamp(this.normalizedValue, 0.0F, 1.0F);
         this.dragging = true;
         onUpdate();
@@ -96,4 +96,5 @@ public class ButtonSlider extends SkyblockAddonsButton {
     public float denormalize() {
         return MathUtils.denormalizeSliderValue(normalizedValue, min, max, step);
     }
+
 }

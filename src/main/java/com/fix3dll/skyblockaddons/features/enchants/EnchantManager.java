@@ -12,17 +12,16 @@ import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.serialization.Codec;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import java.util.ArrayList;
@@ -243,13 +242,13 @@ public class EnchantManager {
      * @param insertAt        the position at which we should insert the tag
      * @return the index after the point at which we inserted new lines, or {@param insertAt} if we didn't insert anything.
      */
-    public static int insertStackingEnchantProgress(List<Component> loreList, CustomData extraAttributes, int insertAt) {
+    public static int insertStackingEnchantProgress(List<Component> loreList, CompoundTag extraAttributes, int insertAt) {
         if (extraAttributes == null || Feature.SHOW_STACKING_ENCHANT_PROGRESS.isDisabled()) {
             return insertAt;
         }
         for (EnchantmentsData.Enchant.Stacking enchant : enchants.getStacking().values()) {
             if (extraAttributes.contains(enchant.getNbtNum())) {
-                long stackedEnchantNum = extraAttributes.read(Codec.LONG.fieldOf(enchant.getNbtNum())).result().orElse(0L);
+                long stackedEnchantNum = extraAttributes.getLongOr("enchant.getNbtNum()", 0L);
                 Long nextLevel = enchant.getStackLevel().higher(stackedEnchantNum);
                 String statLabel = Translations.getMessage("enchants." + enchant.getStatLabel());
                 ColorCode colorCode = Feature.SHOW_STACKING_ENCHANT_PROGRESS.getRestrictedColor();
@@ -448,4 +447,5 @@ public class EnchantManager {
             return b.toString();
         }
     }
+
 }

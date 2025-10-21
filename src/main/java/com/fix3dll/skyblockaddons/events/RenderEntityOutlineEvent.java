@@ -1,5 +1,8 @@
 package com.fix3dll.skyblockaddons.events;
 
+import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
+import com.fix3dll.skyblockaddons.mixin.hooks.LevelRendererHook;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -85,9 +88,12 @@ public class RenderEntityOutlineEvent {
         Iterator<Entity> itr = entitiesToChooseFrom.iterator();
         while (itr.hasNext()) {
             Entity e = itr.next();
-            Integer i = outlineColor.apply(e);
-            if (i != null) {
-                entitiesToOutline.put(e, i.intValue());
+            Integer color = outlineColor.apply(e);
+            if (color != null) {
+                int primitiveColor = color == ColorCode.CHROMA.getColor()
+                        ? ManualChromaManager.getChromaColor(0, 0, 255)
+                        : color;
+                entitiesToOutline.put(e, primitiveColor);
                 itr.remove();
             }
         }
@@ -108,6 +114,9 @@ public class RenderEntityOutlineEvent {
         if (!entitiesToChooseFrom.contains(entity)) {
             return;
         }
+        if (outlineColor == ColorCode.CHROMA.getColor()) {
+            outlineColor = ManualChromaManager.getChromaColor(0, 0, 255);
+        }
         entitiesToOutline.put(entity, outlineColor);
         entitiesToChooseFrom.remove(entity);
     }
@@ -126,7 +135,7 @@ public class RenderEntityOutlineEvent {
         entities.forEach(e -> {
             if (e == null) return;
 
-            Frustum cullingFrustum = Minecraft.getInstance().levelRenderer.cullingFrustum;
+            Frustum cullingFrustum = LevelRendererHook.getCullingFrustum();
             if (!cullingFrustum.isVisible(e.getBoundingBox())) return;
 
             if (!(e instanceof ArmorStand && e.isInvisible()) && !(e instanceof ItemFrame)) {
@@ -145,4 +154,5 @@ public class RenderEntityOutlineEvent {
         XRAY,
         NO_XRAY
     }
+
 }

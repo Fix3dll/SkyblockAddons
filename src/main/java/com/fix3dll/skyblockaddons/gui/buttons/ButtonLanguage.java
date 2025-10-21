@@ -10,7 +10,8 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +44,7 @@ public class ButtonLanguage extends SkyblockAddonsButton {
 
         int color = ARGB.white(1F);
         try {
-            graphics.blit(RenderType::guiTextured, language.getIdentifier(), getX() + width - 32, getY(), 0, 0, 30, 26, 30, 26, color);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, language.getIdentifier(), getX() + width - 32, getY(), 0, 0, 30, 26, 30, 26, color);
         } catch (Exception ex) {
             if (!flagResourceExceptionTriggered) {
                 flagResourceExceptionTriggered = true;
@@ -55,7 +56,7 @@ public class ButtonLanguage extends SkyblockAddonsButton {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (MC.screen instanceof SettingsGui gui) {
             DataUtils.loadLocalizedStrings(this.language, true);
             gui.setClosingGui(true);

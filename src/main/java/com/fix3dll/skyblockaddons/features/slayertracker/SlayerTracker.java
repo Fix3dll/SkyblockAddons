@@ -2,15 +2,15 @@ package com.fix3dll.skyblockaddons.features.slayertracker;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.commands.SkyblockAddonsCommand;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.SkyblockRune;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import lombok.Getter;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.Locale;
 import java.util.Map;
@@ -116,7 +116,7 @@ public class SlayerTracker {
     }
 
     // TODO dont count dropped items by player again
-    public void addToTrackerData(CustomData ea, int amount, EnumUtils.SlayerQuest activeQuest) {
+    public void addToTrackerData(CompoundTag ea, int amount, EnumUtils.SlayerQuest activeQuest) {
         SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
 
         for (SlayerDrop drop : activeQuest.getBoss().getDrops()) {
@@ -151,4 +151,5 @@ public class SlayerTracker {
             }
         }
     }
+
 }

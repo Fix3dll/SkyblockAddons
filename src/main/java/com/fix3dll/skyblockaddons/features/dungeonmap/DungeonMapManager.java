@@ -1,30 +1,31 @@
 package com.fix3dll.skyblockaddons.features.dungeonmap;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
+import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
+import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonPlayer;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +40,8 @@ import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fStack;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -54,10 +56,12 @@ import java.util.TreeSet;
 public class DungeonMapManager {
 
     private static final Minecraft MC = Minecraft.getInstance();
+    private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     public static final float MIN_ZOOM = 0.5F;
     public static final float MAX_ZOOM = 5F;
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
+
+    private static final Feature feature = Feature.DUNGEONS_MAP_DISPLAY;
     private static final ResourceLocation DUNGEON_MAP = SkyblockAddons.resourceLocation("dungeonsmap.png");
     private static final Comparator<MapMarker> MAP_MARKER_COMPARATOR = (first, second) -> {
         boolean firstIsNull = first.getMapMarkerName() == null;
@@ -118,21 +122,16 @@ public class DungeonMapManager {
         float x = Feature.DUNGEONS_MAP_DISPLAY.getActualX();
         float y = Feature.DUNGEONS_MAP_DISPLAY.getActualY();
 
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
 
         final int originalSize = 128;
         final float initialScaleFactor = 0.5F;
-
         int size = (int) (originalSize * initialScaleFactor);
 
-        int minecraftScale = (int) MC.getWindow().getGuiScale();
-        int scissorX = Math.round((x - size / 2f * scale) * minecraftScale);
-        int scissorY = MC.getWindow().getHeight() - Math.round((y + size / 2F * scale) * minecraftScale);
-        int widthHeight = Math.round(size * minecraftScale * scale);
-        // Scissor is in screen coordinates...
-        graphics.flush();
-        RenderSystem.enableScissor(scissorX, scissorY, widthHeight, widthHeight);
+        int scissorX = (int) (x - size / 2f * scale);
+        int scissorY = (int) (y - size / 2F * scale);
+        int widthHeight = (int) (size * scale);
 
         x = transformXY(x, size, scale);
         y = transformXY(y, size, scale);
@@ -140,35 +139,35 @@ public class DungeonMapManager {
         if (buttonLocation != null) {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + size, y, y + size, scale);
         }
-        Feature feature = Feature.DUNGEONS_MAP_DISPLAY;
 
-        graphics.flush();
-        RenderSystem.disableScissor();
-        DrawUtils.fillAbsolute(graphics, x, y, x + size, y + size, 0x55000000);
+        graphics.guiRenderState.submitGuiElement(
+                new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), x, y, x + size, y + size, 0x55000000, graphics.scissorStack.peek())
+        );
         ManualChromaManager.renderingText(feature);
         int color = feature.getColor();
-        RenderType renderType = feature.isChroma() && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE
+        RenderPipeline renderType = feature.isChroma() && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE
                 ? DrawUtils.CHROMA_STANDARD
-                : RenderType.gui();
-        DrawUtils.renderOutlineAbsolute(graphics, renderType, x, y, size, size, 1, color);
+                : RenderPipelines.GUI;
+        DrawUtils.renderOutlineAbsolute(graphics, renderType, TextureSetup.noTexture(), x, y, size, size, 1, color);
         ManualChromaManager.doneRenderingText();
-        graphics.flush();
-        RenderSystem.enableScissor(scissorX, scissorY, widthHeight, widthHeight);
+
+        // Scissor is in screen coordinates...
+        graphics.scissorStack.push(new ScreenRectangle(scissorX, scissorY, widthHeight, widthHeight));
 
         float zoomScaleFactor = isScoreSummary ? 1.0F : getMapZoom();
         float totalScaleFactor = initialScaleFactor * zoomScaleFactor;
         float mapSize = (originalSize * totalScaleFactor);
 
-        poseStack.scale(totalScaleFactor, totalScaleFactor, 1);
+        poseStack.scale(totalScaleFactor, totalScaleFactor);
         x /= totalScaleFactor;
         y /= totalScaleFactor;
-        poseStack.translate(x, y, 0);
+        poseStack.translate(x, y);
 
         float rotationCenterX = originalSize * initialScaleFactor;
         float rotationCenterY = originalSize * initialScaleFactor;
 
         float centerOffset = -((mapSize - size) / zoomScaleFactor);
-        poseStack.translate(centerOffset, centerOffset, 0);
+        poseStack.translate(centerOffset, centerOffset);
 
         boolean rotateOnPlayer = feature.isEnabled(FeatureSetting.CENTER_ROTATION_ON_PLAYER);
         boolean rotate = !isScoreSummary && feature.isEnabled(FeatureSetting.ROTATE_MAP);
@@ -225,7 +224,7 @@ public class DungeonMapManager {
 
                     if (rotate) {
                         if (rotateOnPlayer) {
-                            poseStack.translate(size - rotationCenterX, size - rotationCenterY, 0);
+                            poseStack.translate(size - rotationCenterX, size - rotationCenterY);
                         }
 
                         float rotation;
@@ -235,11 +234,9 @@ public class DungeonMapManager {
                             rotation = 0; // Dummy
                         }
 
-                        poseStack.translate(rotationCenterX, rotationCenterY, 0);
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(rotation));
-                        poseStack.translate(-rotationCenterX, -rotationCenterY, 0);
+                        poseStack.rotateAbout((float) Math.toRadians(rotation), rotationCenterX, rotationCenterY);
                     }
-                    graphics.drawSpecial(source -> drawMap(graphics, source, mapData, mapId, isScoreSummary, zoomScaleFactor));
+                    drawMap(graphics, mapData, mapId, isScoreSummary, zoomScaleFactor);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -247,32 +244,34 @@ public class DungeonMapManager {
         } else {
             if (rotate) {
                 float ticks = System.currentTimeMillis() % 18000 / 50F;
-
-                poseStack.translate(rotationCenterX, rotationCenterY, 0);
-                poseStack.mulPose(Axis.ZP.rotationDegrees(ticks));
-                poseStack.translate(-rotationCenterX, -rotationCenterY, 0);
+                poseStack.rotateAbout((float) Math.toRadians(ticks), rotationCenterX, rotationCenterY);
             }
 
-            graphics.blit(RenderType::guiTextured, DUNGEON_MAP, 0, 0, 0, 0, 128, 128, 128, 128);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, DUNGEON_MAP, 0, 0, 0, 0, 128, 128, 128, 128);
         }
-        graphics.flush();
-        RenderSystem.disableScissor();
-        poseStack.popPose();
+//        graphics.flush();
+        graphics.disableScissor();
+        poseStack.popMatrix();
     }
 
 
     private static final LinkedHashMap<String, MapDecoration> savedMapDecorations = Maps.newLinkedHashMap();
 
-    private static void drawMap(GuiGraphics graphics, MultiBufferSource bufferSource, MapItemSavedData mapData, MapId mapId, boolean isScoreSummary, float markerScale) {
-        PoseStack poseStack = graphics.pose();
-        Matrix4f matrix4f = poseStack.last().pose();
+    private static void drawMap(GuiGraphics graphics, MapItemSavedData mapData, MapId mapId, boolean isScoreSummary, float markerScale) {
+        TextureManager textureManager = MC.getTextureManager();
         ResourceLocation texture = MC.getMapTextureManager().prepareMapTexture(mapId , mapData);
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.textSeeThrough(texture));
-        vertexConsumer.addVertex(matrix4f, 0.0F, 128.0F, -0.01F).setColor(-1).setUv(0.0F, 1.0F).setLight(LightTexture.FULL_BRIGHT);
-        vertexConsumer.addVertex(matrix4f, 128.0F, 128.0F, -0.01F).setColor(-1).setUv(1.0F, 1.0F).setLight(LightTexture.FULL_BRIGHT);
-        vertexConsumer.addVertex(matrix4f, 128.0F, 0.0F, -0.01F).setColor(-1).setUv(1.0F, 0.0F).setLight(LightTexture.FULL_BRIGHT);
-        vertexConsumer.addVertex(matrix4f, 0.0F, 0.0F, -0.01F).setColor(-1).setUv(0.0F, 0.0F).setLight(LightTexture.FULL_BRIGHT);
-        int decorationCount = 0;
+        GpuTextureView gpuTextureView = textureManager.getTexture(texture).getTextureView();
+        Matrix3x2fStack poseStack = graphics.pose();
+
+        graphics.guiRenderState.submitGuiElement(
+                new BlitRenderState(
+                        RenderPipelines.GUI_TEXTURED,
+                        TextureSetup.singleTexture(gpuTextureView),
+                        new Matrix3x2f(poseStack),
+                        0, 0, 128, 128, 0.0F, 1.0F, 0.0F, 1.0F, -1,
+                        graphics.scissorStack.peek()
+                )
+        );
 
         // We don't need to show any markers...
         if (isScoreSummary) return;
@@ -361,22 +360,24 @@ public class DungeonMapManager {
 
             PlayerInfo markerPlayerInfo = null;
             if (showPlayerHead && markerName != null) {
+                //noinspection DataFlowIssue
                 for (PlayerInfo playerInfo : MC.getConnection().getOnlinePlayers()) {
-                    if (markerName.equals(playerInfo.getProfile().getName())) {
+                    if (markerName.equals(playerInfo.getProfile().name())) {
                         markerPlayerInfo = playerInfo;
                         break;
                     }
                 }
             }
 
-            poseStack.pushPose();
-            poseStack.translate(marker.getX() / 2.0F + 64.0F, marker.getY() / 2.0F + 64.0F, -0.02F);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(marker.getRotation() * 360 / 16.0F));
-            poseStack.scale(markerScale, markerScale, 3.0F);
+            poseStack.pushMatrix();
+            poseStack.translate(marker.getX()/ 2.0F + 64.0F, marker.getY() / 2.0F + 64.0F);
+            poseStack.rotate((float) (Math.PI / 180.0) * marker.getRotation() * 360.0F / 16.0F);
+            poseStack.scale(markerScale, markerScale);
 
             if (markerPlayerInfo != null) {
-                poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
-                DrawUtils.fillAbsolute(graphics, -1.2F, -1.2F, 1.2F, 1.2F, 0xFF000000);
+                graphics.guiRenderState.submitGuiElement(
+                        new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), -1.2F, -1.2F, 1.2F, 1.2F, 0xFF000000, graphics.scissorStack.peek())
+                );
 
                 int color = -1;
                 if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() && teammates.containsKey(markerName)) {
@@ -388,46 +389,45 @@ public class DungeonMapManager {
                     }
                 }
 
-                ResourceLocation skin = markerPlayerInfo.getSkin().texture();
-                poseStack.pushPose();
-                poseStack.scale(0.25F, 0.25F, 1F);
-                graphics.blit(RenderType::guiTexturedOverlay, skin, -4, -4, 8.0F, 8, 8, 8, 8, 8, 64, 64, color);
+                ResourceLocation skin = markerPlayerInfo.getSkin().body().texturePath();
+                poseStack.pushMatrix();
+                poseStack.scale(0.25F, 0.25F);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, skin, -4, -4, 8.0F, 8, 8, 8, 8, 8, 64, 64, color);
                 if (markerPlayerInfo.showHat()) {
-                    graphics.blit(RenderType::guiTexturedOverlay, skin, -4, -4, 40.0F, 8, 8, 8, 8, 8, 64, 64, color);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, skin, -4, -4, 40.0F, 8, 8, 8, 8, 8, 64, 64, color);
                 }
-                poseStack.popPose();
+                poseStack.popMatrix();
             } else {
-                poseStack.translate(-0.125F, 0.125F, 0.0F);
+                poseStack.translate(-0.125F, 0.125F);
                 TextureAtlasSprite textureAtlasSprite;
                 if (marker.getDecorationType() != null) {
-                    textureAtlasSprite = MC.getMapDecorationTextures().getSprite(marker.getDecorationType().assetId());
+                    textureAtlasSprite = MC.getMapRenderer().decorationSprites.getSprite(marker.getDecorationType().assetId());
                 } else {
                     textureAtlasSprite = null;
                 }
 
                 if (textureAtlasSprite != null) {
-                    VertexConsumer vertexConsumer2 = bufferSource.getBuffer(RenderType.textSeeThrough(textureAtlasSprite.atlasLocation()));
-                    Matrix4f matrix4f2 = poseStack.last().pose();
-                    vertexConsumer2.addVertex(matrix4f2, -1.0F, 1.0F, decorationCount * -0.001F)
-                            .setColor(-1)
-                            .setUv(textureAtlasSprite.getU0(), textureAtlasSprite.getV0())
-                            .setLight(LightTexture.FULL_BRIGHT);
-                    vertexConsumer2.addVertex(matrix4f2, 1.0F, 1.0F, decorationCount * -0.001F)
-                            .setColor(-1)
-                            .setUv(textureAtlasSprite.getU1(), textureAtlasSprite.getV0())
-                            .setLight(LightTexture.FULL_BRIGHT);
-                    vertexConsumer2.addVertex(matrix4f2, 1.0F, -1.0F, decorationCount * -0.001F)
-                            .setColor(-1)
-                            .setUv(textureAtlasSprite.getU1(), textureAtlasSprite.getV1())
-                            .setLight(LightTexture.FULL_BRIGHT);
-                    vertexConsumer2.addVertex(matrix4f2, -1.0F, -1.0F, decorationCount * -0.001F)
-                            .setColor(-1)
-                            .setUv(textureAtlasSprite.getU0(), textureAtlasSprite.getV1())
-                            .setLight(LightTexture.FULL_BRIGHT);
+                    GpuTextureView atlasLocation = textureManager.getTexture(textureAtlasSprite.atlasLocation()).getTextureView();
+                    graphics.guiRenderState.submitGuiElement(
+                            new BlitRenderState(
+                                    RenderPipelines.GUI_TEXTURED,
+                                    TextureSetup.singleTexture(atlasLocation),
+                                    new Matrix3x2f(poseStack),
+                                    -1,
+                                    -1,
+                                    1,
+                                    1,
+                                    textureAtlasSprite.getU0(),
+                                    textureAtlasSprite.getU1(),
+                                    textureAtlasSprite.getV1(),
+                                    textureAtlasSprite.getV0(),
+                                    -1,
+                                    graphics.scissorStack.peek()
+                            )
+                    );
                 }
             }
-            poseStack.popPose();
-            decorationCount++;
+            poseStack.popMatrix();
         }
     }
 
