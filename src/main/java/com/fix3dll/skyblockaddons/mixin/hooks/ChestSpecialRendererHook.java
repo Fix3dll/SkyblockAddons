@@ -4,31 +4,26 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 
 public class ChestSpecialRendererHook {
 
-    private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final ResourceLocation BLANK_ENDERCHEST = SkyblockAddons.resourceLocation("blankenderchest.png");
+    public static final Material BLANK_ENDER_CHEST_MATERIAL = Sheets.CHEST_MAPPER.apply(
+            SkyblockAddons.resourceLocation("blankenderchest")
+    );
+
+    public static TextureAtlasSprite getBlankSprite() {
+        return Minecraft.getInstance().getAtlasManager().get(BLANK_ENDER_CHEST_MATERIAL);
+    }
 
     public static Integer getCustomEnderChestColor() {
-        if (main.getUtils().isOnSkyblock() && Minecraft.getInstance().screen == null
+        if (Minecraft.getInstance().screen == null
+                && SkyblockAddons.getInstance().getUtils().isOnSkyblock()
                 && Feature.MAKE_ENDERCHESTS_GREEN_IN_END.isEnabled()
                 && LocationUtils.isOnZealotSpawnLocation()) {
             return Feature.MAKE_ENDERCHESTS_GREEN_IN_END.getColor();
-        }
-        return null;
-    }
-
-    /**
-     * @return original if conditions are not met
-     */
-    public static RenderType getRenderType() {
-        if (main.getUtils().isOnSkyblock() && Minecraft.getInstance().screen == null
-                && Feature.MAKE_ENDERCHESTS_GREEN_IN_END.isEnabled()
-                && LocationUtils.isOnZealotSpawnLocation()) {
-            return RenderType.entitySolid(BLANK_ENDERCHEST);
         }
         return null;
     }
