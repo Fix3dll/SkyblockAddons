@@ -6,7 +6,6 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
-import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
@@ -25,7 +24,6 @@ import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.MayorRequest;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -33,7 +31,6 @@ import lombok.Getter;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -116,8 +113,6 @@ public class ScreenListener {
                 }
             }
         }
-
-        return;
     }
 
     private void beforeKeyPress(Screen screen, KeyEvent event) {
@@ -334,44 +329,7 @@ public class ScreenListener {
             return true;
         }
 
-        // Ignore button up
-//        if (!Mouse.getEventButtonState()) {
-//            return;
-//        }
-
-        if (Feature.LOCK_SLOTS.isEnabled() && screen instanceof AbstractContainerScreen<?> containerScreen) {
-            /*
-            This prevents swapping items in/out of locked hotbar slots when using a hotbar key binding that is bound
-            to a mouse button.
-             */
-            InputConstants.Key clickKey = InputConstants.Type.MOUSE.getOrCreate(event.button());
-            KeyMapping[] hotbarKeys = MC.options.keyHotbarSlots;
-            for (int i = 0; i < 9; i++) {
-                if (!hotbarKeys[i].key.equals(clickKey)) continue;
-
-                Slot slot = containerScreen.hoveredSlot;
-                Slot hotbarSlot = containerScreen.getMenu().getSlot(containerScreen.getMenu().slots.size() - (9 - i));
-
-                if (slot == null || hotbarSlot == null) {
-                    return true;
-                }
-
-                if (main.getPersistentValuesManager().getLockedSlots().contains(i + 36)) {
-                    if (!slot.hasItem() && !hotbarSlot.hasItem()) {
-                        return true;
-                    } else {
-                        main.getUtils().playLoudSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.5);
-                        Utils.sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
-                        return false;
-                    }
-                }
-            }
-            //TODO: Cover shift-clicking into locked slots
-        }
-
-        if (main.getUtils().isOnSkyblock()) {
-            ContainerPreviewManager.onContainerKeyTyped(event.button());
-        }
+        ContainerPreviewManager.onContainerKeyTyped(event.button());
 
         return true;
     }

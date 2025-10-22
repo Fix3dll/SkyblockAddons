@@ -60,7 +60,7 @@ public class MinecraftMixin {
 
     @Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
     public void sba$shouldEntityAppearGlowing(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (EntityOutlineRenderer.shouldRenderEntityOutlines(entity.getId())) {
+        if (EntityOutlineRenderer.shouldRenderEntityOutlines(entity)) {
             cir.setReturnValue(true);
         }
     }

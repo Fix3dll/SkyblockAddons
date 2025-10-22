@@ -138,7 +138,7 @@ public class AbstractContainerScreenHook {
             if (Feature.LOCK_SLOTS.isEnabled() && keyCode != 1 && keyCode != MC.options.keyInventory.key.getValue()) {
                 int slot = main.getUtils().getLastHoveredSlot();
                 boolean isHotkeying = false;
-                if (MC.player.getInventory().getSelectedItem() == ItemStack.EMPTY && hoveredSlot != null) {
+                if (hoveredSlot != null) {
                     for (int i = 0; i < 9; ++i) {
                         if (keyCode == MC.options.keyHotbarSlots[i].key.getValue()) {
                             slot = i + 36; // They are hotkeying, the actual slot is the targeted one, +36 because

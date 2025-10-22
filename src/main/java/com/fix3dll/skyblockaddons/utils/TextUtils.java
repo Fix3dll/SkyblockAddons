@@ -686,7 +686,7 @@ public class TextUtils {
                 TextColor textColor = style.getColor();
                 String colorName = textColor.name;
 
-                if (colorName != null && colorName.equalsIgnoreCase("chroma")) {
+                if (colorName != null && colorName.equals(DrawUtils.CHROMA_TEXT_COLOR.name)) {
                     sb.append(ColorCode.CHROMA);
                 } else {
                     ColorCode color = ColorCode.getByARGB(0xFF000000 | (textColor.getValue() & 0x00FFFFFF));

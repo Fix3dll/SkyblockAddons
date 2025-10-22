@@ -965,7 +965,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
         @Override
         public String getDescription() {
-            return "";
+            return null;
         }
     }
+
 }

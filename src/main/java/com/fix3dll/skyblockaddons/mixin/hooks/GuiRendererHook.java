@@ -2,9 +2,10 @@ package com.fix3dll.skyblockaddons.mixin.hooks;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
-import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.core.render.chroma.ChromaUniform;
+import com.fix3dll.skyblockaddons.utils.DrawUtils;
+import com.fix3dll.skyblockaddons.utils.EnumUtils;
+import com.fix3dll.skyblockaddons.utils.Utils;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -51,7 +52,8 @@ public class GuiRendererHook {
         if (state instanceof GlyphRenderState glyphRenderState
                 && glyphRenderState.renderable() instanceof BakedSheetGlyph.GlyphInstance glyphInstance) {
             TextColor glyphColor = glyphInstance.style().getColor();
-            if (glyphColor != null && "chroma".equals(glyphColor.name)) {
+            if (glyphColor != null && DrawUtils.CHROMA_TEXT_COLOR.name.equals(glyphColor.name)
+                    && Feature.CHROMA_MODE.getValue() == EnumUtils.ChromaMode.FADE) {
                 return DrawUtils.CHROMA_TEXT;
             }
         }

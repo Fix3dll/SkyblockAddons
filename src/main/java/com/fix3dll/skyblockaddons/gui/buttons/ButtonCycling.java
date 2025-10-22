@@ -111,17 +111,9 @@ public class ButtonCycling extends SkyblockAddonsButton {
         //noinspection SuspiciousNameCombination
         graphics.blit(RenderPipelines.GUI_TEXTURED, ARROW_RIGHT, getX() + width - height, getY(), 0, 0, height, height, height, height, -1);
 
-        if (!name.equals(trimmedName)) {
-            if (isOverText(mouseX, mouseY)) {
-                // draw tooltip next to the cursor showing the full title
-                final int stringWidth = MC.font.width(name);
-                int rectLeft = mouseX + 3;
-                int rectTop = mouseY + 3;
-                int rectRight = rectLeft + stringWidth + 8;
-                int rectBottom = rectTop + 12;
-                graphics.fill(rectLeft, rectTop, rectRight, rectBottom, ColorCode.BLACK.getColor());
-                graphics.drawString(MC.font, name, rectLeft + 4, rectTop + 2, ColorCode.WHITE.getColor(), false);
-            }
+        // When the title is not fully visible, draw a tooltip showing the entire title.
+        if (!name.equals(trimmedName) && isOverText(mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(MC.font, Component.literal(name), mouseX, mouseY);
         }
 
         // description

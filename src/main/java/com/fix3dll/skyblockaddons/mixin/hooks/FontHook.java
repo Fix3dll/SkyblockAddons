@@ -1,5 +1,10 @@
 package com.fix3dll.skyblockaddons.mixin.hooks;
 
+import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
+import com.fix3dll.skyblockaddons.utils.DrawUtils;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.font.glyphs.BakedSheetGlyph;
@@ -13,37 +18,49 @@ import net.minecraft.network.chat.TextColor;
  */
 public class FontHook {
 
-    private static final TextColor textColor = new TextColor(0xFFFFFF, "chroma");
-    private static final TextColor textColorOffWhite = new TextColor(0xFFFFFE, "chroma");
     @Getter @Setter private static boolean allTextChroma = false;
     @Getter private static boolean glyphChroma = false;
     @Setter private static boolean haltChroma = false;
 
     public static void checkIfGlyphIsChroma(BakedSheetGlyph.GlyphInstance glyphInstance) {
         TextColor color = glyphInstance.style().getColor();
-        glyphChroma = color != null && "chroma".equals(color.name);
+        glyphChroma = color != null && DrawUtils.CHROMA_TEXT_COLOR.name.equals(color.name);
     }
 
     public static Style setChromaColorStyle(Style style, String text, char colorCode) {
-        if (colorCode == 'z') {
-            return Style.EMPTY.withColor(textColor);
+        if (colorCode == ColorCode.CHROMA.getCode()) {
+            if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                style.withColor(DrawUtils.CHROMA_TEXT_COLOR);
+            } else {
+                style.withColor(new TextColor(ManualChromaManager.getChromaColor(0, 0, 255), DrawUtils.CHROMA_TEXT_COLOR.name));
+            }
         }
         return style;
     }
 
-    public static TextColor forceWhiteTextColorForChroma(TextColor color) {
-        if (allTextChroma && !haltChroma) {
-            return textColor;
+    public static Style forceChromaStyle(Style original) {
+        if (haltChroma) {
+            return original;
         }
 
-        return color;
-    }
-
-    public static Style forceChromaStyleIfNecessary(Style style) {
         if (allTextChroma) {
-            return style.withColor(textColorOffWhite);
+            if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                return original.withColor(DrawUtils.CHROMA_TEXT_COLOR);
+            } else {
+                return original.withColor(new TextColor(ManualChromaManager.getChromaColor(0, 0, 255), DrawUtils.CHROMA_TEXT_COLOR.name));
+            }
         }
-        return style;
+
+        TextColor textColor = original.getColor();
+        boolean chroma = textColor != null && DrawUtils.CHROMA_TEXT_COLOR.name.equals(textColor.name);
+
+        if (chroma && Feature.CHROMA_MODE.getValue() == ChromaMode.ALL_SAME_COLOR) {
+            return original.withColor(
+                    new TextColor(ManualChromaManager.getChromaColor(0, 0, 255), DrawUtils.CHROMA_TEXT_COLOR.name)
+            );
+        }
+
+        return original;
     }
 
 }

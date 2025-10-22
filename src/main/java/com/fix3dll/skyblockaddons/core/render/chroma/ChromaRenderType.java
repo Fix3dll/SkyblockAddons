@@ -38,6 +38,18 @@ public class ChromaRenderType extends CompositeRenderType {
         RenderPipeline renderPipeline = this.pipeline();
         this.setupRenderState();
 
+        GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms().writeTransform(
+                RenderSystem.getModelViewMatrix(),
+                new Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
+                new Vector3f(),
+                RenderSystem.getTextureMatrix(),
+                RenderSystem.getShaderLineWidth()
+        );
+
+        if (GuiRendererHook.chromaBufferSlice == null) {
+            GuiRendererHook.computeChromaBufferSlice();
+        }
+
         try {
             GpuBuffer gpuBuffer = renderPipeline.getVertexFormat().uploadImmediateVertexBuffer(meshData.vertexBuffer());
             GpuBuffer gpuBuffer2;
@@ -60,13 +72,6 @@ public class ChromaRenderType extends CompositeRenderType {
                     colorAttachment, OptionalInt.empty(),
                     depthAttachment, OptionalDouble.empty()
             )) {
-                GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms().writeTransform(
-                        RenderSystem.getModelViewMatrix(),
-                        new Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
-                        new Vector3f(),
-                        RenderSystem.getTextureMatrix(),
-                        RenderSystem.getShaderLineWidth()
-                );
 
                 RenderSystem.bindDefaultUniforms(renderPass);
                 renderPass.setUniform("DynamicTransforms", dynamicTransforms);

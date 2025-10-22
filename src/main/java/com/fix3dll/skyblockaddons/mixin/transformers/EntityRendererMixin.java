@@ -36,7 +36,7 @@ public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> 
     @Inject(method = "extractRenderState", at = @At("HEAD"))
     public void sba$setEntityId(T entity, S reusedState, float partialTick, CallbackInfo ci) {
         EntityRenderStateExtension entityRenderStateExtension = (EntityRenderStateExtension) reusedState;
-        entityRenderStateExtension.sba$setEntityId(entity.getId());
+        entityRenderStateExtension.sba$setEntity(entity);
     }
 
 }

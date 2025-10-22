@@ -1,19 +1,18 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.TextRenderable;
+import net.minecraft.client.gui.font.glyphs.BakedGlyph;
 import net.minecraft.client.gui.font.glyphs.BakedSheetGlyph;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Chroma related codes adapted from SkyHanni under LGPL-2.1 license
@@ -30,14 +29,9 @@ public class FontPreparedTextBuilderMixin {
         }
     }
 
-    @WrapOperation(method = "accept(ILnet/minecraft/network/chat/Style;Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Style;getColor()Lnet/minecraft/network/chat/TextColor;"))
-    private TextColor sba$forceWhiteTextColorForChroma(Style original, Operation<TextColor> operation) {
-        return FontHook.forceWhiteTextColorForChroma(original.getColor());
-    }
-
-    @ModifyArg(method = "accept(ILnet/minecraft/network/chat/Style;Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;createGlyph(FFIILnet/minecraft/network/chat/Style;FF)Lnet/minecraft/client/gui/font/TextRenderable;"))
-    private Style sba$forceChromaIfNecessary(Style style) {
-        return FontHook.forceChromaStyleIfNecessary(style);
+    @Inject(method = "accept(ILnet/minecraft/network/chat/Style;Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;)Z", at = @At("HEAD"))
+    private void sba$forceWhiteTextColorForChroma(int positionInCurrentSequence, Style style, BakedGlyph glyph, CallbackInfoReturnable<Boolean> cir, @Local(argsOnly = true) LocalRef<Style> styleLocalRef) {
+        styleLocalRef.set(FontHook.forceChromaStyle(styleLocalRef.get()));
     }
 
 }

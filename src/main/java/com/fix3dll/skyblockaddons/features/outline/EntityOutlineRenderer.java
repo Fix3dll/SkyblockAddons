@@ -41,14 +41,14 @@ public class EntityOutlineRenderer {
      * Colors xray and no-xray entity outlines.
      */
     public static void colorSkyblockEntityOutlines(EntityRenderState entityRenderState) {
-        int entityId = ((EntityRenderStateExtension) entityRenderState).sba$getEntityId();
-        if (shouldRenderEntityOutlines(entityId)) {
+        Entity entity = ((EntityRenderStateExtension) entityRenderState).sba$getEntity();
+        if (shouldRenderEntityOutlines(entity)) {
             RenderTarget outlineRenderTarget = MC.levelRenderer.entityOutlineTarget();
             if (outlineRenderTarget == null) return;
 
             // Render x-ray outlines first, ignoring the depth buffer bit
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getXrayCache().object2IntEntrySet()) {
-                if (entityAndColor.getKey().getId() == entityId) {
+                if (entityAndColor.getKey().getId() == entity.getId()) {
                     entityRenderState.outlineColor = entityAndColor.getValue();
                     return;
                 }
@@ -57,7 +57,7 @@ public class EntityOutlineRenderer {
             // Xray disabled by re-enabling traditional depth testing
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getNoXrayCache().object2IntEntrySet()) {
                 // Test if the entity should render, given the player's instantaneous camera position
-                if (entityAndColor.getKey().getId() == entityId) {
+                if (entityAndColor.getKey().getId() == entity.getId()) {
                     entityRenderState.outlineColor = entityAndColor.getValue();
                     return;
                 }
@@ -83,7 +83,7 @@ public class EntityOutlineRenderer {
     /**
      * @return {@code true} if outlines should be rendered
      */
-    public static boolean shouldRenderEntityOutlines(int entityId) {
+    public static boolean shouldRenderEntityOutlines(Entity entity) {
         if (!isRenderEntityOutlinesConditionsMet()) {
             return false;
         }
@@ -92,7 +92,7 @@ public class EntityOutlineRenderer {
         if (!isXrayCacheEmpty()) {
             // Xray is enabled by disabling depth testing
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getXrayCache().object2IntEntrySet()) {
-                if (entityAndColor.getKey().getId() == entityId) {
+                if (entityAndColor.getKey().getId() == entity.getId()) {
                     return true;
                 }
             }
@@ -103,10 +103,9 @@ public class EntityOutlineRenderer {
             // Xray disabled by re-enabling traditional depth testing
             for (Map.Entry<Entity, Integer> entityAndColor : entityRenderCache.getNoXrayCache().object2IntEntrySet()) {
                 // Test if the entity should render, given the player's instantaneous camera position
-                if (entityAndColor.getKey().getId() == entityId && MC.level != null) {
-                    Entity entity = MC.level.getEntity(entityId);
+                if (entityAndColor.getKey().getId() == entity.getId()) {
                     // TODO could be used depth? **RenderType
-                    if (entity != null && !entity.isInvisible() && MC.player != null && MC.player.hasLineOfSight(entity)) {
+                    if (!entity.isInvisible() && MC.player != null && MC.player.hasLineOfSight(entity)) {
                         return true;
                     }
                 }

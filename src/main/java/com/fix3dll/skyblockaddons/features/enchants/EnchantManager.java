@@ -3,9 +3,10 @@ package com.fix3dll.skyblockaddons.features.enchants;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
+import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.RomanNumeralParser;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
@@ -248,7 +248,7 @@ public class EnchantManager {
         }
         for (EnchantmentsData.Enchant.Stacking enchant : enchants.getStacking().values()) {
             if (extraAttributes.contains(enchant.getNbtNum())) {
-                long stackedEnchantNum = extraAttributes.getLongOr("enchant.getNbtNum()", 0L);
+                long stackedEnchantNum = extraAttributes.getLongOr(enchant.getNbtNum(), 0L);
                 Long nextLevel = enchant.getStackLevel().higher(stackedEnchantNum);
                 String statLabel = Translations.getMessage("enchants." + enchant.getStatLabel());
                 ColorCode colorCode = Feature.SHOW_STACKING_ENCHANT_PROGRESS.getRestrictedColor();
@@ -357,9 +357,9 @@ public class EnchantManager {
 
         while (m.find()) {
             String part = m.group();
-            if (part.contains("§z")) {
+            if (part.contains(ColorCode.CHROMA.toString())) {
                 component.append(Component.literal(part).withStyle(
-                        Style.EMPTY.withColor(new TextColor(ColorCode.CHROMA.getColor(), "chroma"))
+                        Style.EMPTY.withColor(DrawUtils.CHROMA_TEXT_COLOR)
                 ));
             } else {
                 component.append(part);

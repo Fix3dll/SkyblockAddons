@@ -100,10 +100,10 @@ public class DeployableManager {
                             ArmorStand.class,
                             new AABB(
                                     entityArmorStand.getX() - 0.1,
-                                    entityArmorStand.getY() - 3,
+                                    entityArmorStand.getY() - 1,
                                     entityArmorStand.getZ() - 0.1,
                                     entityArmorStand.getX() + 0.1,
-                                    entityArmorStand.getY(),
+                                    entityArmorStand.getY() + 1,
                                     entityArmorStand.getZ() + 0.1
                             ),
                             armorStandEntity -> armorStandEntity.getItemBySlot(EquipmentSlot.HEAD) != ItemStack.EMPTY
@@ -152,4 +152,5 @@ public class DeployableManager {
 
         private final UUID uuid;
     }
+
 }

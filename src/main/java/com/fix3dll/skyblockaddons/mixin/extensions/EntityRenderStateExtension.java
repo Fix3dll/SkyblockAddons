@@ -1,9 +1,11 @@
 package com.fix3dll.skyblockaddons.mixin.extensions;
 
+import net.minecraft.world.entity.Entity;
+
 public interface EntityRenderStateExtension {
 
-    int sba$getEntityId();
+    Entity sba$getEntity();
 
-    void sba$setEntityId(int id);
+    void sba$setEntity(Entity entity);
 
 }

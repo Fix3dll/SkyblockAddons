@@ -42,7 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMenu> extends Screen implements MenuAccess<T> {
 
-    @Shadow @Nullable protected Slot hoveredSlot;
+    @Shadow @Nullable public Slot hoveredSlot;
     @Shadow protected int titleLabelX;
     @Shadow protected int titleLabelY;
     @Shadow @Final protected Component playerInventoryTitle;
@@ -96,7 +96,6 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         } else {
             AbstractContainerScreenHook.keyPressed(this.hoveredSlot, event.key(), cir);
         }
-
     }
 
     @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
@@ -141,6 +140,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         if (AbstractContainerScreenHook.mouseClicked(event, isDoubleClick)) {
             cir.cancel();
         }
+        AbstractContainerScreenHook.keyPressed(this.hoveredSlot, event.input() - 100, cir);
         if (SkyblockEquipment.equipmentsInInventory() && Minecraft.getInstance().screen instanceof InventoryScreen) {
             for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
                 equipment.onClick(event.button());

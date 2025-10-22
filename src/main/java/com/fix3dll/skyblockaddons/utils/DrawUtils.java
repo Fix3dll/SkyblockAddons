@@ -90,6 +90,7 @@ public class DrawUtils {
                             .createCompositeState(false)
             ))
     );
+    public static final TextColor CHROMA_TEXT_COLOR = new TextColor(ColorCode.CHROMA.getColor(), "chroma");
 
     public static RenderType getChromaTextured(ResourceLocation identifier) {
         return CHROMA_TEXTURED.apply(identifier);
@@ -221,9 +222,7 @@ public class DrawUtils {
 
         Component component;
         if (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
-            component = Component.literal(strippedText).withStyle(style ->
-               style.withColor(new TextColor(ColorCode.CHROMA.getColor(), "chroma"))
-            );
+            component = Component.literal(strippedText).withStyle(style -> style.withColor(CHROMA_TEXT_COLOR));
         } else {
             component = Component.literal(text);
         }

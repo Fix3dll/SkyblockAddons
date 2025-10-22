@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.mixin.extensions.EntityRenderStateExtension;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -9,16 +10,16 @@ import org.spongepowered.asm.mixin.Unique;
 public class EntityRenderStateMixin implements EntityRenderStateExtension {
 
     @Unique
-    private int sba$entityId;
+    private Entity sba$entity;
 
     @Override
-    public int sba$getEntityId() {
-        return this.sba$entityId;
+    public Entity sba$getEntity() {
+        return this.sba$entity;
     }
 
     @Override
-    public void sba$setEntityId(int id) {
-        this.sba$entityId = id;
+    public void sba$setEntity(Entity entity) {
+        this.sba$entity = entity;
     }
 
 }

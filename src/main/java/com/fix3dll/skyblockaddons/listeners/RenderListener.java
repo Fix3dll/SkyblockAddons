@@ -162,6 +162,8 @@ public class RenderListener {
 
     private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?i)(?:(?:§[a-f0-9])?✪)+(?:§r)?(?:§[a-f0-9]?[➊-➒])?");
 
+    private static final int DEPLOYABLE_GUI_SIZE = 27; // MC.font.lineHeight * 3 because it looked the best
+
     private static Zombie revenant;
     private static Spider tarantula;
     private static CaveSpider caveSpider;
@@ -1801,8 +1803,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 return;
         }
 
-        float x = feature.getActualX();
-        float y = feature.getActualY();
+        float actualX = feature.getActualX();
+        float actualY = feature.getActualY();
         int color = feature.getColor();
 
         if (textMode) {
@@ -1840,8 +1842,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             int width = Math.max(longestLineWidth, longestSlayerDropLineWidth + 8 + longestCount);
             int height = lines * 8 + spacer * spacers;
 
-            x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
-            y = transformY(y, height, scale);
+            float x = transformX(actualX, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
+            float y = transformY(actualY, height, scale);
 
             if (buttonLocation != null) {
                 buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
@@ -1931,8 +1933,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             int width = entityWidth + entityIconSpacingHorizontal + maxItemsPerRow * iconWidth + totalColumnWidth + iconTextOffset;
             int height = (iconWidth + iconSpacingVertical) * 3 - iconSpacingVertical;
 
-            x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
-            y = transformY(y, height, scale);
+            float x = transformX(actualX, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
+            float y = transformY(actualY, height, scale);
 
             if (buttonLocation != null) {
                 buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
@@ -1941,7 +1943,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             switch (feature) {
                 case REVENANT_SLAYER_TRACKER:
                     if (revenant == null) {
-                        revenant = new Zombie(EntityType.ZOMBIE, MC.level /*Utils.getDummyWorld()*/);
+                        revenant = new Zombie(EntityType.ZOMBIE, MC.level );
 
                         revenant.setItemSlot(EquipmentSlot.MAINHAND, ItemUtils.createItemStack(Items.DIAMOND_HOE, true));
                         revenant.setItemSlot(EquipmentSlot.FEET, ItemUtils.createItemStack(Items.DIAMOND_BOOTS, false));
@@ -1950,17 +1952,16 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                         revenant.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHead("REAPER_MASK"));
                     }
                     revenant.tickCount = (int) main.getScheduler().getTotalTicks();
-                    drawEntity(graphics, revenant, x, y, entityWidth, height, -15); // left is 35
+                    drawEntity(graphics, revenant, x, y, entityWidth, height, -15, scale); // left is 35
                     break;
 
                 case TARANTULA_SLAYER_TRACKER:
                     if (tarantula == null) {
-                        tarantula = new Spider(EntityType.SPIDER, MC.level /*Utils.getDummyWorld()*/);
-                        caveSpider = new CaveSpider(EntityType.CAVE_SPIDER, MC.level /*Utils.getDummyWorld()*/);
-                        caveSpider.startRiding(tarantula, true, false); // TODO: test
+                        tarantula = new Spider(EntityType.SPIDER, MC.level);
+                        caveSpider = new CaveSpider(EntityType.CAVE_SPIDER, MC.level);
                     }
-                    drawEntity(graphics, tarantula, x + 3, y + 15, entityWidth, height, -30);
-                    drawEntity(graphics, caveSpider, x, y, entityWidth, height, -30);
+                    drawEntity(graphics, tarantula, x + 3, y, entityWidth, height, -30, scale);
+                    drawEntity(graphics, caveSpider, x, y - 10, entityWidth, height, -30, scale);
                     break;
 
                 case SVEN_SLAYER_TRACKER:
@@ -1968,7 +1969,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                         sven = new Wolf(EntityType.WOLF, MC.level);
                         sven.setRemainingPersistentAngerTime(Integer.MAX_VALUE);
                     }
-                    drawEntity(graphics, sven, x, y, entityWidth, height, -35);
+                    drawEntity(graphics, sven, x, y - 2, entityWidth, height, -35, scale, 1.2F);
                     break;
 
                 case VOIDGLOOM_SLAYER_TRACKER:
@@ -1978,7 +1979,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                     }
 //                    GlStateManager.color(1, 1, 1, 1);
                     enderman.tickCount = (int) main.getScheduler().getTotalTicks();
-                    drawEntity(graphics, enderman, x, y + (height * 0.15F), entityWidth, height * 1.3F, -30.0F);
+                    drawEntity(graphics, enderman, x, y, entityWidth, height, -30.0F, scale, 0.7F);
                     break;
 
                 case INFERNO_SLAYER_TRACKER:
@@ -1987,7 +1988,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                         inferno.setCharged(true);
                     }
                     inferno.tickCount = (int) main.getScheduler().getTotalTicks();
-                    drawEntity(graphics, inferno, x, y, entityWidth, height, -15);
+                    drawEntity(graphics, inferno, x, y, entityWidth, height, -15, scale);
                     break;
 
                 case RIFTSTALKER_SLAYER_TRACKER:
@@ -2001,7 +2002,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                         };
                         riftstalker.setCustomNameVisible(false);
                     }
-                    drawEntity(graphics, riftstalker, x, y, entityWidth, height, -15);
+                    drawEntity(graphics, riftstalker, x, y, entityWidth, height, -15, scale);
                     break;
             }
 
@@ -2424,14 +2425,13 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
         String secondsString = String.format("§e%ss", seconds);
         int spacing = 1;
-        int iconSize = MC.font.lineHeight * 3; // 3 because it looked the best
-        int width = iconSize + spacing + MC.font.width(secondsString);
+        int width = DEPLOYABLE_GUI_SIZE + spacing + MC.font.width(secondsString);
 
         x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
-        y = transformY(y, iconSize, scale);
+        y = transformY(y, DEPLOYABLE_GUI_SIZE, scale);
 
         if (buttonLocation != null) {
-            buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + iconSize, scale);
+            buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + DEPLOYABLE_GUI_SIZE, scale);
         }
 
         Entity entity = null;
@@ -2446,16 +2446,16 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
 
         if (entity instanceof ArmorStand armorStand) {
-            drawDeployableArmorStand(graphics, armorStand, x, y, iconSize + spacing, y + iconSize);
+            drawDeployableArmorStand(graphics, armorStand, x, y, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, scale);
         } else {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
 
         DrawUtils.drawText(
                 graphics,
                 secondsString,
-                x + spacing + iconSize,
-                y + (iconSize / 2F) - (8 / 2F),
+                x + spacing + DEPLOYABLE_GUI_SIZE,
+                y + (DEPLOYABLE_GUI_SIZE / 2F) - (8 / 2F),
                 ColorCode.WHITE.getColor()
         );
     }
@@ -2541,11 +2541,10 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         Optional<String> longestLine = display.stream().max(Comparator.comparingInt(String::length));
 
         int spacingBetweenLines = 1;
-        int iconSize = MC.font.lineHeight * 3; // 3 because it looked the best
-        int iconAndSecondsHeight = iconSize + MC.font.lineHeight;
+        int iconAndSecondsHeight = DEPLOYABLE_GUI_SIZE + MC.font.lineHeight;
 
         int effectsHeight = (MC.font.lineHeight + spacingBetweenLines) * display.size();
-        int width = iconSize + 2 + longestLine.map(MC.font::width).orElseGet(() ->
+        int width = DEPLOYABLE_GUI_SIZE + 2 + longestLine.map(MC.font::width).orElseGet(() ->
                 MC.font.width(display.getFirst())
         );
         int height = Math.max(effectsHeight, iconAndSecondsHeight);
@@ -2577,21 +2576,21 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
 
         if (entity instanceof ArmorStand armorStand) {
-            drawDeployableArmorStand(graphics, armorStand, x, y, iconSize + 2, height);
+            drawDeployableArmorStand(graphics, armorStand, x, y, DEPLOYABLE_GUI_SIZE, height - DEPLOYABLE_GUI_SIZE, scale);
         } else {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
 
         String secondsString = String.format("§e%ss", seconds);
         DrawUtils.drawText(
                 graphics,
                 secondsString,
-                Math.round(x + (iconSize / 2F) - (MC.font.width(secondsString) / 2F)),
-                y + iconSize,
+                Math.round(x + (DEPLOYABLE_GUI_SIZE / 2F) - (MC.font.width(secondsString) / 2F)),
+                y + DEPLOYABLE_GUI_SIZE,
                 ColorCode.WHITE.getColor()
         );
 
-        float displayTextX = x + iconSize + 2;
+        float displayTextX = x + DEPLOYABLE_GUI_SIZE + 2;
         for (int i = 0; i < display.size(); i++) {
             DrawUtils.drawText(
                     graphics,
@@ -2656,37 +2655,43 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         HealingCircleManager.renderHealingCircleOverlays(source, poseStack);
     }
 
-    private void drawDeployableArmorStand(GuiGraphics graphics, ArmorStand deployableArmorStand, float x, float y, float width, float height) {
+    private void drawDeployableArmorStand(GuiGraphics graphics, ArmorStand deployableArmorStand, float x, float y, float width, float height, float scale) {
+        Vector3f translation = new Vector3f(0.0F, 1.5F + 0.0625F * deployableArmorStand.getScale(), 0.0F);
+        Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
+        Quaternionf rotation4 = Axis.XP.rotationDegrees(-22.0F);
+        rotation.mul(rotation4);
+
+        // save values
         float prevRenderYawOffset = deployableArmorStand.yBodyRot;
         float prevPrevRenderYawOffset = deployableArmorStand.yBodyRotO;
 
-        Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
-        Quaternionf rotation2 = Axis.YP.rotationDegrees(135.0F);
-        Quaternionf rotation3 = Axis.YP.rotationDegrees(-135.0F);
-        Quaternionf rotation4 = Axis.XP.rotationDegrees(22.0F);
-        rotation.mul(rotation2);
-        rotation.mul(rotation3);
-        rotation.mul(rotation4);
-
+        // set values
         float yaw = System.currentTimeMillis() % 1750 / 1750F * 360F;
         deployableArmorStand.yBodyRot = yaw;
         deployableArmorStand.yBodyRotO = yaw;
-        deployableArmorStand.setInvisible(true);
 
-        Vector3f translation = new Vector3f(0.0F, deployableArmorStand.getBbHeight() / 2.0F + 0.0625F * deployableArmorStand.getScale(), 0.0F);
-        int finalX = Math.round(x);
-        int finalY = Math.round(y);
-        InventoryScreen.renderEntityInInventory(graphics, finalX, finalY, Math.round(finalX + width), Math.round(finalY + height), 25.0F / deployableArmorStand.getScale(), translation, rotation, null, deployableArmorStand);
+        x *= scale;
+        y *= scale;
+        width *= scale;
+        height *= scale;
+        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height), 25.0F / deployableArmorStand.getScale() * scale, translation, rotation, null, deployableArmorStand);
 
+        // rollback after rendering
         deployableArmorStand.yBodyRot = prevRenderYawOffset;
         deployableArmorStand.yBodyRotO = prevPrevRenderYawOffset;
     }
+    private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float width, float height, float yaw, float scale) {
+        drawEntity(graphics, entity, x, y, width, height, yaw, scale, 1.0F);
+    }
 
-    private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float width, float height, float yaw) {
-        Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
-        Quaternionf rotation2 = Axis.XP.rotationDegrees(15.0F);
-        rotation.mul(rotation2);
+    private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float width, float height, float yaw, float scale, float entityScale) {
+        Vector3f translation = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + 0.0625F * entity.getScale(), 0.0F);
         Quaternionf overrideCameraAngel = Axis.YN.rotationDegrees(-180.0F);
+        Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
+        Quaternionf rotation2 = Axis.YP.rotationDegrees(180.0F);
+        Quaternionf rotation3 = Axis.XP.rotationDegrees(15.0F);
+        rotation.mul(rotation2);
+        rotation.mul(rotation3);
 
         // save values
         float oYRot = entity.getYRot();
@@ -2695,14 +2700,16 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         float oyHeadRot = entity.yHeadRot;
 
         // set values
-        yaw -= 180;
         entity.setYRot(yaw);
         entity.yBodyRot = yaw;
         entity.yHeadRot = yaw;
         entity.yHeadRotO = yaw;
 
-        Vector3f translation = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + 0.0625F * entity.getScale(), 0.0F);
-        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height), 25.0F / entity.getScale(), translation, rotation, overrideCameraAngel, entity);
+        x *= scale;
+        y *= scale;
+        width *= scale;
+        height *= scale;
+        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height), 25.0F / entity.getScale() * entityScale * scale, translation, rotation, overrideCameraAngel, entity);
 
         // rollback after rendering
         entity.setYRot(oYRot);

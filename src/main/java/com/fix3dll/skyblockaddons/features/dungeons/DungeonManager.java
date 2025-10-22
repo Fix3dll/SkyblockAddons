@@ -31,7 +31,6 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -485,9 +484,7 @@ public class DungeonManager {
                     int classColor = dungeonPlayer.getDungeonClass().getColor();
                     if (classColor == ColorCode.CHROMA.getColor()) {
                         if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
-                            playerName.withStyle(style -> style
-                                    .withColor(new TextColor(ColorCode.CHROMA.getColor(), "chroma"))
-                            );
+                            playerName.withStyle(style -> style.withColor(DrawUtils.CHROMA_TEXT_COLOR));
                         } else {
                             playerName.withColor(ManualChromaManager.getChromaColor(0, 0, 255));
                         }

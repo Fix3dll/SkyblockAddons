@@ -98,7 +98,7 @@ public class MultiPlayerGameModeHook {
 
                 Slot slotIn;
                 try {
-                    slotIn = slots.getSlot(slotNum);
+                    slotIn = slotNum == -999 ? null : slots.getSlot(slotNum);
                 } catch (IndexOutOfBoundsException e) {
                     slotIn = null;
                 }
