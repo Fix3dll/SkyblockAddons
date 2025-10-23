@@ -1,8 +1,8 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.mixin.hooks.ChestSpecialRendererHook;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.special.ChestSpecialRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,7 +18,7 @@ public class ChestSpecialRendererMixin {
     public void sba$submit(Args args) {
         Integer customEnderChestColor = ChestSpecialRendererHook.getCustomEnderChestColor();
         if (customEnderChestColor != null) {
-            args.set(3, BLANK_ENDER_CHEST_MATERIAL.renderType(DrawUtils::getEntitySolidZOffset));
+            args.set(3, BLANK_ENDER_CHEST_MATERIAL.renderType(RenderType::entitySolid));
             args.set(4, LightTexture.FULL_BRIGHT);
             args.set(6, customEnderChestColor);
             args.set(7, ChestSpecialRendererHook.getBlankSprite());
