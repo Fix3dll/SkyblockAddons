@@ -90,10 +90,25 @@ public class DrawUtils {
                             .createCompositeState(false)
             ))
     );
+    private static final Function<ResourceLocation, RenderType> ENTITY_SOLID_Z_OFFSET = Util.memoize(
+            resourceLocation -> {
+                RenderType.CompositeState compositeState = RenderType.CompositeState.builder()
+                        .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false))
+                        .setLightmapState(RenderStateShard.LIGHTMAP)
+                        .setOverlayState(RenderStateShard.OVERLAY)
+                        .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                        .createCompositeState(true);
+                return RenderType.create("entity_solid_z_offset", RenderType.TRANSIENT_BUFFER_SIZE, true, false, RenderPipelines.ENTITY_SOLID_Z_OFFSET_FORWARD, compositeState);
+            }
+    );
     public static final TextColor CHROMA_TEXT_COLOR = new TextColor(ColorCode.CHROMA.getColor(), "chroma");
 
-    public static RenderType getChromaTextured(ResourceLocation identifier) {
-        return CHROMA_TEXTURED.apply(identifier);
+    public static RenderType getChromaTextured(ResourceLocation resourceLocation) {
+        return CHROMA_TEXTURED.apply(resourceLocation);
+    }
+
+    public static RenderType getEntitySolidZOffset(ResourceLocation resourceLocation) {
+        return ENTITY_SOLID_Z_OFFSET.apply(resourceLocation);
     }
 
     public static void drawRoundedRect(GuiGraphics graphics, int x, int y, int width, int height, int radius, int color) {
