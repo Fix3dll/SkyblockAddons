@@ -521,7 +521,7 @@ public class InventoryUtils {
             String displayName = TextUtils.getFormattedText(itemStack.getCustomName());
             displayName = TextUtils.stripResets(displayName);
             // Exceptions
-            if ("ENCHANTED_BOOK".equals(skyblockId) || "ATTRIBUTE_SHARD".equals(skyblockId)) {
+            if ("ENCHANTED_BOOK".equals(skyblockId)) {
                 List<String> lore = ItemUtils.getItemLore(itemStack);
                 if (!lore.isEmpty()) {
                     displayName = lore.getFirst();
