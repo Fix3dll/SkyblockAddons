@@ -60,7 +60,6 @@ public enum Feature {
     STOP_DROPPING_SELLING_RARE_ITEMS(42, "settings.stopDroppingSellingRareItems", new FeatureGuiData(ColorCode.RED)),
     REPLACE_ROMAN_NUMERALS_WITH_NUMBERS(45, "settings.replaceRomanNumeralsWithNumbers", null),
     FISHING_SOUND_INDICATOR(48, "settings.soundIndicatorForFishing", null),
-    AVOID_BLINKING_NIGHT_VISION(49, "settings.avoidBlinkingNightVision", null), // TODO remove
     MINION_DISABLE_LOCATION_WARNING(50, "settings.disableMinionLocationWarning", null),
     ENCHANTMENT_LORE_PARSING(52, "settings.enchantmentLoreParsing", null),
     SHOW_ITEM_COOLDOWNS(53, "settings.showItemCooldowns", null),

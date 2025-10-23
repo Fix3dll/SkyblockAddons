@@ -165,7 +165,6 @@ tasks.shadowJar {
 
     val basePackage = "${project.group}.${project.name.lowercase(Locale.US)}"
     relocate("com.jagrosh.discordipc", "${basePackage}.discordipc")
-//	relocate("net.hypixel.modapi", "${basePackage}.modapi")
     relocate("moe.nea.libautoupdate", "${basePackage}.libautoupdate")
 }
 

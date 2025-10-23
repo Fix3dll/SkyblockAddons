@@ -235,8 +235,8 @@ public class EnumUtils {
                 ENCHANTMENT_LORE_PARSING),
         HIGH_CRIT("HighCrit", "github.com/HighCrit", PREVENT_MOVEMENT_ON_DEATH),
         MOULBERRY("Moulberry", "github.com/Moulberry", DONT_RESET_CURSOR_INVENTORY),
-        TOMOCRAFTER("tomocrafter", "github.com/tomocrafter", AVOID_BLINKING_NIGHT_VISION, SLAYER_ARMOR_PROGRESS,
-                NO_ARROWS_LEFT_ALERT, BOSS_APPROACH_ALERT),
+        TOMOCRAFTER("tomocrafter", "github.com/tomocrafter", SLAYER_ARMOR_PROGRESS, NO_ARROWS_LEFT_ALERT,
+                BOSS_APPROACH_ALERT),
         DAPIGGUY("DaPigGuy", "github.com/DaPigGuy", MINION_DISABLE_LOCATION_WARNING),
         KEAGEL("Keagel", "github.com/Keagel", DISABLE_MAGICAL_SOUP_MESSAGES),
         SUPERHIZE("SuperHiZe", "github.com/superhize", SPECIAL_ZEALOT_ALERT),
@@ -361,4 +361,5 @@ public class EnumUtils {
             return null;
         }
     }
+
 }
