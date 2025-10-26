@@ -71,7 +71,6 @@ public enum FeatureSetting {
     SHOW_SKILL_XP_GAINED("settings.showSkillXPGained", Feature.SKILL_DISPLAY),
     SHOW_SALVAGE_ESSENCES_COUNTER("settings.showSalvageEssencesCounter", Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY),
     HEALING_CIRCLE_OPACITY("settings.healingCircleOpacity", Feature.SHOW_HEALING_CIRCLE_WALL),
-    BIGGER_WAKE("settings.biggerWake", Feature.FISHING_PARTICLE_OVERLAY),
     HIGHLIGHT_ENCHANTMENTS("settings.highlightSpecialEnchantments", Feature.ENCHANTMENT_LORE_PARSING),
     PERFECT_ENCHANT_COLOR("enchants.superTier", Feature.ENCHANTMENT_LORE_PARSING),
     GREAT_ENCHANT_COLOR("enchants.highTier", Feature.ENCHANTMENT_LORE_PARSING),
@@ -138,6 +137,7 @@ public enum FeatureSetting {
     PRESSURE_TEXT_ALERT("settings.pressureText.alert", Feature.PRESSURE_TEXT),
     PRESSURE_TEXT_ICON("settings.pressureText.icon", Feature.PRESSURE_TEXT),
     PET_PANEL("settings.equipmentsInInventory.petPanel", Feature.EQUIPMENTS_IN_INVENTORY),
+    BIGGER_WAKE("settings.coloredFishingParticles.biggerWake", Feature.COLORED_FISHING_PARTICLES),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),

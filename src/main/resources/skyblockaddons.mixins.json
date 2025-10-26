@@ -9,6 +9,7 @@
   },
   "client": [
     "AbstractContainerScreenMixin",
+    "AtlasManagerMixin",
     "AvatarRendererMixin",
     "ChatComponentMixin",
     "ChatScreenMixin",
@@ -38,7 +39,8 @@
     "RecipeBookComponentMixin",
     "RenderSystemMixin",
     "ScreenMixin",
-    "SoundEngineMixin"
+    "SoundEngineMixin",
+    "WakeParticleMixin"
   ],
   "mixins": [
     "ConnectionMixin",

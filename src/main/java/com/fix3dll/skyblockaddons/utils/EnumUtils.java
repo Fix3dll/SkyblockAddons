@@ -231,8 +231,7 @@ public class EnumUtils {
 
     public enum FeatureCredit {
         // If you make a feature, feel free to add your name here with an associated website of your choice.
-        ORCHID_ALLOY("orchidalloy", "github.com/orchidalloy", SUMMONING_EYE_ALERT, FISHING_SOUND_INDICATOR,
-                ENCHANTMENT_LORE_PARSING),
+        ORCHID_ALLOY("orchidalloy", "github.com/orchidalloy", SUMMONING_EYE_ALERT, ENCHANTMENT_LORE_PARSING),
         HIGH_CRIT("HighCrit", "github.com/HighCrit", PREVENT_MOVEMENT_ON_DEATH),
         MOULBERRY("Moulberry", "github.com/Moulberry", DONT_RESET_CURSOR_INVENTORY),
         TOMOCRAFTER("tomocrafter", "github.com/tomocrafter", SLAYER_ARMOR_PROGRESS, NO_ARROWS_LEFT_ALERT,
@@ -255,7 +254,7 @@ public class EnumUtils {
         TIRELESS_TRAVELER("TirelessTraveler", "github.com/ILikePlayingGames", DUNGEON_DEATH_COUNTER),
         KAASBROODJU("kaasbroodju", "github.com/kaasbroodju", SKILL_PROGRESS_BAR),
         PHOUBE("Phoube", "github.com/Phoube", HIDE_OTHER_PLAYERS_PRESENTS, SHOW_EXPERIMENTATION_TABLE_TOOLTIPS,
-                DRILL_FUEL_BAR, DRILL_FUEL_TEXT, FISHING_PARTICLE_OVERLAY),
+                DRILL_FUEL_BAR, DRILL_FUEL_TEXT),
         PEDRO9558("Pedro9558", "github.com/Pedro9558", TREVOR_THE_TRAPPER_FEATURES, FETCHUR_TODAY, STOP_RAT_SOUNDS),
         ROBOTHANZO("RobotHanzo", "robothanzo.dev", HIDE_SPAWN_POINT_PLAYERS),
         IRONM00N("IRONM00N", "github.com/IRONM00N", FARM_EVENT_TIMER),
@@ -267,7 +266,8 @@ public class EnumUtils {
         JASON54("jason54jg", "github.com/jason54jg", INFERNO_SLAYER_TRACKER),
         GLACIALVITALITY("GlacialVitality", "github.com/glacialvitality", RIFTSTALKER_SLAYER_TRACKER),
         FIX3DLL("Fix3dll", "github.com/Fix3dll", FIRE_FREEZE_TIMER, HIDE_HAUNTED_SKULLS, THUNDER_BOTTLE_DISPLAY,
-                PET_DISPLAY, PRESSURE_BAR, PRESSURE_TEXT, HIDE_EFFECTS_HUD, EQUIPMENTS_IN_INVENTORY);
+                PET_DISPLAY, PRESSURE_BAR, PRESSURE_TEXT, HIDE_EFFECTS_HUD, EQUIPMENTS_IN_INVENTORY,
+                COLORED_FISHING_PARTICLES);
 
         private final Set<Feature> features;
         private final String author;

@@ -40,8 +40,6 @@
     "darkAuctionTimer": "Dark Auction Timer",
     "magmaBossTimer": "Magma Boss Timer",
     "itemPickupLog": "Item Pickup Log",
-    "avoidPlacingEnchantedItems": "Avoid Placing Enchanted Items",
-    "stopBowChargeFromResetting": "Stop Bow Charge From Resetting",
     "preventMovementOnDeath": "Prevent Walking After Death",
     "showItemAnvilUses": "Show Item Anvil Uses",
     "lockSlots": "Allow Locking Slots",
@@ -63,9 +61,6 @@
     "makeBackpackInventoriesColored": "Color Inventories",
     "replaceRomanNumeralsWithNumbers": "Replace Roman Numerals on Items",
     "changeBarColorForPotions": "Change Bar Color for Wither & Poison",
-    "craftingPatterns": "Choose Crafting Patterns",
-    "soundIndicatorForFishing": "Sound Indicator for Fishing",
-    "avoidBlinkingNightVision": "Disable Night Vision Potion Blinking",
     "disableMinionLocationWarning": "Disable Location Not Perfect Warnings",
     "showItemCooldowns": "Show Item Cooldowns",
     "speedPercentage": "Speed Percentage",
@@ -107,14 +102,12 @@
     "showZealotsPerEye": "Zealot Counter - Show Zealots Per Eye",
     "turnBowGreenWhenUsingToxicArrowPoison": "Turn Bow Color When Using Arrow Poison",
     "birchParkRainmakerTimer": "Birch Park Rainmaker Timer",
-    "combatTimerDisplay": "Combat Timer Display",
     "discordRP": "Discord Rich Presence",
     "endstoneProtectorDisplay": "Endstone Protector Display",
     "fancyWarpMenu": "Fancy Warp Menu",
     "stopRatSounds": "Stop Rat Pet Sounds",
     "onlyStopRatSqueak": "Only Stop the Rat Squeak Sound",
     "doubleWarp": "Warp Twice",
-    "advancedMode": "Advanced Mode",
     "legendarySeaCreatureWarning": "Legendary Sea Creature Warning",
     "bossApproachAlert": "Slayer Boss Approach Alert",
     "disableTeleportPadMessages": "Disable Teleport Pad Messages",
@@ -185,11 +178,8 @@
     "drillFuelBar": "Drill Fuel Bar",
     "drillFuelNumber": "Drill Fuel Number",
     "fetchurToday": "Show What Fetchur Wants Today",
-    "fishingParticleOverlay": "Fishing Particle Overlay",
     "enchantmentLoreParsing": "Parse Enchant Tooltips",
     "cooldownPrediction": "Predict and Shorten Cooldown",
-    "legendaryMonkeyLevel100": "[TEMP] Level 100 Legendary Monkey",
-    "biggerWake": "Enlarge Overlay Particles",
     "stackingEnchantProgress": "Show Stacking Enchant Progress",
     "showReforgeOverlay": "Show Reforge Overlay",
     "reforgeFilter": "Reforge Filter",
@@ -296,6 +286,10 @@
     "equipmentsInInventory": {
       "title": "Equipment and Pet Panel in Inventory",
       "petPanel": "Show Pet Panel"
+    },
+    "coloredFishingParticles": {
+      "title": "Custom Colored Fishing Particles",
+      "biggerWake": "Enlarge Wake Particles"
     }
   },
   "messages": {
@@ -795,8 +789,7 @@
     "home": "Your Island",
     "spawn": "Spawn",
     "unknown": "Haven't Visited",
-    "notUnlocked": "Not Unlocked",
-    "inCombat": "In Combat..."
+    "notUnlocked": "Not Unlocked"
   },
   "enchants": {
     "superTier": "Max Tier",

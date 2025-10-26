@@ -11,7 +11,6 @@ accessible field net/minecraft/world/level/chunk/LevelChunk loaded Z
 accessible field net/minecraft/client/particle/Particle x D
 accessible field net/minecraft/client/particle/Particle y D
 accessible field net/minecraft/client/particle/Particle z D
-accessible field net/minecraft/client/particle/Particle yo D
 accessible method net/minecraft/world/entity/monster/Blaze setCharged (Z)V
 accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyBlockPos Lnet/minecraft/core/BlockPos;
 accessible field net/minecraft/client/renderer/LevelRenderer destroyingBlocks Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
@@ -31,3 +30,5 @@ accessible class net/minecraft/client/gui/font/glyphs/BakedSheetGlyph$GlyphInsta
 accessible method net/minecraft/client/gui/font/glyphs/BakedSheetGlyph$GlyphInstance style ()Lnet/minecraft/network/chat/Style;
 extendable class net/minecraft/client/gui/render/state/GuiTextRenderState
 accessible field net/minecraft/client/renderer/MapRenderer decorationSprites Lnet/minecraft/client/renderer/texture/TextureAtlas;
+accessible field net/minecraft/client/particle/ParticleResources spriteSets Ljava/util/Map;
+accessible class net/minecraft/client/particle/ParticleResources$MutableSpriteSet

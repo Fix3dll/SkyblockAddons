@@ -59,7 +59,6 @@ public enum Feature {
     MAKE_ENDERCHESTS_GREEN_IN_END(40, "settings.makeEnderchestsInEndGreen", new FeatureGuiData(ColorCode.GREEN)),
     STOP_DROPPING_SELLING_RARE_ITEMS(42, "settings.stopDroppingSellingRareItems", new FeatureGuiData(ColorCode.RED)),
     REPLACE_ROMAN_NUMERALS_WITH_NUMBERS(45, "settings.replaceRomanNumeralsWithNumbers", null),
-    FISHING_SOUND_INDICATOR(48, "settings.soundIndicatorForFishing", null),
     MINION_DISABLE_LOCATION_WARNING(50, "settings.disableMinionLocationWarning", null),
     ENCHANTMENT_LORE_PARSING(52, "settings.enchantmentLoreParsing", null),
     SHOW_ITEM_COOLDOWNS(53, "settings.showItemCooldowns", null),
@@ -125,7 +124,6 @@ public enum Feature {
     SHOW_EXPERIMENTATION_TABLE_TOOLTIPS(158, "settings.showExperimentationTableTooltips", null),
     DRILL_FUEL_BAR(160, "settings.drillFuelBar", new FeatureGuiData(DrawType.BAR, ColorCode.DARK_GREEN)),
     DRILL_FUEL_TEXT(161, "settings.drillFuelNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.DARK_GREEN)),
-    FISHING_PARTICLE_OVERLAY(162, "settings.fishingParticleOverlay", null),
     REFORGE_FILTER(172, "settings.reforgeFilter", null),
     TREVOR_THE_TRAPPER_FEATURES(177, "settings.trevorTheTrapper.title", new FeatureGuiData(DrawType.PROXIMITY_INDICATOR)),
     FETCHUR_TODAY(178, "settings.fetchurToday", new FeatureGuiData(DrawType.TEXT, ColorCode.GREEN)),
@@ -163,6 +161,7 @@ public enum Feature {
     PRESSURE_TEXT(261, "settings.pressureText.title", new FeatureGuiData(DrawType.TEXT, ColorCode.BLUE)),
     HIDE_EFFECTS_HUD(262, "settings.hideEffectsHud", null),
     EQUIPMENTS_IN_INVENTORY(263, "settings.equipmentsInInventory.title", new FeatureGuiData(ColorCode.WHITE)),
+    COLORED_FISHING_PARTICLES(264, "settings.coloredFishingParticles.title", new FeatureGuiData(ColorCode.WHITE)),
 
 
     WARNING_TIME(-2, "settings.warningDuration"),

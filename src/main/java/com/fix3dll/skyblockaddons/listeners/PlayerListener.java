@@ -29,7 +29,7 @@ import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonMilestone;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonPlayer;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
-import com.fix3dll.skyblockaddons.features.fishParticles.FishParticleManager;
+import com.fix3dll.skyblockaddons.features.fishing.FishParticleManager;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerTracker;
 import com.fix3dll.skyblockaddons.features.tablist.TabListParser;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
@@ -84,7 +84,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.MagmaCube;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -166,8 +165,6 @@ public class PlayerListener {
     private long lastBroodmother = -1;
     private int timerTick = 1;
     private long lastMinionSound = -1;
-    private long lastFishingAlert = 0;
-    private long lastBobberEnteredWater = Long.MAX_VALUE;
     private long lastSkyblockServerJoinAttempt = 0;
     private long lastDeath = 0;
     private long lastRevive = 0;
@@ -175,9 +172,6 @@ public class PlayerListener {
     private String lastMaddoxSlayerType;
 
     @Getter private long rainmakerTimeEnd = -1;
-
-    private boolean oldBobberIsInWater;
-    private double oldBobberPosY = 0;
 
     @Getter private final Set<UUID> countedEndermen = new HashSet<>();
     @Getter private final TreeMap<Long, Set<Vec3>> recentlyKilledZealots = new TreeMap<>();
@@ -652,9 +646,6 @@ public class PlayerListener {
                     main.getInventoryUtils().checkIfUsingArrowPoison(player);
                     main.getInventoryUtils().checkIfWearingSlayerArmor(player);
                     main.getInventoryUtils().checkIfThunderBottle(player);
-                    if (shouldTriggerFishingIndicator(mc)) { // The logic fits better in its own function
-                        main.getUtils().playLoudSound(SoundEvents.ARROW_HIT_PLAYER, 0.8);
-                    }
                     if (Feature.FETCHUR_TODAY.isEnabled()) {
                         FetchurManager.getInstance().recalculateFetchurItem();
                     }
@@ -1040,12 +1031,6 @@ public class PlayerListener {
 
     private InteractionResult onRightClickBlock(Player player, Level world, InteractionHand hand) {
         if (player.getMainHandItem().getItem() == Items.FISHING_ROD) {
-            // Update fishing status if the player is fishing and reels in their rod.
-            if (Feature.FISHING_SOUND_INDICATOR.isEnabled() && isHoldingRod()) {
-                oldBobberIsInWater = false;
-                lastBobberEnteredWater = Long.MAX_VALUE;
-                oldBobberPosY = 0;
-            }
             if (Feature.SHOW_ITEM_COOLDOWNS.isEnabled()) {
                 String itemId = ItemUtils.getSkyblockItemID(player.getMainHandItem());
                 // Grappling hook cool-down
@@ -1089,38 +1074,6 @@ public class PlayerListener {
     public boolean shouldResetMouse() {
         return System.currentTimeMillis() - main.getScreenListener().getLastContainerCloseMs() > 150L;
     }
-
-    /**
-     * Checks if the fishing indicator sound should be played. To play the sound, these conditions have to be met:
-     * <p>1. Fishing sound indicator feature is enabled</p>
-     * <p>2. The player is on Skyblock (checked in {@link #onTickStart(Minecraft)}</p>
-     * <p>3. The player is holding a fishing rod</p>
-     * <p>4. The fishing rod is in the water</p>
-     * <p>5. The bobber suddenly moves downwards, indicating a fish has been caught</p>
-     * @return {@code true} if the fishing alert sound should be played, {@code false} otherwise
-     * @see Feature#FISHING_SOUND_INDICATOR
-     */
-    private boolean shouldTriggerFishingIndicator(Minecraft MC) {
-        if (Feature.FISHING_SOUND_INDICATOR.isEnabled() && MC.player != null && MC.player.fishing != null && isHoldingRod()) {
-            // Highly consistent detection by checking when the hook has been in the water for a while and
-            // suddenly moves downward. The client may rarely bug out with the idle bobbing and trigger a false positive.
-            FishingHook bobber = MC.player.fishing;
-            long currentTime = System.currentTimeMillis();
-            if (bobber.isOpenWaterFishing() && !oldBobberIsInWater) lastBobberEnteredWater = currentTime;
-            oldBobberIsInWater = bobber.isOpenWaterFishing();
-            if (bobber.isOpenWaterFishing() && Math.abs(bobber.getDeltaMovement().x()) < 0.01 && Math.abs(bobber.getDeltaMovement().z()) < 0.01
-                    && currentTime - lastFishingAlert > 1000 && currentTime - lastBobberEnteredWater > 1500) {
-                double movement = bobber.getY() - oldBobberPosY; // The Entity#motionY field is inaccurate for this purpose
-                oldBobberPosY = bobber.getY();
-                if (movement < -0.04d) {
-                    lastFishingAlert = currentTime;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 
     /**
      * Check if our Player is holding a Fishing Rod, and filters out the Grapple Hook and Soul Whip and other items
