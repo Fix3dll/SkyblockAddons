@@ -113,7 +113,10 @@ public abstract class SkyblockAddonsScreen extends Screen {
         int color = ARGB.white(glowAlpha);
         graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO_GLOW, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height, color);
 
-        drawScaledString(graphics, screen, FORMATTED_VERSION, 55, defaultBlue, 1.3F, 170 - MC.font.width(FORMATTED_VERSION), false);
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(1.3F);
+        drawScaledString(graphics, screen, FORMATTED_VERSION, 42, defaultBlue, 1.0F, 10, true);
+        graphics.pose().popMatrix();
     }
 
     /**

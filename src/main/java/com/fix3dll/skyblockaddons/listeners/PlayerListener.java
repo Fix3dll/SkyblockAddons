@@ -391,7 +391,7 @@ public class PlayerListener {
                 main.getRenderListener().setTitleFeature(Feature.SUMMONING_EYE_ALERT);
 
                 // TODO: Seems like leg warning and num sc killed should be separate features
-            } else if (isSeaCreatureMessage(strippedText)) {
+            } else if (SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages().contains(unformattedText)) {
                 int spawned = unformattedText.contains("Magma Slug")
                            || unformattedText.contains("Bayou Sludge")
                            || unformattedText.contains("Liltads") ? 4 : 1;
@@ -1289,11 +1289,5 @@ public class PlayerListener {
     }
 
     private record RatSound(ResourceLocation location, float volume, float pitch) {}
-
-    // SkyHanni sents modified chat message instead of original one.
-    private boolean isSeaCreatureMessage(String chatMessage) {
-        return !chatMessage.isBlank() && SeaCreatureManager.getInstance().getAllSeaCreatureSpawnMessages()
-                .stream().anyMatch(chatMessage::endsWith);
-    }
 
 }
