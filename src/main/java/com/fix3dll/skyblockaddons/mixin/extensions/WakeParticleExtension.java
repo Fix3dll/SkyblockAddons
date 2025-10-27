@@ -4,4 +4,6 @@ public interface WakeParticleExtension {
 
     void sba$setBlankSprite(boolean shouldBlank);
 
+    boolean sba$isBlankSprite();
+
 }

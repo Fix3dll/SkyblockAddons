@@ -20,6 +20,11 @@ public class WakeParticleMixin implements WakeParticleExtension {
         this.sba$blankSprite = shouldBlank;
     }
 
+    @Override
+    public boolean sba$isBlankSprite() {
+        return this.sba$blankSprite;
+    }
+
     @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/WakeParticle;setSprite(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;)V"))
     public TextureAtlasSprite sba$tick_setSprite(TextureAtlasSprite original, @Local int i) {
         if (!sba$blankSprite) return original;

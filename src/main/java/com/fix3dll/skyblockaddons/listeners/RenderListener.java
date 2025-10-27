@@ -2446,7 +2446,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
 
         if (entity instanceof ArmorStand armorStand) {
-            drawDeployableArmorStand(graphics, armorStand, x, y, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, scale);
+            drawDeployableArmorStand(graphics, armorStand, x, y, scale);
         } else {
             graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
@@ -2576,7 +2576,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
 
         if (entity instanceof ArmorStand armorStand) {
-            drawDeployableArmorStand(graphics, armorStand, x, y, DEPLOYABLE_GUI_SIZE, height - DEPLOYABLE_GUI_SIZE, scale);
+            drawDeployableArmorStand(graphics, armorStand, x, y, scale);
         } else {
             graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
@@ -2655,7 +2655,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         HealingCircleManager.renderHealingCircleOverlays(source, poseStack);
     }
 
-    private void drawDeployableArmorStand(GuiGraphics graphics, ArmorStand deployableArmorStand, float x, float y, float width, float height, float scale) {
+    private void drawDeployableArmorStand(GuiGraphics graphics, ArmorStand deployableArmorStand, float x, float y, float scale) {
         Vector3f translation = new Vector3f(0.0F, 1.5F + 0.0625F * deployableArmorStand.getScale(), 0.0F);
         Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
         Quaternionf rotation4 = Axis.XP.rotationDegrees(-22.0F);
@@ -2672,9 +2672,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
         x *= scale;
         y *= scale;
-        width *= scale;
-        height *= scale;
-        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height), 25.0F / deployableArmorStand.getScale() * scale, translation, rotation, null, deployableArmorStand);
+        float scaledWH = DEPLOYABLE_GUI_SIZE * scale;
+        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + scaledWH), Math.round(y + scaledWH), 25.0F / deployableArmorStand.getScale() * scale, translation, rotation, null, deployableArmorStand);
 
         // rollback after rendering
         deployableArmorStand.yBodyRot = prevRenderYawOffset;

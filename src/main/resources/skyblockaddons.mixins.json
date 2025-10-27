@@ -36,6 +36,7 @@
     "MouseHandlerMixin",
     "MultiPlayerGameModeMixin",
     "ParticleEngineMixin",
+    "ParticleMixin",
     "RecipeBookComponentMixin",
     "RenderSystemMixin",
     "ScreenMixin",
