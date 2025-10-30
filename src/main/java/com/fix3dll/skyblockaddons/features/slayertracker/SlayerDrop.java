@@ -29,6 +29,7 @@ public enum SlayerDrop {
     REVENANT_VISCERA(Items.COOKED_PORKCHOP, "Revenant Viscera", "REVENANT_VISCERA", SkyblockRarity.RARE, true),
     SCYTHE_BLADE(Items.DIAMOND, "Scythe Blade", "SCYTHE_BLADE", SkyblockRarity.LEGENDARY, true),
     SMITE_SEVEN(SkyblockRarity.EPIC, "smite", 7),
+    SEVERED_HAND("SEVERED_HAND", SkyblockRarity.LEGENDARY),
     SHARD_OF_SHREDDED("SHARD_OF_THE_SHREDDED", SkyblockRarity.LEGENDARY),
     WARDEN_HEART("WARDEN_HEART", SkyblockRarity.LEGENDARY),
     DYE_MATCHA("DYE_MATCHA", SkyblockRarity.LEGENDARY),
@@ -83,6 +84,7 @@ public enum SlayerDrop {
     JUDGEMENT_CORE("JUDGEMENT_CORE", SkyblockRarity.LEGENDARY),
     ENCHANT_RUNE("ENCHANT_RUNE", "ENCHANT", SkyblockRarity.LEGENDARY),
     ENDER_SLAYER_SEVEN(SkyblockRarity.RARE, "ender_slayer", 7),
+    ENDSTONE_IDOL("ENDSTONE_IDOL", SkyblockRarity.LEGENDARY),
     DYE_BYZANTIUM("DYE_BYZANTIUM", SkyblockRarity.LEGENDARY),
 
     // Blaze Drops
