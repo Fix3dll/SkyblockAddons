@@ -335,6 +335,12 @@ public class SkyblockAddonsCommand {
             return 1;
         }));
 
+        // COPY_OPEN_GL
+        builder.then(literal("copyOpenGl").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
+            DevUtils.copyOpenGLLogs();
+            return 1;
+        }));
+
         // PD
         builder.then(literal("pd").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
             Utils.sendMessage(ColorCode.BOLD + "Death Counts: ");

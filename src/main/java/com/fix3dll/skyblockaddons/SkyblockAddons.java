@@ -5,20 +5,21 @@ import com.fix3dll.skyblockaddons.config.ConfigValuesManager;
 import com.fix3dll.skyblockaddons.config.ConfigValuesManager.ConfigValues;
 import com.fix3dll.skyblockaddons.config.PersistentValuesManager;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureData;
+import com.fix3dll.skyblockaddons.core.scheduler.Scheduler;
+import com.fix3dll.skyblockaddons.core.updater.Updater;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.features.SkillXpManager;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordRPCManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonManager;
+import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.listeners.NetworkListener;
 import com.fix3dll.skyblockaddons.listeners.PlayerListener;
 import com.fix3dll.skyblockaddons.listeners.RenderListener;
-import com.fix3dll.skyblockaddons.core.updater.Updater;
-import com.fix3dll.skyblockaddons.core.scheduler.Scheduler;
 import com.fix3dll.skyblockaddons.listeners.ScreenListener;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.InventoryUtils;
@@ -44,7 +45,6 @@ import com.google.gson.InstanceCreator;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.ClientModInitializer;
-
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -186,6 +186,8 @@ public class SkyblockAddons implements ClientModInitializer {
 		SkyblockAddonsCommand.initialize();
 
 		ClientEvents.AFTER_INITIALIZATION.register(client -> {
+            runAsync(ButtonBanner.REGISTER_BANNER); // Load banner image
+
 			if (Feature.DEVELOPER_MODE.isDisabled()) {
 				SkyblockKeyBinding.DEVELOPER_COPY_NBT.deRegister();
 			}
@@ -200,8 +202,8 @@ public class SkyblockAddons implements ClientModInitializer {
 			DevUtils.resetEntityNamesToDefault(); // initialize class
 			NetworkListener.setupModAPI();
 
-			immediatelyFastLoaded = FabricLoader.getInstance().isModLoaded("immediatelyfast");
-			entityCullingLoaded = FabricLoader.getInstance().isModLoaded("entityculling");
+			immediatelyFastLoaded = utils.isModLoaded("immediatelyfast");
+			entityCullingLoaded = utils.isModLoaded("entityculling");
 			fullyInitialized = true;
             TextUtils.setInstanceLoaded(true);
 		});

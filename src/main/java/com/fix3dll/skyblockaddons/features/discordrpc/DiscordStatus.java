@@ -92,9 +92,9 @@ public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
 
     ZEALOTS("discordStatus.titleZealots", "discordStatus.descriptionZealots",
             () -> String.format(
-                    "%d Zealots killed",
-                    0)//SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getKills()) TODO
-    ),
+                    "%d Zealots killed"
+                    , SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getKills())
+            ),
 
     ITEM("discordStatus.titleItem", "discordStatus.descriptionItem",
             () -> {

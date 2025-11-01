@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.gui.screens;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonSocial;
 import com.fix3dll.skyblockaddons.gui.buttons.SkyblockAddonsButton;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
@@ -11,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +42,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
     final long timeOpened = System.currentTimeMillis();
 
     boolean firstDraw = true;
+    ButtonBanner buttonBanner;
 
     protected SkyblockAddonsScreen(Component title) {
         super(title);
@@ -52,6 +55,12 @@ public abstract class SkyblockAddonsScreen extends Screen {
             firstDraw = false;
         }
         super.render(graphics, mouseX, mouseY, partialTick);
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (buttonBanner != null) buttonBanner.mouseClicked(event, isDoubleClick);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -93,30 +102,36 @@ public abstract class SkyblockAddonsScreen extends Screen {
      * Draws the default text at the top at bottoms of the GUI.
      * @param screen The screen to draw the text on.
      */
-    protected void drawDefaultTitleText(GuiGraphics graphics, Screen screen, int alpha) {
+    protected void drawDefaultTitleText(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Screen screen, int alpha) {
         int defaultBlue = ColorUtils.getDefaultBlue(alpha);
 
         int height = 85;
         int width = height*2;
         Window window = MC.getWindow();
 
-        graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height);
+        if (main.getOnlineData().getBannerImageURL() == null && !ButtonBanner.bannerRegistered) {
+            graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height);
 
-        float glowAlpha;
-        glowAlpha = System.currentTimeMillis() % TITLE_ANIMATION_MILLIS;
-        if (glowAlpha > TITLE_ANIMATION_MILLIS / 2F) {
-            glowAlpha = (TITLE_ANIMATION_MILLIS - glowAlpha) / (TITLE_ANIMATION_MILLIS / 2F);
+            float glowAlpha;
+            glowAlpha = System.currentTimeMillis() % TITLE_ANIMATION_MILLIS;
+            if (glowAlpha > TITLE_ANIMATION_MILLIS / 2F) {
+                glowAlpha = (TITLE_ANIMATION_MILLIS - glowAlpha) / (TITLE_ANIMATION_MILLIS / 2F);
+            } else {
+                glowAlpha = glowAlpha / (TITLE_ANIMATION_MILLIS / 2F);
+            }
+
+            int color = ARGB.white(glowAlpha);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO_GLOW, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height, color);
         } else {
-            glowAlpha = glowAlpha / (TITLE_ANIMATION_MILLIS / 2F);
+            if (buttonBanner == null) {
+                buttonBanner = new ButtonBanner(this.width / 2.0F - ButtonBanner.WIDTH / 2.0F, 0);
+            }
+            buttonBanner.setX(this.width / 2 - ButtonBanner.WIDTH / 2);
+            buttonBanner.renderWidget(graphics, mouseX, mouseY, partialTick);
         }
 
-        int color = ARGB.white(glowAlpha);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO_GLOW, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height, color);
-
-        graphics.pose().pushMatrix();
-        graphics.pose().scale(1.3F);
-        drawScaledString(graphics, screen, FORMATTED_VERSION, 42, defaultBlue, 1.0F, 10, true);
-        graphics.pose().popMatrix();
+        int xOffset = (int) (160 / 1.3F); // see Social.GITHUB
+        drawScaledString(graphics, screen, FORMATTED_VERSION, 55, defaultBlue, 1.3F, xOffset);
     }
 
     /**
@@ -139,13 +154,12 @@ public abstract class SkyblockAddonsScreen extends Screen {
         });
     }
 
-    static void drawScaledString(GuiGraphics graphics, Screen guiScreen, String text, int y, int color, float scale, int xOffset) {
-        drawScaledString(graphics, guiScreen, text, y, color, scale, xOffset, true);
+    static void drawScaledString(GuiGraphics graphics, Screen screen, String text, int y, int color, float scale, int xOffset) {
+        drawScaledString(graphics, screen, text, y, color, scale, xOffset, true);
     }
 
     /**
      * Draws a centered string at the middle of the screen on the x axis, with a specified scale and location.
-     *
      * @param text The text to draw.
      * @param y The y level to draw the text/
      * @param color The text color.
@@ -160,16 +174,16 @@ public abstract class SkyblockAddonsScreen extends Screen {
             graphics.drawCenteredString(
                     MC.font,
                     text,
-                    Math.round((float) screen.width / 2 / scale) + xOffset,
-                    Math.round((float) y / scale),
+                    Math.round(screen.width / 2.0F / scale) + xOffset,
+                    Math.round(y / scale),
                     color
             );
         } else {
             graphics.drawString(
                     MC.font,
                     text,
-                    Math.round((float) screen.width / 2 / scale) + xOffset,
-                    Math.round((float) y / scale),
+                    Math.round(screen.width / 2.0F / scale) + xOffset,
+                    Math.round(y / scale),
                     color,
                     true
             );

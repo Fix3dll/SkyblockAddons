@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.logging.LogUtils;
@@ -346,19 +347,22 @@ public class DevUtils {
     }
 
     /**
-     * Copies OpenGL logs, CPU model and GPU model to clipboard.
+     * Copies CPU model, GPU model and driver, LWJGL version to clipboard.
      * @see com.mojang.blaze3d.platform.GLX
      */
     public static void copyOpenGLLogs() {
-        // TODO complete
         String gpu = GL11.glGetString(GL11.GL_RENDERER);
+        String version = GL11.glGetString(GL11.GL_VERSION);
         String cpu = GLX._getCpuInfo();
+        String lwjgl = GLX._getLWJGLVersion();
         String output = """
                 ```
                 CPU: %s
                 GPU: %s
+                GPU driver: %s
+                LWJGL: %s
                 ```
-                """.formatted(/*logText, */cpu, gpu);
+                """.formatted(cpu, gpu, version, lwjgl);
         copyStringToClipboard(
                 output,
                 ColorCode.GREEN + "Successfully copied the OpenGL logs to clipboard!"
@@ -573,6 +577,7 @@ public class DevUtils {
             if (!scheduledTask.isCanceled() && DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
                 DataUtils.onSkyblockJoined();
                 PackRepository packs = MC.getResourcePackRepository();
+                SkyblockAddons.runAsync(ButtonBanner.REGISTER_BANNER);
                 if (packs.isAvailable(SkyblockAddons.MOD_ID) && packs.getSelectedIds().contains(SkyblockAddons.MOD_ID)) {
                     MC.reloadResourcePacks().whenComplete((unused, throwable) -> {
                         if (throwable == null) {

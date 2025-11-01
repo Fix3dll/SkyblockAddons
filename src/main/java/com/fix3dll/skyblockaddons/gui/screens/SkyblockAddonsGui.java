@@ -5,7 +5,6 @@ import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonArrow;
-import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonNewTag;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonSlider;
@@ -20,13 +19,11 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.TextStyle;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -55,7 +52,6 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     boolean reInit = false;
 
     @Setter private boolean cancelClose;
-    private Screen parent = null;
 
     /**
      * Boolean to draw the warning
@@ -78,12 +74,13 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
     @Override
     public void init() {
+        super.init();
+
         row = 1;
         column = 1;
         displayCount = findDisplayCount();
         addLanguageButton();
         addEditLocationsButton();
-        addFeaturedBanner();
         addGeneralSettingsButton();
 
         if (featureSearchBar == null) {
@@ -219,7 +216,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         drawGradientBackground(graphics, alpha);
 
         if (alpha < 4) alpha = 4; // Text under 4 alpha appear 100% transparent for some reason o.O
-        drawDefaultTitleText(graphics, this, alpha * 2);
+        drawDefaultTitleText(graphics, mouseX, mouseY, partialTick, this, alpha * 2);
 
         featureSearchBar.render(graphics, mouseX, mouseY, partialTick);
 
@@ -424,21 +421,8 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         }));
     }
 
-    private void addFeaturedBanner() {
-        if (main.getOnlineData().getBannerImageURL() != null) {
-            int halfWidth = width / 2;
-            addRenderableWidget(new ButtonBanner(halfWidth - 170, 15));
-        }
-    }
-
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (parent != null) {
-            if (InputConstants.isKeyDown(MC.getWindow(), event.key()) && event.key() == InputConstants.KEY_ESCAPE) {
-                MC.setScreen(parent);
-                return true;
-            }
-        }
         if (featureSearchBar.isFocused()) {
             featureSearchBar.keyPressed(event);
             if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {

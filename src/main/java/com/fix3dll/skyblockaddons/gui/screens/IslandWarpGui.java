@@ -50,6 +50,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
     @Override
     public void init() {
+        super.init();
+
         for (Island island : Island.values()) {
             if (island == Island.JERRYS_WORKSHOP
                     && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER
@@ -236,13 +238,13 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     @Getter
     public enum Island {
         THE_END("The End", 240, 30),
-        CRIMSON_ISLE("Crimson Isle", 835, 25),
+        CRIMSON_ISLE("Crimson Isle", 835, 45),
         THE_PARK("The Park", 80, 440),
         SPIDERS_DEN("Spider's Den", 500, 470),
         DEEP_CAVERNS("Deep Caverns", 1400, 250),
         GOLD_MINE("Gold Mine", 1130, 525),
         MUSHROOM_DESERT("Mushroom Desert", 1470, 525),
-        THE_BARN("The Barn", 1125, 850),
+        THE_BARN("The Barn", 1100, 860),
         HUB("Hub", 300, 820),
         PRIVATE_ISLAND("Private Island", 275, 1172),
         THE_GARDEN("The Garden", 50, 1050),
@@ -250,7 +252,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150),
         THE_RIFT("The Rift", 1720, 1050),
         BACKWATER_BAYOU("Backwater Bayou", 960, 1275),
-        GALATEA("Galatea", -250, 220);
+        GALATEA("Galatea", -200, 240);
 
         private final String label;
         private final int x;
@@ -266,8 +268,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             this.label = label;
             this.x = x;
             this.y = y;
-            this.resourceLocation = ResourceLocation.fromNamespaceAndPath(
-                    "skyblockaddons",
+            this.resourceLocation = SkyblockAddons.resourceLocation(
                     "islands/" + this.name().toLowerCase(Locale.US).replace("_", "") + ".png"
             );
 

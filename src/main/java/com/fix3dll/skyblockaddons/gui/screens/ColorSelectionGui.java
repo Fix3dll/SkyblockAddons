@@ -142,6 +142,8 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
 
     @Override
     public void init() {
+        super.init();
+
         if (COLOR_PICKER_IMAGE == null) {
             COLOR_PICKER_IMAGE = loadColorPicker();
         }
@@ -201,7 +203,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // Draw background and default text.
         drawGradientBackground(graphics, 128, 192);
-        drawDefaultTitleText(graphics, this, 255);
+        drawDefaultTitleText(graphics, mouseX, mouseY, partialTick, this, 255);
 
         int defaultBlue = ColorUtils.getDefaultBlue(1);
 
@@ -285,6 +287,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         }
 
         if (chromaCheckbox != null) chromaCheckbox.onMouseClick(event, isDoubleClick);
+        if (buttonBanner != null) buttonBanner.mouseClicked(event, isDoubleClick);
 
         Optional<GuiEventListener> optional = this.getChildAt(event.x(), event.y());
         if (optional.isEmpty()) {

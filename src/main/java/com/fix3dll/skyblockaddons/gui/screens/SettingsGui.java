@@ -66,6 +66,8 @@ public class SettingsGui extends SkyblockAddonsScreen {
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     @Override
     public void init() {
+        super.init();
+
         scrollValue = 0;
         maxScrollValue = MC.getWindow().getScreenHeight() / 2;
         row = 1;
@@ -141,7 +143,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
 
         if (alpha < 4) alpha = 4; // Text under 4 alpha appear 100% transparent for some reason o.O
         int defaultBlue = ColorUtils.getDefaultBlue(alpha * 2);
-        drawDefaultTitleText(graphics, this, alpha * 2);
+        drawDefaultTitleText(graphics, mouseX, mouseY, partialTick, this, alpha * 2);
 
         boolean scissorEnabled = false;
         if (feature != Feature.LANGUAGE) {

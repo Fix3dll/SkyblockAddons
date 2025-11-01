@@ -4,9 +4,11 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -18,91 +20,114 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.UUID;
 
 public class ButtonBanner extends SkyblockAddonsButton {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final int WIDTH = 130;
+
+    public static final int WIDTH = 130;
+    public static final int HEIGHT = 95;
 
     private static ResourceLocation banner;
     private static NativeImage bannerImage;
 
-    private static boolean grabbedBanner;
+    public static boolean bannerRegistered;
+
+    public static Runnable REGISTER_BANNER = () -> {
+        String bannerImageUrl = main.getOnlineData().getBannerImageURL();
+        if (bannerImageUrl == null) {
+            bannerRegistered = false;
+            return;
+        }
+
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URI(bannerImageUrl).toURL();
+            connection = (HttpURLConnection)url.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            connection.addRequestProperty("User-Agent", Utils.USER_AGENT);
+
+            banner = SkyblockAddons.resourceLocation("dynamic/" + UUID.randomUUID());
+            bannerImage = NativeImage.read(connection.getInputStream());
+
+            connection.disconnect();
+
+            MC.execute(() -> {
+                DynamicTexture dynamicTexture = new DynamicTexture(() -> banner.toString(), bannerImage);
+                Minecraft.getInstance().getTextureManager().register(banner, dynamicTexture);
+                bannerRegistered = true;
+            });
+        } catch (IOException ex) {
+            LOGGER.warn("Couldn't grab main menu banner image from URL, falling back to local banner.", ex);
+        } catch (URISyntaxException e) {
+            LOGGER.error("Wrong banner image URL!", e);
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    };
 
     /**
      * Create a button for toggling a feature on or off. This includes all the Features that have a proper ID.
      */
     public ButtonBanner(double x, double y) {
-        super((int) x, (int) y, Component.empty());
+        super((int) x, (int) y, WIDTH, HEIGHT, Component.empty());
 
-        if (!grabbedBanner) {
-            grabbedBanner = true;
+        if (!bannerRegistered) {
             bannerImage = null;
             banner = null;
 
-            SkyblockAddons.runAsync(() -> {
-                try {
-                    URL url = new URI(main.getOnlineData().getBannerImageURL()).toURL();
-                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                    connection.setReadTimeout(5000);
-                    connection.addRequestProperty("User-Agent", Utils.USER_AGENT);
-
-                    bannerImage = NativeImage.read(connection.getInputStream());
-
-                    connection.disconnect();
-
-                    this.width = bannerImage.getWidth();
-                    this.height = bannerImage.getHeight();
-                } catch (IOException ex) {
-                    LOGGER.warn("Couldn't grab main menu banner image from URL, falling back to local banner.", ex);
-                } catch (URISyntaxException e) {
-                    LOGGER.error("Wrong banner image URL!", e);
-                }
-            });
+            SkyblockAddons.runAsync(REGISTER_BANNER);
         }
 
-        setX(getX() - WIDTH / 2);
-
         if (bannerImage != null) {
-            this.width = bannerImage.getWidth();
-            this.height = bannerImage.getHeight();
+            int imageWidth = bannerImage.getWidth();
+            int imageHeight = bannerImage.getHeight();
+            this.scale = (float) WIDTH / imageWidth; // max width
+            float scaledImageHeight = imageHeight * scale;
+
+            if (scaledImageHeight < HEIGHT) {
+               setY(getY() + (HEIGHT / 2 - (int) (scaledImageHeight / 2.0F)));
+            }
         }
     }
 
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        // This means it was just loaded from the URL above.
-        if (bannerImage != null && banner == null) {
-//            banner = MC.getTextureManager().registerDynamicTexture("banner", new NativeImageBackedTexture(bannerImage)); FIXME
-        }
+        if (bannerRegistered) { // Could have not been loaded yet.
+            int imageWidth = bannerImage.getWidth();
+            int imageHeight = bannerImage.getHeight();
 
-        if (banner != null) { // Could have not been loaded yet.
             float alphaMultiplier = calculateAlphaMultiplier();
+            this.scale = (float) WIDTH / imageWidth; // max width
+            this.isHovered = isMouseOver(mouseX, mouseY);
             int color = ARGB.white(alphaMultiplier * (this.isHovered ? 1F : 0.8F));
-            this.scale = (float) WIDTH / bannerImage.getWidth(); // max width
-            this.isHovered = mouseX >= getX() && mouseX < getX() + WIDTH
-                    && mouseY >= getY() && mouseY < getY() + bannerImage.getHeight() * scale;
 
             Matrix3x2fStack poseStack = graphics.pose();
             poseStack.pushMatrix();
-            poseStack.scale(scale, scale);
+            poseStack.scale(scale);
             int x = Math.round(getX() / scale);
             int y = Math.round(getY() / scale);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, banner, x, y, 0, 0, width, height, width, height, color);
-//            drawModalRectWithCustomSizedTexture(Math.round(xPosition / scale), Math.round(xPosition / scale), 0, 0, width, height, width, height);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, banner, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight, color);
             poseStack.popMatrix();
         }
     }
 
     @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX >= getX() && mouseX < getX() + WIDTH &&
+               mouseY >= getY() && mouseY < getY() + bannerImage.getHeight() * scale;
+    }
+
+    @Override
     public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
-        if (this.isHovered) {
-            String link = main.getOnlineData().getBannerLink();
-            if (link != null && !link.isEmpty()) {
-                try {
-                    Util.getPlatform().openUri(link);
-                } catch (Exception ignored) {}
-            }
+        String link = main.getOnlineData().getBannerLink();
+        if (link != null && !link.isBlank()) {
+            try {
+                Util.getPlatform().openUri(link);
+            } catch (Exception ignored) {}
         }
     }
+
 }

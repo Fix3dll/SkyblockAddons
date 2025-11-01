@@ -253,7 +253,6 @@ public class RenderListener {
     /**
      * This renders all the title/subtitle warnings from features.
      */
-    // TODO refactor
     private void renderWarnings(GuiGraphics graphics) {
         if (MC.level == null || MC.player == null || !main.getUtils().isOnSkyblock()) {
             return;
@@ -288,7 +287,6 @@ public class RenderListener {
                 poseStack.pushMatrix();
                 poseStack.scale(scale); // TODO Check if changing this scale breaks anything...
 
-//                //FontRendererHook.setupFeatureFont(titleFeature);
                 DrawUtils.drawText(
                         graphics,
                         text,
@@ -331,9 +329,8 @@ public class RenderListener {
                 poseStack.pushMatrix();
                 poseStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2));
                 poseStack.pushMatrix();
-                poseStack.scale(scale);  // TODO Check if changing this scale breaks anything...
+                poseStack.scale(scale);
 
-//                //FontRendererHook.setupFeatureFont(subtitleFeature);
                 DrawUtils.drawText(
                         graphics,
                         text,
@@ -1236,7 +1233,6 @@ public class RenderListener {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
         }
 
-        Matrix3x2fStack poseStack = graphics.pose();
         switch (feature) {
             case DARK_AUCTION_TIMER -> {
                 graphics.guiRenderState.submitGuiElement(

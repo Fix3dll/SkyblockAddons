@@ -74,6 +74,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
     @Override
     public void init() {
+        super.init();
+
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
             // Don't display features that have been disabled
@@ -489,7 +491,6 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                         TOP.getCoordinate(button) + (BOTTOM.getCoordinate(button) - TOP.getCoordinate(button)) / 2F;
                 case VERTICAL_MIDDLE ->
                         LEFT.getCoordinate(button) + (RIGHT.getCoordinate(button) - LEFT.getCoordinate(button)) / 2F;
-                default -> 0;
             };
         }
     }
@@ -762,13 +763,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
      * If button is pressed, update the currently dragged button.
      * Otherwise, they clicked the reset button, so reset the coordinates.
      */
-    private void actionPerformed(GuiEventListener eventListener, double mouseX, double mouseY, int button) {
+    private void actionPerformed(GuiEventListener eventListener, MouseButtonEvent event) {
         switch (eventListener) {
             case ButtonLocation buttonLocation -> {
                 draggedFeature = buttonLocation.getFeature();
                 if (draggedFeature != null) {
-                    xOffset = (float) mouseX - draggedFeature.getActualX();
-                    yOffset = (float) mouseY - draggedFeature.getActualY();
+                    xOffset = (float) event.x() - draggedFeature.getActualX();
+                    yOffset = (float) event.y() - draggedFeature.getActualY();
                 }
             }
             case ButtonSolid buttonSolid -> {
@@ -794,11 +795,11 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
                 if (editMode == EditMode.RESCALE_FEATURES) {
                     float scale = draggedFeature.getGuiScale();
-                    xOffset = ((float) mouseX - buttonResize.resizeX * scale) / scale;
-                    yOffset = ((float) mouseY - buttonResize.resizeY * scale) / scale;
+                    xOffset = ((float) event.x() - buttonResize.resizeX * scale) / scale;
+                    yOffset = ((float) event.y() - buttonResize.resizeY * scale) / scale;
                 } else {
-                    xOffset = (float) mouseX;
-                    yOffset = (float) mouseY;
+                    xOffset = (float) event.x();
+                    yOffset = (float) event.y();
                 }
 
                 resizingCorner = buttonResize.getCorner();
@@ -842,7 +843,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                 if (event.button() == 0) {
                     this.setDragging(true);
                 }
-                actionPerformed(guiEventListener, event.x(), event.y(), event.button());
+                actionPerformed(guiEventListener, event);
             }
 
             return true;

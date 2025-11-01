@@ -53,6 +53,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -102,11 +103,6 @@ public class Utils {
      * Matches the pests on the Skyblock scoreboard
      */
     private static final Pattern PEST_PATTERN = Pattern.compile(" ൠ x\\d");
-
-    /**
-     * A dummy world object used for spawning fake entities for GUI features without affecting the actual world
-     */
-    private static ClientLevel DUMMY_WORLD;
 
     /**
      * Used for web requests.
@@ -631,11 +627,7 @@ public class Utils {
                 if (!triggeredSlayerWarning || (repeating && completion != lastCompletion)) {
                     triggeredSlayerWarning = true;
                     main.getUtils().playLoudSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5);
-//                    main.getRenderListener().setTitleFeature(Feature.BOSS_APPROACH_ALERT); TODO
-//                    main.getScheduler().scheduleTask(
-//                            () -> main.getRenderListener().setSubtitleFeature(null),
-//                            main.getConfigValues().getWarningSeconds() * 20L
-//                    );
+                    main.getRenderListener().setTitleFeature(Feature.BOSS_APPROACH_ALERT);
                 }
             } else {
                 triggeredSlayerWarning = false; // Reset warning flag when completion is below 85%, meaning they started a new quest.
@@ -761,20 +753,18 @@ public class Utils {
      * @param version The version of the mod to match (optional).
      */
     public boolean isModLoaded(String modId, String version) {
-        boolean isLoaded = FabricLoader.getInstance().isModLoaded(modId); // Check for the modid...
+        Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modId);
 
-        if (isLoaded && version != null) { // Check for the specific version...
-            for (ModContainer modContainer : FabricLoader.getInstance().getAllMods()) {
-                ModMetadata modMetadata = modContainer.getMetadata();
-                if (modMetadata.getId().equals(modId) && modMetadata.getVersion().toString().equals(version)) {
-                    return true;
-                }
+        if (modContainer.isPresent()) { // Check for the modid...
+            if (version != null) { // Check for the specific version...
+                ModMetadata metadata = modContainer.get().getMetadata();
+                return metadata != null && version.equals(metadata.getVersion().toString());
+            } else {
+                return true;
             }
-
-            return false;
         }
 
-        return isLoaded;
+        return false;
     }
 
     public float[] getCurrentGLTransformations() {

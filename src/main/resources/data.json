@@ -1,6 +1,6 @@
 {
-  "bannerImageURL": null,
-  "bannerLink": null,
+  "bannerImageURL": "https://fabricmc.net/assets/rip_yarn.png",
+  "bannerLink": "https://fabricmc.net/2025/10/31/obfuscation.html",
   "updateInfo": {
     "latestRelease": "2.1.1",
     "releaseDownload": "https://modrinth.com/project/F35D4vTL/versions",
