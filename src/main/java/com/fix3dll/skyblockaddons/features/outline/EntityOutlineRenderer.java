@@ -84,6 +84,10 @@ public class EntityOutlineRenderer {
      * @return {@code true} if outlines should be rendered
      */
     public static boolean shouldRenderEntityOutlines(Entity entity) {
+        if (entity == null) {
+            return false;
+        }
+
         if (!isRenderEntityOutlinesConditionsMet()) {
             return false;
         }
