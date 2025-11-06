@@ -14,7 +14,7 @@ import java.nio.ByteBuffer;
  */
 public class ChromaUniform implements AutoCloseable {
 
-    private final int UNIFORM_SIZE = new Std140SizeCalculator().putFloat().putFloat().get();
+    private final int UNIFORM_SIZE = new Std140SizeCalculator().putFloat().putFloat().putFloat().get();
 
     private final DynamicUniformStorage<UniformValue> storage = new DynamicUniformStorage<>("SBA Chroma UBO", UNIFORM_SIZE, 2);
 
