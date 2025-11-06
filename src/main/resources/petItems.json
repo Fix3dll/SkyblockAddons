@@ -238,6 +238,12 @@
     "material": "ghast_tear",
     "rarity": "COMMON"
   },
+  "PET_ITEM_BINGO_BOOSTER": {
+    "displayName": "§5Bingo Booster",
+    "enchanted": true,
+    "material": "rabbit_foot",
+    "rarity": "EPIC"
+  },
   "PET_ITEM_BIG_TEETH_EPIC": {
     "displayName": "§5Big Teeth",
     "enchanted": true,
@@ -708,6 +714,126 @@
           "name": "textures",
           "signature": "uz5d4UsIcS+T7duc6nw0/dA3/JQbD16nyHvzNYBKqHBsHfQITdXUnClxR7WaYOiJxP4o6aeSP5jM5HvEL6LklRTtE8bFgbNgOoskUbnUjgWPcKnrGqzSYmvMGlUqkVZzW2Ha3NwAy1T6FDRtQsLZos7Ff7IfujAalEQ/Bjb7igb21pDH82n8DLSPIDvobLwOmnCMfB0z6RUnDVi7EwADkFBAG0Bylr9/UasGWbOYFs3fOcepC3Op4Ogp1CjT+06N6oYAgoC7i6ZpfE7OLUBeW3D3ELnD+7mm5xdP1ORcc8MUAne90Z5I9QR1U+KSs+ki4kkXXo8Z1dIDpPNRJN3CwBVrP4Ev6kdNkrpkIfNrB7z05rvocd0mCQ050RGTcUd+vds/G8QVpmC9otvcIF01ahLOuU4DrbIkimGewqt9VaczohGVAqheDTwSeLzST/MSQRRVH2zVhs2wxz5aI+KiB3OFDD6HITVAvvXOoIklnUlMk+MZdqNs5EquZ5bG82WPJVl6nflpvJviHbbxy0AV6gadZnzIBZoNbAETo15WUrYwPcEh9Wt0sVa79FM0KDuoxpS+eow/teMiZwA5Qq3WifHCMXWC3aUIFEeuya1ue79oj6rKP1b9Sb+DKk7Ec+m7056Vti4vfSg2Mnv3zOrdOUT3Tx30Il6WZLgmWeL/kt0=",
           "value": "ewogICJ0aW1lc3RhbXAiIDogMTY3ODgyMjE1OTcwMSwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJHYXl0b3duIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzc5OWQxNjczN2I0ZjI2MzNmOWU3YzQ1Mzg5OTIxMTVjMTA3OTI4YTlhMDFhYmZmNDA3YzAyOTcxOTRiZDY4NjciCiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "HEPHAESTUS_PLUSHIE": {
+    "displayName": "§6Hephaestus Plushie",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        -607876383,
+        -1366675001,
+        -1793190939,
+        700756421
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "gfnNeRO3eFui4G3jaXUnvpHRiVlnPHgXhWiKNIFo4WPkj5udBsE5MzjvsGhtJrmPG1yCwnZntopDaBMO46AnjD2nc4easUql/i6w5/23ntYIQx00W+coLinFfzLRoUj9+1YB7syq7zjaufZhc6+hi1l8HHfZ3zsXd9IsObWJg9N9W2gubxrsVL3WnkQ3HZi6MDFp+RdvkN0UtJrxeXRBL7H2PH23RTTy7A2n/ieQZ3/zamA1hU9dAKAoG+4Tt87C0r1AFFBcZc5S1gk25StAn+NqRraEbbpljPsWiNPeB7k3FjPfpvLogHjr0WGohwPkSO6jdxJbGMSZ6Ll9rqLvaX1jmNZjsEO++VfbO5/INmbk+pHBXlzDVsg0mm4AWwuExO0dh2LREXQx/Q/0xPWu5Fxc6aorJ6UzMmixx1K8M1zaZ3a1fScZzYs7HaI1pYb4SoEXdtR1FeE2Yi+lkQrVIoqowYhchqCaqFhB0M1LP7GOKyskb2Eom0mv892crEkpo0e5UpwmXCIVOocyALR18xObLxM0NI4DNgN2m7eXCP4E1rTFD1YD4tmJm6PXHyaZG25rRIkXIP9e/2uN/8obokeX+S3ys2Mi0WFlXY2Lby853JdUS5HSfO1CseYApcTjq6uv9aMcKNrO9ZVJMZmECGpN7DZ0uco5A4kuBHyzVTM=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc1MTY2MTY5MDk3MCwKICAicHJvZmlsZUlkIiA6ICI4OGMyOGYwOTY3MjU0NmNkYTg3ZjVhMTc0ODU0MzExYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJOaXRlQ2F2ZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yMDg2YTJkMWYwYzM3ZWVlZTgxZmIxYjZhZmY3MTk5NzZmYTMwMjhjYmM3NjViZmI0MDUwNjIzNDY1YzZjOWFjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "HEPHAESTUS_URN": {
+    "displayName": "§6Hephaestus Urn",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        -1624939344,
+        849817778,
+        -1258479808,
+        70121578
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "Iqi4CfaSLHLGaXC4U+yTyaf4rSopVsvERnPVRijLfuR8wXm5h6nnA5Zbw3rlpBmJ/GhDGR9RymgJIAoLOSLGGJIiUq+c7j6JIlA28SsBlWpfXt5+FnIXlP2Iw5eQfUHC/xZNzpQ0FJ1X2eYlSKU0yId51CF5r4TtbX2znY5pnT59sVA7U90o342NTc4oXyhAle5vUZN836fK3wdZDJjOig21pHlQoGQnKWrAmYuCfHn3Zib8zhUQUKHaxTGxR7d+9Oh7qQnjhBTs1/xdAe820ukjTcba3j/0D41XoMN1c+cVZG+20XP5D7VupMisgvKj30JiASaibBj8v2AFqyigEEk2Y8aMNJZtxGGIC+7MSAZ3juAlDNt+wvPCGmywH9osvecNrmMdwsW6aBAlHdzRwc7RqbnXsEjZ6kN+lLvF6zsH6u8F2SEl+HJT5VvanLElZwVIebWk5FRkD+zIeZXwJaQxfz8XC8fztxj7+IUFshaLJmyn2yh/7IcpPS/iVBgnVhh5DYFBiMbudVT4XW1bEXnZo/L+u/9bSU8tMzvF0XdPv8WmjzERW8k+Lqe2LPYn9sCt8hiUX+L2RomGaGJuj5cGgt6DxjXemftSJ6Zb3UU3yQ1rr3Ub+HcCSV+ZZtb2ehl8/4mtHO+eL4y62+Kf3uqlBm5/sT4VSow5jqdp9e8=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc1MTY2MTk3ODcyMSwKICAicHJvZmlsZUlkIiA6ICJiZDNhNWRmY2ZkZjg0NDczOTViZDJiZmUwNGY0YzAzMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJwcmVja3Jhc25vIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ1NWY4YmI1NzgyNDk4YTg0ZjRiZTkwNzFiOTI3MjZiYWM5YTU1ZGY3MzQyNmExYjlhZmM1OTFlNDdjOTgxZWYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+        }
+      ]
+    }
+  },
+  "HEPHAESTUS_REMEDIES": {
+    "displayName": "§6Hephaestus Remedies",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        1517584141,
+        608317732,
+        -1370479048,
+        1868002077
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "QKxbibonDH3+R69cYMVl6/zsvRXb1SPBww6RVkBbnHBdL98MbN0MUtLMfY5jzSTsNh26YbCPZx5tPIdaWv7J7RDsSgJRTHsoDxSCFzo8Si53EZAHdJvksccCQLmdfgyYOiigVdNdNF5In+IfHB3w/Lh3WWwXhnfkKw54Bv8WktdXGrm8pVfodHqsWolzSrkmVt1FcKN+m/ue+NoLzX1OLqyBZSArYuFYp1OBxuz4cZhxnEflqDTdfnDi7Vw3be6wJumtNdVMWL707v716qIu6IIEHPwnE+4+nyz6zYHVKACRe3F+QmPqvEmAzgyKFl/H0xJ/pmRbg4snlKzboiB5SalHDSjQp95ZB0dXEakGUqHSxmr6ITaTXKpY6EwPbJu+dJW1woJEmsYESSkdefEY217HVpOpekjr4lUZ+8lmhpc9gqKN9gyNyjEXmD32GHpOx4zVIEDcgq18/80qvP+fgK3fxKPmZlC6E0ISG4N3h6wF51HUYoniOaRrQ0HvZxTf9NCsX1EkLuyAug71HzEKVWklnRpTudk3OQ6/FcME17GAfZDB1/dmaxBF96XX1TN/iKiMAsl82R30qF46kZ9zDtgKJWcNF1BelSCNugVJX+oTjYvN49IZTFgNJpDuOEJP14dfk81Hqpp3utRqBJ3DdFgbX9vJrJRpzEiJ+jJTeeA=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc1MTY2MTk4MTYxMCwKICAicHJvZmlsZUlkIiA6ICJmZDJlZDMzMzI0Mjk0ZThmOWVlZGNiN2RhMWJiNzlkZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJkcmFtYWdnIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2UwYzBmMmZlMmNjOGU3Mjk4ODFmYTgyNGNkOTVmMWIyYzE0YmQ0YjFhMWViOWU5NGZlNGRkYzZkNGQzNGFlYjUiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+        }
+      ]
+    }
+  },
+  "HEPHAESTUS_RELIC": {
+    "displayName": "§6Hephaestus Relic",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        -2029925463,
+        917450900,
+        -1502033706,
+        -2104789539
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "AEL8zxPXz/eCfAVPi5KkAiOC04FP1f6mZl+bGEnH+wjjgUMaA6uaF4ybGDl/gsOm+4DM2YL5bvf6Cmg4xk8cS4vveS8B8+NgljXhq2u0GtVjJgvcuawodHyY9OLb3u0P6kkSuiFzy2BbdxzdWgr2gPQsimoV7qPVppr31QQPh4B/gWIrDneio6M28ZF0jLYP60a5VyX4XnhrpVJy2JKBz36L5uIiZQsaQXbp/VAGfEXwhlyuj8iNXBwOP2iAItNc5+zXij7nx/OV+ABzOh6L/5Oc+qlN8ztBWyhE7AGDjagUesr0RXzfUUdBjj2SftCav+b1478SaiW+57/yUU+6Zsi8gbNLU9tF7k7SHvT/YVGwXemUJTWAOPVDWCyJMfPXWUdxWzdgtCivJwZ2/4McgmozZ6pYEr4ha9Qm3AYelRzTAlEM3xhjeKYZo2XAo4s7NF8rOXChe8bB+ui/CkDVB2CeNCuH5lvpMgD9E8tQXzcsb8ly08pt0ARAqwdUpXDLGk3gN3/lDaIffTBgd7DZn5dhEWvalWey+tP1RH6G2H5X8XtD1/8cZRu6CodrxPKPCgNQdHIXMrd6roKq7uT1i/Vcxj9mlE6TwXNDaM+RcXEPH+2z0Mk4WrdcjGLCSmy+th5hO2W80BgWm4hyJvI8aGhqPWoa2FtFeY1pmZb2Wi4=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc1MTY2MTk3OTg0MCwKICAicHJvZmlsZUlkIiA6ICJjNWVmOGQ1NDIwOWY0OTdlYWYzYzA1NjA3MjZhYTMwNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNaXNoX0RheCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS83NjljZDUzNTBhNjVlN2IyODkwMjcwNThkMmZmZDlkODJmZGFmODg0MDhjODJkNGRiZDViNWI1ZDMyNjJhMzIwIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "HEPHAESTUS_SHELMET": {
+    "displayName": "§6Hephaestus Shelmet",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        -1594609238,
+        133446185,
+        -1930904577,
+        -1736310243
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "Vc4iiFZmO07K04Kg0QN0GxA40BamOZfZ3mxFcjsHI18lHFx6yt59UpgY1F5bQj3TrJIKHMviyxZqz+wUPcuBC5TxUNLTc4/QjH0l3N/CoYT95T2KyyNKbbbs7vNrcFEHsc+2SAk3ln6iVt3OmZdWppoL2Ldx2Pp5GNCgePi85EVlqnOzkJdJN5uwQhtOSfsXe6lQPrslJxiTswvnvqnvBy3ulufWNc5m3htLNYIjsaycMvHGRMPd0fYq3DILBX0a/421g2vBgWsJqlqdgqJYeX2GS9BO3Q1YOiANm3wforfZivjtHGhCrKV1mO3Oxph63b3r2bSA8EIToDOKsQQ9bKAQiBqTDKygeZYf68WBBoV3g/tblAXfqkHLRG06IFuWE32A2Lc81YgAQsqSik3z5EPfNeP3HCwNvXQ4HURe0xEqLuCmXYhIgLVUYq6qL27qCOCTktRM3MQGo9rVLlSCQxpwgrg6Rgpg1Gni6/kyZPC6h06IlyeVmXiFFFK44VDTKJ8/P95hMEmJ/xotyBHcLqemDG2CU2S8+zp51Ti7P2gMFdoKGreztRe8w+W8aPiZ5bvdTrSl80sjS9lm+HjJtRRm8KXE3JVOaIwfy4p0kQYdwtITAP4lpcFobf+GTdi7b7JDYQo6tq9Hd7ZqkrFKuI/d6gFb04VUHB13aaesOIw=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc1MTY2MTk4NTM2MiwKICAicHJvZmlsZUlkIiA6ICI4NDIyMDRlNjY4ODA0ODdiYWU1YTA1OTUzOTRmOTk0OCIsCiAgInByb2ZpbGVOYW1lIiA6ICJuZWE4OW8iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWIxOTJlY2ExMWUxNmUzNGQ1MmQ5ZmU2OWZhNTE2OWYxYmUzNTcwYWYyOWQ1OWVkNzg5ZDdlYTI4MDY5YzlhZSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "HEPHAESTUS_SOUVENIR": {
+    "displayName": "§6Hephaestus Souvenir",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        1433731959,
+        1694249017,
+        -1848828771,
+        -780833096
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "WxXaZD9eM62TB10bFSRmUOndvu9JaHp/u9aNXfJtYvCEJMW0Q2oU8SlYCI6APtGW6GncIJeDqXwpCHRUc7GSnJHLRniyoGFBqT4OqnsCWJyTMgk1JrUvYUDdSeWkwrHXmun3EzldvLV8ZEqbGR4zmj/PhoPg0RChNBlEjqStnmk6dIoMbDNU8bMs4uoGEs0Gog+kYY+LElO7oasQ2LW6EMiKQw9NPVOO0iLXqSLgBDUSKB/y+q6V1sA420u1CfzytLQy+JJAJaK1Hs8YVZYcOk1aw55sCpg50HCW09EzSMrLwXc9EJL98bYxf4mTrbtK/pz2XTaTrp8XG3pktF5RjtM599ekFFXzFxLZxrKmVfppekTrbzD0QIvxUI4fMAfq8lXlf0XDgGy7t+QJUEzzgNk0qNvTswUMVHwe2b2TVldv7Lms4lPpLgRZdb1VPWo6vEAb/89BX80GrJGTfDj+FdCVrk/Sg4B/hc/rNs/eKv0mupFP+UJZZkY8U53UJDWsjoFcL8cQcx9R2vJ1O0gh1WlWm4laB/AMF7mmyM7lpqKASi7+kQOU0yENqmbV0vV+UmfMctv9W9muSZAssCqIJnWmofnTmRiNhA8nc5eLAd/3rdLazyH9SomzXBW+9b2/RHZEOlbrjAhOldo3weX70QYz7BY65JUxC8lMXS1fOsA=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc1MTY2MTk4NjU0OSwKICAicHJvZmlsZUlkIiA6ICJhYzY1NDYwOWVkZjM0ODhmOTM0ZWNhMDRmNjlkNGIwMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJzcGFjZUd1cmxTa3kiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTEyY2I0YmM4MmNlOWZlMDZlYzQwZTc5OGQxNGFjMmU5NTQ0MDViNWY2OWNjNjI3MmU3NDJlZjMxZDAwOGMxMCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
         }
       ]
     }
