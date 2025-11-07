@@ -93,7 +93,7 @@
   "DWARF_TURTLE_SHELMET": {
     "displayName": "§9Dwarf Turtle Shelmet",
     "material": "skull_item",
-    "rarity": "RARE",
+    "rarity": "EPIC",
     "resolvableProfile": {
       "id": [
         1489096766,
@@ -681,7 +681,7 @@
   "WASHED_UP_SOUVENIR": {
     "displayName": "§6Washed-up Souvenir",
     "material": "skull_item",
-    "rarity": "LEGENDARY",
+    "rarity": "EPIC",
     "resolvableProfile": {
       "id": [
         -2061505657,
