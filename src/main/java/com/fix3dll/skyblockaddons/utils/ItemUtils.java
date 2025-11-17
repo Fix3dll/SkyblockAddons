@@ -499,15 +499,11 @@ public class ItemUtils {
 
     public static void setItemStackSkyblockID(ItemStack itemStack, String skyblockID) {
         CompoundTag ea = getExtraAttributes(itemStack);
-        CustomData customData;
-        if (ea != null) {
-            ea.putString("id", skyblockID);
-            customData = CustomData.of(ea);
-        } else {
-            customData = CustomData.of(new CompoundTag());
+        if (ea == null) {
+            ea = new CompoundTag();
         }
-
-        itemStack.set(DataComponents.CUSTOM_DATA, customData);
+        ea.putString("id", skyblockID);
+        itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(ea));
     }
 
     /**
