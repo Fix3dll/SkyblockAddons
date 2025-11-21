@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -70,7 +71,7 @@ public class DevUtils {
     // If you change this, please change it in the string "commands.usage.sba.help.copyEntity" as well.
     public static final int DEFAULT_ENTITY_COPY_RADIUS = 3;
     private static final List<Class<? extends Entity>> DEFAULT_ENTITY_NAMES = Collections.singletonList(LivingEntity.class);
-    private static final boolean DEFAULT_SIDEBAR_FORMATTED = false;
+    public static final boolean DEFAULT_SIDEBAR_FORMATTED = false;
 
     @Getter @Setter private static boolean loggingActionBarMessages = false;
     @Getter @Setter private static boolean loggingSlayerTracker = false;
@@ -98,17 +99,8 @@ public class DevUtils {
 
     /**
      * Copies the objective and scores that are being displayed on a scoreboard's sidebar.
-     * When copying the sidebar, the control codes (e.g. §a) are removed.
      */
-    public static void copyScoreboardSideBar() {
-        copyScoreboardSidebar(sidebarFormatted);
-    }
-
-    /**
-     * Copies the objective and scores that are being displayed on a scoreboard's sidebar.
-     * @param stripControlCodes if {@code true}, the control codes will be removed, otherwise they will be copied
-     */
-    private static void copyScoreboardSidebar(boolean stripControlCodes) {
+    private static void copyScoreboardSidebar() {
         if (MC.level == null) return;
 
         Scoreboard scoreboard = MC.level.getScoreboard();
@@ -123,9 +115,9 @@ public class DevUtils {
             return;
         }
 
-        String title = stripControlCodes
-                ? TextUtils.stripColor(sideBarObjective.getDisplayName().getString())
-                : TextUtils.getFormattedText(sideBarObjective.getDisplayName(), true);
+        String title = sidebarFormatted
+                ? TextUtils.getFormattedText(sideBarObjective.getDisplayName(), true)
+                : TextUtils.stripColor(sideBarObjective.getDisplayName().getString());
         StringBuilder stringBuilder = new StringBuilder(title).append("\n");
 
         scoreboard.listPlayerScores(sideBarObjective).stream()
@@ -140,19 +132,18 @@ public class DevUtils {
                     Component decoratedName = PlayerTeam.formatNameForTeam(team, name);
 
                     // return fixed name
-                    String text = stripControlCodes
-                            ? TextUtils.stripColor(decoratedName.getString())
-                            : TextUtils.getFormattedText(decoratedName, true);
-                    stringBuilder.append(text.replace(owner, ""));
+                    String text = sidebarFormatted
+                            ? TextUtils.getFormattedText(decoratedName, true)
+                            : TextUtils.stripColor(decoratedName.getString());
 
-                    if (!stripControlCodes) {
-                        stringBuilder.append(" [").append(scoreboardEntry.value()).append("]");
-                    }
-
-                    stringBuilder.append("\n");
+                    // replace control codes (e.g. §j)
+                    stringBuilder.append(sidebarFormatted ? text : text.replace(owner, ""));
+                    stringBuilder.append(" [").append(scoreboardEntry.value()).append("]").append("\n");
                 });
 
-        copyStringToClipboard(stringBuilder.toString(), ColorCode.GREEN + "Sidebar copied to clipboard!");
+        copyStringToClipboard(
+                stringBuilder.toString(), ColorCode.GREEN + "Sidebar copied to clipboard!", true
+        );
     }
 
     /**
@@ -212,7 +203,9 @@ public class DevUtils {
         }
 
         if (!stringBuilder.isEmpty()) {
-            copyStringToClipboard(stringBuilder.toString(), ColorCode.GREEN + "Entity data was copied to clipboard!");
+            copyStringToClipboard(
+                    stringBuilder.toString(), ColorCode.GREEN + "Entity data was copied to clipboard!", true
+            );
         } else {
             Utils.sendErrorMessage("No entities matching the given parameters were found.");
         }
@@ -292,7 +285,7 @@ public class DevUtils {
                 copyEntityData();
                 break;
             case SIDEBAR:
-                copyScoreboardSideBar();
+                copyScoreboardSidebar();
                 break;
             case TAB_LIST:
                 copyTabListHeaderAndFooter();
@@ -311,7 +304,7 @@ public class DevUtils {
             Utils.sendErrorMessage("This item has no NBT data!");
             return;
         }
-        writeToClipboard(prettyPrintNBT(nbtTag), message);
+        writeToClipboard(prettyPrintNBT(nbtTag), message, true);
     }
 
     /**
@@ -342,7 +335,8 @@ public class DevUtils {
 
         copyStringToClipboard(
                 output.toString(),
-                ColorCode.GREEN + "Successfully copied the tab list header and footer to clipboard!"
+                ColorCode.GREEN + "Successfully copied the tab list header and footer to clipboard!",
+                true
         );
     }
 
@@ -364,8 +358,7 @@ public class DevUtils {
                 ```
                 """.formatted(cpu, gpu, version, lwjgl);
         copyStringToClipboard(
-                output,
-                ColorCode.GREEN + "Successfully copied the OpenGL logs to clipboard!"
+                output, ColorCode.GREEN + "Successfully copied the OpenGL logs to clipboard!", true
         );
     }
 
@@ -375,9 +368,10 @@ public class DevUtils {
      *
      * @param string the string to copy
      * @param successMessage the custom message to show after successful copy
+     * @param showToast show {@link net.minecraft.client.gui.components.toasts.Toast} instead of chat message
      */
-    public static void copyStringToClipboard(String string, String successMessage) {
-        writeToClipboard(string, successMessage);
+    public static void copyStringToClipboard(String string, String successMessage, boolean showToast) {
+        writeToClipboard(string, successMessage, showToast);
     }
 
     /**
@@ -431,7 +425,7 @@ public class DevUtils {
             }
         }
 
-        writeToClipboard(prettyPrintNBT(nbt), ColorCode.GREEN + "Successfully copied the block data!");
+        writeToClipboard(prettyPrintNBT(nbt), ColorCode.GREEN + "Successfully copied the block data!", true);
     }
 
     /**
@@ -601,11 +595,24 @@ public class DevUtils {
     }
 
     // Internal methods
-    private static void writeToClipboard(String text, String successMessage) {
+    private static void writeToClipboard(String text, String successMessage, boolean showToast) {
         try {
             MC.keyboardHandler.setClipboard(text);
             if (successMessage != null) {
-                Utils.sendMessage(successMessage);
+                if (showToast) {
+                    try {
+                        MC.getToastManager().addToast(new SystemToast( // TODO custom Toast
+                                new SystemToast.SystemToastId(2000L),
+                                Utils.COMPONENT_TITLE,
+                                Component.literal(successMessage)
+                        ));
+                    } catch (Exception e) {
+                        LOGGER.error("Couldn't add Toast!", e);
+                        Utils.sendMessage(successMessage);
+                    }
+                } else {
+                    Utils.sendMessage(successMessage);
+                }
             }
         } catch (IllegalStateException exception) {
             Utils.sendErrorMessage("Clipboard not available!");

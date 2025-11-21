@@ -311,6 +311,7 @@ public class SkyblockAddonsCommand {
         // COPY_SIDEBAR
         builder.then(literal("copySidebar").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
             DevUtils.setCopyMode(DevUtils.CopyMode.SIDEBAR);
+            DevUtils.setSidebarFormatted(DevUtils.DEFAULT_SIDEBAR_FORMATTED);
             DevUtils.copyData();
             return 1;
         }).then(argument("formatted", BoolArgumentType.bool()).executes(ctx -> {
@@ -417,7 +418,7 @@ public class SkyblockAddonsCommand {
             String command = ctx.getArgument("command", String.class);
             String arg = ctx.getArgument("arg", String.class).toLowerCase(Locale.US);
             if ("copy".equalsIgnoreCase(command)) {
-                DevUtils.copyStringToClipboard(arg, Translations.getMessage("messages.copied"));
+                DevUtils.copyStringToClipboard(arg, Translations.getMessage("messages.copied"), false);
             }
             return 1;
         }))));
