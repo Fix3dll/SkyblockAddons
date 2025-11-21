@@ -72,6 +72,8 @@ public class Utils {
             ColorCode.GRAY + "[" + ColorCode.AQUA + SkyblockAddons.METADATA.getName() + ColorCode.GRAY + "] ";
     public static final String MESSAGE_PREFIX_SHORT =
             ColorCode.GRAY + "[" + ColorCode.AQUA + "SBA" + ColorCode.GRAY + "] " + ColorCode.RESET;
+    public static final Component COMPONENT_TITLE = Component.literal(SkyblockAddons.METADATA.getName())
+            .withColor(ColorCode.AQUA.getColor());
 
     /**
      * "Skyblock" as shown on the scoreboard title in English, Chinese Simplified, Traditional Chinese.

@@ -391,7 +391,7 @@
     "classColoredTeammateRequirement": "Entity Outlines and Outline Dungeon Teammate features must be enabled",
     "perkpocalypseUnknown": "Mayor Jerry's Perkpocalypse mayor is not known! Click here to update Perkpocalypse mayor.",
     "chatMessageCopying": {
-      "unformatted": "Unformatted chat message copied to clipboard!",
+      "unformatted": "Chat message copied to clipboard!",
       "formatted": "Formatted chat message copied to clipboard!"
     }
   },

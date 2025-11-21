@@ -8,14 +8,17 @@ import com.fix3dll.skyblockaddons.mixin.extensions.ChatComponentExtension;
 import com.fix3dll.skyblockaddons.mixin.extensions.GuiMessageLineExtension;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
+import com.fix3dll.skyblockaddons.utils.Utils;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,21 +42,31 @@ public class ChatScreenMixin {
                 : InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL);
 
         if (isLeftControlDown) {
-            ChatComponentExtension extendedChatComponent = (ChatComponentExtension) (Object) chatComponent;
+            ChatComponentExtension extendedChatComponent = (ChatComponentExtension) chatComponent;
             GuiMessageLineExtension extendedLine = extendedChatComponent.sba$getGuiMessageLineAt(event, isDoubleClick);
 
             if (extendedLine != null) {
                 boolean isLeftShiftDown = InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT);
                 if (isLeftShiftDown) {
                     DevUtils.copyStringToClipboard(
-                            TextUtils.getFormattedText(extendedLine.sba$getParentComponent()),
-                            ColorCode.GREEN + Translations.getMessage("messages.chatMessageCopying.formatted")
+                            TextUtils.getFormattedText(extendedLine.sba$getParentComponent()), null
                     );
+                    Minecraft.getInstance().getToastManager().addToast(new SystemToast(
+                            new SystemToast.SystemToastId(2000L),
+                            Utils.COMPONENT_TITLE,
+                            Component.literal(Translations.getMessage("messages.chatMessageCopying.formatted"))
+                                    .withColor(ColorCode.GREEN.getColor())
+                    ));
                 } else {
                     DevUtils.copyStringToClipboard(
-                            TextUtils.stripColor(extendedLine.sba$getParentComponent().getString()),
-                            ColorCode.GREEN + Translations.getMessage("messages.chatMessageCopying.unformatted")
+                            TextUtils.stripColor(extendedLine.sba$getParentComponent().getString()), null
                     );
+                    Minecraft.getInstance().getToastManager().addToast(new SystemToast(
+                            new SystemToast.SystemToastId(2000L),
+                            Utils.COMPONENT_TITLE,
+                            Component.literal(Translations.getMessage("messages.chatMessageCopying.unformatted"))
+                                    .withColor(ColorCode.GREEN.getColor())
+                    ));
                 }
             }
         }
