@@ -138,6 +138,7 @@ public enum FeatureSetting {
     PRESSURE_TEXT_ICON("settings.pressureText.icon", Feature.PRESSURE_TEXT),
     PET_PANEL("settings.equipmentsInInventory.petPanel", Feature.EQUIPMENTS_IN_INVENTORY),
     BIGGER_WAKE("settings.coloredFishingParticles.biggerWake", Feature.COLORED_FISHING_PARTICLES),
+    SHOW_ONLY_WHEN_SCORPIUS_IS_MAYOR("settings.showOnlyWhenScorpiusIsMayor", Feature.DARK_AUCTION_TIMER),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),

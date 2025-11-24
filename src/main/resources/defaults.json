@@ -160,7 +160,8 @@
     ],
     "color": -22016,
     "settings": {
-      "DARK_AUCTION_TIMER_IN_OTHER_GAMES": true
+      "DARK_AUCTION_TIMER_IN_OTHER_GAMES": true,
+      "SHOW_ONLY_WHEN_SCORPIUS_IS_MAYOR": false
     }
   },
   "ITEM_PICKUP_LOG": {

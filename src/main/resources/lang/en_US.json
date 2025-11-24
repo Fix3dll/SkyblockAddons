@@ -290,7 +290,8 @@
     "coloredFishingParticles": {
       "title": "Custom Colored Fishing Particles",
       "biggerWake": "Enlarge Wake Particles"
-    }
+    },
+    "showOnlyWhenScorpiusIsMayor": "Show only when Scorpius is mayor"
   },
   "messages": {
     "enchants": "Enchants",

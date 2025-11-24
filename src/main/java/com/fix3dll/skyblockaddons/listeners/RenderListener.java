@@ -856,6 +856,10 @@ public class RenderListener {
                 }
             }
             case DARK_AUCTION_TIMER -> {
+                if (Feature.DARK_AUCTION_TIMER.isEnabled(FeatureSetting.SHOW_ONLY_WHEN_SCORPIUS_IS_MAYOR)
+                        && !"Scorpius".equals(main.getUtils().getMayor())) {
+                    return;
+                }
                 // The timezone of the server, to avoid problems with like timezones that are 30 minutes ahead or whatnot.
                 ZonedDateTime nowDA = SkyblockAddons.getHypixelZonedDateTime();
                 ZonedDateTime nextDarkAuction = nowDA.withMinute(55).withSecond(0);
