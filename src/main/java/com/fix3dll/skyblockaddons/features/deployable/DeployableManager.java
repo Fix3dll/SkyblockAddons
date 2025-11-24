@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.utils.TextUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -28,7 +29,9 @@ public class DeployableManager {
 
     /** The DeployableManager instance. */
     @Getter private static final DeployableManager instance = new DeployableManager();
+    private static final Minecraft MC = Minecraft.getInstance();
     private static final Pattern POWER_ORB_PATTERN = Pattern.compile("[A-Za-z ]* (?<seconds>[0-9]*)s");
+    private static final Pattern TOTEM_PATTERN = Pattern.compile("Remaining: (?:(?<minutes>\\d{1,2})m )?(?<seconds>\\d{1,2})s");
 
     /** Entry displaying {@link Deployable#SOS_FLARE} at 90 seconds for the edit screen */
     public static ArmorStand DUMMY_ARMOR_STAND;
@@ -37,7 +40,7 @@ public class DeployableManager {
     private final Map<Deployable, DeployableEntry> deployableEntryMap = new HashMap<>();
 
     static {
-        DUMMY_ARMOR_STAND = new ArmorStand(EntityType.ARMOR_STAND, Minecraft.getInstance().level);
+        DUMMY_ARMOR_STAND = new ArmorStand(EntityType.ARMOR_STAND, MC.level);
         DUMMY_ARMOR_STAND.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHead("SOS_FLARE"));
         DUMMY_ARMOR_STAND.setInvisible(true);
         DUMMY_DEPLOYABLE_ENTRY = new DeployableEntry(Deployable.SOS_FLARE, 90, DUMMY_ARMOR_STAND.getUUID());
@@ -70,48 +73,65 @@ public class DeployableManager {
      * @param entityArmorStand The entity to detect whether it is a deployable or not.
      */
     public void detectDeployables(ArmorStand entityArmorStand) {
-        if (entityArmorStand.getCustomName() != null) {
-            Minecraft mc = Minecraft.getInstance();
+        Component customName = entityArmorStand.getCustomName();
 
-            String customNameTag;
-            if (entityArmorStand.getCustomName() != null) {
-                customNameTag = entityArmorStand.getCustomName().getString();
-            } else {
-                return;
-            }
+        if (customName != null) {
+            String customNameString = customName.getString();
+            Deployable orb = Deployable.getByDisplayName(customNameString);
 
-            Deployable orb = Deployable.getByDisplayName(customNameTag);
-
-            if (orb != null && orb.isInRadius(entityArmorStand.distanceToSqr(mc.player))) {
-                Matcher matcher = POWER_ORB_PATTERN.matcher(customNameTag);
-
-                if (matcher.matches()) {
-                    int seconds;
-                    try {
-                        // Apparently they don't have a second count for moment after spawning, that's what this try-catch is for
-                        seconds = Integer.parseInt(matcher.group("seconds"));
-                    } catch (NumberFormatException ex) {
-                        // It's okay, just don't add the deployable I guess...
-                        return;
-                    }
-
-                    if (mc.level == null) return;
-                    List<ArmorStand> surroundingArmorStands = mc.level.getEntitiesOfClass(
+            if (orb != null && orb.isInRadius(entityArmorStand.distanceToSqr(MC.player))) {
+                if (orb == Deployable.TOTEM_OF_CORRUPTION) {
+                    List<ArmorStand> surroundingArmorStands = MC.level.getEntitiesOfClass(
                             ArmorStand.class,
                             new AABB(
                                     entityArmorStand.getX() - 0.1,
                                     entityArmorStand.getY() - 1,
                                     entityArmorStand.getZ() - 0.1,
                                     entityArmorStand.getX() + 0.1,
-                                    entityArmorStand.getY() + 1,
+                                    entityArmorStand.getY(),
                                     entityArmorStand.getZ() + 0.1
-                            ),
-                            armorStandEntity -> armorStandEntity.getItemBySlot(EquipmentSlot.HEAD) != ItemStack.EMPTY
+                            )
                     );
-                    if (!surroundingArmorStands.isEmpty()) {
-                        ArmorStand orbArmorStand = surroundingArmorStands.getFirst();
+                    for (ArmorStand entry : surroundingArmorStands) {
+                        Component entryCustomName = entry.getCustomName();
+                        if (entryCustomName == null) continue;
 
-                        put(orb, seconds, orbArmorStand == null ? null : orbArmorStand.getUUID());
+                        Matcher matcher = TOTEM_PATTERN.matcher(entryCustomName.getString());
+                        if (matcher.matches()) {
+                            put(orb, getSeconds(matcher), entry.getUUID());
+                            break;
+                        }
+                    }
+                } else {
+                    Matcher matcher = POWER_ORB_PATTERN.matcher(customNameString);
+
+                    if (matcher.matches()) {
+                        int seconds;
+                        try {
+                            // Apparently they don't have a second count for moment after spawning, that's what this try-catch is for
+                            seconds = Integer.parseInt(matcher.group("seconds"));
+                        } catch (NumberFormatException ex) {
+                            // It's okay, just don't add the deployable I guess...
+                            return;
+                        }
+
+                        List<ArmorStand> surroundingArmorStands = MC.level.getEntitiesOfClass(
+                                ArmorStand.class,
+                                new AABB(
+                                        entityArmorStand.getX() - 0.1,
+                                        entityArmorStand.getY() - 1,
+                                        entityArmorStand.getZ() - 0.1,
+                                        entityArmorStand.getX() + 0.1,
+                                        entityArmorStand.getY() + 1,
+                                        entityArmorStand.getZ() + 0.1
+                                ),
+                                armorStandEntity -> armorStandEntity.getItemBySlot(EquipmentSlot.HEAD) != ItemStack.EMPTY
+                        );
+                        if (!surroundingArmorStands.isEmpty()) {
+                            ArmorStand orbArmorStand = surroundingArmorStands.getFirst();
+
+                            put(orb, seconds, orbArmorStand == null ? null : orbArmorStand.getUUID());
+                        }
                     }
                 }
             }
@@ -128,7 +148,7 @@ public class DeployableManager {
                 if (decodedTextureUrl == null) return;
 
                 Deployable flare = Deployable.getByTextureId(decodedTextureUrl);
-                if (flare != null && flare.isInRadius(entityArmorStand.distanceToSqr(Minecraft.getInstance().player))) {
+                if (flare != null && flare.isInRadius(entityArmorStand.distanceToSqr(MC.player))) {
                     // Default exist time of flares
                     int seconds = 180;
                     // 1 tick = 50ms
@@ -138,6 +158,21 @@ public class DeployableManager {
                 }
             }
         }
+    }
+
+    private static int getSeconds(Matcher matcher) {
+        String secondsStr = matcher.group("seconds");
+        int seconds = 0;
+        if (secondsStr != null && !secondsStr.isEmpty()) {
+            seconds = Integer.parseInt(secondsStr);
+        }
+
+        String minutesStr = matcher.group("minutes");
+        if (minutesStr != null && !minutesStr.isEmpty()) {
+            seconds += Integer.parseInt(minutesStr) * 60;
+        }
+
+        return seconds;
     }
 
     @Getter @AllArgsConstructor

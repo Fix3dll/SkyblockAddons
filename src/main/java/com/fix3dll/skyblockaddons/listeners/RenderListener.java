@@ -2441,7 +2441,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             entity = DeployableManager.DUMMY_ARMOR_STAND;
         }
 
-        if (entity instanceof ArmorStand armorStand) {
+        if (entity instanceof ArmorStand armorStand && !isUnarmored(armorStand)) {
             drawDeployableArmorStand(graphics, armorStand, x, y, scale);
         } else {
             graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
@@ -2540,8 +2540,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         int iconAndSecondsHeight = DEPLOYABLE_GUI_SIZE + MC.font.lineHeight;
 
         int effectsHeight = (MC.font.lineHeight + spacingBetweenLines) * display.size();
-        int width = DEPLOYABLE_GUI_SIZE + 2 + longestLine.map(MC.font::width).orElseGet(() ->
-                MC.font.width(display.getFirst())
+        int width = DEPLOYABLE_GUI_SIZE + 2 + longestLine.map(MC.font::width).orElseGet(
+                () -> display.isEmpty() ? 0 : MC.font.width(display.getFirst())
         );
         int height = Math.max(effectsHeight, iconAndSecondsHeight);
 
@@ -2571,7 +2571,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             entity = DeployableManager.DUMMY_ARMOR_STAND;
         }
 
-        if (entity instanceof ArmorStand armorStand) {
+        if (entity instanceof ArmorStand armorStand && !isUnarmored(armorStand)) {
             drawDeployableArmorStand(graphics, armorStand, x, y, scale);
         } else {
             graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
@@ -2596,6 +2596,19 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                     ColorCode.WHITE.getColor()
             );
         }
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean isUnarmored(LivingEntity livingEntity) {
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (!slot.isArmor()) continue;
+            ItemStack slotItem = livingEntity.getItemBySlot(slot);
+
+            if (slotItem != ItemStack.EMPTY) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setGui() {

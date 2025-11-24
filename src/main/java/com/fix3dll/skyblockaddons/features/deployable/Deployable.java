@@ -21,7 +21,10 @@ public enum Deployable {
     SOS_FLARE(1.25, 30, 25, 10, 5,  "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b", 40*40, "sos"),
 
     // Umberella
-    UMBERELLA("Umberella ", 5, 30*30, "umberella");
+    UMBERELLA("Umberella ", 5, 30*30, "umberella"),
+
+    // Totem of Corruption
+    TOTEM_OF_CORRUPTION("Totem of Corruption", 30*30, "totem_of_corruption");
 
     /**
      * Start of the display name of the actual floating deployable entity.
@@ -79,32 +82,41 @@ public enum Deployable {
 
     // Orbs
     Deployable(String display, double healthRegen, double manaRegen, int strength, double vitality, double mending, int rangeSquared, String resourcePath) {
+        this(rangeSquared, resourcePath);
         this.display = display;
         this.healthRegen = healthRegen;
         this.manaRegen = manaRegen;
         this.strength = strength;
         this.vitality = vitality;
         this.mending = mending;
-        this.rangeSquared = rangeSquared;
-        this.resourceLocation = SkyblockAddons.resourceLocation("deployables/"+resourcePath+".png");
     }
 
     // Flares
     Deployable(double manaRegen, double vitality, int trueDefense, int ferocity, int bonusAttackSpeed, String textureId, int rangeSquared, String resourcePath) {
+        this(rangeSquared, resourcePath);
         this.manaRegen = manaRegen;
         this.vitality = vitality;
         this.trueDefense = trueDefense;
         this.ferocity = ferocity;
         this.bonusAttackSpeed = bonusAttackSpeed;
-        this.rangeSquared = rangeSquared;
-        this.resourceLocation = SkyblockAddons.resourceLocation("deployables/"+resourcePath+".png");
         this.textureId = textureId;
     }
 
     // Umberella
     Deployable(String display, int trophyFishChance, int rangeSquared, String resourcePath) {
+        this(rangeSquared, resourcePath);
         this.display = display;
         this.trophyFishChance = trophyFishChance;
+    }
+
+    // Totem of Corruption
+    Deployable(String display, int rangeSquared, String resourcePath) {
+        this(rangeSquared, resourcePath);
+        this.display = display;
+    }
+
+    // Base
+    Deployable(int rangeSquared, String resourcePath) {
         this.rangeSquared = rangeSquared;
         this.resourceLocation = SkyblockAddons.resourceLocation("deployables/"+resourcePath+".png");
     }
