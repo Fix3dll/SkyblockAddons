@@ -36,6 +36,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.block.Blocks;
@@ -66,6 +67,7 @@ public class ContainerPreviewManager {
     private static final ResourceLocation CHEST_GUI_TEXTURE = SkyblockAddons.resourceLocation("containerpreview.png");
     private static final Pattern BACKPACK_STORAGE_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
     private static final Pattern ENDERCHEST_STORAGE_PATTERN = Pattern.compile("Ender Chest Page (?<page>\\d+)");
+    private static final ItemStack EMPTY_SLOT_ITEM = Items.AIR.getDefaultInstance();
 
     /**
      * The container preview to render
@@ -232,9 +234,11 @@ public class ContainerPreviewManager {
                     }
 
                     items.add(i, modernItem);
+                } else if (itemTag.isEmpty()) {
+                    items.add(i, EMPTY_SLOT_ITEM);
                 } else {
                     Optional<ItemStack> itemStack = ItemUtils.parseTag(itemTag);
-                    items.add(i, itemStack.orElse(ItemStack.EMPTY));
+                    items.add(i, itemStack.orElse(EMPTY_SLOT_ITEM));
                 }
             }
         } catch (Exception ex) {
