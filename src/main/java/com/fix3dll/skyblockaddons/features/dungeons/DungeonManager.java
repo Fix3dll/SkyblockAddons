@@ -14,14 +14,12 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.LightTexture;
@@ -33,12 +31,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.text.ParseException;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -80,7 +80,7 @@ public class DungeonManager {
     @Getter private final EnumMap<EssenceType, Integer> salvagedEssences = new EnumMap<>(EssenceType.class);
 
     /** The current teammates of the dungeon game */
-    @Getter private final Object2ObjectOpenHashMap<String, DungeonPlayer> teammates = new Object2ObjectOpenHashMap<>();
+    @Getter private final HashMap<String, DungeonPlayer> teammates = new HashMap<>(4);
 
     /** The current number of secrets found in the room */
     @Getter @Setter private int secrets = -1;
@@ -311,7 +311,7 @@ public class DungeonManager {
                 try {
                     health = TextUtils.NUMBER_FORMAT.parse(healthText).intValue();
                 } catch (ParseException ex) {
-                    LOGGER.error("Failed to parse playerEntity "+ name + " health: " + healthText, ex);
+                    LOGGER.error("Failed to parse player '{}' health: {}", name, healthText, ex);
                     return;
                 }
             }
@@ -329,10 +329,12 @@ public class DungeonManager {
                 }
             }
 
-            ClientPacketListener networkHandler =  MC.getConnection();
-            if (networkHandler == null) return;
+            DungeonPlayer computedValue = teammates.computeIfPresent(name, (k, v) ->
+                    new DungeonPlayer(name, dungeonClass, healthColor, health, v.getEntityId())
+            );
+            if (computedValue != null) return; // already computed
 
-            for (PlayerInfo playerListEntry : networkHandler.getOnlinePlayers()) {
+            for (PlayerInfo playerListEntry : MC.getConnection().getOnlinePlayers()) {
                 String profileName = playerListEntry.getProfile().name();
 
                 if (profileName.startsWith(name)) {
@@ -425,13 +427,13 @@ public class DungeonManager {
 
         if (level != null && main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon() && (criticalOverlayEnabled || nameOverlayEnabled)) {
             Entity cameraEntity = MC.getCameraEntity();
-            AbstractClientPlayer player = null;
+            Player player = null;
             DungeonPlayer dungeonPlayer = null;
 
 
             for (DungeonPlayer teammate : teammates.values()) {
                 if (TabStringType.usernameFromLine(nameTag.getString()).equals(teammate.getName())) {
-                    if (level.getEntity(teammate.getEntityId()) instanceof AbstractClientPlayer playerEntity) {
+                    if (level.getEntity(teammate.getEntityId()) instanceof Player playerEntity) {
                         player = playerEntity;
                         dungeonPlayer = teammate;
                         break;

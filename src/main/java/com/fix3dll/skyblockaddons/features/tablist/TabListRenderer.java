@@ -3,7 +3,6 @@ package com.fix3dll.skyblockaddons.features.tablist;
 import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
@@ -18,8 +17,6 @@ import java.util.List;
 
 public class TabListRenderer {
 
-    private static final Font FONT = Minecraft.getInstance().font;
-
     public static final int MAX_LINES = 22;
     private static final int LINE_HEIGHT = 8 + 1;
     private static final int PADDING = 3;
@@ -28,10 +25,12 @@ public class TabListRenderer {
     public static void render(GuiGraphics graphics) {
         Minecraft mc = Minecraft.getInstance();
 
-        List<RenderColumn> columns = TabListParser.getRenderColumns();
+        List<RenderColumn> columns = TabListParser.getRenderColumns().combinedRenderColumns();
         if (columns == null) {
             return;
         }
+
+        List<PlayerInfo> playerInfos = TabListParser.getRenderColumns().vanillaPlayerInfos();
 
         // Calculate maximums...
         int maxLines = 0;
@@ -102,9 +101,9 @@ public class TabListRenderer {
             for (TabLine tabLine : renderColumn.getLines()) {
                 int savedX = middleX;
 
-                if (tabLine.type() == TabStringType.PLAYER && mc.getConnection() != null) {
-                    PlayerInfo playerInfo = mc.getConnection().getPlayerInfo(TabStringType.usernameFromLine(tabLine.text()));
-                    if (playerInfo != null) {
+                if (tabLine.type() == TabStringType.PLAYER) {
+                    if (tabLine.vanillaIndex() != -1 && tabLine.vanillaIndex() < playerInfos.size()) {
+                        PlayerInfo playerInfo = playerInfos.get(tabLine.vanillaIndex());
                         PlayerFaceRenderer.draw(graphics, playerInfo.getSkin(), middleX, middleY, 8);
                     }
                     middleX += 8 + 2;

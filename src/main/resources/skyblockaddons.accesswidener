@@ -32,3 +32,4 @@ extendable class net/minecraft/client/gui/render/state/GuiTextRenderState
 accessible field net/minecraft/client/renderer/MapRenderer decorationSprites Lnet/minecraft/client/renderer/texture/TextureAtlas;
 accessible field net/minecraft/client/particle/ParticleResources spriteSets Ljava/util/Map;
 accessible class net/minecraft/client/particle/ParticleResources$MutableSpriteSet
+accessible method net/minecraft/client/gui/components/PlayerTabOverlay getPlayerInfos ()Ljava/util/List;

@@ -2,7 +2,7 @@ package com.fix3dll.skyblockaddons.features.tablist;
 
 import net.minecraft.client.Minecraft;
 
-public record TabLine(String text, TabStringType type) {
+public record TabLine(String text, TabStringType type, int vanillaIndex) {
 
     public int getWidth() {
 

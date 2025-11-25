@@ -4,12 +4,12 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonClass;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonPlayer;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class HealingCircle {
 
         // The middle point, which is the first point for consistency. The circle will not appear
         // until two other points exist, one that is left of this one, and one right.
-        Point2D.Double middlePoint = healingCircleParticles.get(0).getPoint();
+        Point2D.Double middlePoint = healingCircleParticles.getFirst().getPoint();
 
         // The first point, which can be anywhere on the circle as long as its a decent
         // distance away from the middle.
@@ -206,7 +206,7 @@ public class HealingCircle {
     private void calculateRadius() {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        Object2ObjectOpenHashMap<String, DungeonPlayer> teammates = main.getDungeonManager().getTeammates();
+        HashMap<String, DungeonPlayer> teammates = main.getDungeonManager().getTeammates();
         Pair<DungeonClass, Integer> thePlayerClass = main.getDungeonManager().getThePlayerClass();
         boolean isThePlayerHealer = thePlayerClass != null && thePlayerClass.getLeft() == DungeonClass.HEALER;
 

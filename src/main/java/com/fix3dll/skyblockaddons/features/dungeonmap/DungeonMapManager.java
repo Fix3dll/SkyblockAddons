@@ -12,8 +12,6 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -22,6 +20,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -40,13 +39,17 @@ import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.Logger;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
@@ -55,8 +58,9 @@ import java.util.TreeSet;
 
 public class DungeonMapManager {
 
-    private static final Minecraft MC = Minecraft.getInstance();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Minecraft MC = Minecraft.getInstance();
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     public static final float MIN_ZOOM = 0.5F;
     public static final float MAX_ZOOM = 5F;
@@ -94,6 +98,7 @@ public class DungeonMapManager {
     /** The offset added to the player's z-coordinate when calculating their map marker coordinates */
     @Getter private static double markerOffsetZ = 0;
     private static final NavigableMap<Long, Vec3> previousLocations = new TreeMap<>();
+    private static final HashMap<String, PlayerSkinInfo> cachedSkinInfo = new HashMap<>(5);
 
     public static void drawDungeonsMap(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
         if (buttonLocation == null && !main.getUtils().isInDungeon()) {
@@ -239,7 +244,7 @@ public class DungeonMapManager {
                     drawMap(graphics, mapData, mapId, isScoreSummary, zoomScaleFactor);
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex);
             }
         } else {
             if (rotate) {
@@ -249,7 +254,6 @@ public class DungeonMapManager {
 
             graphics.blit(RenderPipelines.GUI_TEXTURED, DUNGEON_MAP, 0, 0, 0, 0, 128, 128, 128, 128);
         }
-//        graphics.flush();
         graphics.disableScissor();
         poseStack.popMatrix();
     }
@@ -287,21 +291,17 @@ public class DungeonMapManager {
         TreeSet<MapMarker> allMarkers = new TreeSet<>(MAP_MARKER_COMPARATOR);
 
         // Grab all the teammates and try to correlate them to the map
-        Object2ObjectOpenHashMap<String, DungeonPlayer> teammates = main.getDungeonManager().getTeammates();
-        ObjectIterator<DungeonPlayer> iterator = teammates.values().iterator();
-        while (MC.level != null) {
-            DungeonPlayer teammate;
-            if (iterator.hasNext()) {
-                teammate = iterator.next();
-            } else {
-                teammate = null;
-            }
-
+        HashMap<String, DungeonPlayer> teammates = main.getDungeonManager().getTeammates();
+        for (AbstractClientPlayer clientPlayer : MC.level.players()) {
+            DungeonPlayer dungeonTeammate = teammates.get(clientPlayer.getGameProfile().name());
             MapMarker playerMarker;
-            if (teammate != null && MC.level.getPlayerByUUID(teammate.getEntityId()) instanceof Player player) {
-                playerMarker = getMapMarkerForPlayer(teammate, player);
+
+            if (dungeonTeammate != null) {
+                playerMarker = getMapMarkerForPlayer(dungeonTeammate, clientPlayer);
+            } else if (clientPlayer == MC.player) {
+                playerMarker = getMapMarkerForPlayer(null, clientPlayer);
             } else {
-                playerMarker = getMapMarkerForPlayer(null, MC.player);
+                playerMarker = null;
             }
 
             if (playerMarker != null) {
@@ -310,28 +310,35 @@ public class DungeonMapManager {
                 }
                 allMarkers.add(playerMarker);
             }
-
-            if (teammate == null) break;
         }
 
         // Grab all the map icons to make sure we don't miss any that weren't correlated before
-        for (Map.Entry<String, MapDecoration> decoration : savedMapDecorations.entrySet()) {
-            String string = decoration.getKey();
-            MapDecoration mapDecoration = decoration.getValue();
+        for (Map.Entry<String, MapDecoration> decorationEntry : savedMapDecorations.entrySet()) {
+            String decorationName = decorationEntry.getKey();
+            MapDecoration mapDecoration = decorationEntry.getValue();
+
             // If we replaced this marker with a smooth one OR this is the player's marker, lets skip.
-            if (dontAddMarkerNames.contains(string) || mapDecoration.type().value() == MapDecorationTypes.FRAME.value()) {
+            if (dontAddMarkerNames.contains(decorationName) || mapDecoration.type().value() == MapDecorationTypes.FRAME.value()) {
                 continue;
             }
 
             // Check if this marker key is linked to a player
-            DungeonPlayer foundDungeonPlayer = null;
             boolean linkedToPlayer = false;
             for (DungeonPlayer dungeonPlayer : teammates.values()) {
-                if (dungeonPlayer.getMapMarker() != null) {
+                MapMarker mapMarker = dungeonPlayer.getMapMarker();
+
+                if (mapMarker != null) {
                     String mapMarkerName = dungeonPlayer.getMapMarker().getMapMarkerName();
-                    if (mapMarkerName != null && mapMarkerName.equals(string)) {
+                    if (mapMarkerName != null && mapMarkerName.equals(decorationName)) {
+                        // This marker is linked to a player, lets update that marker's data to the server's
+                        mapMarker.setX(mapDecoration.x());
+                        mapMarker.setY(mapDecoration.y());
+                        mapMarker.setRotation(mapDecoration.rot());
+                        if (mapMarker.getPlayerName() == null) {
+                            mapMarker.setPlayerName(dungeonPlayer.getName());
+                        }
+                        allMarkers.add(mapMarker);
                         linkedToPlayer = true;
-                        foundDungeonPlayer = dungeonPlayer;
                         break;
                     }
                 }
@@ -342,29 +349,39 @@ public class DungeonMapManager {
                 allMarkers.add(
                         new MapMarker(mapDecoration.type().value(), mapDecoration.x(), mapDecoration.y(), mapDecoration.rot())
                 );
-            } else {
-                // This marker is linked to a player, lets update that marker's data to the server's
-                MapMarker mapMarker = foundDungeonPlayer.getMapMarker();
-                mapMarker.setX(mapDecoration.x());
-                mapMarker.setY(mapDecoration.y());
-                mapMarker.setRotation(mapDecoration.rot());
-                allMarkers.add(mapMarker);
             }
         }
 
         markerScale = 4.0F / markerScale;
 
-        for (MapMarker marker : allMarkers) {
-            String markerName = marker.getPlayerName();
-            boolean showPlayerHead = Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.SHOW_PLAYER_HEADS_ON_MAP);
+        boolean showPlayerHead = Feature.DUNGEONS_MAP_DISPLAY.isEnabled(FeatureSetting.SHOW_PLAYER_HEADS_ON_MAP);
+        boolean unexpectedSkin;
+        Collection<PlayerInfo> onlinePlayersInfo;
+        if (showPlayerHead) {
+            unexpectedSkin = unexpectedSkin();
+            onlinePlayersInfo = MC.getConnection().getOnlinePlayers();
+        } else {
+            unexpectedSkin = false;
+            onlinePlayersInfo = List.of();
+        }
 
-            PlayerInfo markerPlayerInfo = null;
-            if (showPlayerHead && markerName != null) {
-                //noinspection DataFlowIssue
-                for (PlayerInfo playerInfo : MC.getConnection().getOnlinePlayers()) {
-                    if (markerName.equals(playerInfo.getProfile().name())) {
-                        markerPlayerInfo = playerInfo;
-                        break;
+        for (MapMarker marker : allMarkers) {
+            String markerPlayerName = marker.getPlayerName();
+            PlayerSkinInfo markerSkinInfo = null;
+
+            if (showPlayerHead && markerPlayerName != null) {
+                // Try to get the cached value.
+                markerSkinInfo = cachedSkinInfo.get(markerPlayerName);
+                // If the cached value does not exist, create it.
+                if (markerSkinInfo == null || unexpectedSkin) {
+                    for (PlayerInfo playerInfo : onlinePlayersInfo) {
+                        if (markerPlayerName.equals(playerInfo.getProfile().name())) {
+                            markerSkinInfo = cachedSkinInfo.put(
+                                    markerPlayerName,
+                                    new PlayerSkinInfo(playerInfo.showHat(), playerInfo.getSkin().body().texturePath())
+                            );
+                            break;
+                        }
                     }
                 }
             }
@@ -374,14 +391,14 @@ public class DungeonMapManager {
             poseStack.rotate((float) (Math.PI / 180.0) * marker.getRotation() * 360.0F / 16.0F);
             poseStack.scale(markerScale, markerScale);
 
-            if (markerPlayerInfo != null) {
+            if (markerSkinInfo != null) {
                 graphics.guiRenderState.submitGuiElement(
                         new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), -1.2F, -1.2F, 1.2F, 1.2F, 0xFF000000, graphics.scissorStack.peek())
                 );
 
                 int color = -1;
-                if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() && teammates.containsKey(markerName)) {
-                    DungeonPlayer dungeonPlayer = teammates.get(markerName);
+                if (Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES.isEnabled() && teammates.containsKey(markerPlayerName)) {
+                    DungeonPlayer dungeonPlayer = teammates.get(markerPlayerName);
                     if (dungeonPlayer.isLow()) {
                         color = ARGB.colorFromFloat(1F, 1F, 1F, 0.5F);
                     } else if (dungeonPlayer.isCritical()) {
@@ -389,12 +406,11 @@ public class DungeonMapManager {
                     }
                 }
 
-                ResourceLocation skin = markerPlayerInfo.getSkin().body().texturePath();
                 poseStack.pushMatrix();
                 poseStack.scale(0.25F, 0.25F);
-                graphics.blit(RenderPipelines.GUI_TEXTURED, skin, -4, -4, 8.0F, 8, 8, 8, 8, 8, 64, 64, color);
-                if (markerPlayerInfo.showHat()) {
-                    graphics.blit(RenderPipelines.GUI_TEXTURED, skin, -4, -4, 40.0F, 8, 8, 8, 8, 8, 64, 64, color);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, markerSkinInfo.bodySkinPath, -4, -4, 8.0F, 8, 8, 8, 8, 8, 64, 64, color);
+                if (markerSkinInfo.showHat) {
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, markerSkinInfo.bodySkinPath, -4, -4, 40.0F, 8, 8, 8, 8, 8, 64, 64, color);
                 }
                 poseStack.popMatrix();
             } else {
@@ -408,23 +424,21 @@ public class DungeonMapManager {
 
                 if (textureAtlasSprite != null) {
                     GpuTextureView atlasLocation = textureManager.getTexture(textureAtlasSprite.atlasLocation()).getTextureView();
-                    graphics.guiRenderState.submitGuiElement(
-                            new BlitRenderState(
-                                    RenderPipelines.GUI_TEXTURED,
-                                    TextureSetup.singleTexture(atlasLocation),
-                                    new Matrix3x2f(poseStack),
-                                    -1,
-                                    -1,
-                                    1,
-                                    1,
-                                    textureAtlasSprite.getU0(),
-                                    textureAtlasSprite.getU1(),
-                                    textureAtlasSprite.getV1(),
-                                    textureAtlasSprite.getV0(),
-                                    -1,
-                                    graphics.scissorStack.peek()
-                            )
-                    );
+                    graphics.guiRenderState.submitGuiElement(new BlitRenderState(
+                            RenderPipelines.GUI_TEXTURED,
+                            TextureSetup.singleTexture(atlasLocation),
+                            new Matrix3x2f(poseStack),
+                            -1,
+                            -1,
+                            1,
+                            1,
+                            textureAtlasSprite.getU0(),
+                            textureAtlasSprite.getU1(),
+                            textureAtlasSprite.getV1(),
+                            textureAtlasSprite.getV0(),
+                            -1,
+                            graphics.scissorStack.peek()
+                    ));
                 }
             }
             poseStack.popMatrix();
@@ -440,6 +454,9 @@ public class DungeonMapManager {
             } else {
                 mapMarker = dungeonPlayer.getMapMarker();
                 mapMarker.updateXZRot(player);
+                if (mapMarker.getPlayerName() == null) {
+                    mapMarker.setPlayerName(player.getGameProfile().name());
+                }
             }
         } else {
             mapMarker = new MapMarker(player);
@@ -537,11 +554,28 @@ public class DungeonMapManager {
         main.getConfigValuesManager().saveConfig();
     }
 
+    public static void clearSkinCache() {
+        cachedSkinInfo.clear();
+    }
+
     private static float transformXY(float xy, int widthHeight, float scale) {
         float minecraftScale = (float) MC.getWindow().getGuiScale();
         xy -= widthHeight / 2F * scale;
         xy = Math.round(xy * minecraftScale) / minecraftScale;
         return xy / scale;
+    }
+
+    private static boolean unexpectedSkin() {
+        LocalPlayer player = MC.player;
+        if (player == null) return true;
+
+        PlayerSkinInfo cachedPlayerSkinInfo = cachedSkinInfo.get(player.getGameProfile().name());
+        if (cachedPlayerSkinInfo == null) return true;
+
+        return player.getSkin().body().texturePath() != cachedPlayerSkinInfo.bodySkinPath;
+    }
+
+    private record PlayerSkinInfo(boolean showHat, ResourceLocation bodySkinPath) {
     }
 
 }

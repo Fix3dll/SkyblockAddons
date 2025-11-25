@@ -9,15 +9,14 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.spooky.SpookyEventManager;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -26,6 +25,7 @@ import java.util.regex.Pattern;
 public class TabListParser {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Minecraft MC = Minecraft.getInstance();
 
     public static final String HYPIXEL_ADVERTISEMENT_CONTAINS = "HYPIXEL.NET";
 
@@ -41,32 +41,26 @@ public class TabListParser {
     private static final Pattern OLD_SKILL_LEVEL_PATTERN = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
     private static final Pattern JERRY_POWER_UPS_PATTERN = Pattern.compile("Active Power Ups(?:§.)*(?:\\n(§.)*§7.+)*");
 
-    @Getter private static List<RenderColumn> renderColumns;
+    /** left is vanilla, right is parsed */
+    @Getter private static RenderColumns renderColumns;
     @Getter private static String parsedRainTime;
 
     public static void parse() {
-        Minecraft mc = Minecraft.getInstance();
-
         if (!main.getUtils().isOnSkyblock() || isRelatedFeaturesDisabled()) {
             renderColumns = null;
             return;
         }
 
-        if (mc.player == null || !mc.player.connection.isAcceptingMessages()) {
+        if (MC.player == null || !MC.player.connection.isAcceptingMessages()) {
             renderColumns = null;
             return;
         }
 
-        ClientPacketListener connection = mc.player.connection;
-        List<PlayerInfo> fullList = connection.getListedOnlinePlayers().stream()
-                .sorted(Comparator.comparing(playerInfo -> playerInfo.getProfile().name()))
-                .toList();
+        List<PlayerInfo> fullList = MC.gui.getTabList().getPlayerInfos();
         if (fullList.size() < 80) {
             renderColumns = null;
             return;
         }
-        fullList = fullList.subList(0, 80);
-
 
         // Parse into columns, combining any duplicate columns
         List<ParsedTabColumn> columns = parseColumns(fullList);
@@ -80,9 +74,9 @@ public class TabListParser {
         parseSections(columns);
 
         // Combine columns into how they will be rendered
-        renderColumns = new LinkedList<>();
+        renderColumns = new RenderColumns(fullList, new LinkedList<>());
         RenderColumn renderColumn = new RenderColumn();
-        renderColumns.add(renderColumn);
+        renderColumns.combinedRenderColumns.add(renderColumn);
         combineColumnsToRender(columns, renderColumn);
     }
 
@@ -97,7 +91,7 @@ public class TabListParser {
     }
 
     private static List<ParsedTabColumn> parseColumns(List<PlayerInfo> fullList) {
-        PlayerTabOverlay tabList = Minecraft.getInstance().gui.getTabList();
+        PlayerTabOverlay tabList = MC.gui.getTabList();
 
         List<ParsedTabColumn> columns = new LinkedList<>();
         for (int entry = 0; entry < fullList.size(); entry += 20) {
@@ -110,7 +104,7 @@ public class TabListParser {
 
             for (int columnEntry = entry + 1; columnEntry < fullList.size() && columnEntry < entry + 20; columnEntry++) {
                 String legacyFormatted = TextUtils.getFormattedText(tabList.getNameForDisplay(fullList.get(columnEntry)));
-                column.addLine(legacyFormatted);
+                column.addLine(columnEntry, legacyFormatted);
             }
         }
 
@@ -119,7 +113,7 @@ public class TabListParser {
 
     private static final Pattern TABLIST_S = Pattern.compile("(?i)§S");
     public static ParsedTabColumn parseFooterAsColumn() {
-        PlayerTabOverlay tabList = Minecraft.getInstance().gui.getTabList();
+        PlayerTabOverlay tabList = MC.gui.getTabList();
 
         if (tabList.footer == null) {
             return null;
@@ -176,7 +170,7 @@ public class TabListParser {
                 if (!firstPart.contains("§l")) {
                     firstPart = " " + firstPart;
                 }
-                column.addLine(firstPart);
+                column.addLine(80 + column.size(), firstPart);
 
                 line = m.group("secondPart");
             }
@@ -186,7 +180,7 @@ public class TabListParser {
                 line = " " + line;
             }
 
-            column.addLine(line);
+            column.addLine(80 + column.size(), line);
         }
 
         return column;
@@ -199,16 +193,16 @@ public class TabListParser {
         boolean foundSkill = false;
         for (ParsedTabColumn column : columns) {
             ParsedTabSection currentSection = null;
-            for (String line : column.getLines()) {
+            for (Int2ObjectMap.Entry<String> line : column.getLines().int2ObjectEntrySet()) {
                 // Empty lines reset the current section
-                if (TextUtils.trimWhitespaceAndResets(line).isEmpty()) {
+                if (TextUtils.trimWhitespaceAndResets(line.getValue()).isEmpty()) {
                     foundSkillSection = false;
                     foundEssenceSection = false;
                     currentSection = null;
                     continue;
                 }
 
-                String stripped = TextUtils.stripColor(line).trim();
+                String stripped = TextUtils.stripColor(line.getValue()).trim();
                 Matcher m;
 
                 if (!foundEssenceSection && Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.isEnabled(FeatureSetting.SHOW_SALVAGE_ESSENCES_COUNTER)
@@ -253,7 +247,7 @@ public class TabListParser {
                     column.addSection(currentSection = new ParsedTabSection(column));
                 }
 
-                currentSection.addLine(line);
+                currentSection.addLine(line.getIntKey(), line.getValue());
             }
         }
     }
@@ -280,54 +274,56 @@ public class TabListParser {
                     // If we are already at the max, we must start a new
                     // column so the title isn't by itself
                     if (currentCount >= TabListRenderer.MAX_LINES) {
-                        renderColumns.add(initialColumn = new RenderColumn());
+                        renderColumns.combinedRenderColumns.add(initialColumn = new RenderColumn());
                         currentCount = 1;
                     } else {
                         // Add separator between sections, because there will be text above
                         if (initialColumn.size() > 0) {
-                            initialColumn.addLine(new TabLine("", TabStringType.TEXT));
+                            initialColumn.addLine(new TabLine("", TabStringType.TEXT, -1));
                         }
                     }
 
                     // Add the title first
                     if (needsTitle) {
                         lastTitle = section.getColumn().getTitle();
-                        initialColumn.addLine(new TabLine(lastTitle, TabStringType.TITLE));
+                        initialColumn.addLine(new TabLine(lastTitle, TabStringType.TITLE, -1));
                         currentCount++;
                     }
 
                     // Add lines 1 by 1, checking whether the count goes over the maximum.
                     // If it does go over the maximum add a new column
-                    for (String line : section.getLines()) {
+                    for (Int2ObjectMap.Entry<String> line : section.getLines().int2ObjectEntrySet()) {
                         if (currentCount >= TabListRenderer.MAX_LINES) {
-                            renderColumns.add(initialColumn = new RenderColumn());
+                            renderColumns.combinedRenderColumns.add(initialColumn = new RenderColumn());
                             currentCount = 1;
                         }
 
-                        initialColumn.addLine(new TabLine(line, TabStringType.fromLine(line)));
+                        String lineValue = line.getValue();
+                        initialColumn.addLine(new TabLine(lineValue, TabStringType.fromLine(lineValue), line.getIntKey()));
                         currentCount++;
                     }
                 } else {
                     // This section will cause this column to go over the max, so let's
                     // move on to the next column
                     if (currentCount + sectionSize > TabListRenderer.MAX_LINES) {
-                        renderColumns.add(initialColumn = new RenderColumn());
+                        renderColumns.combinedRenderColumns.add(initialColumn = new RenderColumn());
                     } else {
                         // Add separator between sections, because there will be text above
                         if (initialColumn.size() > 0) {
-                            initialColumn.addLine(new TabLine("", TabStringType.TEXT));
+                            initialColumn.addLine(new TabLine("", TabStringType.TEXT, -1));
                         }
                     }
 
                     // Add the title first
                     if (needsTitle) {
                         lastTitle = section.getColumn().getTitle();
-                        initialColumn.addLine(new TabLine(lastTitle, TabStringType.TITLE));
+                        initialColumn.addLine(new TabLine(lastTitle, TabStringType.TITLE, -1));
                     }
 
                     // And then add all the lines
-                    for (String line : section.getLines()) {
-                        initialColumn.addLine(new TabLine(line, TabStringType.fromLine(line)));
+                    for (Int2ObjectMap.Entry<String> line : section.getLines().int2ObjectEntrySet()) {
+                        String lineValue = line.getValue();
+                        initialColumn.addLine(new TabLine(lineValue, TabStringType.fromLine(lineValue), line.getIntKey()));
                     }
                 }
             }
@@ -345,4 +341,12 @@ public class TabListParser {
                 && (Feature.SKILL_DISPLAY.isDisabled()
                 || Feature.SKILL_DISPLAY.isEnabled(FeatureSetting.SHOW_SKILL_PERCENTAGE_INSTEAD_OF_XP));
     }
+
+    /**
+     * @param vanillaPlayerInfos vanilla tab list
+     * @param combinedRenderColumns processed tab list
+     */
+    public record RenderColumns(List<PlayerInfo> vanillaPlayerInfos, List<RenderColumn> combinedRenderColumns) {
+    }
+
 }

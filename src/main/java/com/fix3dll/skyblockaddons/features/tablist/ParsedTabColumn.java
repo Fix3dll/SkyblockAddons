@@ -1,7 +1,7 @@
 package com.fix3dll.skyblockaddons.features.tablist;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,15 +10,15 @@ import java.util.List;
 public class ParsedTabColumn {
 
     private final String title;
-    private final List<String> lines = new LinkedList<>();
-    @Setter private List<ParsedTabSection> sections = new LinkedList<>();
+    private final Int2ObjectLinkedOpenHashMap<String> lines = new Int2ObjectLinkedOpenHashMap<>();
+    private final List<ParsedTabSection> sections = new LinkedList<>();
 
     public ParsedTabColumn(String title) {
         this.title = title;
     }
 
-    public void addLine(String line) {
-        this.lines.add(line);
+    public void addLine(int vanillaIndex, String line) {
+        this.lines.put(vanillaIndex, line);
     }
 
     public void addSection(ParsedTabSection section) {
@@ -28,4 +28,5 @@ public class ParsedTabColumn {
     public int size() {
         return lines.size() + 1;
     }
+
 }

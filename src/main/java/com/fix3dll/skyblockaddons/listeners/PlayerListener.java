@@ -237,6 +237,7 @@ public class PlayerListener {
             FishParticleManager.clearParticleCache();
             main.getRenderListener().setMaxRiftHealth(0.0F);
             PlayerStat.MAX_RIFT_HEALTH.setValue(0);
+            DungeonMapManager.clearSkinCache();
         }
     }
 
