@@ -44,7 +44,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
 
     protected void onDrag(GuiGraphics graphics, double mouseX, double mouseY) {
         if (this.visible) {
-            double doubleMouseX = (MC.mouseHandler.xpos() * (double)MC.getWindow().getGuiScaledWidth() / (double)MC.getWindow().getWidth());
+            double doubleMouseX = MC.mouseHandler.getScaledXPos(MC.getWindow());
 
             if (this.dragging && previousDoubleMouseX != doubleMouseX) {
                 previousDoubleMouseX = doubleMouseX;

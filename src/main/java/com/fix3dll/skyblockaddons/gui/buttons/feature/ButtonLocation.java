@@ -55,8 +55,8 @@ public class ButtonLocation extends ButtonFeature {
     }
 
     public void checkHoveredAndDrawBox(GuiGraphics graphics, float boxXOne, float boxXTwo, float boxYOne, float boxYTwo, float scale, float scaleX, float scaleY) {
-        double doubleMouseX = (MC.mouseHandler.xpos() * (double)MC.getWindow().getGuiScaledWidth() / (double)MC.getWindow().getWidth());
-        double doubleMouseY = (MC.mouseHandler.ypos() * (double)MC.getWindow().getGuiScaledHeight() / (double)MC.getWindow().getHeight());
+        double doubleMouseX = MC.mouseHandler.getScaledXPos(MC.getWindow());
+        double doubleMouseY = MC.mouseHandler.getScaledYPos(MC.getWindow());
 
         this.boxXOne = boxXOne;
         this.boxXTwo = boxXTwo;
