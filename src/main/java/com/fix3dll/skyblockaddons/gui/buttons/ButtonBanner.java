@@ -32,11 +32,11 @@ public class ButtonBanner extends SkyblockAddonsButton {
     private static ResourceLocation banner;
     private static NativeImage bannerImage;
 
-    public static boolean bannerRegistered;
+    public static boolean bannerRegistered = false;
 
     public static Runnable REGISTER_BANNER = () -> {
         String bannerImageUrl = main.getOnlineData().getBannerImageURL();
-        if (bannerImageUrl == null) {
+        if (bannerImageUrl == null || bannerImageUrl.isBlank()) {
             bannerRegistered = false;
             return;
         }
@@ -116,6 +116,7 @@ public class ButtonBanner extends SkyblockAddonsButton {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
+        if (bannerImage == null) return false;
         return mouseX >= getX() && mouseX < getX() + WIDTH &&
                mouseY >= getY() && mouseY < getY() + bannerImage.getHeight() * scale;
     }

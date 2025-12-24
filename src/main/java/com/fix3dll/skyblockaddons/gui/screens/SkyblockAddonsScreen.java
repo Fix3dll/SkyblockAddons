@@ -109,7 +109,8 @@ public abstract class SkyblockAddonsScreen extends Screen {
         int width = height*2;
         Window window = MC.getWindow();
 
-        if (main.getOnlineData().getBannerImageURL() == null && !ButtonBanner.bannerRegistered) {
+        String bannerImageUrl = main.getOnlineData().getBannerImageURL();
+        if (bannerImageUrl == null || bannerImageUrl.isEmpty() || !ButtonBanner.bannerRegistered) {
             graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, (int) (window.getGuiScaledWidth() / 2F - width / 2F), 5, 0, 0, width, height, width, height);
 
             float glowAlpha;

@@ -888,5 +888,40 @@
     "displayName": {"text":"","extra":[{"text":"Tightly-Tied Hay Bale","color":"blue"}],"italic":false},
     "material": "skull_item",
     "resolvableProfile": {"id":[-555823260,517223443,-2057369032,2023544382],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc0NjQwMjM4Mzk3MiwKICAicHJvZmlsZUlkIiA6ICI5ZDYzZjMxMGNiZWE0MWI1YmQ4YTM4ZmExYTBiMDI4MCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTa3libHVlZm94dGFpbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS82ZDI1YzVhNDhjZGFlZmVjOGRlZGQ1M2Y2NDNiYzMwYTIxMGY1MWE5ZTJmZjQwNTk3NWQwZjhiNDMyMTg4MzdhIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0","signature":"V6YoCqedFZbize0JWUc0o/RCx086fH3Z3s5/oJmT8DdPZYR4QL/zZXSAP6KoDAIRFQgtF/31E/vHgDlzFkwpqk1Y7hdShfvasdO975fhPL1VYENi3ue54eCpae68fEnsc5A0mwAWakevz+P8ChrRE9rOrjwg7OOdTGdcb5tSlrgEWJ4s6iaZSVs985S+KWDuhXMTeKf1TUHNznqyYIB0zU6UgdzYwUhODo1YYjLwyAmEGkob2a6JMu0THxnZTCys4ZEeSTFTcOv6Wzqt/8gLI6YqidxpQshzPEOOMvm0F1/ZGsQq04Kt7UjFn1guv5WeBnJ07JOQkLK/He7zJv/Vl+qW02RnVfvlxuskCZ2T2xAMgubzmidCP+Tx6CNHsmue+dYnD6g2WoMLjRqOPGtlxSCbUtHKSCnrkPl3QuXQecDhDyULWveWwfS/fciZyZWehh572YrVuEQpPWFevoKLvOQWxvGpMkSS6NN+PLpBhS7zxOGoRQCeZUt73ZMfGsi6zei03LL1qLPu4MecUoCRuCPOr1sd0LDA1h168orUVu9Tc9G4rlgpONRTFbE5nU97JlfcBPzpopUOYXcmfi+rFp7SkmH9t5envgGMVLpga58jE3Z08812sNLhtrEwOn3phEGH093k/gSF6gnsjZ2C9F1Ffdv5snRXC8H293/nEBA="}]}
+  },
+  "ENCHANTED_MOONFLOWER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Moonflower","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "blue_orchid"
+  },
+  "ENCHANTED_SUNFLOWER": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Sunflower","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "sunflower"
+  },
+  "ENCHANTED_WILD_ROSE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Wild Rose","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "rose_bush"
+  },
+  "COMPACTED_MOONFLOWER": {
+    "displayName": {"text":"","extra":[{"text":"Compacted Moonflower","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[1312445127,1096757346,-1230825019,184056719],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc2MjgwMjExOTgyMCwKICAicHJvZmlsZUlkIiA6ICJiZDNhNWRmY2ZkZjg0NDczOTViZDJiZmUwNGY0YzAzMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJwcmVja3Jhc25vIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ2OWIzYmFjNDA2YjUxYmEwZTc2YzJjMjE4YWE0ZDQ1ZmRlOWVhN2MxMDFjODVmYmQ4MTA2YzkyYzRhYTM2ZGQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==","signature":"azs9VtqJQRlrCvumVyFOuCAKvqOg9Cl+dpPTw6JMKx6HSK/N1524ElWG6XsjWI/0RTvZbtJ2yyu9P5eumpfevq0jO1cylO23hQrK/9ri6PhEOBR//6snLlJBB6S1flkXU70vnLliHdGpcxdPnAOVLLiKuZ8uexHYAIuEYTYdYhKU9709CTctJQyV/4Rf4prlcGZLFQn4ohvs18wvpCoSdScaqtI9vraMiCffxGjpfN4jYllVNz4SEJlVMMSRuB1AeJhfsRdJCWGYS4WUghU+2vkSNFh/I0hIjJHUIxBskzuA2Ry20tfjp4aaH4D2BbdVkdgxmn16ajJQNv9CYGw7JTO9ubyB2DHOPhgyXO2WYJaC+PdaCRJm3QByaLLprBJH0BbAuzBB0jWMuuG44iih2z3S1JVswTER1rrkXmKmHCsYmscMpYlYBMExMliKDRqdA2ewoahF1SpB5HWSNHsA2xQRQAj5dYTIhTDj9QS3qqvBaNhOa123fKYFDQhLoey8MVR1GK7CL2sy1MvfoDYO22v8XRn7xrR9NbL5FjPERYzEolsfT90iwnmvh9IFUcSrpQ7Xfz1Z+MBXHZvcB2NGHtkeGwwe4Y5JGBQDW0noFxpGXVU+SCB3IexbLh2PMz5A8rxbs/PRXDq9X4DtISiLef2QYd5KtFia9HCm12vgeKQ="}]}
+  },
+  "COMPACTED_SUNFLOWER": {
+    "displayName": {"text":"","extra":[{"text":"Compacted Sunflower","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-2144862568,-1304216127,-2022185738,-395645783],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc1OTk1Mjg2NTU3NSwKICAicHJvZmlsZUlkIiA6ICI1ODc5MjNlNDkxMzM0ZDMzYWE4ZjQ3ZWJkZTljOTc3MiIsCiAgInByb2ZpbGVOYW1lIiA6ICJFbGV2ZW5mb3VyMTAiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ5ODlkODQ2ODYyOTUyZjhhYzg0NGFiYmQ0YzFmNzdiZjg1ZTkyNGMyYmY5ODIzNmY4ZDkyNTM2MjRkODc5ZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9","signature":"ZkwkPhUl7TLYBAtlHyx1J+S8JuZ5zXwfiGME1yIXsIS9lpH9mbrohBPEb5dW00BoOffkh2/UubsOhQ7Y8QeMRAkSe2ztYZTdZPt1Tp/p4ekC7xJoCPJufwZv8L6DlZ1fCcXJ4+FXO1oJTTlznnzugdxq2gzbtMuGr+NWPGApJDHG9tgQ88PsfYb4JUJJKUlT0TlEYv+Uoxh6LRDA2JL3W1sXqm8DmYqXfFxyUvnUxpBGd9dOFiv90JcWlTpQsBqW2Tu0NufiG45Ryxm2yT8tgbc2l0Bgp6D1V4XvrbNYzS13fK5ZSwPXO3JZmIHLLTu++wxSPPCL/nhVACFkLuqubMfhsPW9PWGuJZglHcEIkuJuYuUuTwQpo1FSjoFFzlikksJGJMYiEDohcVdK1rQhpIaCej8U+TUtnX4CWrH+2DtRBCq+y6WOl7PKT1PgiuN8hqZ7GHZG2ODtJaWk0cnOMIG54RuzBNzWFcDlJXGTHtoGFC5M9dMOm+H9Xvu2oBK3YTZnHHk1kDDqvG/+i6sKDhJV2AlEg3w75/wciFbLmjBlWNStzespQ2wGn16ZruEOHX6TKoegOIT2j6e458OXXMIMkH96mecUXdgwN52gj5t0qdgEGtRndRNQ+/ygPbo2bocoXzPFhebxe6lvjh77GS4pa0ckvEgDQp1jfLMro+U="}]}
+  },
+  "COMPACTED_WILD_ROSE": {
+    "displayName": {"text":"","extra":[{"text":"Compacted Wild Rose","color":"blue"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-2048132898,1603944155,-1208525179,-146164850],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc1NjIzOTc1NzI4OCwKICAicHJvZmlsZUlkIiA6ICJhYzY1NDYwOWVkZjM0ODhmOTM0ZWNhMDRmNjlkNGIwMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJzcGFjZUd1cmxTa3kiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTMzMDUxYjdjNjlmNTEwODVjYzQzZjA1NzUxMzljZDU4YWZlMmI4M2YzM2QyYTIwM2E1YWZjMjY2YzIxMDE5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=","signature":"t9EF9VLE4Nq8Llt1/lpUqjkt9YsN68tZ2+BYHYujLK7gxZ6qmxZyLIQRGuEdfUMQ55gFSDDlS3bphpgnsjMUoiaGjNPzNF9BMjlDEHB56vptwOhvOYOEX2vrK94NFAvWUzEOKs9kGtR8z4v1qLBWApJe3JgGyRYIkJD6lAGuZQSiP8HxCSZlS40RguxyhNKoG67XZjj36t71eNyv+ikSxl1B1IgXOrRfdssj7BGXjiFcX7Z0nXErE934D/3KHC/16IFopk5ZQJIHciSq8ueoTXiuKj0QNAh38zS+UT4Ju8HUA9+pF0MkV8rTpJZMzNnKefOQX/XgwpNmbzQSG5MWB8XICbGHs3PNVEAWxJJLHfvdvv2jBI7cqs0rBnRbWQvSSoTwUUqpWmfsTaFlz/RaWI1P/foczeCphY6Qg9osQQWOkPuO7v1YS/Xz1NvQ0SeTA9huR5Z+55nnc8KwVswStz5bew0kGxSLamT3HRlrhGnlHQr9Aq0dXY23DkZLUp5qa3+fXaa+jL0hzGTElIpcq5uKeh4y1jmtOtfbLKNtmrIpN/rtKzyYcNSngPpAH+cd/LD7mL6vL1UESL4WnGOZaxI3wuhXIsv6/UJd/hmHSR1xcL91j5xbneBq20Ci12gtI+TbMtdpJoqu6rY+GCH2fCeYmkC14XTkseftPjmBPfU="}]}
+  },
+  "CONDENSED_HELIANTHUS": {
+    "displayName": {"text":"","extra":[{"text":"Condensed Helianthus","color":"gold"}],"italic":false},
+    "material": "skull_item",
+    "resolvableProfile": {"id":[-297348064,-402835826,-2031705322,-1231328947],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc2MDk4Mjg4MjIyOCwKICAicHJvZmlsZUlkIiA6ICJiMTM1MDRmMjMxOGI0OWNjYWFkZDcyYWVhYmMyNTQ1MCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUeXBrZW4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTU4ZGVmMDFmOTRhMTRhMGJjMTgxNWRjZTAwOGQyYzM4NTQ0NzM0YmY5NjI3ODkxNjVhZWVmNTcxNjVmY2ExMyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9","signature":"sIrV8DYgW5JKCejqyekPKjRSdledc4DCa3Z9Ot8C+uUEp/xFD0WUGo0aMiqMSCsm/ImiAeswHQoq+6pTBVIFnkXRS5nzX9xMtUg5U2z0/to2xW7Vksrbm25k0vcHdB0m/MJSdTHssq09eeMp2UKTBbCMOG+QtBGO6C/++t5obazKlvGtd7x6OoYa2GHCG1rBu6FUECymLVDzqWjUr9myDhEEAPUoC3aDOj04QfjNj9NuTGIXhtzzZVExul7KLK18vXZjTNkeM4u4vypZoOhYB9/qxUNsTiaO9W/pW43xNwoKg1d+rp0lyT01iXpAbEeVxkIHpQVfju2RWY3OWy42iQRct3YWI6dEJr4mjwhjSnEy5jX5Rqd8/hPIFIDX42RZo7r9pbh58injNUeeW2TLUVXJ5QW7xZ38h0FHtyxqEwYdfXO1DS7D24hFcegK3uJagh8W5kX3GiUtlkKMd90qCcloSAGiEHJVKJed6NQ34MyHl8/4kdF7ifK0MvLYyBwM7Dliojp+ypVWiZzW71vViqJ8CKHIdsJxxETlyg+cdpLNUO+NCOim5nhEH3QlnLP0DSuxef+bEMZoXtayjoiffsWFDGCrgtC8kK8TLuFudPFoZW/srN+lCemGSA7Ch+/ZG5PeBG9mOhKZ+6AvIXAjmc+E/QQu6k0j1G3yvCvOZBk="}]}
   }
 }

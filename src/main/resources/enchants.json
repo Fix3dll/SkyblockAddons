@@ -636,6 +636,12 @@
       "maxLevel": 5,
       "nbtName": "turbo_melon"
     },
+    "turbo-moonflower": {
+      "goodLevel": 0,
+      "loreName": "Turbo-Moonflower",
+      "maxLevel": 5,
+      "nbtName": "turbo_moonflower"
+    },
     "turbo-mushrooms": {
       "goodLevel": 0,
       "loreName": "Turbo-Mushrooms",
@@ -653,6 +659,18 @@
       "loreName": "Turbo-Pumpkin",
       "maxLevel": 5,
       "nbtName": "turbo_pumpkin"
+    },
+    "turbo-rose": {
+      "goodLevel": 0,
+      "loreName": "Turbo-Rose",
+      "maxLevel": 5,
+      "nbtName": "turbo_rose"
+    },
+    "turbo-sunflower": {
+      "goodLevel": 0,
+      "loreName": "Turbo-Sunflower",
+      "maxLevel": 5,
+      "nbtName": "turbo_sunflower"
     },
     "turbo-warts": {
       "goodLevel": 0,
@@ -675,7 +693,7 @@
     "venomous": {
       "goodLevel": 5,
       "loreName": "Venomous",
-      "maxLevel": 6,
+      "maxLevel": 7,
       "nbtName": "venomous"
     },
     "vicious": {
@@ -707,8 +725,8 @@
         300000,
         1500000,
         5000000,
-        20000000,
-        100000000
+        25000000,
+        50000000
       ],
       "statLabel": "absorbLogsChopped"
     },
@@ -857,6 +875,12 @@
       "loreName": "Combo",
       "maxLevel": 5,
       "nbtName": "ultimate_combo"
+    },
+    "crop fever": {
+      "goodLevel": 0,
+      "loreName": "Crop Fever",
+      "maxLevel": 5,
+      "nbtName": "ultimate_crop_fever"
     },
     "duplex": {
       "goodLevel": 0,
