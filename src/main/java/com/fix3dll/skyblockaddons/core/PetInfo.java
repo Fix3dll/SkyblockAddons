@@ -24,6 +24,8 @@ public class PetInfo {
     private String heldItemId;
     @SerializedName("candyUsed")
     private int candyUsed;
+    @SerializedName("skin")
+    private String skin;
     @SerializedName("uuid")
     private UUID uuid;
     @SerializedName("uniqueId")
@@ -39,6 +41,7 @@ public class PetInfo {
         if (!Objects.equals(this.petSkyblockId, other.petSkyblockId)) return false;
         if (this.petRarity != other.petRarity) return false;
         if (this.exp != other.exp) return false;
+        if (!Objects.equals(this.skin, other.skin)) return false;
         if (!Objects.equals(this.heldItemId, other.heldItemId)) return false;
         if (this.candyUsed != other.candyUsed) return false;
 

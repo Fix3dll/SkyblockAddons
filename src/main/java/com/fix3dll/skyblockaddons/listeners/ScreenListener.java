@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
+import com.fix3dll.skyblockaddons.core.PetInfo;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
@@ -292,14 +293,16 @@ public class ScreenListener {
 
                         if (selectedPet != null) {
                             PetCacheManager petCacheManager = main.getPetCacheManager();
-                            Pet currentPet = petCacheManager.getCurrentPet();
 
                             if (selectedPet.contains("None")) {
                                 petCacheManager.setCurrentPet(null);
-                            } else if (currentPet != null && !currentPet.getDisplayName().endsWith(selectedPet)) {
+                            } else if (!isCurrentPetValid(selectedPet)) {
                                 Pet petToSet = null;
                                 for (Pet pet : petCacheManager.getPetCache().getPetMap().values()) {
-                                    if (pet.getDisplayName().endsWith(selectedPet)) {
+                                    String resolvedBoneName = resolveAncientGoldenDragonException(pet, selectedPet);
+                                    String strippedPetName = TextUtils.stripColor(pet.getDisplayName());
+
+                                    if (strippedPetName.endsWith(resolvedBoneName)) {
                                         // If a similar pet is found, set the ‘petToSet’,
                                         // but continue searching for similarities.
                                         if (petToSet == null) {
@@ -473,6 +476,32 @@ public class ScreenListener {
             SkyblockEquipment.PET.setItemStack(riftPet);
             SkyblockEquipment.saveEquipments();
         }
+    }
+
+    private boolean isCurrentPetValid(String selectedPetBone) {
+        Pet currentPet = main.getPetCacheManager().getCurrentPet();
+
+        if (currentPet == null) {
+            return selectedPetBone.contains("None");
+        } else {
+            String selectedPet = resolveAncientGoldenDragonException(currentPet, selectedPetBone);
+            return TextUtils.stripColor(currentPet.getDisplayName()).endsWith(selectedPet);
+        }
+    }
+
+    private String resolveAncientGoldenDragonException(Pet pet, String selectedPetBone) {
+        PetInfo currentPetInfo = pet.getPetInfo();
+
+        if (currentPetInfo != null) {
+            String currentSkin = currentPetInfo.getSkin();
+
+            // "§7[Lvl 200] §8[§64§4✦§8] §6Golden Dragon" and "Selected pet: Golden Dragon ✦"
+            if ("GOLDEN_DRAGON_ANCIENT".equals(currentSkin)) {
+                return selectedPetBone.replace(" ✦", "");
+            }
+        }
+
+        return selectedPetBone;
     }
 
 }
