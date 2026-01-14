@@ -68,8 +68,8 @@ import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
+//import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+//import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -127,7 +127,7 @@ public class RenderListener {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
-    public static final ResourceLocation SBA_RENDER_LAYER = SkyblockAddons.resourceLocation("hud_layer");
+//    public static final ResourceLocation SBA_RENDER_LAYER = SkyblockAddons.resourceLocation("hud_layer");
 
     private static final ItemStack BONE_ITEM = new ItemStack(Items.BONE);
     private static final ResourceLocation ARMOR = ResourceLocation.withDefaultNamespace("hud/armor_full");
@@ -204,11 +204,11 @@ public class RenderListener {
     private ItemStack petSkull = null;
 
     public RenderListener() {
-        HudElementRegistryImpl.attachElementAfter(
-                VanillaHudElements.INFO_BAR,
-                SBA_RENDER_LAYER,
-                this::onRenderHud
-        );
+//        HudElementRegistryImpl.attachElementAfter(
+//                VanillaHudElements.INFO_BAR,
+//                SBA_RENDER_LAYER,
+//                this::onRenderHud
+//        );
         RenderEvents.LEVEL_LAST.register(this::onRenderWorld);
     }
 

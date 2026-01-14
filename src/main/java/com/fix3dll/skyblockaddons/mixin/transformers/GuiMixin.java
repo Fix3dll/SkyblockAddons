@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.tablist.TabListParser;
 import com.fix3dll.skyblockaddons.features.tablist.TabListRenderer;
@@ -20,6 +21,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GuiMixin {
 
     @Shadow @Final private Minecraft minecraft;
+
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHotbarAndDecorations(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.AFTER))
+    public void sba$onRenderHud_renderListener(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        SkyblockAddons.getInstance().getRenderListener().onRenderHud(guiGraphics, deltaTracker);
+    }
 
     @Inject(method = "renderTabList", at = @At("HEAD"), cancellable = true)
     public void sba$renderTabList(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
