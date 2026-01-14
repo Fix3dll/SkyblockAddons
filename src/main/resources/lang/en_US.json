@@ -393,7 +393,8 @@
     "perkpocalypseUnknown": "Mayor Jerry's Perkpocalypse mayor is not known! Click here to update Perkpocalypse mayor.",
     "chatMessageCopying": {
       "unformatted": "Chat message copied to clipboard!",
-      "formatted": "Formatted chat message copied to clipboard!"
+      "formatted": "Formatted chat message copied to clipboard!",
+      "failed": "An error occurred while copying the message. See log for details. (Possible mod conflict)"
     }
   },
   "discordStatus": {

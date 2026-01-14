@@ -4,7 +4,7 @@ import java.text.ParseException
 
 plugins {
     java
-    id("fabric-loom") version ("1.13-SNAPSHOT")
+    id("fabric-loom") version ("1.14-SNAPSHOT")
     id("com.gradleup.shadow") version ("8.3.9")
     id("io.freefair.lombok") version ("9.1.0")
 }
@@ -36,7 +36,7 @@ base {
 
 loom {
     log4jConfigs.from(file(("log-config.xml")))
-    accessWidenerPath.set(project.file("src/main/resources/skyblockaddons.accesswidener"))
+    accessWidenerPath.set(project.file("src/main/resources/skyblockaddons.classtweaker"))
     runConfigs {
         getByName("client") {
             vmArg("-Xmx4G")

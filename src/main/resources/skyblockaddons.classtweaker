@@ -1,4 +1,4 @@
-accessWidener v2 named
+classTweaker v1 named
 accessible field net/minecraft/client/gui/Gui SCORE_DISPLAY_ORDER Ljava/util/Comparator;
 accessible field net/minecraft/client/gui/components/PlayerTabOverlay footer Lnet/minecraft/network/chat/Component;
 accessible field net/minecraft/client/gui/components/PlayerTabOverlay header Lnet/minecraft/network/chat/Component;
