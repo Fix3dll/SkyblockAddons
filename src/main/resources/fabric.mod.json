@@ -22,6 +22,9 @@
 		],
 		"modmenu": [
 			"com.fix3dll.skyblockaddons.compat.ModMenuCompat"
+		],
+		"rei_client": [
+			"com.fix3dll.skyblockaddons.compat.ReiCompat"
 		]
 	},
 	"mixins": [

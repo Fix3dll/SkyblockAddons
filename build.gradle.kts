@@ -70,6 +70,7 @@ repositories {
     }
     maven("https://maven.parchmentmc.org")
     maven("https://maven.terraformersmc.com/")
+    maven("https://maven.shedaniel.me")
 }
 
 val bundle : Configuration by configurations.creating {
@@ -79,7 +80,6 @@ val bundle : Configuration by configurations.creating {
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
-//	mappings("net.fabricmc:yarn:${properties["yarn_mappings"]}")
     mappings(loom.layered {
         officialMojangMappings()
         if (properties["parchment_version"] != null) {
@@ -91,6 +91,11 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
     modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+
+    // REI compat
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${properties["rei_version"]}") {
+        exclude("net.fabricmc.fabric-api")
+    }
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1")
     implementation ("net.hypixel:mod-api:1.0.1")
