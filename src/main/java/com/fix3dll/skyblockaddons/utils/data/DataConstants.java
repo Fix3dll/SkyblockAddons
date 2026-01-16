@@ -1,13 +1,11 @@
 package com.fix3dll.skyblockaddons.utils.data;
 
-class DataConstants {
+public class DataConstants {
 
-    static final String BRANCH = "1.21.10";
-    static final String CDN_BASE_URL = String.format(
-            "https://cdn.jsdelivr.net/gh/Fix3dll/SkyblockAddons-Data@%s/", BRANCH
-    );
-    static final String FALLBACK_CDN_BASE_URL = String.format(
-            "https://fastly.jsdelivr.net/gh/Fix3dll/SkyblockAddons-Data@%s/", BRANCH
-    );
+    public static final String BRANCH = "1.21.10";
+    public static final String CDN_BASE_URL = "https://cdn.jsdelivr.net/gh/Fix3dll/SkyblockAddons-Data@%s/"
+            .formatted(BRANCH);
+    public static final String FALLBACK_CDN_BASE_URL = "https://fastly.jsdelivr.net/gh/Fix3dll/SkyblockAddons-Data@%s/"
+            .formatted(BRANCH);
 
 }
