@@ -127,7 +127,8 @@ public class PetCacheManager {
             if (pet == null && !eq.isEmpty()) {
                 eq.setItemStack(eq.getEmptyStack());
                 SkyblockEquipment.saveEquipments();
-            } else if (pet != null && !ItemStack.isSameItemSameComponents(pet.getItemStack(), eq.getItemStack())) {
+            } else if (pet != null && pet.getItemStack() != null
+                    && !ItemStack.isSameItemSameComponents(pet.getItemStack(), eq.getItemStack())) {
                 eq.setItemStack(pet.getItemStack());
                 SkyblockEquipment.saveEquipments();
             }
