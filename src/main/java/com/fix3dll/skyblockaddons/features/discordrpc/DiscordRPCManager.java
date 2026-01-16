@@ -10,6 +10,7 @@ import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.ActivityType;
 import com.jagrosh.discordipc.entities.Packet;
 import com.jagrosh.discordipc.entities.RichPresence;
+import com.jagrosh.discordipc.entities.StatusDisplayType;
 import com.jagrosh.discordipc.entities.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,8 @@ public class DiscordRPCManager implements IPCListener {
                 startTimestamp = System.currentTimeMillis();
                 client = new IPCClient(APPLICATION_ID);
                 client.setListener(this);
+//                client.setVerboseLogging(true);
+//                client.setDebugMode(true);
                 try {
                     client.connect();
                 } catch (Exception ex) {
@@ -79,15 +82,16 @@ public class DiscordRPCManager implements IPCListener {
         String skyblockDateString = skyblockDate != null ? skyblockDate.toString() : "";
 
         // Early Winter 10th, 12:10am - Village
-        String largeImageDescription = String.format("%s - %s", skyblockDateString, location);
-        String smallImageDescription = String.format("Using SkyblockAddons v%s", SkyblockAddons.METADATA.getVersion());
+        String largeImageDescription = "%s - %s".formatted(skyblockDateString, location);
+        String smallImageDescription = "Using SkyblockAddons v%s".formatted(SkyblockAddons.METADATA.getVersion());
         RichPresence presence = new RichPresence.Builder()
                 .setState(stateLine.getDisplayString(FeatureSetting.DISCORD_RP_CUSTOM_STATE))
                 .setDetails(detailsLine.getDisplayString(FeatureSetting.DISCORD_RP_CUSTOM_DETAILS))
                 .setStartTimestamp(startTimestamp)
-                .setLargeImage(location.toLowerCase(Locale.ENGLISH).replaceAll(" ", "-"), largeImageDescription)
-                .setSmallImage("skyblockicon", smallImageDescription)
+                .setLargeImageWithTooltip(location.toLowerCase(Locale.ENGLISH).replaceAll(" ", "-"), largeImageDescription)
+                .setSmallImageWithTooltip("skyblockicon", smallImageDescription)
                 .setActivityType(ActivityType.Playing)
+                .setStatusDisplayType(StatusDisplayType.Name)
                 .build();
         client.sendRichPresence(presence);
     }
@@ -107,7 +111,7 @@ public class DiscordRPCManager implements IPCListener {
     }
 
     private void cancelTimer() {
-        if(updateTimer != null) {
+        if (updateTimer != null) {
             updateTimer.cancel();
             updateTimer = null;
         }
