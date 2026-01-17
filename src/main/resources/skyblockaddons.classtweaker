@@ -18,10 +18,12 @@ accessible field net/minecraft/client/gui/components/ChatComponent trimmedMessag
 accessible field net/minecraft/network/chat/TextColor name Ljava/lang/String;
 accessible method net/minecraft/network/chat/TextColor <init> (ILjava/lang/String;)V
 accessible class net/minecraft/client/gui/Font$PreparedTextBuilder
-extendable class net/minecraft/client/renderer/RenderType$CompositeRenderType
-accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType <init> (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/RenderType$CompositeState;)V
-accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType state Lnet/minecraft/client/renderer/RenderType$CompositeState;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
+extendable class net/minecraft/client/renderer/rendertype/RenderType
+accessible method net/minecraft/client/renderer/rendertype/RenderType <init> (Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)V
+accessible field net/minecraft/client/renderer/rendertype/RenderType state Lnet/minecraft/client/renderer/rendertype/RenderSetup;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup layeringTransform Lnet/minecraft/client/renderer/rendertype/LayeringTransform;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup textureTransform Lnet/minecraft/client/renderer/rendertype/TextureTransform;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup outputTarget Lnet/minecraft/client/renderer/rendertype/OutputTarget;
 accessible field net/minecraft/client/player/LocalPlayer xLast D
 accessible field net/minecraft/client/player/LocalPlayer zLast D
 accessible field net/minecraft/world/level/saveddata/maps/MapItemSavedData decorations Ljava/util/Map;

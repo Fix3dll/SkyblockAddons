@@ -568,7 +568,7 @@ public class DevUtils {
         DataUtils.readLocalAndFetchOnline();
         main.getPersistentValuesManager().loadValues();
         main.getScheduler().scheduleAsyncTask(scheduledTask -> {
-            if (!scheduledTask.isCanceled() && DataUtils.getExecutionServiceMetrics().getActiveConnectionCount() == 0) {
+            if (!scheduledTask.isCanceled() && DataUtils.getActiveRequestCount() == 0) {
                 DataUtils.onSkyblockJoined();
                 PackRepository packs = MC.getResourcePackRepository();
                 SkyblockAddons.runAsync(ButtonBanner.REGISTER_BANNER);

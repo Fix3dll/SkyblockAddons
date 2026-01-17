@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonText extends SkyblockAddonsButton {
 
@@ -16,7 +17,7 @@ public class ButtonText extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
 
@@ -28,7 +29,7 @@ public class ButtonText extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         return false;
     }
 

@@ -23,13 +23,13 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -61,7 +61,7 @@ public class DungeonManager {
     private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("§.\\[(?<classLetter>.)] (?<name>[\\w§]+) §(?<healthColor>.)(?:§l)?(?<health>[\\w,§]+)(?:[§c❤]{0,3})?");
     private static final Pattern PATTERN_PLAYER_LIST_INFO_DEATHS = Pattern.compile("Team Deaths: (?<deaths>\\d+)");
     private static final Pattern PATTERN_STRIP_FORMAT = Pattern.compile("§.?");
-    private static final ResourceLocation CRITICAL = SkyblockAddons.resourceLocation("critical.png");
+    private static final Identifier CRITICAL = SkyblockAddons.identifier("critical.png");
     private static final int CRITICAL_ICON_SIZE = 25;
 
     /** The last dungeon server the player played on */
@@ -458,7 +458,7 @@ public class DungeonManager {
                     poseStack.scale(0.025F, -0.025F, 0.025F);
                     submitNodeCollector.submitCustomGeometry(
                             poseStack,
-                            RenderType.blockScreenEffect(CRITICAL),
+                            RenderTypes.blockScreenEffect(CRITICAL),
                             (pose, vertexConsumer) -> DrawUtils.blitAbsolute(pose, vertexConsumer, -CRITICAL_ICON_SIZE / 2F, 0, 0, 0, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, CRITICAL_ICON_SIZE, -1)
                     );
                     poseStack.popPose();

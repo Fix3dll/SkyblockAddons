@@ -77,7 +77,7 @@ public class TabListRenderer {
             for (String line : header) {
                 FormattedCharSequence lineFcs = Language.getInstance().getVisualOrder(FormattedText.of(line));
                 graphics.guiRenderState.submitText(
-                        new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, headerY, -1, 0, true, graphics.scissorStack.peek())
+                        new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, headerY, -1, 0, true, false, graphics.scissorStack.peek())
                 );
                 headerY += 8 + 1;
             }
@@ -112,11 +112,11 @@ public class TabListRenderer {
                 FormattedCharSequence tabLineTextFcs = Language.getInstance().getVisualOrder(FormattedText.of(tabLine.text()));
                 if (tabLine.type() == TabStringType.TITLE) {
                     graphics.guiRenderState.submitText(
-                            new SbaTextRenderState(tabLineTextFcs, graphics.pose(), (middleX + renderColumn.getMaxWidth() / 2F - tabLine.getWidth() / 2F), middleY, -1, 0, true, graphics.scissorStack.peek())
+                            new SbaTextRenderState(tabLineTextFcs, graphics.pose(), (middleX + renderColumn.getMaxWidth() / 2F - tabLine.getWidth() / 2F), middleY, -1, 0, true, false, graphics.scissorStack.peek())
                     );
                 } else {
                     graphics.guiRenderState.submitText(
-                            new SbaTextRenderState(tabLineTextFcs, graphics.pose(), middleX, middleY, -1, 0, true, graphics.scissorStack.peek())
+                            new SbaTextRenderState(tabLineTextFcs, graphics.pose(), middleX, middleY, -1, 0, true, false, graphics.scissorStack.peek())
                     );
                 }
                 middleY += LINE_HEIGHT;
@@ -132,7 +132,7 @@ public class TabListRenderer {
             for (String line : footer) {
                 FormattedCharSequence lineFcs = Language.getInstance().getVisualOrder(FormattedText.of(line));
                 graphics.guiRenderState.submitText(
-                        new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, footerY, -1, 0, true, graphics.scissorStack.peek())
+                        new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, footerY, -1, 0, true, false, graphics.scissorStack.peek())
                 );
                 footerY += LINE_HEIGHT;
             }

@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonNewTag extends SkyblockAddonsButton {
 
@@ -21,7 +22,7 @@ public class ButtonNewTag extends SkyblockAddonsButton {
     }
 
     @Override
-    public void playDownSound(SoundManager soundManager) {
+    public void playDownSound(@NonNull SoundManager soundManager) {
     }
 
 }

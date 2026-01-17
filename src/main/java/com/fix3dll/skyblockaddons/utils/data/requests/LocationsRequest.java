@@ -2,8 +2,8 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LocationData;
 import com.google.gson.reflect.TypeToken;
@@ -17,19 +17,20 @@ import java.util.Objects;
 public class LocationsRequest extends RemoteFileRequest<HashMap<String, LocationData>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblock/locations.json";
 
     public LocationsRequest() {
         super(
-                "skyblock/locations.json"
-                , new JSONResponseHandler<>(new TypeToken<HashMap<String, LocationData>>() {}.getType()),
-                new LocationsCallback(getCDNBaseURL() + "skyblock/locations.json")
+                PATH,
+                new TypeToken<HashMap<String, LocationData>>() {}.getType(),
+                new LocationsCallback()
         );
     }
 
     public static class LocationsCallback extends DataFetchCallback<HashMap<String, LocationData>> {
 
-        public LocationsCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public LocationsCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
@@ -45,5 +46,7 @@ public class LocationsRequest extends RemoteFileRequest<HashMap<String, Location
                 }
             }
         }
+
     }
+
 }

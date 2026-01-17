@@ -8,7 +8,7 @@ import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -318,11 +318,11 @@ public class EnumUtils {
         MODRINTH("modrinth", "https://modrinth.com/project/F35D4vTL"),
         BUYMEACOFFEE("buymeacoffee", "https://www.buymeacoffee.com/fix3dll");
 
-        private final ResourceLocation resourceLocation;
+        private final Identifier identifier;
         private URI url;
 
         Social(String resourcePath, String url) {
-            this.resourceLocation = SkyblockAddons.resourceLocation("gui/" + resourcePath + ".png");
+            this.identifier = SkyblockAddons.identifier("gui/" + resourcePath + ".png");
             try {
                 this.url = new URI(url);
             } catch (URISyntaxException e) {

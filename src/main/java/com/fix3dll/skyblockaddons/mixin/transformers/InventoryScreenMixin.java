@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,21 +29,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<InventoryMenu> {
 
     @Unique
-    private static final ResourceLocation sba$equipmentPanel = SkyblockAddons.resourceLocation("equipmentpanel.png");
+    private static final Identifier sba$equipmentPanel = SkyblockAddons.identifier("equipmentpanel.png");
     @Unique
-    private static final ResourceLocation sba$petPanel = SkyblockAddons.resourceLocation("petpanel.png");
+    private static final Identifier sba$petPanel = SkyblockAddons.identifier("petpanel.png");
 
     public InventoryScreenMixin(InventoryMenu menu, RecipeBookComponent<?> recipeBookComponent, Inventory playerInventory, Component title) {
         super(menu, recipeBookComponent, playerInventory, title);
     }
 
-    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;renderEffects(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
+    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;render(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
     public boolean sba$renderEffects(EffectsInInventory instance, GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        return GuiHook.renderEffectsHud;
-    }
-
-    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;renderTooltip(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
-    public boolean sba$renderEffectsTooltip(EffectsInInventory instance, GuiGraphics graphics, int mouseX, int mouseY) {
         return GuiHook.renderEffectsHud;
     }
 
@@ -58,7 +53,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         ContainerPreviewManager.drawContainerPreviews(graphics, this, mouseX, mouseY);
     }
 
-    @Inject(method = "renderBg", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V", shift = At.Shift.AFTER))
+    @Inject(method = "renderBg", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V", shift = At.Shift.AFTER))
     public void sba$renderEqs(GuiGraphics graphics, float partialTick, int mouseX, int mouseY, CallbackInfo ci) {
         if (SkyblockEquipment.equipmentsInInventory()) {
             Feature feature = Feature.EQUIPMENTS_IN_INVENTORY;

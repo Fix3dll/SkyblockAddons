@@ -19,23 +19,22 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.StringUtil;
-import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
@@ -56,10 +55,10 @@ public class DrawUtils {
     );
     public static final RenderPipeline CHROMA_STANDARD = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
-                    .withLocation(SkyblockAddons.resourceLocation("sba_chroma_standard"))
+                    .withLocation(SkyblockAddons.identifier("sba_chroma_standard"))
                     .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-                    .withVertexShader(SkyblockAddons.resourceLocation("chroma_standard"))
-                    .withFragmentShader(SkyblockAddons.resourceLocation("chroma_standard"))
+                    .withVertexShader(SkyblockAddons.identifier("chroma_standard"))
+                    .withFragmentShader(SkyblockAddons.identifier("chroma_standard"))
                     .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
                     .withDepthWrite(true)
                     .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
@@ -67,33 +66,30 @@ public class DrawUtils {
     );
     public static final RenderPipeline CHROMA_TEXT = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
-                    .withLocation(SkyblockAddons.resourceLocation("sba_chroma_text"))
+                    .withLocation(SkyblockAddons.identifier("sba_chroma_text"))
                     .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
                     .withBlend(BlendFunction.TRANSLUCENT)
-                    .withVertexShader(SkyblockAddons.resourceLocation("chroma_textured"))
-                    .withFragmentShader(SkyblockAddons.resourceLocation("chroma_textured"))
+                    .withVertexShader(SkyblockAddons.identifier("chroma_textured"))
+                    .withFragmentShader(SkyblockAddons.identifier("chroma_textured"))
                     .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
                     .withSampler("Sampler0")
                     .withDepthWrite(true)
                     .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
                     .build()
     );
-    private static final Function<ResourceLocation, RenderType> CHROMA_TEXTURED = Util.memoize(
+    private static final Function<Identifier, RenderType> CHROMA_TEXTURED = Util.memoize(
             (texture -> new ChromaRenderType(
                     "sba_chroma_textured",
-                    RenderType.TRANSIENT_BUFFER_SIZE,
-                    false,
-                    false,
-                    CHROMA_TEXT,
-                    RenderType.CompositeState.builder()
-                            .setTextureState(new RenderStateShard.TextureStateShard(texture, TriState.FALSE.toBoolean(false)))
-                            .createCompositeState(false)
+                    RenderSetup.builder(CHROMA_TEXT)
+                            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+                            .withTexture("Sampler0", texture)
+                            .createRenderSetup()
             ))
     );
     public static final TextColor CHROMA_TEXT_COLOR = new TextColor(ColorCode.CHROMA.getColor(), "chroma");
 
-    public static RenderType getChromaTextured(ResourceLocation resourceLocation) {
-        return CHROMA_TEXTURED.apply(resourceLocation);
+    public static RenderType getChromaTextured(Identifier identifier) {
+        return CHROMA_TEXTURED.apply(identifier);
     }
 
     public static void drawRoundedRect(GuiGraphics graphics, int x, int y, int width, int height, int radius, int color) {
@@ -130,7 +126,7 @@ public class DrawUtils {
                                     SkyblockColor color) {
 
         // Move into eye‑space
-        final Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        final Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().position();
         poseStack.pushPose();
         poseStack.translate(x - cam.x, y - cam.y, z - cam.z);
         Matrix4f pose = poseStack.last().pose();
@@ -234,24 +230,24 @@ public class DrawUtils {
             FontHook.setHaltChroma(true);
             FormattedCharSequence strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(strippedText));
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x + 1, y, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(strippedFcs, graphics.pose(), x + 1, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x - 1, y, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(strippedFcs, graphics.pose(), x - 1, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x, y + 1, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(strippedFcs, graphics.pose(), x, y + 1, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x, y - 1, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(strippedFcs, graphics.pose(), x, y - 1, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             FontHook.setHaltChroma(false);
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(component.getVisualOrderText(), graphics.pose(), x, y, color, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(component.getVisualOrderText(), graphics.pose(), x, y, color, 0, false, false, graphics.scissorStack.peek())
             );
         } else {
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(component.getVisualOrderText(), graphics.pose(), x, y, color, 0, true, graphics.scissorStack.peek())
+                    new SbaTextRenderState(component.getVisualOrderText(), graphics.pose(), x, y, color, 0, true, false, graphics.scissorStack.peek())
             );
         }
     }

@@ -2,8 +2,8 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.features.cooldowns.CooldownManager;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -16,19 +16,20 @@ import java.util.Objects;
 public class CooldownsRequest extends RemoteFileRequest<HashMap<String, Integer>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblock/cooldowns.json";
 
     public CooldownsRequest() {
         super(
-                "skyblock/cooldowns.json",
-                new JSONResponseHandler<>(new TypeToken<HashMap<String, Integer>>() {}.getType()),
-                new CooldownsCallback(getCDNBaseURL() + "skyblock/cooldowns.json")
+                PATH,
+                new TypeToken<HashMap<String, Integer>>() {}.getType(),
+                new CooldownsCallback()
         );
     }
 
     public static class CooldownsCallback extends DataFetchCallback<HashMap<String, Integer>> {
 
-        public CooldownsCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public CooldownsCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
@@ -40,6 +41,7 @@ public class CooldownsRequest extends RemoteFileRequest<HashMap<String, Integer>
 
             CooldownManager.setItemCooldowns(cooldowns);
         }
+
     }
 
 }

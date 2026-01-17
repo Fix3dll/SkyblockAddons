@@ -11,11 +11,11 @@ import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -66,7 +66,7 @@ public class ChatScreenHook {
                     main.getScheduler().scheduleTask(scheduledTask -> {
                         if (MC.player != null) {
                             ChatScreenHook.logNextChatComponent = true;
-                            MC.gui.getChat().addMessage(Component.empty());
+                            MC.gui.getChat().addMessage(Component.empty(), null, Utils.SBA_MESSAGE_TAG);
                         }
                     }, 0);
 

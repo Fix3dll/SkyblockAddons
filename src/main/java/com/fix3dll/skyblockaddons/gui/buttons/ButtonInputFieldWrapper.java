@@ -8,6 +8,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
 
@@ -29,7 +30,7 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         editBox.renderWidget(graphics, mouseX, mouseY, partialTick);
     }
 
@@ -40,7 +41,7 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean charTyped(CharacterEvent event) {
+    public boolean charTyped(@NonNull CharacterEvent event) {
         if (editBox.isFocused()) {
             boolean consumed = editBox.charTyped(event);
             textUpdated.onUpdate(editBox.getValue());
@@ -50,7 +51,7 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
+    public boolean keyPressed(@NonNull KeyEvent event) {
         if (editBox.isFocused()) {
             return editBox.keyPressed(event);
         }

@@ -10,12 +10,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonSettings extends ButtonFeature {
 
-    private static final ResourceLocation GEAR = SkyblockAddons.resourceLocation("gui/gear.png");
+    private static final Identifier GEAR = SkyblockAddons.identifier("gui/gear.png");
 
     /**
      * Create a button for toggling a feature on or off. This includes all the {@link Feature}s that have a proper ID.
@@ -37,7 +38,7 @@ public class ButtonSettings extends ButtonFeature {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (MC.screen instanceof SkyblockAddonsGui gui) {
             main.getUtils().setFadingIn(false);
             if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {

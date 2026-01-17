@@ -8,7 +8,6 @@ import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ElectionData;
 import net.minecraft.network.chat.ClickEvent;
@@ -24,6 +23,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final String PATH = "https://api.hypixel.net/v2/resources/skyblock/election";
 
     /** New mayor name according to latest election results from chat */
     private static String newMayorName = "";
@@ -41,9 +41,9 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
      */
     public MayorRequest(String newMayorName) {
         super(
-                "https://api.hypixel.net/v2/resources/skyblock/election",
-                new JSONResponseHandler<>(ElectionData.class),
-                new MayorCallback("https://api.hypixel.net/v2/resources/skyblock/election"),
+                PATH,
+                ElectionData.class,
+                new MayorCallback(),
                 false,
                 true
         );
@@ -52,8 +52,8 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
 
     private static class MayorCallback extends DataFetchCallback<ElectionData> {
 
-        public MayorCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public MayorCallback() {
+            super(LOGGER, URI.create(PATH));
         }
 
         @Override
@@ -129,4 +129,5 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
         }
 
     }
+
 }

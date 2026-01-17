@@ -4,6 +4,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import net.minecraft.client.renderer.DynamicUniformStorage;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.ByteBuffer;
 
@@ -37,7 +38,7 @@ public class ChromaUniform implements AutoCloseable {
 
     record UniformValue(Float chromaSize, Float timeOffset, Float saturation) implements DynamicUniformStorage.DynamicUniform{
         @Override
-        public void write(ByteBuffer buffer) {
+        public void write(@NonNull ByteBuffer buffer) {
             Std140Builder.intoBuffer(buffer)
                     .putFloat(chromaSize)
                     .putFloat(timeOffset)

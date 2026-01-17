@@ -10,9 +10,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 import java.awt.geom.Point2D;
 
@@ -20,7 +21,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
 
     public static final int MAX_SELECT_RADIUS = 90;
 
-    private static final ResourceLocation PORTAL_ICON = SkyblockAddons.resourceLocation("portal.png");
+    private static final Identifier PORTAL_ICON = SkyblockAddons.identifier("portal.png");
 
     @Getter private final IslandWarpGui.Marker marker;
 
@@ -33,7 +34,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderWidget(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
     public void drawButton(GuiGraphics graphics, float islandX, float islandY, float expansion, boolean hovered) {
@@ -69,6 +70,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
                             color,
                             0,
                             true,
+                            false,
                             graphics.scissorStack.peek()
                     )
             );
@@ -82,7 +84,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         return false;
     }
 

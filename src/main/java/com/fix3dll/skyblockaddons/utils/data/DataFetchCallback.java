@@ -1,20 +1,19 @@
 package com.fix3dll.skyblockaddons.utils.data;
 
-import org.apache.http.concurrent.FutureCallback;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
 
 /**
- * This is a simple {@link FutureCallback} to log the result of a request for debugging.
- *
+ * This is a simple class to log the result of a request for debugging.
  * @param <T> the type of the result, unused
  */
-public abstract class DataFetchCallback<T> implements FutureCallback<T> {
+public abstract class DataFetchCallback<T> {
+
     private final Logger logger;
     private final String urlString;
     private final boolean isEssential;
-    private Exception firstFail = null;
+    private Throwable firstFail = null;
 
     public DataFetchCallback(Logger logger, URI url) {
         this(logger, url, false);
@@ -26,13 +25,11 @@ public abstract class DataFetchCallback<T> implements FutureCallback<T> {
         this.isEssential = isEssential;
     }
 
-    @Override
     public void completed(T result) {
         logger.debug("Successfully fetched {}", urlString);
     }
 
-    @Override
-    public void failed(Exception ex) {
+    public void failed(Throwable ex) {
         logger.error(
                 "Failed to fetch \"{}\" data from the server. The local copy will be used instead.\n{}",
                 DataUtils.getFileNameFromUrlString(urlString), ex.getMessage()
@@ -50,8 +47,8 @@ public abstract class DataFetchCallback<T> implements FutureCallback<T> {
         if (firstFail == null) firstFail = ex;
     }
 
-    @Override
     public void cancelled() {
         logger.info("Cancelled fetching {}", urlString);
     }
+
 }

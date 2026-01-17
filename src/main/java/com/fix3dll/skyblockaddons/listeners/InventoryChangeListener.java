@@ -1,9 +1,9 @@
 package com.fix3dll.skyblockaddons.listeners;
 
-import lombok.NonNull;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
 import net.minecraft.world.SimpleContainer;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This listener is used for {@link net.minecraft.world.ContainerListener}. Its
@@ -28,7 +28,7 @@ public class InventoryChangeListener implements ContainerListener {
      * @param inventory the {@code InventoryBasic} after the change
      */
     @Override
-    public void containerChanged(Container inventory) {
+    public void containerChanged(@NonNull Container inventory) {
         GUI_SCREEN_LISTENER.containerChanged((SimpleContainer) inventory);
     }
 }

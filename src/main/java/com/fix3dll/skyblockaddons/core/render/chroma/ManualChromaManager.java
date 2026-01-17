@@ -49,7 +49,7 @@ public class ManualChromaManager {
             x *= featureScale;
             y *= featureScale;
         }
-        int scale = (int) MC.getWindow().getGuiScale();
+        int scale = MC.getWindow().getGuiScale();
         x *= scale;
         y *= scale;
 

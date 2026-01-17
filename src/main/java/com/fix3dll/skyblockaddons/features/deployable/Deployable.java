@@ -2,7 +2,7 @@ package com.fix3dll.skyblockaddons.features.deployable;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Represents the Deployables introduced with the Slayer Update and unlocked through the Wolf slayer and Blaze slayer quests.
@@ -69,7 +69,7 @@ public enum Deployable {
     /**
      * Resource location to the icon used when displaying the deployable
      */
-    private final ResourceLocation resourceLocation;
+    private final Identifier identifier;
     /**
      * Entity textureId for detect Flares
      */
@@ -118,7 +118,7 @@ public enum Deployable {
     // Base
     Deployable(int rangeSquared, String resourcePath) {
         this.rangeSquared = rangeSquared;
-        this.resourceLocation = SkyblockAddons.resourceLocation("deployables/"+resourcePath+".png");
+        this.identifier = SkyblockAddons.identifier("deployables/"+resourcePath+".png");
     }
 
     /**

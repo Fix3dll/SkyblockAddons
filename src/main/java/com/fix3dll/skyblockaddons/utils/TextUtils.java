@@ -9,7 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
-import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -20,6 +19,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.PlainTextContents;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
@@ -213,7 +213,7 @@ public class TextUtils {
      */
     public static String convertMagnitudes(String text) throws ParseException {
         Matcher matcher = MAGNITUDE_PATTERN.matcher(text);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         while (matcher.find()) {
             double parsedDouble = NUMBER_FORMAT.parse(matcher.group(1)).doubleValue();
@@ -653,7 +653,7 @@ public class TextUtils {
             private boolean firstChunk = true;
 
             @Override
-            public Optional<Void> accept(Style style, String string) {
+            public @NonNull Optional<Void> accept(@NonNull Style style, @NonNull String string) {
                 String formattingCode = formattingCode(style, rootStyle);
 
                 // Ignore white formatting code on start of string for sidebar

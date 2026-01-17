@@ -8,7 +8,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,8 +19,8 @@ import java.util.function.Consumer;
  */
 public class ButtonCycling extends SkyblockAddonsButton {
 
-    private static final ResourceLocation ARROW_LEFT = SkyblockAddons.resourceLocation("gui/flatarrowleft.png");
-    private static final ResourceLocation ARROW_RIGHT = SkyblockAddons.resourceLocation("gui/flatarrowright.png");
+    private static final Identifier ARROW_LEFT = SkyblockAddons.identifier("gui/flatarrowleft.png");
+    private static final Identifier ARROW_RIGHT = SkyblockAddons.identifier("gui/flatarrowright.png");
 
     /**
      * Item that can be used in this Select button
@@ -84,7 +85,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         int leftColor = main.getUtils().getDefaultColor(isOverLeftButton(mouseX, mouseY) ? 200 : 90);
         int rightColor = main.getUtils().getDefaultColor(isOverRightButton(mouseX, mouseY) ? 200 : 90);
 

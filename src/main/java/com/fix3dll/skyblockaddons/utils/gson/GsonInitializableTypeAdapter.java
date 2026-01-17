@@ -18,7 +18,7 @@ public class GsonInitializableTypeAdapter implements TypeAdapterFactory {
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
         TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
 
-        return new TypeAdapter<T>() {
+        return new TypeAdapter<>() {
             @Override
             public void write(JsonWriter out, T value) throws IOException {
                 delegate.write(out, value);
@@ -34,4 +34,5 @@ public class GsonInitializableTypeAdapter implements TypeAdapterFactory {
             }
         };
     }
+
 }

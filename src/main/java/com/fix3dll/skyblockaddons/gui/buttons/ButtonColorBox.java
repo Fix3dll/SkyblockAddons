@@ -11,6 +11,7 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This button is for when you are choosing one of the 16 color codes.
@@ -31,7 +32,7 @@ public class ButtonColorBox extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isHovered(mouseX, mouseY);
         drawColorRect(graphics, getX(), getY(), getX() + width, getY() + height, this.isHovered ? color.getColor() : color.getColor(127));
     }

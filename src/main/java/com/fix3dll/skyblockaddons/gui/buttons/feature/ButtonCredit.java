@@ -4,19 +4,20 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import lombok.Getter;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Util;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 @Getter
 public class ButtonCredit extends ButtonFeature {
 
-    private static final ResourceLocation WEB = SkyblockAddons.resourceLocation("gui/web.png");
+    private static final Identifier WEB = SkyblockAddons.identifier("gui/web.png");
 
     private final EnumUtils.FeatureCredit credit;
 
@@ -29,7 +30,7 @@ public class ButtonCredit extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         this.isHovered = isHovered(mouseX, mouseY);
         float alphaMultiplier = calculateAlphaMultiplier();
         int color = ARGB.white(alphaMultiplier * (this.isHovered ? 1F : 0.7F));
@@ -45,7 +46,7 @@ public class ButtonCredit extends ButtonFeature {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (!feature.isRemoteDisabled()) {
             try {
                 Util.getPlatform().openUri(credit.getUrl());

@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonColorBox;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonSlider;
@@ -22,10 +23,11 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -34,7 +36,7 @@ import java.util.function.Supplier;
 
 public class ColorSelectionGui extends SkyblockAddonsScreen {
 
-    private static final ResourceLocation COLOR_PICKER = SkyblockAddons.resourceLocation("gui/colorpicker.png");
+    private static final Identifier COLOR_PICKER = SkyblockAddons.identifier("gui/colorpicker.png");
     private static NativeImage COLOR_PICKER_IMAGE = loadColorPicker();
 
     // The feature that this color is for.
@@ -73,7 +75,8 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         this.lastTab = lastTab;
         this.lastGUI = lastGUI;
         this.lastPage = lastPage;
-        this.isRestricted = feature.isGuiFeature() && feature.getFeatureGuiData().isColorsRestricted();
+        FeatureGuiData featureGuiData = feature.getFeatureGuiData();
+        this.isRestricted = featureGuiData != null && featureGuiData.isColorsRestricted();
         this.isChroma = feature::isChroma;
         this.color = feature::getColor;
         this.setColor = feature::setColor;
@@ -200,14 +203,14 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // Draw background and default text.
         drawGradientBackground(graphics, 128, 192);
         drawDefaultTitleText(graphics, mouseX, mouseY, partialTick, this, 255);
 
         int defaultBlue = ColorUtils.getDefaultBlue(1);
 
-        if (feature.isGuiFeature() || setting != null) {
+        if (feature.getFeatureGuiData() != null || setting != null) {
             if (isRestricted) {
                 drawScaledString(
                         graphics,
@@ -262,7 +265,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (!isRestricted && !this.isChroma.get()) {
             int xPixel = (int) event.x() - imageX;
             int yPixel = (int) event.y() - imageY;
@@ -322,7 +325,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
+    public boolean keyPressed(@NonNull KeyEvent event) {
         if (hexColorField.isFocused()) {
             hexColorField.keyPressed(event);
             if (!this.parseColor()) {
@@ -336,7 +339,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean charTyped(CharacterEvent event) {
+    public boolean charTyped(@NonNull CharacterEvent event) {
         if (hexColorField.isFocused()) {
             hexColorField.charTyped(event);
             if (!this.parseColor()) {

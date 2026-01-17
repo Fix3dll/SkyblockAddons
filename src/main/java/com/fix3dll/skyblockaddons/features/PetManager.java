@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PetManager {
-    //private static final Pattern SELECTED_PET_PATTERN = Pattern.compile("(?:§.)*Selected pet: §(?<rarity>\\w)(?<pet>[\\w ]+)");
+
     private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(] )(§8\\[§.)?(?<cosmeticLevel>\\d+)?(.*)");
     private static final Pattern FAVORITE_PATTERN = Pattern.compile("(?i)(§r)?§e⭐ ");
 
@@ -48,18 +48,6 @@ public class PetManager {
 
             // Pets menu size not lower than 54 slot
             if (inventory.size() < 54) return;
-//            ItemStack petMenuBone = lower.getStackInSlot(4);
-//            List<String> lore = ItemUtils.getItemLore(petMenuBone);
-//
-//            for (String line : lore) {
-//                if (line.contains("Selected pet:")) {
-//                    Matcher m = SELECTED_PET_PATTERN.matcher(line);
-//                    if (m.find()) {
-//                        String petName = m.group("pet");
-//                        PetInfo.PetRarity.getRarity(m.group("rarity"));
-//                    }
-//                }
-//            }
 
             int pageNum = main.getInventoryUtils().getInventoryPageNum();
             // Ignore first and last row

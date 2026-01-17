@@ -2,8 +2,8 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.features.SkillXpManager;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import org.apache.logging.log4j.Logger;
 
@@ -13,19 +13,20 @@ import java.util.Objects;
 public class SkillXpRequest extends RemoteFileRequest<SkillXpManager.JsonInput> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblock/skillXp.json";
 
     public SkillXpRequest() {
         super(
-                "skyblock/skillXp.json",
-                new JSONResponseHandler<>(SkillXpManager.JsonInput.class),
-                new SkillXpCallback(getCDNBaseURL() + "skyblock/skillXp.json")
+                PATH,
+                SkillXpManager.JsonInput.class,
+                new SkillXpCallback()
         );
     }
 
     public static class SkillXpCallback extends DataFetchCallback<SkillXpManager.JsonInput> {
 
-        public SkillXpCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public SkillXpCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
@@ -35,5 +36,7 @@ public class SkillXpRequest extends RemoteFileRequest<SkillXpManager.JsonInput> 
                     Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR)
             );
         }
+
     }
+
 }

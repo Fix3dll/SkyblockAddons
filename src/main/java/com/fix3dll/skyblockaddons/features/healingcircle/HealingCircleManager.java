@@ -14,7 +14,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 import java.awt.geom.Point2D;
 import java.util.Iterator;
@@ -38,12 +39,11 @@ public class HealingCircleManager {
 
     private static final RenderType HEALING_CIRCLE = RenderType.create(
             "sba_healing_circle",
-            RenderType.TRANSIENT_BUFFER_SIZE,
-            true,
-            true,
-            HEALING_CIRCLE_PIPELINE,
-            RenderType.CompositeState.builder()
-                    .createCompositeState(false)
+            RenderSetup.builder(HEALING_CIRCLE_PIPELINE)
+                    .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+                    .affectsCrumbling()
+                    .sortOnUpload()
+                    .createRenderSetup()
     );
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();

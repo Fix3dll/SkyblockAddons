@@ -50,7 +50,7 @@ public class ScreenHook {
             if (title.equals("Fast Travel")) {
                 if (islandWarpGui == null) {
                     islandWarpGui = new IslandWarpGui();
-                    islandWarpGui.init(MC, MC.getWindow().getGuiScaledWidth(), MC.getWindow().getGuiScaledHeight());
+                    islandWarpGui.init(MC.getWindow().getGuiScaledWidth(), MC.getWindow().getGuiScaledHeight());
                 }
 
                 try {

@@ -11,6 +11,7 @@ import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonOpenColorMenu;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonSettingToggle;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -73,7 +74,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick); // Draw buttons.
     }
 

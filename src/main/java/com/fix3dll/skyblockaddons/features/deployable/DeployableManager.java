@@ -34,8 +34,8 @@ public class DeployableManager {
     private static final Pattern TOTEM_PATTERN = Pattern.compile("Remaining: (?:(?<minutes>\\d{1,2})m )?(?<seconds>\\d{1,2})s");
 
     /** Entry displaying {@link Deployable#SOS_FLARE} at 90 seconds for the edit screen */
-    public static ArmorStand DUMMY_ARMOR_STAND;
-    public static DeployableEntry DUMMY_DEPLOYABLE_ENTRY;
+    public static final ArmorStand DUMMY_ARMOR_STAND;
+    public static final DeployableEntry DUMMY_DEPLOYABLE_ENTRY;
 
     private final Map<Deployable, DeployableEntry> deployableEntryMap = new HashMap<>();
 

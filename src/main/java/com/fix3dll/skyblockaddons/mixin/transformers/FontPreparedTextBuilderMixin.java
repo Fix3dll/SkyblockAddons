@@ -22,8 +22,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Font.PreparedTextBuilder.class)
 public class FontPreparedTextBuilderMixin {
 
-    @Inject(method = "visit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font$GlyphVisitor;acceptGlyph(Lnet/minecraft/client/gui/font/TextRenderable;)V"))
-    private void sba$checkIfGlyphIsChroma(CallbackInfo ci, @Local TextRenderable textRenderable) {
+    @Inject(method = "visit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font$GlyphVisitor;acceptGlyph(Lnet/minecraft/client/gui/font/TextRenderable$Styled;)V"))
+    private void sba$checkIfGlyphIsChroma(CallbackInfo ci, @Local TextRenderable.Styled textRenderable) {
         if (textRenderable instanceof BakedSheetGlyph.GlyphInstance glyphInstance) {
             FontHook.checkIfGlyphIsChroma(glyphInstance);
         }

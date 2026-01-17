@@ -260,15 +260,6 @@
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE"
   },
-  "ENABLE_MESSAGE_WHEN_MINING_DEEP_CAVERNS": {
-    "value": true
-  },
-  "ENABLE_MESSAGE_WHEN_BREAKING_STEMS": {
-    "value": true
-  },
-  "ENABLE_MESSAGE_WHEN_MINING_NETHER": {
-    "value": true
-  },
   "HIDE_PET_HEALTH_BAR": {
     "value": true
   },
@@ -393,9 +384,6 @@
       36.0,
       100.0
     ]
-  },
-  "ENABLE_MESSAGE_WHEN_BREAKING_PARK": {
-    "value": true
   },
   "BOSS_APPROACH_ALERT": {
     "value": true,

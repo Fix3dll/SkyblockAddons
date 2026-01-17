@@ -2,8 +2,8 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.features.PetManager;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
 import com.google.gson.reflect.TypeToken;
@@ -16,19 +16,20 @@ import java.util.Objects;
 public class PetItemsRequest extends RemoteFileRequest<HashMap<String, PetItem>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblock/petItems.json";
 
     public PetItemsRequest() {
         super(
-                "skyblock/petItems.json",
-                new JSONResponseHandler<>(new TypeToken<HashMap<String, PetItem>>() {}.getType()),
-                new PetItemsCallback(getCDNBaseURL() + "skyblock/petItems.json")
+                PATH,
+                new TypeToken<HashMap<String, PetItem>>() {}.getType(),
+                new PetItemsCallback()
         );
     }
 
     public static class PetItemsCallback extends DataFetchCallback<HashMap<String, PetItem>> {
 
-        public PetItemsCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public PetItemsCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
@@ -36,5 +37,7 @@ public class PetItemsRequest extends RemoteFileRequest<HashMap<String, PetItem>>
             super.completed(result);
             PetManager.setPetItems(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
         }
+
     }
+
 }

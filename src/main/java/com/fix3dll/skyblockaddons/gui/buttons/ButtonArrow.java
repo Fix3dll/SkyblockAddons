@@ -10,8 +10,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonArrow extends SkyblockAddonsButton {
 
@@ -30,7 +31,7 @@ public class ButtonArrow extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // Alpha multiplier is from 0 to 1, multiplying it creates the fade effect.
         float alphaMultiplier = calculateAlphaMultiplier();
         this.isHovered = isHovered(mouseX, mouseY);
@@ -46,7 +47,7 @@ public class ButtonArrow extends SkyblockAddonsButton {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (!this.max) {
             main.getUtils().setFadingIn(false);
 
@@ -77,10 +78,10 @@ public class ButtonArrow extends SkyblockAddonsButton {
         LEFT("gui/arrowleft.png"),
         RIGHT("gui/arrowright.png");
 
-        final ResourceLocation identifier;
+        final Identifier identifier;
 
         ArrowType(String path) {
-            this.identifier = SkyblockAddons.resourceLocation(path);
+            this.identifier = SkyblockAddons.identifier(path);
         }
     }
 

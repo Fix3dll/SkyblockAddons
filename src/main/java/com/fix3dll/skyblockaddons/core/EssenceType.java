@@ -2,7 +2,7 @@ package com.fix3dll.skyblockaddons.core;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Locale;
 
@@ -19,11 +19,11 @@ public enum EssenceType {
     FOSSIL_DUST;
 
     private final String niceName;
-    private final ResourceLocation resourceLocation;
+    private final Identifier identifier;
 
     EssenceType() {
         niceName = this.name().charAt(0) + this.name().substring(1).toLowerCase(Locale.ENGLISH);
-        resourceLocation = SkyblockAddons.resourceLocation("essences/" + this.name().toLowerCase(Locale.US) + ".png");
+        identifier = SkyblockAddons.identifier("essences/" + this.name().toLowerCase(Locale.US) + ".png");
     }
 
     public static EssenceType fromName(String name) {

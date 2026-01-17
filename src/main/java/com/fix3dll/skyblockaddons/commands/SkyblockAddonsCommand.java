@@ -20,11 +20,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.Util;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Util;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -416,7 +416,7 @@ public class SkyblockAddonsCommand {
             return 1;
         }).then(argument("arg", StringArgumentType.greedyString()).executes(ctx -> {
             String command = ctx.getArgument("command", String.class);
-            String arg = ctx.getArgument("arg", String.class).toLowerCase(Locale.US);
+            String arg = ctx.getArgument("arg", String.class);
             if ("copy".equalsIgnoreCase(command)) {
                 DevUtils.copyStringToClipboard(arg, Translations.getMessage("messages.copied"), false);
             }

@@ -29,7 +29,7 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -64,7 +64,7 @@ public class ContainerPreviewManager {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    private static final ResourceLocation CHEST_GUI_TEXTURE = SkyblockAddons.resourceLocation("containerpreview.png");
+    private static final Identifier CHEST_GUI_TEXTURE = SkyblockAddons.identifier("containerpreview.png");
     private static final Pattern BACKPACK_STORAGE_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
     private static final Pattern ENDERCHEST_STORAGE_PATTERN = Pattern.compile("Ender Chest Page (?<page>\\d+)");
     private static final ItemStack EMPTY_SLOT_ITEM = Items.AIR.getDefaultInstance();

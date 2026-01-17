@@ -21,10 +21,10 @@ public class WakeParticleHook {
     static {
         TextureAtlas sbaAtlas = MC.getAtlasManager().getAtlasOrThrow(Atlases.PARTICLES);
         sprites = List.of(
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/0")),
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/1")),
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/2")),
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/3"))
+                sbaAtlas.getSprite(SkyblockAddons.identifier("blank_splash/0")),
+                sbaAtlas.getSprite(SkyblockAddons.identifier("blank_splash/1")),
+                sbaAtlas.getSprite(SkyblockAddons.identifier("blank_splash/2")),
+                sbaAtlas.getSprite(SkyblockAddons.identifier("blank_splash/3"))
         );
     }
 

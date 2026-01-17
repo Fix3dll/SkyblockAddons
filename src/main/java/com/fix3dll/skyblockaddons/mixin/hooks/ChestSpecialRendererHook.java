@@ -11,7 +11,7 @@ import net.minecraft.client.resources.model.Material;
 public class ChestSpecialRendererHook {
 
     public static final Material BLANK_ENDER_CHEST_MATERIAL = Sheets.CHEST_MAPPER.apply(
-            SkyblockAddons.resourceLocation("blankenderchest")
+            SkyblockAddons.identifier("blankenderchest")
     );
 
     public static TextureAtlasSprite getBlankSprite() {

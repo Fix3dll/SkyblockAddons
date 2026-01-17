@@ -15,10 +15,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +30,8 @@ public abstract class SkyblockAddonsScreen extends Screen {
     protected static final Minecraft MC = Minecraft.getInstance();
     protected static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    public static final ResourceLocation LOGO = SkyblockAddons.resourceLocation("logo.png");
-    public static final ResourceLocation LOGO_GLOW = SkyblockAddons.resourceLocation("logoglow.png");
+    public static final Identifier LOGO = SkyblockAddons.identifier("logo.png");
+    public static final Identifier LOGO_GLOW = SkyblockAddons.identifier("logoglow.png");
     private static final String FORMATTED_VERSION = "v" + SkyblockAddons.METADATA.getVersion().toString()
             .replaceAll("\\+\\d+(?:\\.\\d+)?", "") // BUILD NUMBER
             .replace("alpha", "a")
@@ -49,7 +50,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (firstDraw) {
             sortButtonList();
             firstDraw = false;
@@ -58,12 +59,12 @@ public abstract class SkyblockAddonsScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (buttonBanner != null) buttonBanner.mouseClicked(event, isDoubleClick);
         return super.mouseClicked(event, isDoubleClick);
     }
 
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
     /** Returns the last event listener that intersects with the mouse coordinates. */

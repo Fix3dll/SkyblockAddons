@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +27,7 @@ public class MinecraftMixin {
         ClientEvents.AFTER_INITIALIZATION.invoker().afterInitializeClient(instance);
     }
 
-    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", ordinal = 0), cancellable = true)
+    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", ordinal = 0, opcode = Opcodes.GETFIELD), cancellable = true)
     public void sba$beforeScreenInit(Screen screen, CallbackInfo ci) {
         if (ClientEvents.BEFORE_SET_SCREEN.invoker().beforeSetScreen(screen)) {
             ci.cancel();
@@ -38,7 +39,7 @@ public class MinecraftMixin {
         ClientEvents.HANDLE_KEYBINDS.invoker().handleKeybinds();
     }
 
-    @Inject(method = "startUseItem", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;rightClickDelay:I"), cancellable = true)
+    @Inject(method = "startUseItem", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;rightClickDelay:I", opcode = Opcodes.PUTFIELD), cancellable = true)
     private void sba$rightClickMouse(CallbackInfo ci) {
         MinecraftHook.rightClickMouse(ci);
     }

@@ -11,13 +11,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonColorWheel extends ButtonFeature {
 
-    private static final ResourceLocation COLOR_WHEEL = SkyblockAddons.resourceLocation("gui/colorwheel.png");
+    private static final Identifier COLOR_WHEEL = SkyblockAddons.identifier("gui/colorwheel.png");
     public static final int SIZE = 10;
 
     public float colorWheelX;
@@ -53,7 +54,7 @@ public class ButtonColorWheel extends ButtonFeature {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (MC.screen instanceof LocationEditGui gui) {
             gui.setClosing(true);
             MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.EDIT_LOCATIONS, gui.getLastTab(), gui.getLastPage()));

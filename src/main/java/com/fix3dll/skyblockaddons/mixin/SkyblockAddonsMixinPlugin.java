@@ -14,6 +14,7 @@ public class SkyblockAddonsMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         // Reference class for check for old installation of SkyblockAddons
+        // TODO FIXME
         if (checkForClass("codes.biscuit.skyblockaddons.tweaker.SkyblockAddonsTransformer")) {
             SkyblockAddons.getLogger().error("Launch failed because old installation of SkyblockAddons was found."
                     + " Please remove it and restart Minecraft!");

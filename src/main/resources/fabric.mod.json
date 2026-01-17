@@ -35,9 +35,9 @@
     },
 	"depends": {
 		"fabricloader": ">=0.18.4",
-		"minecraft": "~1.21.10",
+		"minecraft": "~1.21.11",
 		"java": ">=21",
-		"fabric-api": ">=0.138.4+1.21.10",
+		"fabric-api": ">=0.141.1+1.21.11",
 		"hypixel-mod-api": ">=1.0.1"
 	},
 	"suggests": {

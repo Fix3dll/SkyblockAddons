@@ -9,6 +9,7 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 @Getter
 public class ButtonLocation extends ButtonFeature {
@@ -33,7 +34,7 @@ public class ButtonLocation extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // If the feature is disabled, don't draw in the "Edit GUI Location" section
         if (feature.isDisabled()) {
             return;
@@ -74,7 +75,7 @@ public class ButtonLocation extends ButtonFeature {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         return this.active && this.visible && this.isHovered && this.isValidClickButton(event.buttonInfo());
     }
 
@@ -84,4 +85,5 @@ public class ButtonLocation extends ButtonFeature {
                 && mouseX >= boxXOne * scale * scaleX && mouseY >= boxYOne * scale * scaleY
                 && mouseX < boxXTwo * scale * scaleX && mouseY < boxYTwo * scale * scaleY;
     }
+
 }

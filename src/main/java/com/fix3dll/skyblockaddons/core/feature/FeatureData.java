@@ -11,8 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import lombok.Data;
-import lombok.NonNull;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.TreeMap;
 
@@ -30,7 +31,7 @@ public class FeatureData<T> {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     // TODO next step of migration. move FeatureGuiData to FeatureData
-    private final FeatureGuiData guiData;
+    private final @Nullable FeatureGuiData guiData;
 
     @SerializedName("value")
     private T value;

@@ -2,21 +2,23 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Supplier;
 
 public class ButtonFeatureToggle extends ButtonFeature {
 
-    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = SkyblockAddons.resourceLocation("gui/toggleinsidecircle.png");
-    private static final ResourceLocation TOGGLE_BORDER = SkyblockAddons.resourceLocation("gui/toggleborder.png");
-    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = SkyblockAddons.resourceLocation("gui/toggleinsidebackground.png");
+    private static final Identifier TOGGLE_INSIDE_CIRCLE = SkyblockAddons.identifier("gui/toggleinsidecircle.png");
+    private static final Identifier TOGGLE_BORDER = SkyblockAddons.identifier("gui/toggleborder.png");
+    private static final Identifier TOGGLE_INSIDE_BACKGROUND = SkyblockAddons.identifier("gui/toggleinsidebackground.png");
 
     private static final int CIRCLE_PADDING_LEFT = 5;
     private static final int ANIMATION_SLIDE_DISTANCE = 12;
@@ -81,7 +83,7 @@ public class ButtonFeatureToggle extends ButtonFeature {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (this.feature != null && !this.feature.isRemoteDisabled()) {
             if (feature.isDisabled()) {
                 feature.setEnabled(true);
@@ -119,7 +121,8 @@ public class ButtonFeatureToggle extends ButtonFeature {
                 boolean areAllFeaturesChroma = ColorUtils.areAllFeaturesChroma();
 
                 for (Feature loopFeature : Feature.values()) {
-                    if (loopFeature.isGuiFeature() && loopFeature.getFeatureGuiData().getDefaultColor() != null) {
+                    FeatureGuiData featureGuiData = loopFeature.getFeatureGuiData();
+                    if (featureGuiData != null && featureGuiData.getDefaultColor() != null) {
                         loopFeature.setChroma(!areAllFeaturesChroma);
                     }
                 }

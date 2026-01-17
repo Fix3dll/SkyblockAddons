@@ -1,8 +1,8 @@
 package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import org.apache.logging.log4j.Logger;
@@ -13,12 +13,13 @@ import java.util.Objects;
 public class OnlineDataRequest extends RemoteFileRequest<OnlineData> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblockaddons/data.json";
 
     public OnlineDataRequest() {
         super(
                 "skyblockaddons/data.json",
-                new JSONResponseHandler<>(OnlineData.class),
-                new OnlineDataCallback(getCDNBaseURL() + "skyblockaddons/data.json")
+                OnlineData.class,
+                new OnlineDataCallback()
 //                , false
 //                , true
         );
@@ -26,8 +27,8 @@ public class OnlineDataRequest extends RemoteFileRequest<OnlineData> {
 
     public static class OnlineDataCallback extends DataFetchCallback<OnlineData> {
 
-        public OnlineDataCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public OnlineDataCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
@@ -39,4 +40,5 @@ public class OnlineDataRequest extends RemoteFileRequest<OnlineData> {
         }
 
     }
+
 }

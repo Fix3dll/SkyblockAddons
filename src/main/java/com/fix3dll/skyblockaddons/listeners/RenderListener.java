@@ -62,7 +62,6 @@ import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -74,14 +73,15 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffects;
@@ -93,10 +93,10 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Blaze;
-import net.minecraft.world.entity.monster.CaveSpider;
 import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.Spider;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.spider.CaveSpider;
+import net.minecraft.world.entity.monster.spider.Spider;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -106,6 +106,7 @@ import net.minecraft.world.level.block.Blocks;
 import org.joml.Matrix3x2fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.jspecify.annotations.NonNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -127,23 +128,23 @@ public class RenderListener {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
-//    public static final ResourceLocation SBA_RENDER_LAYER = SkyblockAddons.resourceLocation("hud_layer");
+//    public static final Identifier SBA_RENDER_LAYER = SkyblockAddons.identifier("hud_layer");
 
     private static final ItemStack BONE_ITEM = new ItemStack(Items.BONE);
-    private static final ResourceLocation ARMOR = ResourceLocation.withDefaultNamespace("hud/armor_full");
-    private static final ResourceLocation BARS = SkyblockAddons.resourceLocation("bars_v2.png");
-    private static final ResourceLocation DEFENCE_VANILLA = SkyblockAddons.resourceLocation("defence.png");
-    private static final ResourceLocation TICKER_SYMBOL = SkyblockAddons.resourceLocation("ticker.png");
-    private static final ResourceLocation ENDERMAN_ICON = SkyblockAddons.resourceLocation("icons/enderman.png");
-    private static final ResourceLocation ENDERMAN_GROUP_ICON = SkyblockAddons.resourceLocation("icons/endermangroup.png");
-    private static final ResourceLocation SIRIUS_ICON = SkyblockAddons.resourceLocation("icons/sirius.png");
-    private static final ResourceLocation SUMMONING_EYE_ICON = SkyblockAddons.resourceLocation("icons/summoningeye.png");
-    private static final ResourceLocation ZEALOTS_PER_EYE_ICON = SkyblockAddons.resourceLocation("icons/zealotspereye.png");
-    private static final ResourceLocation SLASH_ICON = SkyblockAddons.resourceLocation("icons/slash.png");
-    private static final ResourceLocation IRON_GOLEM_ICON = SkyblockAddons.resourceLocation("icons/irongolem.png");
-    private static final ResourceLocation FARM_ICON = SkyblockAddons.resourceLocation("icons/farm.png");
-    private static final ResourceLocation RIFTSTALKER_BLOODFIEND = SkyblockAddons.resourceLocation("vampire.png");
-    private static final ResourceLocation MORT_ICON = SkyblockAddons.resourceLocation("icons/mort.png");
+    private static final Identifier ARMOR = Identifier.withDefaultNamespace("hud/armor_full");
+    private static final Identifier BARS = SkyblockAddons.identifier("bars_v2.png");
+    private static final Identifier DEFENCE_VANILLA = SkyblockAddons.identifier("defence.png");
+    private static final Identifier TICKER_SYMBOL = SkyblockAddons.identifier("ticker.png");
+    private static final Identifier ENDERMAN_ICON = SkyblockAddons.identifier("icons/enderman.png");
+    private static final Identifier ENDERMAN_GROUP_ICON = SkyblockAddons.identifier("icons/endermangroup.png");
+    private static final Identifier SIRIUS_ICON = SkyblockAddons.identifier("icons/sirius.png");
+    private static final Identifier SUMMONING_EYE_ICON = SkyblockAddons.identifier("icons/summoningeye.png");
+    private static final Identifier ZEALOTS_PER_EYE_ICON = SkyblockAddons.identifier("icons/zealotspereye.png");
+    private static final Identifier SLASH_ICON = SkyblockAddons.identifier("icons/slash.png");
+    private static final Identifier IRON_GOLEM_ICON = SkyblockAddons.identifier("icons/irongolem.png");
+    private static final Identifier FARM_ICON = SkyblockAddons.identifier("icons/farm.png");
+    private static final Identifier RIFTSTALKER_BLOODFIEND = SkyblockAddons.identifier("vampire.png");
+    private static final Identifier MORT_ICON = SkyblockAddons.identifier("icons/mort.png");
 
     private static final ItemStack WATER_BUCKET = Items.WATER_BUCKET.getDefaultInstance();
     private static final ItemStack CHEST = Blocks.CHEST.asItem().getDefaultInstance();
@@ -1018,7 +1019,7 @@ public class RenderListener {
                     if (buttonLocation != null) dungeonMilestone = new DungeonMilestone(DungeonClass.HEALER);
                     else return;
                 }
-                text = "Milestone " + dungeonMilestone.getLevel();
+                text = "Milestone " + dungeonMilestone.level();
             }
             case DUNGEONS_COLLECTED_ESSENCES_DISPLAY -> {
                 if (buttonLocation == null && !main.getUtils().isInDungeon()) return;
@@ -1318,12 +1319,12 @@ public class RenderListener {
                     dungeonMilestone = new DungeonMilestone(DungeonClass.HEALER);
                 }
 
-                renderItem(graphics, dungeonMilestone.getDungeonClass().getItem(), x, y);
+                renderItem(graphics, dungeonMilestone.dungeonClass().getItem(), x, y);
 
                 DrawUtils.drawText(graphics, text, x + 18, y, color);
                 Number amount;
                 try {
-                    amount = TextUtils.NUMBER_FORMAT.parse(dungeonMilestone.getValue());
+                    amount = TextUtils.NUMBER_FORMAT.parse(dungeonMilestone.value());
                 } catch (ParseException e) {
                     amount = -1;
                 }
@@ -1661,7 +1662,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         currentY = y + row * 18;
 
         graphics.guiRenderState.submitGuiElement(
-                new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(essenceType.getResourceLocation()), graphics.pose(), currentX, currentY, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(essenceType.getIdentifier()), graphics.pose(), currentX, currentY, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
         );
 
 //        FontRendererHook.setupFeatureFont(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
@@ -1943,7 +1944,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             switch (feature) {
                 case REVENANT_SLAYER_TRACKER:
                     if (revenant == null) {
-                        revenant = new Zombie(EntityType.ZOMBIE, MC.level );
+                        revenant = new Zombie(EntityType.ZOMBIE, MC.level);
 
                         revenant.setItemSlot(EquipmentSlot.MAINHAND, ItemUtils.createItemStack(Items.DIAMOND_HOE, true));
                         revenant.setItemSlot(EquipmentSlot.FEET, ItemUtils.createItemStack(Items.DIAMOND_BOOTS, false));
@@ -1967,7 +1968,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 case SVEN_SLAYER_TRACKER:
                     if (sven == null) {
                         sven = new Wolf(EntityType.WOLF, MC.level);
-                        sven.setRemainingPersistentAngerTime(Integer.MAX_VALUE);
+                        sven.setTimeToRemainAngry(Long.MAX_VALUE);
                     }
                     drawEntity(graphics, sven, x, y - 2, entityWidth, height, -35, scale, 1.2F);
                     break;
@@ -1995,7 +1996,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                     if (riftstalker == null) {
                         riftstalker = new RemotePlayer(MC.level, new GameProfile(UUID.randomUUID(), "Riftstalker")) {
                             @Override
-                            public PlayerSkin getSkin() {
+                            public @NonNull PlayerSkin getSkin() {
                                 var bodySkin = new ClientAsset.ResourceTexture(RIFTSTALKER_BLOODFIEND, RIFTSTALKER_BLOODFIEND);
                                 return new PlayerSkin(bodySkin, null, null, PlayerModelType.WIDE, true);
                             }
@@ -2448,7 +2449,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         if (entity instanceof ArmorStand armorStand && !isUnarmored(armorStand)) {
             drawDeployableArmorStand(graphics, armorStand, x, y, scale);
         } else {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getIdentifier(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
 
         DrawUtils.drawText(
@@ -2578,7 +2579,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         if (entity instanceof ArmorStand armorStand && !isUnarmored(armorStand)) {
             drawDeployableArmorStand(graphics, armorStand, x, y, scale);
         } else {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getIdentifier(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
 
         String secondsString = String.format("§e%ss", seconds);
@@ -2686,7 +2687,10 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         x *= scale;
         y *= scale;
         float scaledWH = DEPLOYABLE_GUI_SIZE * scale;
-        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + scaledWH), Math.round(y + scaledWH), 25.0F / deployableArmorStand.getScale() * scale, translation, rotation, null, deployableArmorStand);
+
+        var entityRenderer = MC.getEntityRenderDispatcher().getRenderer(deployableArmorStand);
+        EntityRenderState entityRenderState = entityRenderer.createRenderState(deployableArmorStand, 1.0F);
+        graphics.submitEntityRenderState(entityRenderState, 25.0F / deployableArmorStand.getScale() * scale, translation, rotation, null, Math.round(x), Math.round(y), Math.round(x + scaledWH), Math.round(y + scaledWH));
 
         // rollback after rendering
         deployableArmorStand.yBodyRot = prevRenderYawOffset;
@@ -2721,7 +2725,9 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         y *= scale;
         width *= scale;
         height *= scale;
-        InventoryScreen.renderEntityInInventory(graphics, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height), 25.0F / entity.getScale() * entityScale * scale, translation, rotation, overrideCameraAngel, entity);
+        var entityRenderer = MC.getEntityRenderDispatcher().getRenderer(entity);
+        EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
+        graphics.submitEntityRenderState(entityRenderState, 25.0F / entity.getScale() * entityScale * scale, translation, rotation, overrideCameraAngel, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height));
 
         // rollback after rendering
         entity.setYRot(oYRot);
@@ -2764,9 +2770,9 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         }
     }
 
-    public static TextureSetup textureSetup(ResourceLocation location) {
-        GpuTextureView gpuTextureView = MC.getTextureManager().getTexture(location).getTextureView();
-        return TextureSetup.singleTexture(gpuTextureView);
+    public static TextureSetup textureSetup(Identifier location) {
+        AbstractTexture gpuTextureView = MC.getTextureManager().getTexture(location);
+        return TextureSetup.singleTexture(gpuTextureView.getTextureView(), gpuTextureView.getSampler());
     }
 
     private enum DamageDisplayItem {

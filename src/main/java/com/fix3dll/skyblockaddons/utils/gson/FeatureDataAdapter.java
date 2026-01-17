@@ -131,16 +131,12 @@ public class FeatureDataAdapter<T> implements JsonDeserializer<FeatureData<T>>, 
     }
 
     private void serializeValue(String propertyName, Object value, JsonObject jsonObject, JsonSerializationContext context) {
-        if (value instanceof Boolean) {
-            jsonObject.addProperty(propertyName, (boolean) value);
-        } else if (value instanceof Number) {
-            jsonObject.addProperty(propertyName, (Number) value);
-        } else if (value instanceof RegistrableEnum) {
-            jsonObject.add(propertyName, context.serialize(value));
-        } else if (value instanceof String) {
-            jsonObject.addProperty(propertyName, (String) value);
-        } else {
-            throw new JsonParseException("Invalid FeatureData value type: " + value.getClass());
+        switch (value) {
+            case Boolean bool -> jsonObject.addProperty(propertyName, bool);
+            case Number number -> jsonObject.addProperty(propertyName, number);
+            case RegistrableEnum re -> jsonObject.add(propertyName, context.serialize(value));
+            case String string -> jsonObject.addProperty(propertyName, string);
+            default -> throw new JsonParseException("Invalid FeatureData value type: " + value.getClass());
         }
     }
 
@@ -196,4 +192,5 @@ public class FeatureDataAdapter<T> implements JsonDeserializer<FeatureData<T>>, 
 
         return settings;
     }
+
 }

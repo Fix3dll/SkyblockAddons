@@ -6,8 +6,8 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.GlyphRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,10 +18,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class GlyphRenderTypesMixin {
 
     @Unique
-    private ResourceLocation sba$identifier;
+    private Identifier sba$identifier;
 
     @ModifyReturnValue(method = { "createForColorTexture", "createForIntensityTexture" }, at = @At("RETURN"))
-    private static GlyphRenderTypes sba$createForColorTextureMethods(GlyphRenderTypes original, @Local(argsOnly = true) ResourceLocation id) {
+    private static GlyphRenderTypes sba$createForColorTextureMethods(GlyphRenderTypes original, @Local(argsOnly = true) Identifier id) {
         ((GlyphRenderTypesMixin) (Object) original).sba$identifier = id;
         return original;
     }

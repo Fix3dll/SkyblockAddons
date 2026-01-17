@@ -3,8 +3,8 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Language;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,21 +18,15 @@ import java.util.Objects;
 public class LocalizationsRequest extends RemoteFileRequest<JsonObject> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "https://cdn.jsdelivr.net/gh/Fix3dll/SkyblockAddons@%s/src/main/resources/lang/%s.json";
+    protected Language language;
 
     public LocalizationsRequest(@NonNull Language language) {
         //TODO: Fix this so it runs after getting language manifest
         super(
-                String.format(
-                        "https://cdn.jsdelivr.net/gh/Fix3dll/SkyblockAddons@1.21.5/src/main/resources/lang/%s.json",
-                        language.getPath()
-                ),
-                new JSONResponseHandler<>(JsonObject.class),
-                new LocalizationsCallback(
-                        String.format(
-                                "https://cdn.jsdelivr.net/gh/Fix3dll/SkyblockAddons@1.21.5/src/main/resources/lang/%s.json",
-                                language.getPath()
-                        )
-                ),
+                PATH.formatted(DataConstants.BRANCH, language.getPath()),
+                JsonObject.class,
+                new LocalizationsCallback(language),
                 false, //!(language == Language.ENGLISH || language == Language.RUSSIAN)
                 true
         );
@@ -40,8 +34,8 @@ public class LocalizationsRequest extends RemoteFileRequest<JsonObject> {
 
     public static class LocalizationsCallback extends DataFetchCallback<JsonObject> {
 
-        public LocalizationsCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public LocalizationsCallback(Language language) {
+            super(LOGGER, URI.create(PATH.formatted(DataConstants.BRANCH, language.getPath())));
         }
 
         @Override
@@ -84,5 +78,7 @@ public class LocalizationsRequest extends RemoteFileRequest<JsonObject> {
                 }
             }
         }
+
     }
+
 }

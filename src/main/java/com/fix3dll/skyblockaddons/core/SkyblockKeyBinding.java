@@ -4,11 +4,11 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.mixin.accessors.GameOptionsAccessor;
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.util.Util;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -27,7 +27,7 @@ public enum SkyblockKeyBinding {
     INCREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_ADD, "keyBindings.increaseDungeonMapZoom"),
     DECREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
     ANSWER_ABIPHONE_OR_OPTION(GLFW.GLFW_KEY_UNKNOWN, "keyBindings.answerAbiphoneOrOption"),
-    DEVELOPER_COPY_NBT(Util.getPlatform() == Util.OS.OSX? GLFW.GLFW_KEY_LEFT_ALT : GLFW.GLFW_KEY_RIGHT_CONTROL, "keyBindings.developerCopyNBT");
+    DEVELOPER_COPY_NBT(Util.getPlatform() == Util.OS.OSX ? GLFW.GLFW_KEY_LEFT_ALT : GLFW.GLFW_KEY_RIGHT_CONTROL, "keyBindings.developerCopyNBT");
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 

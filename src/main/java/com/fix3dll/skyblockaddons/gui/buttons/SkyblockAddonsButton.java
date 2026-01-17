@@ -8,17 +8,18 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 public abstract class SkyblockAddonsButton extends AbstractWidget {
 
     protected static final SkyblockAddons main = SkyblockAddons.getInstance();
     protected static final Minecraft MC = Minecraft.getInstance();
     protected static final WidgetSprites SPRITES = new WidgetSprites(
-            ResourceLocation.withDefaultNamespace("widget/button"),
-            ResourceLocation.withDefaultNamespace("widget/button_disabled"),
-            ResourceLocation.withDefaultNamespace("widget/button_highlighted")
+            Identifier.withDefaultNamespace("widget/button"),
+            Identifier.withDefaultNamespace("widget/button_disabled"),
+            Identifier.withDefaultNamespace("widget/button_highlighted")
     );
     private static final int FADE_MILLIS = 150;
 
@@ -38,7 +39,7 @@ public abstract class SkyblockAddonsButton extends AbstractWidget {
         super(x, y, width, height, buttonText);
     }
 
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(@NonNull NarrationElementOutput narrationElementOutput) {
     }
 
     @Override

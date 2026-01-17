@@ -8,6 +8,7 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
+import org.jspecify.annotations.NonNull;
 
 import static net.minecraft.util.Mth.HALF_PI;
 
@@ -41,7 +42,7 @@ public record CornerRenderState(
     }
 
     @Override
-    public void buildVertices(VertexConsumer consumer) {
+    public void buildVertices(@NonNull VertexConsumer consumer) {
         int segments = 64;
         double angleStep = HALF_PI / (float) segments;
         double startAngle = corner.startAngle;

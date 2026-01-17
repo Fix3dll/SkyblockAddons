@@ -53,7 +53,7 @@ public class ContainerData {
      * The container (item array) dimensions
      */
     @SerializedName("dimensions")
-    private int[] dimensions = {6, 9};
+    private final int[] dimensions = {6, 9};
 
 
     /* Functions that check the container type */

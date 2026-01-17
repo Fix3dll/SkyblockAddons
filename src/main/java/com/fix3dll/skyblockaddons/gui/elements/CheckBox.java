@@ -12,12 +12,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import org.joml.Matrix3x2fStack;
 
 public class CheckBox {
-    private static final ResourceLocation ICONS = SkyblockAddons.resourceLocation("gui/checkbox.png");
+    private static final Identifier ICONS = SkyblockAddons.identifier("gui/checkbox.png");
 
     @FunctionalInterface
     public interface OnToggleListener {

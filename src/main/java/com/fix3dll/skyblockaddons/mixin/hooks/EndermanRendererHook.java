@@ -3,12 +3,12 @@ package com.fix3dll.skyblockaddons.mixin.hooks;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class EndermanRendererHook {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final ResourceLocation BLANK_ENDERMAN_TEXTURE = SkyblockAddons.resourceLocation("blankenderman.png");
+    private static final Identifier BLANK_ENDERMAN_TEXTURE = SkyblockAddons.identifier("blankenderman.png");
 
     public static int getEndermanColor() {
         if (main.getUtils().isOnSkyblock()
@@ -19,7 +19,7 @@ public class EndermanRendererHook {
         return -1;
     }
 
-    public static ResourceLocation getEndermanTexture() {
+    public static Identifier getEndermanTexture() {
         SkyblockAddons main = SkyblockAddons.getInstance();
         if (main.getUtils().isOnSkyblock() && Feature.CHANGE_ZEALOT_COLOR.isEnabled() && LocationUtils.isOnZealotSpawnLocation()) {
             return BLANK_ENDERMAN_TEXTURE;

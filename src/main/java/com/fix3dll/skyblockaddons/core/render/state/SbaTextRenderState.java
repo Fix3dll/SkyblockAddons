@@ -22,6 +22,7 @@ public final class SbaTextRenderState extends GuiTextRenderState implements Scre
     public final int color;
     public final int backgroundColor;
     public final boolean dropShadow;
+    final boolean includeEmpty;
     @Nullable
     public final ScreenRectangle scissor;
     @Nullable
@@ -30,9 +31,9 @@ public final class SbaTextRenderState extends GuiTextRenderState implements Scre
     private ScreenRectangle bounds;
 
     public SbaTextRenderState(
-            FormattedCharSequence text, Matrix3x2f pose, float floatX, float floatY, int color, int backgroundColor, boolean dropShadow, @Nullable ScreenRectangle scissor
+            FormattedCharSequence text, Matrix3x2f pose, float floatX, float floatY, int color, int backgroundColor, boolean dropShadow, boolean includeEmpty, @Nullable ScreenRectangle scissor
     ) {
-        super(MC.font, text, new Matrix3x2f(pose), Math.round(floatX), Math.round(floatY), color, backgroundColor, dropShadow, scissor);
+        super(MC.font, text, new Matrix3x2f(pose), Math.round(floatX), Math.round(floatY), color, backgroundColor, dropShadow, includeEmpty, scissor);
         this.text = text;
         this.pose = new Matrix3x2f(pose);
         this.floatX = floatX;
@@ -40,13 +41,14 @@ public final class SbaTextRenderState extends GuiTextRenderState implements Scre
         this.color = color;
         this.backgroundColor = backgroundColor;
         this.dropShadow = dropShadow;
+        this.includeEmpty = includeEmpty;
         this.scissor = scissor;
     }
 
     @Override
     public Font.@NotNull PreparedText ensurePrepared() {
         if (this.preparedText == null) {
-            this.preparedText = this.font.prepareText(this.text, this.floatX, this.floatY, this.color, this.dropShadow, this.backgroundColor);
+            this.preparedText = this.font.prepareText(this.text, this.floatX, this.floatY, this.color, this.dropShadow, this.includeEmpty, this.backgroundColor);
             ScreenRectangle screenRectangle = this.preparedText.bounds();
             if (screenRectangle != null) {
                 screenRectangle = screenRectangle.transformMaxBounds(this.pose);

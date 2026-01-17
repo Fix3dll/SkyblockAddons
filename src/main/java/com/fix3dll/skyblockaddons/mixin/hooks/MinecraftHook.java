@@ -30,7 +30,7 @@ public class MinecraftHook {
 
     protected static BlockPos prevClickBlock = new BlockPos(-1, -1, -1);
     protected static long startMineTime = Long.MAX_VALUE;
-    protected static LinkedHashMap<BlockPos, Long> recentlyClickedBlocks = new LinkedHashMap<>();
+    protected final static LinkedHashMap<BlockPos, Long> recentlyClickedBlocks = new LinkedHashMap<>();
 
     public static void rightClickMouse(CallbackInfo ci) {
         if (main.getUtils().isOnSkyblock() && MC.player != null) {

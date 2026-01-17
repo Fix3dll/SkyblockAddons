@@ -19,9 +19,10 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.time.Month;
@@ -54,7 +55,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         for (Island island : Island.values()) {
             if (island == Island.JERRYS_WORKSHOP
-                    && main.getUtils().getCurrentDate().getMonth() != SkyblockDate.SkyblockMonth.LATE_WINTER
+                    && main.getUtils().getCurrentDate().month() != SkyblockDate.SkyblockMonth.LATE_WINTER
                     && SkyblockAddons.getHypixelZonedDateTime().getMonth() != Month.DECEMBER) {
                 continue;
             }
@@ -87,7 +88,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.nextStratum();
         drawGradientBackground(graphics, Math.round(255/3F), Math.round(255/2F));
 
@@ -144,7 +145,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     public static float IMAGE_SCALED_DOWN_FACTOR = 0.75F;
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (event.button() == 0 && selectedMarker != null) {
             MC.setScreen(null);
 
@@ -260,7 +261,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         private int w;
         private int h;
 
-        private final ResourceLocation resourceLocation;
+        private final Identifier identifier;
         private NativeImage nativeImage;
 
         @SuppressWarnings("lossy-conversions")
@@ -268,11 +269,11 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             this.label = label;
             this.x = x;
             this.y = y;
-            this.resourceLocation = SkyblockAddons.resourceLocation(
+            this.identifier = SkyblockAddons.identifier(
                     "islands/" + this.name().toLowerCase(Locale.US).replace("_", "") + ".png"
             );
 
-            Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(this.resourceLocation);
+            Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(this.identifier);
             if (resource.isPresent()) {
                 try {
                     this.nativeImage = NativeImage.read(resource.get().open());

@@ -2,12 +2,13 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import lombok.Getter;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Util;
+import org.jspecify.annotations.NonNull;
 
 @Getter
 public class ButtonSocial extends SkyblockAddonsButton {
@@ -30,11 +31,11 @@ public class ButtonSocial extends SkyblockAddonsButton {
         this.isHovered = isHovered(mouseX, mouseY);
         int color = ARGB.white(alphaMultiplier * (this.isHovered ? 1F : 0.7F));
 
-        graphics.blit(RenderPipelines.GUI_TEXTURED, social.getResourceLocation(), getX(), getY(), 0, 0, width, height, width, height, color);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, social.getIdentifier(), getX(), getY(), 0, 0, width, height, width, height, color);
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         Util.getPlatform().openUri(social.getUrl());
     }
 

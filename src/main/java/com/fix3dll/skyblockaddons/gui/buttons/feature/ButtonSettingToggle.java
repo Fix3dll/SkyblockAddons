@@ -6,6 +6,7 @@ import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonSettingToggle extends ButtonFeatureToggle {
 
@@ -31,7 +32,7 @@ public class ButtonSettingToggle extends ButtonFeatureToggle {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (this.isHovered && this.feature != null) {
             if (feature.isDisabled(setting)) {
                 feature.set(setting, true);

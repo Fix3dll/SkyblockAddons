@@ -37,13 +37,11 @@ import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LocationData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
@@ -52,19 +50,13 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Items;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.NoConnectionReuseStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.FutureRequestExecutionMetrics;
-import org.apache.http.impl.client.FutureRequestExecutionService;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpRequestFutureTask;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,48 +64,35 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * This class reads data from the JSON files in the mod's resources or on the mod's Github repo and loads it into memory.
- */
 public class DataUtils {
 
     private static final Gson GSON = SkyblockAddons.getGson();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    private static final RequestConfig requestConfig = RequestConfig.custom()
-            .setConnectTimeout(120 * 1000)
-            .setConnectionRequestTimeout(120 * 1000)
-            .setSocketTimeout(30 * 1000).build();
+    // Executor virtual thread factory
+    private static final ThreadFactory virtualThreadFactory = Thread.ofVirtual()
+            .name("SBA DataUtils Thread ", 0)
+            .uncaughtExceptionHandler(new UncaughtFetchExceptionHandler())
+            .factory();
+    private static final ExecutorService executorService = Executors.newThreadPerTaskExecutor(virtualThreadFactory);
+    // Thread-safe counter that tracks the number of active requests
+    private static final AtomicInteger activeRequests = new AtomicInteger(0);
 
-    private static final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-
-    private static final CloseableHttpClient httpClient = HttpClientBuilder.create()
-            .setUserAgent(Utils.USER_AGENT)
-            .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(connectionManager)
-            .setConnectionReuseStrategy(new NoConnectionReuseStrategy())
-            .setRetryHandler(new RequestRetryHandler()).build();
-
-    private static final ThreadFactory threadFactory =
-            new ThreadFactoryBuilder().setNameFormat("SBA DataUtils Thread %d")
-                    .setUncaughtExceptionHandler(new UncaughtFetchExceptionHandler()).build();
-
-    private static final ExecutorService executorService = Executors.newCachedThreadPool(threadFactory);
-
-    private static final FutureRequestExecutionService futureRequestExecutionService =
-            new FutureRequestExecutionService(httpClient, executorService);
-
-    @Getter
-    private static final FutureRequestExecutionMetrics executionServiceMetrics =
-            futureRequestExecutionService.metrics();
+    private static final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .followRedirects(HttpClient.Redirect.NORMAL)
+            .connectTimeout(Duration.ofSeconds(30))
+            .executor(executorService)
+            .build();
 
     private static final ArrayList<RemoteFileRequest<?>> remoteRequests = new ArrayList<>();
-
     private static final TreeMap<String, Throwable> failedRequests = new TreeMap<>();
 
     static boolean fallbackCDNUsed = false;
@@ -133,12 +112,9 @@ public class DataUtils {
             Boolean.getBoolean("sba.data.online");
 
     private static String path;
-
     private static LocalizationsRequest localizedStringsRequest = null;
 
     static {
-        connectionManager.setMaxTotal(5);
-        connectionManager.setDefaultMaxPerRoute(5);
         registerNewRemoteRequests();
     }
 
@@ -308,12 +284,13 @@ public class DataUtils {
      */
     private static void fetchFromOnline() {
         for (RemoteFileRequest<?> request : remoteRequests) {
-            request.execute(futureRequestExecutionService);
+            request.execute(httpClient, executorService);
+
             if (request.getURL().contains(DataConstants.CDN_BASE_URL)) {
                 SkyblockAddons.getInstance().getScheduler().scheduleAsyncTask(scheduledTask -> {
                     if (request.isDone() && failedUris.contains(request.getURL())) {
                         request.setFallbackCDN();
-                        request.execute(futureRequestExecutionService);
+                        request.execute(httpClient, executorService);
 
                         if (!fallbackCDNUsed) {
                             if (Minecraft.getInstance().player != null) {
@@ -332,7 +309,7 @@ public class DataUtils {
     }
 
     public static void loadOnlineData(RemoteFileRequest<?> request) {
-        request.execute(futureRequestExecutionService);
+        request.execute(httpClient, executorService);
     }
 
     /**
@@ -370,14 +347,14 @@ public class DataUtils {
 
         if (USE_ONLINE_DATA && loadOnlineStrings && language != Language.ENGLISH) {
             if (localizedStringsRequest != null) {
-                HttpRequestFutureTask<JsonObject> futureTask = localizedStringsRequest.getFutureTask();
-                if (!futureTask.isDone()) {
-                    futureTask.cancel(false);
+                CompletableFuture<JsonObject> future = localizedStringsRequest.getFutureTask();
+                if (future != null && !future.isDone()) {
+                    future.cancel(false);
                 }
             }
 
             localizedStringsRequest = new LocalizationsRequest(language);
-            localizedStringsRequest.execute(futureRequestExecutionService);
+            localizedStringsRequest.execute(httpClient, executorService);
         }
 
         // logger.info("Finished loading localized strings.");
@@ -405,9 +382,7 @@ public class DataUtils {
 
             MutableComponent buttonRowComponent = Component.literal("[" + Translations.getMessage("messages.copy") + "]").withStyle(style ->
                     style.withClickEvent(
-                            new ClickEvent.RunCommand(
-                                    ColorCode.WHITE + String.format("/sba internal copy %s", errorMessageBuilder)
-                            )
+                            new ClickEvent.RunCommand("/sba internal copy %s".formatted(errorMessageBuilder))
                     )
             );
             buttonRowComponent.append("  ");
@@ -524,4 +499,17 @@ public class DataUtils {
             }
         }
     }
+
+    public static int getActiveRequestCount() {
+        return activeRequests.get();
+    }
+
+    public static void onRequestStart() {
+        activeRequests.incrementAndGet();
+    }
+
+    public static void onRequestFinish() {
+        activeRequests.decrementAndGet();
+    }
+
 }

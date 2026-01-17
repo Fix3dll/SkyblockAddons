@@ -11,7 +11,6 @@ import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -23,11 +22,12 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -66,7 +66,7 @@ public class DungeonMapManager {
     public static final float MAX_ZOOM = 5F;
 
     private static final Feature feature = Feature.DUNGEONS_MAP_DISPLAY;
-    private static final ResourceLocation DUNGEON_MAP = SkyblockAddons.resourceLocation("dungeonsmap.png");
+    private static final Identifier DUNGEON_MAP = SkyblockAddons.identifier("dungeonsmap.png");
     private static final Comparator<MapMarker> MAP_MARKER_COMPARATOR = (first, second) -> {
         boolean firstIsNull = first.getMapMarkerName() == null;
         boolean secondIsNull = second.getMapMarkerName() == null;
@@ -263,14 +263,14 @@ public class DungeonMapManager {
 
     private static void drawMap(GuiGraphics graphics, MapItemSavedData mapData, MapId mapId, boolean isScoreSummary, float markerScale) {
         TextureManager textureManager = MC.getTextureManager();
-        ResourceLocation texture = MC.getMapTextureManager().prepareMapTexture(mapId , mapData);
-        GpuTextureView gpuTextureView = textureManager.getTexture(texture).getTextureView();
+        Identifier texture = MC.getMapTextureManager().prepareMapTexture(mapId , mapData);
+        AbstractTexture gpuTextureView = textureManager.getTexture(texture);
         Matrix3x2fStack poseStack = graphics.pose();
 
         graphics.guiRenderState.submitGuiElement(
                 new BlitRenderState(
                         RenderPipelines.GUI_TEXTURED,
-                        TextureSetup.singleTexture(gpuTextureView),
+                        TextureSetup.singleTexture(gpuTextureView.getTextureView(), gpuTextureView.getSampler()),
                         new Matrix3x2f(poseStack),
                         0, 0, 128, 128, 0.0F, 1.0F, 0.0F, 1.0F, -1,
                         graphics.scissorStack.peek()
@@ -423,10 +423,10 @@ public class DungeonMapManager {
                 }
 
                 if (textureAtlasSprite != null) {
-                    GpuTextureView atlasLocation = textureManager.getTexture(textureAtlasSprite.atlasLocation()).getTextureView();
+                    AbstractTexture atlasLocation = textureManager.getTexture(textureAtlasSprite.atlasLocation());
                     graphics.guiRenderState.submitGuiElement(new BlitRenderState(
                             RenderPipelines.GUI_TEXTURED,
-                            TextureSetup.singleTexture(atlasLocation),
+                            TextureSetup.singleTexture(atlasLocation.getTextureView(), atlasLocation.getSampler()),
                             new Matrix3x2f(poseStack),
                             -1,
                             -1,
@@ -575,7 +575,7 @@ public class DungeonMapManager {
         return player.getSkin().body().texturePath() != cachedPlayerSkinInfo.bodySkinPath;
     }
 
-    private record PlayerSkinInfo(boolean showHat, ResourceLocation bodySkinPath) {
+    private record PlayerSkinInfo(boolean showHat, Identifier bodySkinPath) {
     }
 
 }

@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Consumer;
 
@@ -32,7 +33,7 @@ public class ButtonStepper extends SkyblockAddonsButton {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         int boxColor, fontColor, boxAlpha;
         this.isHovered = isMouseOver(mouseX, mouseY);
         for (Modifier modifier : Modifier.values()) {

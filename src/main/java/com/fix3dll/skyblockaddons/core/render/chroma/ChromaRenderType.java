@@ -12,72 +12,81 @@ import com.mojang.blaze3d.systems.ScissorState;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderType.CompositeRenderType;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import org.joml.Matrix4fStack;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.jspecify.annotations.NonNull;
 
+import java.util.Map;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.function.Consumer;
 
 /**
  * Chroma related codes adapted from SkyHanni under LGPL-2.1 license
  * @link <a href="https://github.com/hannibal002/SkyHanni/blob/beta/LICENSE">github.com/hannibal002/SkyHanni/blob/beta/LICENSE</a>
  * @author hannibal2
  */
-public class ChromaRenderType extends CompositeRenderType {
+public class ChromaRenderType extends RenderType {
 
     public ChromaRenderType(
-            String name, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, RenderPipeline renderPipeline, RenderType.CompositeState state
+            String name, RenderSetup state
     ) {
-        super(name, bufferSize, affectsCrumbling, sortOnUpload, renderPipeline, state);
+        super(name, state);
     }
 
     @Override
-    public void draw(MeshData meshData) {
-        RenderPipeline renderPipeline = this.pipeline();
-        this.setupRenderState();
+    public void draw(@NonNull MeshData meshData) {
+        RenderPipeline pipeline = this.pipeline();
+        Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
+        Consumer<Matrix4fStack> consumer = this.state.layeringTransform.getModifier();
+        if (consumer != null) {
+            matrix4fStack.pushMatrix();
+            consumer.accept(matrix4fStack);
+        }
 
-        GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms().writeTransform(
+        GpuBufferSlice gpuBufferSlice = RenderSystem.getDynamicUniforms().writeTransform(
                 RenderSystem.getModelViewMatrix(),
                 new Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
                 new Vector3f(),
-                RenderSystem.getTextureMatrix(),
-                RenderSystem.getShaderLineWidth()
+                this.state.textureTransform.getMatrix()
         );
 
         if (GuiRendererHook.chromaBufferSlice == null) {
             GuiRendererHook.computeChromaBufferSlice();
         }
 
+        Map<String, RenderSetup.TextureAndSampler> map = this.state.getTextures();
+
         try {
-            GpuBuffer gpuBuffer = renderPipeline.getVertexFormat().uploadImmediateVertexBuffer(meshData.vertexBuffer());
+            GpuBuffer gpuBuffer = pipeline.getVertexFormat().uploadImmediateVertexBuffer(meshData.vertexBuffer());
             GpuBuffer gpuBuffer2;
             VertexFormat.IndexType indexType;
             if (meshData.indexBuffer() == null) {
-                AutoStorageIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(meshData.drawState().mode());
-                gpuBuffer2 = shapeIndexBuffer.getBuffer(meshData.drawState().indexCount());
-                indexType = shapeIndexBuffer.type();
+                AutoStorageIndexBuffer autoStorageIndexBuffer = RenderSystem.getSequentialBuffer(meshData.drawState().mode());
+                gpuBuffer2 = autoStorageIndexBuffer.getBuffer(meshData.drawState().indexCount());
+                indexType = autoStorageIndexBuffer.type();
             } else {
-                gpuBuffer2 = renderPipeline.getVertexFormat().uploadImmediateIndexBuffer(meshData.indexBuffer());
+                gpuBuffer2 = pipeline.getVertexFormat().uploadImmediateIndexBuffer(meshData.indexBuffer());
                 indexType = meshData.drawState().indexType();
             }
 
-            RenderTarget framebuffer = this.state.outputState.getRenderTarget();
-            GpuTextureView colorAttachment = framebuffer.getColorTextureView();
-            GpuTextureView depthAttachment = framebuffer.useDepth ? framebuffer.getDepthTextureView() : null;
+            RenderTarget renderTarget = this.state.outputTarget.getRenderTarget();
+            GpuTextureView colorAttachment = renderTarget.getColorTextureView();
+            GpuTextureView depthAttachment = renderTarget.useDepth ? renderTarget.getDepthTextureView() : null;
 
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(
                     () -> "SBA Immediate Chroma Pipeline Draw",
                     colorAttachment, OptionalInt.empty(),
                     depthAttachment, OptionalDouble.empty()
             )) {
-
                 RenderSystem.bindDefaultUniforms(renderPass);
-                renderPass.setUniform("DynamicTransforms", dynamicTransforms);
+                renderPass.setUniform("DynamicTransforms", gpuBufferSlice);
                 renderPass.setUniform("ChromaUniforms", GuiRendererHook.chromaBufferSlice);
 
-                renderPass.setPipeline(renderPipeline);
+                renderPass.setPipeline(pipeline);
                 renderPass.setVertexBuffer(0, gpuBuffer);
 
                 ScissorState scissorState = RenderSystem.getScissorStateForRenderTypeDraws();
@@ -85,29 +94,27 @@ public class ChromaRenderType extends CompositeRenderType {
                     scissorState.enable(scissorState.x(), scissorState.y(), scissorState.width(), scissorState.height());
                 }
 
-                for (int i = 0; i <= 11; i++) {
-                    GpuTextureView gpuTextureView = RenderSystem.getShaderTexture(i);
-                    if (gpuTextureView != null) {
-                        renderPass.bindSampler("Sampler" + i, gpuTextureView);
-                    }
+                for (Map.Entry<String, RenderSetup.TextureAndSampler> entry : map.entrySet()) {
+                    renderPass.bindTexture(entry.getKey(), entry.getValue().textureView(), entry.getValue().sampler());
                 }
 
                 renderPass.setIndexBuffer(gpuBuffer2, indexType);
                 renderPass.drawIndexed(0, 0, meshData.drawState().indexCount(), 1);
             }
-        } catch (Throwable ex) {
+        } catch (Throwable t) {
             try {
                 meshData.close();
-            } catch (Throwable ex2) {
-                ex.addSuppressed(ex2);
+            } catch (Throwable t2) {
+                t.addSuppressed(t2);
             }
 
-            throw ex;
+            throw t;
         }
 
         meshData.close();
-        this.clearRenderState();
-
+        if (consumer != null) {
+            matrix4fStack.popMatrix();
+        }
     }
 
 }

@@ -3,17 +3,18 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -29,12 +30,12 @@ public class ButtonBanner extends SkyblockAddonsButton {
     public static final int WIDTH = 130;
     public static final int HEIGHT = 95;
 
-    private static ResourceLocation banner;
+    private static Identifier banner;
     private static NativeImage bannerImage;
 
     public static boolean bannerRegistered = false;
 
-    public static Runnable REGISTER_BANNER = () -> {
+    public static final Runnable REGISTER_BANNER = () -> {
         String bannerImageUrl = main.getOnlineData().getBannerImageURL();
         if (bannerImageUrl == null || bannerImageUrl.isBlank()) {
             bannerRegistered = false;
@@ -49,7 +50,7 @@ public class ButtonBanner extends SkyblockAddonsButton {
             connection.setReadTimeout(5000);
             connection.addRequestProperty("User-Agent", Utils.USER_AGENT);
 
-            banner = SkyblockAddons.resourceLocation("dynamic/" + UUID.randomUUID());
+            banner = SkyblockAddons.identifier("dynamic/" + UUID.randomUUID());
             bannerImage = NativeImage.read(connection.getInputStream());
 
             connection.disconnect();
@@ -94,7 +95,7 @@ public class ButtonBanner extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (bannerRegistered) { // Could have not been loaded yet.
             int imageWidth = bannerImage.getWidth();
             int imageHeight = bannerImage.getHeight();
@@ -122,7 +123,7 @@ public class ButtonBanner extends SkyblockAddonsButton {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         String link = main.getOnlineData().getBannerLink();
         if (link != null && !link.isBlank()) {
             try {

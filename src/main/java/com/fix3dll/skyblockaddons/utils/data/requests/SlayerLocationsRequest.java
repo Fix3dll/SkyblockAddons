@@ -2,8 +2,8 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.Logger;
@@ -16,19 +16,20 @@ import java.util.Set;
 public class SlayerLocationsRequest extends RemoteFileRequest<HashMap<String, Set<String>>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblock/slayerLocations.json";
 
     public SlayerLocationsRequest() {
         super(
-                "skyblock/slayerLocations.json",
-                new JSONResponseHandler<>(new TypeToken<HashMap<String, Set<String>>>() {}.getType()),
-                new SlayerLocationsCallback(getCDNBaseURL() + "skyblock/slayerLocations.json")
+                PATH,
+                new TypeToken<HashMap<String, Set<String>>>() {}.getType(),
+                new SlayerLocationsCallback()
         );
     }
 
     public static class SlayerLocationsCallback extends DataFetchCallback<HashMap<String, Set<String>>> {
 
-        public SlayerLocationsCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public SlayerLocationsCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
@@ -36,6 +37,7 @@ public class SlayerLocationsRequest extends RemoteFileRequest<HashMap<String, Se
             super.completed(result);
             LocationUtils.setSlayerLocations(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
         }
+
     }
 
 }

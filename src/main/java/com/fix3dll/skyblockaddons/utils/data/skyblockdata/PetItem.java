@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -45,11 +45,11 @@ public class PetItem implements GsonInitializable {
                 if (material.equals("skull_item")) {
                     itemStack = ItemUtils.createSkullItemStack(resolvableProfile, null, "PET_ITEM");
                 } else {
-                    Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(material));
+                    Item item = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(material));
                     if (item != Items.AIR) {
                         itemStack = item.asItem().getDefaultInstance();
                     } else {
-                        Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(material));
+                        Block block = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(material));
                         if (block != Blocks.AIR) {
                             itemStack = block.asItem().getDefaultInstance();
                         } else {

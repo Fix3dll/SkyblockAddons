@@ -1,11 +1,11 @@
 package com.fix3dll.skyblockaddons.core.atlas;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class Atlases {
 
-    public static final ResourceLocation PARTICLES = SkyblockAddons.resourceLocation("particles");
-    public static final ResourceLocation PARTICLES_LOCATION = SkyblockAddons.resourceLocation("textures/atlas/particles");
+    public static final Identifier PARTICLES = SkyblockAddons.identifier("particles");
+    public static final Identifier PARTICLES_LOCATION = SkyblockAddons.identifier("textures/atlas/particles");
 
 }

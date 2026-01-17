@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonSlider extends SkyblockAddonsButton {
 
@@ -38,8 +39,11 @@ public class ButtonSlider extends SkyblockAddonsButton {
         int boxAlpha = this.isHovered ? 170 : 100;
         graphics.fill(getX(), getY(), getX() + width, getY() + height, main.getUtils().getDefaultColor(boxAlpha));
         this.onDrag(graphics, mouseX, mouseY);
-        int i = this.active ? 16777215 : 10526880;
-        renderScrollingString(graphics, MC.font, 2, i | Mth.ceil(alpha * 255.0F) << 24);
+        renderScrollingStringOverContents(
+                graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE),
+                this.message,
+                2
+        );
     }
 
     protected void onDrag(GuiGraphics graphics, double mouseX, double mouseY) {
@@ -66,7 +70,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
     }
 
     @Override
-    public void onRelease(MouseButtonEvent event) {
+    public void onRelease(@NonNull MouseButtonEvent event) {
         this.dragging = false;
     }
 

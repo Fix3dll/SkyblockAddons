@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Function;
 
@@ -51,7 +52,7 @@ public class ButtonOpenColorMenu extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isHovered(mouseX, mouseY);
         int fontColor, boxAlpha;
         if (this.isHovered) {
@@ -72,7 +73,7 @@ public class ButtonOpenColorMenu extends ButtonFeature {
      * Code to perform the button toggles, openings of other gui's/pages, and language changes.
      */
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (this.feature != null && MC.screen instanceof SettingsGui gui) {
             gui.setClosingGui(true);
             if (this.setting != null) {

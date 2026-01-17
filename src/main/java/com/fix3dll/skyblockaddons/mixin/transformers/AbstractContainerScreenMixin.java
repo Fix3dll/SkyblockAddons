@@ -24,12 +24,13 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -55,7 +56,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         super(title);
     }
 
-    @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/ResourceLocation;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     public void sba$onRenderTooltip(GuiGraphics guiGraphics, int x, int y, CallbackInfo ci, ItemStack itemStack) {
         if (ScreenHook.onRenderTooltip(itemStack, x, y)) {
             ci.cancel();
@@ -72,13 +73,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         SkyblockAddons.getInstance().getUtils().setLastHoveredSlot(-1);
     }
 
-    @WrapWithCondition(method = "renderSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/ResourceLocation;IIII)V"))
-    public boolean sba$renderSlotHighlightFront(GuiGraphics graphics, RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height) {
+    @WrapWithCondition(method = "renderSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+    public boolean sba$renderSlotHighlightFront(GuiGraphics graphics, RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height) {
         return AbstractContainerScreenHook.renderSlotHighlightFront(graphics, x, y, this.hoveredSlot);
     }
 
-    @Inject(method = "renderSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.AFTER))
-    public void sba$renderSlots(GuiGraphics graphics, CallbackInfo ci, @Local Slot slot) {
+    @Inject(method = "renderSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;II)V", shift = At.Shift.AFTER))
+    public void sba$renderSlots(GuiGraphics graphics, int mouseX, int mouseY, CallbackInfo ci, @Local Slot slot) {
         AbstractContainerScreenHook.renderSlot(graphics, slot);
     }
 
@@ -163,7 +164,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Override
-    public boolean charTyped(CharacterEvent event) {
+    public boolean charTyped(@NonNull CharacterEvent event) {
         AbstractContainerScreenHook.charTyped_reforgeFilter(event);
         return super.charTyped(event);
     }

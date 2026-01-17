@@ -32,7 +32,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
@@ -57,7 +57,7 @@ public class AbstractContainerScreenHook {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
 
-    private static final ResourceLocation LOCK = SkyblockAddons.resourceLocation("lock.png");
+    private static final Identifier LOCK = SkyblockAddons.identifier("lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
     /** (slotId, clickedButton) */
     @Getter @Setter private static Pair<Integer, Integer> lastClickedButtonOnPetsMenu = new Pair<>(-46, -1);
@@ -277,7 +277,7 @@ public class AbstractContainerScreenHook {
                             TooltipRenderUtil.renderTooltipBackground(graphics, (int) renderX, renderY, stringWidth, 7, null);
                             FormattedCharSequence strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(reforge));
                             graphics.guiRenderState.submitText(
-                                    new SbaTextRenderState(strippedFcs, graphics.pose(), renderX, renderY, color, 0, true, graphics.scissorStack.peek())
+                                    new SbaTextRenderState(strippedFcs, graphics.pose(), renderX, renderY, color, 0, true, false, graphics.scissorStack.peek())
                             );
                         }
                     }
@@ -368,10 +368,10 @@ public class AbstractContainerScreenHook {
 
                 // Calculate the height of the whole thing to center it vertically in relation to the chest UI.
                 maxStringWidth = textFieldWidth + 5;
-                typeEnchantmentsHeight = MC.font.wordWrapHeight(TYPE_ENCHANTMENTS, maxStringWidth);
-                int separateEnchantmentsHeight = MC.font.wordWrapHeight(SEPARATE_MULTIPLE, maxStringWidth) + MC.font.lineHeight;
-                enchantsToIncludeHeight = MC.font.wordWrapHeight(ENCHANTS_TO_INCLUDE, maxStringWidth);
-                enchantsToExcludeHeight = MC.font.wordWrapHeight(ENCHANTS_TO_EXCLUDE, maxStringWidth);
+                typeEnchantmentsHeight = MC.font.wordWrapHeight(FormattedText.of(TYPE_ENCHANTMENTS), maxStringWidth);
+                int separateEnchantmentsHeight = MC.font.wordWrapHeight(FormattedText.of(SEPARATE_MULTIPLE), maxStringWidth) + MC.font.lineHeight;
+                enchantsToIncludeHeight = MC.font.wordWrapHeight(FormattedText.of(ENCHANTS_TO_INCLUDE), maxStringWidth);
+                enchantsToExcludeHeight = MC.font.wordWrapHeight(FormattedText.of(ENCHANTS_TO_EXCLUDE), maxStringWidth);
                 reforgeFilterHeight = typeEnchantmentsHeight + separateEnchantmentsHeight + enchantsToIncludeHeight +
                         2 * textFieldHeight + textFieldSpacing;
 

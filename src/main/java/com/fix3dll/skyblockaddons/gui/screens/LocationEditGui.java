@@ -30,6 +30,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
             // Don't display features that have been disabled
-            if (feature.isGuiFeature() && feature.isEnabled()) {
+            if (feature.getFeatureGuiData() != null && feature.isEnabled()) {
                 ButtonLocation buttonLocation = new ButtonLocation(feature);
                 addRenderableWidget(buttonLocation);
                 buttonLocations.put(feature, buttonLocation);
@@ -100,7 +101,6 @@ public class LocationEditGui extends SkyblockAddonsScreen {
         int x;
         int y = window.getGuiScaledHeight() / 2;
         // List may change later
-        //noinspection ConstantConditions
         if (numButtons % 2 == 0) {
             y -= Math.round((numButtons / 2F) * (BOX_HEIGHT + 5)) - 5;
         } else {
@@ -137,7 +137,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.guiGraphics = graphics;
         Snap[] snaps = checkSnapping();
 
@@ -319,8 +319,9 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     return;
                 }
 
-                float scaleX = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
-                float scaleY = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ?feature.getFeatureData().getSizesY() : 1;
+                FeatureGuiData featureGuiData = feature.getFeatureGuiData();
+                float scaleX = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
+                float scaleY = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesY() : 1;
                 float boxXOne = buttonLocation.getBoxXOne() * scaleX;
                 float boxXTwo = buttonLocation.getBoxXTwo() * scaleX;
                 float boxYOne = buttonLocation.getBoxYOne() * scaleY;
@@ -352,8 +353,9 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     return;
                 }
 
-                float scaleX = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
-                float scaleY = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesY() : 1;
+                FeatureGuiData featureGuiData = feature.getFeatureGuiData();
+                float scaleX = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
+                float scaleY = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesY() : 1;
                 float boxXOne = buttonLocation.getBoxXOne() * scaleX;
                 float boxXTwo = buttonLocation.getBoxXTwo() * scaleX;
                 float boxYOne = buttonLocation.getBoxYOne() * scaleY;
@@ -738,9 +740,9 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     ColorCode.YELLOW.getColor(),
                     true
             );
-            if (lastHoveredButtonFeature.isGuiFeature()) {
-                FeatureGuiData guiFeatureData = lastHoveredButtonFeature.getFeatureGuiData();
-                if (guiFeatureData.getDrawType() == DrawType.BAR) {
+            FeatureGuiData lastHoveredButtonGuiData = lastHoveredButtonFeature.getFeatureGuiData();
+            if (lastHoveredButtonGuiData != null) {
+                if (lastHoveredButtonGuiData.getDrawType() == DrawType.BAR) {
                     String barScales = String.format(
                             "scaleX = %.2f, scaleY = %.2f",
                             lastHoveredButton.getScaleX(),
@@ -810,7 +812,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         this.isMiddlePressed = false;
 
         // Reset to default scale with right mouse button click
@@ -854,7 +856,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
      * Allow moving the last hovered feature with arrow keys.
      */
     @Override
-    public boolean keyPressed(KeyEvent event) {
+    public boolean keyPressed(@NonNull KeyEvent event) {
         Feature hoveredFeature = ButtonLocation.getLastHoveredFeature();
         if (hoveredFeature != null) {
             int xOffset = 0;

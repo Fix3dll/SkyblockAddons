@@ -5,16 +5,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Supplier;
 
 public class ButtonCustomToggle extends SkyblockAddonsButton {
 
-    private static final ResourceLocation TOGGLE_INSIDE_CIRCLE = SkyblockAddons.resourceLocation("gui/toggleinsidecircle.png");
-    private static final ResourceLocation TOGGLE_BORDER = SkyblockAddons.resourceLocation("gui/toggleborder.png");
-    private static final ResourceLocation TOGGLE_INSIDE_BACKGROUND = SkyblockAddons.resourceLocation("gui/toggleinsidebackground.png");
+    private static final Identifier TOGGLE_INSIDE_CIRCLE = SkyblockAddons.identifier("gui/toggleinsidecircle.png");
+    private static final Identifier TOGGLE_BORDER = SkyblockAddons.identifier("gui/toggleborder.png");
+    private static final Identifier TOGGLE_INSIDE_BACKGROUND = SkyblockAddons.identifier("gui/toggleinsidebackground.png");
     private static final int animationSlideTime = 150;
 
     private final int circlePaddingLeft;
@@ -90,7 +91,7 @@ public class ButtonCustomToggle extends SkyblockAddonsButton {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         this.animationButtonClicked = System.currentTimeMillis();
         this.onClickRunnable.run();
     }

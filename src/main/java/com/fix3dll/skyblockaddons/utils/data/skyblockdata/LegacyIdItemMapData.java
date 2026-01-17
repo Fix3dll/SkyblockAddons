@@ -5,7 +5,7 @@ import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -38,7 +38,7 @@ public final class LegacyIdItemMapData {
 
             for (Map.Entry<String, String> entry : idMapping.entrySet()) {
                 String legacyId = entry.getKey();
-                ResourceLocation modernId = ResourceLocation.withDefaultNamespace(entry.getValue());
+                Identifier modernId = Identifier.withDefaultNamespace(entry.getValue());
 
                 BuiltInRegistries.ITEM.get(modernId).ifPresentOrElse(
                         modernItem -> tempMap.put(legacyId, modernItem.value()),

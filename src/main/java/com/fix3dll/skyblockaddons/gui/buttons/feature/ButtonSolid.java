@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonSolid extends ButtonFeature {
 
@@ -35,7 +36,7 @@ public class ButtonSolid extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         float alphaMultiplier = calculateAlphaMultiplier();
         int alpha = alphaMultiplier == 1F ? 255 : (int) (255 * alphaMultiplier);
         this.isHovered = isHovered(mouseX, mouseY);
@@ -54,7 +55,7 @@ public class ButtonSolid extends ButtonFeature {
     }
 
     @Override
-    public void playDownSound(SoundManager soundManager) {
+    public void playDownSound(@NonNull SoundManager soundManager) {
         if (feature != Feature.WARNING_TIME) playButtonClickSound(soundManager);
     }
 
@@ -79,4 +80,5 @@ public class ButtonSolid extends ButtonFeature {
         }
         return fontColor;
     }
+
 }

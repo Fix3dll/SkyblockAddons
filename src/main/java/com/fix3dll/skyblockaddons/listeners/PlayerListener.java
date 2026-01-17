@@ -53,7 +53,6 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
@@ -72,11 +71,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.StringUtil;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -144,7 +144,7 @@ public class PlayerListener {
             "You can now fly for 200 minutes.", "Your flight has been extended for 200 extra minutes."
     );
 
-    private static final Set<ResourceLocation> BONZO_STAFF_SOUNDS = Set.of(
+    private static final Set<Identifier> BONZO_STAFF_SOUNDS = Set.of(
             SoundEvents.FIREWORK_ROCKET_BLAST.location(),
             SoundEvents.FIREWORK_ROCKET_BLAST_FAR.location(),
             SoundEvents.FIREWORK_ROCKET_TWINKLE.location(),
@@ -192,8 +192,8 @@ public class PlayerListener {
     private String cachedChatRunCommand;
     @Setter private boolean savePersistentFlag = false;
 
-    public static final ResourceLocation SBA_FIRST_PHASE = SkyblockAddons.resourceLocation("first");
-    public static final ResourceLocation SBA_LAST_PHASE = SkyblockAddons.resourceLocation("last");
+    public static final Identifier SBA_FIRST_PHASE = SkyblockAddons.identifier("first");
+    public static final Identifier SBA_LAST_PHASE = SkyblockAddons.identifier("last");
 
     public PlayerListener() {
         ClientTickEvents.START_CLIENT_TICK.register(this::onTickStart);
@@ -902,12 +902,12 @@ public class PlayerListener {
 
         if (Feature.STOP_RAT_SOUNDS.isEnabled() && soundInstance.getSource() == SoundSource.NEUTRAL) {
             boolean isRatSound = RAT_SOUNDS.stream().anyMatch(ratSound ->
-                    soundInstance.getLocation().equals(ratSound.location())
+                    soundInstance.getIdentifier().equals(ratSound.location())
                     && soundInstance.getPitch() == ratSound.pitch()
                     && soundInstance.getVolume() == ratSound.volume()
             );
             if (isRatSound && (Feature.STOP_RAT_SOUNDS.isDisabled(FeatureSetting.STOP_ONLY_RAT_SQUEAK)
-                    || soundInstance.getLocation().equals(SoundEvents.BAT_AMBIENT.location()))) {
+                    || soundInstance.getIdentifier().equals(SoundEvents.BAT_AMBIENT.location()))) {
                 cir.cancel();
                 return;
             }
@@ -918,7 +918,7 @@ public class PlayerListener {
         // When a player opens a backpack, a chest open sound is played at the player's location.
         if (Feature.BACKPACK_OPENING_SOUND.isEnabled()
                 && System.currentTimeMillis() - main.getScreenListener().getLastBackpackOpenMs() < 500
-                && soundInstance.getLocation().equals(SoundEvents.CHEST_OPEN.location())) {
+                && soundInstance.getIdentifier().equals(SoundEvents.CHEST_OPEN.location())) {
             // When a player opens a backpack, a chest open sound is played at the player's location.
             if (player != null &&
                     Math.round(soundInstance.getX()) == player.position().x() &&
@@ -929,7 +929,7 @@ public class PlayerListener {
             }
         }
 
-        if (Feature.STOP_BONZO_STAFF_SOUNDS.isEnabled() && BONZO_STAFF_SOUNDS.contains(soundInstance.getLocation())
+        if (Feature.STOP_BONZO_STAFF_SOUNDS.isEnabled() && BONZO_STAFF_SOUNDS.contains(soundInstance.getIdentifier())
                 && MC.player != null) {
             String skyblockId = ItemUtils.getSkyblockItemID(MC.player.getMainHandItem());
             if (skyblockId != null && skyblockId.endsWith("BONZO_STAFF")) {
@@ -1289,6 +1289,6 @@ public class PlayerListener {
         }
     }
 
-    private record RatSound(ResourceLocation location, float volume, float pitch) {}
+    private record RatSound(Identifier location, float volume, float pitch) {}
 
 }

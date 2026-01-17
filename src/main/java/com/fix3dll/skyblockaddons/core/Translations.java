@@ -19,9 +19,11 @@ import java.util.regex.Pattern;
 
 public class Translations {
 
+    private static final Minecraft MC = Minecraft.getInstance();
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("%[A-Za-z-]+%");
+
     @Getter @Setter private static JsonObject languageJson = new JsonObject();
     @Setter private static JsonObject defaultLangJson = null;
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("%[A-Za-z-]+%");
 
     public static String getMessage(String path, Object... variables) {
         SkyblockAddons main = SkyblockAddons.getInstance();
@@ -55,8 +57,8 @@ public class Translations {
         // Handle RTL text...
         Language currentLanguage  = (Language) Feature.LANGUAGE.getValue();
         if ((currentLanguage  == Language.HEBREW || currentLanguage  == Language.ARABIC)
-                && !Minecraft.getInstance().font.isBidirectional()) {
-            text = Minecraft.getInstance().font.bidirectionalShaping(text);
+                && !MC.font.isBidirectional()) {
+            text = MC.font.bidirectionalShaping(text);
         }
 
         return text;
@@ -90,4 +92,5 @@ public class Translations {
             return text;
         }
     }
+
 }

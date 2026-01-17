@@ -1,7 +1,7 @@
 package com.fix3dll.skyblockaddons.core;
 
 import com.fix3dll.skyblockaddons.utils.TextUtils;
-import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 
 import java.util.regex.Matcher;
 
@@ -15,10 +15,14 @@ import java.util.regex.Matcher;
  * <p>Spring 28th</p>
  * <p>9:10pm ☽</p>
  */
-@Getter
-public class SkyblockDate {
+public record SkyblockDate(SkyblockMonth month, int day, int hour, int minute, String period) {
+
+    public SkyblockDate(SkyblockMonth month, int day) {
+        this(month, day, -1, -1, "");
+    }
+
     public static SkyblockDate parse(Matcher dateMatcher) {
-        if(dateMatcher == null) {
+        if (dateMatcher == null) {
             return null;
         }
 
@@ -29,7 +33,7 @@ public class SkyblockDate {
     }
 
     public static SkyblockDate parse(Matcher dateMatcher, Matcher timeMatcher) {
-        if(dateMatcher == null || timeMatcher == null) {
+        if (dateMatcher == null || timeMatcher == null) {
             return null;
         }
 
@@ -40,28 +44,6 @@ public class SkyblockDate {
         String period = timeMatcher.group("period");
 
         return new SkyblockDate(SkyblockMonth.fromName(month), day, hour, minute, period);
-    }
-
-    private final SkyblockMonth month;
-    private final int day;
-    private final int hour;
-    private final int minute;
-    private final String period;
-
-    public SkyblockDate(SkyblockMonth month, int day) {
-        this.month = month;
-        this.day = day;
-        this.hour = -1;
-        this.minute = -1;
-        this.period = "";
-    }
-
-    public SkyblockDate(SkyblockMonth month, int day, int hour, int minute, String period) {
-        this.month = month;
-        this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.period = period;
     }
 
     /**
@@ -96,7 +78,7 @@ public class SkyblockDate {
          */
         public static SkyblockMonth fromName(String scoreboardName) {
             for (SkyblockMonth skyblockMonth : values()) {
-                if(skyblockMonth.scoreboardString.equals(scoreboardName)) {
+                if (skyblockMonth.scoreboardString.equals(scoreboardName)) {
                     return skyblockMonth;
                 }
             }
@@ -111,26 +93,20 @@ public class SkyblockDate {
      * @return this Skyblock date as a formatted String
      */
     @Override
-    public String toString() {
-        String monthName;
+    public @NonNull String toString() {
+        String monthName = month != null ? month.scoreboardString : null;
 
-        if (month != null) {
-            monthName = month.scoreboardString;
-        }
-        else {
-            monthName = null;
-        }
-
-        if (hour == -1 || minute == -1)
-            return String.format("%s %s",
-                    monthName,
-                    day + TextUtils.getOrdinalSuffix(day));
-        else
-            return String.format("%s %s, %d:%s%s",
+        if (hour == -1 || minute == -1) {
+            return "%s %s".formatted(monthName, day + TextUtils.getOrdinalSuffix(day));
+        } else {
+            return "%s %s, %d:%s%s".formatted(
                     monthName,
                     day + TextUtils.getOrdinalSuffix(day),
                     hour,
                     minute == 0 ? "00" : minute,
-                    period);
+                    period
+            );
+        }
     }
+
 }

@@ -50,7 +50,7 @@ import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -81,7 +81,7 @@ public class SkyblockAddons implements ClientModInitializer {
 	 */
 	public static final String BUILD_NUMBER = SkyblockAddons.METADATA.getCustomValue(SkyblockAddons.MOD_ID).getAsObject().get("buildNumber").getAsString();
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(
-            SkyblockAddons.resourceLocation(MOD_ID)
+            SkyblockAddons.identifier(MOD_ID)
     );
     private static final Logger LOGGER = LogManager.getLogger(new SkyblockAddonsMessageFactory(METADATA.getName()));
 	private static final ThreadPoolExecutor THREAD_EXECUTOR = new ThreadPoolExecutor(
@@ -195,7 +195,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			if (Feature.FANCY_WARP_MENU.isEnabled()) {
 				// Load in these textures so they don't lag the user loading them in later...
 				for (IslandWarpGui.Island island : IslandWarpGui.Island.values()) {
-					Minecraft.getInstance().getTextureManager().getTexture(island.getResourceLocation());
+					Minecraft.getInstance().getTextureManager().getTexture(island.getIdentifier());
 				}
 			}
 
@@ -212,6 +212,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			configValuesManager.saveConfig();
 			persistentValuesManager.saveValues();
 			petCacheManager.saveValues();
+//			discordRPCManager.stop();
 
 			THREAD_EXECUTOR.shutdown();
 			try {
@@ -244,8 +245,8 @@ public class SkyblockAddons implements ClientModInitializer {
 		THREAD_EXECUTOR.execute(runnable);
 	}
 
-	public static ResourceLocation resourceLocation(String location) {
-		return ResourceLocation.fromNamespaceAndPath(SkyblockAddons.MOD_ID, location);
+	public static Identifier identifier(String location) {
+		return Identifier.fromNamespaceAndPath(SkyblockAddons.MOD_ID, location);
 	}
 
 }

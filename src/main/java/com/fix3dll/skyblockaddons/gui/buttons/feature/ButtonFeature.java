@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 public abstract class ButtonFeature extends SkyblockAddonsButton {
 
     // The feature that this button moves.
-    public Feature feature;
+    public final Feature feature;
 
     /**
      * Create a button that is assigned a feature (to toggle/change color etc.).

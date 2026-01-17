@@ -81,7 +81,7 @@ public class RomanNumeralParser {
      * @return The input string with all numerals replaced by integers
      */
     public static String replaceNumeralsWithIntegers(String input) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         Matcher matcher = NUMERAL_FINDING_PATTERN.matcher(input);
 
         // The matcher finds all words after a space that begin with a Roman numeral.

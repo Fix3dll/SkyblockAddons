@@ -2,8 +2,8 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
-import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import com.google.gson.reflect.TypeToken;
@@ -16,19 +16,20 @@ import java.util.Objects;
 public class CompactorItemsRequest extends RemoteFileRequest<Object2ObjectOpenHashMap<String, CompactorItem>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblock/compactorItems.json";
 
     public CompactorItemsRequest() {
         super(
-                "skyblock/compactorItems.json",
-                new JSONResponseHandler<>(new TypeToken<Object2ObjectOpenHashMap<String, CompactorItem>>() {}.getType()),
-                new CompactorItemsCallback(getCDNBaseURL() + "skyblock/compactorItems.json")
+                PATH,
+                new TypeToken<Object2ObjectOpenHashMap<String, CompactorItem>>() {}.getType(),
+                new CompactorItemsCallback()
         );
     }
 
     public static class CompactorItemsCallback extends DataFetchCallback<Object2ObjectOpenHashMap<String, CompactorItem>> {
 
-        public CompactorItemsCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public CompactorItemsCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
@@ -39,5 +40,7 @@ public class CompactorItemsRequest extends RemoteFileRequest<Object2ObjectOpenHa
             );
             ItemUtils.setCompactorItems(result);
         }
+
     }
+
 }

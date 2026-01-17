@@ -147,6 +147,9 @@ public class ScreenListener {
         }
     }
 
+    /**
+     * @return {@code true} to cancel the screen opening
+     */
     public boolean onGuiOpen(Screen screen) {
         if (!main.getUtils().isOnSkyblock()) {
             return false;

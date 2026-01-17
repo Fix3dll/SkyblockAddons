@@ -14,10 +14,11 @@ import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import com.mojang.blaze3d.platform.Window;
 import lombok.Getter;
-import lombok.NonNull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ARGB;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.awt.geom.Point2D;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import java.util.TreeMap;
  * @implNote Please don't forget to add new Feature or FeatureSetting values to {@code defaults.json} before push.
  */
 @Getter
+@NullMarked
 public enum Feature {
     DROP_CONFIRMATION(1, "settings.itemDropConfirmation", new FeatureGuiData(ColorCode.RED)),
     SHOW_BACKPACK_PREVIEW(3, "settings.showBackpackPreview", null),
@@ -66,9 +68,6 @@ public enum Feature {
     SPEED_PERCENTAGE(55, "settings.speedPercentage", new FeatureGuiData(DrawType.TEXT, ColorCode.WHITE)),
     SLAYER_ARMOR_PROGRESS(57, "settings.revenantIndicator", new FeatureGuiData(DrawType.SLAYER_ARMOR_PROGRESS, ColorCode.AQUA)),
     SPECIAL_ZEALOT_ALERT(58, "settings.specialZealotAlert", new FeatureGuiData(ColorCode.RED)),
-    ENABLE_MESSAGE_WHEN_MINING_DEEP_CAVERNS(60, null),
-    ENABLE_MESSAGE_WHEN_BREAKING_STEMS(61, null),
-    ENABLE_MESSAGE_WHEN_MINING_NETHER(62, null),
     HIDE_PET_HEALTH_BAR(63, "settings.hidePetHealthBar", null),
     // Release v1.4
     DISABLE_MAGICAL_SOUP_MESSAGES(64, "settings.disableMagicalSoupMessage", null),
@@ -86,7 +85,6 @@ public enum Feature {
     ENDSTONE_PROTECTOR_DISPLAY(84, "settings.endstoneProtectorDisplay", new FeatureGuiData(DrawType.TEXT, ColorCode.WHITE)),
     FANCY_WARP_MENU(85, "settings.fancyWarpMenu", null),
     LEGENDARY_SEA_CREATURE_WARNING(88, "settings.legendarySeaCreatureWarning", new FeatureGuiData(ColorCode.RED)),
-    ENABLE_MESSAGE_WHEN_BREAKING_PARK(90, null),
     BOSS_APPROACH_ALERT(91, "settings.bossApproachAlert", null),
     DISABLE_TELEPORT_PAD_MESSAGES(92, "settings.disableTeleportPadMessages", null),
     BAIT_LIST(93, "settings.baitListDisplay", new FeatureGuiData(DrawType.BAIT_LIST_DISPLAY, ColorCode.AQUA)),
@@ -207,7 +205,7 @@ public enum Feature {
     private static final int ID_AT_PREVIOUS_UPDATE = 221;
 
     private final int id;
-    private final FeatureGuiData featureGuiData;
+    private @Nullable final FeatureGuiData featureGuiData;
     private final FeatureData<?> featureData;
     private final String translationKey;
 
@@ -215,7 +213,7 @@ public enum Feature {
         this(id, translationKey, null);
     }
 
-    Feature(int id, String translationKey, FeatureGuiData featureGuiData) {
+    Feature(int id, String translationKey, @Nullable FeatureGuiData featureGuiData) {
         this.id = id;
         this.translationKey = translationKey;
         this.featureGuiData = featureGuiData;
@@ -265,29 +263,17 @@ public enum Feature {
         }
     }
 
-    public boolean isActualFeature() {
-        return id != -1 && getMessage() != null;
-    }
-
     public String getMessage(String... variables) {
-        if (translationKey != null) {
-            return Translations.getMessage(translationKey, (Object[]) variables);
-        }
-
-        return null;
+        return Translations.getMessage(translationKey, (Object[]) variables);
     }
 
-    public static Feature fromId(int id) {
+    public static @Nullable Feature fromId(int id) {
         for (Feature feature : values()) {
             if (feature.getId() == id) {
                 return feature;
             }
         }
         return null;
-    }
-
-    public boolean isGuiFeature() {
-        return this.featureGuiData != null;
     }
 
     /**
@@ -307,11 +293,11 @@ public enum Feature {
     }
 
     public boolean isColorFeature() {
-        return this.isGuiFeature() && featureGuiData.getDefaultColor() != null;
+        return featureGuiData != null && featureGuiData.getDefaultColor() != null;
     }
 
     public boolean couldBeXAllignment() {
-        if (!this.isGuiFeature() || featureGuiData.getDrawType() == null) return false;
+        if (featureGuiData == null || featureGuiData.getDrawType() == null) return false;
 
         return switch (featureGuiData.getDrawType()) {
             case TEXT,
@@ -325,7 +311,7 @@ public enum Feature {
         };
     }
 
-    public ColorCode getDefaultColor() {
+    public @Nullable ColorCode getDefaultColor() {
         if (featureGuiData != null) {
             return featureGuiData.getDefaultColor();
         }
@@ -510,7 +496,7 @@ public enum Feature {
         this.featureData.setColor(color);
     }
 
-    public ColorCode getRestrictedColor() {
+    public @Nullable ColorCode getRestrictedColor() {
         int featureColor = this.getColor();
 
         for (ColorCode colorCode : ColorCode.values()) {
@@ -573,7 +559,7 @@ public enum Feature {
      * @exception IllegalArgumentException if specified setting value is not instance of {@link Number}
      * @see Feature#get(FeatureSetting)
      */
-    public @NonNull Number getAsNumber(FeatureSetting setting) {
+    public Number getAsNumber(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof Number number) {
             return number;
@@ -589,7 +575,7 @@ public enum Feature {
      * @exception IllegalArgumentException if specified setting value is not instance of {@link RegistrableEnum}
      * @see Feature#get(FeatureSetting)
      */
-    public @NonNull RegistrableEnum getAsEnum(FeatureSetting setting) {
+    public RegistrableEnum getAsEnum(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof RegistrableEnum registrableEnum) {
             return registrableEnum;
@@ -605,7 +591,7 @@ public enum Feature {
      * @exception IllegalArgumentException if specified setting value is not instance of {@link String}
      * @see Feature#get(FeatureSetting)
      */
-    public @NonNull String getAsString(FeatureSetting setting) {
+    public String getAsString(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof String string) {
             return string;
@@ -622,7 +608,7 @@ public enum Feature {
      * @exception IllegalArgumentException if {@code setting} is not related with this Feature
      * @see ConfigValuesManager#setSettingToDefault(FeatureSetting)
      */
-    public @NonNull Object get(FeatureSetting setting) {
+    public Object get(FeatureSetting setting) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
             throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this);
         }
@@ -661,11 +647,12 @@ public enum Feature {
      * @param setting of Feature
      * @return true if {@link Feature}'s settings is not null and contains {@code setting}
      */
-    public boolean has(@NonNull FeatureSetting setting) {
+    public boolean has(FeatureSetting setting) {
         if (this.featureData.getSettings() == null) {
             return false;
         } else {
             return this.featureData.getSettings().containsKey(setting);
         }
     }
+
 }

@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonLanguage extends SkyblockAddonsButton {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
@@ -37,7 +38,7 @@ public class ButtonLanguage extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isHovered(mouseX, mouseY);
 
         DrawUtils.drawRoundedRect(graphics, getX(), getY(), width, height, 4, ARGB.color(230, 28, 29, 41));
@@ -56,11 +57,12 @@ public class ButtonLanguage extends SkyblockAddonsButton {
     }
 
     @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (MC.screen instanceof SettingsGui gui) {
             DataUtils.loadLocalizedStrings(this.language, true);
             gui.setClosingGui(true);
             main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, gui.getLastPage(), gui.getLastTab());
         }
     }
+
 }

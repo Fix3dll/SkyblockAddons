@@ -3,7 +3,7 @@ package com.fix3dll.skyblockaddons.core;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Locale;
 
@@ -57,12 +57,12 @@ public enum Language implements RegistrableEnum {
     BISCUITISH("bc_BC"),
     OWO("ow_Wo");
 
-    private final ResourceLocation identifier;
+    private final Identifier identifier;
     private final String path;
 
     Language(String path) {
         this.path = path;
-        this.identifier = SkyblockAddons.resourceLocation("flags/" + path.toLowerCase(Locale.ENGLISH) + ".png");
+        this.identifier = SkyblockAddons.identifier("flags/" + path.toLowerCase(Locale.ENGLISH) + ".png");
     }
 
     /**

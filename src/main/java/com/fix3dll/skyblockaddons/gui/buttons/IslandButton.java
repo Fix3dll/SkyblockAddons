@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 public class IslandButton extends SkyblockAddonsButton {
 
@@ -46,7 +47,7 @@ public class IslandButton extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         drawButton(graphics, mouseX, mouseY, true);
     }
 
@@ -148,7 +149,7 @@ public class IslandButton extends SkyblockAddonsButton {
 
             Matrix3x2fStack poseStack = graphics.pose();
             graphics.guiRenderState.submitGuiElement(
-                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(island.getResourceLocation()), graphics.pose(), x, y, 0, 0, w, h, w, h, color, graphics.scissorStack.peek())
+                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(island.getIdentifier()), graphics.pose(), x, y, 0, 0, w, h, w, h, color, graphics.scissorStack.peek())
             );
 
             for (IslandMarkerButton marker : markerButtons) {
@@ -168,6 +169,7 @@ public class IslandButton extends SkyblockAddonsButton {
                             ColorCode.WHITE.getColor(),
                             0,
                             true,
+                            false,
                             graphics.scissorStack.peek()
                     )
             );
@@ -176,7 +178,7 @@ public class IslandButton extends SkyblockAddonsButton {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
 //        int minecraftScale = Minecraft.getMinecraft().gameSettings.guiScale;
 //        float islandGuiScale = ISLAND_SCALE;
 //

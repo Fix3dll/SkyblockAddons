@@ -14,18 +14,19 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Consumer;
 
 public class FeatureBase extends ButtonFeature {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final ResourceLocation GUI_MOVE = SkyblockAddons.resourceLocation("gui/move.png");
-    private static final ResourceLocation HALLOWEEN = SkyblockAddons.resourceLocation("flags/halloween.png");
+    private static final Identifier GUI_MOVE = SkyblockAddons.identifier("gui/move.png");
+    private static final Identifier HALLOWEEN = SkyblockAddons.identifier("flags/halloween.png");
 
     private final Consumer<FeatureBase> consumer;
 
@@ -52,7 +53,7 @@ public class FeatureBase extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         float alphaMultiplier = calculateAlphaMultiplier();
         int alpha = alphaMultiplier == 1F ? 255 : (int) (255 * alphaMultiplier);
         if (alpha < 4) alpha = 4;
@@ -137,7 +138,7 @@ public class FeatureBase extends ButtonFeature {
 
         if (feature == Feature.LANGUAGE) {
             try {
-                ResourceLocation langSprite = main.getUtils().isHalloween()
+                Identifier langSprite = main.getUtils().isHalloween()
                         ? HALLOWEEN
                         : ((Language) Feature.LANGUAGE.getValue()).getIdentifier();
                 graphics.blit(RenderPipelines.GUI_TEXTURED, langSprite, (int) (getX() + width / 2F - 20), getY() + 20, 0, 0, 38, 30, 38, 30, -1);
@@ -183,14 +184,14 @@ public class FeatureBase extends ButtonFeature {
     }
 
     @Override
-    public void playDownSound(SoundManager soundManager) {
+    public void playDownSound(@NonNull SoundManager soundManager) {
         switch (feature) {
             case LANGUAGE, EDIT_LOCATIONS, GENERAL_SETTINGS -> playButtonClickSound(soundManager);
         }
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (this.isHovered && this.consumer != null) {
             this.consumer.accept(this);
         }
