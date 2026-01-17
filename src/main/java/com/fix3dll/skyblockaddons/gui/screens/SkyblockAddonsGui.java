@@ -114,7 +114,12 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
                     for (FeatureSetting setting : settings.keySet()) {
                         try {
-                            if (matchesSearch(setting.getMessage())) {
+                            String settingIdentifier = setting.getMessage();
+                            if (settingIdentifier == null) {
+                                settingIdentifier = setting.name();
+                            }
+
+                            if (matchesSearch(settingIdentifier)) {
                                 features.add(feature);
                             }
                         } catch (Exception ignored) {} // Hit a message that probably needs variables to fill in, just skip it.
