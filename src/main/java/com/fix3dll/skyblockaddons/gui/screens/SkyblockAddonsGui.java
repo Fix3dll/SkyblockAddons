@@ -30,7 +30,6 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.text.WordUtils;
 import org.jspecify.annotations.NonNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -120,7 +119,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                         try {
                             String settingIdentifier = setting.getMessage();
                             if (settingIdentifier == null) {
-                                settingIdentifier = WordUtils.capitalizeFully(setting.name());
+                                settingIdentifier = setting.name();
                             }
 
                             if (matchesSearch(settingIdentifier)) {
