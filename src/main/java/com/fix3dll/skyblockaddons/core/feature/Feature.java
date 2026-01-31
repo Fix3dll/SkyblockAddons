@@ -162,12 +162,14 @@ public enum Feature {
     COLORED_FISHING_PARTICLES(264, "settings.coloredFishingParticles.title", new FeatureGuiData(ColorCode.WHITE)),
 
 
+    // These are not actual features.
+    EDIT_LOCATIONS(-1, "settings.editLocations"),
+    GENERAL_SETTINGS(-1, "settings.tab.generalSettings"),
+    LANGUAGE(-1, "language"),
+
     WARNING_TIME(-2, "settings.warningDuration"),
-    LANGUAGE(-3, "language"),
-    EDIT_LOCATIONS(-4, "settings.editLocations"),
     RESET_LOCATION(-5, "settings.resetLocations"),
     RESCALE_FEATURES(-6, "messages.rescaleFeatures"),
-    GENERAL_SETTINGS(-7, "settings.tab.generalSettings"),
     TEXT_STYLE(-8, "settings.textStyle"),
     CHROMA_SPEED(-9, "settings.chromaSpeed"),
     CHROMA_MODE(-10, "settings.chromaMode"),
@@ -220,7 +222,7 @@ public enum Feature {
 
         HashSet<Integer> registeredFeatureIDs = SkyblockAddons.getInstance().getRegisteredFeatureIDs();
         if (id != -1 && registeredFeatureIDs.contains(id)) {
-            throw new RuntimeException("Multiple features have the same IDs!");
+            throw new RuntimeException("Multiple features have the same IDs! (" + id + ")");
         } else {
             registeredFeatureIDs.add(id);
         }

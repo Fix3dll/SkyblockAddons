@@ -102,7 +102,7 @@ dependencies {
     //bundle("moe.nea:libautoupdate:1.3.1")
     bundle("com.github.nea89o:libautoupdate:841d9f7e78")
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
-    bundle("io.github.cdagaming:DiscordIPC:0.11.1") {
+    bundle("io.github.cdagaming:DiscordIPC:0.11.2") {
         exclude(module = "log4j")
         because("Different version conflicts with Minecraft's Log4J")
         exclude(module = "gson")

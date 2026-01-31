@@ -67,6 +67,7 @@ public class DiscordRPCManager implements IPCListener {
         SkyblockAddons.runAsync(() -> {
             if (isActive()) {
                 connected = false;
+                client.sendRichPresence(null);
                 client.close();
             }
         });

@@ -1,9 +1,9 @@
 {
   "ALL_SKILLS_SUPER_BOOST": {
-    "displayName": "§fAll Skills Exp Super-Boost",
+    "displayName": "§aAll Skills Exp Super-Boost",
     "enchanted": true,
     "material": "diamond",
-    "rarity": "COMMON"
+    "rarity": "UNCOMMON"
   },
   "ANTIQUE_REMEDIES": {
     "displayName": "§5Antique Remedies",
@@ -38,10 +38,10 @@
     "rarity": "UNCOMMON"
   },
   "BROWN_BANDANA": {
-    "displayName": "§9Brown Bandana",
+    "displayName": "§5Brown Bandana",
     "enchanted": false,
     "material": "skull_item",
-    "rarity": "RARE",
+    "rarity": "EPIC",
     "resolvableProfile": {
       "id": [
         2120157719,
@@ -531,9 +531,9 @@
     "rarity": "UNCOMMON"
   },
   "PET_ITEM_QUICK_CLAW": {
-    "displayName": "§5Quick Claw",
+    "displayName": "§6Quick Claw",
     "material": "skull_item",
-    "rarity": "EPIC",
+    "rarity": "LEGENDARY",
     "resolvableProfile": {
       "id": [
         1225744421,
