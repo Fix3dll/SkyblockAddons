@@ -30,8 +30,7 @@ public class ChatScreenHook {
 
     public static void copyChatMessage(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
         if (event.button() != 0) return;
-        if (Feature.DEVELOPER_MODE.isDisabled()
-                && (Feature.CHAT_MESSAGE_COPYING.isDisabled() || !main.getUtils().isOnSkyblock())) {
+        if (Feature.DEVELOPER_MODE.isDisabled() && Feature.CHAT_MESSAGE_COPYING.isDisabled()) {
             return;
         }
 
