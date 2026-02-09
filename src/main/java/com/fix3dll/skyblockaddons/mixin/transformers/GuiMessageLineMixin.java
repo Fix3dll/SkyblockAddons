@@ -16,7 +16,7 @@ public abstract class GuiMessageLineMixin implements GuiMessageLineExtension {
     private Component sba$parentComponent = null;
 
     @Unique
-    private final Logger sba$LOGGER = SkyblockAddons.getLogger();
+    private static final Logger sba$LOGGER = SkyblockAddons.getLogger();
 
     @Override
     public Component sba$getParentComponent() {
