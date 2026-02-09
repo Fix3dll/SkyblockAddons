@@ -139,6 +139,7 @@ public enum FeatureSetting {
     PET_PANEL("settings.equipmentsInInventory.petPanel", Feature.EQUIPMENTS_IN_INVENTORY),
     BIGGER_WAKE("settings.coloredFishingParticles.biggerWake", Feature.COLORED_FISHING_PARTICLES),
     SHOW_ONLY_WHEN_SCORPIUS_IS_MAYOR("settings.showOnlyWhenScorpiusIsMayor", Feature.DARK_AUCTION_TIMER),
+    ALLOW_CHAT_MESSAGE_COPYING_OUTSIDE_SKYBLOCK("settings.allowChatMessageCopyingOutsideSkyblock", Feature.CHAT_MESSAGE_COPYING),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
