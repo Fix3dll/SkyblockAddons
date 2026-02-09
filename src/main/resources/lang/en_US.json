@@ -273,6 +273,7 @@
     },
     "fullAutoUpdate": "Full Auto Update",
     "chatMessageCopying": "Chat Message Copying",
+    "allowChatMessageCopyingOutsideSkyblock": "Allow copying chat messages outside Skyblock",
     "pressureBar": {
       "title": "Pressure Bar",
       "alert": "Alert by changing color when pressure exceeds 90%"

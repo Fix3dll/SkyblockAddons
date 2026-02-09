@@ -1003,7 +1003,10 @@
     "value": false
   },
   "CHAT_MESSAGE_COPYING": {
-    "value": false
+    "value": false,
+    "settings": {
+      "ALLOW_CHAT_MESSAGE_COPYING_OUTSIDE_SKYBLOCK": false
+    }
   },
   "COLORED_FISHING_PARTICLES": {
     "value": false,

@@ -5,7 +5,8 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
-import com.fix3dll.skyblockaddons.utils.EnumUtils;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.GUIType;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.GuiTab;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -43,7 +44,10 @@ public class ButtonSettings extends ButtonFeature {
             if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {
                 MC.setScreen(new EnchantmentSettingsGui(0, gui.getPage(), gui.getTab()));
             } else {
-                MC.setScreen(new SettingsGui(this.feature, 1, gui.getPage(), gui.getTab(), EnumUtils.GUIType.MAIN));
+                boolean generalSettings = gui.getTab() == GuiTab.GENERAL_SETTINGS;
+                if (generalSettings) gui.setCancelClose(true);
+                MC.setScreen(new SettingsGui(this.feature, 1, gui.getPage(), gui.getTab(), GUIType.MAIN));
+                if (generalSettings) gui.setCancelClose(false);
             }
         }
     }

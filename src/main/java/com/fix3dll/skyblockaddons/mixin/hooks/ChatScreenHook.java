@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.mixin.extensions.ChatComponentExtension;
 import com.fix3dll.skyblockaddons.mixin.extensions.GuiMessageLineExtension;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
@@ -30,8 +31,7 @@ public class ChatScreenHook {
 
     public static void copyChatMessage(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
         if (event.button() != 0) return;
-        if (Feature.DEVELOPER_MODE.isDisabled()
-                && (Feature.CHAT_MESSAGE_COPYING.isDisabled() || !main.getUtils().isOnSkyblock())) {
+        if (Feature.DEVELOPER_MODE.isDisabled() && !canCopyMessages()) {
             return;
         }
 
@@ -92,6 +92,13 @@ public class ChatScreenHook {
                 cir.cancel();
             }
         }
+    }
+
+    private static boolean canCopyMessages() {
+        if (Feature.CHAT_MESSAGE_COPYING.isDisabled()) return false;
+
+        return Feature.CHAT_MESSAGE_COPYING.isEnabled(FeatureSetting.ALLOW_CHAT_MESSAGE_COPYING_OUTSIDE_SKYBLOCK)
+                || main.getUtils().isOnSkyblock();
     }
 
 }
