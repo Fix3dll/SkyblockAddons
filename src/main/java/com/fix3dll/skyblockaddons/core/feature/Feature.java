@@ -267,16 +267,8 @@ public enum Feature {
         }
     }
 
-    public boolean isActualFeature() {
-        return id != -1 && getMessage() != null;
-    }
-
     public String getMessage(String... variables) {
-        if (translationKey != null) {
-            return Translations.getMessage(translationKey, (Object[]) variables);
-        }
-
-        return null;
+        return Translations.getMessage(translationKey, (Object[]) variables);
     }
 
     public static Feature fromId(int id) {
@@ -286,10 +278,6 @@ public enum Feature {
             }
         }
         return null;
-    }
-
-    public boolean isGuiFeature() {
-        return this.featureGuiData != null;
     }
 
     /**
@@ -309,11 +297,11 @@ public enum Feature {
     }
 
     public boolean isColorFeature() {
-        return this.isGuiFeature() && featureGuiData.getDefaultColor() != null;
+        return featureGuiData != null && featureGuiData.getDefaultColor() != null;
     }
 
     public boolean couldBeXAllignment() {
-        if (!this.isGuiFeature() || featureGuiData.getDrawType() == null) return false;
+        if (featureGuiData == null || featureGuiData.getDrawType() == null) return false;
 
         return switch (featureGuiData.getDrawType()) {
             case TEXT,

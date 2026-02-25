@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Base64;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -62,6 +63,7 @@ public class TextUtils {
     private static final Pattern RESET_CODE_PATTERN = Pattern.compile("(?i)§R");
     private static final Pattern MAGNITUDE_PATTERN = Pattern.compile("(\\d[\\d,.]*\\d*)+([kKmMbBtT])");
     private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s?:\\s?\".+/(?<textureId>\\w+)\"");
+    private static final Pattern QUANTITY_PATTERN = Pattern.compile("^x\\d+$");
 
     private static final NavigableMap<Long, String> SUFFIXES = new TreeMap<>();
     static {
@@ -704,4 +706,67 @@ public class TextUtils {
 
         return sb.toString();
     }
+
+    /**
+     * Strips the appended quantity suffix (e.g., " x1", " x64") from a given Component.
+     * Leverages the shallow-copied siblings list from Component#copy to safely mutate
+     * the tree without requiring a full traversal.
+     * @param original The original component, potentially containing a quantity suffix.
+     * @return A mutated copy of the original component with the quantity suffix removed,
+     * or the original if no match is found.
+     */
+    public static Component stripQuantitySuffix(Component original) {
+        if (original == null) {
+            return null;
+        }
+
+        List<Component> siblings = original.getSiblings();
+        if (siblings.size() < 2) {
+            return original;
+        }
+
+        Component nameNode = siblings.get(siblings.size() - 2);
+        Component quantityNode = siblings.getLast();
+
+        // Validate the quantity node (must be plain text matching "x[number]")
+        if (!(quantityNode.getContents() instanceof PlainTextContents quantityContents)
+                || !QUANTITY_PATTERN.matcher(quantityContents.text()).matches()) {
+            return original;
+        }
+
+        // Validate the color (Must not be null and must strictly match DARK_GRAY)
+        TextColor quantityColor = quantityNode.getStyle().getColor();
+        if (quantityColor == null || quantityColor.getValue() != ChatFormatting.DARK_GRAY.getColor()) {
+            return original;
+        }
+
+        // Validate the name node (must be plain text and end with a trailing space)
+        if (!(nameNode.getContents() instanceof PlainTextContents nameContents)) {
+            return original;
+        }
+
+        String nameText = nameContents.text();
+        if (!nameText.endsWith(" ")) {
+            return original;
+        }
+
+        MutableComponent cleanComponent = original.copy();
+        List<Component> modifiableSiblings = cleanComponent.getSiblings();
+
+        // Remove the trailing quantity node entirely
+        modifiableSiblings.removeLast();
+
+        // Trim the trailing space from the item name text
+        String strippedNameText = nameText.substring(0, nameText.length() - 1);
+        MutableComponent fixedNameNode = Component.literal(strippedNameText).withStyle(nameNode.getStyle());
+
+        // Preserve any deeply nested siblings the original name node might contain
+        nameNode.getSiblings().forEach(fixedNameNode::append);
+
+        // Replace the old name node with the trimmed version
+        modifiableSiblings.set(modifiableSiblings.size() - 1, fixedNameNode);
+
+        return cleanComponent;
+    }
+
 }

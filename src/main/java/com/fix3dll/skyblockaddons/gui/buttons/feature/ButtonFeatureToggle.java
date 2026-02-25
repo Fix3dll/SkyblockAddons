@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -119,7 +120,8 @@ public class ButtonFeatureToggle extends ButtonFeature {
                 boolean areAllFeaturesChroma = ColorUtils.areAllFeaturesChroma();
 
                 for (Feature loopFeature : Feature.values()) {
-                    if (loopFeature.isGuiFeature() && loopFeature.getFeatureGuiData().getDefaultColor() != null) {
+                    FeatureGuiData featureGuiData = loopFeature.getFeatureGuiData();
+                    if (featureGuiData != null && featureGuiData.getDefaultColor() != null) {
                         loopFeature.setChroma(!areAllFeaturesChroma);
                     }
                 }

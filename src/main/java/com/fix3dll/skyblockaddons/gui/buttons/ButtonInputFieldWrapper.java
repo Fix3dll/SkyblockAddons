@@ -52,7 +52,9 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
     @Override
     public boolean keyPressed(KeyEvent event) {
         if (editBox.isFocused()) {
-            return editBox.keyPressed(event);
+            boolean consumed = editBox.keyPressed(event);
+            textUpdated.onUpdate(editBox.getValue());
+            return consumed;
         }
         return false;
     }

@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.joml.Matrix3x2fStack;
@@ -33,7 +34,7 @@ public class CheckBox {
 
     private final int x;
     private final int y;
-    private final String text;
+    private final Component text;
     private final int textWidth;
     private final int size;
     @Getter @Setter private boolean value;
@@ -65,7 +66,7 @@ public class CheckBox {
         this.x = x;
         this.y = y;
         this.scale = (float) size / (float) ICON_SIZE;
-        this.text = text;
+        this.text = Component.literal(text);
         this.textWidth = Minecraft.getInstance().font.width(text);
         this.size = size;
     }

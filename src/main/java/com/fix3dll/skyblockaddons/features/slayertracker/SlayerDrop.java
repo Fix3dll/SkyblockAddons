@@ -186,128 +186,128 @@ public enum SlayerDrop {
         this.attributeID = attributeID;
     }
 
-    private static final EnumMap<SlayerDrop, String> internalItemTranslations = new EnumMap<>(SlayerDrop.class);
+    private static final EnumMap<SlayerDrop, Component> internalItemTranslations = new EnumMap<>(SlayerDrop.class);
 
     static {
         // revenant
-        internalItemTranslations.put(REVENANT_FLESH, "Revenant Flesh");
-        internalItemTranslations.put(FOUL_FLESH, "Foul Flesh");
-        internalItemTranslations.put(REVENANT_SHARD, "Revenant");
-        internalItemTranslations.put(PESTILENCE_RUNE, "◆ Pestilence Rune");
-        internalItemTranslations.put(UNDEAD_CATALYST, "Undead Catalyst");
-        internalItemTranslations.put(SMITE_SIX, "Smite 6");
-        internalItemTranslations.put(BEHEADED_HORROR, "Beheaded Horror");
-        internalItemTranslations.put(REVENANT_CATALYST, "Revenant Catalyst");
-        internalItemTranslations.put(SNAKE_RUNE, "◆ Snake Rune");
-        internalItemTranslations.put(FESTERING_MAGGOT, "Festering Maggot");
-        internalItemTranslations.put(REVENANT_VISCERA, "Revenant Viscera");
-        internalItemTranslations.put(SCYTHE_BLADE, "Scythe Blade");
-        internalItemTranslations.put(SMITE_SEVEN, "Smite 7");
-        internalItemTranslations.put(SHARD_OF_SHREDDED, "Shard of Shredded");
-        internalItemTranslations.put(WARDEN_HEART, "Warden Heart");
-        internalItemTranslations.put(DYE_MATCHA, "Matcha Dye");
+        internalItemTranslations.put(REVENANT_FLESH, Component.literal("Revenant Flesh"));
+        internalItemTranslations.put(FOUL_FLESH, Component.literal("Foul Flesh"));
+        internalItemTranslations.put(REVENANT_SHARD, Component.literal("Revenant"));
+        internalItemTranslations.put(PESTILENCE_RUNE, Component.literal("◆ Pestilence Rune"));
+        internalItemTranslations.put(UNDEAD_CATALYST, Component.literal("Undead Catalyst"));
+        internalItemTranslations.put(SMITE_SIX, Component.literal("Smite 6"));
+        internalItemTranslations.put(BEHEADED_HORROR, Component.literal("Beheaded Horror"));
+        internalItemTranslations.put(REVENANT_CATALYST, Component.literal("Revenant Catalyst"));
+        internalItemTranslations.put(SNAKE_RUNE, Component.literal("◆ Snake Rune"));
+        internalItemTranslations.put(FESTERING_MAGGOT, Component.literal("Festering Maggot"));
+        internalItemTranslations.put(REVENANT_VISCERA, Component.literal("Revenant Viscera"));
+        internalItemTranslations.put(SCYTHE_BLADE, Component.literal("Scythe Blade"));
+        internalItemTranslations.put(SMITE_SEVEN, Component.literal("Smite 7"));
+        internalItemTranslations.put(SHARD_OF_SHREDDED, Component.literal("Shard of Shredded"));
+        internalItemTranslations.put(WARDEN_HEART, Component.literal("Warden Heart"));
+        internalItemTranslations.put(DYE_MATCHA, Component.literal("Matcha Dye"));
 
         // tarantula
-        internalItemTranslations.put(TARANTULA_WEB, "Tarantula Web");
-        internalItemTranslations.put(TOXIC_ARROW_POISON, "Toxic Arrow Poison");
-        internalItemTranslations.put(BITE_RUNE, "◆ Bite Rune");
-        internalItemTranslations.put(DARKNESS_WITHIN_RUNE, "◆ Darkness Within Rune");
-        internalItemTranslations.put(SPIDER_CATALYST, "Spider Catalyst");
-        internalItemTranslations.put(TARANTULA_SILK, "Tarantula Silk");
-        internalItemTranslations.put(BANE_OF_ARTHROPODS_SIX, "Bane Of Arthropods 6");
-        internalItemTranslations.put(TARANTULA_CATALYST, "Tarantula Catalyst");
-        internalItemTranslations.put(FLY_SWATTER, "Fly Swatter");
-        internalItemTranslations.put(VIAL_OF_VENOM, "Vial of Venom");
-        internalItemTranslations.put(TARANTULA_TALISMAN, "Tarantula Talisman");
-        internalItemTranslations.put(DIGESTED_MOSQUITO, "Digested Mosquito");
-        internalItemTranslations.put(SHRIVELED_WASP, "Shriveled Wasp");
-        internalItemTranslations.put(ENSNARED_SNAIL, "Ensnared Snail");
-        internalItemTranslations.put(PRIMORDIAL_EYE, "Primordial Eye");
-        internalItemTranslations.put(DYE_BRICK_RED, "Brick Red Dye");
+        internalItemTranslations.put(TARANTULA_WEB, Component.literal("Tarantula Web"));
+        internalItemTranslations.put(TOXIC_ARROW_POISON, Component.literal("Toxic Arrow Poison"));
+        internalItemTranslations.put(BITE_RUNE, Component.literal("◆ Bite Rune"));
+        internalItemTranslations.put(DARKNESS_WITHIN_RUNE, Component.literal("◆ Darkness Within Rune"));
+        internalItemTranslations.put(SPIDER_CATALYST, Component.literal("Spider Catalyst"));
+        internalItemTranslations.put(TARANTULA_SILK, Component.literal("Tarantula Silk"));
+        internalItemTranslations.put(BANE_OF_ARTHROPODS_SIX, Component.literal("Bane Of Arthropods 6"));
+        internalItemTranslations.put(TARANTULA_CATALYST, Component.literal("Tarantula Catalyst"));
+        internalItemTranslations.put(FLY_SWATTER, Component.literal("Fly Swatter"));
+        internalItemTranslations.put(VIAL_OF_VENOM, Component.literal("Vial of Venom"));
+        internalItemTranslations.put(TARANTULA_TALISMAN, Component.literal("Tarantula Talisman"));
+        internalItemTranslations.put(DIGESTED_MOSQUITO, Component.literal("Digested Mosquito"));
+        internalItemTranslations.put(SHRIVELED_WASP, Component.literal("Shriveled Wasp"));
+        internalItemTranslations.put(ENSNARED_SNAIL, Component.literal("Ensnared Snail"));
+        internalItemTranslations.put(PRIMORDIAL_EYE, Component.literal("Primordial Eye"));
+        internalItemTranslations.put(DYE_BRICK_RED, Component.literal("Brick Red Dye"));
 
         // wolf
-        internalItemTranslations.put(WOLF_TOOTH, "Wolf Tooth");
-        internalItemTranslations.put(HAMSTER_WHEEL, "Hamster Wheel");
-        internalItemTranslations.put(SPIRIT_RUNE, "◆ Spirit Rune");
-        internalItemTranslations.put(CRITICAL_SIX, "Critical 6");
-        internalItemTranslations.put(FURBALL, "Furball");
-        internalItemTranslations.put(RED_CLAW_EGG, "Red Claw Egg");
-        internalItemTranslations.put(COUTURE_RUNE, "◆ Couture Rune");
-        internalItemTranslations.put(OVERFLUX_CAPACITOR, "Overflux Capacitor");
-        internalItemTranslations.put(GRIZZLY_BAIT, "Grizzly Salmon");
-        internalItemTranslations.put(DYE_CELESTE, "Celeste Dye");
+        internalItemTranslations.put(WOLF_TOOTH, Component.literal("Wolf Tooth"));
+        internalItemTranslations.put(HAMSTER_WHEEL, Component.literal("Hamster Wheel"));
+        internalItemTranslations.put(SPIRIT_RUNE, Component.literal("◆ Spirit Rune"));
+        internalItemTranslations.put(CRITICAL_SIX, Component.literal("Critical 6"));
+        internalItemTranslations.put(FURBALL, Component.literal("Furball"));
+        internalItemTranslations.put(RED_CLAW_EGG, Component.literal("Red Claw Egg"));
+        internalItemTranslations.put(COUTURE_RUNE, Component.literal("◆ Couture Rune"));
+        internalItemTranslations.put(OVERFLUX_CAPACITOR, Component.literal("Overflux Capacitor"));
+        internalItemTranslations.put(GRIZZLY_BAIT, Component.literal("Grizzly Salmon"));
+        internalItemTranslations.put(DYE_CELESTE, Component.literal("Celeste Dye"));
 
         // voidgloom
-        internalItemTranslations.put(NULL_SPHERE, "Null Sphere");
-        internalItemTranslations.put(TWILIGHT_ARROW_POISON, "Twilight Arrow Poison");
-        internalItemTranslations.put(ENDERSNAKE_RUNE, "◆ Endersnake Rune");
-        internalItemTranslations.put(SUMMONING_EYE, "Summoning Eye");
-        internalItemTranslations.put(MANA_STEAL_ONE, "Mana Steal 1");
-        internalItemTranslations.put(TRANSMISSION_TUNER, "Transmission Tuner");
-        internalItemTranslations.put(NULL_ATOM, "Null Atom");
-        internalItemTranslations.put(HAZMAT_ENDERMAN, "Hazmat Enderman");
-        internalItemTranslations.put(POCKET_ESPRESSO_MACHINE, "Pocket Espresso Machine");
-        internalItemTranslations.put(SMARTY_PANTS_ONE, "Smarty Pants 1");
-        internalItemTranslations.put(END_RUNE, "◆ End Rune");
-        internalItemTranslations.put(HANDY_BLOOD_CHALICE, "Handy Blood Chalice");
-        internalItemTranslations.put(SINFUL_DICE, "Sinful Dice");
-        internalItemTranslations.put(EXCEEDINGLY_RARE_ENDER_ARTIFACT_UPGRADER, "Exceedingly Rare Ender Artifact Upgrader");
-        internalItemTranslations.put(VOID_CONQUEROR_ENDERMAN_SKIN, "Void Conqueror Enderman Skin");
-        internalItemTranslations.put(ETHERWARP_MERGER, "Etherwarp Merger");
-        internalItemTranslations.put(JUDGEMENT_CORE, "Judgement Core");
-        internalItemTranslations.put(ENCHANT_RUNE, "◆ Enchant Rune");
-        internalItemTranslations.put(ENDER_SLAYER_SEVEN, "Ender Slayer 7");
-        internalItemTranslations.put(DYE_BYZANTIUM, "Byzantium Dye");
+        internalItemTranslations.put(NULL_SPHERE, Component.literal("Null Sphere"));
+        internalItemTranslations.put(TWILIGHT_ARROW_POISON, Component.literal("Twilight Arrow Poison"));
+        internalItemTranslations.put(ENDERSNAKE_RUNE, Component.literal("◆ Endersnake Rune"));
+        internalItemTranslations.put(SUMMONING_EYE, Component.literal("Summoning Eye"));
+        internalItemTranslations.put(MANA_STEAL_ONE, Component.literal("Mana Steal 1"));
+        internalItemTranslations.put(TRANSMISSION_TUNER, Component.literal("Transmission Tuner"));
+        internalItemTranslations.put(NULL_ATOM, Component.literal("Null Atom"));
+        internalItemTranslations.put(HAZMAT_ENDERMAN, Component.literal("Hazmat Enderman"));
+        internalItemTranslations.put(POCKET_ESPRESSO_MACHINE, Component.literal("Pocket Espresso Machine"));
+        internalItemTranslations.put(SMARTY_PANTS_ONE, Component.literal("Smarty Pants 1"));
+        internalItemTranslations.put(END_RUNE, Component.literal("◆ End Rune"));
+        internalItemTranslations.put(HANDY_BLOOD_CHALICE, Component.literal("Handy Blood Chalice"));
+        internalItemTranslations.put(SINFUL_DICE, Component.literal("Sinful Dice"));
+        internalItemTranslations.put(EXCEEDINGLY_RARE_ENDER_ARTIFACT_UPGRADER, Component.literal("Exceedingly Rare Ender Artifact Upgrader"));
+        internalItemTranslations.put(VOID_CONQUEROR_ENDERMAN_SKIN, Component.literal("Void Conqueror Enderman Skin"));
+        internalItemTranslations.put(ETHERWARP_MERGER, Component.literal("Etherwarp Merger"));
+        internalItemTranslations.put(JUDGEMENT_CORE, Component.literal("Judgement Core"));
+        internalItemTranslations.put(ENCHANT_RUNE, Component.literal("◆ Enchant Rune"));
+        internalItemTranslations.put(ENDER_SLAYER_SEVEN, Component.literal("Ender Slayer 7"));
+        internalItemTranslations.put(DYE_BYZANTIUM, Component.literal("Byzantium Dye"));
 
         // inferno
-        internalItemTranslations.put(DERELICT_ASHE, "Derelict Ashe");
-        internalItemTranslations.put(ENCHANTED_BLAZE_POWDER, "Enchanted Blaze Powder");
-        internalItemTranslations.put(LAVATEARS_RUNE, "◆ Lavatears Rune");
-        internalItemTranslations.put(WISPS_ICE_FLAVORED_WATER, "Wisp's Ice-Flavored Water");
-        internalItemTranslations.put(BUNDLE_OF_MAGMA_ARROWS, "Bundle of Magma Arrows");
-        internalItemTranslations.put(MANA_DISINTEGRATOR, "Mana Disintegrator");
-        internalItemTranslations.put(SCORCHED_BOOKS, "Scorched Books");
-        internalItemTranslations.put(KELVIN_INVERTER, "Kelvin Inverter");
-        internalItemTranslations.put(BLAZE_ROD_DISTILLATE, "Blaze Rod Distillate");
-        internalItemTranslations.put(GLOWSTONE_DISTILLATE, "Glowstone Distillate");
-        internalItemTranslations.put(MAGMA_CREAM_DISTILLATE, "Magma Cream Distillate");
-        internalItemTranslations.put(NETHER_WART_DISTILLATE, "Nether Wart Distillate");
-        internalItemTranslations.put(GABAGOOL_DISTILLATE, "Gabagool Distillate");
-        internalItemTranslations.put(SCORCHED_POWER_CRYSTAL, "Scorched Power Crystal");
-        internalItemTranslations.put(ARCHFIEND_DICE, "Archfiend Dice");
-        internalItemTranslations.put(FIRE_ASPECT_THREE, "Fire Aspect 3");
-        internalItemTranslations.put(FIERY_BURST_RUNE, "◆ Fiery Burst Rune");
-        internalItemTranslations.put(FLAWED_OPAL_GEMSTONE, "Flawed Opal Gemstone");
-        internalItemTranslations.put(DUPLEX, "Duplex 1");
-        internalItemTranslations.put(HIGH_CLASS_ARCHFIEND_DICE, "High Class Archfiend Dice");
-        internalItemTranslations.put(WILSON_ENGINEERING_PLANS, "Wilson's Engineering Plans");
-        internalItemTranslations.put(SUBZERO_INVERTER, "Subzero Inverter");
-        internalItemTranslations.put(DYE_FLAME, "Flame Dye");
+        internalItemTranslations.put(DERELICT_ASHE, Component.literal("Derelict Ashe"));
+        internalItemTranslations.put(ENCHANTED_BLAZE_POWDER, Component.literal("Enchanted Blaze Powder"));
+        internalItemTranslations.put(LAVATEARS_RUNE, Component.literal("◆ Lavatears Rune"));
+        internalItemTranslations.put(WISPS_ICE_FLAVORED_WATER, Component.literal("Wisp's Ice-Flavored Water"));
+        internalItemTranslations.put(BUNDLE_OF_MAGMA_ARROWS, Component.literal("Bundle of Magma Arrows"));
+        internalItemTranslations.put(MANA_DISINTEGRATOR, Component.literal("Mana Disintegrator"));
+        internalItemTranslations.put(SCORCHED_BOOKS, Component.literal("Scorched Books"));
+        internalItemTranslations.put(KELVIN_INVERTER, Component.literal("Kelvin Inverter"));
+        internalItemTranslations.put(BLAZE_ROD_DISTILLATE, Component.literal("Blaze Rod Distillate"));
+        internalItemTranslations.put(GLOWSTONE_DISTILLATE, Component.literal("Glowstone Distillate"));
+        internalItemTranslations.put(MAGMA_CREAM_DISTILLATE, Component.literal("Magma Cream Distillate"));
+        internalItemTranslations.put(NETHER_WART_DISTILLATE, Component.literal("Nether Wart Distillate"));
+        internalItemTranslations.put(GABAGOOL_DISTILLATE, Component.literal("Gabagool Distillate"));
+        internalItemTranslations.put(SCORCHED_POWER_CRYSTAL, Component.literal("Scorched Power Crystal"));
+        internalItemTranslations.put(ARCHFIEND_DICE, Component.literal("Archfiend Dice"));
+        internalItemTranslations.put(FIRE_ASPECT_THREE, Component.literal("Fire Aspect 3"));
+        internalItemTranslations.put(FIERY_BURST_RUNE, Component.literal("◆ Fiery Burst Rune"));
+        internalItemTranslations.put(FLAWED_OPAL_GEMSTONE, Component.literal("Flawed Opal Gemstone"));
+        internalItemTranslations.put(DUPLEX, Component.literal("Duplex 1"));
+        internalItemTranslations.put(HIGH_CLASS_ARCHFIEND_DICE, Component.literal("High Class Archfiend Dice"));
+        internalItemTranslations.put(WILSON_ENGINEERING_PLANS, Component.literal("Wilson's Engineering Plans"));
+        internalItemTranslations.put(SUBZERO_INVERTER, Component.literal("Subzero Inverter"));
+        internalItemTranslations.put(DYE_FLAME, Component.literal("Flame Dye"));
 
         // rift
-        internalItemTranslations.put(COVEN_SEAL, "Coven Seal");
-        internalItemTranslations.put(QUANTUM_BOOK_BUNDLE, "Quantum (Book Bundle)");
-        internalItemTranslations.put(SOULTWIST_RUNE, "◆ Soultwist Rune");
-        internalItemTranslations.put(BUBBA_BLISTER, "Bubba Blister");
-        internalItemTranslations.put(FANGTASTIC_CHOCOLATE_CHIP, "Fang-Tastic Chocolate Chip");
-        internalItemTranslations.put(GUARDIAN_LUCKY_BLOCK, "Guardian Lucky Block");
-        internalItemTranslations.put(MCGRUBBERS_BURGER, "McGrubber's Burger");
-        internalItemTranslations.put(UNFANGED_VAMPIRE_PART, "Unfanged Vampire Part");
-        internalItemTranslations.put(THE_ONE_BOOK_BUNDLE, "The One (Book Bundle)");
-        internalItemTranslations.put(DYE_SANGRIA, "Sangria Dye");
+        internalItemTranslations.put(COVEN_SEAL, Component.literal("Coven Seal"));
+        internalItemTranslations.put(QUANTUM_BOOK_BUNDLE, Component.literal("Quantum (Book Bundle)"));
+        internalItemTranslations.put(SOULTWIST_RUNE, Component.literal("◆ Soultwist Rune"));
+        internalItemTranslations.put(BUBBA_BLISTER, Component.literal("Bubba Blister"));
+        internalItemTranslations.put(FANGTASTIC_CHOCOLATE_CHIP, Component.literal("Fang-Tastic Chocolate Chip"));
+        internalItemTranslations.put(GUARDIAN_LUCKY_BLOCK, Component.literal("Guardian Lucky Block"));
+        internalItemTranslations.put(MCGRUBBERS_BURGER, Component.literal("McGrubber's Burger"));
+        internalItemTranslations.put(UNFANGED_VAMPIRE_PART, Component.literal("Unfanged Vampire Part"));
+        internalItemTranslations.put(THE_ONE_BOOK_BUNDLE, Component.literal("The One (Book Bundle)"));
+        internalItemTranslations.put(DYE_SANGRIA, Component.literal("Sangria Dye"));
     }
 
-    public String getDisplayName() {
-        String displayName = internalItemTranslations.get(this);
+    public Component getDisplayName() {
+        Component displayName = internalItemTranslations.get(this);
 
         if (displayName == null) {
             if (this.itemStack != null && this.itemStack != ItemStack.EMPTY) {
                 Component nameComponent = this.itemStack.get(DataComponents.CUSTOM_NAME);
                 if (nameComponent != null) {
-                    displayName = nameComponent.getString();
+                    displayName = nameComponent;
                 }
             } else {
-                displayName = this.name();
+                displayName = Component.literal(this.name());
             }
         }
 

@@ -63,7 +63,7 @@ public class InventoryUtils {
     );
     private static final Pattern SLAYER_ARMOR_STACK_PATTERN = Pattern.compile("Next Upgrade: \\+([0-9]+❈) \\(([0-9,]+)/([0-9,]+)\\)");
     private List<ItemStack> previousInventory;
-    private final Multimap<String, ItemDiff> itemPickupLog = ArrayListMultimap.create();
+    private final Multimap<Component, ItemDiff> itemPickupLog = ArrayListMultimap.create();
 
     @Setter private boolean inventoryWarningShown;
 
@@ -128,15 +128,18 @@ public class InventoryUtils {
                         previousInventoryMap.updateWithItem(previousItem);
                     }
 
-                    if (newItem != null && newItem.getCustomName() != null) {
-                        String legacyDisplayName = TextUtils.getFormattedText(newItem.getCustomName());
-                        legacyDisplayName = TextUtils.stripResets(legacyDisplayName);
-                        if (legacyDisplayName.contains(" " + ColorCode.DARK_GRAY + "x")) {
-                            String newName = legacyDisplayName.substring(0, legacyDisplayName.lastIndexOf(" "));
-                            // This is a workaround for merchants, it adds x64 or whatever to the end of the name.
-                            newItem.set(DataComponents.CUSTOM_NAME, Component.literal(newName));
+                    if (newItem != null) {
+                        Component newItemCustomName = newItem.getCustomName();
+
+                        if (newItemCustomName != null) {
+                            Component strippedName = TextUtils.stripQuantitySuffix(newItemCustomName);
+
+                            if (strippedName != newItemCustomName) {
+                                newItem.set(DataComponents.CUSTOM_NAME, strippedName);
+                            }
+
+                            newInventoryMap.updateWithItem(newItem);
                         }
-                        newInventoryMap.updateWithItem(newItem);
                     }
                 } catch (RuntimeException exception) {
                     CrashReport crashReport = CrashReport.forThrowable(exception, "Comparing current inventory to previous inventory");
@@ -157,7 +160,7 @@ public class InventoryUtils {
             }
 
             List<ItemDiff> inventoryDifference = new LinkedList<>();
-            Set<String> keySet = new HashSet<>(previousInventoryMap.keySet());
+            Set<Component> keySet = new HashSet<>(previousInventoryMap.keySet());
             keySet.addAll(newInventoryMap.keySet());
 
             keySet.forEach(key -> {
@@ -315,7 +318,7 @@ public class InventoryUtils {
     public void checkIfUsingArrowPoison(LocalPlayer p) {
         if (Feature.TURN_BOW_COLOR_WHEN_USING_ARROW_POISON.isEnabled()) {
             for (ItemStack item : p.getInventory().getNonEquipmentItems()) {
-                if (item != null) {
+                if (item != ItemStack.EMPTY) {
                     String itemID = ItemUtils.getSkyblockItemID(item);
                     if ("TOXIC_ARROW_POISON".equals(itemID)) {
                         this.usingToxicArrowPoison = true;
@@ -512,21 +515,20 @@ public class InventoryUtils {
      * Custom HashMap for handle inventory differences
      * </br>Key: Display Name, Value: Diff size and ItemStack pair
      */
-    private static class DiffHashMap extends HashMap<String, Pair<Integer, ItemStack>> {
+    private static class DiffHashMap extends HashMap<Component, Pair<Integer, ItemStack>> {
 
         public void updateWithItem(ItemStack itemStack) {
             if (itemStack.getCustomName() == null) return;
             String skyblockId = ItemUtils.getSkyblockItemID(itemStack);
 
-            String displayName = TextUtils.getFormattedText(itemStack.getCustomName());
-            displayName = TextUtils.stripResets(displayName);
+            Component displayName = itemStack.getCustomName();
             // Exceptions
             if ("ENCHANTED_BOOK".equals(skyblockId)) {
-                List<String> lore = ItemUtils.getItemLore(itemStack);
+                List<Component> lore = ItemUtils.getItemLoreComponent(itemStack);
                 if (!lore.isEmpty()) {
                     displayName = lore.getFirst();
                 }
-            } else if (main.getUtils().isInDungeon() && itemStack.getItem() == Items.GRAY_DYE && StringUtils.isBlank(displayName)) {
+            } else if (main.getUtils().isInDungeon() && itemStack.getItem() == Items.GRAY_DYE && StringUtils.isBlank(displayName.getString())) {
                 // Ignore Archer's ghost abilities cooldown
                 return;
             } else if (ItemUtils.isQuiverArrow(itemStack)) {

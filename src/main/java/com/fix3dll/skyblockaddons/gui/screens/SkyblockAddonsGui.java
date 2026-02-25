@@ -13,9 +13,12 @@ import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonCredit;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonFeatureToggle;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonSettings;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.FeatureBase;
-import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AutoUpdateMode;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.ButtonType;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.FeatureCredit;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.GUIType;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.GuiTab;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.TextStyle;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
@@ -44,7 +47,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     private static String searchString;
 
     private EditBox featureSearchBar;
-    @Getter private final EnumUtils.GuiTab tab;
+    @Getter private final GuiTab tab;
     @Getter private int page;
     private int row = 1;
     private int column = 1;
@@ -66,7 +69,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     /**
      * The main gui, opened with /sba.
      */
-    public SkyblockAddonsGui(int page, EnumUtils.GuiTab tab) {
+    public SkyblockAddonsGui(int page, GuiTab tab) {
         super(Component.empty());
         this.tab = tab;
         this.page = page;
@@ -99,13 +102,13 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
         // Add the buttons for each page.
         TreeSet<Feature> features = new TreeSet<>(Comparator.comparing(Feature::ordinal).reversed());
-        for (Feature feature : tab != EnumUtils.GuiTab.GENERAL_SETTINGS ? FEATURE_SET : Feature.getGeneralTabFeatures()) {
+        for (Feature feature : tab != GuiTab.GENERAL_SETTINGS ? FEATURE_SET : Feature.getGeneralTabFeatures()) {
             // Ignore Edit GUI features
             if (Feature.getEditGuiFeatures().contains(feature)) {
                 continue;
             }
             // Don't add disabled features yet
-            if ((feature.isActualFeature() || tab == EnumUtils.GuiTab.GENERAL_SETTINGS) && !feature.isRemoteDisabled()) {
+            if ((feature.getId() != -1 || tab == GuiTab.GENERAL_SETTINGS) && !feature.isRemoteDisabled()) {
                 if (matchesSearch(feature.getMessage())) { // Matches search.
                     features.add(feature);
                 } else { // If a sub-setting matches the search show it up in the results as well.
@@ -128,7 +131,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             }
         }
 
-        if (tab != EnumUtils.GuiTab.GENERAL_SETTINGS) {
+        if (tab != GuiTab.GENERAL_SETTINGS) {
             for (Feature feature : Feature.values()) {
                 if (Feature.getEditGuiFeatures().contains(feature)) {
                     continue;
@@ -156,19 +159,19 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                     case TEXT_STYLE:
                     case CHROMA_MODE:
                     case AUTO_UPDATE:
-                        addButton(feature, EnumUtils.ButtonType.CYCLING);
+                        addButton(feature, ButtonType.CYCLING);
                         break;
                     case WARNING_TIME:
-                        addButton(feature, EnumUtils.ButtonType.STEPPER);
+                        addButton(feature, ButtonType.STEPPER);
                         break;
                     case CHROMA_SPEED:
                     case CHROMA_SIZE:
                     case CHROMA_SATURATION:
                     case CHROMA_BRIGHTNESS:
-                        addButton(feature, EnumUtils.ButtonType.CHROMA_SLIDER);
+                        addButton(feature, ButtonType.CHROMA_SLIDER);
                         break;
                     default:
-                        addButton(feature, EnumUtils.ButtonType.TOGGLE);
+                        addButton(feature, ButtonType.TOGGLE);
                 }
             } else {
                 skip--;
@@ -242,7 +245,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     /**
      * Adds a button, limiting its width and setting the correct position.
      */
-    private void addButton(Feature feature, EnumUtils.ButtonType buttonType) {
+    private void addButton(Feature feature, ButtonType buttonType) {
         if (displayCount == 0) return;
         String text = feature.getMessage();
         int halfWidth = width/2;
@@ -259,11 +262,11 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         }
         double y = getRowHeight(row);
 
-        if (buttonType == EnumUtils.ButtonType.TOGGLE) {
+        if (buttonType == ButtonType.TOGGLE) {
             FeatureBase featureGui = new FeatureBase(x, y, text, feature);
             addRenderableWidget(featureGui);
 
-            EnumUtils.FeatureCredit credit = EnumUtils.FeatureCredit.fromFeature(feature);
+            FeatureCredit credit = FeatureCredit.fromFeature(feature);
             if (credit != null) {
                 Pair<Integer, Integer> coords = featureGui.getCreditsCoords(credit);
                 addRenderableWidget(new ButtonCredit(coords.getLeft(), coords.getRight(), text, credit, feature, featureGui.isMultilineButton()));
@@ -274,7 +277,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             }
             addRenderableWidget(new ButtonFeatureToggle(x + (boxWidth / 2F) - (31 / 2F), y + boxHeight - 18, feature));
 
-        } else if (buttonType == EnumUtils.ButtonType.CYCLING) {
+        } else if (buttonType == ButtonType.CYCLING) {
             addRenderableWidget(new FeatureBase(x, y, text, feature));
 
             int bcX = x + 10;
@@ -302,7 +305,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 ));
             }
 
-        } else if (buttonType == EnumUtils.ButtonType.STEPPER) {
+        } else if (buttonType == ButtonType.STEPPER) {
             addRenderableWidget(new FeatureBase(x, y, text, feature));
 
             //noinspection SwitchStatementWithTooFewBranches
@@ -335,7 +338,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 }
             }
 
-        } else if (buttonType == EnumUtils.ButtonType.CHROMA_SLIDER) {
+        } else if (buttonType == ButtonType.CHROMA_SLIDER) {
             addRenderableWidget(new FeatureBase(x, y, text, feature));
             switch (feature) {
                 case CHROMA_SPEED -> addRenderableWidget(new ButtonSlider(
@@ -383,7 +386,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 Feature.LANGUAGE,
                 button -> {
                     main.getUtils().setFadingIn(false);
-                    MC.setScreen(new SettingsGui(Feature.LANGUAGE,1, page, tab, EnumUtils.GUIType.MAIN));
+                    MC.setScreen(new SettingsGui(Feature.LANGUAGE,1, page, tab, GUIType.MAIN));
                 })
         );
     }
@@ -416,12 +419,12 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             searchString = "";
             featureSearchBar.setValue(searchString);
 
-            if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) {
+            if (tab == GuiTab.GENERAL_SETTINGS) {
                 main.getUtils().setFadingIn(false);
-                MC.setScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.MAIN));
+                MC.setScreen(new SkyblockAddonsGui(1, GuiTab.MAIN));
             } else {
                 main.getUtils().setFadingIn(false);
-                MC.setScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.GENERAL_SETTINGS));
+                MC.setScreen(new SkyblockAddonsGui(1, GuiTab.GENERAL_SETTINGS));
             }
         }));
     }
@@ -482,8 +485,8 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     @Override
     public void removed() {
         if (!cancelClose) {
-            if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) {
-                main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, 1, EnumUtils.GuiTab.MAIN);
+            if (tab == GuiTab.GENERAL_SETTINGS) {
+                main.getRenderListener().setGuiToOpen(GUIType.MAIN, 1, GuiTab.MAIN);
             }
             main.getConfigValuesManager().saveConfig();
         }

@@ -34,18 +34,15 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.StringUtil;
 import net.minecraft.util.TriState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public class DrawUtils {
 
-    private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(?i)§[0-9A-F]");
     public static final RenderPipeline TRIANGLE_FAN = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
                     .withUsePipelineDrawModeForGui(true)
@@ -184,7 +181,7 @@ public class DrawUtils {
         );
     }
 
-    public static void drawCenteredText(GuiGraphics graphics, String text, float x, float y, int color) {
+    public static void drawCenteredText(GuiGraphics graphics, Component text, float x, float y, int color) {
         drawText(graphics, text, x - Minecraft.getInstance().font.width(text) / 2F, y, color);
     }
 
@@ -195,7 +192,7 @@ public class DrawUtils {
      * @param y the y-coordinate of the text.
      * @param color the color to fill the text with.
      */
-    public static void drawText(GuiGraphics graphics, String text, float x, float y, int color) {
+    public static void drawText(GuiGraphics graphics, Component text, float x, float y, int color) {
         drawText(graphics, text, x, y, color, false);
     }
 
@@ -207,24 +204,26 @@ public class DrawUtils {
      * @param color the color to fill the text with.
      * @param chromaDisabled if true overrides chroma
      */
-    public static void drawText(GuiGraphics graphics, String text, float x, float y, int color, boolean chromaDisabled) {
-        if (StringUtil.isNullOrEmpty(text)) return;
+    public static void drawText(GuiGraphics graphics, Component text, float x, float y, int color, boolean chromaDisabled) {
+        if (text == null) return;
 
         boolean isChroma = !chromaDisabled && color == ManualChromaManager.getChromaColor(0, 0, ARGB.alpha(color));
         boolean styleTwo = Feature.TEXT_STYLE.getValue() == EnumUtils.TextStyle.STYLE_TWO;
 
-        String strippedText;
-        if (styleTwo || isChroma) {
-            strippedText  = "§r" + COLOR_CODE_PATTERN.matcher(text).replaceAll("§r");
-        } else {
-            strippedText = text;
-        }
+        Component renderComponent = text;
+        FormattedCharSequence strippedFcs = null;
 
-        Component component;
-        if (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
-            component = Component.literal(strippedText).withStyle(style -> style.withColor(CHROMA_TEXT_COLOR));
-        } else {
-            component = Component.literal(text);
+        if (styleTwo || (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE)) {
+            String strippedText = TextUtils.stripColor(text.getString());
+            if (strippedText == null) strippedText = "";
+
+            if (styleTwo) {
+                strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(strippedText));
+            }
+
+            if (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                renderComponent = Component.literal(strippedText).withStyle(style -> style.withColor(CHROMA_TEXT_COLOR));
+            }
         }
 
         if (styleTwo) {
@@ -232,7 +231,6 @@ public class DrawUtils {
             int colorAlpha = Math.max(ARGB.alpha(color), 4);
             int colorBlack = ARGB.color(colorAlpha, 0, 0, 0);
             FontHook.setHaltChroma(true);
-            FormattedCharSequence strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(strippedText));
             graphics.guiRenderState.submitText(
                     new SbaTextRenderState(strippedFcs, graphics.pose(), x + 1, y, colorBlack, 0, false, graphics.scissorStack.peek())
             );
@@ -247,11 +245,11 @@ public class DrawUtils {
             );
             FontHook.setHaltChroma(false);
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(component.getVisualOrderText(), graphics.pose(), x, y, color, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(renderComponent.getVisualOrderText(), graphics.pose(), x, y, color, 0, false, graphics.scissorStack.peek())
             );
         } else {
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(component.getVisualOrderText(), graphics.pose(), x, y, color, 0, true, graphics.scissorStack.peek())
+                    new SbaTextRenderState(renderComponent.getVisualOrderText(), graphics.pose(), x, y, color, 0, true, graphics.scissorStack.peek())
             );
         }
     }

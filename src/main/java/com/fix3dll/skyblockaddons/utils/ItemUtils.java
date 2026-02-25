@@ -381,6 +381,19 @@ public class ItemUtils {
 
     }
 
+    public static List<Component> getItemLoreComponent(ItemStack itemStack) {
+        if (itemStack == null) {
+            throw new NullPointerException("Cannot get lore from null item!");
+        }
+
+        ItemLore itemLore = itemStack.get(DataComponents.LORE);
+        if (itemLore != null) {
+            return itemLore.lines();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     /**
      * Returns a string list containing the NBT lore of an {@code ItemStack}, or
      * an empty list if this item doesn't have a lore tag.

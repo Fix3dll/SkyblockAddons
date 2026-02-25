@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Language;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordStatus;
 import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
@@ -407,7 +408,8 @@ public class SettingsGui extends SkyblockAddonsScreen {
     }
 
     private void addUniversalButton() {
-        if (feature.isGuiFeature()) {
+        FeatureGuiData featureGuiData = feature.getFeatureGuiData();
+        if (featureGuiData != null) {
             final int halfWidth = width / 2;
             if (feature.couldBeXAllignment()) {
                 double x = halfWidth - 15.5D; // - half button width
@@ -417,7 +419,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 addRenderableWidget(new ButtonSettingToggle(x, y, xAllignment.getMessage(), xAllignment));
                 row++;
             }
-            if (feature.getFeatureGuiData().getDefaultColor() != null) {
+            if (featureGuiData.getDefaultColor() != null) {
                 double x = halfWidth - 50; // - half button width
                 double y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonOpenColorMenu(x, y - 10, 100, 20, Translations.getMessage("settings.changeColor"), feature));

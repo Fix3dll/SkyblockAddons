@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import net.minecraft.util.ARGB;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
@@ -13,7 +14,8 @@ public class ColorUtils {
 
     public static boolean areAllFeaturesChroma() {
         for (Feature loopFeature : Feature.values()) {
-            if (loopFeature.isGuiFeature() && loopFeature.getFeatureGuiData().getDefaultColor() != null) {
+            FeatureGuiData featureGuiData = loopFeature.getFeatureGuiData();
+            if (featureGuiData != null && featureGuiData.getDefaultColor() != null) {
                 if (!loopFeature.isChroma()) {
                     return false;
                 }

@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonColorBox;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonSlider;
@@ -73,7 +74,8 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         this.lastTab = lastTab;
         this.lastGUI = lastGUI;
         this.lastPage = lastPage;
-        this.isRestricted = feature.isGuiFeature() && feature.getFeatureGuiData().isColorsRestricted();
+        FeatureGuiData featureGuiData = feature.getFeatureGuiData();
+        this.isRestricted = featureGuiData != null && featureGuiData.isColorsRestricted();
         this.isChroma = feature::isChroma;
         this.color = feature::getColor;
         this.setColor = feature::setColor;
@@ -207,7 +209,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
 
         int defaultBlue = ColorUtils.getDefaultBlue(1);
 
-        if (feature.isGuiFeature() || setting != null) {
+        if (feature.getFeatureGuiData() != null || setting != null) {
             if (isRestricted) {
                 drawScaledString(
                         graphics,

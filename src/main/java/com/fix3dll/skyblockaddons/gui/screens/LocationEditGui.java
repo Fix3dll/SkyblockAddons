@@ -79,7 +79,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
         // Add all gui elements that can be edited to the gui.
         for (Feature feature : Feature.getGuiFeatures()) {
             // Don't display features that have been disabled
-            if (feature.isGuiFeature() && feature.isEnabled()) {
+            if (feature.getFeatureGuiData() != null && feature.isEnabled()) {
                 ButtonLocation buttonLocation = new ButtonLocation(feature);
                 addRenderableWidget(buttonLocation);
                 buttonLocations.put(feature, buttonLocation);
@@ -100,7 +100,6 @@ public class LocationEditGui extends SkyblockAddonsScreen {
         int x;
         int y = window.getGuiScaledHeight() / 2;
         // List may change later
-        //noinspection ConstantConditions
         if (numButtons % 2 == 0) {
             y -= Math.round((numButtons / 2F) * (BOX_HEIGHT + 5)) - 5;
         } else {
@@ -319,8 +318,9 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     return;
                 }
 
-                float scaleX = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
-                float scaleY = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ?feature.getFeatureData().getSizesY() : 1;
+                FeatureGuiData featureGuiData = feature.getFeatureGuiData();
+                float scaleX = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
+                float scaleY = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesY() : 1;
                 float boxXOne = buttonLocation.getBoxXOne() * scaleX;
                 float boxXTwo = buttonLocation.getBoxXTwo() * scaleX;
                 float boxYOne = buttonLocation.getBoxYOne() * scaleY;
@@ -352,8 +352,9 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     return;
                 }
 
-                float scaleX = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
-                float scaleY = feature.getFeatureGuiData().getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesY() : 1;
+                FeatureGuiData featureGuiData = feature.getFeatureGuiData();
+                float scaleX = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesX() : 1;
+                float scaleY = featureGuiData.getDrawType() == DrawType.BAR ? feature.getFeatureData().getSizesY() : 1;
                 float boxXOne = buttonLocation.getBoxXOne() * scaleX;
                 float boxXTwo = buttonLocation.getBoxXTwo() * scaleX;
                 float boxYOne = buttonLocation.getBoxYOne() * scaleY;
@@ -697,10 +698,10 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
             // mouseX/Y for devs. parameters contains half of current position of mouseX/Y
             if (Feature.DEVELOPER_MODE.isEnabled()) {
-                String mouse = String.format("mouseX: %.0f, mouseY: %.0f", MC.mouseHandler.xpos(), MC.mouseHandler.ypos());
+                String mouse = "mouseX: %.0f, mouseY: %.0f".formatted(MC.mouseHandler.xpos(), MC.mouseHandler.ypos());
                 DrawUtils.drawText(
                         graphics,
-                        mouse,
+                        Component.literal(mouse),
                         (int) (x - MC.font.width(mouse) / 2F),
                         (int) (y - boxCount * BOX_HEIGHT - 37),
                         ColorCode.RED.getColor(),
@@ -718,37 +719,35 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
             DrawUtils.drawText(
                     graphics,
-                    featureName,
+                    Component.literal(featureName),
                     (int) (x - MC.font.width(featureName) / 2F),
                     (int) (y - boxCount * BOX_HEIGHT - 25),
                     ColorCode.AQUA.getColor(),
                     true
             );
-            String info = String.format(
-                    "x=%.0f, y=%.0f, scale=%.2f",
+            String info = "x=%.0f, y=%.0f, scale=%.2f".formatted(
                     lastHoveredButtonFeature.getActualX() * 2,
                     lastHoveredButtonFeature.getActualY() * 2,
                     lastHoveredButton.getScale()
             );
             DrawUtils.drawText(
                     graphics,
-                    info,
+                    Component.literal(info),
                     (int) (x - MC.font.width(info) / 2F),
                     (int) (y - boxCount * BOX_HEIGHT - 12),
                     ColorCode.YELLOW.getColor(),
                     true
             );
-            if (lastHoveredButtonFeature.isGuiFeature()) {
-                FeatureGuiData guiFeatureData = lastHoveredButtonFeature.getFeatureGuiData();
-                if (guiFeatureData.getDrawType() == DrawType.BAR) {
-                    String barScales = String.format(
-                            "scaleX = %.2f, scaleY = %.2f",
+            FeatureGuiData lastHoveredButtonGuiData = lastHoveredButtonFeature.getFeatureGuiData();
+            if (lastHoveredButtonGuiData != null) {
+                if (lastHoveredButtonGuiData.getDrawType() == DrawType.BAR) {
+                    String barScales = "scaleX = %.2f, scaleY = %.2f".formatted(
                             lastHoveredButton.getScaleX(),
                             lastHoveredButton.getScaleY()
                     );
                     DrawUtils.drawText(
                             graphics,
-                            barScales,
+                            Component.literal(barScales),
                             (int) (x - MC.font.width(barScales) / 2F),
                             (int) (y - boxCount * BOX_HEIGHT),
                             ColorCode.YELLOW.getColor(),
