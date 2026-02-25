@@ -79,7 +79,7 @@ public abstract class SkyblockAddonsButton extends AbstractWidget {
         //noinspection IntegerDivisionInFloatingPointContext
         DrawUtils.drawCenteredText(
                 graphics,
-                message.getString(),
+                message,
                 ((x + width / 2) / scale),
                 ((y + (height - (8 * scale)) / 2) / scale),
                 fontColor

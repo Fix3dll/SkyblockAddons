@@ -1,7 +1,7 @@
 package com.fix3dll.skyblockaddons.mixin.hooks;
 
 import com.fix3dll.skyblockaddons.core.Island;
-import com.fix3dll.skyblockaddons.core.npc.NPCUtils;
+import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

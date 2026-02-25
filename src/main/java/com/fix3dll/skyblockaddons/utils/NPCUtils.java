@@ -1,7 +1,5 @@
-package com.fix3dll.skyblockaddons.core.npc;
+package com.fix3dll.skyblockaddons.utils;
 
-import com.fix3dll.skyblockaddons.utils.ItemUtils;
-import com.fix3dll.skyblockaddons.utils.TextUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;

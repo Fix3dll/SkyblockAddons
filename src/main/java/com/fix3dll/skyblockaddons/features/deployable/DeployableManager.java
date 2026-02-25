@@ -1,6 +1,8 @@
 package com.fix3dll.skyblockaddons.features.deployable;
 
+import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +32,7 @@ public class DeployableManager {
     /** The DeployableManager instance. */
     @Getter private static final DeployableManager instance = new DeployableManager();
     private static final Minecraft MC = Minecraft.getInstance();
-    private static final Pattern POWER_ORB_PATTERN = Pattern.compile("[A-Za-z ]* (?<seconds>[0-9]*)s");
+    private static final Pattern DEPLOYABLE_PATTERN = Pattern.compile("[A-Za-z ]* (?<seconds>[0-9]*)s");
     private static final Pattern TOTEM_PATTERN = Pattern.compile("Remaining: (?:(?<minutes>\\d{1,2})m )?(?<seconds>\\d{1,2})s");
 
     /** Entry displaying {@link Deployable#SOS_FLARE} at 90 seconds for the edit screen */
@@ -41,9 +43,9 @@ public class DeployableManager {
 
     static {
         DUMMY_ARMOR_STAND = new ArmorStand(EntityType.ARMOR_STAND, MC.level);
-        DUMMY_ARMOR_STAND.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHead("SOS_FLARE"));
+        DUMMY_ARMOR_STAND.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHead("WILL_O_WISP"));
         DUMMY_ARMOR_STAND.setInvisible(true);
-        DUMMY_DEPLOYABLE_ENTRY = new DeployableEntry(Deployable.SOS_FLARE, 90, DUMMY_ARMOR_STAND.getUUID());
+        DUMMY_DEPLOYABLE_ENTRY = new DeployableEntry(Deployable.WILL_O_WISP, 300, DUMMY_ARMOR_STAND.getUUID());
     }
 
     /**
@@ -70,40 +72,52 @@ public class DeployableManager {
 
     /**
      * Detects a deployable from an entity, and puts it in this manager.
-     * @param entityArmorStand The entity to detect whether it is a deployable or not.
+     * @param armorStand The entity to detect whether it is a deployable or not.
      */
-    public void detectDeployables(ArmorStand entityArmorStand) {
-        Component customName = entityArmorStand.getCustomName();
+    public void detectDeployables(ArmorStand armorStand) {
+        Component customName = armorStand.getCustomName();
 
         if (customName != null) {
             String customNameString = customName.getString();
             Deployable orb = Deployable.getByDisplayName(customNameString);
 
-            if (orb != null && orb.isInRadius(entityArmorStand.distanceToSqr(MC.player))) {
+            if (orb != null && (orb.isInRadius(armorStand.distanceToSqr(MC.player)) || lanternInMineshaft(orb))) {
                 if (orb == Deployable.TOTEM_OF_CORRUPTION) {
                     List<ArmorStand> surroundingArmorStands = MC.level.getEntitiesOfClass(
                             ArmorStand.class,
-                            new AABB(
-                                    entityArmorStand.getX() - 0.1,
-                                    entityArmorStand.getY() - 1,
-                                    entityArmorStand.getZ() - 0.1,
-                                    entityArmorStand.getX() + 0.1,
-                                    entityArmorStand.getY(),
-                                    entityArmorStand.getZ() + 0.1
-                            )
+                            new AABB(armorStand.getX() - 0.1,
+                                    armorStand.getY() - 1,
+                                    armorStand.getZ() - 0.1,
+                                    armorStand.getX() + 0.1,
+                                    armorStand.getY(),
+                                    armorStand.getZ() + 0.1)
                     );
+                    String ownerLine = "Owner: " + MC.player.getGameProfile().name();
+                    int seconds = Integer.MIN_VALUE;
+                    UUID uuid = null;
+
+                    boolean patternFound = false;
+                    boolean ownedByPlayer = false;
                     for (ArmorStand entry : surroundingArmorStands) {
                         Component entryCustomName = entry.getCustomName();
                         if (entryCustomName == null) continue;
 
-                        Matcher matcher = TOTEM_PATTERN.matcher(entryCustomName.getString());
-                        if (matcher.matches()) {
-                            put(orb, getSeconds(matcher), entry.getUUID());
-                            break;
+                        String entryCustomNameString = entryCustomName.getString();
+                        Matcher matcher = TOTEM_PATTERN.matcher(entryCustomNameString);
+                        if (!patternFound && matcher.matches()) {
+                            seconds = getSeconds(matcher);
+                            uuid = entry.getUUID();
+                            patternFound = true;
+                        } else if (entryCustomNameString.equals(ownerLine)) {
+                            ownedByPlayer = true;
+                        }
+
+                        if (patternFound && ownedByPlayer) {
+                            put(orb, seconds, uuid);
                         }
                     }
                 } else {
-                    Matcher matcher = POWER_ORB_PATTERN.matcher(customNameString);
+                    Matcher matcher = DEPLOYABLE_PATTERN.matcher(customNameString);
 
                     if (matcher.matches()) {
                         int seconds;
@@ -118,12 +132,12 @@ public class DeployableManager {
                         List<ArmorStand> surroundingArmorStands = MC.level.getEntitiesOfClass(
                                 ArmorStand.class,
                                 new AABB(
-                                        entityArmorStand.getX() - 0.1,
-                                        entityArmorStand.getY() - 1,
-                                        entityArmorStand.getZ() - 0.1,
-                                        entityArmorStand.getX() + 0.1,
-                                        entityArmorStand.getY() + 1,
-                                        entityArmorStand.getZ() + 0.1
+                                        armorStand.getX() - 0.1,
+                                        armorStand.getY() - 1,
+                                        armorStand.getZ() - 0.1,
+                                        armorStand.getX() + 0.1,
+                                        armorStand.getY() + 1,
+                                        armorStand.getZ() + 0.1
                                 ),
                                 armorStandEntity -> armorStandEntity.getItemBySlot(EquipmentSlot.HEAD) != ItemStack.EMPTY
                         );
@@ -138,9 +152,9 @@ public class DeployableManager {
         } else {
             // Flare detection
             // TODO optimize
-            if (entityArmorStand.isInvisible()) {
+            if (armorStand.isInvisible()) {
                 // we need skull on head
-                ItemStack headItem = entityArmorStand.getItemBySlot(EquipmentSlot.HEAD);
+                ItemStack headItem = armorStand.getItemBySlot(EquipmentSlot.HEAD);
                 if (headItem == ItemStack.EMPTY) return;
 
                 String skullTexture = ItemUtils.getSkullTexture(headItem);
@@ -148,13 +162,13 @@ public class DeployableManager {
                 if (decodedTextureUrl == null) return;
 
                 Deployable flare = Deployable.getByTextureId(decodedTextureUrl);
-                if (flare != null && flare.isInRadius(entityArmorStand.distanceToSqr(MC.player))) {
+                if (flare != null && flare.isInRadius(armorStand.distanceToSqr(MC.player))) {
                     // Default exist time of flares
                     int seconds = 180;
                     // 1 tick = 50ms
-                    seconds -= entityArmorStand.tickCount * 50 / 1000;
+                    seconds -= armorStand.tickCount * 50 / 1000;
 
-                    put(flare, seconds, entityArmorStand.getUUID());
+                    put(flare, seconds, armorStand.getUUID());
                 }
             }
         }
@@ -173,6 +187,11 @@ public class DeployableManager {
         }
 
         return seconds;
+    }
+
+    private boolean lanternInMineshaft(Deployable deployable) {
+        return (deployable == Deployable.GLACITE_LANTERN || deployable == Deployable.WILL_O_WISP)
+                && LocationUtils.isOn(Island.MINESHAFT);
     }
 
     @Getter @AllArgsConstructor

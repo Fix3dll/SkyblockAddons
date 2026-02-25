@@ -1,124 +1,307 @@
 package com.fix3dll.skyblockaddons.features.deployable;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.utils.TextUtils;
+import lombok.Builder;
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the Deployables introduced with the Slayer Update and unlocked through the Wolf slayer and Blaze slayer quests.
  */
 @Getter
 public enum Deployable {
+
     // Orbs
-    RADIANT("Radiant ", 0.01, 0.0, 0, 0, 0.0, 18*18, "radiant"),
-    MANA_FLUX("Mana Flux ", 0.02, 0.5, 10, 0, 0.0, 18*18, "manaflux"),
-    OVERFLUX("Overflux ", 0.025, 1, 25, 5, 5.0, 18*18, "overflux"),
-    PLASMAFLUX("Plasmaflux ", 0.03, 1.25, 35, 7.5, 7.5, 20*20, "plasmaflux"),
+    RADIANT(Properties.builder()
+            .display("Radiant ")
+            .healthRegen(0.01)
+            .rangeSquared(18 * 18)
+            .resourcePath("radiant")
+            .build()),
+
+    MANA_FLUX(Properties.builder()
+            .display("Mana Flux ")
+            .healthRegen(0.02).manaRegen(0.5).strength(10)
+            .rangeSquared(18 * 18)
+            .resourcePath("manaflux")
+            .build()),
+
+    OVERFLUX(Properties.builder()
+            .display("Overflux ")
+            .healthRegen(0.025).manaRegen(1.0).strength(25).vitality(5.0).mending(5.0)
+            .rangeSquared(18 * 18)
+            .resourcePath("overflux")
+            .build()),
+
+    PLASMAFLUX(Properties.builder()
+            .display("Plasmaflux ")
+            .healthRegen(0.03).manaRegen(1.25).strength(35).vitality(7.5).mending(7.5)
+            .rangeSquared(20 * 20)
+            .resourcePath("plasmaflux")
+            .build()),
 
     // Flares
-    WARNING_FLARE(0.0, 10, 10, 0, 0,  "22e2bf6c1ec330247927ba63479e5872ac66b06903c86c82b52dac9f1c971458", 40*40, "warning"),
-    ALERT_FLARE(0.5, 20, 20, 10, 0,  "9d2bf9864720d87fd06b84efa80b795c48ed539b16523c3b1f1990b40c003f6b", 40*40, "alert"),
-    SOS_FLARE(1.25, 30, 25, 10, 5,  "c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b", 40*40, "sos"),
+    WARNING_FLARE(Properties.builder()
+            .manaRegen(0.0).vitality(10.0).trueDefense(10)
+            .textureId("22e2bf6c1ec330247927ba63479e5872ac66b06903c86c82b52dac9f1c971458")
+            .rangeSquared(40 * 40)
+            .resourcePath("warning")
+            .build()),
+
+    ALERT_FLARE(Properties.builder()
+            .manaRegen(0.5).vitality(20.0).trueDefense(20).ferocity(10)
+            .textureId("9d2bf9864720d87fd06b84efa80b795c48ed539b16523c3b1f1990b40c003f6b")
+            .rangeSquared(40 * 40)
+            .resourcePath("alert")
+            .build()),
+
+    SOS_FLARE(Properties.builder()
+            .manaRegen(1.25).vitality(30.0).trueDefense(25).ferocity(10).bonusAttackSpeed(5)
+            .textureId("c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b")
+            .rangeSquared(40 * 40)
+            .resourcePath("sos")
+            .build()),
 
     // Umberella
-    UMBERELLA("Umberella ", 5, 30*30, "umberella"),
+    UMBERELLA(Properties.builder()
+            .display("Umberella ")
+            .trophyFishChance(5)
+            .rangeSquared(30 * 30)
+            .resourcePath("umberella")
+            .build()),
 
     // Totem of Corruption
-    TOTEM_OF_CORRUPTION("Totem of Corruption", 30*30, "totem_of_corruption");
+    TOTEM_OF_CORRUPTION(Properties.builder()
+            .display("Totem of Corruption")
+            .rangeSquared(30 * 30)
+            .resourcePath("totem_of_corruption")
+            .build()),
+
+    // Mining Lanterns
+    DWARVEN_LANTERN(Properties.builder()
+            .display("Dwarven Lantern ")
+            .miningSpeed(20)
+            .rangeSquared(30 * 30)
+            .resourcePath("dwarven")
+            .build()),
+
+    MITHRIL_LANTERN(Properties.builder()
+            .display("Mithril Lantern ")
+            .miningSpeed(40).miningFortune(10)
+            .rangeSquared(30 * 30)
+            .resourcePath("mithril")
+            .build()),
+
+    TITANIUM_LANTERN(Properties.builder()
+            .display("Titanium Lantern ")
+            .miningSpeed(60).miningFortune(15).heatResistance(5)
+            .rangeSquared(30 * 30)
+            .resourcePath("titanium")
+            .build()),
+
+    GLACITE_LANTERN(Properties.builder()
+            .display("Glacite Lantern ")
+            .miningSpeed(80).miningFortune(20).heatResistance(10).coldResistance(5)
+            .rangeSquared(30 * 30)
+            .resourcePath("glacite")
+            .build()),
+
+    WILL_O_WISP(Properties.builder()
+            .display("Will-o'-wisp ")
+            .miningSpeed(100).miningFortune(25).heatResistance(20).coldResistance(10).gemstoneSpread(2.5)
+            .rangeSquared(30 * 30)
+            .resourcePath("will_o_wisp")
+            .build());
 
     /**
      * Start of the display name of the actual floating deployable entity.
      */
-    private String display = "";
+    private final String display;
+
     /**
      * Percentage of max health that's regenerated every second
      */
-    private double healthRegen = 0.0D;
+    private final double healthRegen;
+
     /**
      * Percentage of mana regeneration increase given by the deployable
      */
-    private double manaRegen = 0.0;
+    private final double manaRegen;
+
     /**
      * Amount of strength given by the deployable
      */
-    private int strength = 0;
+    private final int strength;
+
     /**
      * Amount of vitality given by the deployable
      */
-    private double vitality = 0.0D;
+    private final double vitality;
+
     /**
      * Amount of mending given by the deployable
      */
-    private double mending = 0;
+    private final double mending;
+
     /**
      * Amount of vitality given by the deployable
      */
-    private int trueDefense = 0;
+    private final int trueDefense;
+
     /**
      * Amount of ferocity given by the deployable
      */
-    private int ferocity = 0;
+    private final int ferocity;
+
     /**
      * Amount of strength given by the deployable
      */
-    private int bonusAttackSpeed;
-    /**
-     * The squared range of the deployable effects
-     */
-    private final int rangeSquared;
-    /**
-     * Resource location to the icon used when displaying the deployable
-     */
-    private final Identifier identifier;
-    /**
-     * Entity textureId for detect Flares
-     */
-    private String textureId = "";
+    private final int bonusAttackSpeed;
 
     /**
      * Amount of Trophy Fish Chance given by the deployable
      */
-    private int trophyFishChance = 0;
+    private final int trophyFishChance;
 
-    // Orbs
-    Deployable(String display, double healthRegen, double manaRegen, int strength, double vitality, double mending, int rangeSquared, String resourcePath) {
-        this(rangeSquared, resourcePath);
-        this.display = display;
-        this.healthRegen = healthRegen;
-        this.manaRegen = manaRegen;
-        this.strength = strength;
-        this.vitality = vitality;
-        this.mending = mending;
+    /**
+     * Amount of mining speed given by the deployable
+     */
+    private final int miningSpeed;
+
+    /**
+     * Amount of mining fortune given by the deployable
+     */
+    private final int miningFortune;
+
+    /**
+     * Amount of heat resistance given by the deployable
+     */
+    private final int heatResistance;
+
+    /**
+     * Amount of cold resistance given by the deployable
+     */
+    private final int coldResistance;
+
+    /**
+     * Amount of gemstone spread given by the deployable
+     */
+    private final double gemstoneSpread;
+
+    /**
+     * The squared range of the deployable effects
+     */
+    private final int rangeSquared;
+
+    /**
+     * Resource location to the icon used when displaying the deployable
+     */
+    private final Identifier identifier;
+
+    /**
+     * Entity textureId for detect Flares
+     */
+    private final String textureId;
+
+    /**
+     * Pre-calculated and formatted list of static stats.
+     * Cached during initialization to achieve zero-allocation rendering in the draw method.
+     */
+    @Getter private final List<Component> staticDisplayLines;
+
+    /**
+     * Internal configuration class used exclusively for cleanly initializing Enum constants.
+     */
+    @Builder
+    private static class Properties {
+        @Builder.Default String display = "";
+        @Builder.Default double healthRegen = 0.0D;
+        @Builder.Default double manaRegen = 0.0;
+        @Builder.Default int strength = 0;
+        @Builder.Default double vitality = 0.0D;
+        @Builder.Default double mending = 0.0;
+        @Builder.Default int trueDefense = 0;
+        @Builder.Default int ferocity = 0;
+        @Builder.Default int bonusAttackSpeed = 0;
+        @Builder.Default int trophyFishChance = 0;
+        @Builder.Default int miningSpeed = 0;
+        @Builder.Default int miningFortune = 0;
+        @Builder.Default int heatResistance = 0;
+        @Builder.Default int coldResistance = 0;
+        @Builder.Default double gemstoneSpread = 0.0D;
+        @Builder.Default String textureId = "";
+
+        // Mandatory fields for the builder
+        int rangeSquared;
+        String resourcePath;
     }
 
-    // Flares
-    Deployable(double manaRegen, double vitality, int trueDefense, int ferocity, int bonusAttackSpeed, String textureId, int rangeSquared, String resourcePath) {
-        this(rangeSquared, resourcePath);
-        this.manaRegen = manaRegen;
-        this.vitality = vitality;
-        this.trueDefense = trueDefense;
-        this.ferocity = ferocity;
-        this.bonusAttackSpeed = bonusAttackSpeed;
-        this.textureId = textureId;
-    }
+    Deployable(Properties props) {
+        this.display = props.display;
+        this.healthRegen = props.healthRegen;
+        this.manaRegen = props.manaRegen;
+        this.strength = props.strength;
+        this.vitality = props.vitality;
+        this.mending = props.mending;
+        this.trueDefense = props.trueDefense;
+        this.ferocity = props.ferocity;
+        this.bonusAttackSpeed = props.bonusAttackSpeed;
+        this.trophyFishChance = props.trophyFishChance;
+        this.miningSpeed = props.miningSpeed;
+        this.miningFortune = props.miningFortune;
+        this.heatResistance = props.heatResistance;
+        this.coldResistance = props.coldResistance;
+        this.gemstoneSpread = props.gemstoneSpread;
+        this.rangeSquared = props.rangeSquared;
+        this.textureId = props.textureId;
+        this.identifier = SkyblockAddons.identifier("deployables/" + props.resourcePath + ".png");
 
-    // Umberella
-    Deployable(String display, int trophyFishChance, int rangeSquared, String resourcePath) {
-        this(rangeSquared, resourcePath);
-        this.display = display;
-        this.trophyFishChance = trophyFishChance;
-    }
+        ArrayList<Component> staticLines = new ArrayList<>();
+        if (this.strength > 0) staticLines.add(
+                Component.literal("+%s ❁ ".formatted(this.strength)).withColor(ColorCode.RED.getColor())
+        );
+        if (this.vitality > 0.0) staticLines.add(
+                Component.literal("+%s ♨ ".formatted(TextUtils.formatNumber(this.vitality))).withColor(ColorCode.DARK_RED.getColor())
+        );
+        if (this.mending > 0.0) staticLines.add(
+                Component.literal("+%s ☄ ".formatted(TextUtils.formatNumber(this.mending))).withColor(ColorCode.GREEN.getColor())
+        );
+        if (this.trueDefense > 0) staticLines.add(
+                Component.literal("+%d ❂ ".formatted(this.trueDefense)).withColor(ColorCode.WHITE.getColor())
+        );
+        if (this.ferocity > 0) staticLines.add(
+                Component.literal("+%d ⫽ ".formatted(this.ferocity)).withColor(ColorCode.RED.getColor())
+        );
+        if (this.bonusAttackSpeed > 0) staticLines.add(
+                Component.literal("+%d%% ⚔ ".formatted(this.bonusAttackSpeed)).withColor(ColorCode.YELLOW.getColor())
+        );
+        if (this.trophyFishChance > 0) staticLines.add(
+                Component.literal("+%d ♔ ".formatted(this.trophyFishChance)).withColor(ColorCode.GOLD.getColor())
+        );
+        if (this.miningSpeed > 0) staticLines.add(
+                Component.literal("+%d ⸕ ".formatted(this.miningSpeed)).withColor(ColorCode.GOLD.getColor())
+        );
+        if (this.miningFortune > 0) staticLines.add(
+                Component.literal("+%d ☘ ".formatted(this.miningFortune)).withColor(ColorCode.GOLD.getColor())
+        );
+        if (this.heatResistance > 0) staticLines.add(
+                Component.literal("+%d ♨ ".formatted(this.heatResistance)).withColor(ColorCode.RED.getColor())
+        );
+        if (this.coldResistance > 0) staticLines.add(
+                Component.literal("+%d ❄ ".formatted(this.coldResistance)).withColor(ColorCode.AQUA.getColor())
+        );
+        if (this.gemstoneSpread > 0) staticLines.add(
+                Component.literal("+%s ▚ ".formatted(TextUtils.formatNumber(this.gemstoneSpread))).withColor(ColorCode.YELLOW.getColor())
+        );
 
-    // Totem of Corruption
-    Deployable(String display, int rangeSquared, String resourcePath) {
-        this(rangeSquared, resourcePath);
-        this.display = display;
-    }
-
-    // Base
-    Deployable(int rangeSquared, String resourcePath) {
-        this.rangeSquared = rangeSquared;
-        this.identifier = SkyblockAddons.identifier("deployables/"+resourcePath+".png");
+        // Convert to an immutable list to ensure thread-safety
+        this.staticDisplayLines = List.copyOf(staticLines);
     }
 
     /**
@@ -137,7 +320,7 @@ public enum Deployable {
      */
     public static Deployable getByDisplayName(String displayName) {
         for (Deployable orb : values()) {
-            if(!orb.display.isEmpty() && displayName.startsWith(orb.display)) {
+            if (!orb.display.isEmpty() && displayName.startsWith(orb.display)) {
                 return orb;
             }
         }
@@ -151,10 +334,11 @@ public enum Deployable {
      */
     public static Deployable getByTextureId(String textureId) {
         for (Deployable flare : values()) {
-            if(!flare.textureId.isEmpty() && textureId.equals(flare.textureId)) {
+            if (!flare.textureId.isEmpty() && textureId.equals(flare.textureId)) {
                 return flare;
             }
         }
         return null;
     }
+
 }

@@ -699,10 +699,10 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
             // mouseX/Y for devs. parameters contains half of current position of mouseX/Y
             if (Feature.DEVELOPER_MODE.isEnabled()) {
-                String mouse = String.format("mouseX: %.0f, mouseY: %.0f", MC.mouseHandler.xpos(), MC.mouseHandler.ypos());
+                String mouse = "mouseX: %.0f, mouseY: %.0f".formatted(MC.mouseHandler.xpos(), MC.mouseHandler.ypos());
                 DrawUtils.drawText(
                         graphics,
-                        mouse,
+                        Component.literal(mouse),
                         (int) (x - MC.font.width(mouse) / 2F),
                         (int) (y - boxCount * BOX_HEIGHT - 37),
                         ColorCode.RED.getColor(),
@@ -720,21 +720,20 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
             DrawUtils.drawText(
                     graphics,
-                    featureName,
+                    Component.literal(featureName),
                     (int) (x - MC.font.width(featureName) / 2F),
                     (int) (y - boxCount * BOX_HEIGHT - 25),
                     ColorCode.AQUA.getColor(),
                     true
             );
-            String info = String.format(
-                    "x=%.0f, y=%.0f, scale=%.2f",
+            String info = "x=%.0f, y=%.0f, scale=%.2f".formatted(
                     lastHoveredButtonFeature.getActualX() * 2,
                     lastHoveredButtonFeature.getActualY() * 2,
                     lastHoveredButton.getScale()
             );
             DrawUtils.drawText(
                     graphics,
-                    info,
+                    Component.literal(info),
                     (int) (x - MC.font.width(info) / 2F),
                     (int) (y - boxCount * BOX_HEIGHT - 12),
                     ColorCode.YELLOW.getColor(),
@@ -743,14 +742,13 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             FeatureGuiData lastHoveredButtonGuiData = lastHoveredButtonFeature.getFeatureGuiData();
             if (lastHoveredButtonGuiData != null) {
                 if (lastHoveredButtonGuiData.getDrawType() == DrawType.BAR) {
-                    String barScales = String.format(
-                            "scaleX = %.2f, scaleY = %.2f",
+                    String barScales = "scaleX = %.2f, scaleY = %.2f".formatted(
                             lastHoveredButton.getScaleX(),
                             lastHoveredButton.getScaleY()
                     );
                     DrawUtils.drawText(
                             graphics,
-                            barScales,
+                            Component.literal(barScales),
                             (int) (x - MC.font.width(barScales) / 2F),
                             (int) (y - boxCount * BOX_HEIGHT),
                             ColorCode.YELLOW.getColor(),

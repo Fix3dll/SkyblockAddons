@@ -32,6 +32,7 @@ import com.fix3dll.skyblockaddons.features.dragontracker.DragonType;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonsSince;
 import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonClass;
+import com.fix3dll.skyblockaddons.features.dungeons.DungeonManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonMilestone;
 import com.fix3dll.skyblockaddons.features.healingcircle.HealingCircleManager;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerBoss;
@@ -57,6 +58,7 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils.GuiTab;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.PetItemStyle;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.MathUtils;
 import com.fix3dll.skyblockaddons.utils.SkyblockColor;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
@@ -67,8 +69,6 @@ import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-//import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-//import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -81,6 +81,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
@@ -113,10 +114,10 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -156,9 +157,17 @@ public class RenderListener {
     };
 
     private static final ObjectArrayList<ItemDiff> DUMMY_PICKUP_LOG = ObjectArrayList.of(
-            new ItemDiff(ColorCode.DARK_PURPLE + "Forceful Ember Chestplate", 1, new ItemStack(Items.CHAINMAIL_CHESTPLATE)),
-            new ItemDiff("Oak Boat", -1, new ItemStack(Items.OAK_BOAT)),
-            new ItemDiff(ColorCode.BLUE + "Aspect of the End", 1, new ItemStack(Items.DIAMOND_SWORD))
+            new ItemDiff(
+                    Component.literal("Forceful Ember Chestplate").withColor(ColorCode.DARK_PURPLE.getColor()),
+                    1,
+                    new ItemStack(Items.CHAINMAIL_CHESTPLATE)
+            ),
+            new ItemDiff(Component.literal("Oak Boat"), -1, new ItemStack(Items.OAK_BOAT)),
+            new ItemDiff(
+                    Component.literal("Aspect of the End").withColor(ColorCode.BLUE.getColor()),
+                    1,
+                    new ItemStack(Items.DIAMOND_SWORD)
+            )
     );
 
     private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?i)(?:(?:§[a-f0-9])?✪)+(?:§r)?(?:§[a-f0-9]?[➊-➒])?");
@@ -203,6 +212,9 @@ public class RenderListener {
     // caching
     private PetManager.Pet pet = null;
     private ItemStack petSkull = null;
+
+    private final ArrayList<Component> deployableDisplayBuffer = new ArrayList<>();
+    private final ArrayList<Component> deployableExpandBuffer = new ArrayList<>();
 
     public RenderListener() {
 //        HudElementRegistryImpl.attachElementAfter(
@@ -274,7 +286,7 @@ public class RenderListener {
                 default -> null;
             };
             if (translationKey != null) {
-                String text = Translations.getMessage(translationKey);
+                Component text = Component.literal(Translations.getMessage(translationKey));
                 int stringWidth = MC.font.width(text);
 
                 float scale = 4; // Scale is normally 4, but if it's larger than the screen, scale it down...
@@ -318,8 +330,8 @@ public class RenderListener {
             };
 
             if (text != null) {
-
-                int stringWidth = MC.font.width(text);
+                Component renderComponent = Component.literal(text);
+                int stringWidth = MC.font.width(renderComponent);
 
                 float scale = 2; // Scale is normally 2, but if it's larger than the screen, scale it down...
                 if (stringWidth * scale > (scaledWidth * 0.9F)) {
@@ -334,7 +346,7 @@ public class RenderListener {
 
                 DrawUtils.drawText(
                         graphics,
-                        text,
+                        renderComponent,
                         -MC.font.width(text) / 2F,
                         -23.0F,
                         subtitleFeature.getColor()
@@ -868,7 +880,7 @@ public class RenderListener {
                     nextDarkAuction = nextDarkAuction.plusHours(1);
                 }
                 Duration diffDA = Duration.between(nowDA, nextDarkAuction);
-                text = String.format("%02d:%02d", diffDA.toMinutes(), diffDA.getSeconds() % 60);
+                text = "%02d:%02d".formatted(diffDA.toMinutes(), diffDA.getSeconds() % 60);
             }
             case FARM_EVENT_TIMER -> {
                 // The timezone of the server, to avoid problems with like timezones that are 30 minutes ahead or whatnot.
@@ -880,9 +892,9 @@ public class RenderListener {
                 Duration diffFE = Duration.between(nowFE, nextFarmEvent);
                 long minutesFE = diffFE.toMinutes();
                 if (minutesFE < 40) {
-                    text = String.format("%02d:%02d", minutesFE, diffFE.getSeconds() % 60);
+                    text = "%02d:%02d".formatted(minutesFE, diffFE.getSeconds() % 60);
                 } else {
-                    text = String.format("Active: %02d:%02d", minutesFE - 40, diffFE.getSeconds() % 60);
+                    text = "Active: %02d:%02d".formatted(minutesFE - 40, diffFE.getSeconds() % 60);
                 }
             }
             case SKILL_DISPLAY -> {
@@ -1101,7 +1113,7 @@ public class RenderListener {
                     double countdown = (fireFreezeTimer - System.currentTimeMillis()) / 1000D;
 
                     if (countdown > 0) {
-                        text = String.format("Fire Freeze in %.2f", countdown);
+                        text = "Fire Freeze in %.2f".formatted(countdown);
                     } else {
                         if (feature.isEnabled(FeatureSetting.FIRE_FREEZE_SOUND)) {
                             main.getUtils().playLoudSound(SoundEvents.WITHER_SPAWN, 1);
@@ -1149,15 +1161,16 @@ public class RenderListener {
         float x = feature.getActualX();
         float y = feature.getActualY();
 
+        Component renderComponent = Component.literal(text);
         int height = 7;
-        int width = MC.font.width(text);
+        int width = MC.font.width(renderComponent);
 
         switch (feature) {
             case ZEALOT_COUNTER:
             case SHOW_AVERAGE_ZEALOTS_PER_EYE:
             case SHOW_TOTAL_ZEALOT_COUNT:
             case SHOW_SUMMONING_EYE_COUNT:
-                width = MC.font.width(text) + 18;
+                width = MC.font.width(renderComponent) + 18;
                 height += 9;
                 break;
 
@@ -1243,35 +1256,35 @@ public class RenderListener {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SIRIUS_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case FARM_EVENT_TIMER -> {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(FARM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case ZEALOT_COUNTER -> {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case SHOW_TOTAL_ZEALOT_COUNT -> {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_GROUP_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case SHOW_SUMMONING_EYE_COUNT -> {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SUMMONING_EYE_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case SHOW_AVERAGE_ZEALOTS_PER_EYE -> {
@@ -1281,36 +1294,36 @@ public class RenderListener {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SLASH_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, color, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case SKILL_DISPLAY -> {
                 if ((skill == null || skill.getItem() == null) && buttonLocation == null) return;
                 renderItem(graphics, buttonLocation == null ? skill.getItem() : SkillType.FARMING.getItem(), x, y);
 
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case BIRCH_PARK_RAINMAKER_TIMER -> {
                 renderItem(graphics, WATER_BUCKET, x, y);
 
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case ENDSTONE_PROTECTOR_DISPLAY -> {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(IRON_GOLEM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
-                x += 16 + 2 + MC.font.width(text) + 2;
+                x += 16 + 2 + MC.font.width(renderComponent) + 2;
 
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_GROUP_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
 
-                int count = EndstoneProtectorManager.getZealotCount();
-                DrawUtils.drawText(graphics, TextUtils.formatNumber(count), x + 16 + 2, y + 4, color);
+                String formattedCount = TextUtils.formatNumber(EndstoneProtectorManager.getZealotCount());
+                DrawUtils.drawText(graphics, Component.literal(formattedCount), x + 16 + 2, y + 4, color);
 
             }
             case SHOW_DUNGEON_MILESTONE -> {
@@ -1321,19 +1334,18 @@ public class RenderListener {
 
                 renderItem(graphics, dungeonMilestone.dungeonClass().getItem(), x, y);
 
-                DrawUtils.drawText(graphics, text, x + 18, y, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y, color);
                 Number amount;
                 try {
                     amount = TextUtils.NUMBER_FORMAT.parse(dungeonMilestone.value());
                 } catch (ParseException e) {
                     amount = -1;
                 }
-                String formattedAmount = TextUtils.formatNumber(amount);
+                Component formattedAmount = Component.literal(TextUtils.formatNumber(amount));
                 DrawUtils.drawText(
                         graphics,
                         formattedAmount,
-                        x + 18 + MC.font.width(text) / 2F
-                                - MC.font.width(formattedAmount) / 2F,
+                        x + 18 + MC.font.width(renderComponent) / 2F - MC.font.width(formattedAmount) / 2F,
                         y + 9,
                         color
                 );
@@ -1346,59 +1358,50 @@ public class RenderListener {
                 graphics.guiRenderState.submitGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(MORT_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case ROCK_PET_TRACKER -> {
                 renderItem(graphics, ItemUtils.getTexturedHead("DUMMY_ROCK"), x, y);
 
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case DOLPHIN_PET_TRACKER -> {
                 renderItem(graphics, ItemUtils.getTexturedHead("DUMMY_DOLPHIN"), x, y);
 
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case DUNGEONS_SECRETS_DISPLAY -> {
-                int secrets = main.getDungeonManager().getSecrets();
-                int maxSecrets = main.getDungeonManager().getMaxSecrets();
+                DungeonManager dungeonManager = main.getDungeonManager();
+                int secrets = dungeonManager.getSecrets();
+                int maxSecrets = dungeonManager.getMaxSecrets();
 
-                DrawUtils.drawText(graphics, text, x + 16 + 2, y, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 16 + 2, y, color);
 
                 if (secrets == -1 && buttonLocation != null) {
                     secrets = 5;
                     maxSecrets = 10;
                 }
 
-                if (secrets == -1 | maxSecrets == 0) {
+                float centerX = x + 16 + 2 + MC.font.width(renderComponent) / 2F;
+                float drawY = y + 11;
 
-                    String none = Translations.getMessage("messages.none");
+                if (secrets == -1 || maxSecrets == 0) {
+                    Component none = Component.literal(Translations.getMessage("messages.none"));
                     DrawUtils.drawText(
                             graphics,
                             none,
-                            x + 16 + 2 + MC.font.width(text) / 2F
-                                    - MC.font.width(none) / 2F,
-                            y + 10,
+                            centerX - (MC.font.width(none) / 2F),
+                            drawY - 1,
                             color
                     );
-
                 } else {
-                    if (secrets > maxSecrets) {
-                        // Assume the max secrets equals to found secrets
-                        maxSecrets = secrets;
-                    }
+                    if (secrets > maxSecrets) maxSecrets = secrets; // Assume the max secrets equals to found secrets
+                    float percent = MathUtils.clamp(secrets / (float) maxSecrets, 0, 1);
 
-                    float percent = secrets / (float) maxSecrets;
-                    if (percent < 0) {
-                        percent = 0;
-                    } else if (percent > 1) {
-                        percent = 1;
-                    }
-
-                    float r;
-                    float g;
+                    float r, g;
                     if (percent <= 0.5) { // Fade from red -> yellow
                         r = 1;
                         g = (percent * 2) * 0.66F + 0.33F;
@@ -1408,33 +1411,18 @@ public class RenderListener {
                     }
                     int secretsColor = ARGB.colorFromFloat(1.0F, Math.min(1, r), g, 0.33F);
 
-                    float secretsWidth = MC.font.width(String.valueOf(secrets));
-                    float slashWidth = MC.font.width("/");
-                    float maxSecretsWidth = MC.font.width(String.valueOf(maxSecrets));
+                    Component secretsLine = Component.literal(String.valueOf(secrets)).withColor(secretsColor)
+                            .append(Component.literal("/").withColor(color))
+                            .append(Component.literal(String.valueOf(maxSecrets)).withColor(secretsColor));
 
-                    float totalWidth = secretsWidth + slashWidth + maxSecretsWidth;
+                    float totalWidth = MC.font.width(secretsLine);
 
                     DrawUtils.drawText(
                             graphics,
-                            "/",
-                            x + 16 + 2 + MC.font.width(text) / 2F - totalWidth / 2F + secretsWidth,
-                            y + 11,
+                            secretsLine,
+                            centerX - (totalWidth / 2F),
+                            drawY,
                             color
-                    );
-
-                    DrawUtils.drawText(
-                            graphics,
-                            String.valueOf(secrets),
-                            x + 16 + 2 + MC.font.width(text) / 2F - totalWidth / 2F,
-                            y + 11,
-                            secretsColor
-                    );
-                    DrawUtils.drawText(
-                            graphics,
-                            String.valueOf(maxSecrets),
-                            x + 16 + 2 + MC.font.width(text) / 2F - totalWidth / 2F + secretsWidth + slashWidth,
-                            y + 11,
-                            secretsColor
                     );
                 }
 
@@ -1444,15 +1432,15 @@ public class RenderListener {
                 int hitEnemies = main.getPlayerListener().getSpiritSceptreHitEnemies();
                 float dealtDamage = main.getPlayerListener().getSpiritSceptreDealtDamage();
 
-                DrawUtils.drawText(graphics, text, x + 16 + 2, y, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 16 + 2, y, color);
 
                 if (hitEnemies == 1) {
-                    DrawUtils.drawText(graphics, String.format("%d enemy hit", hitEnemies), x + 16 + 2, y + 9, color);
+                    DrawUtils.drawText(graphics, Component.literal(hitEnemies + " enemy hit"), x + 16 + 2, y + 9, color);
                 } else {
-                    DrawUtils.drawText(graphics, String.format("%d enemies hit", hitEnemies), x + 16 + 2, y + 9, color);
+                    DrawUtils.drawText(graphics, Component.literal(hitEnemies + " enemies hit"), x + 16 + 2, y + 9, color);
                 }
 
-                DrawUtils.drawText(graphics, String.format("%,d damage dealt", Math.round(dealtDamage)), x + 16 + 2, y + 18, color);
+                DrawUtils.drawText(graphics, Component.literal("%,d damage dealt".formatted(Math.round(dealtDamage))), x + 16 + 2, y + 18, color);
 
                 if (buttonLocation != null) {
                     renderItem(graphics, DamageDisplayItem.HYPERION.itemStack, x, y);
@@ -1465,43 +1453,44 @@ public class RenderListener {
                 }
             }
             case CANDY_POINTS_COUNTER -> {
-                Map<CandyType, Integer> candyCounts = SpookyEventManager.getCandyCounts();
-                if (!SpookyEventManager.isActive()) {
-                    candyCounts = SpookyEventManager.getDummyCandyCounts();
-                }
+                boolean isActive = SpookyEventManager.isActive();
+                Map<CandyType, Integer> candyCounts = isActive
+                        ? SpookyEventManager.getCandyCounts()
+                        : SpookyEventManager.getDummyCandyCounts();
+                int points = isActive ? SpookyEventManager.getPoints() : 5678;
+
                 int green = candyCounts.get(CandyType.GREEN);
                 int purple = candyCounts.get(CandyType.PURPLE);
 
-                int points = SpookyEventManager.getPoints();
-                if (!SpookyEventManager.isActive()) {
-                    points = 5678;
-                }
-
                 float currentX = x;
-                if (buttonLocation != null || green > 0) {
+                boolean isDummy = buttonLocation != null;
+
+                if (isDummy || green > 0) {
+                    Component greenComponent = Component.literal(TextUtils.formatNumber(green));
                     renderItem(graphics, ItemUtils.getTexturedHead("GREEN_CANDY"), currentX, y);
+                    currentX += 17; // 16 (item) + 1 (gap)
 
-                    currentX += 16 + 1;
-
-                    DrawUtils.drawText(graphics, TextUtils.formatNumber(green), currentX, y + 4, color);
-
+                    DrawUtils.drawText(graphics, greenComponent, currentX, y + 4, color);
+                    currentX += MC.font.width(greenComponent) + 1;
                 }
-                if (buttonLocation != null || purple > 0) {
-                    if (buttonLocation != null || green > 0) {
-                        currentX += MC.font.width(TextUtils.formatNumber(green)) + 1;
-                    }
 
+                if (isDummy || purple > 0) {
                     renderItem(graphics, ItemUtils.getTexturedHead("PURPLE_CANDY"), currentX, y);
+                    currentX += 17;
 
-                    currentX += 16 + 1;
-
-                    DrawUtils.drawText(graphics, TextUtils.formatNumber(purple), currentX, y + 4, color);
-
+                    DrawUtils.drawText(graphics, Component.literal(TextUtils.formatNumber(purple)), currentX, y + 4, color);
                 }
 
-                text = TextUtils.formatNumber(points) + " Points";
-                DrawUtils.drawText(graphics, text, x + width / 2F - MC.font.width(text) / 2F, y + 16, color);
+                Component pointsComponent = Component.literal(TextUtils.formatNumber(points) + " Points").withColor(color);
+                float pointsWidth = MC.font.width(pointsComponent);
 
+                DrawUtils.drawText(
+                        graphics,
+                        pointsComponent,
+                        x + (width / 2F) - (pointsWidth / 2F),
+                        y + 16,
+                        color
+                );
             }
             case FETCHUR_TODAY -> {
                 boolean showDwarven = feature.isDisabled(FeatureSetting.SHOW_FETCHUR_ONLY_IN_DWARVENS) || LocationUtils.isOn(Island.DWARVEN_MINES);
@@ -1514,8 +1503,8 @@ public class RenderListener {
                         (!FetchurManager.getInstance().hasFetchedToday() && showDwarven && showInventory))) {
 
                     if (feature.isDisabled(FeatureSetting.SHOW_FETCHUR_ITEM_NAME)) {
-                        DrawUtils.drawText(graphics, text, x + 1, y + 4, color); // Line related to the "Fetchur wants" text
-                        float offsetX = MC.font.width(text);
+                        DrawUtils.drawText(graphics, renderComponent, x + 1, y + 4, color); // Line related to the "Fetchur wants" renderComponent
+                        float offsetX = MC.font.width(renderComponent);
                         renderItemAndOverlay(
                                 graphics,
                                 fetchurItem.itemStack(),
@@ -1524,7 +1513,7 @@ public class RenderListener {
                                 y
                         );
                     } else {
-                        DrawUtils.drawText(graphics, text, x, y, color); // Line related to the "Fetchur wants" text
+                        DrawUtils.drawText(graphics, renderComponent, x, y, color); // Line related to the "Fetchur wants" text
                     }
 
                 }
@@ -1533,33 +1522,25 @@ public class RenderListener {
                 // 22 -> Absorption
                 if (MC.player != null && MC.player.hasEffect(MobEffects.ABSORPTION)
                         && PlayerStat.HEALTH.getValue() > PlayerStat.MAX_HEALTH.getValue()) {
-                    String formattedHealth = TextUtils.formatNumber(PlayerStat.HEALTH.getValue());
-                    int formattedHealthWidth = MC.font.width(formattedHealth);
+                    String healthStr = TextUtils.formatNumber(PlayerStat.HEALTH.getValue());
+                    String maxHealthStr = TextUtils.formatNumber(PlayerStat.MAX_HEALTH.getValue());
+                    String icon = feature.isEnabled(FeatureSetting.HEALTH_TEXT_ICON) ? "❤" : "";
 
-                    color = ColorUtils.getDummySkyblockColor(ColorCode.GOLD.getColor(), feature.isChroma()).getColor();
+                    int absorptionColor = ColorUtils.getDummySkyblockColor(ColorCode.GOLD.getColor(), feature.isChroma()).getColor();
+                    int baseColor = feature.getColor();
 
-                    DrawUtils.drawText(graphics, formattedHealth, x, y, color);
-
-                    color = feature.getColor();
-                    DrawUtils.drawText(
-                            graphics,
-                            "/" + TextUtils.formatNumber(PlayerStat.MAX_HEALTH.getValue())
-                                    + (feature.isEnabled(FeatureSetting.HEALTH_TEXT_ICON) ? "❤" : ""),
-                            x + formattedHealthWidth,
-                            y,
-                            color
-                    );
+                    Component finalHealthComponent = Component.literal(healthStr).withColor(absorptionColor)
+                            .append(Component.literal("/" + maxHealthStr + icon).withColor(baseColor));
+                    DrawUtils.drawText(graphics, finalHealthComponent, x, y, color);
 
                 } else {
-
-                    DrawUtils.drawText(graphics, text, x, y, color);
-
+                    DrawUtils.drawText(graphics, renderComponent, x, y, color);
                 }
             }
             case FIRE_FREEZE_TIMER -> {
                 renderItem(graphics, Blocks.DANDELION.asItem().getDefaultInstance(), x, y - 3);
 
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
             }
             case THUNDER_BOTTLE_DISPLAY -> {
                 ThunderBottle displayBottle = ThunderBottle.getDisplayBottle();
@@ -1570,7 +1551,7 @@ public class RenderListener {
                     renderItem(graphics, ItemUtils.getTexturedHead("DUMMY_THUNDER_BOTTLE"), x, y);
                 }
 
-                DrawUtils.drawText(graphics, text, x + 18, y + 4, color);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
             }
             case PRESSURE_TEXT -> {
                 if (Feature.PRESSURE_TEXT.isEnabled(FeatureSetting.PRESSURE_TEXT_ALERT)) {
@@ -1580,11 +1561,10 @@ public class RenderListener {
                     }
                 }
 
-                DrawUtils.drawText(graphics, text, x, y, color);
+                DrawUtils.drawText(graphics, renderComponent, x, y, color);
             }
             default -> {
-                DrawUtils.drawText(graphics, text, x, y, color);
-
+                DrawUtils.drawText(graphics, renderComponent, x, y, color);
             }
         }
 
@@ -1665,9 +1645,8 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(essenceType.getIdentifier()), graphics.pose(), currentX, currentY, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
         );
 
-//        FontRendererHook.setupFeatureFont(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
-        DrawUtils.drawText(graphics, TextUtils.formatNumber(value), currentX + 18 + 2, currentY + 5, color);
-//        FontRendererHook.endFeatureFont();
+        Component formattedValue = Component.literal(TextUtils.formatNumber(value));
+        DrawUtils.drawText(graphics, formattedValue, currentX + 18 + 2, currentY + 5, color);
 
         count++;
     }
@@ -1714,10 +1693,10 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             renderItem(graphics, entry.getKey(), x, y);
 
             int color = feature.getColor();
-//            //FontRendererHook.setupFeatureFont(Feature.BAIT_LIST);
+            Component formattedValue = Component.literal(TextUtils.formatNumber(entry.getValue()));
             DrawUtils.drawText(
                     graphics,
-                    TextUtils.formatNumber(entry.getValue()),
+                    formattedValue,
                     x + iconSize + spacing,
                     y + (iconSize / 2F) - (8 / 2F),
                     color
@@ -1850,21 +1829,27 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
             }
 
-            DrawUtils.drawText(graphics, slayerBoss.getDisplayName(), x, y, color);
+            Component bossDisplayName = Component.literal(slayerBoss.getDisplayName());
+            DrawUtils.drawText(graphics, bossDisplayName, x, y, color);
             y += lineHeight + spacer;
-            DrawUtils.drawText(graphics, Translations.getMessage("slayerTracker.bossesKilled"), x, y, color);
-            String text = String.valueOf(SlayerTracker.getInstance().getSlayerKills(slayerBoss));
-            DrawUtils.drawText(graphics, text, x + width - MC.font.width(text), y, color);
+
+            Component bossesKilled = Component.literal(Translations.getMessage("slayerTracker.bossesKilled"));
+            DrawUtils.drawText(graphics, bossesKilled, x, y, color);
+
+            Component slayerKills = Component.literal(
+                    String.valueOf(SlayerTracker.getInstance().getSlayerKills(slayerBoss))
+            );
+            DrawUtils.drawText(graphics, slayerKills, x + width - MC.font.width(slayerKills), y, color);
             y += lineHeight + spacer;
 
             for (SlayerDrop slayerDrop : slayerBoss.getDrops()) {
-
                 int currentColor = colorByRarity ? slayerDrop.getRarity().getColorCode().getColor() : color;
-
                 DrawUtils.drawText(graphics, slayerDrop.getDisplayName(), x, y, currentColor, colorByRarity);
 
-                text = String.valueOf(SlayerTracker.getInstance().getDropCount(slayerDrop));
-                DrawUtils.drawText(graphics, text, x + width - MC.font.width(text), y, currentColor);
+                Component dropCount = Component.literal(
+                        String.valueOf(SlayerTracker.getInstance().getDropCount(slayerDrop))
+                );
+                DrawUtils.drawText(graphics, dropCount, x + width - MC.font.width(slayerKills), y, currentColor);
 
                 y += lineHeight;
             }
@@ -1978,7 +1963,6 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                         enderman = new EnderMan(EntityType.ENDERMAN, MC.level);
                         enderman.setCarriedBlock(Blocks.BEACON.defaultBlockState());
                     }
-//                    GlStateManager.color(1, 1, 1, 1);
                     enderman.tickCount = (int) main.getScheduler().getTotalTicks();
                     drawEntity(graphics, enderman, x, y, entityWidth, height, -30.0F, scale, 0.7F);
                     break;
@@ -2000,14 +1984,17 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                                 var bodySkin = new ClientAsset.ResourceTexture(RIFTSTALKER_BLOODFIEND, RIFTSTALKER_BLOODFIEND);
                                 return new PlayerSkin(bodySkin, null, null, PlayerModelType.WIDE, true);
                             }
+
+                            @Override
+                            public boolean shouldShowName() {
+                                return false;
+                            }
                         };
-                        riftstalker.setCustomNameVisible(false);
                     }
                     drawEntity(graphics, riftstalker, x, y, entityWidth, height, -15, scale);
                     break;
             }
 
-//            GlStateManager.disableDepth();
             row = 0;
             column = 0;
             float currentX = x + entityIconSpacingHorizontal + entityWidth;
@@ -2022,9 +2009,10 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
                 int currentColor = colorByRarity ? slayerDrop.getRarity().getColorCode().getColor() : color;
 
+                String abbreviatedDropCount = TextUtils.abbreviate(SlayerTracker.getInstance().getDropCount(slayerDrop));
                 DrawUtils.drawText(
                         graphics,
-                        TextUtils.abbreviate(SlayerTracker.getInstance().getDropCount(slayerDrop)),
+                        Component.literal(abbreviatedDropCount),
                         currentX + iconWidth + iconTextOffset,
                         currentY + 8,
                         currentColor,
@@ -2039,16 +2027,15 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 }
             }
 
-            String text = TextUtils.abbreviate(SlayerTracker.getInstance().getSlayerKills(slayerBoss)) + " Kills";
+            String abbreviatedSlayerKills = TextUtils.abbreviate(SlayerTracker.getInstance().getSlayerKills(slayerBoss)) + " Kills";
+            Component killsComponent = Component.literal(abbreviatedSlayerKills);
             DrawUtils.drawText(
                     graphics,
-                    text,
-                    x + textCenterX - MC.font.width(text) / 2F,
+                    killsComponent,
+                    x + textCenterX - MC.font.width(killsComponent) / 2F,
                     y + entityRenderY,
                     color
             );
-
-//            GlStateManager.enableDepth();
         }
     }
 
@@ -2128,33 +2115,31 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         int color = feature.getColor();
 
         if (textMode) {
-//            //FontRendererHook.setupFeatureFont(Feature.DRAGON_STATS_TRACKER);
-            DrawUtils.drawText(graphics, Translations.getMessage("dragonTracker.recentDragons"), x, y, color);
+            Component recentDragonsComponent = Component.literal(Translations.getMessage("dragonTracker.recentDragons"));
+            DrawUtils.drawText(graphics, recentDragonsComponent, x, y, color);
             y += 8 + spacerHeight;
 
             for (DragonType dragon : recentDragons) {
                 int currentColor = colorByRarity ? dragon.getColor().getColor() : color;
-
-                DrawUtils.drawText(graphics, dragon.getDisplayName(), x, y, currentColor, colorByRarity);
+                DrawUtils.drawText(graphics, Component.literal(dragon.getDisplayName()), x, y, currentColor, colorByRarity);
 
                 y += 8;
             }
             y += spacerHeight;
 
             color = feature.getColor();
-            DrawUtils.drawText(graphics, Translations.getMessage("dragonTracker.dragonsSince"), x, y, color);
+            Component dragonsSinceComponent =  Component.literal(Translations.getMessage("dragonTracker.dragonsSince"));
+            DrawUtils.drawText(graphics, dragonsSinceComponent, x, y, color);
             y += 8 + spacerHeight;
 
             for (DragonsSince dragonsSince : DragonsSince.values()) {
-
                 int currentColor = colorByRarity ? dragonsSince.getItemRarity().getColorCode().getColor() : color;
+                DrawUtils.drawText(graphics, Component.literal(dragonsSince.getDisplayName()), x, y, currentColor, colorByRarity);
 
-                DrawUtils.drawText(graphics, dragonsSince.getDisplayName(), x, y, currentColor, colorByRarity);
-
-//                //FontRendererHook.setupFeatureFont(Feature.DRAGON_STATS_TRACKER);
                 int dragonsSinceValue = DragonTracker.getInstance().getDragsSince(dragonsSince);
                 String text = dragonsSinceValue == 0 ? never : String.valueOf(dragonsSinceValue);
-                DrawUtils.drawText(graphics, text, x + width - MC.font.width(text), y, color);
+                Component component =  Component.literal(text);
+                DrawUtils.drawText(graphics, component, x + width - MC.font.width(component), y, color);
                 y += 8;
 
             }
@@ -2206,17 +2191,10 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             }
             renderItem(graphics, progress.getItemStack(), x, fixedY);
 
-            float currentX = x + 19;
-//            //FontRendererHook.setupFeatureFont(Feature.SLAYER_ARMOR_PROGRESS);
-            DrawUtils.drawText(graphics, progress.getPercent() + "% (", currentX, fixedY + 5, color);
-
-            currentX += MC.font.width(progress.getPercent() + "% (");
-            DrawUtils.drawText(graphics, progress.getDefence(), currentX, fixedY + 5, 0xFFFFFFFF);
-
-            currentX += MC.font.width(progress.getDefence());
-//            //FontRendererHook.setupFeatureFont(Feature.SLAYER_ARMOR_PROGRESS);
-            DrawUtils.drawText(graphics, ")", currentX, fixedY + 5, color);
-
+            Component line = Component.literal(progress.getPercent() + "% (").withColor(color)
+                    .append(Component.literal(progress.getDefence()).withColor(ColorCode.WHITE.getColor()))
+                    .append(Component.literal(")").withColor(color));
+            DrawUtils.drawText(graphics, line, x + 19, fixedY + 5, color);
             drawnCount++;
         }
     }
@@ -2233,13 +2211,13 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             petSkull = newPet.getItemStack();
         }
 
-        String text = pet.getDisplayName();
+        Component displayName = Component.literal(pet.getDisplayName());
 
         float x = feature.getActualX();
         float y = feature.getActualY();
 
         int height = 7 + MC.font.lineHeight;
-        int width = MC.font.width(text) + 18; // + ItemStack width
+        int width = MC.font.width(displayName) + 18; // + ItemStack width
 
         PetItemStyle style = (PetItemStyle) feature.getAsEnum(FeatureSetting.PET_ITEM_STYLE);
         int line = 1; // maybe new lines can be added in the future?
@@ -2257,18 +2235,17 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
         }
 
-//        //FontRendererHook.setupFeatureFont(Feature.PET_DISPLAY);
         int color = feature.getColor();
-        DrawUtils.drawText(graphics, text, x + (18 * line), y + 4, color);
+        DrawUtils.drawText(graphics, displayName, x + (18 * line), y + 4, color);
 
         switch (style) {
             case DISPLAY_NAME:
                 if (pet.getPetInfo().getHeldItemId() == null) break;
 
-                String petDisplayName = PetManager.getInstance().getPetItemDisplayNameFromId(
+                String petItemDisplayName = PetManager.getInstance().getPetItemDisplayNameFromId(
                         pet.getPetInfo().getHeldItemId()
                 );
-                DrawUtils.drawText(graphics, "Held Item: " + petDisplayName, x + (18 * line), y + 16, color);
+                DrawUtils.drawText(graphics, Component.literal("Held Item: " + petItemDisplayName), x + (18 * line), y + 16, color);
                 break;
 
             case SHOW_ITEM:
@@ -2285,9 +2262,10 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                     // To recognize those with the same Item but different Rarity
                     displayText += " " + petItemRarity.getColorCode().toString() + petItemRarity.getLoreName();
                 }
-                DrawUtils.drawText(graphics, displayText, x + (18 * line), y + 16, color);
 
-                renderItem(graphics, petItemStack, x + (18 * line) + MC.font.width(displayText), y + 10);
+                Component displayComponent =  Component.literal(displayText);
+                DrawUtils.drawText(graphics, displayComponent, x + (18 * line), y + 16, color);
+                renderItem(graphics, petItemStack, x + (18 * line) + MC.font.width(displayComponent), y + 10);
                 break;
         }
 
@@ -2369,24 +2347,25 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                 stringY = y + height - (i * lineHeight) - 9 - heightSpacer / 2;
             }
 
-            String countText = String.format(
-                    "%s %sx",
-                    itemDiff.getAmount() > 0 ? "§a+" : "§c-",
-                    Math.abs(itemDiff.getAmount())
-            );
-            DrawUtils.drawText(graphics, countText, x, stringY, 0xFFFFFFFF);
+            int diffAmount = itemDiff.getAmount();
+            int absoluteAmount = Math.abs(diffAmount);
+            MutableComponent countComponent = diffAmount > 0
+                    ? Component.literal("+ " + absoluteAmount + "x").withColor(ColorCode.GREEN.getColor())
+                    : Component.literal("- " + absoluteAmount + "x").withColor(ColorCode.RED.getColor());
+            DrawUtils.drawText(graphics, countComponent, x, stringY, ColorCode.WHITE.getColor());
             DrawUtils.drawText(
                     graphics,
-                    "§r" + itemDiff.getDisplayName(),
-                    x + MC.font.width(countText) + (renderItemStack ? 20 : 4),
+                    itemDiff.getDisplayName(),
+                    x + MC.font.width(countComponent) + (renderItemStack ? 20 : 4),
                     stringY,
-                    0xFFFFFFFF
+                    ColorCode.WHITE.getColor(),
+                    true
             );
             if (renderItemStack) {
                 renderItem(
                         graphics,
                         itemDiff.getItemStack(),
-                        x + MC.font.width(countText) + 2,
+                        x + MC.font.width(countComponent) + 2,
                         stringY - heightSpacer / 2 - 1
                 );
             }
@@ -2424,9 +2403,9 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         float x = feature.getActualX();
         float y = feature.getActualY();
 
-        String secondsString = String.format("§e%ss", seconds);
+        Component secondsComponent = Component.literal(seconds + "s").withColor(ColorCode.YELLOW.getColor());
         int spacing = 1;
-        int width = DEPLOYABLE_GUI_SIZE + spacing + MC.font.width(secondsString);
+        int width = DEPLOYABLE_GUI_SIZE + spacing + MC.font.width(secondsComponent);
 
         x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
         y = transformY(y, DEPLOYABLE_GUI_SIZE, scale);
@@ -2454,7 +2433,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
 
         DrawUtils.drawText(
                 graphics,
-                secondsString,
+                secondsComponent,
                 x + spacing + DEPLOYABLE_GUI_SIZE,
                 y + (DEPLOYABLE_GUI_SIZE / 2F) - (8 / 2F),
                 ColorCode.WHITE.getColor()
@@ -2474,7 +2453,7 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
         float x = feature.getActualX();
         float y = feature.getActualY();
 
-        List<String> display = new LinkedList<>();
+        deployableDisplayBuffer.clear();
         // Counts already long strings
         int passIndex = 0;
 
@@ -2485,68 +2464,59 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
                     && main.getUtils().getSlayerQuestLevel() >= 2) {
                 healthRegen *= 0.5F; // Tarantula boss 2+ reduces healing by 50%.
             }
-            display.add(String.format("§c+%s ❤/s", TextUtils.formatNumber(healthRegen)));
+            deployableDisplayBuffer.add(
+                    Component.literal("+" + TextUtils.formatNumber(healthRegen) + " ❤/s")
+                            .withColor(ColorCode.RED.getColor())
+            );
             passIndex++;
         }
 
         if (deployable.getManaRegen() > 0.0) {
             float maxMana = PlayerStat.MAX_MANA.getValue();
             float manaRegen = (float) (maxMana * deployable.getManaRegen() / 50);
-            display.add(String.format("§b+%s ✎/s", TextUtils.formatNumber(manaRegen)));
+            deployableDisplayBuffer.add(
+                    Component.literal("+" + TextUtils.formatNumber(manaRegen) + " ✎/s")
+                            .withColor(ColorCode.AQUA.getColor())
+            );
             passIndex++;
         }
 
-        int strength = deployable.getStrength();
-        if (strength > 0) display.add("§c+" + strength + " ❁ ");
-
-        double vitality = deployable.getVitality();
-        if (vitality > 0.0) display.add("§4+" + TextUtils.formatNumber(vitality) + " ♨ ");
-
-        double mending = deployable.getMending();
-        if (mending > 0.0) display.add("§a+" + TextUtils.formatNumber(mending) + " ☄ ");
-
-        int trueDefense = deployable.getTrueDefense();
-        if (trueDefense > 0) display.add("§f+" + trueDefense + " ❂ ");
-
-        int ferocity = deployable.getFerocity();
-        if (ferocity > 0) display.add("§c+" + ferocity + " ⫽ ");
-
-        int bonusAttackSpeed = deployable.getBonusAttackSpeed();
-        if (bonusAttackSpeed > 0) display.add("§e+" + bonusAttackSpeed + "% ⚔ ");
-
-        int trophyFishChance = deployable.getTrophyFishChance();
-        if (trophyFishChance > 0) display.add("§6+" + trophyFishChance + " ♔ ");
+        // constant stats static lines
+        deployableDisplayBuffer.addAll(deployable.getStaticDisplayLines());
 
         // For better visual (maybe?)
-        if (feature.isEnabled(FeatureSetting.EXPAND_DEPLOYABLE_STATUS) && display.size() > 3) {
-            List<String> displayCopy = new LinkedList<>(display);
-            display.clear();
+        if (feature.isEnabled(FeatureSetting.EXPAND_DEPLOYABLE_STATUS) && deployableDisplayBuffer.size() > 3) {
+            deployableExpandBuffer.clear();
 
             // Firstly add mana and health strings which already long
             for (int i = 0; i < passIndex; i++)
-                display.add(displayCopy.get(i));
+                deployableExpandBuffer.add(deployableDisplayBuffer.get(i));
 
             // Concatenate the remaining strings in pairs
-            for (int i = passIndex; i < displayCopy.size() - 1; i += 2) {
-                if (i - 1 < displayCopy.size()) {
-                    display.add(displayCopy.get(i) + displayCopy.get(i + 1));
-                }
+            for (int i = passIndex; i < deployableDisplayBuffer.size() - 1; i += 2) {
+                Component combinedLine = deployableDisplayBuffer.get(i).copy().append(deployableDisplayBuffer.get(i + 1));
+                deployableExpandBuffer.add(combinedLine);
             }
 
             // Last touch
-            if ((displayCopy.size() - passIndex) % 2 != 0) {
-                display.add(displayCopy.getLast());
+            if ((deployableDisplayBuffer.size() - passIndex) % 2 != 0) {
+                deployableExpandBuffer.add(deployableDisplayBuffer.getLast());
             }
+
+            deployableDisplayBuffer.clear();
+            deployableDisplayBuffer.addAll(deployableExpandBuffer);
         }
 
-        Optional<String> longestLine = display.stream().max(Comparator.comparingInt(String::length));
+        Optional<Component> longestLine = deployableDisplayBuffer.stream().max(
+                Comparator.comparingInt(c -> c.getString().length())
+        );
 
         int spacingBetweenLines = 1;
         int iconAndSecondsHeight = DEPLOYABLE_GUI_SIZE + MC.font.lineHeight;
 
-        int effectsHeight = (MC.font.lineHeight + spacingBetweenLines) * display.size();
+        int effectsHeight = (MC.font.lineHeight + spacingBetweenLines) * deployableDisplayBuffer.size();
         int width = DEPLOYABLE_GUI_SIZE + 2 + longestLine.map(MC.font::width).orElseGet(
-                () -> display.isEmpty() ? 0 : MC.font.width(display.getFirst())
+                () -> deployableDisplayBuffer.isEmpty() ? 0 : MC.font.width(deployableDisplayBuffer.getFirst())
         );
         int height = Math.max(effectsHeight, iconAndSecondsHeight);
 
@@ -2582,20 +2552,20 @@ public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolea
             graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getIdentifier(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
 
-        String secondsString = String.format("§e%ss", seconds);
+        Component secondsComponent = Component.literal(seconds + "s").withColor(ColorCode.YELLOW.getColor());
         DrawUtils.drawText(
                 graphics,
-                secondsString,
-                Math.round(x + (DEPLOYABLE_GUI_SIZE / 2F) - (MC.font.width(secondsString) / 2F)),
+                secondsComponent,
+                Math.round(x + (DEPLOYABLE_GUI_SIZE / 2F) - (MC.font.width(secondsComponent) / 2F)),
                 y + DEPLOYABLE_GUI_SIZE,
                 ColorCode.WHITE.getColor()
         );
 
         float displayTextX = x + DEPLOYABLE_GUI_SIZE + 2;
-        for (int i = 0; i < display.size(); i++) {
+        for (int i = 0; i < deployableDisplayBuffer.size(); i++) {
             DrawUtils.drawText(
                     graphics,
-                    display.get(i),
+                    deployableDisplayBuffer.get(i),
                     displayTextX,
                     startY + (i * (MC.font.lineHeight + spacingBetweenLines)),
                     ColorCode.WHITE.getColor()
