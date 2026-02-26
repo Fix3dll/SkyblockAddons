@@ -66,9 +66,6 @@ public enum Feature {
     SPEED_PERCENTAGE(55, "settings.speedPercentage", new FeatureGuiData(DrawType.TEXT, ColorCode.WHITE)),
     SLAYER_ARMOR_PROGRESS(57, "settings.revenantIndicator", new FeatureGuiData(DrawType.SLAYER_ARMOR_PROGRESS, ColorCode.AQUA)),
     SPECIAL_ZEALOT_ALERT(58, "settings.specialZealotAlert", new FeatureGuiData(ColorCode.RED)),
-    ENABLE_MESSAGE_WHEN_MINING_DEEP_CAVERNS(60, null),
-    ENABLE_MESSAGE_WHEN_BREAKING_STEMS(61, null),
-    ENABLE_MESSAGE_WHEN_MINING_NETHER(62, null),
     HIDE_PET_HEALTH_BAR(63, "settings.hidePetHealthBar", null),
     // Release v1.4
     DISABLE_MAGICAL_SOUP_MESSAGES(64, "settings.disableMagicalSoupMessage", null),
@@ -86,7 +83,6 @@ public enum Feature {
     ENDSTONE_PROTECTOR_DISPLAY(84, "settings.endstoneProtectorDisplay", new FeatureGuiData(DrawType.TEXT, ColorCode.WHITE)),
     FANCY_WARP_MENU(85, "settings.fancyWarpMenu", null),
     LEGENDARY_SEA_CREATURE_WARNING(88, "settings.legendarySeaCreatureWarning", new FeatureGuiData(ColorCode.RED)),
-    ENABLE_MESSAGE_WHEN_BREAKING_PARK(90, null),
     BOSS_APPROACH_ALERT(91, "settings.bossApproachAlert", null),
     DISABLE_TELEPORT_PAD_MESSAGES(92, "settings.disableTeleportPadMessages", null),
     BAIT_LIST(93, "settings.baitListDisplay", new FeatureGuiData(DrawType.BAIT_LIST_DISPLAY, ColorCode.AQUA)),
