@@ -5,7 +5,6 @@ import com.fix3dll.skyblockaddons.test.FeatureTest;
 import com.fix3dll.skyblockaddons.test.SkyblockAddonsTestSuite;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class SkyblockAddonsTest implements FabricClientGameTest {
     );
 
     @Override
-    public void runTest(@NonNull ClientGameTestContext context) {
+    public void runTest(ClientGameTestContext context) {
         System.out.println("Starting SkyblockAddons client game tests...");
 
         List<String> allErrors = suites.stream()
