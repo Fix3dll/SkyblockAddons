@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "skyblockaddons-test",
+  "version": "${version}",
+  "name": "SkyblockAddons Test",
+  "description": "SkyblockAddons game tests with 'net.fabricmc:fabric-loader-junit'",
+  "authors": [
+    "Fix3dll"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/project/F35D4vTL",
+    "sources": "https://github.com/Fix3dll/SkyblockAddons/",
+    "issues": "https://github.com/Fix3dll/SkyblockAddons/issues"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/skyblockaddons-test/logosquare.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "com.fix3dll.skyblockaddons.SkyblockAddonsTest"
+    ]
+  }
+}
