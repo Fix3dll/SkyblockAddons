@@ -41,7 +41,7 @@ loom {
         getByName("client") {
             vmArg("-Xmx4G")
             property("mixin.debug", "true")
-            property("devauth.enabled", "true")
+            property("devauth.enabled", "false")
             property("sba.data.online", "false")
         }
         remove(getByName("server"))
