@@ -5,8 +5,8 @@ import java.text.ParseException
 plugins {
     java
     id("fabric-loom") version ("1.14-SNAPSHOT")
-    id("com.gradleup.shadow") version ("8.3.9")
-    id("io.freefair.lombok") version ("9.1.0")
+    id("com.gradleup.shadow") version ("8.3.10")
+    id("io.freefair.lombok") version ("9.2.0")
 }
 
 ext {
@@ -49,14 +49,31 @@ loom {
     mixin.useLegacyMixinAp = false
 }
 
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "skyblockaddons-test"
+        enableGameTests = false
+        eula = true
+    }
+}
+
 repositories {
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
-    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
-    maven("https://repo.hypixel.net/repository/Hypixel/")
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1") {
+        content {
+            includeGroup("me.djtheredstoner")
+        }
+    }
+    maven("https://repo.hypixel.net/repository/Hypixel/") {
+        content {
+            includeGroup("net.hypixel")
+        }
+    }
     //maven("https://repo.nea.moe/releases")
     maven("https://jitpack.io") {
         content {
@@ -68,9 +85,22 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-    maven("https://maven.parchmentmc.org")
-    maven("https://maven.terraformersmc.com/")
-    maven("https://maven.shedaniel.me")
+    maven("https://maven.parchmentmc.org") {
+        content {
+            includeGroupByRegex("org\\.parchmentmc.*")
+        }
+    }
+    maven("https://maven.terraformersmc.com/") {
+        content {
+            includeGroup("com.terraformersmc")
+        }
+    }
+    maven("https://maven.shedaniel.me") {
+        content {
+            includeGroupByRegex("me\\.shedaniel.*")
+            includeGroup("dev.architectury")
+        }
+    }
 }
 
 val bundle : Configuration by configurations.creating {
@@ -98,7 +128,8 @@ dependencies {
     }
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
-    implementation ("net.hypixel:mod-api:1.0.1")
+    implementation("net.hypixel:mod-api:1.0.1")
+    modImplementation("maven.modrinth:hypixel-mod-api:1.0.1+build.1+mc1.21")
     //bundle("moe.nea:libautoupdate:1.3.1")
     bundle("com.github.nea89o:libautoupdate:841d9f7e78")
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
@@ -108,9 +139,11 @@ dependencies {
         exclude(module = "gson")
         because("Different version conflicts with Minecraft's GSON")
     }
-    val junitVersion = "6.0.0"
-    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitVersion")
+
+    // Test
+    testImplementation(platform("org.junit:junit-bom:6.0.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation("net.fabricmc:fabric-loader-junit:${properties["loader_version"]}")
 }
 
 tasks.withType(JavaCompile::class).configureEach {

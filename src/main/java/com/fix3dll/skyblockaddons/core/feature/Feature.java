@@ -13,6 +13,7 @@ import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import com.mojang.blaze3d.platform.Window;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ARGB;
@@ -23,7 +24,6 @@ import org.jspecify.annotations.Nullable;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TreeMap;
@@ -209,7 +209,7 @@ public enum Feature {
     private final int id;
     private @Nullable final FeatureGuiData featureGuiData;
     private final FeatureData<?> featureData;
-    private final String translationKey;
+    @Getter(AccessLevel.NONE) private final String translationKey;
 
     Feature(int id, String translationKey) {
         this(id, translationKey, null);
@@ -219,14 +219,6 @@ public enum Feature {
         this.id = id;
         this.translationKey = translationKey;
         this.featureGuiData = featureGuiData;
-
-        HashSet<Integer> registeredFeatureIDs = SkyblockAddons.getInstance().getRegisteredFeatureIDs();
-        if (id != -1 && registeredFeatureIDs.contains(id)) {
-            throw new RuntimeException("Multiple features have the same IDs! (" + id + ")");
-        } else {
-            registeredFeatureIDs.add(id);
-        }
-
         this.featureData = new FeatureData<>(featureGuiData);
     }
 

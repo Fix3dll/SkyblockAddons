@@ -63,7 +63,6 @@ import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -138,8 +137,6 @@ public class SkyblockAddons implements ClientModInitializer {
 	@Setter private OnlineData onlineData;
 	@Setter private ElectionData electionData;
 	@Setter private MayorJerryData mayorJerryData;
-
-	private final HashSet<Integer> registeredFeatureIDs = new HashSet<>();
 
 	public SkyblockAddons() {
 		instance = this;

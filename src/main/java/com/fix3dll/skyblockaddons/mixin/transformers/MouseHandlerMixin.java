@@ -32,7 +32,7 @@ public class MouseHandlerMixin {
     @Redirect(method = "releaseMouse", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MouseHandler;xpos:D", ordinal = 0, opcode = Opcodes.PUTFIELD))
     public void sba$releaseMouse_xpos(MouseHandler instance, double value) {
         if (Feature.DONT_RESET_CURSOR_INVENTORY.isDisabled() || SkyblockAddons.getInstance().getPlayerListener().shouldResetMouse()) {
-            this.ypos = value;
+            this.xpos = value;
         }
     }
 
