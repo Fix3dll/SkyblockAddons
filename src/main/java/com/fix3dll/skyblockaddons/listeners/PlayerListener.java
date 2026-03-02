@@ -13,7 +13,6 @@ import com.fix3dll.skyblockaddons.core.SkyblockOre;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
-import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.core.seacreatures.SeaCreatureManager;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
@@ -39,6 +38,7 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.InventoryUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.utils.RomanNumeralParser;
 import com.fix3dll.skyblockaddons.utils.ScoreboardManager;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
@@ -70,7 +70,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -1176,13 +1175,7 @@ public class PlayerListener {
                 }
             }
             if (!suffix.isBlank()) {
-                String formattedRoot = TextUtils.getFormattedText(root).replace(finalUsername, finalUsername + suffix);
-                MutableComponent modifiedRoot = Component.literal(formattedRoot);
-                Style rootStyle = root.getStyle().getHoverEvent() != null ? root.getStyle() : root.getSiblings().getFirst().getStyle();
-                return modifiedRoot.withStyle(style -> style
-                        .withClickEvent(rootStyle.getClickEvent())
-                        .withHoverEvent(rootStyle.getHoverEvent())
-                );
+                return TextUtils.replaceComponent(root, finalUsername, finalUsername + suffix);
             }
         }
 

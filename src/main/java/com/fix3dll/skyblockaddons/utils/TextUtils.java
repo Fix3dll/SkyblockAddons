@@ -20,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.PlainTextContents;
+import net.minecraft.util.StringUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
@@ -714,6 +715,7 @@ public class TextUtils {
      * @param original The original component, potentially containing a quantity suffix.
      * @return A mutated copy of the original component with the quantity suffix removed,
      * or the original if no match is found.
+     * @since 2.2.1
      */
     public static Component stripQuantitySuffix(Component original) {
         if (original == null) {
@@ -767,6 +769,58 @@ public class TextUtils {
         modifiableSiblings.set(modifiableSiblings.size() - 1, fixedNameNode);
 
         return cleanComponent;
+    }
+
+    /**
+     * Traverses the root Component and its direct siblings to find and replace specific text,
+     * preserving all styles, click events, hover events, and sibling hierarchies.
+     * @param original    The original component to process.
+     * @param target      The exact string to search for.
+     * @param replacement The string to replace the target with.
+     * @return A new MutableComponent with the replaced text if the target is found,
+     * otherwise returns the unmodified original Component.
+     * @since 2.2.2
+     * @apiNote This method stops searching after finding the first matching component.
+     * It replaces all occurrences of the target within that single component's text,
+     * but does not search or modify any subsequent components.
+     */
+    public static Component replaceComponent(Component original, String target, String replacement) {
+        // First check parent content
+        if (original.getContents() instanceof PlainTextContents originalContents) {
+            String contentsText = originalContents.text();
+
+            if (!StringUtil.isNullOrEmpty(contentsText) && contentsText.contains(target)) {
+                // Create new MutableComponent with a replacement as content and preserved original style.
+                MutableComponent newComponent = MutableComponent.create(
+                        PlainTextContents.create(contentsText.replace(target, replacement))
+                ).withStyle(original.getStyle());
+
+                // Preserve original's siblings.
+                original.getSiblings().forEach(newComponent::append);
+                return newComponent;
+            }
+        }
+
+        // If not found in parent content, check content of siblings.
+        MutableComponent newComponent = original.copy();
+        List<Component> modifiableSiblings = newComponent.getSiblings();
+
+        for (int i = 0; i < modifiableSiblings.size(); i++) {
+            Component sibling = modifiableSiblings.get(i);
+
+            if (sibling.getContents() instanceof PlainTextContents siblingContents) {
+                String contentsText = siblingContents.text();
+
+                if (!StringUtil.isNullOrEmpty(contentsText) && contentsText.contains(target)) {
+                    MutableComponent modifiedSibling = Component.literal(contentsText.replace(target, replacement))
+                            .withStyle(sibling.getStyle());
+                    modifiableSiblings.set(i, modifiedSibling);
+                    return newComponent;
+                }
+            }
+        }
+
+        return original;
     }
 
 }
