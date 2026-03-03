@@ -238,22 +238,26 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
     @Getter
     public enum Island {
-        THE_END("The End", 240, 30),
-        CRIMSON_ISLE("Crimson Isle", 835, 45),
-        THE_PARK("The Park", 80, 440),
-        SPIDERS_DEN("Spider's Den", 500, 470),
-        DEEP_CAVERNS("Deep Caverns", 1400, 250),
-        GOLD_MINE("Gold Mine", 1130, 525),
-        MUSHROOM_DESERT("Mushroom Desert", 1470, 525),
-        THE_BARN("The Barn", 1100, 860),
-        HUB("Hub", 300, 820),
-        PRIVATE_ISLAND("Private Island", 275, 1172),
-        THE_GARDEN("The Garden", 50, 1050),
-        DUNGEON_HUB("Dungeon Hub", 1500, 1100),
-        JERRYS_WORKSHOP("Jerry's Workshop", 1280, 1150),
-        THE_RIFT("The Rift", 1720, 1050),
-        BACKWATER_BAYOU("Backwater Bayou", 960, 1275),
-        GALATEA("Galatea", -200, 240);
+        THE_END("The End", 350, 20),
+        CRIMSON_ISLE("Crimson Isle", 960, 90),
+        THE_PARK("The Park", 160, 440),
+        SPIDERS_DEN("Spider's Den", 740, 470),
+        DEEP_CAVERNS("Deep Caverns", 1610, 245),
+        THE_FORGE("The Forge", 2260, 218), // exception
+        DWARVEN_MINES("Dwarven Mines", 2060, 340),
+        DWARVEN_BASE_CAMP("Dwarven Base Camp", 2260, 462),
+        CRYSTAL_HOLLOWS("Crystal Hollows", 2460, 584),
+        GOLD_MINE("Gold Mine", 1360, 500),
+        MUSHROOM_DESERT("Mushroom Desert", 1830, 600),
+        THE_BARN("The Barn", 1410, 870),
+        HUB("Hub", 510, 820),
+        PRIVATE_ISLAND("Private Island", 385, 1172),
+        THE_GARDEN("The Garden", 160, 1050),
+        DUNGEON_HUB("Dungeon Hub", 1890, 1117),
+        JERRYS_WORKSHOP("Jerry's Workshop", 1660, 1239),
+        THE_RIFT("The Rift", 2120, 995),
+        BACKWATER_BAYOU("Backwater Bayou", 1285, 1250),
+        GALATEA("Galatea", -140, 240);
 
         private final String label;
         private final int x;
@@ -279,11 +283,6 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
                     this.nativeImage = NativeImage.read(resource.get().open());
                     this.w = nativeImage.getWidth();
                     this.h = nativeImage.getHeight();
-
-                    if (label.equals("The End")) {
-                        // The original end HD texture is 573 pixels wide.
-                        IslandWarpGui.IMAGE_SCALED_DOWN_FACTOR = this.w / 573F;
-                    }
                 } catch (IOException e) {
                     SkyblockAddons.getLogger().catching(e);
                 }
@@ -308,59 +307,62 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         THE_GARDEN("garden", Translations.getMessage("warpMenu.spawn"), Island.THE_GARDEN, 160, 70),
 
-        JERRYS_WORKSHOP("workshop", Translations.getMessage("warpMenu.spawn"), Island.JERRYS_WORKSHOP, 35, 90),
+        JERRYS_WORKSHOP("workshop", "", Island.JERRYS_WORKSHOP, 35, 90),
 
-        THE_RIFT("rift", Translations.getMessage("warpMenu.spawn"), Island.THE_RIFT, 35, 90),
+        THE_RIFT("rift", "", Island.THE_RIFT, 35, 90),
 
-        BACKWATER_BAYOU("backwater", Translations.getMessage("warpMenu.spawn"), Island.BACKWATER_BAYOU, 60, 150),
+        BACKWATER_BAYOU("backwater", Translations.getMessage("warpMenu.spawn"), Island.BACKWATER_BAYOU, 40, 200),
 
-        HUB("hub", Translations.getMessage("warpMenu.spawn"), Island.HUB, 610, 210),
-        ELIZABETH("elizabeth", "Elizabeth", Island.HUB, 660, 150),
+        HUB("hub", Translations.getMessage("warpMenu.spawn"), Island.HUB, 630, 230),
+        ELIZABETH("elizabeth", "Elizabeth", Island.HUB, 700, 180),
         CASTLE("castle", "Castle", Island.HUB, 130, 80),
-        DARK_AUCTION("da", "Sirius Shack", Island.HUB, 385, 415),
-        CRYPT("crypt", "Crypts", Island.HUB, 580, 100),
-        WIZARD_TOWER("wizard", "Wizard Tower", Island.HUB, 490, 260),
-        MUSEUM("museum", "Museum", Island.HUB, 310, 200),
-        TRADE_CENTER("stonks", "Trade Center", Island.HUB, 530, 175),
-        CARNIVAL("carnival", "Carnival", Island.HUB, 480, 100),
+        DARK_AUCTION("da", "Sirius Shack", Island.HUB, 445, 430),
+        CRYPT("crypt", "Crypts", Island.HUB, 440, 80),
+        WIZARD_TOWER("wizard", "Wizard Tower", Island.HUB, 510, 270),
+        MUSEUM("museum", "Museum", Island.HUB, 320, 240),
+        TRADE_CENTER("stonks", "Trade Center", Island.HUB, 540, 175),
+        CARNIVAL("carnival", "Carnival", Island.HUB, 440, 160),
 
-        SPIDERS_DEN("spider", Translations.getMessage("warpMenu.spawn"), Island.SPIDERS_DEN, 345, 240),
-        SPIDERS_DEN_NEST("nest", "Top of Nest", Island.SPIDERS_DEN, 450, 30),
-        ARACHNES_SANCTUARY("arachne", "Arachne's Sanctuary", Island.SPIDERS_DEN, 240, 135),
+        SPIDERS_DEN("spider", Translations.getMessage("warpMenu.spawn"), Island.SPIDERS_DEN, 315, 250),
+        SPIDERS_DEN_NEST("nest", "Top of Nest", Island.SPIDERS_DEN, 390, 50),
+        ARACHNES_SANCTUARY("arachne", "Arachne's Sanctuary", Island.SPIDERS_DEN, 220, 135),
 
-        THE_PARK("park", Translations.getMessage("warpMenu.spawn"), Island.THE_PARK, 263, 308),
-        HOWLING_CAVE("howl", "Howling Cave", Island.THE_PARK, 254, 202),
-        THE_PARK_JUNGLE("jungle", "Jungle", Island.THE_PARK, 194, 82),
+        THE_PARK("park", Translations.getMessage("warpMenu.spawn"), Island.THE_PARK, 420, 350),
+        HOWLING_CAVE("howl", "Howling Cave", Island.THE_PARK, 310, 180),
+        THE_PARK_JUNGLE("jungle", "Jungle", Island.THE_PARK, 150, 100),
 
-        // https://hypixel-skyblock.fandom.com/wiki/Galatea?file=Galatea.png
         GALATEA("galatea", Translations.getMessage("warpMenu.spawn"), Island.GALATEA, 160, 260),
         MURKWATER_LOCH("murkwater", "Murkwater Loch", Island.GALATEA, 220, 140),
 
         THE_END("end", Translations.getMessage("warpMenu.spawn"), Island.THE_END, 440, 291),
-        DRAGONS_NEST("drag", "Dragon's Nest", Island.THE_END, 260, 248),
-        VOID_SEPULTURE("void", "Void Sepulture", Island.THE_END, 370, 227),
+        DRAGONS_NEST("drag", "Dragon's Nest", Island.THE_END, 260, 240),
+        VOID_SEPULTURE("void", "Void Sepulture", Island.THE_END, 370, 200),
 
         CRIMSON_ISLE("nether", Translations.getMessage("warpMenu.spawn"), Island.CRIMSON_ISLE, 70, 280),
-        FORGOTTEN_SKULL("kuudra", "Forgotten Skull", Island.CRIMSON_ISLE, 460, 90),
+        FORGOTTEN_SKULL("kuudra", "Forgotten Skull", Island.CRIMSON_ISLE, 450, 100),
         THE_WASTELAND("wasteland", "The Wasteland", Island.CRIMSON_ISLE, 330, 160),
         DRAGONTAIL("dragontail", "Dragontail", Island.CRIMSON_ISLE, 140, 150),
         SCARLETON("scarleton", "Scarleton", Island.CRIMSON_ISLE, 400, 220),
-        SMOLDERING_TOMB("smold", "Smoldering Tomb", Island.CRIMSON_ISLE, 350, 70),
+        SMOLDERING_TOMB("smoldering", "Smoldering Tomb", Island.CRIMSON_ISLE, 350, 80),
 
         THE_BARN("barn", Translations.getMessage("warpMenu.spawn"), Island.THE_BARN, 140, 150),
-        MUSHROOM_DESERT("desert", Translations.getMessage("warpMenu.spawn"), Island.MUSHROOM_DESERT, 210, 295),
-        TRAPPER("trapper", "Trapper's Hut", Island.MUSHROOM_DESERT, 300, 200),
+        MUSHROOM_DESERT("desert", Translations.getMessage("warpMenu.spawn"), Island.MUSHROOM_DESERT, 250, 320),
+        TRAPPER("trapper", "Trapper's Hut", Island.MUSHROOM_DESERT, 185, 85),
 
         GOLD_MINE("gold", Translations.getMessage("warpMenu.spawn"), Island.GOLD_MINE, 86, 259),
 
-        DEEP_CAVERNS("deep", Translations.getMessage("warpMenu.spawn"), Island.DEEP_CAVERNS, 97, 213),
-        DWARVEN_MINES("mines", "Dwarven Mines", Island.DEEP_CAVERNS, 280, 205),
-        DWARVEN_FORGE("forge", "Forge", Island.DEEP_CAVERNS, 280, 280),
-        DWARVEN_BASE_CAMP("base", "Dwarven Base Camp", Island.DEEP_CAVERNS, 240, 330),
-        CRYSTAL_HOLLOWS("crystals", "Crystal Hollows", Island.DEEP_CAVERNS, 190, 360),
-        CRYSTAL_NUCLEUS("nucleus", "Crystal Nucleus", Island.DEEP_CAVERNS, 140, 390),
+        DEEP_CAVERNS("deep", Translations.getMessage("warpMenu.spawn"), Island.DEEP_CAVERNS, 90, 213),
+        CRYSTAL_NUCLEUS("nucleus", "Crystal Nucleus", Island.DEEP_CAVERNS, 150, 380),
 
-        DUNGEON_HUB_ISLAND("dungeon_hub", Translations.getMessage("warpMenu.spawn"), Island.DUNGEON_HUB, 35, 80),
+        THE_FORGE("forge", "", Island.THE_FORGE, 35, 90), // Exception
+
+        DWARVEN_MINES("mines", "", Island.DWARVEN_MINES, 36, 90),
+
+        DWARVEN_BASE_CAMP("base", "", Island.DWARVEN_BASE_CAMP, 38, 90),
+
+        CRYSTAL_HOLLOWS("crystals", "", Island.CRYSTAL_HOLLOWS, 35, 90),
+
+        DUNGEON_HUB_ISLAND("dungeon_hub", "", Island.DUNGEON_HUB, 35, 90),
         ;
 
         private final String warpName;
