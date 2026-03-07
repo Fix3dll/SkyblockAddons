@@ -119,7 +119,7 @@ public class TextUtils {
      * @since 2.2.3
      */
     public static Component formatPrice(double price) {
-        return price == -1
+        return price < 0
                 ? Component.literal(Translations.getMessage("tooltip.none")).withColor(ColorCode.RED.getColor())
                 : Component.literal(TextUtils.formatCoin(price)).withColor(ColorCode.GOLD.getColor());
     }
