@@ -395,6 +395,23 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 if (setting == FeatureSetting.TANK_COLOR) row += 0.4F; // Last spacing
                 break;
 
+            case BAZAAR_PRICES_UPDATE_INTERVAL:
+                boxWidth = 120;
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, Translations.getMessage("settings.itemPricesInTooltip.updateInterval"), true, ColorCode.GRAY.getColor()));
+                row += .1F;
+                y = getRowHeightSetting(row);
+                addRenderableWidget(
+                        new ButtonSlider(
+                                x, y, boxWidth, 20,
+                                feature.getAsNumber(setting).floatValue(), 20.0F, 120.0F, 1.0F,
+                                updatedValue -> feature.set(setting, updatedValue)
+                        ).setSuffix(" seconds")
+                );
+                row += .1F;
+                break;
+
             default:
                 if (setting.isUniversal()) return; // see addUniversalButton()
 

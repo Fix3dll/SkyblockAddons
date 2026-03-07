@@ -27,7 +27,9 @@ import com.fix3dll.skyblockaddons.utils.SkyblockAddonsMessageFactory;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.BazaarData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ElectionData;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.MayorJerryData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.gson.ConfigValuesAdapter;
@@ -137,6 +139,8 @@ public class SkyblockAddons implements ClientModInitializer {
 	@Setter private OnlineData onlineData;
 	@Setter private ElectionData electionData;
 	@Setter private MayorJerryData mayorJerryData;
+	@Setter private BazaarData bazaarData = new BazaarData();
+	@Setter private ItemsData itemsData = new ItemsData();
 
 	public SkyblockAddons() {
 		instance = this;

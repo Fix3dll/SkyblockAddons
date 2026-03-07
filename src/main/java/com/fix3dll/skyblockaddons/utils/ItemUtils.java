@@ -10,9 +10,11 @@ import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.gson.JsonElement;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
@@ -41,6 +43,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -674,6 +677,27 @@ public class ItemUtils {
         }
 
         return null;
+    }
+
+    /**
+     * Constructs a {@link GameProfile} from raw Mojang skin properties.
+     *
+     * <p>The {@link UUID} is derived deterministically from {@code value} via
+     * {@link UUID#nameUUIDFromBytes} so that repeated calls with the same texture
+     * produce the same UUID, preserving Minecraft's skin cache behaviour.
+     *
+     * @param value     Base64-encoded texture payload
+     * @param signature Mojang RSA signature for {@code value}, may be {@code null}
+     * @return a {@link GameProfile} with the {@code "textures"} property populated
+     * @since 2.2.3
+     */
+    public static GameProfile createGameProfile(String value, String signature) {
+        PropertyMap propertyMap = new PropertyMap(ImmutableMultimap.of());
+        propertyMap.put("textures", new Property("textures", value, signature));
+
+        UUID uuid = UUID.nameUUIDFromBytes(value.getBytes(StandardCharsets.UTF_8));
+
+        return new GameProfile(uuid, "", propertyMap);
     }
 
 }

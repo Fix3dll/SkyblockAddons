@@ -23,7 +23,7 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
-import com.fix3dll.skyblockaddons.utils.data.requests.MayorRequest;
+import com.fix3dll.skyblockaddons.utils.data.requests.ElectionRequest;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -229,7 +229,7 @@ public class ScreenListener {
 
                         if (!mayorName.equals(main.getUtils().getMayor())) {
                             // Update new mayor data from API
-                            DataUtils.loadOnlineData(new MayorRequest(mayorName));
+                            DataUtils.loadOnlineData(new ElectionRequest(mayorName));
 
                             main.getUtils().setMayor(mayorName);
                             LOGGER.info("Mayor changed to {}", mayorName);
@@ -248,7 +248,7 @@ public class ScreenListener {
                 if (!StringUtil.isNullOrEmpty(mayorName)) {
                     if (!mayorName.equals(main.getUtils().getMayor())) {
                         // Update new mayor data from API
-                        DataUtils.loadOnlineData(new MayorRequest(mayorName));
+                        DataUtils.loadOnlineData(new ElectionRequest(mayorName));
 
                         main.getUtils().setMayor(mayorName);
                         LOGGER.info("Mayor changed to {}", mayorName);

@@ -14,21 +14,24 @@ public class ButtonSlider extends SkyblockAddonsButton {
     private final float min;
     private final float max;
     private final float step;
+    private final boolean stepHasDecimal;
     private final UpdateCallback<Float> sliderCallback;
     private String prefix = "";
+    private String suffix = "";
 
     private boolean dragging;
     private float normalizedValue;
     private double previousDoubleMouseX = -1D;
 
     public ButtonSlider(double x, double y, int width, int height, float value, float min, float max, float step, UpdateCallback<Float> sliderCallback) {
-        super((int) x, (int) y, Component.literal(TextUtils.roundForString(value, 2)));
+        super((int) x, (int) y, Component.literal(TextUtils.roundForString(value, step != ((int) step) ? 2 : 0)));
         this.width = width;
         this.height = height;
         this.sliderCallback = sliderCallback;
         this.min = min;
         this.max = max;
         this.step = step;
+        this.stepHasDecimal = step != ((int) step);
         this.normalizedValue = MathUtils.normalizeSliderValue(value, min, max, step);
     }
 
@@ -50,7 +53,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
                 previousDoubleMouseX = doubleMouseX;
                 this.normalizedValue = (float) ((doubleMouseX - (getX() + 4)) / (float) (width - 8));
                 this.normalizedValue = Mth.clamp(normalizedValue, 0.0F, 1.0F);
-                onUpdate();
+                this.updateDisplayString();
             }
 
             graphics.blitSprite(
@@ -68,6 +71,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
     @Override
     public void onRelease(MouseButtonEvent event) {
         this.dragging = false;
+        sliderCallback.onUpdate(denormalize());
     }
 
     @Override
@@ -75,7 +79,7 @@ public class ButtonSlider extends SkyblockAddonsButton {
         this.normalizedValue = (float) (event.x() - (getX() + 4)) / (float) (this.width - 8);
         this.normalizedValue = Mth.clamp(this.normalizedValue, 0.0F, 1.0F);
         this.dragging = true;
-        onUpdate();
+        this.updateDisplayString();
     }
 
     public ButtonSlider setPrefix(String text) {
@@ -84,13 +88,14 @@ public class ButtonSlider extends SkyblockAddonsButton {
         return this;
     }
 
-    private void onUpdate() {
-        sliderCallback.onUpdate(denormalize());
+    public ButtonSlider setSuffix(String text) {
+        suffix = text;
         this.updateDisplayString();
+        return this;
     }
 
     private void updateDisplayString() {
-        setMessage(Component.literal(prefix + TextUtils.roundForString(denormalize(), 2)));
+        setMessage(Component.literal(prefix + TextUtils.roundForString(denormalize(), stepHasDecimal ? 2 : 0) + suffix));
     }
 
     public float denormalize() {

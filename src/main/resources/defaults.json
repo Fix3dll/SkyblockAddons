@@ -1002,5 +1002,15 @@
     "settings": {
       "BIGGER_WAKE": false
     }
+  },
+  "ITEM_PRICES_IN_TOOLTIP": {
+    "value": false,
+    "color": -5592406,
+    "settings": {
+      "NPC_SELL_PRICES_IN_TOOLTIP": true,
+      "BAZAAR_PRICES_IN_TOOLTIP": true,
+      "ALWAYS_SHOW_BULK_PRICE": false,
+      "BAZAAR_PRICES_UPDATE_INTERVAL": 60.0
+    }
   }
 }

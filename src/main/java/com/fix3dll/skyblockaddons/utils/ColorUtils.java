@@ -86,4 +86,33 @@ public class ColorUtils {
     public static SkyblockColor getDummySkyblockColor(SkyblockColor.ColorAnimation colorAnimation, int color) {
         return SKYBLOCK_COLOR.setColorAnimation(colorAnimation).setColor(color);
     }
+
+    /**
+     * Parses a {@code "R,G,B"} color string to a packed RGB int ({@code 0xRRGGBB}).
+     * Hot path — avoids regex, split(), and heap allocation.
+     * Returns {@code null} on null or malformed input.
+     * @since 2.2.3
+     */
+    public static Integer parseColorToRgb(String color) {
+        if (color == null) return null;
+
+        int first = color.indexOf(',');
+        if (first < 1) return null;
+
+        int second = color.indexOf(',', first + 1);
+        if (second < 0 || second == color.length() - 1) return null;
+
+        try {
+            int r = Integer.parseInt(color, 0,           first,          10);
+            int g = Integer.parseInt(color, first  + 1,  second,         10);
+            int b = Integer.parseInt(color, second + 1,  color.length(), 10);
+
+            if ((r | g | b) < 0 || r > 255 || g > 255 || b > 255) return null;
+
+            return (r << 16) | (g << 8) | b;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
 }

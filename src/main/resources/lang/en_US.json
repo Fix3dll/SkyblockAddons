@@ -292,7 +292,14 @@
       "title": "Custom Colored Fishing Particles",
       "biggerWake": "Enlarge Wake Particles"
     },
-    "showOnlyWhenScorpiusIsMayor": "Show only when Scorpius is mayor"
+    "showOnlyWhenScorpiusIsMayor": "Show only when Scorpius is mayor",
+    "itemPricesInTooltip": {
+      "title": "Item Prices In Tooltip",
+      "bazaarPrices": "Show bazaar buy/sell prices in tooltip",
+      "npcSellPrices": "Show NPC sell prices in tooltip",
+      "alwaysShowBulkPrice": "Always show bulk price",
+      "updateInterval": "Time in seconds for updating bazaar values via the API"
+    }
   },
   "messages": {
     "enchants": "Enchants",
@@ -396,6 +403,10 @@
       "unformatted": "Chat message copied to clipboard!",
       "formatted": "Formatted chat message copied to clipboard!",
       "failed": "An error occurred while copying the message. See log for details. (Possible mod conflict)"
+    },
+    "itemPricesInTooltip": {
+      "apiBazaarError": "An error occurred while retrieving bazaar data from API! Check the console or latest.log for detailed information.",
+      "apiBazaarUpdated": "Bazaar data has been updated from API."
     }
   },
   "discordStatus": {
@@ -808,5 +819,11 @@
     "toxophiliteCombatXp": "Toxophilite Combat XP",
     "absorbLogsChopped": "Absorb Logs Chopped",
     "maxed": "Maxed"
+  },
+  "tooltip": {
+    "buyPrice": "Bazaar buy price: ",
+    "sellPrice": "Bazaar sell price: ",
+    "npcSellPrice": "NPC sell price: ",
+    "none": "None"
   }
 }
