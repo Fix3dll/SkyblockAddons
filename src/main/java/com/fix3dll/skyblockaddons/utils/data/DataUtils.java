@@ -20,10 +20,11 @@ import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.requests.CompactorItemsRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.ContainersRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.CooldownsRequest;
+import com.fix3dll.skyblockaddons.utils.data.requests.ElectionRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.EnchantmentsRequest;
+import com.fix3dll.skyblockaddons.utils.data.requests.ItemsRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.LocalizationsRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.LocationsRequest;
-import com.fix3dll.skyblockaddons.utils.data.requests.MayorRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.OnlineDataRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.PetItemsRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.SeaCreaturesRequest;
@@ -126,7 +127,8 @@ public class DataUtils {
      */
     public static void readLocalAndFetchOnline() {
         readLocalFileData();
-        DataUtils.loadOnlineData(new MayorRequest()); // API data
+        DataUtils.loadOnlineData(new ElectionRequest()); // API data
+        DataUtils.loadOnlineData(new ItemsRequest()); // API request but constant
 
         if (USE_ONLINE_DATA) {
             fetchFromOnline();

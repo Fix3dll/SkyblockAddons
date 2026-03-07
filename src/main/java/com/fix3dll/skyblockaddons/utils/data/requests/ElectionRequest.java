@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 import java.net.URI;
 import java.util.Date;
 
-public class MayorRequest extends RemoteFileRequest<ElectionData> {
+public class ElectionRequest extends RemoteFileRequest<ElectionData> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
@@ -30,7 +30,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
     private static ScheduledTask updateTask;
     private static ScheduledTask jerryMayorTask;
 
-    public MayorRequest() {
+    public ElectionRequest() {
         this("");
     }
 
@@ -39,7 +39,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
      * announced via chat.
      * @param newMayorName according to the latest election results in the chat, the name of the new mayor
      */
-    public MayorRequest(String newMayorName) {
+    public ElectionRequest(String newMayorName) {
         super(
                 PATH,
                 ElectionData.class,
@@ -47,7 +47,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
                 false,
                 true
         );
-        MayorRequest.newMayorName = newMayorName;
+        ElectionRequest.newMayorName = newMayorName;
     }
 
     private static class MayorCallback extends DataFetchCallback<ElectionData> {
@@ -101,7 +101,7 @@ public class MayorRequest extends RemoteFileRequest<ElectionData> {
             int delayTick = (int) (nextUpdateTime - System.currentTimeMillis()) / 50;
 
             return main.getScheduler().scheduleAsyncTask(
-                    scheduledTask -> DataUtils.loadOnlineData(new MayorRequest(expectedMayorName)),
+                    scheduledTask -> DataUtils.loadOnlineData(new ElectionRequest(expectedMayorName)),
                     delayTick
             );
         }

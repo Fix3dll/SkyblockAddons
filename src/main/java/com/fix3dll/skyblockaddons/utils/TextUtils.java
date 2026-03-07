@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,6 +42,7 @@ import java.util.regex.Pattern;
  * Collection of text/string related utility methods
  */
 public class TextUtils {
+
     /**
      * Hypixel uses US number format.
      */
@@ -50,6 +52,8 @@ public class TextUtils {
      * style
      */
     public static final NumberFormat NUMBER_FORMAT_NO_GROUPING = NumberFormat.getInstance(Locale.US);
+    public static final NumberFormat COIN_FORMAT = NumberFormat.getInstance(Locale.US);
+
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-ORZ]");
     private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("\\[✌]|[♲Ⓑ⚒ቾ]+");
     private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[\\d+]");
@@ -75,6 +79,8 @@ public class TextUtils {
         NUMBER_FORMAT.setMaximumFractionDigits(2);
         NUMBER_FORMAT_NO_GROUPING.setMaximumFractionDigits(2);
         NUMBER_FORMAT_NO_GROUPING.setGroupingUsed(false);
+        COIN_FORMAT.setMaximumFractionDigits(1);
+        COIN_FORMAT.setMinimumFractionDigits(1);
     }
 
     /** For test environment */
@@ -97,6 +103,25 @@ public class TextUtils {
         } else {
             return NUMBER_FORMAT_NO_GROUPING.format(number);
         }
+    }
+
+    /**
+     * Formats a coin value with US thousands separator and one decimal place,
+     * e.g. {@code 123456.0} → {@code "123,456.0"}.
+     * @since 2.2.3
+     */
+    public static String formatCoin(Number number) {
+        return COIN_FORMAT.format(number);
+    }
+
+    /**
+     * Returns a yellow formatted coin value, or a red localized {@code "None"} if the price is {@code -1}.
+     * @since 2.2.3
+     */
+    public static Component formatPrice(double price) {
+        return price == -1
+                ? Component.literal(Translations.getMessage("tooltip.none")).withColor(ColorCode.RED.getColor())
+                : Component.literal(TextUtils.formatCoin(price)).withColor(ColorCode.GOLD.getColor());
     }
 
     /**

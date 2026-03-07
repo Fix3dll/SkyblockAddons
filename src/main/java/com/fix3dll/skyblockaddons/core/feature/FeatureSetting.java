@@ -140,6 +140,10 @@ public enum FeatureSetting {
     BIGGER_WAKE("settings.coloredFishingParticles.biggerWake", Feature.COLORED_FISHING_PARTICLES),
     SHOW_ONLY_WHEN_SCORPIUS_IS_MAYOR("settings.showOnlyWhenScorpiusIsMayor", Feature.DARK_AUCTION_TIMER),
     ALLOW_CHAT_MESSAGE_COPYING_OUTSIDE_SKYBLOCK("settings.allowChatMessageCopyingOutsideSkyblock", Feature.CHAT_MESSAGE_COPYING),
+    NPC_SELL_PRICES_IN_TOOLTIP("settings.itemPricesInTooltip.npcSellPrices", Feature.ITEM_PRICES_IN_TOOLTIP),
+    BAZAAR_PRICES_IN_TOOLTIP("settings.itemPricesInTooltip.bazaarPrices", Feature.ITEM_PRICES_IN_TOOLTIP),
+    ALWAYS_SHOW_BULK_PRICE("settings.itemPricesInTooltip.alwaysShowBulkPrice", Feature.ITEM_PRICES_IN_TOOLTIP),
+    BAZAAR_PRICES_UPDATE_INTERVAL("settings.itemPricesInTooltip.updateInterval", Feature.ITEM_PRICES_IN_TOOLTIP),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),

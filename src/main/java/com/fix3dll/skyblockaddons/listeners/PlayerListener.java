@@ -11,6 +11,7 @@ import com.fix3dll.skyblockaddons.core.SkillType;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.SkyblockOre;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
+import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.seacreatures.SeaCreatureManager;
@@ -34,6 +35,7 @@ import com.fix3dll.skyblockaddons.features.tablist.TabListParser;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.utils.ActionBarParser;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
+import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.InventoryUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
@@ -44,7 +46,10 @@ import com.fix3dll.skyblockaddons.utils.ScoreboardManager;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
-import com.fix3dll.skyblockaddons.utils.data.requests.MayorRequest;
+import com.fix3dll.skyblockaddons.utils.data.requests.ElectionRequest;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.BazaarData;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
@@ -92,6 +97,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -100,11 +106,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -578,7 +586,7 @@ public class PlayerListener {
                     String mayorName = lines[0].substring(lines[0].lastIndexOf(" ") + 1);
 
                     // Update new mayor data from API
-                    DataUtils.loadOnlineData(new MayorRequest(mayorName));
+                    DataUtils.loadOnlineData(new ElectionRequest(mayorName));
 
                     main.getUtils().setMayor(mayorName);
                     LOGGER.info("Mayor changed to {}", mayorName);
@@ -839,14 +847,17 @@ public class PlayerListener {
             }
         }
 
+        String itemId = null;
         if (Feature.SHOW_SKYBLOCK_ITEM_ID.isEnabled() || Feature.DEVELOPER_MODE.isEnabled()) {
-            String itemId = ItemUtils.getSkyblockItemID(itemStack);
-            Component tooltipLine = Component.literal(ColorCode.DARK_GRAY + "skyblock:" + itemId);
+            itemId = ItemUtils.getSkyblockItemID(itemStack);
+            Component tooltipLine = Component.literal( "skyblock:" + itemId).withColor(ColorCode.DARK_GRAY.getColor());
 
             if (itemId != null) {
                 if (tooltipFlag.isAdvanced()) {
                     for (int i = components.size(); i-- > 0; ) {
-                        if (TextUtils.getFormattedText(components.get(i)).startsWith(ColorCode.DARK_GRAY + "minecraft:")) {
+                        Component component = components.get(i);
+
+                        if (component != null && component.getString().startsWith("minecraft:")) {
                             components.add(i + 1, tooltipLine);
                             break;
                         }
@@ -855,6 +866,10 @@ public class PlayerListener {
                     components.add(tooltipLine);
                 }
             }
+        }
+
+        if (Feature.ITEM_PRICES_IN_TOOLTIP.isEnabled()) {
+            addItemPricesToTooltip(itemId, itemStack, tooltipContext, tooltipFlag, components);
         }
     }
 
@@ -1279,6 +1294,106 @@ public class PlayerListener {
             }
 
             previousAllowFlyingState = thePlayer.getAbilities().mayfly;
+        }
+    }
+
+    /**
+     * Appends SkyBlock price information to the given tooltip component list.
+     *
+     * <p>Depending on the enabled {@link FeatureSetting settings}, the following lines may be added:
+     * <ul>
+     *   <li><b>Bazaar buy/sell prices</b> — resolved via the Hypixel Bazaar API.
+     *       Enchanted books are looked up by their enchantment ID
+     *       (e.g. {@code ENCHANTMENT_SHARPNESS_5}) rather than {@code ENCHANTED_BOOK}.</li>
+     *   <li><b>NPC sell price</b> — resolved from the SkyBlock items API.</li>
+     * </ul>
+     *
+     * <p>If {@link FeatureSetting#ALWAYS_SHOW_BULK_PRICE} is disabled and
+     * {@code LEFT SHIFT} is not held, prices are shown for a single item.
+     * When the stack count is greater than one and shift is held, prices are
+     * multiplied by {@link ItemStack#getCount()}. In the latter case a
+     * {@code [LSHIFT] for x<count>} hint is prepended to the added lines.
+     *
+     * <p>Price labels are rendered in the feature's configured color, or in
+     * chroma if {@link Feature#isChroma()} is {@code true}.
+     *
+     * <p><b>This method is called on the render thread.</b>
+     *
+     * @param itemId        the SkyBlock item ID, e.g. {@code "ASPECT_OF_THE_DRAGON"};
+     *                      may be {@code null}, in which case it is resolved lazily
+     *                      via {@link ItemUtils#getSkyblockItemID(ItemStack)}
+     * @param itemStack     the item whose tooltip is being built
+     * @param tooltipContext Minecraft tooltip context passed through from the event
+     * @param tooltipFlag   Minecraft tooltip flag passed through from the event
+     * @param components    mutable tooltip line list to append price lines to
+     * @since 2.2.3
+     */
+    private void addItemPricesToTooltip(String itemId,
+                                        ItemStack itemStack,
+                                        Item.TooltipContext tooltipContext,
+                                        TooltipFlag tooltipFlag,
+                                        List<Component> components) {
+        Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
+        UnaryOperator<Style> textColor = style -> feature.isChroma()
+                ? style.withColor(DrawUtils.CHROMA_TEXT_COLOR) // TextColor
+                : style.withColor(feature.getColor());         // int
+        boolean lshift = feature.isEnabled(FeatureSetting.ALWAYS_SHOW_BULK_PRICE)
+                || InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT);
+        int count = itemStack.getCount();
+        int countToBeShown = lshift ? count : 1;
+
+        int addedLines = 0;
+        if (feature.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP)) {
+            if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
+
+            String apiItemId = itemId;
+            if ("ENCHANTED_BOOK".equals(itemId)) {
+                var enchantments = ItemUtils.getEnchantments(itemStack).entrySet().iterator();
+
+                if (enchantments.hasNext()) {
+                    var enchant = enchantments.next();
+                    apiItemId = "ENCHANTMENT_" + enchant.getKey().toUpperCase(Locale.ENGLISH) + "_" + enchant.getValue();
+                }
+            }
+
+            if (apiItemId != null) {
+                BazaarData.Product product = main.getBazaarData().getProducts().get(apiItemId);
+
+                if (product != null) {
+                    Component buyPrice = TextUtils.formatPrice(product.getInstaBuyPrice() * countToBeShown);
+                    Component sellPrice = TextUtils.formatPrice(product.getInstaSellPrice() * countToBeShown);
+
+                    components.add(Component.literal(Translations.getMessage("tooltip.buyPrice"))
+                            .withStyle(textColor).append(buyPrice));
+                    components.add(Component.literal(Translations.getMessage("tooltip.sellPrice"))
+                            .withStyle(textColor).append(sellPrice));
+                    addedLines += 2;
+                }
+            }
+        }
+
+        if (feature.isEnabled(FeatureSetting.NPC_SELL_PRICES_IN_TOOLTIP)) {
+            if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
+
+            if (itemId != null) {
+                ItemsData.Item item = main.getItemsData().getItemMap().get(itemId);
+
+                if (item != null && item.getNpcSellPrice() != 0.0D) {
+                    Component npcSellPrice = TextUtils.formatPrice(item.getNpcSellPrice() * countToBeShown);
+
+                    components.add(Component.literal(Translations.getMessage("tooltip.npcSellPrice"))
+                            .withStyle(textColor).append(npcSellPrice));
+                    addedLines += 1;
+                }
+            }
+        }
+
+        if (!lshift && count > 1 && addedLines > 0) {
+            int headIndex = components.size() - addedLines;
+
+            if (headIndex >= 0) {
+                components.add(headIndex, Component.literal("[LSHIFT] for x" + count).withColor(ColorCode.DARK_GRAY.getColor()));
+            }
         }
     }
 
