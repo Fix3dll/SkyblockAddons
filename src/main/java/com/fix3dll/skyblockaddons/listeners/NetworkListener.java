@@ -13,6 +13,7 @@ import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.BazaarRequest;
+import com.fix3dll.skyblockaddons.utils.data.requests.LowestBinRequest;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.ChannelHandlerContext;
@@ -59,6 +60,7 @@ public class NetworkListener {
         );
 
         DataUtils.loadOnlineData(new BazaarRequest());
+        DataUtils.loadOnlineData(new LowestBinRequest());
         DataUtils.onSkyblockJoined();
     }
 
@@ -74,6 +76,7 @@ public class NetworkListener {
             updateHealth = null;
         }
         BazaarRequest.cancelUpdateTask();
+        LowestBinRequest.cancelUpdateTask();
     }
 
     private void onPacketRead(ChannelHandlerContext channelHandlerContext, Packet<?> packet) {

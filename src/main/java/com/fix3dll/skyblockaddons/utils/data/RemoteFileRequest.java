@@ -5,17 +5,23 @@ import com.fix3dll.skyblockaddons.utils.Utils;
 import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
+import java.util.zip.GZIPInputStream;
 
 public class RemoteFileRequest<T> {
 
@@ -61,7 +67,10 @@ public class RemoteFileRequest<T> {
                 .build();
 
         CompletableFuture<T> mainOperation = sendRequestWithRetry(client, request, MAX_RETRY_COUNT)
-                .thenApply(body -> GSON.fromJson(body, type));
+                .thenApply(bytes -> isGzipUrl()
+                        ? parseGzip(bytes)
+                        : GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), type)
+                );
         this.futureTask = mainOperation;
         mainOperation.whenCompleteAsync((result, ex) -> {
             try {
@@ -83,8 +92,8 @@ public class RemoteFileRequest<T> {
         }, executor);
     }
 
-    private CompletableFuture<String> sendRequestWithRetry(HttpClient client, HttpRequest request, int retries) {
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+    private CompletableFuture<byte[]> sendRequestWithRetry(HttpClient client, HttpRequest request, int retries) {
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray())
                 .thenCompose(response -> {
                     if (response.statusCode() == 200) {
                         return CompletableFuture.completedFuture(response.body());
@@ -116,6 +125,19 @@ public class RemoteFileRequest<T> {
 
     protected boolean isDone() {
         return futureTask != null && futureTask.isDone();
+    }
+
+    @SneakyThrows
+    private T parseGzip(byte[] bytes) {
+        try (var gzip = new GZIPInputStream(new ByteArrayInputStream(bytes));
+             var reader = new BufferedReader(new InputStreamReader(gzip, StandardCharsets.UTF_8))) {
+            return GSON.fromJson(reader, type);
+        }
+    }
+
+    private boolean isGzipUrl() {
+        String url = getURL();
+        return url.endsWith(".gz") || url.endsWith(".gzip");
     }
 
 }

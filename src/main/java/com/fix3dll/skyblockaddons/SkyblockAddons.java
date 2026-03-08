@@ -65,6 +65,7 @@ import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -141,6 +142,7 @@ public class SkyblockAddons implements ClientModInitializer {
 	@Setter private MayorJerryData mayorJerryData;
 	@Setter private BazaarData bazaarData = new BazaarData();
 	@Setter private ItemsData itemsData = new ItemsData();
+	@Setter private Map<String, Double> lowestBinData = Map.of();
 
 	public SkyblockAddons() {
 		instance = this;

@@ -6,11 +6,13 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.ItemType;
+import com.fix3dll.skyblockaddons.core.PetInfo;
 import com.fix3dll.skyblockaddons.core.PlayerStat;
 import com.fix3dll.skyblockaddons.core.SkillType;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.SkyblockOre;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
+import com.fix3dll.skyblockaddons.core.SkyblockRune;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
@@ -1302,11 +1304,15 @@ public class PlayerListener {
      *
      * <p>Depending on the enabled {@link FeatureSetting settings}, the following lines may be added:
      * <ul>
+     *   <li><b>Lowest BIN prices</b> - from <a href="https://moulberry.codes">moulberry.codes</a></li>
      *   <li><b>Bazaar buy/sell prices</b> — resolved via the Hypixel Bazaar API.
      *       Enchanted books are looked up by their enchantment ID
      *       (e.g. {@code ENCHANTMENT_SHARPNESS_5}) rather than {@code ENCHANTED_BOOK}.</li>
      *   <li><b>NPC sell price</b> — resolved from the SkyBlock items API.</li>
      * </ul>
+     *
+     * <p>Special item types (PET, RUNE, NEW_YEAR_CAKE, POTION, perfect stat boost items)
+     * are resolved to their API-specific item IDs before lookup.
      *
      * <p>If {@link FeatureSetting#ALWAYS_SHOW_BULK_PRICE} is disabled and
      * {@code LEFT SHIFT} is not held, prices are shown for a single item.
@@ -1334,15 +1340,106 @@ public class PlayerListener {
                                         TooltipFlag tooltipFlag,
                                         List<Component> components) {
         Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
+        boolean boldLines = feature.isEnabled(FeatureSetting.BOLD_PRICE_LINES);
         UnaryOperator<Style> textColor = style -> feature.isChroma()
-                ? style.withColor(DrawUtils.CHROMA_TEXT_COLOR) // TextColor
-                : style.withColor(feature.getColor());         // int
+                ? style.withBold(boldLines).withColor(DrawUtils.CHROMA_TEXT_COLOR) // TextColor
+                : style.withBold(boldLines).withColor(feature.getColor());         // int
         boolean lshift = feature.isEnabled(FeatureSetting.ALWAYS_SHOW_BULK_PRICE)
                 || InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT);
         int count = itemStack.getCount();
         int countToBeShown = lshift ? count : 1;
 
         int addedLines = 0;
+
+        if (feature.isEnabled(FeatureSetting.LOWEST_BIN_PRICES_IN_TOOLTIP)) {
+            if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
+
+            String apiItemId = itemId;
+            String extraString = null;
+            switch (apiItemId) {
+                case "PET" -> {
+                    PetManager.Pet pet = PetManager.getInstance().getPetFromItemStack(itemStack);
+
+                    if (pet != null) {
+                        PetInfo petInfo = pet.getPetInfo();
+
+                        if (petInfo != null) {
+                            apiItemId = petInfo.getPetSkyblockId() + ";" + petInfo.getPetRarity().ordinal();
+
+                            int petLevel = pet.getPetLevel();
+                            if (petLevel != 0 && pet.getPetLevel() % 100 == 0) {
+                                extraString = "+" + petLevel;
+                                apiItemId += extraString;
+                            }
+                        }
+                    }
+                }
+                case "RUNE" -> {
+                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                    if (extraAttributes != null) {
+                        SkyblockRune rune = ItemUtils.getRuneData(extraAttributes);
+
+                        if (rune != null) {
+                            apiItemId = rune.getType() + "_RUNE;" + rune.getLevel();
+                        }
+                    }
+                }
+                case "NEW_YEAR_CAKE" -> {
+                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                    if (extraAttributes != null) {
+                        int cakeYears = extraAttributes.getIntOr("new_years_cake", -1);
+
+                        if (cakeYears != -1) {
+                            apiItemId += "+" + cakeYears;
+                        }
+                    }
+                }
+                case "POTION" -> {
+                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                    if (extraAttributes != null) {
+                        String potion = extraAttributes.getStringOr("potion", "");
+                        int potionLevel = extraAttributes.getIntOr("potion_level", -1);
+
+                        if (!potion.isEmpty() && potionLevel != -1) {
+                            apiItemId += "_" + potion.toUpperCase(Locale.ENGLISH) + ";" + potionLevel;
+                        }
+                    }
+                }
+                case null -> {
+                    return;
+                }
+                default -> {
+                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                    if (extraAttributes != null) {
+                        int baseStatBoost = extraAttributes.getIntOr("baseStatBoostPercentage", -1);
+
+                        if (baseStatBoost == 50) {
+                            extraString = "+PERFECT";
+                            apiItemId += extraString;
+                        }
+                    }
+                }
+            }
+
+            double lowestBinPrice = main.getLowestBinData().getOrDefault(apiItemId, -1.0D);
+            if (extraString != null && lowestBinPrice == -1.0D) {
+                lowestBinPrice = main.getLowestBinData().getOrDefault(
+                        apiItemId.replace(extraString, ""), -1.0D
+                );
+            }
+
+            if (lowestBinPrice > 0.0D) {
+                Component priceComponent = TextUtils.formatPrice(lowestBinPrice, 0, boldLines);
+
+                components.add(Component.literal(Translations.getMessage("tooltip.lowestBinPrice"))
+                        .withStyle(textColor).append(priceComponent));
+            }
+        }
+
         if (feature.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP)) {
             if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
 
@@ -1360,8 +1457,8 @@ public class PlayerListener {
                 BazaarData.Product product = main.getBazaarData().getProducts().get(apiItemId);
 
                 if (product != null) {
-                    Component buyPrice = TextUtils.formatPrice(product.getInstaBuyPrice() * countToBeShown);
-                    Component sellPrice = TextUtils.formatPrice(product.getInstaSellPrice() * countToBeShown);
+                    Component buyPrice = TextUtils.formatPrice(product.getInstaBuyPrice() * countToBeShown, 1, boldLines);
+                    Component sellPrice = TextUtils.formatPrice(product.getInstaSellPrice() * countToBeShown, 1, boldLines);
 
                     components.add(Component.literal(Translations.getMessage("tooltip.buyPrice"))
                             .withStyle(textColor).append(buyPrice));
@@ -1379,7 +1476,8 @@ public class PlayerListener {
                 ItemsData.Item item = main.getItemsData().getItemMap().get(itemId);
 
                 if (item != null && item.getNpcSellPrice() != 0.0D) {
-                    Component npcSellPrice = TextUtils.formatPrice(item.getNpcSellPrice() * countToBeShown);
+                    double price = item.getNpcSellPrice() * countToBeShown;
+                    Component npcSellPrice = TextUtils.formatPrice(price, price <= 10.0D ? 2 : 0, boldLines);
 
                     components.add(Component.literal(Translations.getMessage("tooltip.npcSellPrice"))
                             .withStyle(textColor).append(npcSellPrice));

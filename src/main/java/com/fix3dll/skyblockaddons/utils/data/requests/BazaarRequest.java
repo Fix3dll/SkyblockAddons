@@ -68,7 +68,7 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
             if (apiBazaarError) {
                 apiBazaarError = false;
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
-                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiBazaarUpdated"))
+                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiUpdated", "Bazaar"))
                                 .withColor(ColorCode.GREEN.getColor())
                 ));
             }
@@ -80,7 +80,7 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
             if (!apiBazaarError) {
                 apiBazaarError = true;
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
-                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiBazaarError"))
+                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiError", "Bazaar"))
                                 .withColor(ColorCode.RED.getColor())
                 ));
             }

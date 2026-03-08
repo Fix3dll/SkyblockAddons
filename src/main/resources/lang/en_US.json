@@ -295,10 +295,13 @@
     "showOnlyWhenScorpiusIsMayor": "Show only when Scorpius is mayor",
     "itemPricesInTooltip": {
       "title": "Item Prices In Tooltip",
-      "bazaarPrices": "Show bazaar buy/sell prices in tooltip",
-      "npcSellPrices": "Show NPC sell prices in tooltip",
+      "boldPriceLines": "§lShow price lines bold",
       "alwaysShowBulkPrice": "Always show bulk price",
-      "updateInterval": "Time in seconds for updating bazaar values via the API"
+      "npcSellPrices": "Show NPC sell prices in tooltip",
+      "lowestBinPrices": "Show lowest BIN prices in tooltip",
+      "bazaarPrices": "Show bazaar buy/sell prices in tooltip",
+      "lowestBinUpdateInterval": "Time in seconds for updating Lowest BIN data via the API",
+      "bazaarUpdateInterval": "Time in seconds for updating Bazaar data via the API"
     }
   },
   "messages": {
@@ -405,8 +408,8 @@
       "failed": "An error occurred while copying the message. See log for details. (Possible mod conflict)"
     },
     "itemPricesInTooltip": {
-      "apiBazaarError": "An error occurred while retrieving bazaar data from API! Check the console or latest.log for detailed information.",
-      "apiBazaarUpdated": "Bazaar data has been updated from API."
+      "apiError": "An error occurred while retrieving %apiName% data from API! Check the console or latest.log for detailed information.",
+      "apiUpdated": "%apiName% data has been updated from API."
     }
   },
   "discordStatus": {
@@ -821,6 +824,7 @@
     "maxed": "Maxed"
   },
   "tooltip": {
+    "lowestBinPrice": "Lowest BIN: ",
     "buyPrice": "Bazaar buy price: ",
     "sellPrice": "Bazaar sell price: ",
     "npcSellPrice": "NPC sell price: ",
