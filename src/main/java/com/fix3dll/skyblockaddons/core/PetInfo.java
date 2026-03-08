@@ -34,9 +34,12 @@ public class PetInfo {
     private boolean hideRightClick;
     @SerializedName("noMove")
     private boolean noMove;
+    @SerializedName("petSoulbound")
+    private boolean petSoulbound;
 
     public boolean equals(PetInfo other) {
         if (other == null) return false;
+        if (this.petSoulbound != other.petSoulbound) return false;
         if (this.active != other.active) return false;
         if (!Objects.equals(this.petSkyblockId, other.petSkyblockId)) return false;
         if (this.petRarity != other.petRarity) return false;
@@ -47,4 +50,5 @@ public class PetInfo {
 
         return Objects.equals(this.uniqueId, other.uniqueId); // the last castle
     }
+
 }

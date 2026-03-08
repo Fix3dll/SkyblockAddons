@@ -52,7 +52,7 @@ public class TextUtils {
      * style
      */
     public static final NumberFormat NUMBER_FORMAT_NO_GROUPING = NumberFormat.getInstance(Locale.US);
-    public static final NumberFormat COIN_FORMAT = NumberFormat.getInstance(Locale.US);
+    private static final NumberFormat[] COIN_FORMATS = new NumberFormat[6]; // 0-5
 
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-ORZ]");
     private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("\\[✌]|[♲Ⓑ⚒ቾ]+");
@@ -79,8 +79,11 @@ public class TextUtils {
         NUMBER_FORMAT.setMaximumFractionDigits(2);
         NUMBER_FORMAT_NO_GROUPING.setMaximumFractionDigits(2);
         NUMBER_FORMAT_NO_GROUPING.setGroupingUsed(false);
-        COIN_FORMAT.setMaximumFractionDigits(1);
-        COIN_FORMAT.setMinimumFractionDigits(1);
+        for (int i = 0; i < COIN_FORMATS.length; i++) {
+            COIN_FORMATS[i] = NumberFormat.getInstance(Locale.US);
+            COIN_FORMATS[i].setMaximumFractionDigits(i);
+            COIN_FORMATS[i].setMinimumFractionDigits(i);
+        }
     }
 
     /** For test environment */
@@ -106,22 +109,31 @@ public class TextUtils {
     }
 
     /**
-     * Formats a coin value with US thousands separator and one decimal place,
-     * e.g. {@code 123456.0} → {@code "123,456.0"}.
+     * Formats a coin value with US thousands separator and the given number of decimal places,
+     * e.g. {@code formatCoin(123456.0, 1)} → {@code "123,456.0"}, {@code formatCoin(123456.0, 0)} → {@code "123,456"}.
+     * Supports 0–5 decimal places.
+     * @param number the coin value to format
+     * @param decimals the number of decimal places (0–5)
+     * @return formatted coin string
      * @since 2.2.3
      */
-    public static String formatCoin(Number number) {
-        return COIN_FORMAT.format(number);
+    public static String formatCoin(Number number, int decimals) {
+        return COIN_FORMATS[decimals].format(number);
     }
 
     /**
-     * Returns a yellow formatted coin value, or a red localized {@code "None"} if the price is {@code -1}.
+     * Returns a gold formatted coin value, or a red localized {@code "None"} if the price is negative.
+     * @param price the coin value to format
+     * @param decimal the number of decimal places (0–5), passed to {@link #formatCoin(Number, int)}
+     * @return a gold {@link Component} with the formatted price, or a red {@link Component} with {@code "None"}
      * @since 2.2.3
      */
-    public static Component formatPrice(double price) {
-        return price < 0
-                ? Component.literal(Translations.getMessage("tooltip.none")).withColor(ColorCode.RED.getColor())
-                : Component.literal(TextUtils.formatCoin(price)).withColor(ColorCode.GOLD.getColor());
+    public static Component formatPrice(double price, int decimal, boolean bold) {
+        return price < 0.0D
+                ? Component.literal(Translations.getMessage("tooltip.none"))
+                .withStyle(style -> style.withBold(bold).withColor(ColorCode.RED.getColor()))
+                : Component.literal(TextUtils.formatCoin(price, decimal) + " coins")
+                .withStyle(style -> style.withBold(bold).withColor(ColorCode.GOLD.getColor()));
     }
 
     /**

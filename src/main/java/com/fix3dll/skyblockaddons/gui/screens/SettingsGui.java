@@ -396,16 +396,33 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 break;
 
             case BAZAAR_PRICES_UPDATE_INTERVAL:
-                boxWidth = 120;
+                boxWidth = 150;
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
-                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, Translations.getMessage("settings.itemPricesInTooltip.updateInterval"), true, ColorCode.GRAY.getColor()));
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, Translations.getMessage("settings.itemPricesInTooltip.bazaarUpdateInterval"), true, ColorCode.GRAY.getColor()));
                 row += .1F;
                 y = getRowHeightSetting(row);
                 addRenderableWidget(
                         new ButtonSlider(
                                 x, y, boxWidth, 20,
                                 feature.getAsNumber(setting).floatValue(), 20.0F, 120.0F, 1.0F,
+                                updatedValue -> feature.set(setting, updatedValue)
+                        ).setSuffix(" seconds")
+                );
+                row += .1F;
+                break;
+
+            case LOWEST_BIN_PRICES_UPDATE_INTERVAL:
+                boxWidth = 150;
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, Translations.getMessage("settings.itemPricesInTooltip.lowestBinUpdateInterval"), true, ColorCode.GRAY.getColor()));
+                row += .1F;
+                y = getRowHeightSetting(row);
+                addRenderableWidget(
+                        new ButtonSlider(
+                                x, y, boxWidth, 20,
+                                feature.getAsNumber(setting).floatValue(), 60.0F, 300.0F, 1.0F,
                                 updatedValue -> feature.set(setting, updatedValue)
                         ).setSuffix(" seconds")
                 );
