@@ -103,8 +103,6 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
 
         @Override
         public void failed(Exception ex) {
-            super.failed(ex);
-
             if (!apiAuctionAverageLBinError) {
                 apiAuctionAverageLBinError = true;
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
