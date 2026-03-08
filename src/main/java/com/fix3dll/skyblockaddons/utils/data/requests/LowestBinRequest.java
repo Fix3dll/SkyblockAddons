@@ -89,8 +89,6 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
 
         @Override
         public void failed(Throwable ex) {
-            super.failed(ex);
-
             if (!apiLowestBinError) {
                 apiLowestBinError = true;
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
