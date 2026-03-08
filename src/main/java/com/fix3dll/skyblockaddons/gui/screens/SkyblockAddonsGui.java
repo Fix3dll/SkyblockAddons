@@ -487,6 +487,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             if (tab == GuiTab.GENERAL_SETTINGS) {
                 main.getRenderListener().setGuiToOpen(GUIType.MAIN, 1, GuiTab.MAIN);
             }
+            Feature.ITEM_PRICES_IN_TOOLTIP.updateApiRequests();
             main.getConfigValuesManager().saveConfig();
         }
     }

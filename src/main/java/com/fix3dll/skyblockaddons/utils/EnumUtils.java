@@ -229,6 +229,30 @@ public class EnumUtils {
         }
     }
 
+    public enum LBinAveragesType implements ButtonCycling.SelectItem, RegistrableEnum {
+        ONE_DAY("settings.itemPricesInTooltip.avgTypes.1day", "1day.json.gz"),
+        THREE_DAY("settings.itemPricesInTooltip.avgTypes.3day", "3day.json.gz"),
+        SEVEN_DAY("settings.itemPricesInTooltip.avgTypes.7day", "7day.json.gz");
+
+        private final String TRANSLATION_KEY;
+        @Getter private final String urlPath;
+
+        LBinAveragesType(String translationKey, String urlPath) {
+            TRANSLATION_KEY = translationKey;
+            this.urlPath = urlPath;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return Translations.getMessage(TRANSLATION_KEY);
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+    }
+
     public enum FeatureCredit {
         // If you make a feature, feel free to add your name here with an associated website of your choice.
         ORCHID_ALLOY("orchidalloy", "github.com/orchidalloy", SUMMONING_EYE_ALERT, ENCHANTMENT_LORE_PARSING),

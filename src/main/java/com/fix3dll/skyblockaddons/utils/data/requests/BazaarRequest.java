@@ -24,8 +24,8 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final String PATH = "https://api.hypixel.net/v2/skyblock/bazaar";
 
-    private static boolean apiBazaarError = false;
-    private static ScheduledTask updateTask;
+    private static volatile boolean apiBazaarError = false;
+    private static volatile ScheduledTask updateTask;
 
     public BazaarRequest() {
         super(
@@ -38,15 +38,25 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
     }
 
     /**
-     * Cancels the scheduled update task.
-     * To restart the update cycle, call {@code DataUtils.loadOnlineData(new BazaarRequest())}.
+     * Starts or stops the scheduled fetch cycle for this request.
+     *
+     * <p>If {@code active} is {@code true} and no update task is currently running,
+     * a new fetch is initiated immediately. If {@code active} is {@code false} and
+     * a task is running, it is canceled and the error state is cleared.
+     * @param active {@code true} to start the fetch cycle, {@code false} to stop it
      */
-    public static void cancelUpdateTask() {
-        if (updateTask != null) {
-            updateTask.cancel();
-            updateTask = null;
-            apiBazaarError = false; // clear error cache too
-            LOGGER.info("Bazaar update task cancelled.");
+    public static void setActive(boolean active) {
+        if (active) {
+            if (updateTask == null) {
+                DataUtils.loadOnlineData(new BazaarRequest());
+            }
+        } else {
+            if (updateTask != null) {
+                updateTask.cancel();
+                updateTask = null;
+                apiBazaarError = false; // clear error cache too
+                LOGGER.info("Bazaar update task cancelled.");
+            }
         }
     }
 
@@ -107,12 +117,10 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
                     delayTicks
             );
 
-            if (Feature.DEVELOPER_MODE.isEnabled()) {
-                LOGGER.info(
-                        "Next bazaar update scheduled in {}ms (delay: {} ticks).",
-                        nextUpdateTime - System.currentTimeMillis(), delayTicks
-                );
-            }
+            LOGGER.debug(
+                    "Next bazaar update scheduled in {}ms (delay: {} ticks).",
+                    nextUpdateTime - System.currentTimeMillis(), delayTicks
+            );
         }
     }
 

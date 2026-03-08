@@ -21,6 +21,7 @@ public class EnumRegistry {
         REGISTRY.put("TEXT_STYLE", EnumUtils.TextStyle.class);
         REGISTRY.put("CHROMA_MODE", EnumUtils.ChromaMode.class);
         REGISTRY.put("AUTO_UPDATE", EnumUtils.AutoUpdateMode.class);
+        REGISTRY.put("LBIN_AVERAGES_TYPE", EnumUtils.LBinAveragesType.class);
         REGISTRY.put("COLOR_CODE", ColorCode.class);
         REGISTRY.put("ENCHANT_LAYOUT", EnchantLayout.class);
         REGISTRY.put("LANGUAGE", Language.class);

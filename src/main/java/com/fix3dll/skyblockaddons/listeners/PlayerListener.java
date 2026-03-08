@@ -99,10 +99,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -200,6 +203,19 @@ public class PlayerListener {
     private boolean doubleHook = false;
     private String cachedChatRunCommand;
     @Setter private boolean savePersistentFlag = false;
+
+    // addItemPricesToTooltip() caching fields
+    private final ArrayList<Component> cachedPriceComponents = new ArrayList<>();
+    private ItemStack lastPriceItemStack       = null;
+    private int       lastPriceItemHash        = 0;
+    private int       lastPriceItemCount       = -1;
+    private boolean   lastPriceShiftState      = false;
+    private boolean   lastPriceBoldLines       = false;
+    private boolean   lastPriceIsChroma        = false;
+    private int       lastLowestBinIdentity    = 0;
+    private int       lastLBinAveragesIdentity = 0;
+    private long      lastBazaarIdentity       = 0;
+    private long      lastItemsDataIdentity    = 0;
 
     public static final Identifier SBA_FIRST_PHASE = SkyblockAddons.identifier("first");
     public static final Identifier SBA_LAST_PHASE = SkyblockAddons.identifier("last");
@@ -1305,6 +1321,10 @@ public class PlayerListener {
      * <p>Depending on the enabled {@link FeatureSetting settings}, the following lines may be added:
      * <ul>
      *   <li><b>Lowest BIN prices</b> - from <a href="https://moulberry.codes">moulberry.codes</a></li>
+     *   <li><b>Lowest BIN average prices</b> — from <a href="https://moulberry.codes">moulberry.codes</a>,
+     *       averaged over the period configured in {@link FeatureSetting#LBIN_AVERAGES_TYPE}
+     *       (1, 3, or 7 days). {@link #resolveLowestBinItemId(String, ItemStack)} result is reused
+     *       from the Lowest BIN block if both are enabled.</li>
      *   <li><b>Bazaar buy/sell prices</b> — resolved via the Hypixel Bazaar API.
      *       Enchanted books are looked up by their enchantment ID
      *       (e.g. {@code ENCHANTMENT_SHARPNESS_5}) rather than {@code ENCHANTED_BOOK}.</li>
@@ -1312,7 +1332,8 @@ public class PlayerListener {
      * </ul>
      *
      * <p>Special item types (PET, RUNE, NEW_YEAR_CAKE, POTION, perfect stat boost items)
-     * are resolved to their API-specific item IDs before lookup.
+     * are resolved to their API-specific item IDs before lookup, via
+     * {@link #resolveLowestBinItemId(String, ItemStack)}.
      *
      * <p>If {@link FeatureSetting#ALWAYS_SHOW_BULK_PRICE} is disabled and
      * {@code LEFT SHIFT} is not held, prices are shown for a single item.
@@ -1323,8 +1344,13 @@ public class PlayerListener {
      * <p>Price labels are rendered in the feature's configured color, or in
      * chroma if {@link Feature#isChroma()} is {@code true}.
      *
-     * <p><b>This method is called on the render thread.</b>
+     * <p>Results are cached per item stack and invalidated when the item identity,
+     * stack count, shift state, feature settings (bold/chroma), or any underlying
+     * data source changes. The cache is keyed on {@link ItemStack} reference equality
+     * first, falling back to {@link ItemStack#hashItemAndComponents} for different
+     * references with identical content.
      *
+     * <p><b>This method is called on the render thread.</b>
      * @param itemId        the SkyBlock item ID, e.g. {@code "ASPECT_OF_THE_DRAGON"};
      *                      may be {@code null}, in which case it is resolved lazily
      *                      via {@link ItemUtils#getSkyblockItemID(ItemStack)}
@@ -1341,108 +1367,92 @@ public class PlayerListener {
                                         List<Component> components) {
         Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
         boolean boldLines = feature.isEnabled(FeatureSetting.BOLD_PRICE_LINES);
-        UnaryOperator<Style> textColor = style -> feature.isChroma()
-                ? style.withBold(boldLines).withColor(DrawUtils.CHROMA_TEXT_COLOR) // TextColor
-                : style.withBold(boldLines).withColor(feature.getColor());         // int
-        boolean lshift = feature.isEnabled(FeatureSetting.ALWAYS_SHOW_BULK_PRICE)
+        boolean isChroma = feature.isChroma();
+        boolean isLeftShiftPressed = feature.isEnabled(FeatureSetting.ALWAYS_SHOW_BULK_PRICE)
                 || InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT);
         int count = itemStack.getCount();
-        int countToBeShown = lshift ? count : 1;
 
-        int addedLines = 0;
+        var lowestBinData        = main.getLowestBinData();
+        var lBinAveragesData     = main.getLowestBinAveragesData();
+        BazaarData bazaarData    = main.getBazaarData();
+        ItemsData itemsData      = main.getItemsData();
 
+        // Snapshot current data-source identities
+        int lowestBinIdentity    = System.identityHashCode(lowestBinData);
+        int lbinAveragesIdentity = System.identityHashCode(lBinAveragesData);
+        long bazaarIdentity      = bazaarData.getLastUpdated();
+        long itemsDataIdentity   = itemsData.getLastUpdated();
+
+        // Cache validity checks
+        boolean isReferenceSame  = this.lastPriceItemStack == itemStack;
+        boolean isStateSame      = this.lastPriceItemCount == count && this.lastPriceShiftState == isLeftShiftPressed;
+        boolean isSettingsSame   = (this.lastPriceBoldLines == boldLines) && (this.lastPriceIsChroma == isChroma);
+        boolean isDataSame       = (this.lastLowestBinIdentity == lowestBinIdentity)
+                                && (this.lastLBinAveragesIdentity == lbinAveragesIdentity)
+                                && (this.lastBazaarIdentity == bazaarIdentity)
+                                && (this.lastItemsDataIdentity == itemsDataIdentity);
+
+        boolean isContentSame = false;
+        if (!isReferenceSame && isStateSame && isSettingsSame && isDataSame) {
+            int currentHash = ItemStack.hashItemAndComponents(itemStack);
+            if (currentHash == this.lastPriceItemHash) {
+                isContentSame = true;
+                this.lastPriceItemStack = itemStack;
+            }
+        }
+
+        if ((isReferenceSame && isStateSame && isSettingsSame && isDataSame) || isContentSame) {
+            components.addAll(this.cachedPriceComponents);
+            return;
+        }
+
+        this.cachedPriceComponents.clear();
+        this.lastPriceItemStack       = itemStack;
+        this.lastPriceItemCount       = count;
+        this.lastPriceShiftState      = isLeftShiftPressed;
+        this.lastPriceBoldLines       = boldLines;
+        this.lastPriceIsChroma        = isChroma;
+        this.lastPriceItemHash        = ItemStack.hashItemAndComponents(itemStack);
+        this.lastLowestBinIdentity    = lowestBinIdentity;
+        this.lastLBinAveragesIdentity = lbinAveragesIdentity;
+        this.lastBazaarIdentity       = bazaarIdentity;
+        this.lastItemsDataIdentity    = itemsDataIdentity;
+
+        int countToBeShown = isLeftShiftPressed ? count : 1;
+        UnaryOperator<Style> textColor = style -> isChroma
+                ? style.withBold(boldLines).withColor(DrawUtils.CHROMA_TEXT_COLOR)
+                : style.withBold(boldLines).withColor(feature.getColor());
+        if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
+        if (itemId == null) return; // early return
+
+        ResolvedItemId resolvedItemId = null;
         if (feature.isEnabled(FeatureSetting.LOWEST_BIN_PRICES_IN_TOOLTIP)) {
-            if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
+            resolvedItemId = resolveLowestBinItemId(itemId, itemStack);
 
-            String apiItemId = itemId;
-            String extraString = null;
-            switch (apiItemId) {
-                case "PET" -> {
-                    PetManager.Pet pet = PetManager.getInstance().getPetFromItemStack(itemStack);
+            if (resolvedItemId != null) { // itemId was null (unresolvable)
+                double price = lookupWithFallback(lowestBinData, resolvedItemId);
 
-                    if (pet != null) {
-                        PetInfo petInfo = pet.getPetInfo();
-
-                        if (petInfo != null) {
-                            apiItemId = petInfo.getPetSkyblockId() + ";" + petInfo.getPetRarity().ordinal();
-
-                            int petLevel = pet.getPetLevel();
-                            if (petLevel != 0 && pet.getPetLevel() % 100 == 0) {
-                                extraString = "+" + petLevel;
-                                apiItemId += extraString;
-                            }
-                        }
-                    }
-                }
-                case "RUNE" -> {
-                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
-
-                    if (extraAttributes != null) {
-                        SkyblockRune rune = ItemUtils.getRuneData(extraAttributes);
-
-                        if (rune != null) {
-                            apiItemId = rune.getType() + "_RUNE;" + rune.getLevel();
-                        }
-                    }
-                }
-                case "NEW_YEAR_CAKE" -> {
-                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
-
-                    if (extraAttributes != null) {
-                        int cakeYears = extraAttributes.getIntOr("new_years_cake", -1);
-
-                        if (cakeYears != -1) {
-                            apiItemId += "+" + cakeYears;
-                        }
-                    }
-                }
-                case "POTION" -> {
-                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
-
-                    if (extraAttributes != null) {
-                        String potion = extraAttributes.getStringOr("potion", "");
-                        int potionLevel = extraAttributes.getIntOr("potion_level", -1);
-
-                        if (!potion.isEmpty() && potionLevel != -1) {
-                            apiItemId += "_" + potion.toUpperCase(Locale.ENGLISH) + ";" + potionLevel;
-                        }
-                    }
-                }
-                case null -> {
-                    return;
-                }
-                default -> {
-                    CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
-
-                    if (extraAttributes != null) {
-                        int baseStatBoost = extraAttributes.getIntOr("baseStatBoostPercentage", -1);
-
-                        if (baseStatBoost == 50) {
-                            extraString = "+PERFECT";
-                            apiItemId += extraString;
-                        }
-                    }
+                if (price > 0.0D) {
+                    this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.lowestBinPrice"))
+                            .withStyle(textColor).append(TextUtils.formatPrice(price, 0, boldLines)));
                 }
             }
+        }
 
-            double lowestBinPrice = main.getLowestBinData().getOrDefault(apiItemId, -1.0D);
-            if (extraString != null && lowestBinPrice == -1.0D) {
-                lowestBinPrice = main.getLowestBinData().getOrDefault(
-                        apiItemId.replace(extraString, ""), -1.0D
-                );
-            }
+        if (feature.isEnabled(FeatureSetting.LBIN_AVERAGE_PRICES_IN_TOOLTIP)) {
+            if (resolvedItemId == null) resolvedItemId = resolveLowestBinItemId(itemId, itemStack);
 
-            if (lowestBinPrice > 0.0D) {
-                Component priceComponent = TextUtils.formatPrice(lowestBinPrice, 0, boldLines);
+            if (resolvedItemId != null) { // itemId was null (unresolvable)
+                double price = lookupWithFallback(lBinAveragesData, resolvedItemId);
 
-                components.add(Component.literal(Translations.getMessage("tooltip.lowestBinPrice"))
-                        .withStyle(textColor).append(priceComponent));
+                if (price > 0.0D) {
+                    this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.lowestBinAveragePrice"))
+                            .withStyle(textColor).append(TextUtils.formatPrice(price, 0, boldLines)));
+                }
             }
         }
 
         if (feature.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP)) {
-            if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
-
             String apiItemId = itemId;
             if ("ENCHANTED_BOOK".equals(itemId)) {
                 var enchantments = ItemUtils.getEnchantments(itemStack).entrySet().iterator();
@@ -1453,47 +1463,163 @@ public class PlayerListener {
                 }
             }
 
-            if (apiItemId != null) {
-                BazaarData.Product product = main.getBazaarData().getProducts().get(apiItemId);
+            BazaarData.Product product = bazaarData.getProducts().get(apiItemId);
 
-                if (product != null) {
-                    Component buyPrice = TextUtils.formatPrice(product.getInstaBuyPrice() * countToBeShown, 1, boldLines);
-                    Component sellPrice = TextUtils.formatPrice(product.getInstaSellPrice() * countToBeShown, 1, boldLines);
+            if (product != null) {
+                Component buyPrice = TextUtils.formatPrice(product.getInstaBuyPrice() * countToBeShown, 1, boldLines);
+                Component sellPrice = TextUtils.formatPrice(product.getInstaSellPrice() * countToBeShown, 1, boldLines);
 
-                    components.add(Component.literal(Translations.getMessage("tooltip.buyPrice"))
-                            .withStyle(textColor).append(buyPrice));
-                    components.add(Component.literal(Translations.getMessage("tooltip.sellPrice"))
-                            .withStyle(textColor).append(sellPrice));
-                    addedLines += 2;
-                }
+                this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.buyPrice"))
+                        .withStyle(textColor).append(buyPrice));
+                this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.sellPrice"))
+                        .withStyle(textColor).append(sellPrice));
             }
         }
 
         if (feature.isEnabled(FeatureSetting.NPC_SELL_PRICES_IN_TOOLTIP)) {
-            if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
+            ItemsData.Item item = itemsData.getItemMap().get(itemId);
 
-            if (itemId != null) {
-                ItemsData.Item item = main.getItemsData().getItemMap().get(itemId);
+            if (item != null && item.getNpcSellPrice() != 0.0D) {
+                double price = item.getNpcSellPrice() * countToBeShown;
+                Component npcSellPrice = TextUtils.formatPrice(price, price <= 10.0D ? 2 : 0, boldLines);
 
-                if (item != null && item.getNpcSellPrice() != 0.0D) {
-                    double price = item.getNpcSellPrice() * countToBeShown;
-                    Component npcSellPrice = TextUtils.formatPrice(price, price <= 10.0D ? 2 : 0, boldLines);
+                this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.npcSellPrice"))
+                        .withStyle(textColor).append(npcSellPrice));
+            }
+        }
 
-                    components.add(Component.literal(Translations.getMessage("tooltip.npcSellPrice"))
-                            .withStyle(textColor).append(npcSellPrice));
-                    addedLines += 1;
+        if (!isLeftShiftPressed && count > 1 && !this.cachedPriceComponents.isEmpty()) {
+            this.cachedPriceComponents.addFirst(Component.literal("[LSHIFT] for x" + count)
+                    .withColor(ColorCode.DARK_GRAY.getColor()));
+        }
+
+        components.addAll(this.cachedPriceComponents);
+    }
+
+    /**
+     * Looks up the price for the resolved item in the given data map,
+     * falling back to the base item ID (without the extra suffix) if not found.
+     * @return price from the map, or {@code -1.0} if absent
+     */
+    private double lookupWithFallback(@NonNull Map<String, Double> data, @NonNull ResolvedItemId resolved) {
+        String apiItemId = resolved.apiItemId();
+        double price = data.getOrDefault(apiItemId, -1.0D);
+        String extraString = resolved.extraString();
+
+        // Fallback to base item API ID if the specific variant (e.g., max level) is not found
+        if (extraString != null && price == -1.0D) {
+            price = data.getOrDefault(apiItemId.replace(extraString, ""), -1.0D);
+        }
+        return price;
+    }
+
+    /**
+     * Resolves Lowest BIN API item ID to use for price lookups.
+     *
+     * <p>Most items use their raw SkyBlock item ID directly. The following special
+     * types require additional NBT inspection to produce a lookup-ready ID:
+     * <ul>
+     *   <li><b>PET</b> — resolved to {@code <PET_ID>;<RARITY_ORDINAL>}, with an
+     *       optional {@code +<level>} suffix for pets at level 100 or 200.</li>
+     *   <li><b>RUNE</b> — resolved to {@code <TYPE>_RUNE;<LEVEL>}.</li>
+     *   <li><b>NEW_YEAR_CAKE</b> — resolved to {@code NEW_YEAR_CAKE+<YEAR>}.</li>
+     *   <li><b>POTION</b> — resolved to {@code POTION_<TYPE>;<LEVEL>}.</li>
+     *   <li><b>Default</b> — items with {@code baseStatBoostPercentage == 50} receive
+     *       a {@code +PERFECT} suffix.</li>
+     * </ul>
+     * @param itemId    the raw SkyBlock item ID; if {@code null} this method returns
+     *                  {@code null} to signal that no lookup should be attempted
+     * @param itemStack the item stack, used to read NBT extra attributes
+     * @return a {@link ResolvedItemId} containing the resolved API item ID and optional
+     *         variant suffix (e.g. {@code "+PERFECT"}), or {@code null} if the item ID
+     *         could not be resolved
+     * @since 2.2.3
+     */
+    @Nullable
+    private static ResolvedItemId resolveLowestBinItemId(String itemId, ItemStack itemStack) {
+        if (itemId == null) return null;
+
+        String apiItemId   = itemId;
+        String extraString = null;
+
+        switch (apiItemId) {
+            case "PET" -> {
+                PetManager.Pet pet = PetManager.getInstance().getPetFromItemStack(itemStack);
+
+                if (pet != null) {
+                    PetInfo petInfo = pet.getPetInfo();
+
+                    if (petInfo != null) {
+                        apiItemId = petInfo.getPetSkyblockId() + ";" + petInfo.getPetRarity().ordinal();
+
+                        int petLevel = pet.getPetLevel();
+                        if (petLevel != 0 && petLevel % 100 == 0) {
+                            extraString = "+" + petLevel;
+                            apiItemId += extraString;
+                        }
+                    }
+                }
+            }
+            case "RUNE" -> {
+                CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                if (extraAttributes != null) {
+                    SkyblockRune rune = ItemUtils.getRuneData(extraAttributes);
+
+                    if (rune != null) {
+                        apiItemId = rune.getType() + "_RUNE;" + rune.getLevel();
+                    }
+                }
+            }
+            case "NEW_YEAR_CAKE" -> {
+                CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                if (extraAttributes != null) {
+                    int cakeYears = extraAttributes.getIntOr("new_years_cake", -1);
+
+                    if (cakeYears != -1) {
+                        apiItemId += "+" + cakeYears;
+                    }
+                }
+            }
+            case "POTION" -> {
+                CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                if (extraAttributes != null) {
+                    String potion      = extraAttributes.getStringOr("potion", "");
+                    int    potionLevel = extraAttributes.getIntOr("potion_level", -1);
+
+                    if (!potion.isEmpty() && potionLevel != -1) {
+                        apiItemId += "_" + potion.toUpperCase(Locale.ENGLISH) + ";" + potionLevel;
+                    }
+                }
+            }
+            default -> {
+                CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
+
+                if (extraAttributes != null) {
+                    int baseStatBoost = extraAttributes.getIntOr("baseStatBoostPercentage", -1);
+
+                    if (baseStatBoost == 50) {
+                        extraString = "+PERFECT";
+                        apiItemId += extraString;
+                    }
                 }
             }
         }
 
-        if (!lshift && count > 1 && addedLines > 0) {
-            int headIndex = components.size() - addedLines;
-
-            if (headIndex >= 0) {
-                components.add(headIndex, Component.literal("[LSHIFT] for x" + count).withColor(ColorCode.DARK_GRAY.getColor()));
-            }
-        }
+        return new ResolvedItemId(apiItemId, extraString);
     }
+
+    /**
+     * Holds the result of {@link #resolveLowestBinItemId(String, ItemStack)}.
+     * @param apiItemId   the resolved Lowest BIN API item ID ready for price map lookup
+     * @param extraString the variant suffix that was appended to {@code apiItemId}
+     *                    (e.g. {@code "+PERFECT"}, {@code "+100"}), or {@code null}
+     *                    if no suffix was added; used for the fallback lookup when
+     *                    the specific variant has no listing
+     */
+    private record ResolvedItemId(String apiItemId, @Nullable String extraString) {}
 
     private record RatSound(Identifier location, float volume, float pitch) {}
 
