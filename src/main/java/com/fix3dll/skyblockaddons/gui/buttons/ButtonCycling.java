@@ -129,12 +129,12 @@ public class ButtonCycling extends SkyblockAddonsButton {
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (isOverLeftButton(event.x(), event.y())) {
-            index = index == itemList.size() - 1 ? 0 : index + 1;
+            index = index == 0 ? itemList.size() - 1 : index - 1;
             callback.accept(index);
             this.playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         } else if (isOverRightButton(event.x(), event.y())) {
-            index = index == 0 ? itemList.size() - 1 : index - 1;
+            index = index == itemList.size() - 1 ? 0 : index + 1;
             callback.accept(index);
             this.playDownSound(Minecraft.getInstance().getSoundManager());
             return true;

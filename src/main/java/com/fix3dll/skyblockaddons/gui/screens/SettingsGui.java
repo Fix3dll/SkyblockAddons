@@ -343,7 +343,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, setting.getMessage(), true, 0xFFFFFFFF));
                 addRenderableWidget(new ButtonCycling(x, (int) y, 140, 20,
                         Arrays.asList(EnumUtils.PetItemStyle.values()),
-                        feature.getAsEnum(FeatureSetting.PET_ITEM_STYLE).ordinal(),
+                        feature.getAsEnum(setting).ordinal(),
                         index -> feature.set(setting, EnumUtils.PetItemStyle.values()[index])
                 ));
                 row += .1F;
@@ -427,6 +427,22 @@ public class SettingsGui extends SkyblockAddonsScreen {
                         ).setSuffix(" seconds")
                 );
                 row += .1F;
+                break;
+
+            case LBIN_AVERAGES_TYPE:
+                boxWidth = 140;
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, setting.getMessage(), true, ColorCode.GRAY.getColor()));
+                addRenderableWidget(new ButtonCycling(x, (int) y, 140, 20,
+                        Arrays.asList(EnumUtils.LBinAveragesType.values()),
+                        feature.getAsEnum(setting).ordinal(),
+                        index -> feature.set(setting, EnumUtils.LBinAveragesType.values()[index])
+                ));
+                row += .4F;
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonText(halfWidth, (int) y + 15, Translations.getMessage("settings.itemPricesInTooltip.lbinAveragesWarning"), true, ColorCode.GRAY.getColor()));
+                row += .2F;
                 break;
 
             default:

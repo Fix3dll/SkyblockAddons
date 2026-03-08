@@ -300,8 +300,16 @@
       "npcSellPrices": "Show NPC sell prices in tooltip",
       "lowestBinPrices": "Show lowest BIN prices in tooltip",
       "bazaarPrices": "Show bazaar buy/sell prices in tooltip",
+      "lbinAveragePrices": "Show lowest BIN average prices in tooltip",
       "lowestBinUpdateInterval": "Time in seconds for updating Lowest BIN data via the API",
-      "bazaarUpdateInterval": "Time in seconds for updating Bazaar data via the API"
+      "bazaarUpdateInterval": "Time in seconds for updating Bazaar data via the API",
+      "lbinAveragesType": "Time period for Lowest BIN averages from API",
+      "lbinAveragesWarning": "§oAverages update interval = x2 Lowest BIN update interval",
+      "avgTypes": {
+        "1day": "1-day averages",
+        "3day": "3-day averages",
+        "7day": "7-day averages"
+      }
     }
   },
   "messages": {
@@ -825,6 +833,7 @@
   },
   "tooltip": {
     "lowestBinPrice": "Lowest BIN: ",
+    "lowestBinAveragePrice": "AVG Lowest BIN: ",
     "buyPrice": "Bazaar buy price: ",
     "sellPrice": "Bazaar sell price: ",
     "npcSellPrice": "NPC sell price: ",

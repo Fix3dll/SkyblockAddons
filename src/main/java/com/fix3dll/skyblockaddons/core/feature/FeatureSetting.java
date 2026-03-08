@@ -145,8 +145,10 @@ public enum FeatureSetting {
     NPC_SELL_PRICES_IN_TOOLTIP("settings.itemPricesInTooltip.npcSellPrices", Feature.ITEM_PRICES_IN_TOOLTIP),
     LOWEST_BIN_PRICES_IN_TOOLTIP("settings.itemPricesInTooltip.lowestBinPrices", Feature.ITEM_PRICES_IN_TOOLTIP),
     BAZAAR_PRICES_IN_TOOLTIP("settings.itemPricesInTooltip.bazaarPrices", Feature.ITEM_PRICES_IN_TOOLTIP),
+    LBIN_AVERAGE_PRICES_IN_TOOLTIP("settings.itemPricesInTooltip.lbinAveragePrices", Feature.ITEM_PRICES_IN_TOOLTIP),
     LOWEST_BIN_PRICES_UPDATE_INTERVAL("settings.itemPricesInTooltip.lowestBinUpdateInterval", Feature.ITEM_PRICES_IN_TOOLTIP),
     BAZAAR_PRICES_UPDATE_INTERVAL("settings.itemPricesInTooltip.bazaarUpdateInterval", Feature.ITEM_PRICES_IN_TOOLTIP),
+    LBIN_AVERAGES_TYPE("settings.itemPricesInTooltip.lbinAveragesType", Feature.ITEM_PRICES_IN_TOOLTIP),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
@@ -200,4 +202,5 @@ public enum FeatureSetting {
             return null;
         }
     }
+
 }

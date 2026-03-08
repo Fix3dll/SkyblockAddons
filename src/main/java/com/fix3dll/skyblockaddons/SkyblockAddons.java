@@ -137,12 +137,13 @@ public class SkyblockAddons implements ClientModInitializer {
 	private final NetworkListener networkListener;
 	private final SkillXpManager skillXpManager;
 
-	@Setter private OnlineData onlineData;
-	@Setter private ElectionData electionData;
-	@Setter private MayorJerryData mayorJerryData;
-	@Setter private BazaarData bazaarData = new BazaarData();
-	@Setter private ItemsData itemsData = new ItemsData();
-	@Setter private Map<String, Double> lowestBinData = Map.of();
+	@Setter private volatile OnlineData onlineData;
+	@Setter private volatile ElectionData electionData;
+	@Setter private volatile MayorJerryData mayorJerryData;
+	@Setter private volatile BazaarData bazaarData = new BazaarData();
+	@Setter private volatile ItemsData itemsData = new ItemsData();
+	@Setter private volatile Map<String, Double> lowestBinData = Map.of();
+	@Setter private volatile Map<String, Double> lowestBinAveragesData = Map.of();
 
 	public SkyblockAddons() {
 		instance = this;

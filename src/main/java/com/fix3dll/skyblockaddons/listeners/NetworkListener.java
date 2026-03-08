@@ -1,8 +1,8 @@
 package com.fix3dll.skyblockaddons.listeners;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.events.PacketEvents;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
@@ -13,6 +13,7 @@ import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.BazaarRequest;
+import com.fix3dll.skyblockaddons.utils.data.requests.LowestBinAveragesRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.LowestBinRequest;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -58,9 +59,7 @@ public class NetworkListener {
         updateHealth = main.getScheduler().scheduleTask(scheduledTask ->
             main.getPlayerListener().updateLastSecondHealth(), 0, 20
         );
-
-        DataUtils.loadOnlineData(new BazaarRequest());
-        DataUtils.loadOnlineData(new LowestBinRequest());
+        Feature.ITEM_PRICES_IN_TOOLTIP.updateApiRequests();
         DataUtils.onSkyblockJoined();
     }
 
@@ -75,8 +74,9 @@ public class NetworkListener {
             updateHealth.cancel();
             updateHealth = null;
         }
-        BazaarRequest.cancelUpdateTask();
-        LowestBinRequest.cancelUpdateTask();
+        BazaarRequest.setActive(false);
+        LowestBinRequest.setActive(false);
+        LowestBinAveragesRequest.setActive(false);
     }
 
     private void onPacketRead(ChannelHandlerContext channelHandlerContext, Packet<?> packet) {

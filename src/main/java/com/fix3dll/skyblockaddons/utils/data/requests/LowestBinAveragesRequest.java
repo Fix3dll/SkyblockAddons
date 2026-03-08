@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.LBinAveragesType;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
@@ -18,25 +19,37 @@ import org.apache.logging.log4j.Logger;
 import java.net.URI;
 import java.util.Map;
 
+import static com.fix3dll.skyblockaddons.core.feature.FeatureSetting.LBIN_AVERAGES_TYPE;
 import static com.fix3dll.skyblockaddons.core.feature.FeatureSetting.LOWEST_BIN_PRICES_UPDATE_INTERVAL;
 
-public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
+/**
+ * @apiNote Averages update interval is double the lowest bin update interval
+ */
+public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Double>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final String URL = "https://moulberry.codes/lowestbin.json.gz";
+    private static final String BASE_URL = "https://moulberry.codes/auction_averages_lbin/";
 
-    private static volatile boolean apiLowestBinError = false;
+    private static volatile boolean apiAuctionAverageLBinError = false;
     private static volatile ScheduledTask updateTask;
 
-    public LowestBinRequest() {
+    public LowestBinAveragesRequest() {
         super(
-                URL,
+                buildUrl(),
                 new JSONResponseHandler<>(new TypeToken<Map<String, Double>>() {}.getType(), true),
-                new LowestBinCallback(),
+                new AuctionAverageLBinCallback(),
                 false,
                 true
         );
+    }
+
+    /**
+     * Builds the full endpoint URL from the currently selected {@link LBinAveragesType} setting.
+     */
+    private static String buildUrl() {
+        LBinAveragesType type = (LBinAveragesType) Feature.ITEM_PRICES_IN_TOOLTIP.getAsEnum(LBIN_AVERAGES_TYPE);
+        return BASE_URL + type.getUrlPath();
     }
 
     /**
@@ -50,37 +63,37 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
     public static void setActive(boolean active) {
         if (active) {
             if (updateTask == null) {
-                DataUtils.loadOnlineData(new LowestBinRequest());
+                DataUtils.loadOnlineData(new LowestBinAveragesRequest());
             }
         } else {
             if (updateTask != null) {
                 updateTask.cancel();
                 updateTask = null;
-                apiLowestBinError = false; // clear error cache too
-                LOGGER.info("Lowest BIN update task cancelled.");
+                apiAuctionAverageLBinError = false; // clear error cache too
+                LOGGER.info("Auction average LBIN update task cancelled.");
             }
         }
     }
 
-    private static class LowestBinCallback extends DataFetchCallback<Map<String, Double>> {
+    private static class AuctionAverageLBinCallback extends DataFetchCallback<Map<String, Double>> {
 
-        public LowestBinCallback() {
-            super(LOGGER, URI.create(URL));
+        public AuctionAverageLBinCallback() {
+            super(LOGGER, URI.create(buildUrl()));
         }
 
         @Override
         public void completed(Map<String, Double> result) {
             super.completed(result);
-            main.setLowestBinData(result);
+            main.setLowestBinAveragesData(result);
 
             if (Feature.DEVELOPER_MODE.isEnabled()) {
-                LOGGER.info("Lowest BIN data loaded with '{}' entries", result.size());
+                LOGGER.info("Auction average LBIN data loaded with '{}' entries", result.size());
             }
 
-            if (apiLowestBinError) {
-                apiLowestBinError = false;
+            if (apiAuctionAverageLBinError) {
+                apiAuctionAverageLBinError = false;
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
-                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiUpdated", "Lowest BIN"))
+                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiUpdated", "LBIN Averages"))
                                 .withColor(ColorCode.GREEN.getColor())
                 ));
             }
@@ -92,10 +105,10 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
         public void failed(Exception ex) {
             super.failed(ex);
 
-            if (!apiLowestBinError) {
-                apiLowestBinError = true;
+            if (!apiAuctionAverageLBinError) {
+                apiAuctionAverageLBinError = true;
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
-                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiError", "Lowest BIN"))
+                        Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiError", "LBIN Averages"))
                                 .withColor(ColorCode.RED.getColor())
                 ));
             }
@@ -108,15 +121,16 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
                 updateTask.cancel();
             }
 
-            // lowestbin data approximately updates every 1 minute; +1s buffer
+            // double the lowest bin update interval for averages
             int updateInterval = Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(LOWEST_BIN_PRICES_UPDATE_INTERVAL).intValue();
-            int delayTicks = (updateInterval + 1) * 20;
+            int delayTicks = (updateInterval + 1) * 20 * 2;
 
             updateTask = main.getScheduler().scheduleAsyncTask(
-                    scheduledTask -> DataUtils.loadOnlineData(new LowestBinRequest()), delayTicks
+                    scheduledTask -> DataUtils.loadOnlineData(new LowestBinAveragesRequest()), delayTicks
             );
 
-            LOGGER.debug("Next bazaar update scheduled in {} ticks", delayTicks);
+            LBinAveragesType type = (LBinAveragesType) Feature.ITEM_PRICES_IN_TOOLTIP.getAsEnum(LBIN_AVERAGES_TYPE);
+            LOGGER.debug("Next LBIN averages data ({}) update scheduled in {} ticks", type.getUrlPath(), delayTicks);
         }
     }
 
