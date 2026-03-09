@@ -66,7 +66,7 @@ public class ChatScreenHook {
                     main.getScheduler().scheduleTask(scheduledTask -> {
                         if (MC.player != null) {
                             ChatScreenHook.logNextChatComponent = true;
-                            MC.gui.getChat().addMessage(Component.empty());
+                            MC.gui.getChat().addMessage(Component.empty(), null, Utils.SBA_MESSAGE_TAG);
                         }
                     }, 0);
 

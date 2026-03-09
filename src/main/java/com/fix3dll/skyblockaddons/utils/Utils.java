@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -63,6 +64,7 @@ import java.util.regex.Pattern;
 public class Utils {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
+    private static final Minecraft MC = Minecraft.getInstance();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     /**
@@ -74,6 +76,9 @@ public class Utils {
             ColorCode.GRAY + "[" + ColorCode.AQUA + "SBA" + ColorCode.GRAY + "] " + ColorCode.RESET;
     public static final Component COMPONENT_TITLE = Component.literal(SkyblockAddons.METADATA.getName())
             .withColor(ColorCode.AQUA.getColor());
+    public static final GuiMessageTag SBA_MESSAGE_TAG = new GuiMessageTag(
+            ColorCode.AQUA.getColor(), null, COMPONENT_TITLE, SkyblockAddons.METADATA.getName()
+    );
 
     /**
      * "Skyblock" as shown on the scoreboard title in English, Chinese Simplified, Traditional Chinese.
@@ -245,9 +250,9 @@ public class Utils {
         Component message = prefix ? Component.literal(MESSAGE_PREFIX).append(text) : text;
         boolean eventCanceled = !ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message, false);
         if (!eventCanceled) {
-            LocalPlayer player = Minecraft.getInstance().player;
+            LocalPlayer player = MC.player;
             if (player != null) {
-                player.displayClientMessage(message, false); // Just for logs
+                MC.gui.getChat().addMessage(message, null, Utils.SBA_MESSAGE_TAG);
             }
         }
     }
@@ -265,7 +270,7 @@ public class Utils {
     }
 
     public static void sendMessageOrElseLog(String message, Logger logger, boolean isError) {
-        if (Minecraft.getInstance().player != null) {
+        if (MC.player != null) {
             if (isError) {
                 sendErrorMessage(message);
             } else {
@@ -290,7 +295,7 @@ public class Utils {
      * @return {@code true} if the player is on Hypixel, {@code false} otherwise
      */
     public boolean isOnHypixel() {
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = MC.player;
         if (player == null) {
             return false;
         }
@@ -414,7 +419,7 @@ public class Utils {
                                 location = "The Garden";
                             } else if (map == Island.CRIMSON_ISLE) {
                                 // Location fix
-                                LocalPlayer player = Minecraft.getInstance().player;
+                                LocalPlayer player = MC.player;
                                 if (player == null) return;
                                 double x = player.xo;
                                 double y = player.yo;
@@ -650,7 +655,7 @@ public class Utils {
      */
     public void playLoudSound(SoundEvent sound, double pitch) {
         playingLoudSound = true;
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = MC.player;
         if (player == null) return;
 
         player.playSound(sound, 1, (float) pitch);
@@ -666,7 +671,7 @@ public class Utils {
     }
 
     public static void playSound(SoundEvent sound, double volume, double pitch) {
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = MC.player;
         if (player == null) return;
 
         player.playSound(sound, (float) volume, (float) pitch);
@@ -726,7 +731,7 @@ public class Utils {
     }
 
     public boolean itemIsInHotbar(ItemStack itemStack) {
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = MC.player;
         if (player == null) return false;
 
         NonNullList<ItemStack> inventory = player.getInventory().getNonEquipmentItems();
@@ -786,7 +791,7 @@ public class Utils {
     }
 
     public static Player getPlayerFromName(@NonNull String name) {
-        ClientLevel level = Minecraft.getInstance().level;
+        ClientLevel level = MC.level;
         if (level != null) {
             for (Player player : level.players()) {
                 if (name.equals(player.getGameProfile().name())) {
@@ -814,7 +819,7 @@ public class Utils {
     }
 
     public static float getPartialTicks() {
-        return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
+        return MC.getDeltaTracker().getGameTimeDeltaPartialTick(true);
     }
 
     public static byte[] toByteArray(BufferedInputStream inputStream) throws IOException {
@@ -826,7 +831,7 @@ public class Utils {
     }
 
     public static Entity getEntityFromUUID(UUID uuid) {
-        ClientLevel world = Minecraft.getInstance().level;
+        ClientLevel world = MC.level;
         if (uuid == null || world == null) {
             return null;
         }
@@ -841,7 +846,7 @@ public class Utils {
     }
 
     public static RegistryAccess registryAccess() {
-        ClientLevel world = Minecraft.getInstance().level;
+        ClientLevel world = MC.level;
         if (world == null) {
             return RegistryAccess.EMPTY;
         } else {
