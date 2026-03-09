@@ -120,7 +120,9 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
             }
 
             // double the lowest bin update interval for averages
-            int updateInterval = Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(LOWEST_BIN_PRICES_UPDATE_INTERVAL).intValue();
+            int updateInterval = Math.max(
+                    Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(LOWEST_BIN_PRICES_UPDATE_INTERVAL).intValue(), 60
+            );
             int delayTicks = (updateInterval + 1) * 20 * 2;
 
             updateTask = main.getScheduler().scheduleAsyncTask(

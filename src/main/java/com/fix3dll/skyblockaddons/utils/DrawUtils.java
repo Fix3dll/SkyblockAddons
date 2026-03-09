@@ -5,9 +5,8 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.render.chroma.ChromaRenderType;
 import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
-import com.fix3dll.skyblockaddons.core.render.state.CornerRenderState;
-import com.fix3dll.skyblockaddons.core.render.state.CornerRenderState.RoundedRectCorner;
 import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
+import com.fix3dll.skyblockaddons.core.render.state.RoundedRectRenderState;
 import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
@@ -36,21 +35,12 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.TriState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
 import java.util.function.Function;
 
 public class DrawUtils {
 
-    public static final RenderPipeline TRIANGLE_FAN = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
-                    .withUsePipelineDrawModeForGui(true)
-                    .withLocation("pipeline/debug_triangle_fan")
-                    .withCull(false)
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN)
-                    .build()
-    );
     public static final RenderPipeline CHROMA_STANDARD = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
                     .withLocation(SkyblockAddons.resourceLocation("sba_chroma_standard"))
@@ -94,29 +84,16 @@ public class DrawUtils {
     }
 
     public static void drawRoundedRect(GuiGraphics graphics, int x, int y, int width, int height, int radius, int color) {
-        TextureSetup textureSetup = TextureSetup.noTexture();
-        Matrix3x2fStack poseStack = graphics.pose();
         radius = Math.min(radius, Math.min(width, height) / 2);
 
-        graphics.nextStratum();
-        graphics.guiRenderState.submitGuiElement(
-                new CornerRenderState(TRIANGLE_FAN, textureSetup, poseStack, x + radius, y + radius, radius, RoundedRectCorner.TOP_LEFT, color, graphics.scissorStack.peek())
-        );
-        graphics.nextStratum();
-        graphics.fill(x + radius, y, x + width - radius, y + height, color); // Main vertical rectangle
-        graphics.guiRenderState.submitGuiElement(
-                new CornerRenderState(TRIANGLE_FAN, textureSetup, poseStack, x + width - radius, y + radius, radius, RoundedRectCorner.TOP_RIGHT, color, null)
-        );
-        graphics.fill(x + width - radius, y + radius, x + width, y + height - radius, color); // Right rectangle
-        graphics.guiRenderState.submitGuiElement(
-                new CornerRenderState(TRIANGLE_FAN, textureSetup, poseStack, x + radius, y + height - radius, radius, RoundedRectCorner.BOTTOM_RIGHT, color, graphics.scissorStack.peek())
-        );
-        graphics.nextStratum();
-        graphics.fill(x, y + radius, x + radius, y + height - radius, color); // Left rectangle
-        graphics.nextStratum();
-        graphics.guiRenderState.submitGuiElement(
-                new CornerRenderState(TRIANGLE_FAN, textureSetup, poseStack, x + width - radius, y + height - radius, radius, RoundedRectCorner.BOTTOM_LEFT, color, null)
-        );
+        // RenderPipelines.GUI expects QUADS
+        graphics.guiRenderState.submitGuiElement(new RoundedRectRenderState(
+                RenderPipelines.GUI, // Standard 2D solid color quad pipeline
+                TextureSetup.noTexture(),
+                graphics.pose(),
+                x, y, width, height, radius, color,
+                graphics.scissorStack.peek()
+        ));
     }
 
     public static void drawCylinder(PoseStack poseStack,

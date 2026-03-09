@@ -70,6 +70,7 @@ public class EnchantmentSettingsGui extends SettingsGui {
         addScrollIgnoredButton(new ButtonArrow(width / 2D - 15 - 150, height - 70, ButtonArrow.ArrowType.LEFT, page == 0));
         addScrollIgnoredButton(new ButtonArrow(width / 2D - 15 + 150, height - 70, ButtonArrow.ArrowType.RIGHT, page == maxPage));
         addSocials(this::addScrollIgnoredButton);
+        computeScrollGeometry();
     }
 
     @Override
