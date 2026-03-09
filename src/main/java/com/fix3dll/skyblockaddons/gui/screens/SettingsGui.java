@@ -20,7 +20,6 @@ import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,11 +32,36 @@ import net.minecraft.util.ARGB;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 public class SettingsGui extends SkyblockAddonsScreen {
 
-    final ObjectArrayList<Renderable> scrollIgnoredButtons = new ObjectArrayList<>();
+    /** Half the total pixel width of the settings box. Box spans [screenCenterX ± BOX_HALF_EXTENT]. */
+    static final int BOX_HALF_EXTENT = 230;
+    static final int BOX_TOTAL_WIDTH = BOX_HALF_EXTENT * 2;
+    /** Top Y of the settings box, matching {@link #getRowHeight(double)} at row 1. */
+    static final int BOX_Y = 95;
+
+    /** Maximum fraction of the logical screen height the settings box may occupy. */
+    static final float MAX_BOX_HEIGHT_RATIO = 0.65F;
+    static final int SCROLL_SPEED = 16;
+    static final int SCROLLBAR_WIDTH = 4;
+    static final int SCROLLBAR_PADDING = 4;
+    static final int MIN_THUMB_HEIGHT = 20;
+    static final int SCROLLBAR_TRACK_COLOR = ARGB.color(160, 45, 47, 65);
+    static final int SCROLLBAR_THUMB_COLOR = ARGB.color(220, 100, 105, 150);
+    static final int BOX_BACKGROUND_COLOR = ARGB.color(230, 28, 29, 41);
+
+    /**
+     * Buttons that are excluded from scroll offset adjustments and drawn on top of
+     * the scissored content region (e.g. navigation arrows, social links).
+     *
+     * <p>Uses {@link LinkedHashSet} instead of a list to preserve insertion
+     * order for rendering while providing O(1) {@code contains()} for per-frame checks.</p>
+     */
+    final LinkedHashSet<Renderable> scrollIgnoredButtons = new LinkedHashSet<>();
+
     @Getter final Feature feature;
     @Getter final int lastPage;
     @Getter final EnumUtils.GuiTab lastTab;
@@ -50,12 +74,25 @@ public class SettingsGui extends SkyblockAddonsScreen {
     @Setter boolean reInit = false;
 
     double scrollValue;
+    double previousScrollValue;
+    /** Maximum downward scroll distance in pixels (0 when content fits without scrolling). */
     int maxScrollValue;
     double scrollY;
 
-    /**
-     * The main gui, opened with /sba.
-     */
+    /** Rendered height of the settings box, capped at {@link #MAX_BOX_HEIGHT_RATIO} of screen height. */
+    int boxHeight;
+    /** Whether content exceeds {@link #boxHeight} and a scrollbar should be shown. */
+    boolean isScrollable;
+
+    private boolean isDraggingScrollbar;
+    private double dragStartMouseY;
+    private double dragStartScrollValue;
+    /** Cached thumb geometry for drag hit testing, updated each frame by {@link #drawScrollbar}. */
+    private int cachedThumbY;
+    private int cachedThumbHeight;
+    private int cachedTrackX;
+    private int cachedTrackHeight;
+
     public SettingsGui(@NonNull Feature feature, int page, int lastPage, EnumUtils.GuiTab lastTab, EnumUtils.GUIType lastGUI) {
         super(Component.empty());
         this.feature = feature;
@@ -71,7 +108,8 @@ public class SettingsGui extends SkyblockAddonsScreen {
         super.init();
 
         scrollValue = 0;
-        maxScrollValue = MC.getWindow().getScreenHeight() / 2;
+        previousScrollValue = 0;
+        isDraggingScrollbar = false;
         row = 1;
         column = 1;
         clearWidgets();
@@ -82,10 +120,8 @@ public class SettingsGui extends SkyblockAddonsScreen {
             // Add the buttons for each page.
             int skip = (page - 1) * displayCount;
 
-            boolean max = page == 1;
-            addScrollIgnoredButton(new ButtonArrow(width / 2 - 15 - 50, height - 70, ButtonArrow.ArrowType.LEFT, max));
-            max = Language.values().length - skip - displayCount <= 0;
-            addScrollIgnoredButton(new ButtonArrow(width / 2 - 15 + 50, height - 70, ButtonArrow.ArrowType.RIGHT, max));
+            addScrollIgnoredButton(new ButtonArrow(width / 2 - 15 - 50, height - 70, ButtonArrow.ArrowType.LEFT, page == 1));
+            addScrollIgnoredButton(new ButtonArrow(width / 2 - 15 + 50, height - 70, ButtonArrow.ArrowType.RIGHT, Language.values().length - skip - displayCount <= 0));
 
             for (Language language : Language.values()) {
                 if (skip == 0) {
@@ -101,6 +137,10 @@ public class SettingsGui extends SkyblockAddonsScreen {
 
             feature.setValue(currentLanguage);
             DataUtils.loadLocalizedStrings(false);
+
+            boxHeight = 0;
+            isScrollable = false;
+            maxScrollValue = 0;
         } else {
             if (feature.hasSettings()) {
                 for (Map.Entry<FeatureSetting, Object> entry : feature.getFeatureData().getSettings().entrySet()) {
@@ -108,6 +148,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 }
             }
             addUniversalButton();
+            computeScrollGeometry();
         }
         addSocials(this::addScrollIgnoredButton);
     }
@@ -125,17 +166,30 @@ public class SettingsGui extends SkyblockAddonsScreen {
         return displayCount;
     }
 
+    /**
+     * Recomputes {@link #boxHeight}, {@link #isScrollable}, and {@link #maxScrollValue}
+     * based on the current content height and screen size. Must be called after all
+     * setting buttons have been added so that {@link #row} reflects the final layout.
+     */
+    protected void computeScrollGeometry() {
+        int fullContentHeight = (int) getRowHeightSetting(row) - BOX_Y;
+        int maxBoxHeight = (int) (this.height * MAX_BOX_HEIGHT_RATIO);
+        boxHeight = Math.min(fullContentHeight, maxBoxHeight);
+        isScrollable = fullContentHeight > boxHeight;
+        maxScrollValue = isScrollable ? fullContentHeight - boxHeight : 0;
+    }
+
     @Override
     public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (reInit) {
             reInit = false;
             init();
         }
-        double scroll = this.getMouseScrollY() * 16;
-        if (Math.abs(scrollValue + scroll) <= maxScrollValue) {
-            scrollValue += scroll;
-        } else {
-            scroll = 0;
+
+        double scroll = this.getMouseScrollY() * SCROLL_SPEED;
+        double newScrollValue = scrollValue + scroll;
+        if (newScrollValue >= -maxScrollValue && newScrollValue <= 0) {
+            scrollValue = newScrollValue;
         }
 
         float alphaMultiplier = calculateAlphaMultiplier();
@@ -149,31 +203,62 @@ public class SettingsGui extends SkyblockAddonsScreen {
 
         boolean scissorEnabled = false;
         if (feature != Feature.LANGUAGE) {
-            int halfWidth = width / 2;
-            int boxWidth = 140;
-            int x = halfWidth - 90 - boxWidth;
-            int width = halfWidth + 90 + boxWidth;
-            width -= x;
-            float numberOfRow = row - 1;
-            int height = (int) (getRowHeightSetting(numberOfRow) - 70);
-            int y = (int) getRowHeight(1);
-            this.maxScrollValue = height - 35; // - 35 because we don't want it to be completely invisible
-            DrawUtils.drawRoundedRect(graphics, x, y, width, height, 4, ARGB.color(230, 28, 29, 41));
+            int boxX = width / 2 - BOX_HALF_EXTENT;
+
+            DrawUtils.drawRoundedRect(graphics, boxX, BOX_Y, BOX_TOTAL_WIDTH, boxHeight, 4, BOX_BACKGROUND_COLOR);
+
             // Scroll ability with scissor
-            graphics.enableScissor(x, y, x + width, y + height);
+            graphics.enableScissor(boxX, BOX_Y, boxX + BOX_TOTAL_WIDTH, BOX_Y + boxHeight);
             scissorEnabled = true;
+
             drawScaledString(graphics, this, Translations.getMessage("settings.settings"), (int) (110 + scrollValue), defaultBlue, 1.5F, 0);
-            final double finalScroll = scroll;
-            renderables.forEach(guiButton -> {
-                AbstractWidget abstractWidget = (AbstractWidget) guiButton;
-                if (!scrollIgnoredButtons.contains(guiButton)) {
-                    abstractWidget.setY(abstractWidget.getY() + (int) finalScroll);
+
+            final int scrollDelta = (int) scrollValue - (int) previousScrollValue;
+            previousScrollValue = scrollValue;
+            renderables.forEach(renderable -> {
+                AbstractWidget widget = (AbstractWidget) renderable;
+                if (!scrollIgnoredButtons.contains(renderable)) {
+                    widget.setY(widget.getY() + scrollDelta);
                 }
             });
         }
+
         this.drawSettingsScreen(graphics, mouseX, mouseY, partialTick); // Draw buttons.
-        if (scissorEnabled) graphics.disableScissor();
+
+        if (scissorEnabled) {
+            graphics.disableScissor();
+            if (isScrollable) {
+                drawScrollbar(graphics);
+            }
+        }
+
         scrollIgnoredButtons.forEach(renderable -> renderable.render(graphics, mouseX, mouseY, partialTick));
+    }
+
+    /**
+     * Draws the scrollbar track and thumb outside the scissor region so they are never clipped.
+     * Also caches the computed thumb bounds into {@link #cachedTrackX}, {@link #cachedTrackHeight},
+     * {@link #cachedThumbY}, and {@link #cachedThumbHeight} for use in mouse hit-testing.
+     */
+    private void drawScrollbar(GuiGraphics graphics) {
+        int boxX = width / 2 - BOX_HALF_EXTENT;
+        int trackX = boxX + BOX_TOTAL_WIDTH - SCROLLBAR_WIDTH - SCROLLBAR_PADDING;
+        int trackY = BOX_Y + SCROLLBAR_PADDING;
+        int trackHeight = boxHeight - SCROLLBAR_PADDING * 2;
+
+        DrawUtils.drawRoundedRect(graphics, trackX, trackY, SCROLLBAR_WIDTH, trackHeight, SCROLLBAR_WIDTH / 2, SCROLLBAR_TRACK_COLOR);
+
+        int fullContentHeight = boxHeight + maxScrollValue;
+        int thumbHeight = Math.max(MIN_THUMB_HEIGHT, (int) ((float) boxHeight / fullContentHeight * trackHeight));
+        float scrollRatio = (float) (-scrollValue) / maxScrollValue;
+        int thumbY = trackY + Math.round(scrollRatio * (trackHeight - thumbHeight));
+
+        cachedTrackX = trackX;
+        cachedTrackHeight = trackHeight;
+        cachedThumbY = thumbY;
+        cachedThumbHeight = thumbHeight;
+
+        DrawUtils.drawRoundedRect(graphics, trackX, thumbY, SCROLLBAR_WIDTH, thumbHeight, SCROLLBAR_WIDTH / 2, SCROLLBAR_THUMB_COLOR);
     }
 
     @Override
@@ -540,9 +625,41 @@ public class SettingsGui extends SkyblockAddonsScreen {
 
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        boolean consumed =  super.mouseClicked(event, isDoubleClick);
+        if (isScrollable && event.button() == 0) {
+            double mx = event.x();
+            double my = event.y();
+            if (mx >= cachedTrackX && mx <= cachedTrackX + SCROLLBAR_WIDTH
+                    && my >= cachedThumbY && my <= cachedThumbY + cachedThumbHeight) {
+                isDraggingScrollbar = true;
+                dragStartMouseY = my;
+                dragStartScrollValue = scrollValue;
+                return true;
+            }
+        }
+        boolean consumed = super.mouseClicked(event, isDoubleClick);
         updateButtonInputFields(event, isDoubleClick);
         return consumed;
+    }
+
+    @Override
+    public boolean mouseDragged(@NonNull MouseButtonEvent event, double dragX, double dragY) {
+        if (isDraggingScrollbar && event.button() == 0 && isScrollable) {
+            double mouseDelta = event.y() - dragStartMouseY;
+            double scrollablePx = cachedTrackHeight - cachedThumbHeight;
+            if (scrollablePx > 0) {
+                double newScrollValue = dragStartScrollValue - (mouseDelta / scrollablePx) * maxScrollValue;
+                scrollValue = Math.max(-maxScrollValue, Math.min(0, newScrollValue));
+            }
+        }
+        return super.mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(@NonNull MouseButtonEvent event) {
+        if (isDraggingScrollbar && event.button() == 0) {
+            isDraggingScrollbar = false;
+        }
+        return super.mouseReleased(event);
     }
 
 }

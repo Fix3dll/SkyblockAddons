@@ -106,7 +106,9 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
             }
 
             // lowestbin data approximately updates every 1 minute; +1s buffer
-            int updateInterval = Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(LOWEST_BIN_PRICES_UPDATE_INTERVAL).intValue();
+            int updateInterval = Math.max(
+                    Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(LOWEST_BIN_PRICES_UPDATE_INTERVAL).intValue(), 60
+            );
             int delayTicks = (updateInterval + 1) * 20;
 
             updateTask = main.getScheduler().scheduleAsyncTask(

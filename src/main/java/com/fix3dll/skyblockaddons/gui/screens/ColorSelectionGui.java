@@ -59,6 +59,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     private int imageY;
 
     private EditBox hexColorField;
+    private boolean hexColorFieldHovered;
     private CheckBox chromaCheckbox;
 
     /**
@@ -208,7 +209,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         drawGradientBackground(graphics, 128, 192);
         drawDefaultTitleText(graphics, mouseX, mouseY, partialTick, this, 255);
 
-        int defaultBlue = ColorUtils.getDefaultBlue(1);
+        int defaultBlue = ColorUtils.getDefaultBlue(255);
 
         if (feature.getFeatureGuiData() != null || setting != null) {
             if (isRestricted) {
@@ -249,14 +250,16 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
 
                 if (chromaCheckbox != null) chromaCheckbox.draw(graphics);
 
-                if (!isChroma) { // Disabled cause chroma is enabled
-                    drawScaledString(graphics, this, Translations.getMessage("messages.setHexColor"), 200, defaultBlue, 1.5F, 75);
-                    hexColorField.renderWidget(graphics, mouseX, mouseY, partialTick);
-                }
-
                 if (isChroma) {
                     drawScaledString(graphics, this, Translations.getMessage("settings.chromaSpeed"), 170 + 25, defaultBlue, 1F, 110);
                     drawScaledString(graphics, this, Translations.getMessage("settings.chromaFadeWidth"), 170 + 35 + 25, defaultBlue, 1F, 110);
+                } else {
+                    drawScaledString(graphics, this, Translations.getMessage("messages.setHexColor"), 200, defaultBlue, 1.5F, 75);
+                    hexColorField.renderWidget(graphics, mouseX, mouseY, partialTick);
+                    int hcfX = hexColorField.getX();
+                    int hcfY = hexColorField.getY();
+                    hexColorFieldHovered = mouseX >= hcfX && mouseX < hcfX + hexColorField.getWidth()
+                            && mouseY >= hcfY && mouseY < hcfY + hexColorField.getHeight();
                 }
             }
         }
@@ -286,7 +289,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
             }
 
             hexColorField.mouseClicked(event, isDoubleClick);
-            hexColorField.setFocused(hexColorField.isHovered());
+            hexColorField.setFocused(hexColorFieldHovered);
         }
 
         if (chromaCheckbox != null) chromaCheckbox.onMouseClick(event, isDoubleClick);

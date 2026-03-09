@@ -108,7 +108,10 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
             }
 
             // Bazaar endpoint updates approximately every 20 seconds; +1s buffer to avoid hitting stale data.
-            long updateInterval = Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(FeatureSetting.BAZAAR_PRICES_UPDATE_INTERVAL).longValue();
+            long updateInterval = Math.max(
+                    Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(FeatureSetting.BAZAAR_PRICES_UPDATE_INTERVAL).longValue(),
+                    20
+            );
             long nextUpdateTime = lastUpdated + (updateInterval * 1_000) + 1_000;
             int delayTicks = (int) Math.max(0, (nextUpdateTime - System.currentTimeMillis()) / 50);
 
