@@ -2,8 +2,9 @@ package com.fix3dll.skyblockaddons.core;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter
+@Getter @ToString
 public enum CrimsonArmorAbilityStack {
     CRIMSON("Crimson", "Dominus", "ᝐ"),
     TERROR("Terror", "Hydra Strike", "⁑"),

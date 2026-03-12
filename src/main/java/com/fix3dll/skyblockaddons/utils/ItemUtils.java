@@ -90,6 +90,8 @@ public class ItemUtils {
     public static SkyblockRarity getRarity(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
+        } else if (item == ItemStack.EMPTY) {
+            return null;
         }
 
         return getRarity(getItemLore(item));
@@ -104,6 +106,8 @@ public class ItemUtils {
     public static ItemType getItemType(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
+        } else if (item == ItemStack.EMPTY) {
+            return null;
         }
 
         return getType(getItemLore(item));
@@ -153,7 +157,10 @@ public class ItemUtils {
     public static CompoundTag getExtraAttributes(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
+        } else if (item == ItemStack.EMPTY) {
+            return null;
         }
+
         CustomData customData = item.get(DataComponents.CUSTOM_DATA);
         return customData == null ? null : customData.copyTag();
     }
@@ -275,10 +282,11 @@ public class ItemUtils {
     public static boolean isDrill(ItemStack itemStack) {
         if (itemStack == null) {
             return false;
+        } else if (itemStack == ItemStack.EMPTY) {
+            return false;
         }
 
         CompoundTag extraAttributes = getExtraAttributes(itemStack);
-
         return extraAttributes != null && extraAttributes.contains("drill_fuel");
     }
 
@@ -330,6 +338,7 @@ public class ItemUtils {
      */
     public static int getBackpackSlot(ItemStack itemStack) {
         if (itemStack == null) return 0;
+        else if (itemStack == ItemStack.EMPTY) return 0;
 
         Matcher matcher = BACKPACK_SLOT_PATTERN.matcher(itemStack.getDisplayName().getString());
         if (matcher.find()) {
@@ -387,6 +396,8 @@ public class ItemUtils {
     public static List<Component> getItemLoreComponent(ItemStack itemStack) {
         if (itemStack == null) {
             throw new NullPointerException("Cannot get lore from null item!");
+        } else if (itemStack == ItemStack.EMPTY) {
+            return Collections.emptyList();
         }
 
         ItemLore itemLore = itemStack.get(DataComponents.LORE);
@@ -409,6 +420,8 @@ public class ItemUtils {
     public static List<String> getItemLore(ItemStack itemStack) {
         if (itemStack == null) {
             throw new NullPointerException("Cannot get lore from null item!");
+        } else if (itemStack == ItemStack.EMPTY) {
+            return Collections.emptyList();
         }
 
         ItemLore itemLore = itemStack.get(DataComponents.LORE);
@@ -441,6 +454,8 @@ public class ItemUtils {
     public static boolean isMenuItem(ItemStack itemStack) {
         if (itemStack == null) {
             throw new NullPointerException("Item stack cannot be null!");
+        } else if (itemStack == ItemStack.EMPTY) {
+            return false;
         }
         CompoundTag extraAttributes = getExtraAttributes(itemStack);
 
@@ -612,8 +627,8 @@ public class ItemUtils {
     }
 
     public static UUID getUuid(ItemStack itemStack) {
-        CompoundTag extraAttributes = getExtraAttributes(itemStack);
-        return extraAttributes == null ? null : extraAttributes.getString("uuid").map(UUID::fromString).orElse(null);
+        CompoundTag ea = getExtraAttributes(itemStack);
+        return ea == null ? null : ea.getString("uuid").map(UUID::fromString).orElse(null);
     }
 
     public static boolean isQuiverArrow(ItemStack itemStack) {

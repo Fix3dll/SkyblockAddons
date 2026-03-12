@@ -118,6 +118,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -215,6 +216,18 @@ public class RenderListener {
 
     private final ArrayList<Component> deployableDisplayBuffer = new ArrayList<>();
     private final ArrayList<Component> deployableExpandBuffer = new ArrayList<>();
+
+    /**
+     * Tracks which stacks have their corresponding armor bonus active (§6 Tiered Bonus line in lore).
+     * Updated only when equipment changes, not every frame.
+     */
+    private final EnumSet<CrimsonArmorAbilityStack> equippedStacks = EnumSet.noneOf(CrimsonArmorAbilityStack.class);
+    /**
+     * Last seen {@link ItemStack} reference per equipment slot, indexed by {@link EquipmentSlot#ordinal()}.
+     * Reference equality is used for change detection — {@link net.minecraft.world.entity.LivingEntity#getItemBySlot}
+     * returns the same instance from an {@link java.util.EnumMap} as long as the item has not changed.
+     */
+    private final ItemStack[] lastEquipmentStacks = new ItemStack[EquipmentSlot.values().length];
 
     public RenderListener() {
 //        HudElementRegistryImpl.attachElementAfter(
@@ -1570,87 +1583,135 @@ public class RenderListener {
 
     }
 
+    /**
+     * Returns a formatted string of Crimson Isles armor ability stack values for display.
+     * Shows all stacks whose Tiered Bonus is active (§6 Tiered Bonus line present in lore),
+     * even if the current stack count is 0. Multiple stacks are separated by ", ".
+     * <p>
+     * If armor is removed mid-combat, stacks that are still winding down ({@code currentValue > 0})
+     * continue to be shown until they naturally reach 0 via {@link ActionBarParser}.
+     * <p>
+     * Equipment lore is only re-scanned when the {@link ItemStack} reference of any equipped
+     * armor piece changes. {@link net.minecraft.world.entity.LivingEntity#getItemBySlot} returns
+     * the same instance from an internal {@link java.util.EnumMap} as long as the slot has not
+     * changed, making change detection a pointer comparison — near-zero cost on the render thread.
+     * Non-armor slots (offhand, saddle, body) are excluded from both change detection and lore scanning.
+     * @return Formatted stack string, or {@code null} if no relevant armor is equipped or winding down
+     */
     private String getCrimsonArmorAbilityStacks() {
         LocalPlayer player = MC.player;
         if (player == null) return null;
 
+        boolean changed = false;
+        for (EquipmentSlot slot : Inventory.EQUIPMENT_SLOT_MAPPING.values()) {
+            if (!slot.isArmor()) continue;
+
+            int ordinal = slot.ordinal();
+            ItemStack itemStack = player.getItemBySlot(slot);
+
+            if (lastEquipmentStacks[ordinal] != itemStack) {
+                lastEquipmentStacks[ordinal] = itemStack;
+                changed = true;
+            }
+        }
+        if (changed) refreshEquippedStacks(player);
+
         StringBuilder builder = new StringBuilder();
-        out:
-        for (CrimsonArmorAbilityStack crimsonArmorAbilityStack : CrimsonArmorAbilityStack.values()) {
-            for (EquipmentSlot equipmentSlot : Inventory.EQUIPMENT_SLOT_MAPPING.values()) { // 1.21.5
-                ItemStack itemStack = player.getItemBySlot(equipmentSlot);
-                if (itemStack == ItemStack.EMPTY) continue;
-                for (String line : ItemUtils.getItemLore(itemStack)) {
-                    if (line.contains("§6Tiered Bonus: ")) {
-                        String abilityName = crimsonArmorAbilityStack.getAbilityName();
-                        if (line.contains(abilityName)) {
-                            String symbol = crimsonArmorAbilityStack.getSymbol();
-                            int stack = crimsonArmorAbilityStack.getCurrentValue();
-                            builder.append(abilityName).append(" ").append(symbol).append(" ").append(stack);
-                            continue out;
-                        }
+        for (CrimsonArmorAbilityStack stack : CrimsonArmorAbilityStack.values()) {
+            // Skip if armor is no longer equipped and the stack has fully wound down
+            if (!equippedStacks.contains(stack) && stack.getCurrentValue() == 0) continue;
+
+            if (!builder.isEmpty()) builder.append(", ");
+            builder.append(stack.getAbilityName())
+                    .append(" ").append(stack.getSymbol())
+                    .append(" ").append(stack.getCurrentValue());
+        }
+
+        return builder.isEmpty() ? null : builder.toString();
+    }
+
+    /**
+     * Scans equipped armor lore to refresh {@link #equippedStacks}.
+     * Only called when equipment has changed since the last scan.
+     * Non-armor slots (offhand, saddle, body) are skipped as they cannot carry Tiered Bonuses.
+     */
+    private void refreshEquippedStacks(LocalPlayer player) {
+        equippedStacks.clear();
+        CrimsonArmorAbilityStack[] stacks = CrimsonArmorAbilityStack.values();
+
+        for (EquipmentSlot slot : Inventory.EQUIPMENT_SLOT_MAPPING.values()) {
+            if (!slot.isArmor()) continue;
+
+            ItemStack itemStack = player.getItemBySlot(slot);
+            if (itemStack == ItemStack.EMPTY) continue;
+
+            for (String line : ItemUtils.getItemLore(itemStack)) {
+                if (!line.contains("§6Tiered Bonus: ")) continue;
+
+                for (CrimsonArmorAbilityStack stack : stacks) {
+                    if (line.contains(stack.getAbilityName())) {
+                        equippedStacks.add(stack);
                     }
                 }
             }
         }
-        return builder.isEmpty() ? null : builder.toString();
     }
 
-public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolean usePlaceholders, boolean hideZeroes) {
-    InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+    public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolean usePlaceholders, boolean hideZeroes) {
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
-    float currentX = x;
-    float currentY;
+        float currentX = x;
+        float currentY;
 
-    int maxNumberWidth;
-    if (inventoryType == InventoryType.SALVAGING) {
-        Set<Map.Entry<EssenceType, Integer>> entrySet = main.getDungeonManager().getSalvagedEssences().entrySet();
-        if (entrySet.isEmpty()) return;
-
-        String highestAmountStr = Collections.max(entrySet, Map.Entry.comparingByValue()).getValue().toString();
-        maxNumberWidth = MC.font.width(highestAmountStr);
-    } else {
-        maxNumberWidth = MC.font.width("99");
-    }
-
-    int color = Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.getColor();
-
-    int count = 0;
-    for (EssenceType essenceType : EssenceType.values()) {
-        int value;
-
+        int maxNumberWidth;
         if (inventoryType == InventoryType.SALVAGING) {
-            value = main.getDungeonManager().getSalvagedEssences().getOrDefault(essenceType, 0);
+            Set<Map.Entry<EssenceType, Integer>> entrySet = main.getDungeonManager().getSalvagedEssences().entrySet();
+            if (entrySet.isEmpty()) return;
+
+            String highestAmountStr = Collections.max(entrySet, Map.Entry.comparingByValue()).getValue().toString();
+            maxNumberWidth = MC.font.width(highestAmountStr);
         } else {
-            value = main.getDungeonManager().getCollectedEssences().getOrDefault(essenceType, 0);
+            maxNumberWidth = MC.font.width("99");
         }
 
-        if (usePlaceholders) {
-            value = 99;
-        } else if (value <= 0 && hideZeroes) {
-            continue;
+        int color = Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY.getColor();
+
+        int count = 0;
+        for (EssenceType essenceType : EssenceType.values()) {
+            int value;
+
+            if (inventoryType == InventoryType.SALVAGING) {
+                value = main.getDungeonManager().getSalvagedEssences().getOrDefault(essenceType, 0);
+            } else {
+                value = main.getDungeonManager().getCollectedEssences().getOrDefault(essenceType, 0);
+            }
+
+            if (usePlaceholders) {
+                value = 99;
+            } else if (value <= 0 && hideZeroes) {
+                continue;
+            }
+
+            int column = count % 2;
+            int row = count / 2;
+
+            if (column == 0) {
+                currentX = x;
+            } else if (column == 1) {
+                currentX = x + 18 + 2 + maxNumberWidth + 5;
+            }
+            currentY = y + row * 18;
+
+            graphics.guiRenderState.submitGuiElement(
+                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(essenceType.getIdentifier()), graphics.pose(), currentX, currentY, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+            );
+
+            Component formattedValue = Component.literal(TextUtils.formatNumber(value));
+            DrawUtils.drawText(graphics, formattedValue, currentX + 18 + 2, currentY + 5, color);
+
+            count++;
         }
-
-        int column = count % 2;
-        int row = count / 2;
-
-        if (column == 0) {
-            currentX = x;
-        } else if (column == 1) {
-            currentX = x + 18 + 2 + maxNumberWidth + 5;
-        }
-        currentY = y + row * 18;
-
-        graphics.guiRenderState.submitGuiElement(
-                new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(essenceType.getIdentifier()), graphics.pose(), currentX, currentY, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
-        );
-
-        Component formattedValue = Component.literal(TextUtils.formatNumber(value));
-        DrawUtils.drawText(graphics, formattedValue, currentX + 18 + 2, currentY + 5, color);
-
-        count++;
     }
-}
 
     /**
      * Displays the bait list. Only shows bait with count > 0.
