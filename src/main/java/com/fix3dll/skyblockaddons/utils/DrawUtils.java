@@ -37,9 +37,11 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class DrawUtils {
 
+    private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(?i)§[0-9A-F]");
     public static final RenderPipeline CHROMA_STANDARD = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
                     .withLocation(SkyblockAddons.identifier("sba_chroma_standard"))
@@ -187,8 +189,7 @@ public class DrawUtils {
         FormattedCharSequence strippedFcs = null;
 
         if (styleTwo || (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE)) {
-            String strippedText = TextUtils.stripColor(text.getString());
-            if (strippedText == null) strippedText = "";
+            String strippedText = COLOR_CODE_PATTERN.matcher(text.getString()).replaceAll("");
 
             if (styleTwo) {
                 strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(strippedText));
