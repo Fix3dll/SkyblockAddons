@@ -1,7 +1,6 @@
 package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
@@ -57,13 +56,6 @@ public class ButtonArrow extends SkyblockAddonsButton {
                 MC.setScreen(new SkyblockAddonsGui(page, gui.getTab()));
 
                 if (gui.getTab() == EnumUtils.GuiTab.GENERAL_SETTINGS) gui.setCancelClose(false);
-
-            } else if (MC.screen instanceof EnchantmentSettingsGui gui) {
-                gui.setClosingGui(true);
-
-                int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
-                MC.setScreen(new EnchantmentSettingsGui(page, gui.getLastPage(), gui.getLastTab()));
-
             } else if (MC.screen instanceof SettingsGui gui) {
                 gui.setClosingGui(true);
 

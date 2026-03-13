@@ -2,7 +2,6 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.GUIType;
@@ -41,14 +40,10 @@ public class ButtonSettings extends ButtonFeature {
     public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (MC.screen instanceof SkyblockAddonsGui gui) {
             main.getUtils().setFadingIn(false);
-            if (this.feature == Feature.ENCHANTMENT_LORE_PARSING) {
-                MC.setScreen(new EnchantmentSettingsGui(0, gui.getPage(), gui.getTab()));
-            } else {
-                boolean generalSettings = gui.getTab() == GuiTab.GENERAL_SETTINGS;
-                if (generalSettings) gui.setCancelClose(true);
-                MC.setScreen(new SettingsGui(this.feature, 1, gui.getPage(), gui.getTab(), GUIType.MAIN));
-                if (generalSettings) gui.setCancelClose(false);
-            }
+            boolean generalSettings = gui.getTab() == GuiTab.GENERAL_SETTINGS;
+            if (generalSettings) gui.setCancelClose(true);
+            MC.setScreen(new SettingsGui(this.feature, 1, gui.getPage(), gui.getTab(), GUIType.MAIN));
+            if (generalSettings) gui.setCancelClose(false);
         }
     }
 

@@ -837,6 +837,9 @@
     "buyPrice": "Bazaar buy price: ",
     "sellPrice": "Bazaar sell price: ",
     "npcSellPrice": "NPC sell price: ",
-    "none": "None"
+    "none": "None",
+    "baseStatBoost": "Base Stat Boost: ",
+    "swordKills": "Sword Kills: ",
+    "itemDungeonFloor": "Obtained on Floor: "
   }
 }

@@ -203,6 +203,9 @@ public class PlayerListener {
     private String cachedChatRunCommand;
     @Setter private boolean savePersistentFlag = false;
 
+    private final ArrayList<Component> cachedTooltipFirstComponents = new ArrayList<>();
+    private ItemStack lastTooltipFirstItemStack = null;
+
     // addItemPricesToTooltip() caching fields
     private final ArrayList<Component> cachedPriceComponents = new ArrayList<>();
     private ItemStack lastPriceItemStack       = null;
@@ -785,6 +788,22 @@ public class PlayerListener {
         }
     }
 
+    /**
+     * Builds and caches tooltip components inserted before the rarity line.
+     * <p>
+     * The cache is keyed by {@link ItemStack} reference equality. Since
+     * {@link net.minecraft.world.entity.LivingEntity#getItemBySlot} returns the same instance
+     * from an internal {@link java.util.EnumMap} as long as the slot has not changed, this is
+     * sufficient for most cases.
+     * <p>
+     * Known exception: auction house preview tooltips update their lore every second (e.g. "Ends in: 32m 36s"),
+     * which causes a new {@link ItemStack} instance to be created each time. As a result, the cache
+     * is invalidated and rebuilt every second for such items. This is acceptable given the low frequency.
+     * @param itemStack      the item whose tooltip is being built
+     * @param tooltipContext context for tooltip rendering
+     * @param tooltipFlag    flags controlling tooltip detail level
+     * @param components     the tooltip component list being built
+     */
     private void onGetComponentFirst(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
         if (components.isEmpty() || !main.getUtils().isOnSkyblock()) return;
 
@@ -798,12 +817,22 @@ public class PlayerListener {
         }
         insertAt = Math.max(0, insertAt);
 
+        // Caching
+        if (lastTooltipFirstItemStack == itemStack) {
+            components.addAll(insertAt, cachedTooltipFirstComponents);
+            return;
+        }
+
+        this.cachedTooltipFirstComponents.clear();
+        this.lastTooltipFirstItemStack = itemStack;
+
         CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
         if (extraAttributes != null) {
             if (Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.isEnabled() && extraAttributes.contains("baseStatBoostPercentage")) {
                 int baseStatBoost = extraAttributes.getIntOr("baseStatBoostPercentage", 0);
-
                 ColorCode colorCode = Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.getRestrictedColor();
+                if (colorCode == null) colorCode = ColorCode.WHITE;
+
                 if (Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.isEnabled(FeatureSetting.BASE_STAT_COLOR_BY_RARITY)) {
                     int rarityIndex = baseStatBoost / 10;
                     if (rarityIndex < 0) rarityIndex = 0;
@@ -811,33 +840,49 @@ public class PlayerListener {
 
                     colorCode = SkyblockRarity.values()[rarityIndex].getColorCode();
                 }
-                components.add(insertAt++, Component.literal("§7Base Stat Boost: " + colorCode + "+" + baseStatBoost + "%"));
+
+                cachedTooltipFirstComponents.add(
+                        Component.literal(Translations.getMessage("tooltip.baseStatBoost")).withColor(ColorCode.GRAY.getColor())
+                                .append(Component.literal("+" + baseStatBoost + "%").withColor(colorCode.getColor()))
+                );
             }
 
-            if (Feature.SHOW_STACKING_ENCHANT_PROGRESS.isEnabled()) {
-                insertAt = EnchantManager.insertStackingEnchantProgress(components, extraAttributes, insertAt);
-            }
+            EnchantManager.insertStackingEnchantProgress(cachedTooltipFirstComponents, extraAttributes);
 
             if (Feature.SHOW_SWORD_KILLS.isEnabled() && extraAttributes.contains("sword_kills")) {
                 ColorCode colorCode = Feature.SHOW_SWORD_KILLS.getRestrictedColor();
+                if (colorCode == null) colorCode = ColorCode.WHITE;
                 int swordKills = extraAttributes.getIntOr("sword_kills", 0);
-                components.add(insertAt++, Component.literal("§7Sword Kills: " + colorCode + swordKills));
+
+                cachedTooltipFirstComponents.add(
+                        Component.literal(Translations.getMessage("tooltip.swordKills")).withColor(ColorCode.GRAY.getColor())
+                                .append(Component.literal(String.valueOf(swordKills)).withColor(colorCode.getColor()))
+                );
             }
 
             if (Feature.SHOW_ITEM_DUNGEON_FLOOR.isEnabled() && extraAttributes.contains("item_tier")) {
-                int floor = extraAttributes.getIntOr("item_tier", 0);
                 ColorCode colorCode = Feature.SHOW_ITEM_DUNGEON_FLOOR.getRestrictedColor();
-                components.add(insertAt, Component.literal("§7Obtained on Floor: " + colorCode + (floor == 0 ? "Entrance" : floor)));
+                if (colorCode == null) colorCode = ColorCode.WHITE;
+                int floor = extraAttributes.getIntOr("item_tier", 0);
+                String floorString = floor == 0 ? "Entrance" : Integer.toString(floor);
+
+                cachedTooltipFirstComponents.add(
+                        Component.literal(Translations.getMessage("tooltip.itemDungeonFloor")).withColor(ColorCode.GRAY.getColor())
+                                .append(Component.literal(floorString).withColor(colorCode.getColor()))
+                );
             }
         }
+
+        components.addAll(insertAt, cachedTooltipFirstComponents);
     }
 
     private void onGetComponentLast(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
         if (components.isEmpty() || !main.getUtils().isOnSkyblock()) return;
 
         // Last
+        int[] enchantmentLoreIdx = null;
         if (Feature.ENCHANTMENT_LORE_PARSING.isEnabled()) {
-            EnchantManager.parseEnchants(components, itemStack);
+            enchantmentLoreIdx = EnchantManager.parseEnchants(components, itemStack);
         }
 
         if (Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS.isEnabled()) {
@@ -846,20 +891,19 @@ public class PlayerListener {
             );
             int startIndex = replaceItemName ? 1 : 0;
 
-            // TODO clean this shit + EnchantManager
             for (int i = startIndex; i < components.size(); i++) {
-                String line = components.get(i).getString();
-                boolean legacy = line.contains("§");
-                if (!legacy) {
-                    line = TextUtils.getFormattedText(components.get(i));
+                // Ignore enchantment lines which are processed by EnchantManager
+                if (enchantmentLoreIdx != null) {
+                    if (i >= enchantmentLoreIdx[0] || i <= enchantmentLoreIdx[1]) {
+                        continue;
+                    }
                 }
 
-                String parsedFormattedText = RomanNumeralParser.replaceNumeralsWithIntegers(line);
+                Component loreLine = components.get(i);
+                Component replacedLine = RomanNumeralParser.replaceNumeralsWithIntegers(loreLine);
 
-                if (legacy) {
-                    components.set(i, EnchantManager.CREATE_STYLED_COMPONENT.apply(parsedFormattedText));
-                } else {
-                    components.set(i, Component.literal(parsedFormattedText));
+                if (replacedLine != loreLine) {
+                    components.set(i, replacedLine);
                 }
             }
         }
@@ -867,9 +911,10 @@ public class PlayerListener {
         String itemId = null;
         if (Feature.SHOW_SKYBLOCK_ITEM_ID.isEnabled() || Feature.DEVELOPER_MODE.isEnabled()) {
             itemId = ItemUtils.getSkyblockItemID(itemStack);
-            Component tooltipLine = Component.literal( "skyblock:" + itemId).withColor(ColorCode.DARK_GRAY.getColor());
 
             if (itemId != null) {
+                Component tooltipLine = Component.literal( "skyblock:" + itemId).withColor(ColorCode.DARK_GRAY.getColor());
+
                 if (tooltipFlag.isAdvanced()) {
                     for (int i = components.size(); i-- > 0; ) {
                         Component component = components.get(i);
