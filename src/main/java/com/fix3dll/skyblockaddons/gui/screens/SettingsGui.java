@@ -8,6 +8,7 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordStatus;
 import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
+import com.fix3dll.skyblockaddons.features.enchants.EnchantLayout;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonArrow;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonInputFieldWrapper;
@@ -478,6 +479,30 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), setting));
                 if (setting == FeatureSetting.TANK_COLOR) row += 0.4F; // Last spacing
+                break;
+
+            case PERFECT_ENCHANT_COLOR:
+            case GREAT_ENCHANT_COLOR:
+            case GOOD_ENCHANT_COLOR:
+            case POOR_ENCHANT_COLOR:
+            case COMMA_ENCHANT_COLOR:
+                boxWidth = 100;
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), setting));
+                if (setting == FeatureSetting.COMMA_ENCHANT_COLOR) row += 0.4F; // Last spacing
+                break;
+
+            case ENCHANT_LAYOUT:
+                boxWidth = 140;
+                x = halfWidth - (boxWidth / 2);
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, Translations.getMessage("enchantLayout.title"), true, 0xFFFFFFFF));
+                addRenderableWidget(new ButtonCycling(x, (int) y, boxWidth, 20,
+                        Arrays.asList(EnchantLayout.values()),
+                        feature.getAsEnum(setting).ordinal(),
+                        index -> feature.set(setting, EnchantLayout.values()[index])
+                ));
+                row += 0.5F;
                 break;
 
             case BAZAAR_PRICES_UPDATE_INTERVAL:

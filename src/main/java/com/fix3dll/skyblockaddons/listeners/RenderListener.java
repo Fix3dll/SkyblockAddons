@@ -42,7 +42,6 @@ import com.fix3dll.skyblockaddons.features.spooky.CandyType;
 import com.fix3dll.skyblockaddons.features.spooky.SpookyEventManager;
 import com.fix3dll.skyblockaddons.features.tablist.TabListParser;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonLocation;
-import com.fix3dll.skyblockaddons.gui.screens.EnchantmentSettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.gui.screens.LocationEditGui;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
@@ -2653,11 +2652,7 @@ public class RenderListener {
         } else if (this.guiToOpen == GUIType.EDIT_LOCATIONS) {
             MC.setScreen(new LocationEditGui(this.guiPageToOpen, this.guiTabToOpen));
         } else if (this.guiToOpen == GUIType.SETTINGS) {
-            if (guiFeatureToOpen == Feature.ENCHANTMENT_LORE_PARSING) {
-                MC.setScreen(new EnchantmentSettingsGui(1, this.guiPageToOpen, this.guiTabToOpen));
-            } else {
-                MC.setScreen(new SettingsGui(this.guiFeatureToOpen, 1, this.guiPageToOpen, this.guiTabToOpen, null));
-            }
+            MC.setScreen(new SettingsGui(this.guiFeatureToOpen, 1, this.guiPageToOpen, this.guiTabToOpen, null));
         } else if (this.guiToOpen == GUIType.WARP) {
             MC.setScreen(new IslandWarpGui());
         }

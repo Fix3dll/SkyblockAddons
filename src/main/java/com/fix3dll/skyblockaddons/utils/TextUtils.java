@@ -839,11 +839,9 @@ public class TextUtils {
         }
 
         // If not found in parent content, check content of siblings.
-        MutableComponent newComponent = original.copy();
-        List<Component> modifiableSiblings = newComponent.getSiblings();
-
-        for (int i = 0; i < modifiableSiblings.size(); i++) {
-            Component sibling = modifiableSiblings.get(i);
+        List<Component> originalSiblings = original.getSiblings();
+        for (int i = 0; i < originalSiblings.size(); i++) {
+            Component sibling = originalSiblings.get(i);
 
             if (sibling.getContents() instanceof PlainTextContents siblingContents) {
                 String contentsText = siblingContents.text();
@@ -851,7 +849,8 @@ public class TextUtils {
                 if (!StringUtil.isNullOrEmpty(contentsText) && contentsText.contains(target)) {
                     MutableComponent modifiedSibling = Component.literal(contentsText.replace(target, replacement))
                             .withStyle(sibling.getStyle());
-                    modifiableSiblings.set(i, modifiedSibling);
+                    MutableComponent newComponent = original.copy();
+                    newComponent.getSiblings().set(i, modifiedSibling);
                     return newComponent;
                 }
             }
