@@ -854,6 +854,18 @@ public class TextUtils {
                     return newComponent;
                 }
             }
+
+            //empty[style={color=white,italic}, siblings=[empty[style={!italic}, siblings=[literal{Multi Drop XVIII}[style={color=green}]]]]]
+            //empty[style={!italic}, siblings=[empty[style={color=white}], empty[style={color=white}], literal{Beacon III}[style={color=dark_purple}]]]
+            if (!sibling.getSiblings().isEmpty()) {
+                Component replaced = replaceComponent(sibling, target, replacement);
+
+                if (replaced != sibling) {
+                    MutableComponent newComponent = original.copy();
+                    newComponent.getSiblings().set(i, replaced);
+                    return newComponent;
+                }
+            }
         }
 
         return original;
