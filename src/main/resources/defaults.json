@@ -209,6 +209,7 @@
   "ENCHANTMENT_LORE_PARSING": {
     "value": true,
     "settings": {
+      "SHOW_MISSING_ENCHANTS": true,
       "HIDE_ENCHANTMENT_LORE": false,
       "HIDE_GREY_ENCHANTS": true,
       "ENCHANT_LAYOUT": "NORMAL",

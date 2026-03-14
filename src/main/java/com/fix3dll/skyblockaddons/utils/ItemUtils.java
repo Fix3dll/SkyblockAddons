@@ -65,7 +65,7 @@ public class ItemUtils {
      * This expression matches the line with a Skyblock item's rarity and item type that's at the end of its lore.
      * <p><i>Recombobulated Special items have exception for rarity pattern.<i/></p>
      */
-    private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("§l(?<rarity>[A-Z]+(?: SPECIAL)?) ?(?<type>[A-Z ]+)?(?:§[0-9a-f]§l§ka)?(?:§8\\(ID (?<id>[A-Z]+\\d+)\\))?$");
+    private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("(?<rarity>[A-Z]+(?: SPECIAL)?)\\s*(?<dungeon>DUNGEON\\b)?\\s*(?<type>[A-Z]+(?: [A-Z]+)*)?\\s*(?:\\(ID (?<id>[A-Z]+\\d+)\\))?");
     private static final Pattern BACKPACK_SLOT_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
     @Getter @Setter private static Object2ObjectOpenHashMap<String, CompactorItem> compactorItems;
     @Setter private static Object2ObjectOpenHashMap<String, ContainerData> containers;
@@ -81,42 +81,81 @@ public class ItemUtils {
     }
 
     /**
-     * Returns the rarity of a given Skyblock item. The rarity is read from the item's lore.
-     * The item must not be {@code null}.
-     *
-     * @param item the Skyblock item to check, can't be {@code null}
-     * @return the rarity of the item if a valid rarity is found, or {@code null} if item is {@code null} or no valid rarity is found
+     * Parses the item classification (rarity, type, dungeon status) from the given Skyblock item.
+     * Processes the lore list in a single pass for optimized performance.
+     * @param item the Skyblock item to check, cannot be {@code null}
+     * @return an {@link ItemClassification} instance containing the parsed data, or {@code null} if the item is empty or invalid
+     * @since 2.2.4
      */
-    public static SkyblockRarity getRarity(ItemStack item) {
+    public static ItemClassification getItemClassification(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
         } else if (item == ItemStack.EMPTY) {
             return null;
         }
 
-        return getRarity(getItemLore(item));
+        return getClassificationFromLore(getItemLoreComponent(item));
     }
 
     /**
-     * Returns the item type of given Skyblock item.
-     * The item must not be {@code null}.
-     * @param item the Skyblock item to check, can't be {@code null}
-     * @return the item type of the item or {@code null} if no item type was found
+     * Parses the item classification from the given lore components.
+     * This method is split up from the method that takes the {@code ItemStack} instance for easier unit testing.
+     * @param lore the {@code List<Component>} containing the item's lore
+     * @return an {@link ItemClassification} instance, or {@code null} if no valid classification line is found
+     * @since 2.2.4
      */
-    public static ItemType getItemType(ItemStack item) {
-        if (item == null) {
-            throw new NullPointerException("The item cannot be null!");
-        } else if (item == ItemStack.EMPTY) {
+    private static ItemClassification getClassificationFromLore(List<Component> lore) {
+        if (lore == null || lore.isEmpty()) {
             return null;
         }
 
-        return getType(getItemLore(item));
+        // Start from the end since the target line is usually the last line or one of the last.
+        for (int i = lore.size() - 1; i >= 0; i--) {
+            String loreLine = lore.get(i).getString();
+            if (loreLine.isBlank()) continue;
+
+            Matcher matcher = ITEM_TYPE_AND_RARITY_PATTERN.matcher(loreLine);
+            if (matcher.find()) {
+                String rarityStr = matcher.group("rarity");
+                if (rarityStr == null || rarityStr.isBlank()) continue;
+
+                SkyblockRarity parsedRarity = null;
+                for (SkyblockRarity itemRarity : SkyblockRarity.values()) {
+                    if (itemRarity.getLoreName().equals(rarityStr)) {
+                        parsedRarity = itemRarity;
+                        break;
+                    }
+                }
+
+                // If a valid rarity is matched, we consider this the correct classification line.
+                if (parsedRarity != null) {
+                    String typeStr = matcher.group("type");
+                    ItemType parsedType = null;
+
+                    if (typeStr != null && !typeStr.isBlank()) {
+                        for (ItemType itemType : ItemType.values()) {
+                            if (itemType.getLoreName().startsWith(typeStr)) {
+                                parsedType = itemType;
+                                break;
+                            }
+                        }
+                    }
+
+                    String dungeonStr = matcher.group("dungeon");
+                    boolean isDungeon = dungeonStr != null && !dungeonStr.isBlank();
+
+                    String idStr = matcher.group("id");
+                    return new ItemClassification(parsedRarity, parsedType, isDungeon, idStr);
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
      * Returns the itemstack that this personal compactor skyblock ID represents. Note that
      * a personal compactor skyblock ID is not the same as an item's regular skyblock id!
-     *
      * @param personalCompactorSkyblockID The personal compactor skyblock ID (ex. ENCHANTED_ACACIA_LOG)
      * @return The itemstack that this personal compactor skyblock ID represents
      */
@@ -140,7 +179,6 @@ public class ItemUtils {
 
     /**
      * Returns data about the container that is passed in.
-     *
      * @param skyblockID The skyblock ID of the container
      * @return A {@link ContainerData} object containing info about the container in general
      */
@@ -150,7 +188,6 @@ public class ItemUtils {
 
     /**
      * Returns the {@code ExtraAttributes} compound tag from the item's NBT data. The item must not be {@code null}.
-     *
      * @param item the item to get the tag from
      * @return the item's {@code ExtraAttributes} compound tag or {@code null} if the item doesn't have one
      */
@@ -401,11 +438,7 @@ public class ItemUtils {
         }
 
         ItemLore itemLore = itemStack.get(DataComponents.LORE);
-        if (itemLore != null) {
-            return itemLore.lines();
-        } else {
-            return Collections.emptyList();
-        }
+        return itemLore != null ? itemLore.lines() : Collections.emptyList();
     }
 
     /**
@@ -637,70 +670,11 @@ public class ItemUtils {
     }
 
     /**
-     * Returns the rarity of a Skyblock item given its lore. This method takes the item's lore as a string list as input.
-     * This method is split up from the method that takes the {@code ItemStack} instance for easier unit testing.
-     *
-     * @param lore the {@code List<String>} containing the item's lore
-     * @return the rarity of the item if a valid rarity is found, or {@code null} if item is {@code null} or no valid rarity is found
-     */
-    private static SkyblockRarity getRarity(List<String> lore) {
-        // Start from the end since the rarity is usually the last line or one of the last.
-        for (int i = lore.size() - 1; i >= 0 ; i--) {
-            String currentLine = lore.get(i);
-
-            Matcher rarityMatcher = ITEM_TYPE_AND_RARITY_PATTERN.matcher(currentLine);
-            if (rarityMatcher.find()) {
-                String rarity = rarityMatcher.group("rarity");
-
-                for (SkyblockRarity itemRarity : SkyblockRarity.values()) {
-                    // Use a "startsWith" check here because "VERY SPECIAL" has two words and only "VERY" is matched.
-                    if (itemRarity.getLoreName().startsWith(rarity)) {
-                        return itemRarity;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the item type of a Skyblock item given its lore. This method takes the item's lore as a string list as input.
-     * This method is split up from the method that takes the {@code ItemStack} instance for easier unit testing.
-     *
-     * @param lore the {@code List<String>} containing the item's lore
-     * @return the rarity of the item if a valid rarity is found, or {@code null} if item is {@code null} or no valid rarity is found
-     */
-    private static ItemType getType(List<String> lore) {
-        // Start from the end since the rarity is usually the last line or one of the last.
-        for (int i = lore.size() - 1; i >= 0; i--) {
-            String currentLine = lore.get(i);
-
-            Matcher itemTypeMatcher = ITEM_TYPE_AND_RARITY_PATTERN.matcher(currentLine);
-            if (itemTypeMatcher.find()) {
-                String type = itemTypeMatcher.group("type");
-
-                if (type != null) {
-                    type = type.trim();
-                    for (ItemType itemType : ItemType.values()) {
-                        if (itemType.getLoreName().startsWith(type)) {
-                            return itemType;
-                        }
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Constructs a {@link GameProfile} from raw Mojang skin properties.
      *
      * <p>The {@link UUID} is derived deterministically from {@code value} via
      * {@link UUID#nameUUIDFromBytes} so that repeated calls with the same texture
      * produce the same UUID, preserving Minecraft's skin cache behaviour.
-     *
      * @param value     Base64-encoded texture payload
      * @param signature Mojang RSA signature for {@code value}, may be {@code null}
      * @return a {@link GameProfile} with the {@code "textures"} property populated
@@ -713,6 +687,26 @@ public class ItemUtils {
         UUID uuid = UUID.nameUUIDFromBytes(value.getBytes(StandardCharsets.UTF_8));
 
         return new GameProfile(uuid, "", propertyMap);
+    }
+
+    /**
+     * Represents the fundamental classification of a Skyblock item extracted from its lore.
+     * Encapsulates the item's rarity, categorical type, dungeon variant status, and optional ID.
+     * @param rarity    the rarity of the item, or {@code null} if not found
+     * @param type      the type of the item, or {@code null} if not found
+     * @param isDungeon {@code true} if the item is a dungeon variant, {@code false} otherwise
+     * @param id        the item ID if present in the lore line (e.g. {@code R36}), or {@code null}
+     * @since 2.2.4
+     */
+    public record ItemClassification(SkyblockRarity rarity, ItemType type, boolean isDungeon, String id) {
+
+        /**
+         * Checks if the item has a valid parsed type.
+         * @return {@code true} if the item type is present and is not considered a default/other type.
+         */
+        public boolean hasValidType() {
+            return type != null && type != ItemType.OTHER;
+        }
     }
 
 }

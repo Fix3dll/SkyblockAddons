@@ -71,6 +71,7 @@ public enum FeatureSetting {
     SHOW_SKILL_XP_GAINED("settings.showSkillXPGained", Feature.SKILL_DISPLAY),
     SHOW_SALVAGE_ESSENCES_COUNTER("settings.showSalvageEssencesCounter", Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY),
     HEALING_CIRCLE_OPACITY("settings.healingCircleOpacity", Feature.SHOW_HEALING_CIRCLE_WALL),
+    SHOW_MISSING_ENCHANTS("settings.showMissingEnchants", Feature.ENCHANTMENT_LORE_PARSING),
     HIDE_ENCHANTMENT_LORE("settings.hideEnchantDescription", Feature.ENCHANTMENT_LORE_PARSING),
     HIDE_GREY_ENCHANTS("settings.hideGreyEnchants", Feature.ENCHANTMENT_LORE_PARSING),
     ENCHANT_LAYOUT("enchantLayout.title", Feature.ENCHANTMENT_LORE_PARSING),

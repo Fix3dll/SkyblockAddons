@@ -113,6 +113,7 @@
     "disableTeleportPadMessages": "Disable Teleport Pad Messages",
     "baitListDisplay": "Show Bait List While Holding a Rod",
     "freezeBackpackPreview": "Freeze Backpack Preview",
+    "showMissingEnchants": "Show missing enchants with [LSHIFT]",
     "hideGreyEnchants": "Hide Regular Grey Enchants",
     "zealotCounterExplosiveBow": "Zealot Counter Explosive Bow Support",
     "disableEndermanTeleportation": "Disable Enderman Teleportation",

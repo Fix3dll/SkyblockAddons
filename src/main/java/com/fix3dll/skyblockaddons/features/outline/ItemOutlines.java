@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.events.RenderEntityOutlineEvent;
 import com.fix3dll.skyblockaddons.events.RenderEntityOutlineEvent.Type;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.ItemUtils.ItemClassification;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -44,10 +45,14 @@ public class ItemOutlines {
                     return null;
                 }
             }
-            SkyblockRarity itemRarity = ItemUtils.getRarity(itemEntity.getItem());
-            if (itemRarity != null) {
-                // Return the rarity color of the item
-                return itemRarity.getColorCode().getColor();
+            ItemClassification itemClassification = ItemUtils.getItemClassification(itemEntity.getItem());
+            if (itemClassification != null) {
+                SkyblockRarity rarity = itemClassification.rarity();
+
+                if (rarity != null) {
+                    // Return the rarity color of the item
+                    return rarity.getColorCode().getColor();
+                }
             }
             // Return null if the item doesn't have a rarity for some reason...
             return null;

@@ -36,6 +36,7 @@ public enum ItemType {
     CLOAK("CLOAK"),
     BELT("BELT"),
     GLOVES("GLOVES"),
+    CARNIVAL_MASK("CARNIVAL MASK"),
 
     // Other
     ACCESSORY("ACCESSORY"),
