@@ -1,29 +1,53 @@
 package com.fix3dll.skyblockaddons.utils.data.skyblockdata;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.ItemType;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 
 @Getter
 public class EnchantmentsData {
+
+    /**
+     * Placeholder shown in the missing enchants list when an item has no ultimate enchant.
+     * Rendered with ultimate styling (bold) to signal that any one ultimate
+     * can be applied, without listing all applicable ultimates individually.
+     */
+    public static final Enchant ULTIMATE_PLACEHOLDER = new Enchant.Ultimate();
+
+    static {
+        ULTIMATE_PLACEHOLDER.loreName = "Ultimate Enchant";
+        ULTIMATE_PLACEHOLDER.nbtName = "";
+    }
+
     @SerializedName("NORMAL")
     private HashMap<String, Enchant.Normal> normal = new HashMap<>();
     @SerializedName("ULTIMATE")
     private HashMap<String, Enchant.Ultimate> ultimate = new HashMap<>();
     @SerializedName("STACKING")
     private HashMap<String, Enchant.Stacking> stacking = new HashMap<>();
+    /**
+     * Groups of mutually exclusive enchants (conflict pools). At most one enchant from each group
+     * may be applied to an item at a time. Values are NBT names as they appear in item data.
+     */
+    @SerializedName("ENCHANT_POOLS")
+    private List<List<String>> enchantPools = new ArrayList<>();
+    private transient ArrayList<Enchant> allEnchants = null;
 
     public Enchant getFromLore(String loreName) {
         loreName = loreName.toLowerCase(Locale.US);
@@ -48,7 +72,13 @@ public class EnchantmentsData {
                 }
             }
         } else {
-            String constantTitle = nbtKey.replace("_", " ");
+            String constantTitle = switch (nbtKey) {
+                case "PROSECUTE" -> "prosecute";
+                case "aiming" -> "dragon tracer";
+                case "turbo_coco" -> "turbo-cocoa";
+                case "turbo_cactus" -> "turbo-cacti";
+                default -> nbtKey.replace("_", " ");
+            };
             if (normal.containsKey(constantTitle)) {
                 return normal.get(constantTitle);
             } else if (stacking.containsKey(constantTitle)) {
@@ -58,7 +88,17 @@ public class EnchantmentsData {
         return null;
     }
 
-    @Getter
+    public List<Enchant> getAllEnchants() {
+        if (allEnchants == null) {
+            allEnchants = new ArrayList<>(normal.size() + ultimate.size() + stacking.size());
+            allEnchants.addAll(normal.values());
+            allEnchants.addAll(ultimate.values());
+            allEnchants.addAll(stacking.values());
+        }
+        return allEnchants;
+    }
+
+    @Getter @ToString
     public static class Enchant implements Comparable<Enchant> {
         /**
          * Orders enchants by type, then alphabetically within each group:
@@ -73,10 +113,21 @@ public class EnchantmentsData {
                 .thenComparingInt(e -> e.isStacking() ? 0 : 1)
                 .thenComparing(e -> e.loreName);
 
+        @SerializedName("nbtName")
         String nbtName;
+        @SerializedName("loreName")
         String loreName;
+        @SerializedName("goodLevel")
         int goodLevel;
+        @SerializedName("maxLevel")
         int maxLevel;
+        /**
+         * Item type (matching {@link ItemType}) to which this enchant can be applied,
+         * e.g. {@code ["SWORD", "LONGSWORD", "GAUNTLET"]}. An empty list means no applicable types
+         * are known and this enchant will never appear in the missing enchants list.
+         */
+        @SerializedName("appliedTo")
+        List<ItemType> appliedTo = List.of();
 
         public boolean isNormal() {
             return this instanceof Normal;

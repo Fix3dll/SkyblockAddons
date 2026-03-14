@@ -2,12 +2,13 @@ package com.fix3dll.skyblockaddons.features;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.ItemUtils.ItemClassification;
 import com.fix3dll.skyblockaddons.utils.Utils;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.Slot;
@@ -80,12 +81,12 @@ public class ItemDropChecker {
     public static boolean canDropItem(ItemStack item, boolean itemIsInHotbar, boolean playAlert) {
         if (main.getUtils().isOnSkyblock()) {
             String itemID = ItemUtils.getSkyblockItemID(item);
-            SkyblockRarity itemRarity = ItemUtils.getRarity(item);
+            ItemClassification itemClassification = ItemUtils.getItemClassification(item);
 
             if (itemID == null) {
                 // Allow dropping of Skyblock items without IDs
                 return true;
-            } else if (itemRarity == null) {
+            } else if (itemClassification == null || itemClassification.rarity() == null) {
             /*
              If this Skyblock item has an ID but no rarity, allow dropping it.
              This really shouldn't happen but just in case it does, this condition is here.
@@ -93,11 +94,13 @@ public class ItemDropChecker {
                 return true;
             }
 
-            List<String> blacklist = main.getOnlineData().getDropSettings().getDontDropTheseItems();
-            List<String> whitelist = main.getOnlineData().getDropSettings().getAllowDroppingTheseItems();
+            OnlineData.DropSettings dropSettings = main.getOnlineData().getDropSettings();
+            List<String> blacklist = dropSettings.getDontDropTheseItems();
+            List<String> whitelist = dropSettings.getAllowDroppingTheseItems();
 
             if (itemIsInHotbar) {
-                if (itemRarity.compareTo(main.getOnlineData().getDropSettings().getMinimumHotbarRarity()) < 0 && !blacklist.contains(itemID)) {
+                if (itemClassification.rarity().compareTo(dropSettings.getMinimumHotbarRarity()) < 0
+                        && !blacklist.contains(itemID)) {
                     return true;
                 } else {
                     // Dropping rare non-whitelisted items from the hotbar is not allowed.
@@ -111,7 +114,8 @@ public class ItemDropChecker {
                     }
                 }
             } else {
-                if (itemRarity.compareTo(main.getOnlineData().getDropSettings().getMinimumInventoryRarity()) < 0 && !blacklist.contains(itemID)) {
+                if (itemClassification.rarity().compareTo(dropSettings.getMinimumInventoryRarity()) < 0
+                        && !blacklist.contains(itemID)) {
                     return true;
                 } else {
                     /*

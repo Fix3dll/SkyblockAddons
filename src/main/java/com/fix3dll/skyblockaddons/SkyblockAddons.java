@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.config.ConfigValuesManager;
 import com.fix3dll.skyblockaddons.config.ConfigValuesManager.ConfigValues;
 import com.fix3dll.skyblockaddons.config.PersistentValuesManager;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
+import com.fix3dll.skyblockaddons.core.ItemType;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
@@ -36,6 +37,7 @@ import com.fix3dll.skyblockaddons.utils.gson.ConfigValuesAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.CustomExposeStrategy;
 import com.fix3dll.skyblockaddons.utils.gson.FeatureDataAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.GsonInitializableTypeAdapter;
+import com.fix3dll.skyblockaddons.utils.gson.ItemTypeAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.PatternAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.SemanticVersionAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.SkyblockRarityAdapter;
@@ -112,6 +114,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			.registerTypeAdapter(UUID.class, new UuidAdapter())
 			.registerTypeAdapter(FeatureData.class, new FeatureDataAdapter())
 			.registerTypeAdapter(ConfigValues.class, new ConfigValuesAdapter())
+			.registerTypeAdapter(ItemType.class, new ItemTypeAdapter())
 			.create();
 
 	private boolean immediatelyFastLoaded = false;

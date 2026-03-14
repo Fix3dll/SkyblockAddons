@@ -41,6 +41,7 @@ import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.InventoryUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.ItemUtils.ItemClassification;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.utils.RomanNumeralParser;
@@ -77,6 +78,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -881,9 +883,39 @@ public class PlayerListener {
         if (components.isEmpty() || !main.getUtils().isOnSkyblock()) return;
 
         // Last
+        Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
         int[] enchantmentLoreIdx = null;
-        if (Feature.ENCHANTMENT_LORE_PARSING.isEnabled()) {
+        if (feature.isEnabled()) {
             enchantmentLoreIdx = EnchantManager.parseEnchants(components, itemStack);
+
+            boolean showMissingEnchants = feature.isEnabled(FeatureSetting.SHOW_MISSING_ENCHANTS)
+                    && InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT);
+            if (showMissingEnchants) {
+                List<Component> missingLines = EnchantManager.getCachedMissingEnchantsComponent();
+
+                if (!missingLines.isEmpty()) {
+                    int addIndex;
+                    if (enchantmentLoreIdx != null) {
+                        addIndex = enchantmentLoreIdx[1] + 1;
+                    } else {
+                        addIndex = components.size();
+                        for (int i = 0; i < components.size(); i++) {
+                            Component c = components.get(i);
+                            if (c.getSiblings().isEmpty()
+                                    && c.getContents() instanceof PlainTextContents contents
+                                    && StringUtil.isNullOrEmpty(contents.text())) {
+                                addIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    components.add(addIndex++, Component.empty());
+                    components.add(addIndex++, Component.literal("Missing: ").withColor(ColorCode.RED.getColor()));
+                    for (Component line : missingLines) {
+                        components.add(addIndex++, line);
+                    }
+                }
+            }
         }
 
         if (Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS.isEnabled()) {
@@ -1166,27 +1198,26 @@ public class PlayerListener {
             ItemStack item = player.getMainHandItem();
             if (item == ItemStack.EMPTY || item.getItem() != Items.FISHING_ROD) return false;
 
-            return ItemUtils.getItemType(item) == ItemType.FISHING_ROD;
+            ItemClassification itemClassification = ItemUtils.getItemClassification(item);
+            return itemClassification != null && itemClassification.type() == ItemType.FISHING_ROD;
         }
         return false;
     }
 
     public boolean isHoldingMiningTool() {
         LocalPlayer player = MC.player;
+        if (player == null) return false;
 
-        if (player != null) {
-            ItemStack item = player.getMainHandItem();
-            if (item != ItemStack.EMPTY) {
-                ItemType type = ItemUtils.getItemType(item);
-                if (type != null) {
-                    return switch (type) {
-                        case PICKAXE, GAUNTLET, DRILL -> true;
-                        default -> false;
-                    };
-                }
-            }
-        }
-        return false;
+        ItemStack item = player.getMainHandItem();
+        if (item == ItemStack.EMPTY) return false;
+
+        ItemClassification itemClassification = ItemUtils.getItemClassification(item);
+        if (itemClassification == null) return false;
+
+        return switch (itemClassification.type()) {
+            case PICKAXE, GAUNTLET, DRILL -> true;
+            case null, default -> false;
+        };
     }
 
     public boolean isHoldingFireFreeze() {

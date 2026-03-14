@@ -3,11 +3,12 @@ package com.fix3dll.skyblockaddons.features.enchants;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
+import com.fix3dll.skyblockaddons.core.ItemType;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
-import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.ItemUtils.ItemClassification;
 import com.fix3dll.skyblockaddons.utils.RomanNumeralParser;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
@@ -25,10 +26,12 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,41 +45,47 @@ public class EnchantManager {
     private static final String COMMA = ", ";
     private static final Cache LORE_CACHE = new Cache();
     /**
-     * Cached {@code [startEnchant, endEnchant]} inclusive index range of the enchantment section within
-     * the tooltip after the last successful parse. Updated on every cache miss, set to {@code null} when
-     * no enchantment section is found.
+     * Cached {@code [startEnchant, endEnchant]} inclusive index range of the enchantment section
+     * within the tooltip as it appears <em>after</em> parsing and reformatting. The end index
+     * therefore reflects the actual number of formatted lines inserted, not the original lore line
+     * count. Updated on every cache miss; set to {@code null} when no enchantment section is found
+     * or the item has no enchantments.
      */
     private static int[] INDEX_CACHE = null;
     @Setter private static EnchantmentsData enchants = new EnchantmentsData();
 
     /**
-     * Parses through enchantments, reformats them according to current feature settings, and caches the
-     * result for future calls. On a cache hit the lore list is replaced with the cached result directly.
+     * Parses through enchantments, reformats them according to current feature settings, and caches
+     * the result for future calls. On a cache hit the lore list is replaced with the cached result
+     * directly.
      * <p>
-     * Enchantments are sorted by type (ultimates → stacking → normal) then alphabetically within each
-     * group, and laid out according to {@link FeatureSetting#ENCHANT_LAYOUT}.
-     * @param loreList the current item lore; contents are cleared and replaced in-place on a cache hit,
-     *                 or reordered and reformatted on a cache miss
+     * The cache check and snapshot precede the no-enchantment early-out so that switching to an
+     * un-enchanted item always commits a clean cache entry, preventing stale data from the previous
+     * item from leaking through to {@link #getCachedMissingEnchants()}.
+     * <p>
+     * Enchantments are sorted by type (ultimates → stacking → normal) then alphabetically within
+     * each group, and laid out according to {@link FeatureSetting#ENCHANT_LAYOUT}.
+     * @param loreList the current item lore; contents are cleared and replaced in-place on a cache
+     *                 hit, or reordered and reformatted on a cache miss
      * @param item     the item whose enchantments are being parsed
-     * @return a two-element array {@code [startIndex, endIndex]} denoting the inclusive index range of
-     *         the enchantment section in the modified {@code loreList}, or {@code null} if no enchantment
-     *         section was found or the item has no enchantments
+     * @return a two-element array {@code [startIndex, endIndex]} denoting the inclusive index range
+     *         of the enchantment section in the <em>modified</em> {@code loreList} (post-format),
+     *         or {@code null} if no enchantment section was found or the item has no enchantments
      */
     public static int[] parseEnchants(List<Component> loreList, ItemStack item) {
-        Map<String, Integer> enchantments = ItemUtils.getEnchantments(item);
-        if (enchantments.isEmpty() && SkyblockAddons.getInstance().getInventoryUtils().getInventoryType() != InventoryType.SUPERPAIRS) {
-            return null;
-        }
-
-        // Return the cached result if the lore has not changed since the last parse
-        if (LORE_CACHE.isCached(loreList)) {
+        if (LORE_CACHE.isCached(loreList, item)) {
             loreList.clear();
             loreList.addAll(LORE_CACHE.getCachedAfter());
             return INDEX_CACHE;
         }
 
-        // Snapshot lore before modifications so we can detect changes on future calls
-        LORE_CACHE.updateBefore(loreList);
+        LORE_CACHE.updateBefore(loreList, item);
+
+        Map<String, Integer> enchantments = ItemUtils.getEnchantments(item);
+        if (enchantments.isEmpty() && SkyblockAddons.getInstance().getInventoryUtils().getInventoryType() != InventoryType.SUPERPAIRS) {
+            LORE_CACHE.updateAfter(loreList, Set.of(), item);
+            return INDEX_CACHE = null;
+        }
 
         Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
         int startEnchant = -1, endEnchant = -1, maxTooltipWidth = 0;
@@ -103,11 +112,9 @@ public class EnchantManager {
             endEnchant = startEnchant;
         }
         if (endEnchant == -1) {
-            LORE_CACHE.updateAfter(loreList);
-            INDEX_CACHE = null;
-            return INDEX_CACHE;
+            LORE_CACHE.updateAfter(loreList, Set.of(), item);
+            return INDEX_CACHE = null;
         }
-        INDEX_CACHE = new int[] {startEnchant, endEnchant};
 
         // Figure out whether the item tooltip is gonna wrap, and if so, try to make our enchantments wrap
         maxTooltipWidth = correctTooltipWidth(maxTooltipWidth);
@@ -119,6 +126,7 @@ public class EnchantManager {
                 ? Component.literal(COMMA).withColor(feature.getAsNumber(FeatureSetting.COMMA_ENCHANT_COLOR).intValue())
                 : Component.literal(COMMA);
 
+        int maxEnchantsPerLine = 0;
         boolean hasLore = false;
         TreeSet<FormattedEnchant> orderedEnchants = new TreeSet<>();
         FormattedEnchant lastEnchant = null;
@@ -156,6 +164,7 @@ public class EnchantManager {
                     counter++;
                 }
             }
+            maxEnchantsPerLine = Math.max(maxEnchantsPerLine, counter);
             // Add any enchantment lore that might follow an enchant to the lore description
             if (!containsEnchant && lastEnchant != null) {
                 lastEnchant.addLore(loreList.get(i));
@@ -169,7 +178,8 @@ public class EnchantManager {
         }
 
         if (orderedEnchants.isEmpty()) {
-            LORE_CACHE.updateAfter(loreList);
+            INDEX_CACHE = new int[] {startEnchant, startEnchant};
+            LORE_CACHE.updateAfter(loreList, orderedEnchants, item);
             return INDEX_CACHE;
         }
         // Remove enchantment lines
@@ -195,57 +205,49 @@ public class EnchantManager {
                 }
                 // Add to enchant followed by a comma
                 loreLine.append(enchant.getFormattedComponent()).append(comma);
-                sum += enchant.getRenderLength() + commaLength ;
+                sum += enchant.getRenderLength() + commaLength;
             }
             // Flush any remaining enchants
-            if (MC.font.width(loreLine) >= commaLength ) {
+            if (MC.font.width(loreLine) >= commaLength) {
                 loreLine.getSiblings().removeLast();
                 insertEnchants.add(loreLine);
             }
         }
-        // Print 2 enchants per line, separated by a comma, with no enchant lore (typical hypixel behavior)
+        // Print maxEnchantsPerLine enchants per line, separated by a comma, with no enchant lore (typical hypixel behavior)
         else if (layout == EnchantLayout.NORMAL && !hasLore) {
             insertEnchants = new ArrayList<>();
 
-            // Process each line of enchants
             int i = 0;
             MutableComponent loreLine = Component.empty();
             for (FormattedEnchant enchant : orderedEnchants) {
-                // Add enchant
                 loreLine.append(enchant.getFormattedComponent());
-                // Add a comma for the first on the row, followed by a comma
-                if (i % 2 == 0) {
+                if (i % maxEnchantsPerLine < maxEnchantsPerLine - 1) {
                     loreLine.append(comma);
-                }
-                // Create a new line
-                else {
+                } else {
                     insertEnchants.add(loreLine);
                     loreLine = Component.empty();
                 }
                 i++;
             }
             // Flush any remaining enchants
-            if (MC.font.width(loreLine) >= commaLength ) {
+            if (MC.font.width(loreLine) >= commaLength) {
                 loreLine.getSiblings().removeLast();
                 insertEnchants.add(loreLine);
             }
         }
         // Prints each enchantment out on a separate line. Also adds the lore if need be
         else {
-            // Add each enchantment (one per line) + add enchant lore (if available)
             if (feature.isDisabled(FeatureSetting.HIDE_ENCHANTMENT_LORE)) {
+                // Add each enchantment (one per line) + add enchant lore (if available)
                 insertEnchants = new ArrayList<>((hasLore ? 3 : 1) * numEnchants);
                 for (FormattedEnchant enchant : orderedEnchants) {
-                    // Add enchant
                     insertEnchants.add(enchant.getFormattedComponent());
-                    // Add the enchant lore (if any)
                     insertEnchants.addAll(enchant.getLore());
                 }
             } else {
                 // Add each enchantment (one per line) and ignore enchant lore
                 insertEnchants = new ArrayList<>(numEnchants);
                 for (FormattedEnchant enchant : orderedEnchants) {
-                    // Add enchant
                     insertEnchants.add(enchant.getFormattedComponent());
                 }
             }
@@ -253,9 +255,34 @@ public class EnchantManager {
 
         // Add all of the enchants to the lore
         loreList.addAll(startEnchant, insertEnchants);
+        // Index range reflects the post-format lines actually inserted into loreList
+        INDEX_CACHE = new int[] {startEnchant, startEnchant + insertEnchants.size() - 1};
         // Cache the result so we can use it again
-        LORE_CACHE.updateAfter(loreList);
+        LORE_CACHE.updateAfter(loreList, orderedEnchants, item);
         return INDEX_CACHE;
+    }
+
+    public static Set<FormattedEnchant> getCachedFormattedEnchants() {
+        return LORE_CACHE.formattedEnchants;
+    }
+
+    /**
+     * Returns the set of enchants applicable to the last parsed item's type that are not present
+     * on it, computed lazily on first access after each cache miss. Returns an empty set when the
+     * item type is unknown or no enchants are missing.
+     */
+    public static Set<EnchantmentsData.Enchant> getCachedMissingEnchants() {
+        return LORE_CACHE.getMissingEnchants();
+    }
+
+    /**
+     * Returns the missing enchants for the last parsed item as ready-to-insert tooltip
+     * {@link Component}s, computed lazily on first access after each cache miss. Enchant names
+     * are laid out {@value Cache#MISSING_ENCHANTS_PER_LINE} per line, separated by commas.
+     * Returns an empty list when the item type is unknown or no enchants are missing.
+     */
+    public static List<Component> getCachedMissingEnchantsComponent() {
+        return LORE_CACHE.getMissingEnchantsComponent();
     }
 
     /**
@@ -383,14 +410,6 @@ public class EnchantManager {
         return maxTooltipWidth;
     }
 
-    private static final Pattern ENCHANT_SPLITTER = Pattern.compile("§.(?:§.)?[^§]*");
-    /**
-     * Reusable {@link Matcher} for {@link #ENCHANT_SPLITTER}. Reset via {@link Matcher#reset(CharSequence)}
-     * before each use to avoid allocating a new instance per enchant string on the render thread.
-     * Must only be accessed from the render thread.
-     */
-    private static final Matcher ENCHANT_SPLITTER_MATCHER = ENCHANT_SPLITTER.matcher("");
-
     /**
      * Signals that the lore cache is stale due to a config change. The next call to
      * {@link #parseEnchants} will perform a full re-parse regardless of whether the lore has changed.
@@ -400,65 +419,212 @@ public class EnchantManager {
     }
 
     /**
-     * Converts a legacy {@code §}-formatted enchant string into a {@link MutableComponent} tree,
-     * replacing any chroma color codes with {@link DrawUtils#CHROMA_TEXT_COLOR}.
-     * Falls back to a plain literal if the string contains no {@code §} segments.
-     */
-    public static Function<String, MutableComponent> CREATE_STYLED_COMPONENT = enchantString -> {
-        MutableComponent component = Component.empty();
-        Matcher m = ENCHANT_SPLITTER_MATCHER.reset(enchantString);
-
-        while (m.find()) {
-            String part = m.group();
-            if (part.contains(ColorCode.CHROMA.toString())) {
-                component.append(Component.literal(part).withStyle(
-                        Style.EMPTY.withColor(DrawUtils.CHROMA_TEXT_COLOR)
-                ));
-            } else {
-                component.append(part);
-            }
-        }
-
-        return component.getSiblings().isEmpty() ? Component.literal(enchantString) : component;
-    };
-
-    /**
-     * Caches the item lore before and after enchant parsing so that repeat tooltip renders for the
-     * same item can skip the full parse. The cache is invalidated either when the pre-parse lore
-     * differs from the stored snapshot, or when {@link EnchantManager#markCacheDirty()} is called
-     * (e.g. on config changes that affect enchant formatting).
+     * Caches the parsed enchant output so that repeat tooltip renders for the same item skip
+     * re-parsing entirely. The cache is keyed on {@link ItemStack} identity plus a snapshot of
+     * the pre-parse lore list; it is invalidated when either changes or when
+     * {@link EnchantManager#markCacheDirty()} is called (e.g. on config changes).
+     * <p>
+     * Component equality is reference-based, so the element loop in {@link #isCached}
+     * uses {@code !=} for a correct, allocation-free comparison.
      */
     static class Cache {
+        static final int MISSING_ENCHANTS_PER_LINE = 3;
+
+        private ArrayList<Component> cachedBefore = new ArrayList<>();
         @Getter ArrayList<Component> cachedAfter = new ArrayList<>();
-        boolean configChanged;
-        @Getter private ArrayList<Component> cachedBefore = new ArrayList<>();
+        boolean configChanged = false;
+        Set<FormattedEnchant> formattedEnchants = Collections.emptySet();
+        /**
+         * Lazily computed set of enchants applicable to this item's type that are absent from the
+         * item. {@code null} until first accessed via {@link #getMissingEnchants()} after a cache
+         * miss, then stored for the lifetime of this cache entry.
+         */
+        @Nullable private Set<EnchantmentsData.Enchant> missingEnchants;
+        /**
+         * Lazily computed list of ready-to-insert tooltip lines built from {@link #missingEnchants}.
+         * {@code null} until first accessed via {@link #getMissingEnchantsComponent()} after a cache
+         * miss, then stored for the lifetime of this cache entry.
+         */
+        @Nullable private List<Component> missingEnchantsComponent;
+        private ItemStack itemStack;
 
         public Cache() {
         }
 
-        public void updateBefore(List<Component> loreBeforeModifications) {
+        /**
+         * Snapshots the pre-parse lore list and resets all per-item state. Called once per cache
+         * miss before any modifications are made to {@code loreBeforeModifications}.
+         */
+        public void updateBefore(List<Component> loreBeforeModifications, ItemStack itemStack) {
             cachedBefore = new ArrayList<>(loreBeforeModifications);
+            this.itemStack = itemStack;
+            formattedEnchants = Collections.emptySet();
+            missingEnchants = null;
+            missingEnchantsComponent = null;
         }
 
-        public void updateAfter(List<Component> loreAfterModifications) {
+        /**
+         * Stores the post-parse output. Also called for no-enchant items (with an empty enchant set)
+         * to ensure the cache reflects the current item and both {@link #getMissingEnchants()} and
+         * {@link #getMissingEnchantsComponent()} return empty results rather than stale data.
+         */
+        public void updateAfter(List<Component> loreAfterModifications, Set<FormattedEnchant> enchants, ItemStack itemStack) {
             cachedAfter = new ArrayList<>(loreAfterModifications);
+            formattedEnchants = enchants;
+            this.itemStack = itemStack;
+            missingEnchants = null;
+            missingEnchantsComponent = null;
             configChanged = false;
         }
 
         /**
-         * Returns {@code true} if {@code loreBeforeModifications} matches the snapshot taken at the
-         * last {@link #updateBefore} call and no config change has been signalled via
-         * {@link EnchantManager#markCacheDirty()}.
-         * @param loreBeforeModifications the unmodified lore list to compare against the cached snapshot
-         * @return {@code true} if the cache is valid and the stored post-parse result can be reused,
-         * {@code false} if a full re-parse is needed
+         * Returns the set of enchants applicable to this item's type that are absent from the item.
+         * Computed once on first access after each cache miss by diffing {@link #formattedEnchants}
+         * against the full enchant list, then stored as an unmodifiable set for subsequent calls.
+         * <p>
+         * An enchant is excluded from the result if:
+         * <ul>
+         *   <li>it is already present on the item,</li>
+         *   <li>its {@code appliedTo} list does not include this item's classification type,</li>
+         *   <li>another member of its conflict pool is already present on the item, or</li>
+         *   <li>the item already carries an ultimate enchant (only one ultimate may be applied
+         *       per item).</li>
+         * </ul>
+         * If no ultimate is present and exactly one ultimate is applicable, that enchant is added
+         * directly. If multiple ultimates are applicable, {@link EnchantmentsData#ULTIMATE_PLACEHOLDER}
+         * is added instead to signal that any one ultimate can be chosen.
          */
-        public boolean isCached(List<Component> loreBeforeModifications) {
-            if (configChanged || loreBeforeModifications.size() != cachedBefore.size()) {
+        public Set<EnchantmentsData.Enchant> getMissingEnchants() {
+            if (missingEnchants != null) return missingEnchants;
+
+            if (itemStack == null) {
+                return missingEnchants = Collections.emptySet();
+            }
+
+            ItemClassification itemClassification = ItemUtils.getItemClassification(itemStack);
+            if (itemClassification == null) {
+                return missingEnchants = Collections.emptySet();
+            } else if (itemClassification.isDungeon() && itemClassification.type() == ItemType.PICKAXE) {
+                // Ignore Dungeonbreaker
+                return missingEnchants = Collections.emptySet();
+            }
+
+            // Build present-NBT-name set from the already-parsed formattedEnchants
+            HashSet<String> presentNbtNames = new HashSet<>(formattedEnchants.size());
+            boolean hasUltimate = false;
+            for (FormattedEnchant fe : formattedEnchants) {
+                String nbtName = fe.getEnchant().getNbtName();
+                presentNbtNames.add(nbtName);
+                if (!hasUltimate && nbtName.startsWith("ultimate_")) {
+                    // If any ultimate enchant is present, no other ultimate can be applied
+                    hasUltimate = true;
+                }
+            }
+
+            // Any pool that has at least one present member blocks all other members from appearing as missing
+            HashSet<String> blockedByPool = new HashSet<>();
+            for (List<String> pool : enchants.getEnchantPools()) {
+                for (String nbtName : pool) {
+                    if (presentNbtNames.contains(nbtName)) {
+                        blockedByPool.addAll(pool);
+                        break;
+                    }
+                }
+            }
+
+            HashSet<EnchantmentsData.Enchant> result = new HashSet<>();
+            int applicableUltimate = 0;
+            EnchantmentsData.Enchant singleUltimate = null;
+            for (EnchantmentsData.Enchant enchant : enchants.getAllEnchants()) {
+                if (enchant instanceof EnchantmentsData.Enchant.Dummy) continue;
+                List<ItemType> appliedTo = enchant.getAppliedTo();
+                if (appliedTo.isEmpty() || !appliedTo.contains(itemClassification.type())) continue;
+                if (presentNbtNames.contains(enchant.getNbtName())) continue;
+                if (blockedByPool.contains(enchant.getNbtName())) continue;
+                // Skip all ultimates - a placeholder is added below if none are present
+                if (enchant.isUltimate()) {
+                    applicableUltimate++;
+                    singleUltimate = enchant;
+                    continue;
+                }
+                result.add(enchant);
+            }
+            if (!hasUltimate && applicableUltimate > 0) {
+                result.add(applicableUltimate == 1 ? singleUltimate : EnchantmentsData.ULTIMATE_PLACEHOLDER);
+            }
+
+            return missingEnchants = Collections.unmodifiableSet(result);
+        }
+
+        /**
+         * Returns the missing enchants as ready-to-insert tooltip {@link Component}s, computed
+         * lazily on first access after each cache miss. Delegates to {@link #getMissingEnchants()}
+         * for the underlying set, then lays out enchant names {@value MISSING_ENCHANTS_PER_LINE}
+         * per line, separated by commas. If an ultimate enchant entry is present (either a real
+         * ultimate or {@link EnchantmentsData#ULTIMATE_PLACEHOLDER}), it is rendered first on its
+         * own slot in bold. Returns an empty list when there are no missing enchants.
+         */
+        public List<Component> getMissingEnchantsComponent() {
+            if (missingEnchantsComponent != null) return missingEnchantsComponent;
+
+            Set<EnchantmentsData.Enchant> missing = getMissingEnchants();
+            if (missing.isEmpty()) {
+                return missingEnchantsComponent = Collections.emptyList();
+            }
+
+            int grayColor = ColorCode.GRAY.getColor();
+            int commaLength = MC.font.width(COMMA);
+            MutableComponent comma = Component.literal(COMMA).withColor(grayColor);
+
+            int i = 0;
+            List<Component> lines = new ArrayList<>();
+            MutableComponent loreLine = Component.empty().withColor(grayColor);
+
+            // Render the ultimate entry first (bold), if present
+            for (EnchantmentsData.Enchant enchant : missing) {
+                if (enchant.isUltimate()) {
+                    loreLine.append(Component.literal(enchant.getUnformattedName())
+                            .withStyle(Style.EMPTY.withColor(grayColor).withBold(true))).append(COMMA);
+                    i++;
+                    break;
+                }
+            }
+
+            for (EnchantmentsData.Enchant enchant : missing) {
+                if (enchant.isUltimate()) continue;
+                loreLine.append(enchant.getUnformattedName());
+                if (i % MISSING_ENCHANTS_PER_LINE < MISSING_ENCHANTS_PER_LINE - 1) {
+                    loreLine.append(comma);
+                } else {
+                    lines.add(loreLine);
+                    loreLine = Component.empty().withColor(grayColor);
+                }
+                i++;
+            }
+            // Flush any remaining enchants
+            if (MC.font.width(loreLine) >= commaLength) {
+                loreLine.getSiblings().removeLast();
+                lines.add(loreLine);
+            }
+
+            return missingEnchantsComponent = Collections.unmodifiableList(lines);
+        }
+
+        /**
+         * Returns {@code true} if the cache entry is valid for the given lore list and item.
+         * Checks {@link ItemStack} identity, lore size, and element identity via {@code !=}, since
+         * component equality is reference-based. The element check catches the edge case where
+         * another mod replaces a component at an existing index without changing list size.
+         * @param loreList  the unmodified lore list passed to {@link EnchantManager#parseEnchants}
+         * @param itemStack the item being rendered
+         * @return {@code true} if the stored post-parse result can be reused, {@code false} otherwise
+         */
+        public boolean isCached(List<Component> loreList, ItemStack itemStack) {
+            if (configChanged || itemStack != this.itemStack || loreList.size() != cachedBefore.size()) {
                 return false;
             }
-            for (int i = 0; i < loreBeforeModifications.size(); i++) {
-                if (!loreBeforeModifications.get(i).equals(cachedBefore.get(i))) {
+            for (int i = 0; i < loreList.size(); i++) {
+                if (loreList.get(i) != cachedBefore.get(i)) {
                     return false;
                 }
             }
@@ -471,7 +637,8 @@ public class EnchantManager {
      * display state. Instances are created fresh on every cache miss and discarded when the lore cache
      * is invalidated, so cached fields never hold stale data across parse cycles.
      */
-    static class FormattedEnchant implements Comparable<FormattedEnchant> {
+    @Getter
+    public static class FormattedEnchant implements Comparable<FormattedEnchant> {
         EnchantmentsData.Enchant enchant;
         int level;
         List<Component> loreDescription;
