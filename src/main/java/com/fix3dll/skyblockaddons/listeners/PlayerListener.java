@@ -52,7 +52,6 @@ import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.ElectionRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.BazaarData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
-import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
@@ -103,7 +102,6 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -888,9 +886,8 @@ public class PlayerListener {
         if (feature.isEnabled()) {
             enchantmentLoreIdx = EnchantManager.parseEnchants(components, itemStack);
 
-            int keyCode = SkyblockKeyBinding.SHOW_MISSING_ENCHANTS.getKeyCode();
             boolean showMissingEnchants = feature.isEnabled(FeatureSetting.SHOW_MISSING_ENCHANTS)
-                    && keyCode != -1 && InputConstants.isKeyDown(MC.getWindow(), keyCode);
+                    && SkyblockKeyBinding.SHOW_MISSING_ENCHANTS.isKeyDown();
             if (showMissingEnchants) {
                 List<Component> missingLines = EnchantManager.getCachedMissingEnchantsComponent();
 
@@ -1442,11 +1439,10 @@ public class PlayerListener {
                                         TooltipFlag tooltipFlag,
                                         List<Component> components) {
         Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
-        int keyCode = SkyblockKeyBinding.SHOW_BULK_PRICE.getKeyCode();
         boolean boldLines = feature.isEnabled(FeatureSetting.BOLD_PRICE_LINES);
         boolean isChroma = feature.isChroma();
         boolean isLeftShiftPressed = feature.isEnabled(FeatureSetting.ALWAYS_SHOW_BULK_PRICE)
-                || (keyCode != GLFW.GLFW_KEY_UNKNOWN && InputConstants.isKeyDown(MC.getWindow(), keyCode));
+                || SkyblockKeyBinding.SHOW_BULK_PRICE.isKeyDown();
         int count = itemStack.getCount();
 
         var lowestBinData        = main.getLowestBinData();
