@@ -54,6 +54,7 @@
     "LivingEntityMixin",
     "PauseScreenMixin",
     "SimpleContainerMixin",
-    "StringDecomposerMixin"
+    "StringDecomposerMixin",
+    "StyleMixin"
   ]
 }

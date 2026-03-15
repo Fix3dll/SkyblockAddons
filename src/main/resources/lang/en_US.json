@@ -311,7 +311,8 @@
         "3day": "3-day averages",
         "7day": "7-day averages"
       }
-    }
+    },
+    "showClickableMessagesContent": "Show Clickable Messages Content"
   },
   "messages": {
     "enchants": "Enchants",
@@ -841,6 +842,8 @@
     "none": "None",
     "baseStatBoost": "Base Stat Boost: ",
     "swordKills": "Sword Kills: ",
-    "itemDungeonFloor": "Obtained on Floor: "
+    "itemDungeonFloor": "Obtained on Floor: ",
+    "clickableCommand": "Command: ",
+    "clickableAddress": "Address: "
   }
 }

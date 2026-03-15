@@ -2652,7 +2652,7 @@ public class RenderListener {
         } else if (this.guiToOpen == GUIType.EDIT_LOCATIONS) {
             MC.setScreen(new LocationEditGui(this.guiPageToOpen, this.guiTabToOpen));
         } else if (this.guiToOpen == GUIType.SETTINGS) {
-            MC.setScreen(new SettingsGui(this.guiFeatureToOpen, 1, this.guiPageToOpen, this.guiTabToOpen, null));
+            MC.setScreen(new SettingsGui(this.guiFeatureToOpen, 1, this.guiPageToOpen, this.guiTabToOpen, GUIType.MAIN));
         } else if (this.guiToOpen == GUIType.WARP) {
             MC.setScreen(new IslandWarpGui());
         }
