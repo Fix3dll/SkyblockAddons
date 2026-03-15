@@ -32,7 +32,7 @@ public class CheckBox {
 
     private final float scale;
 
-    private final int x;
+    @Setter private int x;
     private final int y;
     private final Component text;
     private final int textWidth;

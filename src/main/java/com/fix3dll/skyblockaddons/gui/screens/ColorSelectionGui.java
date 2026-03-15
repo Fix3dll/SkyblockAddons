@@ -163,11 +163,15 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                     this.addChromaSliders();
                 }
             });
+        } else {
+            chromaCheckbox.setX(width / 2 + 88);
         }
 
         if (hexColorField == null) {
             hexColorField = new EditBox(MC.font, width / 2 + 110 - 50, 220, 100, 15, Component.empty());
             hexColorField.setMaxLength(7);
+        } else {
+            hexColorField.setX(width / 2 + 110 - 50);
         }
 
         // Set the current color in the text box after creating it.

@@ -925,10 +925,8 @@ public class PlayerListener {
 
             for (int i = startIndex; i < components.size(); i++) {
                 // Ignore enchantment lines which are processed by EnchantManager
-                if (enchantmentLoreIdx != null) {
-                    if (i >= enchantmentLoreIdx[0] || i <= enchantmentLoreIdx[1]) {
-                        continue;
-                    }
+                if (enchantmentLoreIdx != null && i >= enchantmentLoreIdx[0] && i <= enchantmentLoreIdx[1]) {
+                    continue;
                 }
 
                 Component loreLine = components.get(i);

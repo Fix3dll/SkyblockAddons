@@ -161,7 +161,8 @@ public enum Feature {
     HIDE_EFFECTS_HUD(262, "settings.hideEffectsHud", null),
     EQUIPMENTS_IN_INVENTORY(263, "settings.equipmentsInInventory.title", new FeatureGuiData(ColorCode.WHITE)),
     COLORED_FISHING_PARTICLES(264, "settings.coloredFishingParticles.title", new FeatureGuiData(ColorCode.WHITE)),
-    ITEM_PRICES_IN_TOOLTIP(265, "settings.itemPricesInTooltip.title", new FeatureGuiData(ColorCode.GRAY)),
+    ITEM_PRICES_IN_TOOLTIP(265, "settings.itemPricesInTooltip.title", new FeatureGuiData(ColorCode.YELLOW)),
+    SHOW_CLICKABLE_MESSAGES_CONTENT(266, "settings.showClickableMessagesContent", new FeatureGuiData(ColorCode.GRAY)),
 
 
     // These are not actual features.

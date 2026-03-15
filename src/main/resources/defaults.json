@@ -1018,5 +1018,9 @@
       "BAZAAR_PRICES_UPDATE_INTERVAL": 60.0,
       "LBIN_AVERAGES_TYPE": "THREE_DAY"
     }
+  },
+  "SHOW_CLICKABLE_MESSAGES_CONTENT": {
+    "value": false,
+    "color": -5592406
   }
 }
