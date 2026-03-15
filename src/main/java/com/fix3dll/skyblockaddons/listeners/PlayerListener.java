@@ -887,8 +887,9 @@ public class PlayerListener {
         if (feature.isEnabled()) {
             enchantmentLoreIdx = EnchantManager.parseEnchants(components, itemStack);
 
+            int keyCode = SkyblockKeyBinding.SHOW_MISSING_ENCHANTS.getKeyCode();
             boolean showMissingEnchants = feature.isEnabled(FeatureSetting.SHOW_MISSING_ENCHANTS)
-                    && InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT);
+                    && keyCode != -1 && InputConstants.isKeyDown(MC.getWindow(), keyCode);
             if (showMissingEnchants) {
                 List<Component> missingLines = EnchantManager.getCachedMissingEnchantsComponent();
 
@@ -909,7 +910,8 @@ public class PlayerListener {
                         }
                     }
                     components.add(addIndex++, Component.empty());
-                    components.add(addIndex++, Component.literal("Missing: ").withColor(ColorCode.RED.getColor()));
+                    components.add(addIndex++, Component.literal(Translations.getMessage("tooltip.missingTitle"))
+                            .withColor(ColorCode.RED.getColor()));
                     for (Component line : missingLines) {
                         components.add(addIndex++, line);
                     }
@@ -1439,10 +1441,11 @@ public class PlayerListener {
                                         TooltipFlag tooltipFlag,
                                         List<Component> components) {
         Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
+        int keyCode = SkyblockKeyBinding.SHOW_BULK_PRICE.getKeyCode();
         boolean boldLines = feature.isEnabled(FeatureSetting.BOLD_PRICE_LINES);
         boolean isChroma = feature.isChroma();
         boolean isLeftShiftPressed = feature.isEnabled(FeatureSetting.ALWAYS_SHOW_BULK_PRICE)
-                || InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT);
+                || (keyCode != GLFW.GLFW_KEY_UNKNOWN && InputConstants.isKeyDown(MC.getWindow(), keyCode));
         int count = itemStack.getCount();
 
         var lowestBinData        = main.getLowestBinData();
@@ -1562,7 +1565,8 @@ public class PlayerListener {
         }
 
         if (!isLeftShiftPressed && count > 1 && !this.cachedPriceComponents.isEmpty()) {
-            this.cachedPriceComponents.addFirst(Component.literal("[LSHIFT] for x" + count)
+            String translatedKeyMsg = SkyblockKeyBinding.SHOW_BULK_PRICE.getKeyBinding().getTranslatedKeyMessage().getString();
+            this.cachedPriceComponents.addFirst(Component.literal("[" + translatedKeyMsg + "] for x" + count)
                     .withColor(ColorCode.DARK_GRAY.getColor()));
         }
 
