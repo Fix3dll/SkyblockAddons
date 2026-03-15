@@ -127,13 +127,13 @@ public class DataUtils {
      */
     public static void readLocalAndFetchOnline() {
         readLocalFileData();
-        DataUtils.loadOnlineData(new ElectionRequest()); // API data
-        DataUtils.loadOnlineData(new ItemsRequest()); // API request but constant
 
         if (USE_ONLINE_DATA) {
             fetchFromOnline();
         } else {
             SkyblockAddons.getInstance().getUpdater().checkForUpdate();
+            DataUtils.loadOnlineData(new ElectionRequest()); // API constant data
+            DataUtils.loadOnlineData(new ItemsRequest()); // API constant data
         }
     }
 
@@ -440,6 +440,8 @@ public class DataUtils {
         remoteRequests.add(new PetItemsRequest());
         remoteRequests.add(new LocationsRequest());
         remoteRequests.add(new SlayerLocationsRequest());
+        remoteRequests.add(new ElectionRequest()); // API data
+        remoteRequests.add(new ItemsRequest()); // API data
     }
 
     /**

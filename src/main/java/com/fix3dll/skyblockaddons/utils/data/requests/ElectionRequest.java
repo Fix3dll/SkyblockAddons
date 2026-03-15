@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ElectionRequest extends RemoteFileRequest<ElectionData> {
 
@@ -25,35 +26,30 @@ public class ElectionRequest extends RemoteFileRequest<ElectionData> {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final String PATH = "https://api.hypixel.net/v2/resources/skyblock/election";
 
-    /** New mayor name according to latest election results from chat */
-    private static String newMayorName = "";
-    private static ScheduledTask updateTask;
-    private static ScheduledTask jerryMayorTask;
+    private static final AtomicReference<ScheduledTask> updateTaskRef = new AtomicReference<>();
+    private static final AtomicReference<ScheduledTask> jerryMayorTaskRef = new AtomicReference<>();
 
     public ElectionRequest() {
         this("");
     }
 
-    /**
-     * This constructor is used to update the API data after the mayor election is completed and the new mayor is
-     * announced via chat.
-     * @param newMayorName according to the latest election results in the chat, the name of the new mayor
-     */
-    public ElectionRequest(String newMayorName) {
+    public ElectionRequest(String expectedMayorName) {
         super(
                 PATH,
                 ElectionData.class,
-                new MayorCallback(),
+                new MayorCallback(expectedMayorName),
                 false,
                 true
         );
-        ElectionRequest.newMayorName = newMayorName;
     }
 
     private static class MayorCallback extends DataFetchCallback<ElectionData> {
 
-        public MayorCallback() {
+        private final String expectedMayorName;
+
+        public MayorCallback(String expectedMayorName) {
             super(LOGGER, URI.create(PATH));
+            this.expectedMayorName = expectedMayorName == null ? "" : expectedMayorName;
         }
 
         @Override
@@ -68,42 +64,58 @@ public class ElectionRequest extends RemoteFileRequest<ElectionData> {
             }
 
             // If initial request or request completed with expected result
-            if (newMayorName.isEmpty() || newMayorName.equals(mayorName)) {
+            if (expectedMayorName.isEmpty() || expectedMayorName.equals(mayorName)) {
                 main.getUtils().setMayor(mayorName == null ? "Fix3dll" : mayorName);
             }
 
-            // Jerry's Perkpocalypse mayor updater
-            if (isMayorJerry && jerryMayorTask == null) {
-                jerryMayorTask = scheduleJerryMayorTask();
-            } else if (!isMayorJerry && jerryMayorTask != null) {
-                jerryMayorTask.cancel();
-                jerryMayorTask = null;
+            if (isMayorJerry) {
+                ensureJerryMayorTask();
+            } else {
+                ScheduledTask oldTask = jerryMayorTaskRef.getAndSet(null);
+                if (oldTask != null) {
+                    oldTask.cancel();
+                }
             }
 
-            // If newMayorName is not equals to new API data's mayor field,
-            // schedule new update based on next update time of API data.
-            if (!newMayorName.isEmpty() && !newMayorName.equals(mayorName) && updateTask == null) {
-                updateTask = scheduleUpdateTask(newMayorName);
-                LOGGER.info("Update task scheduled.");
-            } else if (newMayorName.equals(mayorName)) {
-                if (updateTask != null) {
-                    updateTask.cancel();
-                    updateTask = null;
-                    LOGGER.info("Scheduled update task completed.");
+            if (!expectedMayorName.isEmpty() && !expectedMayorName.equals(mayorName)) {
+                rescheduleUpdateTask(expectedMayorName);
+            } else if (expectedMayorName.equals(mayorName)) {
+                ScheduledTask oldTask = updateTaskRef.getAndSet(null);
+                if (oldTask != null) {
+                    oldTask.cancel();
+                    LOGGER.info("Scheduled election update task cancelled.");
                 }
-                newMayorName = "";
             }
         }
 
-        private ScheduledTask scheduleUpdateTask(String expectedMayorName) {
-            // election endpoint is updated every 5 minutes (+5 minutes and bonus 3 seconds)
-            long nextUpdateTime = main.getElectionData().getLastUpdated() + 303000L;
-            int delayTick = (int) (nextUpdateTime - System.currentTimeMillis()) / 50;
+        private void rescheduleUpdateTask(String expectedMayorName) {
+            long nextUpdateTime = main.getElectionData().getLastUpdated() + 301000L;
+            int delayTicks = (int) Math.max(0, (nextUpdateTime - System.currentTimeMillis()) / 50);
+            ScheduledTask newTask = main.getScheduler().scheduleAsyncTask(scheduledTask -> {
+                try {
+                    DataUtils.loadOnlineData(new ElectionRequest(expectedMayorName));
+                } finally {
+                    updateTaskRef.compareAndSet(scheduledTask, null);
+                }
+            }, delayTicks);
 
-            return main.getScheduler().scheduleAsyncTask(
-                    scheduledTask -> DataUtils.loadOnlineData(new ElectionRequest(expectedMayorName)),
-                    delayTick
-            );
+            ScheduledTask oldTask = updateTaskRef.getAndSet(newTask);
+            if (oldTask != null) {
+                oldTask.cancel();
+            }
+
+            LOGGER.info("Election update task scheduled.");
+        }
+
+        private void ensureJerryMayorTask() {
+            if (jerryMayorTaskRef.get() != null) {
+                return;
+            }
+
+            ScheduledTask newTask = scheduleJerryMayorTask();
+            if (!jerryMayorTaskRef.compareAndSet(null, newTask)) {
+                newTask.cancel();
+            }
         }
 
         private ScheduledTask scheduleJerryMayorTask() {
@@ -118,11 +130,10 @@ public class ElectionRequest extends RemoteFileRequest<ElectionData> {
                     MutableComponent updateText = Component.literal(
                             ColorCode.RED + Translations.getMessage("messages.perkpocalypseUnknown")
                     );
-                    updateText.withStyle(style -> style.withClickEvent(
-                            new ClickEvent.RunCommand("/calendar")
-                    ).withHoverEvent(
-                            new HoverEvent.ShowText(Component.literal("§7/calendar"))
-                    ));
+                    updateText.withStyle(style -> style
+                            .withClickEvent(new ClickEvent.RunCommand("/calendar"))
+                            .withHoverEvent(new HoverEvent.ShowText(Component.literal("§7/calendar")))
+                    );
                     Utils.sendMessage(updateText, true);
                 }
             }, 0, 3 * 20);

@@ -17,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BazaarRequest extends RemoteFileRequest<BazaarData> {
 
@@ -24,8 +26,8 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final String PATH = "https://api.hypixel.net/v2/skyblock/bazaar";
 
-    private static volatile boolean apiBazaarError = false;
-    private static volatile ScheduledTask updateTask;
+    private static final AtomicBoolean apiBazaarError = new AtomicBoolean(false);
+    private static final AtomicReference<ScheduledTask> updateTaskRef = new AtomicReference<>();
 
     public BazaarRequest() {
         super(
@@ -38,26 +40,27 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
     }
 
     /**
-     * Starts or stops the scheduled fetch cycle for this request.
-     *
-     * <p>If {@code active} is {@code true} and no update task is currently running,
-     * a new fetch is initiated immediately. If {@code active} is {@code false} and
-     * a task is running, it is canceled and the error state is cleared.
-     * @param active {@code true} to start the fetch cycle, {@code false} to stop it
+     * Starts or stops the scheduled Bazaar polling cycle.
+     * <p>If {@code active} is {@code true}, an initial request is triggered
+     * only when no scheduled update task exists.
+     * <p>If {@code active} is {@code false}, any scheduled polling task is
+     * canceled and the error state is reset.
      */
     public static void setActive(boolean active) {
         if (active) {
-            if (updateTask == null) {
+            if (updateTaskRef.get() == null) {
                 DataUtils.loadOnlineData(new BazaarRequest());
             }
-        } else {
-            if (updateTask != null) {
-                updateTask.cancel();
-                updateTask = null;
-                apiBazaarError = false; // clear error cache too
-                LOGGER.info("Bazaar update task cancelled.");
-            }
+            return;
         }
+
+        ScheduledTask oldTask = updateTaskRef.getAndSet(null);
+        if (oldTask != null) {
+            oldTask.cancel();
+            LOGGER.info("Bazaar update task cancelled.");
+        }
+
+        apiBazaarError.set(false);
     }
 
     private static class BazaarCallback extends DataFetchCallback<BazaarData> {
@@ -75,8 +78,7 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
                 LOGGER.info("lastUpdated: {}, products: {}", new Date(result.getLastUpdated()), result.getProducts().size());
             }
 
-            if (apiBazaarError) {
-                apiBazaarError = false;
+            if (apiBazaarError.compareAndSet(true, false)) {
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
                         Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiUpdated", "Bazaar"))
                                 .withColor(ColorCode.GREEN.getColor())
@@ -87,8 +89,7 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
 
         @Override
         public void failed(Throwable ex) {
-            if (!apiBazaarError) {
-                apiBazaarError = true;
+            if (apiBazaarError.compareAndSet(false, true)) {
                 Minecraft.getInstance().execute(() -> Utils.sendMessage(
                         Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiError", "Bazaar"))
                                 .withColor(ColorCode.RED.getColor())
@@ -103,11 +104,6 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
          * Anchoring to the API's own timestamp keeps polling aligned with the server's update cycle.
          */
         private void scheduleNextUpdate(long lastUpdated) {
-            if (updateTask != null) {
-                updateTask.cancel();
-            }
-
-            // Bazaar endpoint updates approximately every 20 seconds; +1s buffer to avoid hitting stale data.
             long updateInterval = Math.max(
                     Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(FeatureSetting.BAZAAR_PRICES_UPDATE_INTERVAL).longValue(),
                     20
@@ -115,10 +111,18 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
             long nextUpdateTime = lastUpdated + (updateInterval * 1_000) + 1_000;
             int delayTicks = (int) Math.max(0, (nextUpdateTime - System.currentTimeMillis()) / 50);
 
-            updateTask = main.getScheduler().scheduleAsyncTask(
-                    scheduledTask -> DataUtils.loadOnlineData(new BazaarRequest()),
-                    delayTicks
-            );
+            ScheduledTask newTask = main.getScheduler().scheduleAsyncTask(scheduledTask -> {
+                try {
+                    DataUtils.loadOnlineData(new BazaarRequest());
+                } finally {
+                    updateTaskRef.compareAndSet(scheduledTask, null);
+                }
+            }, delayTicks);
+
+            ScheduledTask oldTask = updateTaskRef.getAndSet(newTask);
+            if (oldTask != null) {
+                oldTask.cancel();
+            }
 
             LOGGER.debug(
                     "Next bazaar update scheduled in {}ms (delay: {} ticks).",

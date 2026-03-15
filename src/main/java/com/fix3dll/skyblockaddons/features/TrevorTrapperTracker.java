@@ -259,13 +259,13 @@ public class TrevorTrapperTracker {
         if (feature.isEnabled(FeatureSetting.TREVOR_SHOW_QUEST_COOLDOWN) && CooldownManager.isOnCooldown("TREVOR_THE_TRAPPER_RETURN")) {
             String strippedEntityTag = TextUtils.stripColor(nameTag.getString());
             if (strippedEntityTag.contains("Trevor")) {
-                String str = Utils.MESSAGE_PREFIX_SHORT + Translations.getMessage(
+                Component title = Utils.MESSAGE_PREFIX_SHORT.copy().append(Translations.getMessage(
                         "messages.worldRenderedCooldownTime",
                         CooldownManager.getRemainingCooldown("TREVOR_THE_TRAPPER_RETURN") / 1000
-                );
+                ));
                 poseStack.pushPose();
                 poseStack.translate(0.0F, 9.0F * 1.15F * 0.025F, 0.0F);
-                nodeCollector.submitNameTag(poseStack, vec3, 0, Component.literal(str), true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                nodeCollector.submitNameTag(poseStack, vec3, 0, title, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                 poseStack.popPose();
             }
         }
