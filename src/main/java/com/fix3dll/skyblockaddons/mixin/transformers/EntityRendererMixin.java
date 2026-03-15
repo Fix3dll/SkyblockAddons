@@ -27,7 +27,7 @@ public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> 
     }
 
     @Inject(method = "submitNameTag", at = @At("HEAD"), cancellable = true)
-    public void sba$onsubmitNameTag(S renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
+    public void sba$onSubmitNameTag(S renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
         if (RenderEvents.SUBMIT_ENTITY_NAME_TAG.invoker().onSubmitEntityNameTag(renderState, poseStack, nodeCollector, cameraRenderState, ci)) {
             ci.cancel();
         }

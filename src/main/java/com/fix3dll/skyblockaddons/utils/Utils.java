@@ -70,10 +70,14 @@ public class Utils {
     /**
      * Added to the beginning of messages sent by the mod.
      */
-    public static final String MESSAGE_PREFIX =
-            ColorCode.GRAY + "[" + ColorCode.AQUA + SkyblockAddons.METADATA.getName() + ColorCode.GRAY + "] ";
-    public static final String MESSAGE_PREFIX_SHORT =
-            ColorCode.GRAY + "[" + ColorCode.AQUA + "SBA" + ColorCode.GRAY + "] " + ColorCode.RESET;
+    public static final Component MESSAGE_PREFIX = Component.empty()
+            .append(Component.literal("[").withColor(ColorCode.GRAY.getColor()))
+            .append(Component.literal(SkyblockAddons.METADATA.getName()).withColor(ColorCode.AQUA.getColor()))
+            .append(Component.literal("] ").withColor(ColorCode.GRAY.getColor()));
+    public static final Component MESSAGE_PREFIX_SHORT = Component.empty()
+            .append(Component.literal("[").withColor(ColorCode.GRAY.getColor()))
+            .append(Component.literal("SBA").withColor(ColorCode.AQUA.getColor()))
+            .append(Component.literal("] ").withColor(ColorCode.GRAY.getColor()));
     public static final Component COMPONENT_TITLE = Component.literal(SkyblockAddons.METADATA.getName())
             .withColor(ColorCode.AQUA.getColor());
     public static final GuiMessageTag SBA_MESSAGE_TAG = new GuiMessageTag(
@@ -247,7 +251,7 @@ public class Utils {
     }
 
     public static void sendMessage(Component text, boolean prefix) {
-        Component message = prefix ? Component.literal(MESSAGE_PREFIX).append(text) : text;
+        Component message = prefix ? MESSAGE_PREFIX.copy().append(text) : text;
         boolean eventCanceled = !ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message, false);
         if (!eventCanceled) {
             LocalPlayer player = MC.player;

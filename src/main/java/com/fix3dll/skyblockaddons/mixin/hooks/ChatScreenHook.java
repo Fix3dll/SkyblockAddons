@@ -76,7 +76,7 @@ public class ChatScreenHook {
                 boolean isLeftShiftDown = InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT);
                 if (isLeftShiftDown) {
                     DevUtils.copyStringToClipboard(
-                            TextUtils.getFormattedText(parentComponent),
+                            parentComponent.toString(),
                             ColorCode.GREEN + Translations.getMessage("messages.chatMessageCopying.formatted"),
                             true
                     );
