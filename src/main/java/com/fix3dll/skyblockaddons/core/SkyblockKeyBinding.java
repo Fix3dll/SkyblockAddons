@@ -27,6 +27,8 @@ public enum SkyblockKeyBinding {
     INCREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_ADD, "keyBindings.increaseDungeonMapZoom"),
     DECREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
     ANSWER_ABIPHONE_OR_OPTION(GLFW.GLFW_KEY_UNKNOWN, "keyBindings.answerAbiphoneOrOption"),
+    SHOW_BULK_PRICE(GLFW.GLFW_KEY_LEFT_SHIFT, "keyBindings.showBulkPrice"),
+    SHOW_MISSING_ENCHANTS(GLFW.GLFW_KEY_LEFT_SHIFT, "keyBindings.showMissingEnchants"),
     DEVELOPER_COPY_NBT(Util.getPlatform() == Util.OS.OSX ? GLFW.GLFW_KEY_LEFT_ALT : GLFW.GLFW_KEY_RIGHT_CONTROL, "keyBindings.developerCopyNBT");
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();

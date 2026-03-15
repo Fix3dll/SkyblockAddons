@@ -113,7 +113,7 @@
     "disableTeleportPadMessages": "Disable Teleport Pad Messages",
     "baitListDisplay": "Show Bait List While Holding a Rod",
     "freezeBackpackPreview": "Freeze Backpack Preview",
-    "showMissingEnchants": "Show missing enchants with [LSHIFT]",
+    "showMissingEnchants": "Show missing enchants while holding shortcut (see Keybinds)",
     "hideGreyEnchants": "Hide Regular Grey Enchants",
     "zealotCounterExplosiveBow": "Zealot Counter Explosive Bow Support",
     "disableEndermanTeleportation": "Disable Enderman Teleportation",
@@ -783,7 +783,9 @@
     "developerCopyNBT": "Copy NBT",
     "increaseDungeonMapZoom": "Dungeon Map Zoom In",
     "decreaseDungeonMapZoom": "Dungeon Map Zoom Out",
-    "answerAbiphoneOrOption": "Answer the Abiphone or Option"
+    "answerAbiphoneOrOption": "Answer the Abiphone or Option",
+    "showBulkPrice": "Show Bulk Prices in Tooltip",
+    "showMissingEnchants": "Show Missing Enchants in Tooltip"
   },
   "dragonTracker": {
     "protector": "Protector",
@@ -844,6 +846,7 @@
     "swordKills": "Sword Kills: ",
     "itemDungeonFloor": "Obtained on Floor: ",
     "clickableCommand": "Command: ",
-    "clickableAddress": "Address: "
+    "clickableAddress": "Address: ",
+    "missingTitle": "Missing: "
   }
 }
