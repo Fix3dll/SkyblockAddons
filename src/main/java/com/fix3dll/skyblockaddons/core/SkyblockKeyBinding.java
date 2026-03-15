@@ -84,6 +84,18 @@ public enum SkyblockKeyBinding {
         }
     }
 
+    public boolean isKeyDown() {
+        int keyCode = this.getKeyCode();
+
+        if (keyCode == -1) {
+            return false;
+        } else if (0 <= keyCode && keyCode <= 7) {
+            return GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), keyCode) == 1;
+        } else {
+            return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keyCode);
+        }
+    }
+
     /**
      * Adds this keybinding to {@link net.minecraft.client.Minecraft#options}. If the key binding is not being registered for the first
      * time, its previous keycode setting from before its last de-registration is restored.
