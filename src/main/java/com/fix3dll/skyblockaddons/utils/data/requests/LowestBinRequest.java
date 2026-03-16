@@ -34,7 +34,7 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
     public LowestBinRequest() {
         super(
                 URL,
-                new JSONResponseHandler<>(new TypeToken<Map<String, Double>>() {}.getType()),
+                new JSONResponseHandler<>(new TypeToken<Map<String, Double>>() {}.getType(), true),
                 new LowestBinCallback(),
                 false,
                 true
@@ -100,7 +100,7 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
                                 .withColor(ColorCode.RED.getColor())
                 ));
             }
-
+            LOGGER.catching(ex);
             scheduleNextUpdate();
         }
 

@@ -43,7 +43,7 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
     private LowestBinAveragesRequest(LBinAveragesType type) {
         super(
                 BASE_URL + type.getUrlPath(),
-                new JSONResponseHandler<>(new TypeToken<Map<String, Double>>() {}.getType()),
+                new JSONResponseHandler<>(new TypeToken<Map<String, Double>>() {}.getType(), true),
                 new AuctionAverageLBinCallback(type),
                 false,
                 true
@@ -113,7 +113,7 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
                                 .withColor(ColorCode.RED.getColor())
                 ));
             }
-
+            LOGGER.catching(ex);
             scheduleNextUpdate();
         }
 
