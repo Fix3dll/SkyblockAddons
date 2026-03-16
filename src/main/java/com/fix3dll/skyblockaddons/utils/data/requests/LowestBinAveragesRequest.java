@@ -112,7 +112,7 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
                                 .withColor(ColorCode.RED.getColor())
                 ));
             }
-
+            LOGGER.catching(ex);
             scheduleNextUpdate();
         }
 

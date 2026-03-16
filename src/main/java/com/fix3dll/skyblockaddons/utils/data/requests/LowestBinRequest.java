@@ -99,7 +99,7 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
                                 .withColor(ColorCode.RED.getColor())
                 ));
             }
-
+            LOGGER.catching(ex);
             scheduleNextUpdate();
         }
 

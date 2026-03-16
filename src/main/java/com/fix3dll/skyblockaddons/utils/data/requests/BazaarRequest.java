@@ -102,6 +102,8 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
          * Schedules the next fetch based on {@code lastUpdated} returned by the API,
          * using the interval configured in {@link FeatureSetting#BAZAAR_PRICES_UPDATE_INTERVAL} plus a 1s buffer.
          * Anchoring to the API's own timestamp keeps polling aligned with the server's update cycle.
+         * <p>If the calculated time is in the past (e.g., due to stale API cache), a fallback delay
+         * is applied to prevent rapid request spamming and rate-limit violations.
          */
         private void scheduleNextUpdate(long lastUpdated) {
             long updateInterval = Math.max(
@@ -109,7 +111,17 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
                     20
             );
             long nextUpdateTime = lastUpdated + (updateInterval * 1_000) + 1_000;
-            int delayTicks = (int) Math.max(0, (nextUpdateTime - System.currentTimeMillis()) / 50);
+            long timeRemainingMs = nextUpdateTime - System.currentTimeMillis();
+
+            int delayTicks;
+            if (timeRemainingMs <= 0) {
+                // API data is stale or time remaining is negative.
+                // Fallback to 3 seconds (60 ticks) to prevent 0-tick request loops and HTTP 429 errors.
+                delayTicks = 60;
+                LOGGER.warn("Bazaar API data is stale or delay is negative. Applying fallback delay of 3 seconds.");
+            } else {
+                delayTicks = (int) (timeRemainingMs / 50);
+            }
 
             ScheduledTask newTask = main.getScheduler().scheduleAsyncTask(scheduledTask -> {
                 try {
@@ -126,7 +138,7 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
 
             LOGGER.debug(
                     "Next bazaar update scheduled in {}ms (delay: {} ticks).",
-                    nextUpdateTime - System.currentTimeMillis(), delayTicks
+                    timeRemainingMs <= 0 ? 3000 : timeRemainingMs, delayTicks
             );
         }
     }
