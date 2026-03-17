@@ -34,7 +34,9 @@ public class SeaCreaturesRequest extends RemoteFileRequest<Map<String, SeaCreatu
         @Override
         public void completed(Map<String, SeaCreature> result) {
             super.completed(result);
-            SeaCreatureManager.getInstance().setSeaCreatures(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
+            SeaCreatureManager.getInstance().setSeaCreatures(
+                    Map.copyOf(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR))
+            );
         }
     }
 }

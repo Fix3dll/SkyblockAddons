@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.utils.data.DataConstants;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
@@ -10,32 +11,32 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class LocationsRequest extends RemoteFileRequest<HashMap<String, LocationData>> {
+public class LocationsRequest extends RemoteFileRequest<Map<String, LocationData>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final String PATH = "skyblock/locations.json";
 
     public LocationsRequest() {
         super(
-                "skyblock/locations.json"
-                , new JSONResponseHandler<>(new TypeToken<HashMap<String, LocationData>>() {}.getType()),
-                new LocationsCallback(getCDNBaseURL() + "skyblock/locations.json")
+                PATH,
+                new JSONResponseHandler<>(new TypeToken<Map<String, LocationData>>() {}.getType()),
+                new LocationsCallback()
         );
     }
 
-    public static class LocationsCallback extends DataFetchCallback<HashMap<String, LocationData>> {
+    public static class LocationsCallback extends DataFetchCallback<Map<String, LocationData>> {
 
-        public LocationsCallback(String path) {
-            super(LOGGER, URI.create(path));
+        public LocationsCallback() {
+            super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
-        public void completed(HashMap<String, LocationData> result) {
+        public void completed(Map<String, LocationData> result) {
             super.completed(result);
-            HashMap<String, LocationData> locationsMap = Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR);
+            Map<String, LocationData> locationsMap = Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR);
 
             for (Map.Entry<String, LocationData> entry : locationsMap.entrySet()) {
                 for (Island island : Island.values()) {
@@ -45,5 +46,7 @@ public class LocationsRequest extends RemoteFileRequest<HashMap<String, Location
                 }
             }
         }
+
     }
+
 }

@@ -98,7 +98,7 @@ public class DungeonMapManager {
     /** The offset added to the player's z-coordinate when calculating their map marker coordinates */
     @Getter private static double markerOffsetZ = 0;
     private static final NavigableMap<Long, Vec3> previousLocations = new TreeMap<>();
-    private static final HashMap<String, PlayerSkinInfo> cachedSkinInfo = new HashMap<>(5);
+    private static final HashMap<String, PlayerSkinInfo> cachedSkinInfo = HashMap.newHashMap(5);
 
     public static void drawDungeonsMap(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
         if (buttonLocation == null && !main.getUtils().isInDungeon()) {

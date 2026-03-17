@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.utils.data.skyblockdata;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -104,8 +105,16 @@ public class ItemsData {
     @SerializedName("items")
     private List<Item> items = List.of();
     */
-    @Getter
-    private Map<String, Item> itemMap = Map.of();
+    /**
+     * An unmodifiable map containing all parsed SkyBlock items, indexed by their unique item ID.
+     * @see Item#getId()
+     */
+    private Map<String, Item> byId = Map.of();
+    /**
+     * An unmodifiable map containing all parsed SkyBlock items, indexed by their exact display name.
+     * @see Item#getName()
+     */
+    private Map<String, Item> byName = Map.of();
 
     static class Deserializer implements JsonDeserializer<ItemsData> {
         @Override
@@ -114,15 +123,22 @@ public class ItemsData {
             ItemsData data   = new ItemsData();
             data.success     = obj.get("success").getAsBoolean();
             data.lastUpdated = obj.get("lastUpdated").getAsLong();
+            JsonArray itemsJsonArray = obj.getAsJsonArray("items");
 
-            Map<String, Item> map = new HashMap<>();
-            for (JsonElement el : obj.getAsJsonArray("items")) {
+            int itemsArraySize = itemsJsonArray.size();
+            Map<String, Item> byId = HashMap.newHashMap(itemsArraySize);
+            Map<String, Item> byName = HashMap.newHashMap(itemsArraySize);
+            for (JsonElement el : itemsJsonArray) {
                 Item item = ctx.deserialize(el, Item.class);
                 if (!StringUtil.isNullOrEmpty(item.getId())) {
-                    map.put(item.getId(), item);
+                    byId.put(item.getId(), item);
+                }
+                if (!StringUtil.isNullOrEmpty(item.getName())) {
+                    byName.put(item.getName(), item);
                 }
             }
-            data.itemMap = Collections.unmodifiableMap(map);
+            data.byId = Map.copyOf(byId);
+            data.byName = Map.copyOf(byName);
             return data;
         }
     }

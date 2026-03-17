@@ -12,12 +12,13 @@ import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.reflect.TypeToken;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -27,7 +28,7 @@ import static com.fix3dll.skyblockaddons.core.feature.FeatureSetting.LOWEST_BIN_
 /**
  * @apiNote Averages update interval is double the lowest bin update interval
  */
-public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Double>> {
+public class LowestBinAveragesRequest extends RemoteFileRequest<Object2DoubleMap<String>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
@@ -43,7 +44,7 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
     private LowestBinAveragesRequest(LBinAveragesType type) {
         super(
                 BASE_URL + type.getUrlPath(),
-                new JSONResponseHandler<>(new TypeToken<Map<String, Double>>() {}.getType(), true),
+                new JSONResponseHandler<>(new TypeToken<Object2DoubleMap<String>>() {}.getType(), true),
                 new AuctionAverageLBinCallback(type),
                 false,
                 true
@@ -77,7 +78,7 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
         apiAuctionAverageLBinError.set(false);
     }
 
-    private static class AuctionAverageLBinCallback extends DataFetchCallback<Map<String, Double>> {
+    private static class AuctionAverageLBinCallback extends DataFetchCallback<Object2DoubleMap<String>> {
 
         private final LBinAveragesType type;
 
@@ -87,9 +88,9 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Map<String, Doub
         }
 
         @Override
-        public void completed(Map<String, Double> result) {
+        public void completed(Object2DoubleMap<String> result) {
             super.completed(result);
-            main.setLowestBinAveragesData(result);
+            main.setLowestBinAveragesData(Object2DoubleMaps.unmodifiable(result));
 
             if (Feature.DEVELOPER_MODE.isEnabled()) {
                 LOGGER.info("Auction average LBIN data loaded with '{}' entries", result.size());

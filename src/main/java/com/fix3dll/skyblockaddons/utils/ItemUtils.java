@@ -16,7 +16,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -67,9 +66,9 @@ public class ItemUtils {
      */
     private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("(?<rarity>[A-Z]+(?: SPECIAL)?)\\s*(?<dungeon>DUNGEON\\b)?\\s*(?<type>[A-Z]+(?: [A-Z]+)*)?\\s*(?:\\(ID (?<id>[A-Z]+\\d+)\\))?");
     private static final Pattern BACKPACK_SLOT_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
-    @Getter @Setter private static Object2ObjectOpenHashMap<String, CompactorItem> compactorItems;
-    @Setter private static Object2ObjectOpenHashMap<String, ContainerData> containers;
-    @Setter private static Object2ObjectOpenHashMap<String, TexturedHead> texturedHeads;
+    @Getter @Setter private static Map<String, CompactorItem> compactorItems;
+    @Setter private static Map<String, ContainerData> containers;
+    @Setter private static Map<String, TexturedHead> texturedHeads;
 
     public static @NonNull ItemStack getTexturedHead(String identifier) {
         if (texturedHeads != null) {

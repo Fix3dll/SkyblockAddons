@@ -80,7 +80,7 @@ public class DungeonManager {
     @Getter private final EnumMap<EssenceType, Integer> salvagedEssences = new EnumMap<>(EssenceType.class);
 
     /** The current teammates of the dungeon game */
-    @Getter private final HashMap<String, DungeonPlayer> teammates = new HashMap<>(4);
+    @Getter private final HashMap<String, DungeonPlayer> teammates = HashMap.newHashMap(4);
 
     /** The current number of secrets found in the room */
     @Getter @Setter private int secrets = -1;

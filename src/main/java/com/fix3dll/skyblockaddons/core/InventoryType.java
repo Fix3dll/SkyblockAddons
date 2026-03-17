@@ -15,6 +15,7 @@ public enum InventoryType {
     ULTRASEQUENCER("Ultrasequencer", "Ultrasequencer \\((?<type>[a-zA-Z]+)\\)"),
     CHRONOMATRON("Chronomatron", "Chronomatron \\((?<type>[a-zA-Z]+)\\)"),
     SUPERPAIRS("Superpairs", "Superpairs \\((?<type>[a-zA-Z]+)\\)"),
+    EXP_TABLE_RNG("Experimentation Table RNG", "\\((?<page>\\d+)/\\d+\\) Experimentation Table RNG"),
     STORAGE("Storage", "Storage"),
     STORAGE_BACKPACK("BackpackStorage", "(?<type>[a-zA-Z]+) Backpack ?✦? \\(Slot #(?<page>\\d+)\\)"),
     SKILL_TYPE_MENU("Skill Type Menu", "(?<type>[a-zA-Z]+) Skill"),
@@ -32,4 +33,5 @@ public enum InventoryType {
         this.inventoryName = inventoryName;
         this.inventoryPattern = Pattern.compile(regex);
     }
+
 }
