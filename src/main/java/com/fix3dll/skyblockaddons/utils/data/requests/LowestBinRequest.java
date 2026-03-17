@@ -10,18 +10,19 @@ import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.reflect.TypeToken;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.fix3dll.skyblockaddons.core.feature.FeatureSetting.LOWEST_BIN_PRICES_UPDATE_INTERVAL;
 
-public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
+public class LowestBinRequest extends RemoteFileRequest<Object2DoubleMap<String>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
@@ -33,7 +34,7 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
     public LowestBinRequest() {
         super(
                 URL,
-                new TypeToken<Map<String, Double>>() {}.getType(),
+                new TypeToken<Object2DoubleMap<String>>() {}.getType(),
                 new LowestBinCallback(),
                 false,
                 true
@@ -66,16 +67,16 @@ public class LowestBinRequest extends RemoteFileRequest<Map<String, Double>> {
         apiLowestBinError.set(false);
     }
 
-    private static class LowestBinCallback extends DataFetchCallback<Map<String, Double>> {
+    private static class LowestBinCallback extends DataFetchCallback<Object2DoubleMap<String>> {
 
         public LowestBinCallback() {
             super(LOGGER, URI.create(URL));
         }
 
         @Override
-        public void completed(Map<String, Double> result) {
+        public void completed(Object2DoubleMap<String> result) {
             super.completed(result);
-            main.setLowestBinData(result);
+            main.setLowestBinData(Object2DoubleMaps.unmodifiable(result));
 
             if (Feature.DEVELOPER_MODE.isEnabled()) {
                 LOGGER.info("Lowest BIN data loaded with '{}' entries", result.size());

@@ -40,7 +40,7 @@ public class EnchantManager {
     private static final Minecraft MC = Minecraft.getInstance();
 
     // Catches successive [ENCHANT] [ROMAN NUMERALS OR DIGITS], as well as stacking enchants listing total stacked number
-    private static final Pattern ENCHANTMENT_PATTERN = Pattern.compile("(?<enchant>[A-Za-z][A-Za-z -]+) (?<levelNumeral>[IVXLCDM]+)(?=, |$| [\\d,]+$)");
+    public static final Pattern ENCHANTMENT_PATTERN = Pattern.compile("(?<enchant>[A-Za-z][A-Za-z -]+) (?<levelNumeral>[IVXLCDM]+)(?=, |$| [\\d,]+$)");
     private static final Pattern GREY_ENCHANT_PATTERN = Pattern.compile("^(Respiration|Aqua Affinity|Depth Strider|Efficiency).*");
     private static final String COMMA = ", ";
     private static final Cache LORE_CACHE = new Cache();
@@ -52,7 +52,7 @@ public class EnchantManager {
      * or the item has no enchantments.
      */
     private static int[] INDEX_CACHE = null;
-    @Setter private static EnchantmentsData enchants = new EnchantmentsData();
+    @Getter @Setter private static EnchantmentsData enchants = new EnchantmentsData();
 
     /**
      * Parses through enchantments, reformats them according to current feature settings, and caches

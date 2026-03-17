@@ -51,7 +51,9 @@ import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.ElectionRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.BazaarData;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.EnchantmentsData.Enchant;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
@@ -1491,12 +1493,13 @@ public class PlayerListener {
         this.lastBazaarIdentity       = bazaarIdentity;
         this.lastItemsDataIdentity    = itemsDataIdentity;
 
-        int countToBeShown = isLeftShiftPressed ? count : 1;
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+        boolean expTableItems = inventoryType == InventoryType.SUPERPAIRS || inventoryType == InventoryType.EXP_TABLE_RNG;
+        int countToBeShown = isLeftShiftPressed && !expTableItems ? count : 1;
         UnaryOperator<Style> textColor = style -> isChroma
                 ? style.withBold(boldLines).withColor(DrawUtils.CHROMA_TEXT_COLOR)
                 : style.withBold(boldLines).withColor(feature.getColor());
         if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
-        if (itemId == null) return; // early return
 
         ResolvedItemId resolvedItemId = null;
         if (feature.isEnabled(FeatureSetting.LOWEST_BIN_PRICES_IN_TOOLTIP)) {
@@ -1526,16 +1529,8 @@ public class PlayerListener {
         }
 
         if (feature.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP)) {
-            String apiItemId = itemId;
-            if ("ENCHANTED_BOOK".equals(itemId)) {
-                var enchantments = ItemUtils.getEnchantments(itemStack).entrySet().iterator();
-
-                if (enchantments.hasNext()) {
-                    var enchant = enchantments.next();
-                    apiItemId = "ENCHANTMENT_" + enchant.getKey().toUpperCase(Locale.ENGLISH) + "_" + enchant.getValue();
-                }
-            }
-
+            // Resolve the specific Bazaar item ID using the extracted helper method
+            String apiItemId = resolveBazaarItemId(itemId, itemStack, itemsData);
             BazaarData.Product product = bazaarData.getProducts().get(apiItemId);
 
             if (product != null) {
@@ -1550,7 +1545,19 @@ public class PlayerListener {
         }
 
         if (feature.isEnabled(FeatureSetting.NPC_SELL_PRICES_IN_TOOLTIP)) {
-            ItemsData.Item item = itemsData.getItemMap().get(itemId);
+            ItemsData.Item item = null;
+            if (itemId != null) {
+                item = itemsData.getById().get(itemId);
+            } else {
+                // Fallback lookup by exact display name
+                Component customName = itemStack.getCustomName();
+                if (customName != null) {
+                    String customNameString = customName.getString();
+                    if (!customNameString.isBlank()) {
+                        item = itemsData.getByName().get(customNameString);
+                    }
+                }
+            }
 
             if (item != null && item.getNpcSellPrice() != 0.0D) {
                 double price = item.getNpcSellPrice() * countToBeShown;
@@ -1561,7 +1568,7 @@ public class PlayerListener {
             }
         }
 
-        if (!isLeftShiftPressed && count > 1 && !this.cachedPriceComponents.isEmpty()) {
+        if (!expTableItems && !isLeftShiftPressed && count > 1 && !this.cachedPriceComponents.isEmpty()) {
             String translatedKeyMsg = SkyblockKeyBinding.SHOW_BULK_PRICE.getKeyBinding().getTranslatedKeyMessage().getString();
             this.cachedPriceComponents.addFirst(Component.literal("[" + translatedKeyMsg + "] for x" + count)
                     .withColor(ColorCode.DARK_GRAY.getColor()));
@@ -1575,7 +1582,7 @@ public class PlayerListener {
      * falling back to the base item ID (without the extra suffix) if not found.
      * @return price from the map, or {@code -1.0} if absent
      */
-    private double lookupWithFallback(@NonNull Map<String, Double> data, @NonNull ResolvedItemId resolved) {
+    private double lookupWithFallback(@NonNull Object2DoubleMap<String> data, @NonNull ResolvedItemId resolved) {
         String apiItemId = resolved.apiItemId();
         double price = data.getOrDefault(apiItemId, -1.0D);
         String extraString = resolved.extraString();
@@ -1683,6 +1690,92 @@ public class PlayerListener {
         }
 
         return new ResolvedItemId(apiItemId, extraString);
+    }
+
+    /**
+     * Resolves the Bazaar API item ID to use for price lookups.
+     * <p>Enchanted books are looked up by their first enchantment ID
+     * (e.g., {@code ENCHANTMENT_SHARPNESS_5}) rather than the generic {@code ENCHANTED_BOOK} ID.
+     * If the provided item ID is {@code null}, this method attempts to resolve the ID
+     * by parsing the item's custom display name and lore.
+     * @param itemId    the raw SkyBlock item ID, or {@code null} if unknown
+     * @param itemStack the item stack, used to read enchantments, custom names, and lore
+     * @param itemsData the cached SkyBlock items data used for name-to-ID fallback resolution
+     * @return the resolved Bazaar API item ID, or the uppercase custom name as a fallback
+     * @since 2.2.5
+     */
+    private String resolveBazaarItemId(@Nullable String itemId, ItemStack itemStack, ItemsData itemsData) {
+        String apiItemId = itemId;
+
+        if ("ENCHANTED_BOOK".equals(itemId)) {
+            var enchantments = ItemUtils.getEnchantments(itemStack).entrySet().iterator();
+
+            if (enchantments.hasNext()) {
+                var enchant = enchantments.next();
+                apiItemId = "ENCHANTMENT_" + enchant.getKey().toUpperCase(Locale.ENGLISH) + "_" + enchant.getValue();
+            }
+        } else if (itemId == null) {
+            // Try item resolution from custom name and lore
+            Component customName = itemStack.getCustomName();
+            if (customName == null) return apiItemId;
+
+            String customNameStr = customName.getString();
+            if (customNameStr.isBlank()) return apiItemId;
+
+            Matcher m = EnchantManager.ENCHANTMENT_PATTERN.matcher(customNameStr);
+            boolean isNamedEnchant = m.find();
+            boolean isNamedBook = "Enchanted Book".equals(customNameStr);
+
+            if (isNamedEnchant) {
+                return enchantedBookResolution(apiItemId, m);
+            } else if (isNamedBook) {
+                for (Component line : ItemUtils.getItemLoreComponent(itemStack)) {
+                    String lineStr = line.getString();
+                    if (lineStr.isBlank()) continue;
+
+                    m = EnchantManager.ENCHANTMENT_PATTERN.matcher(lineStr);
+                    if (m.find()) {
+                        return enchantedBookResolution(apiItemId, m);
+                    }
+                }
+            } else {
+                // Reusing the general fallback logic
+                ItemsData.Item item = itemsData.getByName().get(customNameStr);
+                return item != null
+                        ? item.getId()
+                        : customNameStr.toUpperCase(Locale.ENGLISH).replace(" ", "_");
+            }
+        }
+
+        return apiItemId;
+    }
+
+    /**
+     * Resolves the Bazaar API item ID for an enchanted book by extracting the enchantment
+     * name and level from a successful regex match.
+     * <p>This method reads the {@code "enchant"} and {@code "levelNumeral"} capture groups
+     * from the provided matcher, converts the Roman numeral to an integer, and formats
+     * the result into the standard Hypixel Bazaar API format (e.g., {@code ENCHANTMENT_SHARPNESS_5}).
+     * If the enchantment is unrecognized or invalid (i.e., resolved as a dummy enchant),
+     * the original {@code apiItemId} is returned unchanged.
+     * @param apiItemId the fallback API item ID to return if the resolution fails
+     * @param m         the regex matcher containing the successful enchantment match groups
+     * @return the formatted Bazaar API item ID, or the original {@code apiItemId} if unresolved
+     * @since 2.2.5
+     */
+    private String enchantedBookResolution(String apiItemId, Matcher m) {
+        String enchantName = m.group("enchant");
+        int levelNumeral =  RomanNumeralParser.parseNumeral(m.group("levelNumeral"));
+
+        if (!StringUtil.isNullOrEmpty(enchantName) && levelNumeral != 0) {
+            enchantName = enchantName.toLowerCase(Locale.ENGLISH);
+
+            Enchant enchant = EnchantManager.getEnchants().getFromLore(enchantName);
+            if (!(enchant instanceof Enchant.Dummy)) {
+                apiItemId = "ENCHANTMENT_" + enchant.getNbtName().toUpperCase(Locale.ENGLISH) + "_" + levelNumeral;
+            }
+        }
+        return apiItemId;
     }
 
     /**

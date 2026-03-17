@@ -10,10 +10,10 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-public class PetItemsRequest extends RemoteFileRequest<HashMap<String, PetItem>> {
+public class PetItemsRequest extends RemoteFileRequest<Map<String, PetItem>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final String PATH = "skyblock/petItems.json";
@@ -21,21 +21,21 @@ public class PetItemsRequest extends RemoteFileRequest<HashMap<String, PetItem>>
     public PetItemsRequest() {
         super(
                 PATH,
-                new TypeToken<HashMap<String, PetItem>>() {}.getType(),
+                new TypeToken<Map<String, PetItem>>() {}.getType(),
                 new PetItemsCallback()
         );
     }
 
-    public static class PetItemsCallback extends DataFetchCallback<HashMap<String, PetItem>> {
+    public static class PetItemsCallback extends DataFetchCallback<Map<String, PetItem>> {
 
         public PetItemsCallback() {
             super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
-        public void completed(HashMap<String, PetItem> result) {
+        public void completed(Map<String, PetItem> result) {
             super.completed(result);
-            PetManager.setPetItems(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR));
+            PetManager.setPetItems(Map.copyOf(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR)));
         }
 
     }

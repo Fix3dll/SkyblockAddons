@@ -1,11 +1,10 @@
 package com.fix3dll.skyblockaddons.utils;
 
-
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Island;
 import lombok.Setter;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,7 +15,7 @@ public class LocationUtils {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
-    @Setter private static HashMap<String, Set<String>> slayerLocations;
+    @Setter private static Map<String, Set<String>> slayerLocations = Map.of();
 
     /**
      * List of locations that spawn zealots/zealot variants

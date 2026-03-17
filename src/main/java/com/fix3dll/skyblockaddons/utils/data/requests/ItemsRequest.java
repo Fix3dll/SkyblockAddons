@@ -38,7 +38,7 @@ public class ItemsRequest extends RemoteFileRequest<ItemsData> {
             main.setItemsData(result);
 
             if (Feature.DEVELOPER_MODE.isEnabled()) {
-                LOGGER.info("lastUpdated: {}, items: {}", new Date(result.getLastUpdated()), result.getItemMap().size());
+                LOGGER.info("lastUpdated: {}, items: {}", new Date(result.getLastUpdated()), result.getById().size());
             }
         }
     }

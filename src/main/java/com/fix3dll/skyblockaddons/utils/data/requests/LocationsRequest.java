@@ -10,11 +10,10 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class LocationsRequest extends RemoteFileRequest<HashMap<String, LocationData>> {
+public class LocationsRequest extends RemoteFileRequest<Map<String, LocationData>> {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final String PATH = "skyblock/locations.json";
@@ -22,21 +21,21 @@ public class LocationsRequest extends RemoteFileRequest<HashMap<String, Location
     public LocationsRequest() {
         super(
                 PATH,
-                new TypeToken<HashMap<String, LocationData>>() {}.getType(),
+                new TypeToken<Map<String, LocationData>>() {}.getType(),
                 new LocationsCallback()
         );
     }
 
-    public static class LocationsCallback extends DataFetchCallback<HashMap<String, LocationData>> {
+    public static class LocationsCallback extends DataFetchCallback<Map<String, LocationData>> {
 
         public LocationsCallback() {
             super(LOGGER, URI.create(DataConstants.CDN_BASE_URL + PATH));
         }
 
         @Override
-        public void completed(HashMap<String, LocationData> result) {
+        public void completed(Map<String, LocationData> result) {
             super.completed(result);
-            HashMap<String, LocationData> locationsMap = Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR);
+            Map<String, LocationData> locationsMap = Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR);
 
             for (Map.Entry<String, LocationData> entry : locationsMap.entrySet()) {
                 for (Island island : Island.values()) {

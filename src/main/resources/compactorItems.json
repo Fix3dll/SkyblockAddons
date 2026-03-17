@@ -227,7 +227,7 @@
   "ENCHANTED_GLISTERING_MELON": {
     "displayName": {"text":"","extra":[{"text":"Enchanted Glistering Melon","color":"blue"}],"italic":false},
     "enchanted": true,
-    "material": "speckled_melon"
+    "material": "glistering_melon_slice"
   },
   "ENCHANTED_GLOWSTONE": {
     "displayName": {"text":"","extra":[{"text":"Enchanted Glowstone","color":"green"}],"italic":false},
@@ -330,14 +330,14 @@
     "material": "magma_cream"
   },
   "ENCHANTED_MELON": {
-    "displayName": {"text":"","extra":[{"text":"Enchanted Melon","color":"green"}],"italic":false},
+    "displayName": {"text":"","extra":[{"text":"Enchanted Melon Slice","color":"green"}],"italic":false},
     "enchanted": true,
-    "material": "melon"
+    "material": "melon_slice"
   },
   "ENCHANTED_MELON_BLOCK": {
-    "displayName": {"text":"","extra":[{"text":"Enchanted Melon Block","color":"blue"}],"italic":false},
+    "displayName": {"text":"","extra":[{"text":"Enchanted Melon","color":"blue"}],"italic":false},
     "enchanted": true,
-    "material": "melon_block"
+    "material": "melon"
   },
   "ENCHANTED_MITHRIL": {
     "displayName": {"text":"","extra":[{"text":"Enchanted Mithril","color":"blue"}],"italic":false},
@@ -427,7 +427,7 @@
   "ENCHANTED_PUMPKIN": {
     "displayName": {"text":"","extra":[{"text":"Enchanted Pumpkin","color":"green"}],"italic":false},
     "enchanted": true,
-    "material": "pumpkin"
+    "material": "carved_pumpkin"
   },
   "ENCHANTED_QUARTZ": {
     "displayName": {"text":"","extra":[{"text":"Enchanted Quartz","color":"green"}],"italic":false},
@@ -837,7 +837,7 @@
   "MELON_BLOCK": {
     "displayName": {"text":"","extra":[{"text":"Melon","color":"white"}],"italic":false},
     "enchanted": false,
-    "material": "melon_block"
+    "material": "melon"
   },
   "MUTANT_NETHER_STALK": {
     "displayName": {"text":"","extra":[{"text":"Mutant Nether Wart","color":"blue"}],"italic":false},

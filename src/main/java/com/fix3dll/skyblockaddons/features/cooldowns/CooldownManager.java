@@ -2,7 +2,8 @@ package com.fix3dll.skyblockaddons.features.cooldowns;
 
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Setter;
 import net.minecraft.util.StringUtil;
@@ -19,7 +20,7 @@ import java.util.regex.Pattern;
  */
 public class CooldownManager {
 
-    @Setter private static Object2IntOpenHashMap<String> itemCooldowns = new Object2IntOpenHashMap<>();
+    @Setter private static Object2IntMap<String> itemCooldowns = Object2IntMaps.emptyMap();
     private static final Pattern ITEM_COOLDOWN_PATTERN = Pattern.compile("Cooldown: ([0-9]+)s");
     private static final Pattern ALTERNATE_COOLDOWN_PATTERN = Pattern.compile("([0-9]+) Second Cooldown");
 

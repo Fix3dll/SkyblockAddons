@@ -41,11 +41,15 @@ import com.fix3dll.skyblockaddons.utils.gson.ItemTypeAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.PatternAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.SemanticVersionAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.SkyblockRarityAdapter;
+import com.fix3dll.skyblockaddons.utils.gson.String2DoubleMapAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.UuidAdapter;
+import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.ClientModInitializer;
@@ -67,7 +71,6 @@ import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.EnumMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -115,6 +118,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			.registerTypeAdapter(FeatureData.class, new FeatureDataAdapter())
 			.registerTypeAdapter(ConfigValues.class, new ConfigValuesAdapter())
 			.registerTypeAdapter(ItemType.class, new ItemTypeAdapter())
+			.registerTypeAdapter(new TypeToken<Object2DoubleMap<String>>(){}.getType(), new String2DoubleMapAdapter())
 			.create();
 
 	private boolean immediatelyFastLoaded = false;
@@ -145,8 +149,8 @@ public class SkyblockAddons implements ClientModInitializer {
 	@Setter private volatile MayorJerryData mayorJerryData;
 	@Setter private volatile BazaarData bazaarData = new BazaarData();
 	@Setter private volatile ItemsData itemsData = new ItemsData();
-	@Setter private volatile Map<String, Double> lowestBinData = Map.of();
-	@Setter private volatile Map<String, Double> lowestBinAveragesData = Map.of();
+	@Setter private volatile Object2DoubleMap<String> lowestBinData = Object2DoubleMaps.emptyMap();
+	@Setter private volatile Object2DoubleMap<String> lowestBinAveragesData = Object2DoubleMaps.emptyMap();
 
 	public SkyblockAddons() {
 		instance = this;
