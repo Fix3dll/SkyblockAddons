@@ -223,7 +223,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			configValuesManager.saveConfig();
 			persistentValuesManager.saveValues();
 			petCacheManager.saveValues();
-//			discordRPCManager.stop();
+			discordRPCManager.stop();
 
 			THREAD_EXECUTOR.shutdown();
 			try {
