@@ -1703,12 +1703,6 @@ public class PlayerListener {
                             .replace(" ", "_")
                             .replace("_EGG", "");
                     apiItemId = nameGroup + ";" + rarity.ordinal();
-
-                    int petLevel = Integer.parseInt(m.group("level"));
-                    if (petLevel != 0 && petLevel % 100 == 0) {
-                        extraString = "+" + petLevel;
-                        apiItemId += extraString;
-                    }
                 }
             }
             default -> {
