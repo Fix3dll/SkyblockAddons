@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
+import com.fix3dll.skyblockaddons.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,7 +22,7 @@ public class ScreenHook {
     public static boolean onRenderTooltip(ItemStack itemStack, int x, int y) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
-        if (Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && main.getUtils().isBlankGlassPane(itemStack)) {
+        if (Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && Utils.isBlankGlassPane(itemStack)) {
             return true;
         }
 
