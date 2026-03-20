@@ -806,19 +806,20 @@ public class Utils {
         return null;
     }
 
-    public boolean isBlankGlassPane(ItemStack itemStack) {
+    public static boolean isGlassPane(ItemStack itemStack) {
         if (itemStack == null || itemStack.isEmpty()) {
             return false;
         }
-
         Block block = Block.byItem(itemStack.getItem());
-        boolean isGlassPane = block == Blocks.GLASS_PANE || block instanceof StainedGlassPaneBlock;
-        boolean hasBlankDisplayName = itemStack.getHoverName().getString().isBlank();
-
-        return isGlassPane && hasBlankDisplayName;
+        return block == Blocks.GLASS_PANE || block instanceof StainedGlassPaneBlock;
     }
 
-    public boolean isGlassPaneColor(ItemStack itemStack, DyeColor color) {
+    public static boolean isBlankGlassPane(ItemStack itemStack) {
+        if (!isGlassPane(itemStack)) return false;
+        return itemStack.getHoverName().getString().isBlank();
+    }
+
+    public static boolean isGlassPaneColor(ItemStack itemStack, DyeColor color) {
         return itemStack != null && itemStack.getOrDefault(DataComponents.MAP_COLOR, -1) == color.getMapColor();
     }
 

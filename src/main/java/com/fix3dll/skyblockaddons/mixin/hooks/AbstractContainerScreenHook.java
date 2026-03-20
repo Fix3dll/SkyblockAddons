@@ -9,13 +9,14 @@ import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
-import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.features.ItemDropChecker;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.NPCUtils;
+import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
@@ -99,7 +100,7 @@ public class AbstractContainerScreenHook {
 
         if (hoveredSlot != null && MC.player != null) {
             if (hoveredSlot.hasItem() && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled()
-                    && main.getUtils().isBlankGlassPane(hoveredSlot.getItem())) {
+                    && Utils.isBlankGlassPane(hoveredSlot.getItem())) {
                 return false;
             }
 
@@ -230,8 +231,8 @@ public class AbstractContainerScreenHook {
         }
 
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.hasItem()
-                && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && main.getUtils().isBlankGlassPane(slot.getItem())
-                && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || main.getUtils().isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
+                && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && Utils.isBlankGlassPane(slot.getItem())
+                && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || Utils.isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
     }
 
     public static void renderReforgeTooltip(AbstractContainerScreen<?> screen, GuiGraphics graphics) {
