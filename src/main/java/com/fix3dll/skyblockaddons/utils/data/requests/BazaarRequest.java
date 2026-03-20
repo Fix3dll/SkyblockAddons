@@ -116,10 +116,8 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
 
             int delayTicks;
             if (timeRemainingMs <= 0) {
-                // API data is stale or time remaining is negative.
-                // Fallback to 3 seconds (60 ticks) to prevent 0-tick request loops and HTTP 429 errors.
-                delayTicks = 60;
-                LOGGER.warn("Bazaar API data is stale or delay is negative. Applying fallback delay of 3 seconds.");
+                delayTicks = (int) ((updateInterval * 1_000 + 1_000) / 50);
+                LOGGER.warn("Bazaar API data is stale. Skipping cycle, retrying in {}s.", updateInterval);
             } else {
                 delayTicks = (int) (timeRemainingMs / 50);
             }
@@ -139,7 +137,7 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
 
             LOGGER.debug(
                     "Next bazaar update scheduled in {}ms (delay: {} ticks).",
-                    timeRemainingMs <= 0 ? 3000 : timeRemainingMs, delayTicks
+                    timeRemainingMs <= 0 ? delayTicks * 50L : timeRemainingMs, delayTicks
             );
         }
     }
