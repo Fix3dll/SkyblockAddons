@@ -150,6 +150,7 @@ public class PlayerListener {
     private static final Pattern AUTOPET_PATTERN = Pattern.compile("§cAutopet §eequipped your §7\\[Lvl (?<level>\\d+)](?: §8\\[§6\\d+§8§.✦§8])? §(?<rarityColor>.)(?<name>.*)§e! §a§lVIEW RULE§r");
     private static final Pattern PET_LEVELED_UP_PATTERN = Pattern.compile("§aYour §r§(?<rarityColor>.)(?<name>.*?)(?<cosmetic>§r§. ✦)? §r§aleveled up to level §r(?:§.)*(?<newLevel>\\d+)§r§a!§r");
     private static final Pattern PET_ITEM_PATTERN = Pattern.compile("§aYour pet is now holding §r§(?<rarityColor>.)(?<petItem>.*)§r§a.§r");
+    private static final Pattern PET_CUSTOM_NAME_PATTERN = Pattern.compile("(?:(?i)(§r)?§e⭐ )?§7\\[Lvl (?<level>\\d+)](?: §.\\[§.\\d+(§.)+✦§8])? §(?<rarityColor>.)(?<name>[^§]+)(?:§.\\s*✦)?");
 
     private static final ObjectOpenHashSet<String> SOUP_RANDOM_MESSAGES = ObjectOpenHashSet.of(
             "I feel like I can fly!", "What was in that soup?",
@@ -1604,20 +1605,23 @@ public class PlayerListener {
      *   <li><b>RUNE</b> — resolved to {@code <TYPE>_RUNE;<LEVEL>}.</li>
      *   <li><b>NEW_YEAR_CAKE</b> — resolved to {@code NEW_YEAR_CAKE+<YEAR>}.</li>
      *   <li><b>POTION</b> — resolved to {@code POTION_<TYPE>;<LEVEL>}.</li>
+     *   <li><b>null (pet fallback)</b> — when {@code itemId} is {@code null}, attempts
+     *       to resolve a pet ID from the item's custom name via {@code PET_CUSTOM_NAME_PATTERN},
+     *       producing {@code <PET_ID>;<RARITY_ORDINAL>} with an optional {@code +<level>}
+     *       suffix for level 100 or 200 pets. Returns {@code null} if the pattern does not
+     *       match or rarity cannot be determined.</li>
      *   <li><b>Default</b> — items with {@code baseStatBoostPercentage == 50} receive
      *       a {@code +PERFECT} suffix.</li>
      * </ul>
-     * @param itemId    the raw SkyBlock item ID; if {@code null} this method returns
-     *                  {@code null} to signal that no lookup should be attempted
-     * @param itemStack the item stack, used to read NBT extra attributes
+     * @param itemId    the raw SkyBlock item ID; if {@code null}, a pet resolution from
+     *                  the item's custom name is attempted before giving up
+     * @param itemStack the item stack, used to read NBT extra attributes and custom name
      * @return a {@link ResolvedItemId} containing the resolved API item ID and optional
-     *         variant suffix (e.g. {@code "+PERFECT"}), or {@code null} if the item ID
-     *         could not be resolved
+     *         variant suffix (e.g. {@code "+PERFECT"}), or {@code null} if {@code itemId}
+     *         was {@code null} and pet resolution from the custom name also failed
      * @since 2.2.3
      */
     private static ResolvedItemId resolveLowestBinItemId(String itemId, ItemStack itemStack) {
-        if (itemId == null) return null;
-
         String apiItemId   = itemId;
         String extraString = null;
 
@@ -1673,6 +1677,34 @@ public class PlayerListener {
                     }
                 }
             }
+            case null -> {
+                Component customName = itemStack.getCustomName();
+                if (customName == null) break;
+
+                String formattedCustomName = TextUtils.getFormattedText(customName, true);
+                if (formattedCustomName.isBlank()) break;
+
+                Matcher m = PET_CUSTOM_NAME_PATTERN.matcher(formattedCustomName);
+                if (m.find()) {
+                    ColorCode rarityColor = ColorCode.getByChar(m.group("rarityColor").charAt(0));
+                    if (rarityColor == null) break;
+
+                    SkyblockRarity rarity = SkyblockRarity.getByColorCode(rarityColor);
+                    if (rarity == null) break;
+
+                    String nameGroup = m.group("name")
+                            .toUpperCase(Locale.ENGLISH)
+                            .replace(" ", "_")
+                            .replace("_EGG", "");
+                    apiItemId = nameGroup + ";" + rarity.ordinal();
+
+                    int petLevel = Integer.parseInt(m.group("level"));
+                    if (petLevel != 0 && petLevel % 100 == 0) {
+                        extraString = "+" + petLevel;
+                        apiItemId += extraString;
+                    }
+                }
+            }
             default -> {
                 CompoundTag extraAttributes = ItemUtils.getExtraAttributes(itemStack);
 
@@ -1687,7 +1719,7 @@ public class PlayerListener {
             }
         }
 
-        return new ResolvedItemId(apiItemId, extraString);
+        return apiItemId == null ? null : new ResolvedItemId(apiItemId, extraString);
     }
 
     /**
