@@ -822,23 +822,16 @@ public class TextUtils {
      * but does not search or modify any subsequent components.
      */
     public static Component replaceComponent(Component original, String target, String replacement) {
-        // First check parent content
+        // Check the root component's own text content first.
         if (original.getContents() instanceof PlainTextContents originalContents) {
             String contentsText = originalContents.text();
 
             if (!StringUtil.isNullOrEmpty(contentsText) && contentsText.contains(target)) {
-                // Create new MutableComponent with a replacement as content and preserved original style.
-                MutableComponent newComponent = MutableComponent.create(
-                        PlainTextContents.create(contentsText.replace(target, replacement))
-                ).withStyle(original.getStyle());
-
-                // Preserve original's siblings.
-                original.getSiblings().forEach(newComponent::append);
-                return newComponent;
+                return copyWithReplacedText(original, contentsText.replace(target, replacement));
             }
         }
 
-        // If not found in parent content, check content of siblings.
+        // Root had no match, search direct siblings.
         List<Component> originalSiblings = original.getSiblings();
         for (int i = 0; i < originalSiblings.size(); i++) {
             Component sibling = originalSiblings.get(i);
@@ -847,10 +840,10 @@ public class TextUtils {
                 String contentsText = siblingContents.text();
 
                 if (!StringUtil.isNullOrEmpty(contentsText) && contentsText.contains(target)) {
-                    MutableComponent modifiedSibling = Component.literal(contentsText.replace(target, replacement))
-                            .withStyle(sibling.getStyle());
                     MutableComponent newComponent = original.copy();
-                    newComponent.getSiblings().set(i, modifiedSibling);
+                    newComponent.getSiblings().set(
+                            i, copyWithReplacedText(sibling, contentsText.replace(target, replacement))
+                    );
                     return newComponent;
                 }
             }
@@ -869,6 +862,18 @@ public class TextUtils {
         }
 
         return original;
+    }
+
+    /**
+     * Returns a new {@link MutableComponent} with {@code replacedText} as its content,
+     * copying the style and siblings from {@code source} unchanged.
+     */
+    private static MutableComponent copyWithReplacedText(Component source, String replacedText) {
+        MutableComponent newComponent = MutableComponent.create(
+                PlainTextContents.create(replacedText)
+        ).withStyle(source.getStyle());
+        source.getSiblings().forEach(newComponent::append);
+        return newComponent;
     }
 
 }
