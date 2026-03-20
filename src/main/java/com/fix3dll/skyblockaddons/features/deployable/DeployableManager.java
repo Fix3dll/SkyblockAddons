@@ -32,7 +32,7 @@ public class DeployableManager {
     /** The DeployableManager instance. */
     @Getter private static final DeployableManager instance = new DeployableManager();
     private static final Minecraft MC = Minecraft.getInstance();
-    private static final Pattern DEPLOYABLE_PATTERN = Pattern.compile("[A-Za-z ]* (?<seconds>[0-9]*)s");
+    private static final Pattern DEPLOYABLE_PATTERN = Pattern.compile("[A-Za-z '-]* (?<seconds>[0-9]*)s");
     private static final Pattern TOTEM_PATTERN = Pattern.compile("Remaining: (?:(?<minutes>\\d{1,2})m )?(?<seconds>\\d{1,2})s");
 
     /** Entry displaying {@link Deployable#SOS_FLARE} at 90 seconds for the edit screen */
