@@ -1554,7 +1554,11 @@ public class PlayerListener {
                 Component customName = itemStack.getCustomName();
                 if (customName != null) {
                     String customNameString = customName.getString();
-                    if (!customNameString.isBlank()) {
+                    if (itemStack.is(Items.ORANGE_STAINED_GLASS) && "Orange".equals(customNameString)) {
+                        // Exception for InventoryType#CHRONOMATRON
+                        //noinspection DataFlowIssue Exception
+                        item = null;
+                    } else if (!customNameString.isBlank()) {
                         item = itemsData.getByName().get(customNameString);
                     }
                 }
