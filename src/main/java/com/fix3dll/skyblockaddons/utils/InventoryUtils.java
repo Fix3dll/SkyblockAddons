@@ -4,6 +4,7 @@ package com.fix3dll.skyblockaddons.utils;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
+import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.ItemDiff;
 import com.fix3dll.skyblockaddons.core.SlayerArmorProgress;
 import com.fix3dll.skyblockaddons.core.ThunderBottle;
@@ -33,9 +34,9 @@ import net.minecraft.world.inventory.BeaconMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.FurnaceMenu;
 import net.minecraft.world.inventory.HopperMenu;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
@@ -518,19 +519,26 @@ public class InventoryUtils {
     private static class DiffHashMap extends HashMap<Component, Pair<Integer, ItemStack>> {
 
         public void updateWithItem(ItemStack itemStack) {
-            if (itemStack.getCustomName() == null) return;
+            Component displayName = itemStack.getCustomName();
+            if (displayName == null || itemStack == ItemStack.EMPTY) return;
             String skyblockId = ItemUtils.getSkyblockItemID(itemStack);
 
-            Component displayName = itemStack.getCustomName();
             // Exceptions
             if ("ENCHANTED_BOOK".equals(skyblockId)) {
                 List<Component> lore = ItemUtils.getItemLoreComponent(itemStack);
                 if (!lore.isEmpty()) {
                     displayName = lore.getFirst();
                 }
-            } else if (main.getUtils().isInDungeon() && itemStack.getItem() == Items.GRAY_DYE && StringUtils.isBlank(displayName.getString())) {
-                // Ignore Archer's ghost abilities cooldown
-                return;
+            } else if (itemStack.getItem() instanceof DyeItem) {
+                String displayString = displayName.getString();
+                if (main.getUtils().isInDungeon() && displayString.isBlank()) {
+                    // Ignore Archer's ghost abilities cooldown
+                    return;
+                } else if (LocationUtils.isOn(Island.KUUDRA) && (displayString.contains("You will be revived in")
+                        || displayString.contains("Purchasable revive is on cooldown!"))) {
+                    // Ignore revive counter and Purchase Revive cooldown items in Kuudra
+                    return;
+                }
             } else if (ItemUtils.isQuiverArrow(itemStack)) {
                 // Ignore quiver arrow
                 return;
