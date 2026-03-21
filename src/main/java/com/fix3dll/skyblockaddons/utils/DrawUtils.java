@@ -26,9 +26,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -38,11 +36,9 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public class DrawUtils {
 
-    private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(?i)§[0-9A-F]");
     public static final RenderPipeline CHROMA_STANDARD = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
                     .withLocation(SkyblockAddons.resourceLocation("sba_chroma_standard"))
@@ -165,71 +161,87 @@ public class DrawUtils {
     }
 
     /**
-     * Draws an absolute text with the specified parameters. Use black color while drawing legacy formatting texts.
-     * @param text the text.
-     * @param x the x-coordinate of the text.
-     * @param y the y-coordinate of the text.
-     * @param color the color to fill the text with.
+     * Draws absolute text at the given position with chroma detection enabled.
+     * @param graphics the current {@link GuiGraphics} context
+     * @param text     the component to render; no-op if {@code null}
+     * @param x        the x-coordinate
+     * @param y        the y-coordinate
+     * @param color    the ARGB fill color, also used to detect chroma
+     * @see #drawText(GuiGraphics, Component, float, float, int, boolean)
      */
     public static void drawText(GuiGraphics graphics, Component text, float x, float y, int color) {
         drawText(graphics, text, x, y, color, false);
     }
 
     /**
-     * Draws an absolute text with the specified parameters. Use black color while drawing legacy formatting texts.
-     * @param text the text.
-     * @param x the x-coordinate of the text.
-     * @param y the y-coordinate of the text.
-     * @param color the color to fill the text with.
-     * @param chromaDisabled if true overrides chroma
+     * Draws absolute text at the given position.
+     * <p>When {@link EnumUtils.TextStyle#STYLE_TWO} is active, four black outlines are rendered
+     * at ±1px offsets before the main text. When chroma {@link ChromaMode#FADE} is active,
+     * outline passes strip per-character colors so the fade overlay blends uniformly.
+     * @param graphics       the current {@link GuiGraphics} context
+     * @param text           the component to render; no-op if {@code null}
+     * @param x              the x-coordinate
+     * @param y              the y-coordinate
+     * @param color          the ARGB fill color, also used to detect chroma
+     * @param chromaDisabled if {@code true}, suppresses chroma rendering regardless of color
      */
     public static void drawText(GuiGraphics graphics, Component text, float x, float y, int color, boolean chromaDisabled) {
         if (text == null) return;
 
         boolean isChroma = !chromaDisabled && color == ManualChromaManager.getChromaColor(0, 0, ARGB.alpha(color));
         boolean styleTwo = Feature.TEXT_STYLE.getValue() == EnumUtils.TextStyle.STYLE_TWO;
-
-        Component renderComponent = text;
-        FormattedCharSequence strippedFcs = null;
-
-        if (styleTwo || (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE)) {
-            String strippedText = COLOR_CODE_PATTERN.matcher(text.getString()).replaceAll("");
-
-            if (styleTwo) {
-                strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(strippedText));
-            }
-
-            if (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
-                renderComponent = Component.literal(strippedText).withStyle(style -> style.withColor(CHROMA_TEXT_COLOR));
-            }
-        }
+        FormattedCharSequence fcs = text.getVisualOrderText();
+        FormattedCharSequence colorlessFcs = getColorlessFcs(fcs, styleTwo, isChroma);
 
         if (styleTwo) {
-            // FIXME alpha on legacy format
             int colorAlpha = Math.max(ARGB.alpha(color), 4);
             int colorBlack = ARGB.color(colorAlpha, 0, 0, 0);
             FontHook.setHaltChroma(true);
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x + 1, y, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x + 1, y, colorBlack, 0, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x - 1, y, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x - 1, y, colorBlack, 0, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x, y + 1, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y + 1, colorBlack, 0, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(strippedFcs, graphics.pose(), x, y - 1, colorBlack, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y - 1, colorBlack, 0, false, graphics.scissorStack.peek())
             );
             FontHook.setHaltChroma(false);
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(renderComponent.getVisualOrderText(), graphics.pose(), x, y, color, 0, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(fcs, graphics.pose(), x, y, color, 0, false, graphics.scissorStack.peek())
             );
         } else {
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(renderComponent.getVisualOrderText(), graphics.pose(), x, y, color, 0, true, graphics.scissorStack.peek())
+                    new SbaTextRenderState(fcs, graphics.pose(), x, y, color, 0, true, graphics.scissorStack.peek())
             );
         }
+    }
+
+    /**
+     * Returns a {@link FormattedCharSequence} that overrides each character's color for
+     * outline or chroma fade passes, or {@code null} if neither style requires it.
+     * <p>When {@link ChromaMode#FADE} is active, colors are replaced with {@link #CHROMA_TEXT_COLOR}
+     * so the chroma overlay blends uniformly across the outline geometry. When only
+     * {@link EnumUtils.TextStyle#STYLE_TWO} is active without chroma fade, colors are stripped
+     * ({@code null}) to produce a plain black outline.
+     * @param original  the pre-computed visual order sequence from the source component
+     * @param styleTwo  whether {@link EnumUtils.TextStyle#STYLE_TWO} is active
+     * @param isChroma  whether chroma rendering is active for this draw call
+     * @return a color-overriding wrapper sequence, or {@code null} if not needed
+     */
+    private static FormattedCharSequence getColorlessFcs(FormattedCharSequence original, boolean styleTwo, boolean isChroma) {
+        if (!styleTwo && !(isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE)) {
+            return null;
+        }
+        TextColor textColor = isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE
+                ? CHROMA_TEXT_COLOR
+                : null;
+        return sink -> original.accept(
+                (index, style, codePoint) -> sink.accept(index, style.withColor(textColor), codePoint)
+        );
     }
 
     public static void blitAbsolute(
