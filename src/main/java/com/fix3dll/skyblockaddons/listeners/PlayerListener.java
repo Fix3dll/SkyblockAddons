@@ -1384,9 +1384,9 @@ public class PlayerListener {
                 if (Feature.ITEM_PICKUP_LOG.isEnabled()) {
                     main.getInventoryUtils().resetPreviousInventory();
                 }
-            }
 
-            previousAllowFlyingState = thePlayer.getAbilities().mayfly;
+                previousAllowFlyingState = thePlayer.getAbilities().mayfly;
+            }
         }
     }
 
