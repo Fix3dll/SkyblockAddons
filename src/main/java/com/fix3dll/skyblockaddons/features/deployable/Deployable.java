@@ -48,6 +48,7 @@ public enum Deployable {
 
     // Flares
     WARNING_FLARE(Properties.builder()
+            .display("Warning")
             .manaRegen(0.0).vitality(10.0).trueDefense(10)
             .textureId("22e2bf6c1ec330247927ba63479e5872ac66b06903c86c82b52dac9f1c971458")
             .rangeSquared(40 * 40)
@@ -55,6 +56,7 @@ public enum Deployable {
             .build()),
 
     ALERT_FLARE(Properties.builder()
+            .display("Alert")
             .manaRegen(0.5).vitality(20.0).trueDefense(20).ferocity(10)
             .textureId("9d2bf9864720d87fd06b84efa80b795c48ed539b16523c3b1f1990b40c003f6b")
             .rangeSquared(40 * 40)
@@ -62,6 +64,7 @@ public enum Deployable {
             .build()),
 
     SOS_FLARE(Properties.builder()
+            .display("SOS")
             .manaRegen(1.25).vitality(30.0).trueDefense(25).ferocity(10).bonusAttackSpeed(5)
             .textureId("c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b")
             .rangeSquared(40 * 40)
@@ -215,6 +218,8 @@ public enum Deployable {
      */
     @Getter private final List<Component> staticDisplayLines;
 
+    private String compactDisplay;
+
     /**
      * Internal configuration class used exclusively for cleanly initializing Enum constants.
      */
@@ -311,6 +316,25 @@ public enum Deployable {
      */
     public boolean isInRadius(double distanceSquared) {
         return distanceSquared <= rangeSquared;
+    }
+
+    /**
+     * Retrieves the lazily initialized, compact version of the display.
+     * <p>
+     * The compact name consists of the first word of the original {@code display} string
+     * (everything before the first space character). If no space is present, the full
+     * display string is used. The result is cached upon first invocation to prevent
+     * string allocation overhead during high-frequency render loops.
+     * @return the compact display, or an empty string ({@code ""}) if the original display string is {@code null}
+     */
+    public String getCompactDisplay() {
+        if (this.display == null) return "";
+        if (this.compactDisplay == null) {
+            this.compactDisplay = this.display.indexOf(' ') == -1
+                    ? this.display
+                    : this.display.substring(0, this.display.indexOf(' '));
+        }
+        return this.compactDisplay;
     }
 
     /**

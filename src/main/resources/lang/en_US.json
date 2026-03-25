@@ -70,6 +70,7 @@
     "enableMessageWhenActionPrevented": "Show a Message When an Action is Prevented",
     "hidePetHealthBar": "Hide Pet Health Bar",
     "deployableDisplay": "Deployable Display",
+    "animatedDeployable": "Show an animated model instead of a static icon",
     "deployableDisplayStyle": "Deployable Style",
     "deployableStyle": {
       "detailed": "Detailed",

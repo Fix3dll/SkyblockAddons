@@ -50,6 +50,7 @@ public enum FeatureSetting {
     AVERAGE_ZEALOT_SPAWN_AREAS_ONLY("settings.zealotSpawnAreasOnly", Feature.SHOW_AVERAGE_ZEALOTS_PER_EYE),
 
     BACKPACK_STYLE("settings.backpackStyle", Feature.SHOW_BACKPACK_PREVIEW),
+    ANIMATED_DEPLOYABLE("settings.animatedDeployable", Feature.DEPLOYABLE_STATUS_DISPLAY),
     DEPLOYABLE_DISPLAY_STYLE("settings.deployableDisplayStyle", Feature.DEPLOYABLE_STATUS_DISPLAY),
     PET_ITEM_STYLE("settings.petItemStyle", Feature.PET_DISPLAY),
     DRAGONS_NEST_ONLY("settings.dragonsNestOnly", Feature.DRAGON_STATS_TRACKER),

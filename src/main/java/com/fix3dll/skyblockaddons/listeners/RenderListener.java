@@ -2455,7 +2455,7 @@ public class RenderListener {
     /**
      * Displays the deployable display in a compact way with only the amount of seconds to the right of the icon.
      * <p>
-     * ----
+     * ---- SOS
      * |  | XXs
      * ----
      */
@@ -2464,9 +2464,13 @@ public class RenderListener {
         float x = feature.getActualX();
         float y = feature.getActualY();
 
-        Component secondsComponent = Component.literal(seconds + "s").withColor(ColorCode.YELLOW.getColor());
+        Component nameText = Component.literal(deployable.getCompactDisplay()).withColor(ColorCode.YELLOW.getColor());
+        Component timeText = Component.literal(seconds + "s").withColor(ColorCode.YELLOW.getColor());
         int spacing = 1;
-        int width = DEPLOYABLE_GUI_SIZE + spacing + MC.font.width(secondsComponent);
+        int nameTextWidth = MC.font.width(nameText);
+        int timeTextWidth = MC.font.width(timeText);
+        int maxTextWidth = Math.max(nameTextWidth, timeTextWidth);
+        int width = DEPLOYABLE_GUI_SIZE + spacing + maxTextWidth;
 
         x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
         y = transformY(y, DEPLOYABLE_GUI_SIZE, scale);
@@ -2479,7 +2483,7 @@ public class RenderListener {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (activeDeployable != null) {
             UUID uuidOfActiveDep = activeDeployable.getUuid();
-            if (uuidOfActiveDep != null) {
+            if (uuidOfActiveDep != null && feature.isEnabled(FeatureSetting.ANIMATED_DEPLOYABLE)) {
                 entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
         } else if (buttonLocation != null) {
@@ -2492,13 +2496,12 @@ public class RenderListener {
             graphics.blit(RenderPipelines.GUI_TEXTURED, deployable.getResourceLocation(), (int) x, (int) y, 0, 0, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE, DEPLOYABLE_GUI_SIZE);
         }
 
-        DrawUtils.drawText(
-                graphics,
-                secondsComponent,
-                x + spacing + DEPLOYABLE_GUI_SIZE,
-                y + (DEPLOYABLE_GUI_SIZE / 2F) - (8 / 2F),
-                ColorCode.WHITE.getColor()
-        );
+        float halfTextWidth = maxTextWidth / 2F;
+        float nameTextX = x + DEPLOYABLE_GUI_SIZE + spacing + (halfTextWidth - nameTextWidth / 2F);
+        float timeTextX = x + DEPLOYABLE_GUI_SIZE + spacing + (halfTextWidth - timeTextWidth / 2F);
+        float textStartY = y + (DEPLOYABLE_GUI_SIZE / 2F) - (MC.font.lineHeight * 2 / 2F);
+        DrawUtils.drawText(graphics, nameText, nameTextX, textStartY, ColorCode.WHITE.getColor());
+        DrawUtils.drawText(graphics, timeText, timeTextX, textStartY + MC.font.lineHeight, ColorCode.WHITE.getColor());
     }
 
     /**
@@ -2600,7 +2603,7 @@ public class RenderListener {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (activeDeployable != null) {
             UUID uuidOfActiveDep = activeDeployable.getUuid();
-            if (uuidOfActiveDep != null) {
+            if (uuidOfActiveDep != null && feature.isEnabled(FeatureSetting.ANIMATED_DEPLOYABLE)) {
                 entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
         } else if (buttonLocation != null) {

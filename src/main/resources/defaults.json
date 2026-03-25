@@ -275,6 +275,7 @@
       70.479996
     ],
     "settings": {
+      "ANIMATED_DEPLOYABLE": true,
       "DEPLOYABLE_DISPLAY_STYLE": "COMPACT",
       "EXPAND_DEPLOYABLE_STATUS": false
     }
