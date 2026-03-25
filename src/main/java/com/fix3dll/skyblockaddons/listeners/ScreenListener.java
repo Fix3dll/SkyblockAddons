@@ -16,6 +16,7 @@ import com.fix3dll.skyblockaddons.features.PetManager.Pet;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
+import com.fix3dll.skyblockaddons.features.dungeons.DungeonProfitOverlay;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsScreen;
 import com.fix3dll.skyblockaddons.mixin.hooks.AbstractContainerScreenHook;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
@@ -33,6 +34,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -79,6 +81,7 @@ public class ScreenListener {
         SkyblockAddonsEvents.INVENTORY_LOADING_DONE.register(this::onInventoryLoadingDone);
         ClientEvents.BEFORE_SET_SCREEN.register(this::onGuiOpen);
         ScreenEvents.BEFORE_INIT.register(this::beforeScreenInit);
+        ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
     }
 
     public void beforeScreenInit(Minecraft client, Screen screen, int scaledWidth, int scaledHeight) {
@@ -114,6 +117,14 @@ public class ScreenListener {
                 }
             }
         }
+    }
+
+    private void onAfterInitScreen(Minecraft minecraft, Screen screen, int width, int height) {
+        ScreenEvents.afterBackground(screen).register(this::onAfterRenderScreenBg);
+    }
+
+    private void onAfterRenderScreenBg(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
+        DungeonProfitOverlay.render(screen, graphics, mouseX, mouseY, tickDelta);
     }
 
     private void beforeKeyPress(Screen screen, KeyEvent event) {
@@ -189,6 +200,7 @@ public class ScreenListener {
 
             ContainerPreviewManager.onContainerClose();
             setCurrentPet(containerScreen);
+            DungeonProfitOverlay.clear();
         }
 
         return false;
@@ -325,6 +337,10 @@ public class ScreenListener {
                         }
                     }
                 }
+            } else if (inventoryType == InventoryType.KUUDRA_CHEST
+                    || inventoryType == InventoryType.CATACOMBS_CHEST
+                    || inventoryType == InventoryType.CROSEUS_CHEST_MENU) {
+                DungeonProfitOverlay.parseContainer(chestContainer, inventoryType);
             }
 
         }

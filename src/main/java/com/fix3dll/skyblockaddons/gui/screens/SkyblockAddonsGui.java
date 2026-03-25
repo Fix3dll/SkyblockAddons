@@ -13,6 +13,7 @@ import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonCredit;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonFeatureToggle;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonSettings;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.FeatureBase;
+import com.fix3dll.skyblockaddons.listeners.NetworkListener;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AutoUpdateMode;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ButtonType;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
@@ -487,7 +488,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
             if (tab == GuiTab.GENERAL_SETTINGS) {
                 main.getRenderListener().setGuiToOpen(GUIType.MAIN, 1, GuiTab.MAIN);
             }
-            Feature.ITEM_PRICES_IN_TOOLTIP.updateApiRequests();
+            NetworkListener.updateApiRequests();
             main.getConfigValuesManager().saveConfig();
         }
     }

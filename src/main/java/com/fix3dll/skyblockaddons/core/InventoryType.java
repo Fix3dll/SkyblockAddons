@@ -24,7 +24,10 @@ public enum InventoryType {
     CALENDAR("Calendar", "Calendar and Events"),
     PETS("Pets","Pets( \\((?<page>\\d+)/\\d+\\) )?"), // "Pets (1/3) "
     EQUIPMENT("Your Equipment and Stats", "Your Equipment and Stats"),
-    SKYBLOCK_MENU("SkyBlock Menu", "SkyBlock Menu");
+    SKYBLOCK_MENU("SkyBlock Menu", "SkyBlock Menu"),
+    CATACOMBS_CHEST("Catacombs Chest", "(?<type>Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)"),
+    KUUDRA_CHEST("Kuudra Chest", "(?<type>Free|Paid) Chest"),
+    CROSEUS_CHEST_MENU("Croseus Chest Menu", "(?<type>Catacombs|Kuudra) - .+");
 
     private final String inventoryName;
     private final Pattern inventoryPattern;

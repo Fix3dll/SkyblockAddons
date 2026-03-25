@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.listeners;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.events.PacketEvents;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
@@ -59,7 +60,7 @@ public class NetworkListener {
         updateHealth = main.getScheduler().scheduleTask(scheduledTask ->
             main.getPlayerListener().updateLastSecondHealth(), 0, 20
         );
-        Feature.ITEM_PRICES_IN_TOOLTIP.updateApiRequests();
+        updateApiRequests();
         DataUtils.onSkyblockJoined();
     }
 
@@ -136,6 +137,31 @@ public class NetworkListener {
             utils.setMode("null");
         });
         modApi.subscribeToEventPacket(ClientboundLocationPacket.class);
+    }
+
+    /**
+     * Starts or cancels API fetch tasks based on the currently enabled sub-settings.
+     * If the player is not on SkyBlock, all tasks are canceled unconditionally.
+     * Should be called after the feature or any of its price-related settings are changed.
+     */
+    public static void updateApiRequests() {
+        if (!main.getUtils().isOnSkyblock()) {
+            BazaarRequest.setActive(false);
+            LowestBinRequest.setActive(false);
+            LowestBinAveragesRequest.setActive(false);
+            return;
+        }
+        Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
+        boolean itemPricesInTooltip = feature.isEnabled();
+        if (itemPricesInTooltip) {
+            BazaarRequest.setActive(feature.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP));
+            LowestBinRequest.setActive(feature.isEnabled(FeatureSetting.LOWEST_BIN_PRICES_IN_TOOLTIP));
+            LowestBinAveragesRequest.setActive(feature.isEnabled(FeatureSetting.LBIN_AVERAGE_PRICES_IN_TOOLTIP));
+        }
+        if (!itemPricesInTooltip && Feature.DUNGEON_PROFIT_OVERLAY.isEnabled()) {
+            BazaarRequest.setActive(true);
+            LowestBinRequest.setActive(true);
+        }
     }
 
 }

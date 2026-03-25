@@ -152,6 +152,8 @@ public class PlayerListener {
     private static final Pattern PET_LEVELED_UP_PATTERN = Pattern.compile("§aYour §r§(?<rarityColor>.)(?<name>.*?)(?<cosmetic>§r§. ✦)? §r§aleveled up to level §r(?:§.)*(?<newLevel>\\d+)§r§a!§r");
     private static final Pattern PET_ITEM_PATTERN = Pattern.compile("§aYour pet is now holding §r§(?<rarityColor>.)(?<petItem>.*)§r§a.§r");
     private static final Pattern PET_CUSTOM_NAME_PATTERN = Pattern.compile("(?:(?i)(§r)?§e⭐ )?§7\\[Lvl (?<level>\\d+)](?: §.\\[§.\\d+(§.)+✦§8])? §(?<rarityColor>.)(?<name>[^§]+)(?:§.\\s*✦)?");
+    public static final Pattern ESSENCE_NAME_PATTERN = Pattern.compile("(?<type>[\\w ]+) Essence(?: x(?<amount>\\d+))?");
+    public static final Pattern ATTRIBUTE_SHARD_NAME_PATTERN = Pattern.compile("(?<type>[\\w ]+) Shard(?: x(?<amount>\\d+))?");
 
     private static final ObjectOpenHashSet<String> SOUP_RANDOM_MESSAGES = ObjectOpenHashSet.of(
             "I feel like I can fly!", "What was in that soup?",
@@ -1441,6 +1443,9 @@ public class PlayerListener {
                                         Item.TooltipContext tooltipContext,
                                         TooltipFlag tooltipFlag,
                                         List<Component> components) {
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+        if (inventoryType == InventoryType.CROSEUS_CHEST_MENU) return;
+
         Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
         boolean boldLines = feature.isEnabled(FeatureSetting.BOLD_PRICE_LINES);
         boolean isChroma = feature.isChroma();
@@ -1494,7 +1499,6 @@ public class PlayerListener {
         this.lastBazaarIdentity       = bazaarIdentity;
         this.lastItemsDataIdentity    = itemsDataIdentity;
 
-        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
         boolean expTableItems = inventoryType == InventoryType.SUPERPAIRS || inventoryType == InventoryType.EXP_TABLE_RNG;
         int countToBeShown = isLeftShiftPressed && !expTableItems ? count : 1;
         UnaryOperator<Style> textColor = style -> isChroma
@@ -1531,7 +1535,13 @@ public class PlayerListener {
 
         if (feature.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP)) {
             // Resolve the specific Bazaar item ID using the extracted helper method
-            String apiItemId = resolveBazaarItemId(itemId, itemStack, itemsData);
+            int[] countOutParam = {0};
+            String apiItemId = resolveBazaarItemId(itemId, itemStack, itemsData, countOutParam);
+            if (countOutParam[0] != 0) {
+                count = countOutParam[0];
+                countToBeShown = isLeftShiftPressed && !expTableItems ? count : 1;
+                this.lastPriceItemCount = count;
+            }
             BazaarData.Product product = bazaarData.getProducts().get(apiItemId);
 
             if (product != null) {
@@ -1587,7 +1597,7 @@ public class PlayerListener {
      * falling back to the base item ID (without the extra suffix) if not found.
      * @return price from the map, or {@code -1.0} if absent
      */
-    private double lookupWithFallback(@NonNull Object2DoubleMap<String> data, @NonNull ResolvedItemId resolved) {
+    public static double lookupWithFallback(@NonNull Object2DoubleMap<String> data, @NonNull ResolvedItemId resolved) {
         String apiItemId = resolved.apiItemId();
         double price = data.getOrDefault(apiItemId, -1.0D);
         String extraString = resolved.extraString();
@@ -1627,7 +1637,7 @@ public class PlayerListener {
      * @since 2.2.3
      */
     @Nullable
-    private static ResolvedItemId resolveLowestBinItemId(String itemId, ItemStack itemStack) {
+    public static ResolvedItemId resolveLowestBinItemId(String itemId, ItemStack itemStack) {
         String apiItemId   = itemId;
         String extraString = null;
 
@@ -1734,7 +1744,7 @@ public class PlayerListener {
      * @return the resolved Bazaar API item ID, or the uppercase custom name as a fallback
      * @since 2.2.5
      */
-    private String resolveBazaarItemId(@Nullable String itemId, ItemStack itemStack, ItemsData itemsData) {
+    public static String resolveBazaarItemId(@Nullable String itemId, ItemStack itemStack, ItemsData itemsData, int[] countOutParam) {
         String apiItemId = itemId;
 
         if ("ENCHANTED_BOOK".equals(itemId)) {
@@ -1744,6 +1754,13 @@ public class PlayerListener {
                 var enchant = enchantments.next();
                 apiItemId = "ENCHANTMENT_" + enchant.getKey().toUpperCase(Locale.ENGLISH) + "_" + enchant.getValue();
             }
+        } else if ("ATTRIBUTE_SHARD".equals(itemId)) {
+            Component customName = itemStack.getCustomName();
+
+            if (customName != null) {
+                String attributeShardResolution = attributeShardResolution(countOutParam, customName.getString());
+                if (attributeShardResolution != null) return attributeShardResolution;
+            }
         } else if (itemId == null) {
             // Try item resolution from custom name and lore
             Component customName = itemStack.getCustomName();
@@ -1751,6 +1768,12 @@ public class PlayerListener {
 
             String customNameStr = customName.getString();
             if (customNameStr.isBlank()) return apiItemId;
+
+            String essenceResolution = essenceResolution(countOutParam, customNameStr);
+            if (essenceResolution != null) return essenceResolution;
+
+            String attributeShardResolution = attributeShardResolution(countOutParam, customNameStr);
+            if (attributeShardResolution != null) return attributeShardResolution;
 
             Matcher m = EnchantManager.ENCHANTMENT_PATTERN.matcher(customNameStr);
             boolean isNamedEnchant = m.find();
@@ -1781,6 +1804,59 @@ public class PlayerListener {
     }
 
     /**
+     * Resolves the SkyBlock API item ID and quantity for an Essence item from its custom name.
+     * <p>
+     * Matches the given name against {@link #ESSENCE_NAME_PATTERN}. If a match is found,
+     * the parsed amount is stored in {@code countOutParam[0]} (defaulting to 1 if absent),
+     * and the formatted API ID is returned.
+     * @param countOutParam    a single-element array used as an out parameter to store the parsed item count
+     * @param customNameString the plain-text custom name of the item
+     * @return the formatted API item ID (e.g., {@code ESSENCE_WITHER}), or {@code null} if the name does not match
+     */
+    @Nullable
+    public static String essenceResolution(int[] countOutParam, String customNameString) {
+        Matcher m = ESSENCE_NAME_PATTERN.matcher(customNameString);
+        if (m.find()) {
+            String type   = m.group("type");
+            String amount = m.group("amount");
+            countOutParam[0] = StringUtil.isNullOrEmpty(amount) ? 1 : Integer.parseInt(amount);
+            return "ESSENCE_" + type.toUpperCase(Locale.ENGLISH).replace(" ", "_");
+        }
+        return null;
+    }
+
+    /**
+     * Resolves the SkyBlock API item ID and quantity for an Attribute Shard from its custom name.
+     * <p>
+     * Matches the given name against {@link #ATTRIBUTE_SHARD_NAME_PATTERN}. If a match is found,
+     * the parsed amount is stored in {@code countOutParam[0]} (defaulting to 1 if absent).
+     * This method applies specific string replacements to handle edge cases where the in-game
+     * entity name differs from the official API ID (e.g., mapping "Bogged" to "SEA_ARCHER").
+     * @param countOutParam    a single-element array used as an out parameter to store the parsed item count
+     * @param customNameString the plain-text custom name of the item
+     * @return the formatted API item ID (e.g., {@code SHARD_SEA_ARCHER}), or {@code null} if the name does not match
+     */
+    @Nullable
+    public static String attributeShardResolution(int[] countOutParam, String customNameString) {
+        Matcher m = ATTRIBUTE_SHARD_NAME_PATTERN.matcher(customNameString);
+        if (m.find()) {
+            String type   = m.group("type");
+            String amount = m.group("amount");
+            countOutParam[0] = StringUtil.isNullOrEmpty(amount) ? 1 : Integer.parseInt(amount);
+            return "SHARD_" + type.toUpperCase(Locale.ENGLISH)
+                    .replace(" ", "_")
+                    // TODO add to remote data instead of hardcode
+                    .replace("END_STONE", "ENDSTONE")
+                    .replace("BOGGED", "SEA_ARCHER")
+                    .replace("STRIDERSURFER", "STRIDER_SURFER")
+                    .replace("ABYSSAL_LANTERNFISH", "ABYSSAL_LANTERN")
+                    .replace("LOCH_EMPEROR", "SEA_EMPEROR")
+                    .replace("CINDERBAT", "CINDER_BAT");
+        }
+        return null;
+    }
+
+    /**
      * Resolves the Bazaar API item ID for an enchanted book by extracting the enchantment
      * name and level from a successful regex match.
      * <p>This method reads the {@code "enchant"} and {@code "levelNumeral"} capture groups
@@ -1793,7 +1869,7 @@ public class PlayerListener {
      * @return the formatted Bazaar API item ID, or the original {@code apiItemId} if unresolved
      * @since 2.2.5
      */
-    private String enchantedBookResolution(String apiItemId, Matcher m) {
+    public static String enchantedBookResolution(String apiItemId, Matcher m) {
         String enchantName = m.group("enchant");
         int levelNumeral =  RomanNumeralParser.parseNumeral(m.group("levelNumeral"));
 
@@ -1816,7 +1892,7 @@ public class PlayerListener {
      *                    if no suffix was added; used for the fallback lookup when
      *                    the specific variant has no listing
      */
-    private record ResolvedItemId(String apiItemId, @Nullable String extraString) {}
+    public record ResolvedItemId(String apiItemId, @Nullable String extraString) {}
 
     private record RatSound(Identifier location, float volume, float pitch) {}
 

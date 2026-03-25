@@ -1022,5 +1022,12 @@
   "SHOW_CLICKABLE_MESSAGES_CONTENT": {
     "value": false,
     "color": -5592406
+  },
+  "DUNGEON_PROFIT_OVERLAY": {
+    "value": true,
+    "color": -1,
+    "settings": {
+      "SHOW_KISMET_FEATHER_LOSS": true
+    }
   }
 }
