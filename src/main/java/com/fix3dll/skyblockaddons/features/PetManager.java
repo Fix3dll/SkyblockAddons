@@ -145,6 +145,7 @@ public class PetManager {
         String petItemId = getPetIdFromDisplayName("§" + rarityColor + petItem);
         if (petItemId == null) return;
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
+        if (currentPet == null) return;
 
         for (Map.Entry<Integer, Pet> petEntry : main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet()) {
             int index = petEntry.getKey();
