@@ -16,12 +16,15 @@ public enum EssenceType {
     SPIDER,
     UNDEAD,
     WITHER,
-    FOSSIL_DUST;
+    FOSSIL_DUST, // ?
+    FOREST;
 
+    private final String skyblockId;
     private final String niceName;
     private final ResourceLocation resourceLocation;
 
     EssenceType() {
+        this.skyblockId = "ESSENCE_" + this.name();
         niceName = this.name().charAt(0) + this.name().substring(1).toLowerCase(Locale.ENGLISH);
         resourceLocation = SkyblockAddons.resourceLocation("essences/" + this.name().toLowerCase(Locale.US) + ".png");
     }
@@ -35,4 +38,5 @@ public enum EssenceType {
 
         return null;
     }
+
 }

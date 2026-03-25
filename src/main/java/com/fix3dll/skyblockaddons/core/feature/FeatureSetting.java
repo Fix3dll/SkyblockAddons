@@ -150,6 +150,7 @@ public enum FeatureSetting {
     LOWEST_BIN_PRICES_UPDATE_INTERVAL("settings.itemPricesInTooltip.lowestBinUpdateInterval", Feature.ITEM_PRICES_IN_TOOLTIP),
     BAZAAR_PRICES_UPDATE_INTERVAL("settings.itemPricesInTooltip.bazaarUpdateInterval", Feature.ITEM_PRICES_IN_TOOLTIP),
     LBIN_AVERAGES_TYPE("settings.itemPricesInTooltip.lbinAveragesType", Feature.ITEM_PRICES_IN_TOOLTIP),
+    SHOW_KISMET_FEATHER_LOSS("settings.dungeonProfitOverlay.showKismetFeatherLoss", Feature.DUNGEON_PROFIT_OVERLAY),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),

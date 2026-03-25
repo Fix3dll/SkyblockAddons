@@ -9,9 +9,6 @@ import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.AnchorPoint;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.DrawType;
-import com.fix3dll.skyblockaddons.utils.data.requests.BazaarRequest;
-import com.fix3dll.skyblockaddons.utils.data.requests.LowestBinAveragesRequest;
-import com.fix3dll.skyblockaddons.utils.data.requests.LowestBinRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
@@ -163,6 +160,7 @@ public enum Feature {
     COLORED_FISHING_PARTICLES(264, "settings.coloredFishingParticles.title", new FeatureGuiData(ColorCode.WHITE)),
     ITEM_PRICES_IN_TOOLTIP(265, "settings.itemPricesInTooltip.title", new FeatureGuiData(ColorCode.YELLOW)),
     SHOW_CLICKABLE_MESSAGES_CONTENT(266, "settings.showClickableMessagesContent", new FeatureGuiData(ColorCode.GRAY)),
+    DUNGEON_PROFIT_OVERLAY(267, "settings.dungeonProfitOverlay.title", new FeatureGuiData(ColorCode.WHITE)),
 
 
     // These are not actual features.
@@ -649,25 +647,6 @@ public enum Feature {
             return false;
         } else {
             return this.featureData.getSettings().containsKey(setting);
-        }
-    }
-
-    /**
-     * Starts or cancels API fetch tasks based on the currently enabled sub-settings.
-     * If the player is not on SkyBlock, all tasks are canceled unconditionally.
-     * Should be called after the feature or any of its price-related settings are changed.
-     */
-    public void updateApiRequests() {
-        if (!SkyblockAddons.getInstance().getUtils().isOnSkyblock()) {
-            BazaarRequest.setActive(false);
-            LowestBinRequest.setActive(false);
-            LowestBinAveragesRequest.setActive(false);
-            return;
-        }
-        if (this == Feature.ITEM_PRICES_IN_TOOLTIP) {
-            BazaarRequest.setActive(this.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP));
-            LowestBinRequest.setActive(this.isEnabled(FeatureSetting.LOWEST_BIN_PRICES_IN_TOOLTIP));
-            LowestBinAveragesRequest.setActive(this.isEnabled(FeatureSetting.LBIN_AVERAGE_PRICES_IN_TOOLTIP));
         }
     }
 

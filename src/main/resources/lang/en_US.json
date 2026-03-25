@@ -312,7 +312,11 @@
         "7day": "7-day averages"
       }
     },
-    "showClickableMessagesContent": "Show Clickable Messages Content"
+    "showClickableMessagesContent": "Show Clickable Messages Content",
+    "dungeonProfitOverlay": {
+      "title": "Dungeon Profit Overlay",
+      "showKismetFeatherLoss": "Show cost of Kismet Feather as loss"
+    }
   },
   "messages": {
     "enchants": "Enchants",
@@ -847,6 +851,8 @@
     "itemDungeonFloor": "Obtained on Floor: ",
     "clickableCommand": "Command: ",
     "clickableAddress": "Address: ",
-    "missingTitle": "Missing: "
+    "missingTitle": "Missing: ",
+    "valueBin": "Value (BIN):",
+    "profitLoss": "Profit/Loss:"
   }
 }
