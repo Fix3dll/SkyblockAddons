@@ -413,12 +413,13 @@ public class Utils {
                     // No need to try to find location after line 5
                     if (lineNumber < 6) {
                         if (!foundLocation && (strippedLine.contains("⏣") || strippedLine.contains("ф"))) {
-                            onRift = strippedLine.contains("ф");
+                            String locationLine = strippedLine.trim();
+                            onRift = locationLine.contains("ф");
                             SkyblockEquipment.loadEquipments(onRift ? Type.RIFT : Type.MAIN);
-                            location = strippedLine.substring(strippedLine.indexOf(' ') + 1).trim();
+                            location = locationLine.substring(locationLine.indexOf(' ') + 1);
 
                             if (map == Island.KUUDRA || map == Island.DUNGEON) {
-                                dungeonFloor = strippedLine.substring(strippedLine.lastIndexOf(" "));
+                                dungeonFloor = locationLine.substring(locationLine.lastIndexOf(" "));
                             } else if (map == Island.GARDEN) {
                                 location = "The Garden";
                             } else if (map == Island.CRIMSON_ISLE) {
