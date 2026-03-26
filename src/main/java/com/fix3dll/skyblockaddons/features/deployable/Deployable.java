@@ -268,42 +268,54 @@ public enum Deployable {
         this.resourceLocation = SkyblockAddons.resourceLocation("deployables/" + props.resourcePath + ".png");
 
         ArrayList<Component> staticLines = new ArrayList<>();
-        if (this.strength > 0) staticLines.add(
-                Component.literal("+%s ❁ ".formatted(this.strength)).withColor(ColorCode.RED.getColor())
-        );
-        if (this.vitality > 0.0) staticLines.add(
-                Component.literal("+%s ♨ ".formatted(TextUtils.formatNumber(this.vitality))).withColor(ColorCode.DARK_RED.getColor())
-        );
-        if (this.mending > 0.0) staticLines.add(
-                Component.literal("+%s ☄ ".formatted(TextUtils.formatNumber(this.mending))).withColor(ColorCode.GREEN.getColor())
-        );
-        if (this.trueDefense > 0) staticLines.add(
-                Component.literal("+%d ❂ ".formatted(this.trueDefense)).withColor(ColorCode.WHITE.getColor())
-        );
-        if (this.ferocity > 0) staticLines.add(
-                Component.literal("+%d ⫽ ".formatted(this.ferocity)).withColor(ColorCode.RED.getColor())
-        );
-        if (this.bonusAttackSpeed > 0) staticLines.add(
-                Component.literal("+%d%% ⚔ ".formatted(this.bonusAttackSpeed)).withColor(ColorCode.YELLOW.getColor())
-        );
-        if (this.trophyFishChance > 0) staticLines.add(
-                Component.literal("+%d ♔ ".formatted(this.trophyFishChance)).withColor(ColorCode.GOLD.getColor())
-        );
-        if (this.miningSpeed > 0) staticLines.add(
-                Component.literal("+%d ⸕ ".formatted(this.miningSpeed)).withColor(ColorCode.GOLD.getColor())
-        );
-        if (this.miningFortune > 0) staticLines.add(
-                Component.literal("+%d ☘ ".formatted(this.miningFortune)).withColor(ColorCode.GOLD.getColor())
-        );
-        if (this.heatResistance > 0) staticLines.add(
-                Component.literal("+%d ♨ ".formatted(this.heatResistance)).withColor(ColorCode.RED.getColor())
-        );
-        if (this.coldResistance > 0) staticLines.add(
-                Component.literal("+%d ❄ ".formatted(this.coldResistance)).withColor(ColorCode.AQUA.getColor())
-        );
-        if (this.gemstoneSpread > 0) staticLines.add(
-                Component.literal("+%s ▚ ".formatted(TextUtils.formatNumber(this.gemstoneSpread))).withColor(ColorCode.YELLOW.getColor())
-        );
+        if (this.strength > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%s ❁ ".formatted(this.strength)),
+                ColorCode.RED.getColor()
+        ));
+        if (this.vitality > 0.0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%s ♨ ".formatted(TextUtils.formatNumber(this.vitality))),
+                ColorCode.DARK_RED.getColor()
+        ));
+        if (this.mending > 0.0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%s ☄ ".formatted(TextUtils.formatNumber(this.mending))),
+                ColorCode.GREEN.getColor()
+        ));
+        if (this.trueDefense > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d ❂ ".formatted(this.trueDefense)),
+                ColorCode.WHITE.getColor()
+        ));
+        if (this.ferocity > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d ⫽ ".formatted(this.ferocity)),
+                ColorCode.RED.getColor()
+        ));
+        if (this.bonusAttackSpeed > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d%% ⚔ ".formatted(this.bonusAttackSpeed)),
+                ColorCode.YELLOW.getColor()
+        ));
+        if (this.trophyFishChance > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d ♔ ".formatted(this.trophyFishChance)),
+                ColorCode.GOLD.getColor()
+        ));
+        if (this.miningSpeed > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d ⸕ ".formatted(this.miningSpeed)),
+                ColorCode.GOLD.getColor()
+        ));
+        if (this.miningFortune > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d ☘ ".formatted(this.miningFortune)),
+                ColorCode.GOLD.getColor()
+        ));
+        if (this.heatResistance > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d ♨ ".formatted(this.heatResistance)),
+                ColorCode.RED.getColor()
+        ));
+        if (this.coldResistance > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%d ❄ ".formatted(this.coldResistance)),
+                ColorCode.AQUA.getColor()
+        ));
+        if (this.gemstoneSpread > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%s ▚ ".formatted(TextUtils.formatNumber(this.gemstoneSpread))),
+                ColorCode.YELLOW.getColor()
+        ));
 
         // Convert to an immutable list to ensure thread-safety
         this.staticDisplayLines = List.copyOf(staticLines);

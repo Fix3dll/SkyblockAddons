@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -22,10 +23,12 @@ import java.util.function.UnaryOperator;
 import static com.fix3dll.skyblockaddons.core.feature.Feature.SHOW_CLICKABLE_MESSAGES_CONTENT;
 
 @Mixin(Style.class)
-public class StyleMixin {
+public class StyleMixin implements StyleExtension {
 
     @Shadow @Final ClickEvent clickEvent;
     @Mutable @Shadow @Final HoverEvent hoverEvent;
+
+    @Unique private boolean sba$chromaDisabled = false;
 
     @Unique private static final UnaryOperator<Style> sba$color = style -> SHOW_CLICKABLE_MESSAGES_CONTENT.isChroma()
             ? style.withColor(DrawUtils.CHROMA_TEXT_COLOR)
@@ -65,6 +68,31 @@ public class StyleMixin {
         }
 
         sba$lastUpdateTime = currentTime;
+    }
+
+    /**
+     * Preserves the custom chroma flag during style inheritance and merging.
+     */
+    @Inject(method = "applyTo", at = @At("RETURN"))
+    private void sba$preserveChromaFlagOnMerge(Style parent, CallbackInfoReturnable<Style> cir) {
+        if (this.sba$chromaDisabled) {
+            Style mergedStyle = cir.getReturnValue();
+
+            // Ensure we are not mutating the global EMPTY style
+            if (mergedStyle != null && mergedStyle != Style.EMPTY) {
+                ((StyleExtension) (Object) mergedStyle).sba$setChromaDisabled(true);
+            }
+        }
+    }
+
+    @Override
+    public boolean sba$isChromaDisabled() {
+        return sba$chromaDisabled;
+    }
+
+    @Override
+    public void sba$setChromaDisabled(boolean value) {
+        this.sba$chromaDisabled = value;
     }
 
 }

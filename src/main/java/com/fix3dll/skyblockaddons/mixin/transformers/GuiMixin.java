@@ -4,9 +4,13 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.tablist.TabListParser;
 import com.fix3dll.skyblockaddons.features.tablist.TabListRenderer;
+import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.mixin.hooks.GuiHook;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
@@ -80,6 +84,13 @@ public class GuiMixin {
         if (!GuiHook.renderEffectsHud) {
             ci.cancel();
         }
+    }
+
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderExperienceLevel(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;I)V"))
+    public void sba$expBarLevelChromaFix(GuiGraphics graphics, Font font, int level, Operation<Void> original) {
+        FontHook.setHaltChroma(true);
+        original.call(graphics, font, level);
+        FontHook.setHaltChroma(false);
     }
 
 }
