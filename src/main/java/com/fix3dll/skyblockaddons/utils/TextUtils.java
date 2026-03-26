@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -874,6 +875,25 @@ public class TextUtils {
         ).withStyle(source.getStyle());
         source.getSiblings().forEach(newComponent::append);
         return newComponent;
+    }
+
+    /**
+     * Applies a fixed color and disables chroma formatting for the given component.
+     * <p>
+     * If the provided component is not mutable, a copy is created. This ensures the
+     * custom style flag is safely applied to a newly allocated {@link Style} instance,
+     * preventing global side effects on cached styles (e.g., {@link Style#EMPTY}).
+     * @param component the base component to modify or copy
+     * @param color     the integer ARGB or RGB color code to apply
+     * @return a mutable component with the fixed color and chroma disabled
+     */
+    public static MutableComponent withFixedColor(Component component, int color) {
+        MutableComponent mutableComponent = component instanceof MutableComponent mc ? mc : component.copy();
+        return mutableComponent.withStyle(style -> {
+            Style newStyle = style.withColor(color);
+            ((StyleExtension) (Object) newStyle).sba$setChromaDisabled(true);
+            return newStyle;
+        });
     }
 
 }

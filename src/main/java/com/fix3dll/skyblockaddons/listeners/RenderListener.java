@@ -81,6 +81,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
@@ -162,7 +163,10 @@ public class RenderListener {
                     1,
                     new ItemStack(Items.CHAINMAIL_CHESTPLATE)
             ),
-            new ItemDiff(Component.literal("Oak Boat"), -1, new ItemStack(Items.OAK_BOAT)),
+            new ItemDiff(Component.literal("Oak Boat").withColor(ColorCode.WHITE.getColor()),
+                    -1,
+                    new ItemStack(Items.OAK_BOAT)
+            ),
             new ItemDiff(
                     Component.literal("Aspect of the End").withColor(ColorCode.BLUE.getColor()),
                     1,
@@ -598,7 +602,7 @@ public class RenderListener {
         // Overlay absorption health if needed
         if (hasAbsorption) {
             graphics.guiRenderState.submitGuiElement(
-                    new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x + barFill, y, 1 + barFill, 7, barWidth - barFill, barHeight, 80, 50, ColorCode.GOLD.getColor(), graphics.scissorStack.peek())
+                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + barFill, y, 1 + barFill, 7, barWidth - barFill, barHeight, 80, 50, ColorCode.GOLD.getColor(), graphics.scissorStack.peek())
             );
         }
 
@@ -616,12 +620,12 @@ public class RenderListener {
             // End texture at x <= barWidth and 4 <= startTexX + endTexX (total width of overlay texture). Cut off for large fill values.
             float endTexX = Math.min(2 * oneSide - startTexX, barWidth - barFill + oneSide);
             graphics.guiRenderState.submitGuiElement(
-                    new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x + startX, y, 1 + startTexX, 24, endTexX, barHeight, 80, 50, color, graphics.scissorStack.peek())
+                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + startX, y, 1 + startTexX, 24, endTexX, barHeight, 80, 50, ColorCode.WHITE.getColor(), graphics.scissorStack.peek())
             );
         }
         // Overlay uncolored bar display next (texture packs can use this to overlay their own static bar colors)
         graphics.guiRenderState.submitGuiElement(
-                new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x, y, 1, 13, barWidth, barHeight, 80, 50, color, graphics.scissorStack.peek())
+                new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x, y, 1, 13, barWidth, barHeight, 80, 50, ColorCode.WHITE.getColor(), graphics.scissorStack.peek())
         );
     }
 
@@ -1424,18 +1428,11 @@ public class RenderListener {
                     int secretsColor = ARGB.colorFromFloat(1.0F, Math.min(1, r), g, 0.33F);
 
                     Component secretsLine = Component.literal(String.valueOf(secrets)).withColor(secretsColor)
-                            .append(Component.literal("/").withColor(color))
+                            .append(TextUtils.withFixedColor(Component.literal("/"), color))
                             .append(Component.literal(String.valueOf(maxSecrets)).withColor(secretsColor));
 
                     float totalWidth = MC.font.width(secretsLine);
-
-                    DrawUtils.drawText(
-                            graphics,
-                            secretsLine,
-                            centerX - (totalWidth / 2F),
-                            drawY,
-                            color
-                    );
+                    DrawUtils.drawText(graphics, secretsLine, centerX - (totalWidth / 2F), drawY, color);
                 }
 
                 renderItem(graphics, CHEST, x, y);
@@ -1541,10 +1538,9 @@ public class RenderListener {
                     int absorptionColor = ColorUtils.getDummySkyblockColor(ColorCode.GOLD.getColor(), feature.isChroma()).getColor();
                     int baseColor = feature.getColor();
 
-                    Component finalHealthComponent = Component.literal(healthStr).withColor(absorptionColor)
+                    Component finalHealthComponent = TextUtils.withFixedColor(Component.literal(healthStr), absorptionColor)
                             .append(Component.literal("/" + maxHealthStr + icon).withColor(baseColor));
                     DrawUtils.drawText(graphics, finalHealthComponent, x, y, color);
-
                 } else {
                     DrawUtils.drawText(graphics, renderComponent, x, y, color);
                 }
@@ -2068,11 +2064,11 @@ public class RenderListener {
                 renderItem(graphics, slayerDrop.getItemStack(), currentX, currentY);
 
                 int currentColor = colorByRarity ? slayerDrop.getRarity().getColorCode().getColor() : color;
-
                 String abbreviatedDropCount = TextUtils.abbreviate(SlayerTracker.getInstance().getDropCount(slayerDrop));
+                MutableComponent abbreviatedComponent = Component.literal(abbreviatedDropCount);
                 DrawUtils.drawText(
                         graphics,
-                        Component.literal(abbreviatedDropCount),
+                        colorByRarity ? TextUtils.withFixedColor(abbreviatedComponent, currentColor) : abbreviatedComponent,
                         currentX + iconWidth + iconTextOffset,
                         currentY + 8,
                         currentColor,
@@ -2181,7 +2177,14 @@ public class RenderListener {
 
             for (DragonType dragon : recentDragons) {
                 int currentColor = colorByRarity ? dragon.getColor().getColor() : color;
-                DrawUtils.drawText(graphics, Component.literal(dragon.getDisplayName()), x, y, currentColor, colorByRarity);
+                MutableComponent displayComponent = Component.literal(dragon.getDisplayName());
+                DrawUtils.drawText(
+                        graphics,
+                        colorByRarity ? TextUtils.withFixedColor(displayComponent, currentColor) : displayComponent,
+                        x, y,
+                        currentColor,
+                        colorByRarity
+                );
 
                 y += 8;
             }
@@ -2194,7 +2197,14 @@ public class RenderListener {
 
             for (DragonsSince dragonsSince : DragonsSince.values()) {
                 int currentColor = colorByRarity ? dragonsSince.getItemRarity().getColorCode().getColor() : color;
-                DrawUtils.drawText(graphics, Component.literal(dragonsSince.getDisplayName()), x, y, currentColor, colorByRarity);
+                MutableComponent displayComponent = Component.literal(dragonsSince.getDisplayName());
+                DrawUtils.drawText(
+                        graphics,
+                        colorByRarity ? TextUtils.withFixedColor(displayComponent, currentColor) : displayComponent,
+                        x, y,
+                        currentColor,
+                        colorByRarity
+                );
 
                 int dragonsSinceValue = DragonTracker.getInstance().getDragsSince(dragonsSince);
                 String text = dragonsSinceValue == 0 ? never : String.valueOf(dragonsSinceValue);
@@ -2217,7 +2227,8 @@ public class RenderListener {
         for (SlayerArmorProgress progress : progresses) {
             if (progress == null) continue;
 
-            int textWidth = MC.font.width(progress.getPercent() + "% (" + progress.getDefence() + ")");
+            int textWidth = progress.getPercentWidth() + MC.font.width("% (")
+                          + progress.getDefenceWidth() + MC.font.width(")");
             if (textWidth > longest) {
                 longest = textWidth;
             }
@@ -2251,8 +2262,9 @@ public class RenderListener {
             }
             renderItem(graphics, progress.getItemStack(), x, fixedY);
 
-            Component line = Component.literal(progress.getPercent() + "% (").withColor(color)
-                    .append(Component.literal(progress.getDefence()).withColor(ColorCode.WHITE.getColor()))
+            Component line = progress.getPercent().copy()
+                    .append(Component.literal("% (").withColor(color))
+                    .append(TextUtils.withFixedColor(progress.getDefence(), ColorCode.GREEN.getColor()))
                     .append(Component.literal(")").withColor(color));
             DrawUtils.drawText(graphics, line, x + 19, fixedY + 5, color);
             drawnCount++;
@@ -2413,9 +2425,12 @@ public class RenderListener {
                     ? Component.literal("+ " + absoluteAmount + "x").withColor(ColorCode.GREEN.getColor())
                     : Component.literal("- " + absoluteAmount + "x").withColor(ColorCode.RED.getColor());
             DrawUtils.drawText(graphics, countComponent, x, stringY, ColorCode.WHITE.getColor());
+
+            Component displayName = itemDiff.getDisplayName();
+            TextColor nameColor = displayName.getStyle().getColor();
             DrawUtils.drawText(
                     graphics,
-                    itemDiff.getDisplayName(),
+                    TextUtils.withFixedColor(displayName, nameColor == null ? ColorCode.WHITE.getColor() : nameColor.getValue()),
                     x + MC.font.width(countComponent) + (renderItemStack ? 20 : 4),
                     stringY,
                     ColorCode.WHITE.getColor(),
@@ -2485,7 +2500,7 @@ public class RenderListener {
             if (uuidOfActiveDep != null && feature.isEnabled(FeatureSetting.ANIMATED_DEPLOYABLE)) {
                 entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
-        } else if (buttonLocation != null) {
+        } else if (buttonLocation != null && feature.isEnabled(FeatureSetting.ANIMATED_DEPLOYABLE)) {
             entity = DeployableManager.DUMMY_ARMOR_STAND;
         }
 
@@ -2527,20 +2542,20 @@ public class RenderListener {
                     && main.getUtils().getSlayerQuestLevel() >= 2) {
                 healthRegen *= 0.5F; // Tarantula boss 2+ reduces healing by 50%.
             }
-            deployableDisplayBuffer.add(
-                    Component.literal("+" + TextUtils.formatNumber(healthRegen) + " ❤/s")
-                            .withColor(ColorCode.RED.getColor())
-            );
+            deployableDisplayBuffer.add(TextUtils.withFixedColor(
+                    Component.literal("+" + TextUtils.formatNumber(healthRegen) + " ❤/s"),
+                    ColorCode.RED.getColor()
+            ));
             passIndex++;
         }
 
         if (deployable.getManaRegen() > 0.0) {
             float maxMana = PlayerStat.MAX_MANA.getValue();
             float manaRegen = (float) (maxMana * deployable.getManaRegen() / 50);
-            deployableDisplayBuffer.add(
-                    Component.literal("+" + TextUtils.formatNumber(manaRegen) + " ✎/s")
-                            .withColor(ColorCode.AQUA.getColor())
-            );
+            deployableDisplayBuffer.add(TextUtils.withFixedColor(
+                    Component.literal("+" + TextUtils.formatNumber(manaRegen) + " ✎/s"),
+                    ColorCode.AQUA.getColor()
+            ));
             passIndex++;
         }
 
@@ -2605,7 +2620,7 @@ public class RenderListener {
             if (uuidOfActiveDep != null && feature.isEnabled(FeatureSetting.ANIMATED_DEPLOYABLE)) {
                 entity = Utils.getEntityFromUUID(uuidOfActiveDep);
             }
-        } else if (buttonLocation != null) {
+        } else if (buttonLocation != null && feature.isEnabled(FeatureSetting.ANIMATED_DEPLOYABLE)) {
             entity = DeployableManager.DUMMY_ARMOR_STAND;
         }
 

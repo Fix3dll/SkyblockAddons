@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.mixin.hooks;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
+import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import lombok.Getter;
@@ -28,6 +29,10 @@ public class FontHook {
     }
 
     public static Style setChromaColorStyle(Style style, String text, char colorCode) {
+        if (style == null) return null;
+        StyleExtension styleExtension = (StyleExtension) (Object) style;
+        if (styleExtension.sba$isChromaDisabled()) return style;
+
         if (colorCode == ColorCode.CHROMA.getCode()) {
             if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
                 style.withColor(DrawUtils.CHROMA_TEXT_COLOR);
@@ -39,6 +44,10 @@ public class FontHook {
     }
 
     public static Style forceChromaStyle(Style original) {
+        if (original == null) return null;
+        StyleExtension styleExtension = (StyleExtension) (Object) original;
+        if (styleExtension.sba$isChromaDisabled()) return original;
+
         if (haltChroma) {
             return original;
         }

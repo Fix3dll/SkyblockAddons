@@ -7,10 +7,12 @@ import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 
 @Getter @ToString
 public enum DungeonClass {
-    HEALER(Items.SPLASH_POTION.getDefaultInstance(), "Healer", ColorCode.LIGHT_PURPLE),
+    HEALER(PotionContents.createItemStack(Items.SPLASH_POTION, Potions.HEALING), "Healer", ColorCode.LIGHT_PURPLE),
     ARCHER(Items.BOW.getDefaultInstance(), "Archer", ColorCode.GOLD),
     TANK(Items.LEATHER_CHESTPLATE.getDefaultInstance(), "Tank", ColorCode.DARK_GREEN),
     MAGE(Items.BLAZE_ROD.getDefaultInstance(), "Mage", ColorCode.AQUA),
@@ -55,10 +57,10 @@ public enum DungeonClass {
                 case BERSERK -> feature.getAsNumber(FeatureSetting.BERSERK_COLOR).intValue();
                 case ARCHER -> feature.getAsNumber(FeatureSetting.ARCHER_COLOR).intValue();
                 case TANK -> feature.getAsNumber(FeatureSetting.TANK_COLOR).intValue();
-                default -> this.defaultColor.getColor();
             };
         } else {
             return this.defaultColor.getColor();
         }
     }
+
 }

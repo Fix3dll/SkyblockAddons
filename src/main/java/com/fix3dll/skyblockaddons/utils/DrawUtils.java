@@ -8,6 +8,7 @@ import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.core.render.state.RoundedRectRenderState;
 import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
+import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.mojang.blaze3d.pipeline.BlendFunction;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -33,7 +35,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
-import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -171,74 +172,74 @@ public class DrawUtils {
     }
 
     /**
-     * Draws absolute text at the given position.
-     * <p>When {@link EnumUtils.TextStyle#STYLE_TWO} is active, four black outlines are rendered
-     * at ±1px offsets before the main text. When chroma {@link ChromaMode#FADE} is active,
-     * outline passes strip per-character colors so the fade overlay blends uniformly.
-     * @param graphics       the current {@link GuiGraphics} context
-     * @param text           the component to render; no-op if {@code null}
-     * @param x              the x-coordinate
-     * @param y              the y-coordinate
-     * @param color          the ARGB fill color, also used to detect chroma
-     * @param chromaDisabled if {@code true}, suppresses chroma rendering regardless of color
+     * Renders absolute text at the specified coordinates with support for custom styles and chroma effects.
+     * <p>
+     * This method handles two primary rendering modes:
+     * <ul>
+     * <li><b>Style Two:</b> Renders a 4-way black outline (±offset) followed by the main text pass.
+     * The outline pass strips specific colors to allow uniform blending under chroma effects.</li>
+     * <li><b>Default Style:</b> Renders the text with a standard shadow.</li>
+     * </ul>
+     * Chroma effects are applied per-character via {@link #resolveChromaSequence} unless explicitly
+     * disabled by the component's style or the {@code chromaDisabled} override.
+     * @param graphics       the current {@link GuiGraphics} rendering context
+     * @param text           the {@link Component} to be rendered; ignored if {@code null}
+     * @param x              the x-coordinate for text placement
+     * @param y              the y-coordinate for text placement
+     * @param color          the primary ARGB color used for the text fill and chroma detection
+     * @param chromaDisabled if {@code true}, bypasses all chroma logic regardless of global settings
      */
     public static void drawText(GuiGraphics graphics, Component text, float x, float y, int color, boolean chromaDisabled) {
         if (text == null) return;
 
         boolean isChroma = !chromaDisabled && color == ManualChromaManager.getChromaColor(0, 0, ARGB.alpha(color));
         boolean styleTwo = Feature.TEXT_STYLE.getValue() == EnumUtils.TextStyle.STYLE_TWO;
-        FormattedCharSequence fcs = text.getVisualOrderText();
-        FormattedCharSequence colorlessFcs = getColorlessFcs(fcs, styleTwo, isChroma);
+        FormattedCharSequence originalFcs = text.getVisualOrderText();
+        FormattedCharSequence finalFcs = resolveChromaSequence(originalFcs, isChroma);
 
         if (styleTwo) {
+            FormattedCharSequence colorlessFcs = sink -> finalFcs.accept(
+                    (index, style, codePoint) -> sink.accept(index, style.withColor((TextColor) null), codePoint)
+            );
             int colorAlpha = Math.max(ARGB.alpha(color), 4);
             int colorBlack = ARGB.color(colorAlpha, 0, 0, 0);
+            float offset = Minecraft.getInstance().options.forceUnicodeFont().get() ? 0.5F : 1.0F;
             FontHook.setHaltChroma(true);
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x + 1, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x + offset, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x - 1, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x - offset, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y + 1, colorBlack, 0, false, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y + offset, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y - 1, colorBlack, 0, false, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y - offset, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             FontHook.setHaltChroma(false);
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(fcs, graphics.pose(), x, y, color, 0, false, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(finalFcs, graphics.pose(), x, y, color, 0, false, false, graphics.scissorStack.peek())
             );
         } else {
             graphics.guiRenderState.submitText(
-                    new SbaTextRenderState(fcs, graphics.pose(), x, y, color, 0, true, false, graphics.scissorStack.peek())
+                    new SbaTextRenderState(finalFcs, graphics.pose(), x, y, color, 0, true, false, graphics.scissorStack.peek())
             );
         }
     }
 
     /**
-     * Returns a {@link FormattedCharSequence} that overrides each character's color for
-     * outline or chroma fade passes, or {@code null} if neither style requires it.
-     * <p>When {@link ChromaMode#FADE} is active, colors are replaced with {@link #CHROMA_TEXT_COLOR}
-     * so the chroma overlay blends uniformly across the outline geometry. When only
-     * {@link EnumUtils.TextStyle#STYLE_TWO} is active without chroma fade, colors are stripped
-     * ({@code null}) to produce a plain black outline.
-     * @param original  the pre-computed visual order sequence from the source component
-     * @param styleTwo  whether {@link EnumUtils.TextStyle#STYLE_TWO} is active
-     * @param isChroma  whether chroma rendering is active for this draw call
-     * @return a color-overriding wrapper sequence, or {@code null} if not needed
+     * Processes the sequence and applies chroma fade only where the style allows it.
      */
-    private static @Nullable FormattedCharSequence getColorlessFcs(FormattedCharSequence original, boolean styleTwo, boolean isChroma) {
-        if (!styleTwo && !(isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE)) {
-            return null;
+    public static FormattedCharSequence resolveChromaSequence(FormattedCharSequence original, boolean isChroma) {
+        if (isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+            return sink -> original.accept((index, style, codePoint) -> {
+                boolean isChromaDisabled = ((StyleExtension) (Object) style).sba$isChromaDisabled();
+                Style resolvedStyle = isChromaDisabled ? style : style.withColor(DrawUtils.CHROMA_TEXT_COLOR);
+                return sink.accept(index, resolvedStyle, codePoint);
+            });
         }
-        TextColor textColor = isChroma && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE
-                ? CHROMA_TEXT_COLOR
-                : null;
-        return sink -> original.accept(
-                (index, style, codePoint) -> sink.accept(index, style.withColor(textColor), codePoint)
-        );
+        return original;
     }
 
     public static void blitAbsolute(
