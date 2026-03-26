@@ -12,6 +12,7 @@ public class ItemDiff {
      * How long items in the log should be displayed before they are removed in ms
      */
     public static final long LIFESPAN = 5000;
+    private final String displayString;
     private final Component displayName;
     private final ItemStack itemStack;
     private int amount;
@@ -23,6 +24,7 @@ public class ItemDiff {
      * @param itemStack The {@link ItemStack} of the first item detected
      */
     public ItemDiff(Component displayName, int amount, ItemStack itemStack) {
+        this.displayString =  displayName.getString();
         this.displayName = displayName;
         this.amount = amount;
         this.timestamp = System.currentTimeMillis();

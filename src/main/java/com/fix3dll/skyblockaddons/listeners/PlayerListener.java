@@ -1339,9 +1339,9 @@ public class PlayerListener {
                 Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
                 int total = -1;
                 if (m.matches()) {
-                    total = Integer.parseInt(m.group("total").replaceAll(",", ""));
+                    total = Integer.parseInt(m.group("total").replace(",", ""));
                 } else if ((m = MAXED_TIER_PET_PROGRESS.matcher(milestoneProgress)).matches()) {
-                    total = Integer.parseInt(m.group("total").replaceAll(",", ""));
+                    total = Integer.parseInt(m.group("total").replace(",", ""));
                 }
                 if (total > 0) {
                     PersistentValuesManager.PersistentValues persistentValues = main.getPersistentValuesManager().getPersistentValues();
@@ -1563,7 +1563,8 @@ public class PlayerListener {
                 Component customName = itemStack.getCustomName();
                 if (customName != null) {
                     String customNameString = customName.getString();
-                    if (itemStack.is(Items.ORANGE_STAINED_GLASS) && "Orange".equals(customNameString)) {
+                    if ((itemStack.is(Items.ORANGE_STAINED_GLASS) || itemStack.is(Items.ORANGE_TERRACOTTA))
+                            && "Orange".equals(customNameString)) {
                         // Exception for InventoryType#CHRONOMATRON
                         //noinspection DataFlowIssue Exception
                         item = null;
