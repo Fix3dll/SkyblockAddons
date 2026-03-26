@@ -1,6 +1,5 @@
 package com.fix3dll.skyblockaddons.utils;
 
-
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
@@ -12,10 +11,10 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTracker;
-import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -64,7 +63,12 @@ public class InventoryUtils {
     );
     private static final Pattern SLAYER_ARMOR_STACK_PATTERN = Pattern.compile("Next Upgrade: \\+([0-9]+❈) \\(([0-9,]+)/([0-9,]+)\\)");
     private List<ItemStack> previousInventory;
-    private final Multimap<Component, ItemDiff> itemPickupLog = ArrayListMultimap.create();
+    private final Multimap<String, ItemDiff> itemPickupLog = ArrayListMultimap.create();
+    /**
+     * Thread-safe, immutable snapshot of the pickup log.
+     * Exclusively updated by the tick thread and read by the render thread.
+     */
+    private volatile Collection<ItemDiff> pickupLogSnapshot = List.of();
 
     @Setter private boolean inventoryWarningShown;
 
@@ -148,38 +152,45 @@ public class InventoryUtils {
                     inventoryDetails.setDetail("Previous", "Size: " + previousInventory.size());
                     inventoryDetails.setDetail("New", "Size: " + newInventory.size());
                     CrashReportCategory itemDetails = crashReport.addCategory("Item Details");
-                    itemDetails.setDetail("Previous Item", "Item: " + (previousItem != null ? previousItem.toString() : "null") + "\n"
+                    itemDetails.setDetail("Previous Item", "Item: " + previousItem + "\n"
                             + "Display Name: " + (previousItem != null ? previousItem.getCustomName() : "null") + "\n"
                             + "Index: " + i + "\n"
-                            + "Map Value: " + (previousItem != null ? (previousInventoryMap.get(previousItem.getCustomName()) != null ? previousInventoryMap.get(previousItem.getCustomName()).toString() : "null") : "null"));
-                    itemDetails.setDetail("New Item", "Item: " + (newItem != null ? newItem.toString() : "null") + "\n"
+                            + "Map Value: " + (previousItem != null ? (previousInventoryMap.get(previousItem.getCustomName().getString()) != null ? previousInventoryMap.get(previousItem.getCustomName().getString()) : "null") : "null"));
+                    itemDetails.setDetail("New Item", "Item: " + newItem + "\n"
                             + "Display Name: " + (newItem != null ? newItem.getCustomName() : "null") + "\n"
                             + "Index: " + i + "\n"
-                            + "Map Value: " + (newItem != null ? (previousInventoryMap.get(newItem.getCustomName()) != null ? previousInventoryMap.get(newItem.getCustomName()).toString() : "null") : "null"));
+                            + "Map Value: " + (newItem != null ? (previousInventoryMap.get(newItem.getCustomName().getString()) != null ? previousInventoryMap.get(newItem.getCustomName().getString()) : "null") : "null"));
                     throw new ReportedException(crashReport);
                 }
             }
 
             List<ItemDiff> inventoryDifference = new LinkedList<>();
-            Set<Component> keySet = new HashSet<>(previousInventoryMap.keySet());
+            Set<String> keySet = new HashSet<>(previousInventoryMap.keySet());
             keySet.addAll(newInventoryMap.keySet());
 
             keySet.forEach(key -> {
                 int previousAmount = 0;
                 if (previousInventoryMap.containsKey(key)) {
-                    previousAmount = previousInventoryMap.get(key).getLeft();
+                    previousAmount = previousInventoryMap.get(key).getAmount();
                 }
 
                 int newAmount = 0;
                 if (newInventoryMap.containsKey(key)) {
-                    newAmount = newInventoryMap.get(key).getLeft();
+                    newAmount = newInventoryMap.get(key).getAmount();
                 }
 
                 int diff = newAmount - previousAmount;
                 if (diff != 0) { // Get the NBT tag from whichever map the name exists in
-                    inventoryDifference.add(
-                            new ItemDiff(key, diff, newInventoryMap.getOrDefault(key, previousInventoryMap.get(key)).getRight())
-                    );
+                    ItemEntry itemEntry = newInventoryMap.getOrDefault(key, previousInventoryMap.get(key));
+                    ItemStack item = itemEntry.getItemStack();
+
+                    if (item != null && item != ItemStack.EMPTY) {
+                        Component customName = item.getCustomName();
+
+                        if (customName != null) {
+                            inventoryDifference.add(new ItemDiff(customName, diff, item));
+                        }
+                    }
                 }
             });
 
@@ -190,11 +201,15 @@ public class InventoryUtils {
             // Add changes to already logged changes of the same item, so it will increase/decrease the amount
             // instead of displaying the same item twice
             if (Feature.ITEM_PICKUP_LOG.isEnabled()) {
-                for (ItemDiff diff : inventoryDifference) {
-                    Collection<ItemDiff> itemDiffs = itemPickupLog.get(diff.getDisplayName());
-                    if (itemDiffs.size() <= 0) {
-                        itemPickupLog.put(diff.getDisplayName(), diff);
+                boolean wasAdded = false;
 
+                for (ItemDiff diff : inventoryDifference) {
+                    String key = diff.getDisplayString();
+                    Collection<ItemDiff> itemDiffs = itemPickupLog.get(key);
+
+                    if (itemDiffs.isEmpty()) {
+                        itemPickupLog.put(key, diff);
+                        wasAdded = true;
                     } else {
                         boolean added = false;
                         for (ItemDiff loopDiff : itemDiffs) {
@@ -204,9 +219,13 @@ public class InventoryUtils {
                             }
                         }
                         if (!added) {
-                            itemPickupLog.put(diff.getDisplayName(), diff);
+                            itemPickupLog.put(key, diff);
+                            wasAdded = true;
                         }
                     }
+                }
+                if (wasAdded || !inventoryDifference.isEmpty()) {
+                    updatePickupLogSnapshot();
                 }
             }
         }
@@ -225,7 +244,22 @@ public class InventoryUtils {
      * Removes items in the pickup log that have been there for longer than {@link ItemDiff#LIFESPAN}
      */
     public void cleanUpPickupLog() {
-        itemPickupLog.entries().removeIf(entry -> entry.getValue().getLifetime() > ItemDiff.LIFESPAN);
+        // Collection#removeIf returns true if any elements were removed
+        boolean wasModified = itemPickupLog.entries().removeIf(entry ->
+                entry.getValue().getLifetime() > ItemDiff.LIFESPAN
+        );
+
+        if (wasModified) {
+            updatePickupLogSnapshot();
+        }
+    }
+
+    /**
+     * Updates the immutable snapshot used by the render thread.
+     * Must be called from the tick thread immediately after modifying the itemPickupLog.
+     */
+    private void updatePickupLogSnapshot() {
+        this.pickupLogSnapshot = List.copyOf(this.itemPickupLog.values());
     }
 
     /**
@@ -444,10 +478,11 @@ public class InventoryUtils {
     }
 
     /**
-     * @return Log of recent Inventory changes
+     * Retrieves the thread-safe snapshot of recent inventory changes.
+     * @return Immutable collection of ItemDiffs for rendering
      */
     public Collection<ItemDiff> getItemPickupLog() {
-        return itemPickupLog.values();
+        return this.pickupLogSnapshot;
     }
 
     /**
@@ -513,24 +548,35 @@ public class InventoryUtils {
     }
 
     /**
-     * Custom HashMap for handle inventory differences
-     * </br>Key: Display Name, Value: Diff size and ItemStack pair
+     * Custom HashMap to handle inventory differences.
+     * <p>Key: Display Name (String), Value: Mutable ItemEntry
      */
-    private static class DiffHashMap extends HashMap<Component, Pair<Integer, ItemStack>> {
+    private static class DiffHashMap extends HashMap<String, ItemEntry> {
 
         public void updateWithItem(ItemStack itemStack) {
             Component displayName = itemStack.getCustomName();
             if (displayName == null || itemStack == ItemStack.EMPTY) return;
-            String skyblockId = ItemUtils.getSkyblockItemID(itemStack);
 
             // Exceptions
-            if ("ENCHANTED_BOOK".equals(skyblockId)) {
-                List<Component> lore = ItemUtils.getItemLoreComponent(itemStack);
-                if (!lore.isEmpty()) {
-                    displayName = lore.getFirst();
+            String skyblockId = ItemUtils.getSkyblockItemID(itemStack);
+            switch (skyblockId) {
+                case "ENCHANTED_BOOK" -> {
+                    List<Component> lore = ItemUtils.getItemLoreComponent(itemStack);
+                    if (!lore.isEmpty()) {
+                        displayName = lore.getFirst();
+                    }
                 }
-            } else if (itemStack.getItem() instanceof DyeItem) {
-                String displayString = displayName.getString();
+                case "INFINITE_SUPERBOOM_TNT", "LESSER_ORB_OF_HEALING" -> {
+                    // TODO add this to data repository
+                    // Ignore Infinityboom TNT and Lesser Orb of Healing
+                    return;
+                }
+                case null, default -> {
+                }
+            }
+
+            String displayString = displayName.getString();
+            if (itemStack.getItem() instanceof DyeItem) {
                 if (main.getUtils().isInDungeon() && displayString.isBlank()) {
                     // Ignore Archer's ghost abilities cooldown
                     return;
@@ -542,22 +588,24 @@ public class InventoryUtils {
             } else if (ItemUtils.isQuiverArrow(itemStack)) {
                 // Ignore quiver arrow
                 return;
-            } else if ("INFINITE_SUPERBOOM_TNT".equals(skyblockId) || "LESSER_ORB_OF_HEALING".equals(skyblockId)) {
-                // TODO add this to data repository
-                // Ignore Infinityboom TNT and Lesser Orb of Healing
-                return;
             }
 
-            int amount;
-            if (this.containsKey(displayName)) {
-                amount = this.get(displayName).getLeft() + itemStack.getCount();
-            } else {
-                amount = itemStack.getCount();
-            }
-
-            this.put(displayName, new Pair<>(amount, itemStack));
+            this.computeIfAbsent(displayString, k -> new ItemEntry(itemStack)).addAmount(itemStack.getCount());
         }
 
+    }
+
+    /**
+     * Mutable wrapper to hold an item stack and its accumulated amount.
+     */
+    @RequiredArgsConstructor @Getter
+    public static class ItemEntry {
+        private int amount = 0;
+        private final ItemStack itemStack;
+
+        public void addAmount(int amount) {
+            this.amount += amount;
+        }
     }
 
 }

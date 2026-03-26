@@ -2407,10 +2407,9 @@ public class RenderListener {
         }
 
         int i = 0;
-        Collection<ItemDiff> log = main.getInventoryUtils().getItemPickupLog();
-        if (buttonLocation != null) {
-            log = DUMMY_PICKUP_LOG;
-        }
+        Collection<ItemDiff> log = buttonLocation != null
+                ? DUMMY_PICKUP_LOG
+                : main.getInventoryUtils().getItemPickupLog();
         for (ItemDiff itemDiff : log) {
             float stringY;
             if (downwards) {
