@@ -34,7 +34,8 @@
 		"fabricloader": ">=${loader_version}",
 		"minecraft": "~${minecraft_version}",
 		"java": ">=25",
-		"fabric-api": ">=${fabric_version}"
+		"fabric-api": ">=${fabric_version}",
+		"hypixel-mod-api": ">=1.0.2"
 	},
 	"suggests": {
 	},
