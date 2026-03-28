@@ -41,8 +41,8 @@ import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
@@ -59,7 +59,6 @@ import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -143,7 +142,7 @@ public class DataUtils {
     public static void readTexturedHeads() {
         try (InputStream inputStream = DataUtils.class.getResourceAsStream("/texturedHeads.json");
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            ItemUtils.setTexturedHeads(GSON.fromJson(inputStreamReader, new TypeToken<Object2ObjectOpenHashMap<String, TexturedHead>>() {}.getType()));
+            ItemUtils.setTexturedHeads(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, TexturedHead>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -177,7 +176,7 @@ public class DataUtils {
         path = "/containers.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            ItemUtils.setContainers(GSON.fromJson(inputStreamReader, new TypeToken<Object2ObjectOpenHashMap<String, ContainerData>>() {}.getType()));
+            ItemUtils.setContainers(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, ContainerData>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -186,9 +185,8 @@ public class DataUtils {
         path = "/compactorItems.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            Object2ObjectOpenHashMap<String, CompactorItem> compactorItems = GSON.fromJson(
-                    inputStreamReader,
-                    new TypeToken<Object2ObjectOpenHashMap<String, CompactorItem>>() {}.getType()
+            Map<String, CompactorItem> compactorItems = GSON.fromJson(
+                    inputStreamReader, new TypeToken<Map<String, CompactorItem>>() {}.getType()
             );
             compactorItems.forEach((skyblockId, compactorItem) ->
                     ItemUtils.setItemStackSkyblockID(compactorItem.getItemStack(), skyblockId)
@@ -220,8 +218,12 @@ public class DataUtils {
         path = "/cooldowns.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            Object2IntOpenHashMap<String> cooldowns = new Object2IntOpenHashMap<>();
-            cooldowns.putAll(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, Integer>>() {}.getType()));
+            Object2DoubleMap<String> result = GSON.fromJson(inputStreamReader, new TypeToken<Object2DoubleMap<String>>() {}.getType());
+            Object2IntOpenHashMap<String> cooldowns = new Object2IntOpenHashMap<>(result.size());
+            for (Object2DoubleMap.Entry<String> entry : result.object2DoubleEntrySet()) {
+                // direct primitive cast from double to int
+                cooldowns.put(entry.getKey(), (int) entry.getDoubleValue());
+            }
             CooldownManager.setItemCooldowns(cooldowns);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
@@ -241,7 +243,7 @@ public class DataUtils {
         path = "/petItems.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            PetManager.setPetItems(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, PetItem>>() {}.getType()));
+            PetManager.setPetItems(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, PetItem>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -250,8 +252,8 @@ public class DataUtils {
         path = "/locations.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
-            HashMap<String, LocationData> result = GSON.fromJson(
-                    inputStreamReader, new TypeToken<HashMap<String, LocationData>>() {}.getType()
+            Map<String, LocationData> result = GSON.fromJson(
+                    inputStreamReader, new TypeToken<Map<String, LocationData>>() {}.getType()
             );
             for (Map.Entry<String, LocationData> entry : result.entrySet()) {
                 for (Island island : Island.values()) {
@@ -269,7 +271,7 @@ public class DataUtils {
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
             LocationUtils.setSlayerLocations(
-                    GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, Set<String>>>() {}.getType())
+                    GSON.fromJson(inputStreamReader, new TypeToken<Map<String, Set<String>>>() {}.getType())
             );
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);

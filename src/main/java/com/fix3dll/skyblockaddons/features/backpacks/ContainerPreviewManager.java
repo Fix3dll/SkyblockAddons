@@ -266,7 +266,6 @@ public class ContainerPreviewManager {
         ItemStack tooltipItem = ItemStack.EMPTY;
 
         if (backpackPreview.get(FeatureSetting.BACKPACK_STYLE) == EnumUtils.BackpackStyle.GUI) {
-//            GlStateManager.disableLighting();
             int textColor = -12566464;
             int containerColor = -1;
             if (backpackPreview.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
@@ -328,10 +327,6 @@ public class ContainerPreviewManager {
                 graphics.drawString(MC.font, name, x + 8, y + 6, textColor, false);
             }
 
-//            GlStateManager.enableLighting();
-
-//            RenderHelper.enableGUIStandardItemLighting();
-//            GlStateManager.enableRescaleNormal();
             int itemStartX = x + textureBorder + 1;
             int itemStartY = y + topBorder + 1;
             for (int i = 0; i < length; i++) {
@@ -357,12 +352,8 @@ public class ContainerPreviewManager {
                 y = screenHeight - totalHeight;
             }
 
-//            GlStateManager.disableLighting();
             graphics.fill(RenderPipelines.GUI, x - 3, y - 3, x + totalWidth, y + totalHeight, getRectColor());
-//            GlStateManager.enableLighting();
 
-//            RenderHelper.enableGUIStandardItemLighting();
-//            GlStateManager.enableRescaleNormal();
             for (int i = 0; i < length; i++) {
                 ItemStack item = items.get(i);
                 if (item != null) {

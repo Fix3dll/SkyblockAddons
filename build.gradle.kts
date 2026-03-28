@@ -166,7 +166,10 @@ tasks.processResources {
         expand(mapOf(
             "version" to ext.get("formattedVersion"),
             "sbaJarName" to "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar",
-            "sbaBuildNumber" to project.property("buildNumber")
+            "sbaBuildNumber" to project.property("buildNumber"),
+            "loader_version" to project.property("loader_version"),
+            "minecraft_version" to project.property("minecraft_version"),
+            "fabric_version" to project.property("fabric_version")
         ))
     }
 }

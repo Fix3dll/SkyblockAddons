@@ -57,9 +57,11 @@ public class NetworkListener {
         if (Feature.DISCORD_RPC.isEnabled()) {
             main.getDiscordRPCManager().start();
         }
-        updateHealth = main.getScheduler().scheduleTask(scheduledTask ->
-            main.getPlayerListener().updateLastSecondHealth(), 0, 20
-        );
+        if (updateHealth != null) {
+            updateHealth = main.getScheduler().scheduleTask(scheduledTask ->
+                    main.getPlayerListener().updateLastSecondHealth(), 0, 20
+            );
+        }
         updateApiRequests();
         DataUtils.onSkyblockJoined();
     }
@@ -88,7 +90,7 @@ public class NetworkListener {
             if (!SlayerTracker.getInstance().isTrackerEnabled()) return;
 
             SlayerQuest activeQuest = main.getUtils().getSlayerQuest();
-            if (activeQuest == null || !LocationUtils.isOnSlayerLocation(activeQuest)) return;
+            if (!LocationUtils.isOnSlayerLocation(activeQuest)) return;
 
             int entityID = takeItemPacket.getItemId();
             Entity entity = level.getEntity(entityID);
