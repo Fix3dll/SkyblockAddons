@@ -5,7 +5,7 @@ import java.text.ParseException
 plugins {
     java
     id("net.fabricmc.fabric-loom") version ("1.15-SNAPSHOT")
-    id("com.gradleup.shadow") version ("8.3.10")
+    id("com.gradleup.shadow") version ("9.4.1")
     id("io.freefair.lombok") version ("9.2.0")
 }
 
@@ -141,10 +141,6 @@ tasks.withType(JavaCompile::class).configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.jar {
-    archiveFileName = "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar"
-}
-
 tasks.processResources {
     dependsOn("copyLicenses")
 
@@ -189,12 +185,19 @@ tasks.jar {
 }
 
 tasks.shadowJar {
-    destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
+    archiveFileName.set("${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar")
     configurations = listOf(bundle)
 
     val basePackage = "${project.group}.${project.name.lowercase(Locale.US)}"
     relocate("com.jagrosh.discordipc", "${basePackage}.discordipc")
     relocate("moe.nea.libautoupdate", "${basePackage}.libautoupdate")
+
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName.get()}"}
+    }
+    manifest.attributes.run {
+        this["Main-Class"] = "SkyblockAddonsInstallerFrame"
+    }
 }
 
 tasks.test {
