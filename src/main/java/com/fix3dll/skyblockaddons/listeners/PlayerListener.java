@@ -1542,7 +1542,11 @@ public class PlayerListener {
                 countToBeShown = isLeftShiftPressed && !expTableItems ? count : 1;
                 this.lastPriceItemCount = count;
             }
-            BazaarData.Product product = bazaarData.getProducts().get(apiItemId);
+
+            BazaarData.Product product = null;
+            if (!StringUtil.isNullOrEmpty(apiItemId)) {
+                product = bazaarData.getProducts().get(apiItemId);
+            }
 
             if (product != null) {
                 Component buyPrice = TextUtils.formatPrice(product.getInstaBuyPrice() * countToBeShown, 1, boldLines);
@@ -1557,8 +1561,8 @@ public class PlayerListener {
 
         if (feature.isEnabled(FeatureSetting.NPC_SELL_PRICES_IN_TOOLTIP)) {
             ItemsData.Item item = null;
-            if (itemId != null) {
-                item = itemsData.getById().get(itemId);
+            if (!StringUtil.isNullOrEmpty(itemId)) {
+                item = itemsData.getById(itemId);
             } else {
                 // Fallback lookup by exact display name
                 Component customName = itemStack.getCustomName();
@@ -1570,7 +1574,7 @@ public class PlayerListener {
                         //noinspection DataFlowIssue Exception
                         item = null;
                     } else if (!customNameString.isBlank()) {
-                        item = itemsData.getByName().get(customNameString);
+                        item = itemsData.getByName(customNameString);
                     }
                 }
             }
@@ -1794,7 +1798,7 @@ public class PlayerListener {
                 }
             } else {
                 // Reusing the general fallback logic
-                ItemsData.Item item = itemsData.getByName().get(customNameStr);
+                ItemsData.Item item = itemsData.getByName(customNameStr);
                 return item != null
                         ? item.getId()
                         : customNameStr.toUpperCase(Locale.ENGLISH).replace(" ", "_");
