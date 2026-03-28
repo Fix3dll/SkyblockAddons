@@ -35,10 +35,14 @@ public class CooldownManager {
     }
 
     public static int getItemCooldown(ItemStack item) {
+        String skyblockId = ItemUtils.getSkyblockItemID(item);
+        if (StringUtil.isNullOrEmpty(skyblockId)) return 0;
+
         return itemCooldowns.getOrDefault(ItemUtils.getSkyblockItemID(item), 0);
     }
 
     public static int getItemCooldown(String itemId) {
+        if (StringUtil.isNullOrEmpty(itemId)) return 0;
         return itemCooldowns.getOrDefault(itemId, 0);
     }
 

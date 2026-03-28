@@ -32,6 +32,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -166,7 +167,10 @@ public class ItemUtils {
      * @return The itemstack that this personal compactor skyblock ID represents
      */
     public static ItemStack getPersonalCompactorItemStack(String personalCompactorSkyblockID) {
-        CompactorItem compactorItem = compactorItems.get(personalCompactorSkyblockID);
+        CompactorItem compactorItem = null;
+        if (!StringUtil.isNullOrEmpty(personalCompactorSkyblockID)) {
+            compactorItem = compactorItems.get(personalCompactorSkyblockID);
+        }
         if (compactorItem != null) {
             return compactorItem.getItemStack();
         } else {
@@ -189,6 +193,7 @@ public class ItemUtils {
      * @return A {@link ContainerData} object containing info about the container in general
      */
     public static ContainerData getContainerData(String skyblockID) {
+        if (StringUtil.isNullOrEmpty(skyblockID)) return null;
         return containers.get(skyblockID);
     }
 
