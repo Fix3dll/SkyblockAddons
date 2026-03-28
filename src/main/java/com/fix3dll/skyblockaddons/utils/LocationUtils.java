@@ -43,6 +43,7 @@ public class LocationUtils {
      * @return true if current location where the given slayer type is counted
      */
     public static boolean isOnSlayerLocation(EnumUtils.SlayerQuest slayerQuest) {
+        if (slayerQuest == null) return false;
         return slayerLocations.get(slayerQuest.name()).contains(main.getUtils().getLocation());
     }
 

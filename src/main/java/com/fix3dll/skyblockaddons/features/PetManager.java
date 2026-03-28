@@ -16,6 +16,7 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.NonNullList;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -196,7 +197,7 @@ public class PetManager {
     }
 
     public ItemStack getPetItemFromId(String petItemId) {
-        PetItem petItem = petItems.get(petItemId);
+        PetItem petItem = getPetItemById(petItemId);
         if (petItem != null) {
             return petItem.getItemStack();
         } else {
@@ -205,7 +206,7 @@ public class PetManager {
     }
 
     public String getPetItemDisplayNameFromId(String petItemId) {
-        PetItem petItem = petItems.get(petItemId);
+        PetItem petItem = getPetItemById(petItemId);
         if (petItem != null) {
             return petItem.getDisplayName();
         } else {
@@ -214,12 +215,17 @@ public class PetManager {
     }
 
     public SkyblockRarity getPetItemRarityFromId(String petItemId) {
-        PetItem petItem = petItems.get(petItemId);
+        PetItem petItem = getPetItemById(petItemId);
         if (petItem != null) {
             return petItem.getRarity();
         } else {
             return SkyblockRarity.ADMIN;
         }
+    }
+
+    public PetItem getPetItemById(String petItemId) {
+        if (StringUtil.isNullOrEmpty(petItemId)) return null;
+        return petItems.get(petItemId);
     }
 
     public String getPetIdFromDisplayName(String petItemDisplayName) {

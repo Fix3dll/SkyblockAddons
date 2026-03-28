@@ -116,6 +116,20 @@ public class ItemsData {
      */
     private Map<String, Item> byName = Map.of();
 
+    public Item getById(String id) {
+        if (StringUtil.isNullOrEmpty(id)) return null;
+        return byId.get(id);
+    }
+
+    public Item getByName(String name) {
+        if (StringUtil.isNullOrEmpty(name)) return null;
+        return byId.get(name);
+    }
+
+    public int itemCount() {
+        return Math.max(byId.size(), byName.size());
+    }
+
     static class Deserializer implements JsonDeserializer<ItemsData> {
         @Override
         public ItemsData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext ctx) {

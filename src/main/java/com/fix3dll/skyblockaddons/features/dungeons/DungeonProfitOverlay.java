@@ -288,7 +288,7 @@ public class DungeonProfitOverlay {
      * {@link EnchantManager#ENCHANTMENT_PATTERN} and resolved via {@link PlayerListener#enchantedBookResolution}.</li>
      * <li><b>Essence</b> - matched against {@link PlayerListener#ESSENCE_NAME_PATTERN},
      * producing e.g. {@code ESSENCE_WITHER}.</li>
-     * <li><b>Default</b> - plain name looked up in {@link ItemsData#getByName()},
+     * <li><b>Default</b> - plain name looked up in {@link ItemsData#getByName(String)}},
      * falling back to an uppercased underscore-separated ID.</li>
      * </ul>
      * @param lore       raw lore component list from the chest item stack
@@ -385,7 +385,7 @@ public class DungeonProfitOverlay {
         plain = plain.replace("✪", "").trim();
 
         // Generic item - name-to-ID lookup with uppercase fallback
-        ItemsData.Item dataItem = main.getItemsData().getByName().get(plain);
+        ItemsData.Item dataItem = main.getItemsData().getByName(plain);
         if (dataItem != null) return new ChestItem(dataItem.getId(), 1, line);
 
         String fallbackId = plain.toUpperCase(Locale.ENGLISH).replace(" ", "_");
