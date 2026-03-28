@@ -63,6 +63,9 @@ public class DungeonManager {
     private static final Pattern PATTERN_STRIP_FORMAT = Pattern.compile("§.?");
     private static final ResourceLocation CRITICAL = SkyblockAddons.resourceLocation("critical.png");
     private static final int CRITICAL_ICON_SIZE = 25;
+    private static final Component HEART_COMPONENT = Component.literal("❤").withColor(ColorCode.RED.getColor());
+    private static final Component LOW_COMPONENT = Component.literal("LOW").withColor(ColorCode.YELLOW.getColor());
+    private static final Component CRITICAL_COMPONENT = Component.literal("CRITICAL").withColor(ColorCode.RED.getColor());
 
     /** The last dungeon server the player played on */
     @Getter @Setter private String lastServerId;
@@ -463,19 +466,19 @@ public class DungeonManager {
                     );
                     poseStack.popPose();
 
-                    String text;
+                    Component component;
                     if (dungeonPlayer.isLow()) {
-                        text = ColorCode.YELLOW + "LOW";
+                        component = LOW_COMPONENT;
                     } else if (dungeonPlayer.isCritical()) {
-                        text = ColorCode.RED + "CRITICAL";
+                        component = CRITICAL_COMPONENT;
                     } else {
-                        text = null;
+                        component = null;
                     }
 
-                    if (text != null) {
+                    if (component != null) {
                         poseStack.pushPose();
                         poseStack.translate(0, 18.0F * 1.15F * 0.025F, 0); // 18.0F == 2 * lineHeight
-                        submitNodeCollector.submitNameTag(poseStack, vec3, 0, Component.literal(text), true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                        submitNodeCollector.submitNameTag(poseStack, vec3, 0, component, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                         poseStack.popPose();
                     }
                     canceled = true;
@@ -494,12 +497,12 @@ public class DungeonManager {
                         playerName.withColor(classColor);
                     }
 
-                    String dungeonClass = ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] ";
-                    MutableComponent playerNameTag = Component.literal(dungeonClass).append(playerName);
+                    MutableComponent dungeonClass = Component.literal("[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] ").withColor(ColorCode.YELLOW.getColor());
+                    MutableComponent playerNameTag = dungeonClass.append(playerName);
 
                     poseStack.pushPose();
-                    String health = dungeonPlayer.getHealth() + " " + ColorCode.RED + "❤";
-                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, Component.literal(health), true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                    MutableComponent health = Component.literal(dungeonPlayer.getHealth() + " ").append(HEART_COMPONENT);
+                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, health, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                     poseStack.translate(0, 9.0F * 1.15F * 0.025F, 0);
                     submitNodeCollector.submitNameTag(poseStack, vec3, 0, playerNameTag, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                     poseStack.popPose();

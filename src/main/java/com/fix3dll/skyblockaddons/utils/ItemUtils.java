@@ -533,12 +533,19 @@ public class ItemUtils {
 
     public static ItemStack createEnchantedBook(SkyblockRarity rarity, String enchantName, int enchantLevel) {
         String name = rarity == null ? "Enchanted Book" : rarity.getColorCode() + "Enchanted Book";
-        ItemStack stack = createItemStack(Items.ENCHANTED_BOOK, name, "ENCHANTED_BOOK", false);
+        ItemStack stack = createItemStack(Items.ENCHANTED_BOOK, name, null, false);
 
-        CompoundTag enchantments = new CompoundTag();
-        enchantments.putInt(enchantName, enchantLevel);
 
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(enchantments));
+        CompoundTag ea = new CompoundTag();
+        ea.putString("id", "ENCHANTED_BOOK");
+
+        if (enchantName != null) {
+            CompoundTag enchantments = new CompoundTag();
+            enchantments.putInt(enchantName, enchantLevel);
+            ea.put("enchantments", enchantments);
+        }
+
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ea));
 
         return stack;
     }
