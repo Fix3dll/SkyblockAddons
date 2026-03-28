@@ -7,7 +7,7 @@ import com.fix3dll.skyblockaddons.gui.screens.ColorSelectionGui;
 import com.fix3dll.skyblockaddons.gui.screens.LocationEditGui;
 import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -34,7 +34,7 @@ public class ButtonColorWheel extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         this.scale = feature.getGuiScale();
         this.isHovered = isMouseOver(mouseX, mouseY);
         int color = ARGB.white(this.isHovered ? 1F : 0.5F);
@@ -42,7 +42,7 @@ public class ButtonColorWheel extends ButtonFeature {
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
         poseStack.scale(scale, scale);
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(COLOR_WHEEL), graphics.pose(), colorWheelX, colorWheelY, 0, 0, 10, 10, 10, 10, color, graphics.scissorStack.peek())
         );
         poseStack.popMatrix();

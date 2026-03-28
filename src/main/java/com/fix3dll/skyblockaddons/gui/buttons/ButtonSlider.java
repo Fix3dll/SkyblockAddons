@@ -2,7 +2,7 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.utils.MathUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -37,19 +37,19 @@ public class ButtonSlider extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isHovered(mouseX, mouseY);
         int boxAlpha = this.isHovered ? 170 : 100;
         graphics.fill(getX(), getY(), getX() + width, getY() + height, main.getUtils().getDefaultColor(boxAlpha));
         this.onDrag(graphics, mouseX, mouseY);
-        renderScrollingStringOverContents(
-                graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE),
+        extractScrollingStringOverContents(
+                graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE),
                 this.message,
                 2
         );
     }
 
-    protected void onDrag(GuiGraphics graphics, double mouseX, double mouseY) {
+    protected void onDrag(GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         if (this.visible) {
             double doubleMouseX = MC.mouseHandler.getScaledXPos(MC.getWindow());
 

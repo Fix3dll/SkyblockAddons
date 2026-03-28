@@ -23,9 +23,9 @@ public class BaitManager {
     public static final Map<ItemStack, Integer> DUMMY_BAITS = new HashMap<>();
 
     static {
-        DUMMY_BAITS.put(ItemUtils.getTexturedHead("CARROT_BAIT"), 1);
-        DUMMY_BAITS.put(ItemUtils.getTexturedHead("MINNOW_BAIT"), 2);
-        DUMMY_BAITS.put(ItemUtils.getTexturedHead("WHALE_BAIT"), 3);
+        DUMMY_BAITS.put(ItemUtils.getTexturedHeadItem("CARROT_BAIT"), 1);
+        DUMMY_BAITS.put(ItemUtils.getTexturedHeadItem("MINNOW_BAIT"), 2);
+        DUMMY_BAITS.put(ItemUtils.getTexturedHeadItem("WHALE_BAIT"), 3);
     }
 
     /** A map of all baits in the inventory and their count */
@@ -41,7 +41,7 @@ public class BaitManager {
             String skyblockID = ItemUtils.getSkyblockItemID(itemStack);
             if (!StringUtil.isNullOrEmpty(skyblockID) && (skyblockID.endsWith("_BAIT")
                     || skyblockID.startsWith("OBFUSCATED_FISH_1") || skyblockID.startsWith("OBFUSCATED_FISH_2"))) {
-                ItemStack bait = ItemUtils.getTexturedHead(skyblockID);
+                ItemStack bait = ItemUtils.getTexturedHeadItem(skyblockID);
                 if (bait.getItem() == Items.BARRIER) continue;
                 baitsInInventory.put(bait, baitsInInventory.getOrDefault(bait, 0) + itemStack.getCount());
             }

@@ -1,7 +1,6 @@
 package com.fix3dll.skyblockaddons.config;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
@@ -88,7 +87,6 @@ public class PersistentValuesManager {
             saveValues();
         }
         FetchurManager.getInstance().postPersistentConfigLoad(persistentValues.lastTimeFetchur);
-        SkyblockEquipment.loadEquipments(SkyblockEquipment.Type.MAIN);
     }
 
     /**

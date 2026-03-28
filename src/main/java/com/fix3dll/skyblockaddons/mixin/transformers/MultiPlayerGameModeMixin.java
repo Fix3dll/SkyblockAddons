@@ -4,7 +4,7 @@ import com.fix3dll.skyblockaddons.mixin.hooks.MultiPlayerGameModeHook;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,9 +20,9 @@ public class MultiPlayerGameModeMixin {
         MultiPlayerGameModeHook.onDestroyBlock(pos);
     }
 
-    @Inject(method = "handleInventoryMouseClick", at = @At("HEAD"), cancellable = true)
-    public void sba$handleInventoryMouseClick(int containerId, int slotId, int mouseButton, ClickType clickType, Player player, CallbackInfo ci) {
-        MultiPlayerGameModeHook.handleInventoryMouseClick(slotId, mouseButton, clickType, player, ci);
+    @Inject(method = "handleContainerInput", at = @At("HEAD"), cancellable = true)
+    public void sba$handleContainerInput(int containerId, int slotNum, int buttonNum, ContainerInput containerInput, Player player, CallbackInfo ci) {
+        MultiPlayerGameModeHook.handleContainerInput(slotNum, buttonNum, containerInput, player, ci);
     }
 
     @Inject(method = "stopDestroyBlock", at = @At("HEAD"))

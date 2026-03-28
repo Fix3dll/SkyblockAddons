@@ -6,11 +6,11 @@ import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 
 public class ChestSpecialRendererHook {
 
-    public static final Material BLANK_ENDER_CHEST_MATERIAL = Sheets.CHEST_MAPPER.apply(
+    public static final SpriteId BLANK_ENDER_CHEST_MATERIAL = Sheets.CHEST_MAPPER.apply(
             SkyblockAddons.identifier("blankenderchest")
     );
 

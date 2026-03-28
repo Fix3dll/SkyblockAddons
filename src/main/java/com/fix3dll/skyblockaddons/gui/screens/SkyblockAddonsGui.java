@@ -25,7 +25,7 @@ import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -209,7 +209,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (reInit) {
             reInit = false;
             cancelClose = true;
@@ -226,9 +226,9 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         if (alpha < 4) alpha = 4; // Text under 4 alpha appear 100% transparent for some reason o.O
         drawDefaultTitleText(graphics, mouseX, mouseY, partialTick, this, alpha * 2);
 
-        featureSearchBar.render(graphics, mouseX, mouseY, partialTick);
+        featureSearchBar.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
-        super.render(graphics, mouseX, mouseY, partialTick); // Draw buttons.
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick); // Draw buttons.
 
         // Warning for trying to open "Edit GUI Locations" menu from outside
         if (showWarning) {

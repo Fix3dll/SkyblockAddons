@@ -1,7 +1,7 @@
 package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -30,8 +30,8 @@ public class ButtonInputFieldWrapper extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        editBox.renderWidget(graphics, mouseX, mouseY, partialTick);
+    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        editBox.extractWidgetRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override

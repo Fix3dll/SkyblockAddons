@@ -2,7 +2,6 @@ package com.fix3dll.skyblockaddons.events;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
-import com.fix3dll.skyblockaddons.mixin.hooks.LevelRendererHook;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -135,7 +134,7 @@ public class RenderEntityOutlineEvent {
         entities.forEach(e -> {
             if (e == null) return;
 
-            Frustum cullingFrustum = LevelRendererHook.getCullingFrustum();
+            Frustum cullingFrustum = Minecraft.getInstance().gameRenderer.getMainCamera().getCullFrustum();
             if (!cullingFrustum.isVisible(e.getBoundingBox())) return;
 
             if (!(e instanceof ArmorStand && e.isInvisible()) && !(e instanceof ItemFrame)) {

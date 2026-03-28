@@ -4,7 +4,7 @@ import java.text.ParseException
 
 plugins {
     java
-    id("fabric-loom") version ("1.15-SNAPSHOT")
+    id("net.fabricmc.fabric-loom") version ("1.15-SNAPSHOT")
     id("com.gradleup.shadow") version ("8.3.10")
     id("io.freefair.lombok") version ("9.2.0")
 }
@@ -85,11 +85,6 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-    maven("https://maven.parchmentmc.org") {
-        content {
-            includeGroupByRegex("org\\.parchmentmc.*")
-        }
-    }
     maven("https://maven.terraformersmc.com/") {
         content {
             includeGroup("com.terraformersmc")
@@ -104,32 +99,26 @@ repositories {
 }
 
 val bundle : Configuration by configurations.creating {
-    configurations.modImplementation.get().extendsFrom(this)
+    configurations.implementation.get().extendsFrom(this)
 }
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
-    mappings(loom.layered {
-        officialMojangMappings()
-        if (properties["parchment_version"] != null) {
-            parchment("org.parchmentmc.data:parchment-${properties["minecraft_version"]}:${properties["parchment_version"]}@zip")
-        }
-    })
-    modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
+    implementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
-    modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
+    implementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
     // REI compat
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${properties["rei_version"]}") {
+    compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${properties["rei_version"]}") {
         exclude("net.fabricmc.fabric-api")
     }
 
-    modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
-    implementation("net.hypixel:mod-api:1.0.1")
-    modImplementation("maven.modrinth:hypixel-mod-api:1.0.1+build.1+mc1.21")
+    runtimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
+    implementation("net.hypixel:mod-api:1.0.2")
+    implementation("maven.modrinth:hypixel-mod-api:1.0.2+build.1+mc26.1")
     //bundle("moe.nea:libautoupdate:1.3.1")
     bundle("com.github.nea89o:libautoupdate:841d9f7e78")
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
@@ -152,8 +141,7 @@ tasks.withType(JavaCompile::class).configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.remapJar {
-    input = tasks.shadowJar.get().archiveFile
+tasks.jar {
     archiveFileName = "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar"
 }
 
@@ -166,7 +154,10 @@ tasks.processResources {
         expand(mapOf(
             "version" to ext.get("formattedVersion"),
             "sbaJarName" to "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar",
-            "sbaBuildNumber" to project.property("buildNumber")
+            "sbaBuildNumber" to project.property("buildNumber"),
+            "loader_version" to project.property("loader_version"),
+            "minecraft_version" to project.property("minecraft_version"),
+            "fabric_version" to project.property("fabric_version")
         ))
     }
 }
@@ -184,7 +175,7 @@ tasks.register("copyLicenses", Copy::class) {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(21)
+    options.release.set(25)
 }
 
 tasks.jar {
@@ -213,4 +204,4 @@ tasks.test {
     }
 }
 
-tasks.assemble.get().dependsOn(tasks.remapJar)
+tasks.assemble.get().dependsOn(tasks.jar)

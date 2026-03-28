@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -28,14 +28,14 @@ public class MultiPlayerGameModeHook {
     /**
      * Checks if an item is being dropped and if an item is being dropped, whether it is allowed to be dropped.
      * This check works only for mouse clicks, not presses of the "Drop Item" key.
-     * @param clickType the click modifier
+     * @param containerInput the click modifier
      * @param slotNum the number of the slot that was clicked on
      * @param heldStack the item stack the player is holding with their mouse
      * @return {@code true} if the action should be cancelled, {@code false} otherwise
      */
-    public static boolean checkItemDrop(ClickType clickType, int slotNum, ItemStack heldStack) {
+    public static boolean checkItemDrop(ContainerInput containerInput, int slotNum, ItemStack heldStack) {
         // Is this a left or right click?
-        if ((clickType == ClickType.PICKUP || clickType == ClickType.QUICK_MOVE)) {
+        if ((containerInput == ContainerInput.PICKUP || containerInput == ContainerInput.QUICK_MOVE)) {
             // Is the player clicking outside their inventory?
             if (slotNum == -999) {
                 // Is the player holding an item stack with their mouse?
@@ -67,9 +67,9 @@ public class MultiPlayerGameModeHook {
     /**
      * Cancels clicking a locked inventory slot, even from other mods
      */
-    public static void handleInventoryMouseClick(int slotId, int mouseButton, ClickType clickType, Player player, CallbackInfo ci) {
+    public static void handleContainerInput(int slotNum, int buttonNum, ContainerInput containerInput, Player player, CallbackInfo ci) {
         //if (Minecraft.getMinecraft().thePlayer.openContainer != null) {
-        //    SkyblockAddons.getLogger().info("Handling windowclick--slotnum: " + slotNum + " should be locked: " + SkyblockAddons.getInstance().getConfigValues().getLockedSlots().contains(slotNum) + " mousebutton: " + mouseButtonClicked + " mode: " + mode + " container class: " + player.openContainer.getClass().toString());
+        //    SkyblockAddons.getLogger().info("Handling windowclick--slotnum: " + slotId + " should be locked: " + SkyblockAddons.getInstance().getConfigValues().getLockedSlots().contains(slotId) + " mousebutton: " + mouseButtonClicked + " mode: " + mode + " container class: " + player.openContainer.getClass().toString());
         //}
 
         // Handle blocking the next click, sorry I did it this way
@@ -80,33 +80,33 @@ public class MultiPlayerGameModeHook {
         }
 
         ItemStack itemStack = player.inventoryMenu.getCarried();
-        int slotNum = slotId;
+        int slotId = slotNum;
 
         if (main.getUtils().isOnSkyblock()) {
             // Prevent dropping rare items
             if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()) {
-                if (checkItemDrop(clickType, slotId, itemStack)) {
+                if (checkItemDrop(containerInput, slotNum, itemStack)) {
                     ci.cancel();
                     return;
                 }
             }
 
             if (player.containerMenu != null) {
-                slotId += main.getInventoryUtils().getSlotDifference(player.containerMenu);
+                slotNum += main.getInventoryUtils().getSlotDifference(player.containerMenu);
 
                 final AbstractContainerMenu slots = player.containerMenu;
 
                 Slot slotIn;
                 try {
-                    slotIn = slotNum == -999 ? null : slots.getSlot(slotNum);
+                    slotIn = slotId == -999 ? null : slots.getSlot(slotId);
                 } catch (IndexOutOfBoundsException e) {
                     slotIn = null;
                 }
 
                 // Prevent clicking on locked slots.
-                if (Feature.LOCK_SLOTS.isEnabled() && main.getPersistentValuesManager().getLockedSlots().contains(slotId)
-                        && (slotId >= 9 || player.containerMenu instanceof InventoryMenu && slotId >= 5)) {
-                    if (mouseButton == 1 && clickType == ClickType.PICKUP && slotIn != null && slotIn.hasItem() && slotIn.getItem().getItem() == Items.PLAYER_HEAD) {
+                if (Feature.LOCK_SLOTS.isEnabled() && main.getPersistentValuesManager().getLockedSlots().contains(slotNum)
+                        && (slotNum >= 9 || player.containerMenu instanceof InventoryMenu && slotNum >= 5)) {
+                    if (buttonNum == 1 && containerInput == ContainerInput.PICKUP && slotIn != null && slotIn.hasItem() && slotIn.getItem().getItem() == Items.PLAYER_HEAD) {
 
                         String itemID = ItemUtils.getSkyblockItemID(slotIn.getItem());
                         if (itemID == null) itemID = "";
@@ -122,7 +122,7 @@ public class MultiPlayerGameModeHook {
                 }
             }
         } else {
-            if (checkItemDrop(clickType, slotId, itemStack)) {
+            if (checkItemDrop(containerInput, slotNum, itemStack)) {
                 ci.cancel();
             }
         }

@@ -15,7 +15,7 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.CharacterEvent;
@@ -208,7 +208,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Draw background and default text.
         drawGradientBackground(graphics, 128, 192);
         drawDefaultTitleText(graphics, mouseX, mouseY, partialTick, this, 255);
@@ -259,7 +259,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
                     drawScaledString(graphics, this, Translations.getMessage("settings.chromaFadeWidth"), 170 + 35 + 25, defaultBlue, 1F, 110);
                 } else {
                     drawScaledString(graphics, this, Translations.getMessage("messages.setHexColor"), 200, defaultBlue, 1.5F, 75);
-                    hexColorField.renderWidget(graphics, mouseX, mouseY, partialTick);
+                    hexColorField.extractRenderState(graphics, mouseX, mouseY, partialTick);
                     int hcfX = hexColorField.getX();
                     int hcfY = hexColorField.getY();
                     hexColorFieldHovered = mouseX >= hcfX && mouseX < hcfX + hexColorField.getWidth()
@@ -268,7 +268,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
             }
         }
 
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override

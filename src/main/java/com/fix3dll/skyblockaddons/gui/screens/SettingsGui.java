@@ -23,7 +23,7 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -181,7 +181,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (reInit) {
             reInit = false;
             init();
@@ -233,7 +233,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
             }
         }
 
-        scrollIgnoredButtons.forEach(renderable -> renderable.render(graphics, mouseX, mouseY, partialTick));
+        scrollIgnoredButtons.forEach(renderable -> renderable.extractRenderState(graphics, mouseX, mouseY, partialTick));
     }
 
     /**
@@ -241,7 +241,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
      * Also caches the computed thumb bounds into {@link #cachedTrackX}, {@link #cachedTrackHeight},
      * {@link #cachedThumbY}, and {@link #cachedThumbHeight} for use in mouse hit-testing.
      */
-    private void drawScrollbar(GuiGraphics graphics) {
+    private void drawScrollbar(GuiGraphicsExtractor graphics) {
         int boxX = width / 2 - BOX_HALF_EXTENT;
         int trackX = boxX + BOX_TOTAL_WIDTH - SCROLLBAR_WIDTH - SCROLLBAR_PADDING;
         int trackY = BOX_Y + SCROLLBAR_PADDING;
@@ -604,17 +604,17 @@ public class SettingsGui extends SkyblockAddonsScreen {
         addRenderableWidget(button);
     }
 
-    protected void drawSettingsScreen(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void drawSettingsScreen(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (this.firstDraw) {
             sortButtonList();
             this.firstDraw = false;
         }
 
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        this.extractBackground(graphics, mouseX, mouseY, partialTick);
 
         for (Renderable renderable : this.renderables) {
             if (!scrollIgnoredButtons.contains(renderable)) {
-                renderable.render(graphics, mouseX, mouseY, partialTick);
+                renderable.extractRenderState(graphics, mouseX, mouseY, partialTick);
             }
         }
     }

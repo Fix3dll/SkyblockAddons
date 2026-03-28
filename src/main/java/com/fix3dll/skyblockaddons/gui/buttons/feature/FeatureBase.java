@@ -9,7 +9,7 @@ import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
@@ -53,7 +53,7 @@ public class FeatureBase extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         float alphaMultiplier = calculateAlphaMultiplier();
         int alpha = alphaMultiplier == 1F ? 255 : (int) (255 * alphaMultiplier);
         if (alpha < 4) alpha = 4;
@@ -112,7 +112,7 @@ public class FeatureBase extends ButtonFeature {
             if (creditFeature != null) offset -= 4;
             // If the scale is small gotta move it down a bit or else it's too mushed with the above line.
             offset += (10 - 10 * scale);
-            graphics.drawCenteredString(MC.font, line, (int) (textX / scale), (int) ((textY / scale) + offset), fontColor);
+            graphics.centeredText(MC.font, line, (int) (textX / scale), (int) ((textY / scale) + offset), fontColor);
             poseStack.popMatrix();
 
             // If it's not the last line, add to the Y.
@@ -132,7 +132,7 @@ public class FeatureBase extends ButtonFeature {
 
             poseStack.pushMatrix();
             poseStack.scale(scale, scale);
-            graphics.drawCenteredString(MC.font, creditFeature.getAuthor(), (int) (textX / scale), (int) creditsY, fontColor);
+            graphics.centeredText(MC.font, creditFeature.getAuthor(), (int) (textX / scale), (int) creditsY, fontColor);
             poseStack.popMatrix();
         }
 
@@ -150,7 +150,7 @@ public class FeatureBase extends ButtonFeature {
         }
 
         if (feature.isRemoteDisabled()) {
-            graphics.drawCenteredString(
+            graphics.centeredText(
                     MC.font,
                     Translations.getMessage("messages.featureDisabled"),
                     textX,

@@ -6,7 +6,7 @@ import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.GUIType;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.GuiTab;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -28,7 +28,7 @@ public class ButtonSettings extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Alpha multiplier is from 0 to 1, multiplying it creates the fade effect.
         float alphaMultiplier = calculateAlphaMultiplier();
         int color = ARGB.white(this.isHovered ? 1F : alphaMultiplier * 0.7F);

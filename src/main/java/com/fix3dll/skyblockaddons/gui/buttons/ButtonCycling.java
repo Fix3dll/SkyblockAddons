@@ -4,7 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.gui.screens.SettingsGui;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -85,7 +85,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
     }
 
     @Override
-    protected void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int leftColor = main.getUtils().getDefaultColor(isOverLeftButton(mouseX, mouseY) ? 200 : 90);
         int rightColor = main.getUtils().getDefaultColor(isOverRightButton(mouseX, mouseY) ? 200 : 90);
 
@@ -103,7 +103,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
         graphics.fill(getX() + width - height, getY(), getX() + width, getY() + height, rightColor);
 
         // inside text
-        graphics.drawCenteredString(MC.font, trimmedName,  getX() + width / 2, getY() + height / 4, ColorCode.WHITE.getColor());
+        graphics.centeredText(MC.font, trimmedName,  getX() + width / 2, getY() + height / 4, ColorCode.WHITE.getColor());
 
         // Arrow buttons are square so width = height
         //noinspection SuspiciousNameCombination
@@ -120,7 +120,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
         // description
         if (description != null) {
             if (isSettingsGui) {
-               graphics.drawCenteredString(MC.font, description, getX() + width / 2, getY() + height + 2, ColorCode.GRAY.getColor());
+               graphics.centeredText(MC.font, description, getX() + width / 2, getY() + height + 2, ColorCode.GRAY.getColor());
             } else if (isOverText(mouseX, mouseY)) {
                 graphics.setTooltipForNextFrame(MC.font, Component.literal(description), mouseX, mouseY);
             }

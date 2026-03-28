@@ -4,7 +4,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
 import lombok.Getter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -34,7 +34,7 @@ public class ButtonLocation extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // If the feature is disabled, don't draw in the "Edit GUI Location" section
         if (feature.isDisabled()) {
             return;
@@ -51,11 +51,11 @@ public class ButtonLocation extends ButtonFeature {
     /**
      * This just updates the hovered status and draws the box around each feature. To avoid repetitive code.
      */
-    public void checkHoveredAndDrawBox(GuiGraphics graphics, float boxXOne, float boxXTwo, float boxYOne, float boxYTwo, float scale) {
+    public void checkHoveredAndDrawBox(GuiGraphicsExtractor graphics, float boxXOne, float boxXTwo, float boxYOne, float boxYTwo, float scale) {
         checkHoveredAndDrawBox(graphics, boxXOne, boxXTwo, boxYOne, boxYTwo, scale, 1F, 1F);
     }
 
-    public void checkHoveredAndDrawBox(GuiGraphics graphics, float boxXOne, float boxXTwo, float boxYOne, float boxYTwo, float scale, float scaleX, float scaleY) {
+    public void checkHoveredAndDrawBox(GuiGraphicsExtractor graphics, float boxXOne, float boxXTwo, float boxYOne, float boxYTwo, float scale, float scaleX, float scaleY) {
         double doubleMouseX = MC.mouseHandler.getScaledXPos(MC.getWindow());
         double doubleMouseY = MC.mouseHandler.getScaledYPos(MC.getWindow());
 
@@ -69,7 +69,7 @@ public class ButtonLocation extends ButtonFeature {
         this.isHovered = isMouseOver(doubleMouseX, doubleMouseY);
         int boxAlpha = this.isHovered ? 120 : 70;
         int boxColor = ColorCode.GRAY.getColor(boxAlpha);
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), boxXOne, boxYOne, boxXTwo, boxYTwo, boxColor, graphics.scissorStack.peek())
         );
     }

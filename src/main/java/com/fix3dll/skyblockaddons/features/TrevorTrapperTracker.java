@@ -21,15 +21,15 @@ import lombok.Getter;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -82,7 +82,7 @@ public class TrevorTrapperTracker {
      * @param scale          the button scale
      * @param buttonLocation the button location in gui location menu
      */
-    public static void drawTrackerLocationIndicator(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public static void drawTrackerLocationIndicator(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         Feature feature = Feature.TREVOR_THE_TRAPPER_FEATURES;
         if ((feature.isEnabled(FeatureSetting.TREVOR_TRACKED_ENTITY_PROXIMITY_INDICATOR)
                 && main.getUtils().isTrackingAnimal()) || buttonLocation != null) {
@@ -124,7 +124,7 @@ public class TrevorTrapperTracker {
             // Draw the indicator
             for (int tickers = 0; tickers < maxTickers; tickers++) {
                 float uOffset= tickers < fullTickers ? 0 : 9;
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + tickers * 11, y, uOffset, 0, 9, 9, 18, 9, -1, graphics.scissorStack.peek())
                 );
             }
@@ -250,7 +250,7 @@ public class TrevorTrapperTracker {
 
                 poseStack.pushPose();
                 poseStack.scale(distanceScale, distanceScale, distanceScale);
-                nodeCollector.submitNameTag(poseStack, vec3, 0, nameTag, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                nodeCollector.submitNameTag(poseStack, vec3, 0, nameTag, true, LightCoordsUtil.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                 poseStack.popPose();
                 return true;
             }
@@ -265,7 +265,7 @@ public class TrevorTrapperTracker {
                 ));
                 poseStack.pushPose();
                 poseStack.translate(0.0F, 9.0F * 1.15F * 0.025F, 0.0F);
-                nodeCollector.submitNameTag(poseStack, vec3, 0, title, true, LightTexture.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                nodeCollector.submitNameTag(poseStack, vec3, 0, title, true, LightCoordsUtil.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
                 poseStack.popPose();
             }
         }

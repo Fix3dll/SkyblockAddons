@@ -9,7 +9,7 @@ import com.fix3dll.skyblockaddons.mixin.hooks.GuiHook;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.inventory.EffectsInInventory;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -37,13 +37,13 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         super(menu, recipeBookComponent, playerInventory, title);
     }
 
-    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;render(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
-    public boolean sba$renderEffects(EffectsInInventory instance, GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    @WrapWithCondition(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V"))
+    public boolean sba$renderEffects(EffectsInInventory instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         return GuiHook.renderEffectsHud;
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
-    public void sba$renderEquipmentsInInventory(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("RETURN"))
+    public void sba$renderEquipmentsInInventory(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         // Draw items for Feature.EQUIPMENTS_IN_INVENTORY
         if (SkyblockEquipment.equipmentsInInventory()) {
             for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
@@ -53,8 +53,8 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         ContainerPreviewManager.drawContainerPreviews(graphics, this, mouseX, mouseY);
     }
 
-    @Inject(method = "renderBg", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V", shift = At.Shift.AFTER))
-    public void sba$renderEqs(GuiGraphics graphics, float partialTick, int mouseX, int mouseY, CallbackInfo ci) {
+    @Inject(method = "extractBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V", shift = At.Shift.AFTER))
+    public void sba$renderEqs(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         if (SkyblockEquipment.equipmentsInInventory()) {
             Feature feature = Feature.EQUIPMENTS_IN_INVENTORY;
             RenderPipeline pipeline = feature.isChroma() ? DrawUtils.CHROMA_TEXT : RenderPipelines.GUI_TEXTURED;

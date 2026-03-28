@@ -12,7 +12,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,13 +26,13 @@ public class GuiMixin {
 
     @Shadow @Final private Minecraft minecraft;
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHotbarAndDecorations(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.AFTER))
-    public void sba$onRenderHud_renderListener(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractHotbarAndDecorations(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.AFTER))
+    public void sba$onRenderHud_renderListener(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         SkyblockAddons.getInstance().getRenderListener().onRenderHud(guiGraphics, deltaTracker);
     }
 
-    @Inject(method = "renderTabList", at = @At("HEAD"), cancellable = true)
-    public void sba$renderTabList(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(method = "extractTabList", at = @At("HEAD"), cancellable = true)
+    public void sba$renderTabList(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if (GuiHook.isOnSkyblock() && Feature.COMPACT_TAB_LIST.isEnabled()) {
             if (TabListParser.getRenderColumns() != null && this.minecraft.options.keyPlayerList.isDown()) {
                 ci.cancel();
@@ -41,8 +41,8 @@ public class GuiMixin {
         }
     }
 
-    @Inject(method = "renderHearts", at = @At("HEAD"), cancellable = true)
-    public void sba$renderHearts(GuiGraphics guiGraphics, Player player, int x, int y, int height, int offsetHeartIndex, float maxHealth, int currentHealth, int displayHealth, int absorptionAmount, boolean renderHighlight, CallbackInfo ci) {
+    @Inject(method = "extractHearts", at = @At("HEAD"), cancellable = true)
+    public void sba$renderHearts(GuiGraphicsExtractor guiGraphics, Player player, int x, int y, int height, int offsetHeartIndex, float maxHealth, int currentHealth, int displayHealth, int absorptionAmount, boolean renderHighlight, CallbackInfo ci) {
         GuiHook.renderHearts = !GuiHook.isOnSkyblock() || GuiHook.isHideOnlyOutsideRiftEnabled();
 
         if (!GuiHook.renderHearts) {
@@ -50,8 +50,8 @@ public class GuiMixin {
         }
     }
 
-    @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
-    private static void sba$renderArmor(GuiGraphics guiGraphics, Player player, int y, int heartRows, int height, int x, CallbackInfo ci) {
+    @Inject(method = "extractArmor", at = @At("HEAD"), cancellable = true)
+    private static void sba$renderArmor(GuiGraphicsExtractor guiGraphics, Player player, int y, int heartRows, int height, int x, CallbackInfo ci) {
         GuiHook.renderArmor = !GuiHook.isOnSkyblock() || Feature.HIDE_FOOD_ARMOR_BAR.isDisabled();
 
         if (!GuiHook.renderArmor) {
@@ -59,8 +59,8 @@ public class GuiMixin {
         }
     }
 
-    @Inject(method = "renderFood", at = @At("HEAD"), cancellable = true)
-    public void sba$renderFood(GuiGraphics guiGraphics, Player player, int y, int x, CallbackInfo ci) {
+    @Inject(method = "extractFood", at = @At("HEAD"), cancellable = true)
+    public void sba$renderFood(GuiGraphicsExtractor guiGraphics, Player player, int y, int x, CallbackInfo ci) {
         GuiHook.renderFood = !GuiHook.isOnSkyblock() || Feature.HIDE_FOOD_ARMOR_BAR.isDisabled();
 
         if (!GuiHook.renderFood) {
@@ -68,8 +68,8 @@ public class GuiMixin {
         }
     }
 
-    @Inject(method = "renderVehicleHealth", at = @At("HEAD"), cancellable = true)
-    public void sba$renderVehicleHealth(GuiGraphics guiGraphics, CallbackInfo ci) {
+    @Inject(method = "extractVehicleHealth", at = @At("HEAD"), cancellable = true)
+    public void sba$renderVehicleHealth(GuiGraphicsExtractor guiGraphics, CallbackInfo ci) {
         GuiHook.renderVehicleHealth = !GuiHook.isOnSkyblock() || Feature.HIDE_PET_HEALTH_BAR.isDisabled();
 
         if (!GuiHook.renderVehicleHealth) {
@@ -77,8 +77,8 @@ public class GuiMixin {
         }
     }
 
-    @Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
-    public void sba$renderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(method = "extractEffects", at = @At("HEAD"), cancellable = true)
+    public void sba$renderEffects(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         GuiHook.renderEffectsHud = !GuiHook.isOnSkyblock() || Feature.HIDE_EFFECTS_HUD.isDisabled();
 
         if (!GuiHook.renderEffectsHud) {
@@ -86,8 +86,8 @@ public class GuiMixin {
         }
     }
 
-    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderExperienceLevel(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;I)V"))
-    public void sba$expBarLevelChromaFix(GuiGraphics graphics, Font font, int level, Operation<Void> original) {
+    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;extractExperienceLevel(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Font;I)V"))
+    public void sba$expBarLevelChromaFix(GuiGraphicsExtractor graphics, Font font, int level, Operation<Void> original) {
         FontHook.setHaltChroma(true);
         original.call(graphics, font, level);
         FontHook.setHaltChroma(false);

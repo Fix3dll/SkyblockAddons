@@ -3,8 +3,8 @@ package com.fix3dll.skyblockaddons.features.tablist;
 import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.locale.Language;
@@ -22,7 +22,7 @@ public class TabListRenderer {
     private static final int PADDING = 3;
     private static final int COLUMN_SPACING = 6;
 
-    public static void render(GuiGraphics graphics) {
+    public static void render(GuiGraphicsExtractor graphics) {
         Minecraft mc = Minecraft.getInstance();
 
         List<RenderColumn> columns = TabListParser.getRenderColumns().combinedRenderColumns();
@@ -76,7 +76,7 @@ public class TabListRenderer {
         if (header != null) {
             for (String line : header) {
                 FormattedCharSequence lineFcs = Language.getInstance().getVisualOrder(FormattedText.of(line));
-                graphics.guiRenderState.submitText(
+                graphics.guiRenderState.addText(
                         new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, headerY, -1, 0, true, false, graphics.scissorStack.peek())
                 );
                 headerY += 8 + 1;
@@ -104,18 +104,18 @@ public class TabListRenderer {
                 if (tabLine.type() == TabStringType.PLAYER) {
                     if (tabLine.vanillaIndex() != -1 && tabLine.vanillaIndex() < playerInfos.size()) {
                         PlayerInfo playerInfo = playerInfos.get(tabLine.vanillaIndex());
-                        PlayerFaceRenderer.draw(graphics, playerInfo.getSkin(), middleX, middleY, 8);
+                        PlayerFaceExtractor.extractRenderState(graphics, playerInfo.getSkin(), middleX, middleY, 8);
                     }
                     middleX += 8 + 2;
                 }
 
                 FormattedCharSequence tabLineTextFcs = Language.getInstance().getVisualOrder(FormattedText.of(tabLine.text()));
                 if (tabLine.type() == TabStringType.TITLE) {
-                    graphics.guiRenderState.submitText(
+                    graphics.guiRenderState.addText(
                             new SbaTextRenderState(tabLineTextFcs, graphics.pose(), (middleX + renderColumn.getMaxWidth() / 2F - tabLine.getWidth() / 2F), middleY, -1, 0, true, false, graphics.scissorStack.peek())
                     );
                 } else {
-                    graphics.guiRenderState.submitText(
+                    graphics.guiRenderState.addText(
                             new SbaTextRenderState(tabLineTextFcs, graphics.pose(), middleX, middleY, -1, 0, true, false, graphics.scissorStack.peek())
                     );
                 }
@@ -131,7 +131,7 @@ public class TabListRenderer {
             int footerY = y + totalHeight - footer.size() * LINE_HEIGHT;
             for (String line : footer) {
                 FormattedCharSequence lineFcs = Language.getInstance().getVisualOrder(FormattedText.of(line));
-                graphics.guiRenderState.submitText(
+                graphics.guiRenderState.addText(
                         new SbaTextRenderState(lineFcs, graphics.pose(), x + totalWidth / 2F - mc.font.width(line) / 2F, footerY, -1, 0, true, false, graphics.scissorStack.peek())
                 );
                 footerY += LINE_HEIGHT;

@@ -1,15 +1,16 @@
 package com.fix3dll.skyblockaddons.mixin.hooks;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Island;
-import com.fix3dll.skyblockaddons.utils.NPCUtils;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.JerryPresent;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -17,7 +18,11 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
+
+import java.util.Objects;
 
 public class EntityRendererHook {
 
@@ -25,7 +30,8 @@ public class EntityRendererHook {
     private static final Minecraft MC = Minecraft.getInstance();
 
     private static final int HIDE_RADIUS_SQUARED = 7 * 7;
-    private static final String HAUNTED_SKULL_TEXTURE = ItemUtils.getSkullTexture(ItemUtils.getTexturedHead("HAUNTED_SKULL"));
+    private static final ResolvableProfile HAUNTED_SKULL_TEXTURE = ItemUtils.getTexturedHead("HAUNTED_SKULL")
+            .getItemStackTemplate().get(DataComponents.PROFILE);
 
     public static boolean shouldRender(Entity entityIn) {
         if (main.getUtils().isOnSkyblock()) {
@@ -40,9 +46,10 @@ public class EntityRendererHook {
             }
             if (Feature.HIDE_HAUNTED_SKULLS.isEnabled() && main.getUtils().isInDungeon()) {
                 if (entityIn instanceof ArmorStand armorStand && armorStand.isInvisible()) {
-                    String skullID = ItemUtils.getSkullTexture(armorStand.getItemBySlot(EquipmentSlot.HEAD));
-                    if (HAUNTED_SKULL_TEXTURE.equals(skullID)) {
-                        return false;
+                    ItemStack helmet = armorStand.getItemBySlot(EquipmentSlot.HEAD);
+                    if (helmet != ItemStack.EMPTY) {
+                        ResolvableProfile helmetProfile = helmet.get(DataComponents.PROFILE);
+                        return !Objects.equals(helmetProfile, HAUNTED_SKULL_TEXTURE);
                     }
                 }
             }

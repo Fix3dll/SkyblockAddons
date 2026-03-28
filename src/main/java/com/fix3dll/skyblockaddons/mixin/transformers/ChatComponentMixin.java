@@ -3,10 +3,10 @@ package com.fix3dll.skyblockaddons.mixin.transformers;
 import com.fix3dll.skyblockaddons.mixin.extensions.ChatComponentExtension;
 import com.fix3dll.skyblockaddons.mixin.extensions.GuiMessageLineExtension;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import net.minecraft.client.GuiMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,13 +19,12 @@ import java.util.List;
 public abstract class ChatComponentMixin implements ChatComponentExtension {
 
     @Shadow public abstract boolean isChatFocused();
-    @Shadow protected abstract boolean isChatHidden();
     @Shadow protected abstract int getWidth();
     @Shadow protected abstract double getScale();
     @Shadow @Final public List<GuiMessage.Line> trimmedMessages;
     @Shadow public abstract int getLinesPerPage();
     @Shadow private int chatScrollbarPos;
-    @Shadow @Final Minecraft minecraft;
+    @Shadow @Final private Minecraft minecraft;
     @Shadow protected abstract int getLineHeight();
 
     @Override
@@ -34,7 +33,7 @@ public abstract class ChatComponentMixin implements ChatComponentExtension {
         double y = this.minecraft.getWindow().getGuiScaledHeight() - event.y() - 40.0;
         y /= (this.getScale() * this.getLineHeight());
 
-        if (this.isChatFocused() && !this.isChatHidden()) {
+        if (this.isChatFocused()) {
             if (!(x < -4.0) && !(x > Mth.floor(this.getWidth() / this.getScale()))) {
                 int i = Math.min(this.getLinesPerPage(), this.trimmedMessages.size());
                 if (y >= 0.0 && y < i) {

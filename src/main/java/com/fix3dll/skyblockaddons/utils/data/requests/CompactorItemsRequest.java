@@ -36,7 +36,7 @@ public class CompactorItemsRequest extends RemoteFileRequest<Map<String, Compact
         public void completed(Map<String, CompactorItem> result) {
             super.completed(result);
             Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR).forEach((skyblockId, compactorItem) ->
-                    ItemUtils.setItemStackSkyblockID(compactorItem.getItemStack(), skyblockId)
+                    compactorItem.setSkyblockId(skyblockId)
             );
             ItemUtils.setCompactorItems(Map.copyOf(result));
         }

@@ -23,7 +23,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.input.KeyEvent;
@@ -64,7 +64,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
     @Setter private boolean closing = false;
     private static boolean tipShown = false;
-    private GuiGraphics guiGraphics;
+    private GuiGraphicsExtractor guiGraphicsExtractor;
     private boolean isMiddlePressed = false;
 
     public LocationEditGui(int lastPage, EnumUtils.GuiTab lastTab) {
@@ -137,8 +137,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.guiGraphics = graphics;
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        this.guiGraphicsExtractor = graphics;
         Snap[] snaps = checkSnapping();
 
         onMouseMove(mouseX, mouseY, snaps);
@@ -159,11 +159,11 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             int color = lastHoveredFeature != null && lastHoveredFeature.getAnchorPoint() == anchorPoint
                     ? ColorCode.RED.getColor(127)
                     : ColorCode.YELLOW.getColor(127);
-            graphics.guiRenderState.submitGuiElement(
+            graphics.guiRenderState.addGuiElement(
                     new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), x -4, y - 4, x + 4, y + 4, color, graphics.scissorStack.peek())
             );
         }
-        super.render(graphics, mouseX, mouseY, partialTick); // Draw buttons.
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick); // Draw buttons.
 
         if (snaps != null) {
             for (Snap snap : snaps) {
@@ -190,7 +190,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     } else {
                         color = 0xFFFF0000;
                     }
-                    graphics.guiRenderState.submitGuiElement(
+                    graphics.guiRenderState.addGuiElement(
                             new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), left, top, right, bottom, color, graphics.scissorStack.peek())
                     );
                 }
@@ -415,9 +415,9 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
                             if (thisSnap.getHeight() < SNAPPING_RADIUS) {
                                 if (horizontalSnap == null || thisSnap.getHeight() < horizontalSnap.getHeight()) {
-                                    if (Feature.DEVELOPER_MODE.isEnabled() && guiGraphics != null) {
-                                        guiGraphics.guiRenderState.submitGuiElement(
-                                                new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), guiGraphics.pose(), snapX - 0.5F, 0, snapX + 0.5F, MC.getWindow().getHeight(), 0xFF0000FF, guiGraphics.scissorStack.peek())
+                                    if (Feature.DEVELOPER_MODE.isEnabled() && guiGraphicsExtractor != null) {
+                                        guiGraphicsExtractor.guiRenderState.addGuiElement(
+                                                new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), guiGraphicsExtractor.pose(), snapX - 0.5F, 0, snapX + 0.5F, MC.getWindow().getHeight(), 0xFF0000FF, guiGraphicsExtractor.scissorStack.peek())
                                         );
                                     }
                                     horizontalSnap = thisSnap;
@@ -449,9 +449,9 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
                             if (thisSnap.getWidth() < SNAPPING_RADIUS) {
                                 if (verticalSnap == null || thisSnap.getWidth() < verticalSnap.getWidth()) {
-                                    if (Feature.DEVELOPER_MODE.isEnabled() && guiGraphics != null) {
-                                        guiGraphics.guiRenderState.submitGuiElement(
-                                                new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), guiGraphics.pose(), 0, snapY - 0.5F, MC.getWindow().getWidth(), snapY + 0.5F, 0xFF0000FF, guiGraphics.scissorStack.peek())
+                                    if (Feature.DEVELOPER_MODE.isEnabled() && guiGraphicsExtractor != null) {
+                                        guiGraphicsExtractor.guiRenderState.addGuiElement(
+                                                new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), guiGraphicsExtractor.pose(), 0, snapY - 0.5F, MC.getWindow().getWidth(), snapY + 0.5F, 0xFF0000FF, guiGraphicsExtractor.scissorStack.peek())
                                         );
                                     }
                                     verticalSnap = thisSnap;
@@ -530,14 +530,14 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             if (editMode == EditMode.RESIZE_BARS) {
                 float scaleX = (floatMouseX - scaledMiddleX) / (xOffset - scaledMiddleX);
                 float scaleY = (floatMouseY - scaledMiddleY) / (yOffset - scaledMiddleY);
-                scaleX = Math.max(Math.min(scaleX, 5F), .25F);
-                scaleY = Math.max(Math.min(scaleY, 5F), .25F);
+                scaleX = Math.clamp(scaleX, .25F, 5F);
+                scaleY = Math.clamp(scaleY, .25F, 5F);
 
                 draggedFeature.getFeatureData().getBarSizes().setLeft(scaleX);
                 draggedFeature.getFeatureData().getBarSizes().setRight(scaleY);
 
-                if (this.guiGraphics != null) {
-                    buttonLocation.renderWidget(guiGraphics, mouseX, mouseY, 0);
+                if (this.guiGraphicsExtractor != null) {
+                    buttonLocation.extractWidgetRenderState(guiGraphicsExtractor, mouseX, mouseY, 0);
                 }
 
             } else if (editMode == EditMode.RESCALE_FEATURES) {
@@ -567,8 +567,8 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
                 if (Math.abs(newScale - oldScale) > 0.01F) {
                     draggedFeature.setGuiScale(newScale);
-                    if (this.guiGraphics != null) {
-                        buttonLocation.renderWidget(guiGraphics, mouseX, mouseY, 0);
+                    if (this.guiGraphicsExtractor != null) {
+                        buttonLocation.extractWidgetRenderState(guiGraphicsExtractor, mouseX, mouseY, 0);
                     }
                 }
             }
@@ -690,7 +690,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
         }
     }
 
-    private void drawFeatureCoords(GuiGraphics graphics, ButtonLocation lastHoveredButton) {
+    private void drawFeatureCoords(GuiGraphicsExtractor graphics, ButtonLocation lastHoveredButton) {
         if (editMode != EditMode.NONE) {
             final Window window = MC.getWindow();
             final double x = window.getGuiScaledWidth() / 2D;

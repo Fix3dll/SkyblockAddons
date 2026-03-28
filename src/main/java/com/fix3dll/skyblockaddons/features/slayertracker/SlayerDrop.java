@@ -2,13 +2,17 @@ package com.fix3dll.skyblockaddons.features.slayertracker;
 
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import org.jspecify.annotations.Nullable;
 
 import java.util.EnumMap;
 
@@ -126,16 +130,18 @@ public enum SlayerDrop {
 
     private final String skyblockID;
     private final SkyblockRarity rarity;
-    private final ItemStack itemStack;
     private String runeID;
     private String attributeNbtKey;
     private String attributeID;
+    @Getter(AccessLevel.NONE) private ItemStackTemplate itemStackTemplate;
+    @Getter(AccessLevel.NONE) private TexturedHead texturedHead;
+    @Getter(AccessLevel.NONE) private ItemStack itemStack;
 
     /**
      * Creates an enchanted book slayer drop with rarity, enchant nbt name and enchant level.
      */
     SlayerDrop(SkyblockRarity rarity, String enchantID, int enchantLevel) {
-        this.itemStack = ItemUtils.createEnchantedBook(rarity, enchantID, enchantLevel);
+        this.itemStackTemplate = ItemUtils.createEnchantedBookTemplate(rarity, enchantID, enchantLevel);
         this.skyblockID = "ENCHANTED_BOOK";
         this.rarity = rarity;
     }
@@ -151,16 +157,16 @@ public enum SlayerDrop {
      * Creates a slayer drop with an item, item meta, display name, skyblock id, item rarity and enchanted state
      */
     SlayerDrop(Item item, String name, String skyblockID, SkyblockRarity rarity, boolean enchanted) {
-        this.itemStack = ItemUtils.createItemStack(item, name, skyblockID, enchanted);
+        this.itemStackTemplate = ItemUtils.createItemTemplate(item, name, skyblockID, enchanted);
         this.skyblockID = skyblockID;
         this.rarity = rarity;
     }
 
     /**
-     * Creates a slayer drop with textured skull from {@link ItemUtils#getTexturedHead(String)} with skyblockId
+     * Creates a slayer drop with textured skull from {@link ItemUtils#getTexturedHeadItem(String)} with skyblockId
      */
     SlayerDrop(String skyblockID, SkyblockRarity rarity) {
-        this.itemStack = ItemUtils.getTexturedHead(skyblockID);
+        this.texturedHead = ItemUtils.getTexturedHead(skyblockID);
         this.skyblockID = skyblockID;
         this.rarity = rarity;
     }
@@ -169,7 +175,7 @@ public enum SlayerDrop {
      * Creates a rune slayer drop with identifier and runeId field
      */
     SlayerDrop(String identifier, String runeID, SkyblockRarity rarity) {
-        this.itemStack = ItemUtils.getTexturedHead(identifier);
+        this.texturedHead = ItemUtils.getTexturedHead(identifier);
         this.skyblockID = "RUNE";
         this.rarity = rarity;
         this.runeID = runeID;
@@ -179,11 +185,22 @@ public enum SlayerDrop {
      * Creates an attribute shard slayer drop with identifier, attributeNbtKey and attributeID field
      */
     SlayerDrop(String identifier, String attributeNbtKey, String attributeID, SkyblockRarity rarity) {
-        this.itemStack = ItemUtils.getTexturedHead(identifier);
+        this.texturedHead = ItemUtils.getTexturedHead(identifier);
         this.skyblockID = "ATTRIBUTE_SHARD";
         this.rarity = rarity;
         this.attributeNbtKey = attributeNbtKey;
         this.attributeID = attributeID;
+    }
+
+    @Nullable
+    public ItemStack getItemStack() {
+        if (texturedHead != null) {
+            return texturedHead.getItemStack();
+        }
+        if (itemStack == null && itemStackTemplate != null) {
+            return itemStack = itemStackTemplate.create();
+        }
+        return itemStack;
     }
 
     private static final EnumMap<SlayerDrop, Component> internalItemTranslations = new EnumMap<>(SlayerDrop.class);
@@ -301,8 +318,9 @@ public enum SlayerDrop {
         Component displayName = internalItemTranslations.get(this);
 
         if (displayName == null) {
-            if (this.itemStack != null && this.itemStack != ItemStack.EMPTY) {
-                Component nameComponent = this.itemStack.get(DataComponents.CUSTOM_NAME);
+            ItemStack itemStack = this.getItemStack();
+            if (itemStack != null && itemStack != ItemStack.EMPTY) {
+                Component nameComponent = itemStack.get(DataComponents.CUSTOM_NAME);
                 if (nameComponent != null) {
                     displayName = nameComponent;
                 }

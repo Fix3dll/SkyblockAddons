@@ -8,7 +8,7 @@ import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -50,12 +50,12 @@ public abstract class SkyblockAddonsScreen extends Screen {
     }
 
     @Override
-    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (firstDraw) {
             sortButtonList();
             firstDraw = false;
         }
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -64,7 +64,8 @@ public abstract class SkyblockAddonsScreen extends Screen {
         return super.mouseClicked(event, isDoubleClick);
     }
 
-    public void renderBackground(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    @Override
+    public void extractBackground(@NonNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
     /** Returns the last event listener that intersects with the mouse coordinates. */
@@ -89,11 +90,11 @@ public abstract class SkyblockAddonsScreen extends Screen {
         return 0.5F;
     }
 
-    protected void drawGradientBackground(GuiGraphics graphics, int alpha) {
+    protected void drawGradientBackground(GuiGraphicsExtractor graphics, int alpha) {
         drawGradientBackground(graphics, (int) (alpha * 0.5), alpha);
     }
 
-    protected void drawGradientBackground(GuiGraphics graphics, int startAlpha, int endAlpha) {
+    protected void drawGradientBackground(GuiGraphicsExtractor graphics, int startAlpha, int endAlpha) {
         int startColor = ARGB.color(startAlpha, 0, 0, 0);
         int endColor = ARGB.color(endAlpha, 0, 0, 0);
         graphics.fillGradient(0, 0, MC.getWindow().getWidth(), MC.getWindow().getHeight(), startColor, endColor);
@@ -103,7 +104,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
      * Draws the default text at the top at bottoms of the GUI.
      * @param screen The screen to draw the text on.
      */
-    protected void drawDefaultTitleText(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Screen screen, int alpha) {
+    protected void drawDefaultTitleText(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, Screen screen, int alpha) {
         int defaultBlue = ColorUtils.getDefaultBlue(alpha);
 
         int height = 85;
@@ -129,7 +130,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
                 buttonBanner = new ButtonBanner(this.width / 2.0F - ButtonBanner.WIDTH / 2.0F, 0);
             }
             buttonBanner.setX(this.width / 2 - ButtonBanner.WIDTH / 2);
-            buttonBanner.renderWidget(graphics, mouseX, mouseY, partialTick);
+            buttonBanner.extractWidgetRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         int xOffset = (int) (160 / 1.3F); // see Social.GITHUB
@@ -156,7 +157,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
         });
     }
 
-    static void drawScaledString(GuiGraphics graphics, Screen screen, String text, int y, int color, float scale, int xOffset) {
+    static void drawScaledString(GuiGraphicsExtractor graphics, Screen screen, String text, int y, int color, float scale, int xOffset) {
         drawScaledString(graphics, screen, text, y, color, scale, xOffset, true);
     }
 
@@ -168,12 +169,12 @@ public abstract class SkyblockAddonsScreen extends Screen {
      * @param scale The scale to draw the text.
      * @param xOffset The offset from the center x that the text should be drawn at.
      */
-    static void drawScaledString(GuiGraphics graphics, Screen screen, String text, int y, int color, float scale, int xOffset, boolean centered) {
+    static void drawScaledString(GuiGraphicsExtractor graphics, Screen screen, String text, int y, int color, float scale, int xOffset, boolean centered) {
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
         poseStack.scale(scale);
         if (centered) {
-            graphics.drawCenteredString(
+            graphics.centeredText(
                     MC.font,
                     text,
                     Math.round(screen.width / 2.0F / scale) + xOffset,
@@ -181,7 +182,7 @@ public abstract class SkyblockAddonsScreen extends Screen {
                     color
             );
         } else {
-            graphics.drawString(
+            graphics.text(
                     MC.font,
                     text,
                     Math.round(screen.width / 2.0F / scale) + xOffset,

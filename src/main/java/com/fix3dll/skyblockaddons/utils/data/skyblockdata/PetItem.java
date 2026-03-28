@@ -7,11 +7,14 @@ import com.fix3dll.skyblockaddons.utils.gson.GsonInitializable;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,42 +35,56 @@ public class PetItem implements GsonInitializable {
     @SerializedName("resolvableProfile")
     private JsonElement resolvableProfile;
 
-    @Getter private transient ItemStack itemStack;
+    @Setter private String skyblockId;
+
+    private transient ItemStackTemplate itemStackTemplate;
+    private transient ItemStack itemStack;
 
     @Override
     public void gsonInit() {
-        makeItemStack();
+        makeItemStackTemplate();
     }
 
-    private void makeItemStack() {
+    private void makeItemStackTemplate() {
         try {
             if (material != null) {
                 if (material.equals("skull_item")) {
-                    itemStack = ItemUtils.createSkullItemStack(resolvableProfile, null, "PET_ITEM");
+                    itemStackTemplate = ItemUtils.createSkullTemplate(resolvableProfile, null, "PET_ITEM");
                 } else {
                     Item item = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(material));
-                    if (item != Items.AIR) {
-                        itemStack = item.asItem().getDefaultInstance();
-                    } else {
+                    if (item == Items.AIR) {
                         Block block = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(material));
-                        if (block != Blocks.AIR) {
-                            itemStack = block.asItem().getDefaultInstance();
-                        } else {
-                            itemStack = Items.BARRIER.getDefaultInstance(); // Item not found
-                        }
+                        item = block != Blocks.AIR ? block.asItem() : Items.BARRIER;
                     }
 
+                    DataComponentPatch.Builder builder = DataComponentPatch.builder();
+
                     if (enchanted) {
-                        itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                        builder.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
                     }
+
+                    itemStackTemplate = new ItemStackTemplate(item, builder.build());
                 }
             }
         } catch (Exception ex) {
-            itemStack = Items.BARRIER.getDefaultInstance();
+            itemStackTemplate = new ItemStackTemplate(Items.BARRIER);
             LOGGER.error(
-                    "An error occurred while making an ItemStack with ID {} and name {}.\n{}",
+                    "An error occurred while making an ItemStackTemplate with ID {} and name {}.\n{}",
                     material, displayName, ex
             );
         }
     }
+
+    /**
+     * Lazily creates and returns the ItemStack from the template.
+     * @return The instantiated ItemStack.
+     */
+    public ItemStack getItemStack() {
+        if (itemStack == null) {
+            itemStack = itemStackTemplate != null ? itemStackTemplate.create() : Items.BARRIER.getDefaultInstance();
+            if (skyblockId != null) ItemUtils.setItemStackSkyblockID(itemStack, skyblockId);
+        }
+        return itemStack;
+    }
+
 }

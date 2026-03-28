@@ -2,7 +2,7 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -33,7 +33,7 @@ public class ButtonStepper extends SkyblockAddonsButton {
     }
 
     @Override
-    protected void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int boxColor, fontColor, boxAlpha;
         this.isHovered = isMouseOver(mouseX, mouseY);
         for (Modifier modifier : Modifier.values()) {

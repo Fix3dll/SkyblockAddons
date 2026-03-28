@@ -1,6 +1,6 @@
 package com.fix3dll.skyblockaddons.mixin.extensions;
 
-import net.minecraft.client.GuiMessage;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.network.chat.Component;
 
 public interface GuiMessageLineExtension {

@@ -21,7 +21,7 @@ import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
@@ -40,7 +40,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
@@ -89,7 +89,7 @@ public class AbstractContainerScreenHook {
      * @return true for render default
      */
     public static boolean renderSlotHighlightFront(
-            GuiGraphics graphics,
+            GuiGraphicsExtractor graphics,
             int x,
             int y,
             Slot hoveredSlot
@@ -120,7 +120,7 @@ public class AbstractContainerScreenHook {
         return true;
     }
 
-    public static void renderSlot(GuiGraphics graphics, Slot slot) {
+    public static void renderSlot(GuiGraphicsExtractor graphics, Slot slot) {
         if (MC.player != null && slot != null && Feature.LOCK_SLOTS.isEnabled() && main.getUtils().isOnSkyblock()) {
             if (Feature.LOCK_SLOTS.isEnabled(FeatureSetting.DRAW_LOCK_ONLY_WHEN_HOVERED)) return;
 
@@ -181,7 +181,7 @@ public class AbstractContainerScreenHook {
     /**
      * This method returns true to CANCEL the click in a GUI
      */
-    public static boolean onHandleMouseClick(AbstractContainerScreen<?> screen, Slot slot, int slotId, int clickedButton, ClickType clickType) {
+    public static boolean onHandleMouseClick(AbstractContainerScreen<?> screen, Slot slot, int slotId, int clickedButton, ContainerInput containerInput) {
         if (MC.player != null && !main.getUtils().isOnSkyblock()) return false;
 
         if (Feature.REFORGE_FILTER.isEnabled() && !main.getUtils().getReforgeMatches().isEmpty()) {
@@ -235,7 +235,7 @@ public class AbstractContainerScreenHook {
                 && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || Utils.isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
     }
 
-    public static void renderReforgeTooltip(AbstractContainerScreen<?> screen, GuiGraphics graphics) {
+    public static void renderReforgeTooltip(AbstractContainerScreen<?> screen, GuiGraphicsExtractor graphics) {
         if (!main.getUtils().isOnSkyblock()) {
             return; // don't draw any overlays outside SkyBlock
         }
@@ -275,9 +275,9 @@ public class AbstractContainerScreenHook {
                             float renderX = x - 28 - stringWidth / 2F;
                             int renderY = y + 22;
 
-                            TooltipRenderUtil.renderTooltipBackground(graphics, (int) renderX, renderY, stringWidth, 7, null);
+                            TooltipRenderUtil.extractTooltipBackground(graphics, (int) renderX, renderY, stringWidth, 7, null);
                             FormattedCharSequence strippedFcs = Language.getInstance().getVisualOrder(FormattedText.of(reforge));
-                            graphics.guiRenderState.submitText(
+                            graphics.guiRenderState.addText(
                                     new SbaTextRenderState(strippedFcs, graphics.pose(), renderX, renderY, color, 0, true, false, graphics.scissorStack.peek())
                             );
                         }
@@ -287,7 +287,7 @@ public class AbstractContainerScreenHook {
         }
     }
 
-    public static void renderLast(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int leftPos, int topPos) {
+    public static void renderLast(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, int leftPos, int topPos) {
         if (!main.getUtils().isOnSkyblock()) {
             return; // don't draw any overlays outside SkyBlock
         }
@@ -326,18 +326,18 @@ public class AbstractContainerScreenHook {
             y = textFieldMatches.getY() - enchantsToIncludeHeight - 1;
             drawSplitString(graphics, ENCHANTS_TO_INCLUDE, x, y, maxStringWidth, defaultBlue);
 
-            textFieldMatches.render(graphics, mouseX, mouseY, partialTick);
+            textFieldMatches.extractRenderState(graphics, mouseX, mouseY, partialTick);
             if (StringUtils.isEmpty(textFieldMatches.getValue())) {
-                graphics.drawString(MC.font, MC.font.plainSubstrByWidth(INCLUSION_EXAMPLE, textFieldMatches.getWidth()), placeholderTextX, placeholderTextY, ColorCode.DARK_GRAY.getColor());
+                graphics.text(MC.font, MC.font.plainSubstrByWidth(INCLUSION_EXAMPLE, textFieldMatches.getWidth()), placeholderTextX, placeholderTextY, ColorCode.DARK_GRAY.getColor());
             }
 
             y = textFieldExclusions.getY() - enchantsToExcludeHeight - 1;
             drawSplitString(graphics, ENCHANTS_TO_EXCLUDE, x, y, maxStringWidth, defaultBlue);
 
             placeholderTextY = textFieldExclusions.getY() + (textFieldExclusions.getHeight() - 8) / 2;
-            textFieldExclusions.render(graphics, mouseX, mouseY, partialTick);
+            textFieldExclusions.extractRenderState(graphics, mouseX, mouseY, partialTick);
             if (StringUtils.isEmpty(textFieldExclusions.getValue())) {
-                graphics.drawString(
+                graphics.text(
                         MC.font,
                         MC.font.plainSubstrByWidth(EXCLUSION_EXAMPLE, textFieldExclusions.getWidth()),
                         placeholderTextX,
@@ -478,12 +478,12 @@ public class AbstractContainerScreenHook {
         return ScreenHook.islandWarpGui != null;
     }
 
-    private static void drawSplitString(GuiGraphics graphics, String text, int x, int y, int wrapWidth, int color) {
+    private static void drawSplitString(GuiGraphicsExtractor graphics, String text, int x, int y, int wrapWidth, int color) {
         List<FormattedCharSequence> lines = MC.font.split(Component.literal(text), wrapWidth);
 
         int lineY = y;
         for (FormattedCharSequence seq : lines) {
-            graphics.drawString(MC.font, seq, x, lineY, color, false);   // dropShadow=false
+            graphics.text(MC.font, seq, x, lineY, color, false);   // dropShadow=false
             lineY += 9;
         }
     }

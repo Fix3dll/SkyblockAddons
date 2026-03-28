@@ -3,7 +3,7 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -67,11 +67,11 @@ public abstract class SkyblockAddonsButton extends AbstractWidget {
         return 1.0F;
     }
 
-    public void drawButtonBoxAndText(GuiGraphics graphics, int boxColor, float scale, int fontColor) {
+    public void drawButtonBoxAndText(GuiGraphicsExtractor graphics, int boxColor, float scale, int fontColor) {
         drawButtonBoxAndText(graphics, getMessage(), getX(), getY(), getWidth(), getHeight(), boxColor, scale, fontColor);
     }
 
-    public void drawButtonBoxAndText(GuiGraphics graphics, Component message, int x, int y, int width, int height, int boxColor, float scale, int fontColor) {
+    public void drawButtonBoxAndText(GuiGraphicsExtractor graphics, Component message, int x, int y, int width, int height, int boxColor, float scale, int fontColor) {
         ButtonColorBox.drawColorRect(graphics, x, y, x + width, y + height, boxColor);
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();

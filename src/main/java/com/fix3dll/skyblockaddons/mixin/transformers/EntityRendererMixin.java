@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,9 +26,9 @@ public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> 
         }
     }
 
-    @Inject(method = "submitNameTag", at = @At("HEAD"), cancellable = true)
-    public void sba$onSubmitNameTag(S renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
-        if (RenderEvents.SUBMIT_ENTITY_NAME_TAG.invoker().onSubmitEntityNameTag(renderState, poseStack, nodeCollector, cameraRenderState, ci)) {
+    @Inject(method = "submitNameDisplay(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;I)V", at = @At("HEAD"), cancellable = true)
+    public void sba$onSubmitNameDisplay(S renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera, int offset, CallbackInfo ci) {
+        if (RenderEvents.SUBMIT_ENTITY_NAME_TAG.invoker().onSubmitEntityNameTag(renderState, poseStack, nodeCollector, camera, ci)) {
             ci.cancel();
         }
     }

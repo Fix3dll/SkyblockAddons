@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import org.apache.logging.log4j.Logger;
 
@@ -21,21 +22,32 @@ public class TexturedHead implements GsonInitializable {
     @SerializedName("skyblockId")
     private String skyblockId;
 
-    @Getter private transient ItemStack itemStack;
+    @Getter
+    private transient ItemStackTemplate itemStackTemplate;
+    private transient ItemStack itemStack;
 
     @Override
     public void gsonInit() {
-        makeItemStack();
+        makeItemStackTemplate();
     }
 
-    private void makeItemStack() {
+    private void makeItemStackTemplate() {
         try {
-            itemStack = ItemUtils.createSkullItemStack(profile, customName, skyblockId);
+            itemStackTemplate = ItemUtils.createSkullTemplate(profile, customName, skyblockId);
         } catch (Exception ex) {
-            itemStack = Items.BARRIER.getDefaultInstance();
+            itemStackTemplate = new ItemStackTemplate(Items.BARRIER);
+            Object identifier = skyblockId == null ? customName : skyblockId;
             LOGGER.error(
-                    "An error occurred while making an ItemStack with ID {}.\n{}", skyblockId, ex
+                    "An error occurred while making an ItemStack '{}'.\n{}", identifier, ex
             );
         }
     }
+
+    public ItemStack getItemStack() {
+        if (itemStack == null) {
+            itemStack = itemStackTemplate.create();
+        }
+        return itemStack;
+    }
+
 }

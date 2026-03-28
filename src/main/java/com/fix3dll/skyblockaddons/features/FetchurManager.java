@@ -7,7 +7,9 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -30,19 +32,19 @@ public class FetchurManager {
      * Changing the order will affect the algorithm
      */
     private static final FetchurItem[] items = new FetchurItem[] {
-            new FetchurItem(new ItemStack(Items.YELLOW_STAINED_GLASS.asItem(), 20), "Yellow Stained Glass"),
-            new FetchurItem(Items.COMPASS.getDefaultInstance(), "Compass"),
-            new FetchurItem(new ItemStack(Items.PRISMARINE_CRYSTALS, 20), "Mithril"),
-            new FetchurItem(Items.FIREWORK_ROCKET.getDefaultInstance(), "Firework Rocket"),
-            new FetchurItem(ItemUtils.getTexturedHead("CHEAP_COFFEE"), "Cheap Coffee"),
-            new FetchurItem(Items.OAK_DOOR.getDefaultInstance(), "Wooden Door"),
-            new FetchurItem(new ItemStack(Items.RABBIT_FOOT, 3), "Rabbit's Feet"),
-            new FetchurItem(Blocks.TNT.asItem().getDefaultInstance(), "Superboom TNT"),
-            new FetchurItem(Blocks.PUMPKIN.asItem().getDefaultInstance(), "Pumpkin"),
-            new FetchurItem(Items.FLINT_AND_STEEL.getDefaultInstance(), "Flint and Steel"),
-            new FetchurItem(new ItemStack(Items.EMERALD, 50), "Emerald"),
+            new FetchurItem(Items.YELLOW_STAINED_GLASS, 20, "Yellow Stained Glass"),
+            new FetchurItem(Items.COMPASS, "Compass"),
+            new FetchurItem(Items.PRISMARINE_CRYSTALS, 20, "Mithril"),
+            new FetchurItem(Items.FIREWORK_ROCKET, "Firework Rocket"),
+            new FetchurItem(ItemUtils.getTexturedHead("CHEAP_COFFEE").getItemStackTemplate(), "Cheap Coffee"),
+            new FetchurItem(Items.OAK_DOOR, "Wooden Door"),
+            new FetchurItem(Items.RABBIT_FOOT, 3, "Rabbit's Feet"),
+            new FetchurItem(Blocks.TNT.asItem(), "Superboom TNT"),
+            new FetchurItem(Blocks.PUMPKIN.asItem(), "Pumpkin"),
+            new FetchurItem(Items.FLINT_AND_STEEL, "Flint and Steel"),
+            new FetchurItem(Items.EMERALD, 50, "Emerald"),
             //new FetchurItem(new ItemStack(Items.ender_pearl, 16), "Ender Pearl"),
-            new FetchurItem(new ItemStack(Blocks.RED_WOOL.asItem(), 50), "Red Wool")
+            new FetchurItem(Blocks.RED_WOOL.asItem(), 50, "Red Wool")
     };
 
     // Used for storage, essential for Fetchur Warner
@@ -120,12 +122,29 @@ public class FetchurManager {
     /**
      * A class representing the item Fetchur wants contains the item instance and the text format of the item
      */
-    public record FetchurItem(ItemStack itemStack, String itemText) {
+    public record FetchurItem(ItemStackTemplate itemStackTemplate, String itemText) {
+
+        FetchurItem(Item item, String itemText) {
+            this(new ItemStackTemplate(item), itemText);
+        }
+
+        FetchurItem(Item item, int count, String itemText) {
+            this(new ItemStackTemplate(item, count), itemText);
+        }
+
+        private static ItemStack itemStack;
+
+        public ItemStack itemStack() {
+            if (itemStack == null) {
+                itemStack = itemStackTemplate().create();
+            }
+            return itemStack;
+        }
 
         @Override
         public boolean equals(Object anotherObject) {
-            if (anotherObject instanceof FetchurItem(ItemStack stack, String text)) {
-                return text.equals(this.itemText()) && ItemStack.matches(stack, this.itemStack());
+            if (anotherObject instanceof FetchurItem(_, String text)) {
+                return text.equals(this.itemText());
             }
             return false;
         }

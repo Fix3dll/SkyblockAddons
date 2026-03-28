@@ -12,17 +12,18 @@ import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -32,6 +33,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -47,21 +49,19 @@ public class DrawUtils {
                     .withVertexShader(SkyblockAddons.identifier("chroma_standard"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_standard"))
                     .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
-                    .withDepthWrite(true)
-                    .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     public static final RenderPipeline CHROMA_TEXT = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
                     .withLocation(SkyblockAddons.identifier("sba_chroma_text"))
                     .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
-                    .withBlend(BlendFunction.TRANSLUCENT)
+                    .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .withVertexShader(SkyblockAddons.identifier("chroma_textured"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_textured"))
                     .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
                     .withSampler("Sampler0")
-                    .withDepthWrite(true)
-                    .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     private static final Function<Identifier, RenderType> CHROMA_TEXTURED = Util.memoize(
@@ -79,11 +79,11 @@ public class DrawUtils {
         return CHROMA_TEXTURED.apply(identifier);
     }
 
-    public static void drawRoundedRect(GuiGraphics graphics, int x, int y, int width, int height, int radius, int color) {
+    public static void drawRoundedRect(GuiGraphicsExtractor graphics, int x, int y, int width, int height, int radius, int color) {
         radius = Math.min(radius, Math.min(width, height) / 2);
 
         // RenderPipelines.GUI expects QUADS
-        graphics.guiRenderState.submitGuiElement(new RoundedRectRenderState(
+        graphics.guiRenderState.addGuiElement(new RoundedRectRenderState(
                 RenderPipelines.GUI, // Standard 2D solid color quad pipeline
                 TextureSetup.noTexture(),
                 graphics.pose(),
@@ -106,7 +106,7 @@ public class DrawUtils {
         Matrix4f pose = poseStack.last().pose();
 
         // Full‑bright lightmap
-        final int packed = LightTexture.FULL_BRIGHT;
+        final int packed = LightCoordsUtil.FULL_BRIGHT;
         int lu = packed & 0xFFFF;
         int lv = packed >>> 16;
 
@@ -139,35 +139,35 @@ public class DrawUtils {
         poseStack.popPose();
     }
 
-    public static void renderOutlineAbsolute(GuiGraphics graphics, RenderPipeline renderPipeline, TextureSetup textureSetup, float x, float y, float width, float height, int thickness, int color) {
-        graphics.guiRenderState.submitGuiElement(
+    public static void renderOutlineAbsolute(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, TextureSetup textureSetup, float x, float y, float width, float height, int thickness, int color) {
+        graphics.guiRenderState.addGuiElement(
                 new FillAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x - thickness, y, x, y + height, color, graphics.scissorStack.peek())
         );
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new FillAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x - thickness, y - thickness, x + width + thickness, y, color, graphics.scissorStack.peek())
         );
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new FillAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x + width, y, x + width + thickness, y + height, color, graphics.scissorStack.peek())
         );
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new FillAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x - thickness, y + height, x - thickness + width + thickness * 2, y + height + thickness, color, graphics.scissorStack.peek())
         );
     }
 
-    public static void drawCenteredText(GuiGraphics graphics, Component text, float x, float y, int color) {
+    public static void drawCenteredText(GuiGraphicsExtractor graphics, Component text, float x, float y, int color) {
         drawText(graphics, text, x - Minecraft.getInstance().font.width(text) / 2F, y, color);
     }
 
     /**
      * Draws absolute text at the given position with chroma detection enabled.
-     * @param graphics the current {@link GuiGraphics} context
+     * @param graphics the current {@link GuiGraphicsExtractor} context
      * @param text     the component to render; no-op if {@code null}
      * @param x        the x-coordinate
      * @param y        the y-coordinate
      * @param color    the ARGB fill color, also used to detect chroma
-     * @see #drawText(GuiGraphics, Component, float, float, int, boolean)
+     * @see #drawText(GuiGraphicsExtractor, Component, float, float, int, boolean)
      */
-    public static void drawText(GuiGraphics graphics, Component text, float x, float y, int color) {
+    public static void drawText(GuiGraphicsExtractor graphics, Component text, float x, float y, int color) {
         drawText(graphics, text, x, y, color, false);
     }
 
@@ -182,14 +182,14 @@ public class DrawUtils {
      * </ul>
      * Chroma effects are applied per-character via {@link #resolveChromaSequence} unless explicitly
      * disabled by the component's style or the {@code chromaDisabled} override.
-     * @param graphics       the current {@link GuiGraphics} rendering context
+     * @param graphics       the current {@link GuiGraphicsExtractor} rendering context
      * @param text           the {@link Component} to be rendered; ignored if {@code null}
      * @param x              the x-coordinate for text placement
      * @param y              the y-coordinate for text placement
      * @param color          the primary ARGB color used for the text fill and chroma detection
      * @param chromaDisabled if {@code true}, bypasses all chroma logic regardless of global settings
      */
-    public static void drawText(GuiGraphics graphics, Component text, float x, float y, int color, boolean chromaDisabled) {
+    public static void drawText(GuiGraphicsExtractor graphics, Component text, float x, float y, int color, boolean chromaDisabled) {
         if (text == null) return;
 
         boolean isChroma = !chromaDisabled && color == ManualChromaManager.getChromaColor(0, 0, ARGB.alpha(color));
@@ -205,24 +205,24 @@ public class DrawUtils {
             int colorBlack = ARGB.color(colorAlpha, 0, 0, 0);
             float offset = Minecraft.getInstance().options.forceUnicodeFont().get() ? 0.5F : 1.0F;
             FontHook.setHaltChroma(true);
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(colorlessFcs, graphics.pose(), x + offset, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(colorlessFcs, graphics.pose(), x - offset, y, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y + offset, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(colorlessFcs, graphics.pose(), x, y - offset, colorBlack, 0, false, false, graphics.scissorStack.peek())
             );
             FontHook.setHaltChroma(false);
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(finalFcs, graphics.pose(), x, y, color, 0, false, false, graphics.scissorStack.peek())
             );
         } else {
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(finalFcs, graphics.pose(), x, y, color, 0, true, false, graphics.scissorStack.peek())
             );
         }

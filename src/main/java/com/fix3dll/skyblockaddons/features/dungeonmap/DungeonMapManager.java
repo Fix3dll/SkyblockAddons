@@ -14,14 +14,14 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.BlitRenderState;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -100,7 +100,7 @@ public class DungeonMapManager {
     private static final NavigableMap<Long, Vec3> previousLocations = new TreeMap<>();
     private static final HashMap<String, PlayerSkinInfo> cachedSkinInfo = HashMap.newHashMap(5);
 
-    public static void drawDungeonsMap(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public static void drawDungeonsMap(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         if (buttonLocation == null && !main.getUtils().isInDungeon()) {
             markerOffsetX = -1;
             markerOffsetZ = -1;
@@ -145,7 +145,7 @@ public class DungeonMapManager {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + size, y, y + size, scale);
         }
 
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), x, y, x + size, y + size, 0x55000000, graphics.scissorStack.peek())
         );
         ManualChromaManager.renderingText(feature);
@@ -261,13 +261,13 @@ public class DungeonMapManager {
 
     private static final LinkedHashMap<String, MapDecoration> savedMapDecorations = Maps.newLinkedHashMap();
 
-    private static void drawMap(GuiGraphics graphics, MapItemSavedData mapData, MapId mapId, boolean isScoreSummary, float markerScale) {
+    private static void drawMap(GuiGraphicsExtractor graphics, MapItemSavedData mapData, MapId mapId, boolean isScoreSummary, float markerScale) {
         TextureManager textureManager = MC.getTextureManager();
         Identifier texture = MC.getMapTextureManager().prepareMapTexture(mapId , mapData);
         AbstractTexture gpuTextureView = textureManager.getTexture(texture);
         Matrix3x2fStack poseStack = graphics.pose();
 
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new BlitRenderState(
                         RenderPipelines.GUI_TEXTURED,
                         TextureSetup.singleTexture(gpuTextureView.getTextureView(), gpuTextureView.getSampler()),
@@ -392,7 +392,7 @@ public class DungeonMapManager {
             poseStack.scale(markerScale, markerScale);
 
             if (markerSkinInfo != null) {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), -1.2F, -1.2F, 1.2F, 1.2F, 0xFF000000, graphics.scissorStack.peek())
                 );
 
@@ -424,7 +424,7 @@ public class DungeonMapManager {
 
                 if (textureAtlasSprite != null) {
                     AbstractTexture atlasLocation = textureManager.getTexture(textureAtlasSprite.atlasLocation());
-                    graphics.guiRenderState.submitGuiElement(new BlitRenderState(
+                    graphics.guiRenderState.addGuiElement(new BlitRenderState(
                             RenderPipelines.GUI_TEXTURED,
                             TextureSetup.singleTexture(atlasLocation.getTextureView(), atlasLocation.getSampler()),
                             new Matrix3x2f(poseStack),

@@ -14,7 +14,7 @@ import com.mojang.blaze3d.platform.Window;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -88,12 +88,12 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     }
 
     @Override
-    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.nextStratum();
         drawGradientBackground(graphics, Math.round(255/3F), Math.round(255/2F));
 
-        graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.click"), WINDOW.getGuiScaledWidth() / 2, 10, -1);
-        graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.mustUnlock"), WINDOW.getGuiScaledWidth() / 2, 20, -1);
+        graphics.centeredText(MC.font, Translations.getMessage("warpMenu.click"), WINDOW.getGuiScaledWidth() / 2, 10, -1);
+        graphics.centeredText(MC.font, Translations.getMessage("warpMenu.mustUnlock"), WINDOW.getGuiScaledWidth() / 2, 20, -1);
 
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
@@ -125,7 +125,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         }
 
         for (Renderable renderable : this.renderables) {
-            renderable.render(graphics, mouseX, mouseY, partialTick);
+            renderable.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         int x = Math.round(WINDOW.getWidth() / ISLAND_SCALE - SHIFT_LEFT - 500);
@@ -133,8 +133,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         poseStack.pushMatrix();
         float textScale = 3F;
         poseStack.scale(textScale);
-        graphics.drawString(MC.font, Feature.FANCY_WARP_MENU.getMessage(), (int) (x / textScale + 50), (int) ((y - 30 - 60 * 2) / textScale + 5), -1);
-        graphics.drawString(MC.font, FeatureSetting.DOUBLE_WARP.getMessage(), (int) (x / textScale + 50), (int) ((y - 30 - 60) / textScale + 5), -1);
+        graphics.text(MC.font, Feature.FANCY_WARP_MENU.getMessage(), (int) (x / textScale + 50), (int) ((y - 30 - 60 * 2) / textScale + 5), -1);
+        graphics.text(MC.font, FeatureSetting.DOUBLE_WARP.getMessage(), (int) (x / textScale + 50), (int) ((y - 30 - 60) / textScale + 5), -1);
         poseStack.popMatrix();
 
         poseStack.popMatrix();

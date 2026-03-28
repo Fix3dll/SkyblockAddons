@@ -3,7 +3,7 @@ package com.fix3dll.skyblockaddons.mixin.transformers;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.mixin.extensions.GuiMessageLineExtension;
 import com.fix3dll.skyblockaddons.mixin.hooks.ChatScreenHook;
-import net.minecraft.client.GuiMessage;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;

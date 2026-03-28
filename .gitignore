@@ -25,6 +25,7 @@ build
 
 # other
 run
+.fabric
 .DS_Store
 Thumbs.db
 bytecode

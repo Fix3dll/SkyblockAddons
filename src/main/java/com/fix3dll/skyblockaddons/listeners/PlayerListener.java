@@ -173,7 +173,7 @@ public class PlayerListener {
     // All Rat pet sounds as instance with their respective sound categories, except the sound when it lays a cheese
     private static final ObjectOpenHashSet<RatSound> RAT_SOUNDS = ObjectOpenHashSet.of(
             new RatSound(SoundEvents.BAT_AMBIENT.location(),1.0F, 1.1904762F),
-            new RatSound(SoundEvents.CHICKEN_STEP.location(),0.15F, 1.0F)
+            new RatSound(SoundEvents.CHICKEN_STEP.value().location(),0.15F, 1.0F)
     );
 
     private long lastWorldJoin = -1;

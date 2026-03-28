@@ -15,7 +15,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -26,7 +26,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -56,35 +56,35 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         super(title);
     }
 
-    @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    public void sba$onRenderTooltip(GuiGraphics guiGraphics, int x, int y, CallbackInfo ci, ItemStack itemStack) {
+    @Inject(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void sba$onRenderTooltip(GuiGraphicsExtractor guiGraphics, int x, int y, CallbackInfo ci, ItemStack itemStack) {
         if (ScreenHook.onRenderTooltip(itemStack, x, y)) {
             ci.cancel();
         }
     }
 
-    @Inject(method = "renderContents", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix3x2fStack;popMatrix()Lorg/joml/Matrix3x2fStack;"))
-    public void sba$renderContentsLast(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "extractContents", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix3x2fStack;popMatrix()Lorg/joml/Matrix3x2fStack;"))
+    public void sba$renderContentsLast(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         AbstractContainerScreenHook.renderReforgeTooltip((AbstractContainerScreen<?>) (Object) this, graphics);
     }
 
-    @Inject(method = "renderContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlightFront(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-    public void sba$setLastSlot(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "extractContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractSlotHighlightFront(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+    public void sba$setLastSlot(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         SkyblockAddons.getInstance().getUtils().setLastHoveredSlot(-1);
     }
 
-    @WrapWithCondition(method = "renderSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
-    public boolean sba$renderSlotHighlightFront(GuiGraphics graphics, RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height) {
+    @WrapWithCondition(method = "extractSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+    public boolean sba$renderSlotHighlightFront(GuiGraphicsExtractor graphics, RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height) {
         return AbstractContainerScreenHook.renderSlotHighlightFront(graphics, x, y, this.hoveredSlot);
     }
 
-    @Inject(method = "renderSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;II)V", shift = At.Shift.AFTER))
-    public void sba$renderSlots(GuiGraphics graphics, int mouseX, int mouseY, CallbackInfo ci, @Local Slot slot) {
+    @Inject(method = "extractSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractSlot(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/inventory/Slot;II)V", shift = At.Shift.AFTER))
+    public void sba$renderSlots(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci, @Local(name = "slot") Slot slot) {
         AbstractContainerScreenHook.renderSlot(graphics, slot);
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
-    public void sba$drawBackpacks(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("RETURN"))
+    public void sba$drawBackpacks(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         //noinspection unchecked
         AbstractContainerScreen<T> instance = (AbstractContainerScreen<T>) (Object) this;
         ContainerPreviewManager.drawContainerPreviews(graphics, instance, mouseX, mouseY);
@@ -100,15 +100,15 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
-    public void sba$slotClicked(Slot slot, int slotId, int mouseButton, ClickType type, CallbackInfo ci) {
+    public void sba$slotClicked(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
         //noinspection unchecked
-        if (AbstractContainerScreenHook.onHandleMouseClick((AbstractContainerScreen<T>) (Object) this, slot, slotId, mouseButton, type)) {
+        if (AbstractContainerScreenHook.onHandleMouseClick((AbstractContainerScreen<T>) (Object) this, slot, slotId, buttonNum, containerInput)) {
             ci.cancel();
         }
     }
 
-    @WrapMethod(method = "renderLabels")
-    public void sba$renderLabels(GuiGraphics graphics, int mouseX, int mouseY, Operation<Void> original) {
+    @WrapMethod(method = "extractLabels")
+    public void sba$renderLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY, Operation<Void> original) {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
         if (main.getUtils().isOnSkyblock() && Feature.SHOW_BACKPACK_PREVIEW.isEnabled(FeatureSetting.MAKE_INVENTORY_COLORED)) {
@@ -117,8 +117,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
             );
             if (backpackColor != null) {
                 int color = backpackColor.getInventoryTextColor();
-                graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, color, false);
-                graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, color, false);
+                graphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, color, false);
+                graphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, color, false);
                 return;
             }
         }
@@ -126,8 +126,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         original.call(graphics, mouseX, mouseY);
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
-    public void sba$renderLast(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("RETURN"))
+    public void sba$renderLast(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         AbstractContainerScreenHook.renderLast(graphics, mouseX, mouseY, partialTick, this.leftPos, this.topPos);
     }
 

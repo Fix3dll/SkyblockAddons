@@ -57,9 +57,11 @@ public class NetworkListener {
         if (Feature.DISCORD_RPC.isEnabled()) {
             main.getDiscordRPCManager().start();
         }
-        updateHealth = main.getScheduler().scheduleTask(scheduledTask ->
-            main.getPlayerListener().updateLastSecondHealth(), 0, 20
-        );
+        if (updateHealth == null) {
+            updateHealth = main.getScheduler().scheduleTask(scheduledTask ->
+                    main.getPlayerListener().updateLastSecondHealth(), 0, 20
+            );
+        }
         updateApiRequests();
         DataUtils.onSkyblockJoined();
     }

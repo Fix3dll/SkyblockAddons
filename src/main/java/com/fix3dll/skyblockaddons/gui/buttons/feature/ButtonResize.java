@@ -3,7 +3,7 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
 import lombok.Getter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -27,7 +27,7 @@ public class ButtonResize extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         this.scale = feature.getGuiScale();
         this.isHovered = isMouseOver(mouseX, mouseY);
         int color = ARGB.white(this.isHovered ? 1F : 0.25F);
@@ -35,7 +35,7 @@ public class ButtonResize extends ButtonFeature {
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
         poseStack.scale(scale, scale);
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new FillAbsoluteRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), resizeX - SIZE, resizeY - SIZE, resizeX + SIZE, resizeY + SIZE, color, graphics.scissorStack.peek())
         );
         poseStack.popMatrix();

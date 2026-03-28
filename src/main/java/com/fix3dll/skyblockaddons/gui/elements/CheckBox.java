@@ -9,7 +9,7 @@ import com.fix3dll.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -71,7 +71,7 @@ public class CheckBox {
         this.size = size;
     }
 
-    public void draw(GuiGraphics graphics) {
+    public void draw(GuiGraphicsExtractor graphics) {
         int scaledX = Math.round(x / scale);
         int scaledY = Math.round(y / scale);
 
@@ -83,7 +83,7 @@ public class CheckBox {
         DrawUtils.drawText(graphics, text, scaledX + Math.round(size * 1.5f / scale), scaledY + (size / 2f), color);
 
         float uOffset = value ? 16 : 0;
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(ICONS), graphics.pose(), scaledX, scaledY, uOffset, 0, 16, 16, 32, 16, -1, graphics.scissorStack.peek())
         );
         poseStack.popMatrix();

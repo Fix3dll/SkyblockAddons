@@ -21,6 +21,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
@@ -33,12 +34,14 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -70,13 +73,17 @@ public class ItemUtils {
     @Setter private static Map<String, ContainerData> containers;
     @Setter private static Map<String, TexturedHead> texturedHeads;
 
-    public static @NonNull ItemStack getTexturedHead(String identifier) {
+    public static @NonNull ItemStack getTexturedHeadItem(String identifier) {
         if (texturedHeads != null) {
             TexturedHead texturedHead = texturedHeads.get(identifier);
             return texturedHead == null ? Items.BARRIER.getDefaultInstance() : texturedHead.getItemStack();
         }
 
         return Items.BARRIER.getDefaultInstance();
+    }
+
+    public static @Nullable TexturedHead getTexturedHead(String identifier) {
+        return texturedHeads != null ? texturedHeads.get(identifier) : null;
     }
 
     /**
@@ -495,71 +502,6 @@ public class ItemUtils {
         return extraAttributes != null && !extraAttributes.contains("uuid");
     }
 
-    /**
-     * Creates a new {@code ItemStack} instance with the given item and a fake enchantment to enable the enchanted "glint"
-     * effect if {@code enchanted} is true. This method should be used when you want to create a bare-bones {@code ItemStack}
-     * to render as part of a GUI.
-     *
-     * @param item the {@code Item} the created {@code ItemStack} should be
-     * @param enchanted the item has the enchanted "glint" effect enabled if {@code true}, disabled if {@code false}
-     * @return a new {@code ItemStack} instance with the given item and a fake enchantment if applicable
-     */
-    public static ItemStack createItemStack(Item item, boolean enchanted) {
-        return createItemStack(item, null, null, enchanted);
-    }
-
-    public static ItemStack createItemStack(Item item, String name, String skyblockID, boolean enchanted) {
-        ItemStack stack = item.getDefaultInstance();
-
-        if (name != null) {
-            stack.set(DataComponents.ITEM_NAME, Component.literal(name));
-        }
-
-        if (enchanted) {
-            stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-        }
-
-        if (skyblockID != null) {
-            setItemStackSkyblockID(stack, skyblockID);
-        }
-
-        return stack;
-    }
-
-    public static ItemStack createEnchantedBook(SkyblockRarity rarity, String enchantName, int enchantLevel) {
-        String name = rarity == null ? "Enchanted Book" : rarity.getColorCode() + "Enchanted Book";
-        ItemStack stack = createItemStack(Items.ENCHANTED_BOOK, name, "ENCHANTED_BOOK", false);
-
-        CompoundTag enchantments = new CompoundTag();
-        enchantments.putInt(enchantName, enchantLevel);
-
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(enchantments));
-
-        return stack;
-    }
-
-    public static ItemStack createSkullItemStack(@NonNull JsonElement profile, JsonElement customName, String skyblockId) {
-        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-
-        ResolvableProfile.CODEC.parse(JsonOps.INSTANCE, profile).result().ifPresent(
-                resolvableProfile -> stack.set(DataComponents.PROFILE, resolvableProfile)
-        );
-
-        MutableComponent component = null;
-        if (customName != null) {
-            component = TextUtils.componentFromJson(customName);
-        }
-        if (component != null) {
-            stack.set(DataComponents.CUSTOM_NAME, component);
-        }
-
-        if (skyblockId != null) {
-            ItemUtils.setItemStackSkyblockID(stack, skyblockId);
-        }
-
-        return stack;
-    }
-
     public static void setItemStackSkyblockID(ItemStack itemStack, String skyblockID) {
         CompoundTag ea = getExtraAttributes(itemStack);
         if (ea == null) {
@@ -686,6 +628,96 @@ public class ItemUtils {
         UUID uuid = UUID.nameUUIDFromBytes(value.getBytes(StandardCharsets.UTF_8));
 
         return new GameProfile(uuid, "", propertyMap);
+    }
+
+    /**
+     * Creates an ItemStackTemplate with the given item and an enchantment glint.
+     * Ideal for early-loading during Gson initialization.
+     */
+    public static ItemStackTemplate createItemTemplate(Item item, boolean enchanted) {
+        return createItemTemplate(item, null, null, enchanted);
+    }
+
+    public static ItemStackTemplate createItemTemplate(Item item, String name, String skyblockID, boolean enchanted) {
+        DataComponentPatch.Builder builder = DataComponentPatch.builder();
+
+        if (name != null) {
+            builder.set(DataComponents.ITEM_NAME, Component.literal(name));
+        }
+
+        if (enchanted) {
+            builder.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        }
+
+        if (skyblockID != null) {
+            CompoundTag ea = new CompoundTag();
+            ea.putString("id", skyblockID);
+            builder.set(DataComponents.CUSTOM_DATA, CustomData.of(ea));
+        }
+
+        return new ItemStackTemplate(item, builder.build());
+    }
+
+    public static ItemStack createItemStack(Item item, boolean enchanted) {
+        return createItemTemplate(item, enchanted).create();
+    }
+
+    public static ItemStack createItemStack(Item item, String name, String skyblockID, boolean enchanted) {
+        return createItemTemplate(item, name, skyblockID, enchanted).create();
+    }
+
+    public static ItemStackTemplate createEnchantedBookTemplate(SkyblockRarity rarity, String enchantName, int enchantLevel) {
+        DataComponentPatch.Builder builder = DataComponentPatch.builder();
+
+        MutableComponent customName = Component.literal("Enchanted Book");
+        if (rarity != null) {
+            customName.withColor(rarity.getColorCode().getColor());
+        }
+        builder.set(DataComponents.ITEM_NAME, customName);
+
+        CompoundTag ea = new CompoundTag();
+        ea.putString("id", "ENCHANTED_BOOK");
+
+        if (enchantName != null) {
+            CompoundTag enchantments = new CompoundTag();
+            enchantments.putInt(enchantName, enchantLevel);
+            ea.put("enchantments", enchantments);
+        }
+
+        builder.set(DataComponents.CUSTOM_DATA, CustomData.of(ea));
+
+        return new ItemStackTemplate(Items.ENCHANTED_BOOK, builder.build());
+    }
+
+    public static ItemStack createEnchantedBook(SkyblockRarity rarity, String enchantName, int enchantLevel) {
+        return createEnchantedBookTemplate(rarity, enchantName, enchantLevel).create();
+    }
+
+    public static ItemStackTemplate createSkullTemplate(@NonNull JsonElement profile, JsonElement customName, String skyblockId) {
+        DataComponentPatch.Builder builder = DataComponentPatch.builder();
+
+        ResolvableProfile.CODEC.parse(JsonOps.INSTANCE, profile).result().ifPresent(
+                resolvableProfile -> builder.set(DataComponents.PROFILE, resolvableProfile)
+        );
+
+        if (customName != null) {
+            MutableComponent component = TextUtils.componentFromJson(customName);
+            if (component != null) {
+                builder.set(DataComponents.CUSTOM_NAME, component);
+            }
+        }
+
+        if (skyblockId != null) {
+            CompoundTag ea = new CompoundTag();
+            ea.putString("id", skyblockId);
+            builder.set(DataComponents.CUSTOM_DATA, CustomData.of(ea));
+        }
+
+        return new ItemStackTemplate(Items.PLAYER_HEAD, builder.build());
+    }
+
+    public static ItemStack createSkullItemStack(@NonNull JsonElement profile, JsonElement customName, String skyblockId) {
+        return createSkullTemplate(profile, customName, skyblockId).create();
     }
 
     /**

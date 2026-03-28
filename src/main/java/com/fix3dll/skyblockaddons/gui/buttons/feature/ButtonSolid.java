@@ -3,7 +3,7 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsGui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -36,7 +36,7 @@ public class ButtonSolid extends ButtonFeature {
     }
 
     @Override
-    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         float alphaMultiplier = calculateAlphaMultiplier();
         int alpha = alphaMultiplier == 1F ? 255 : (int) (255 * alphaMultiplier);
         this.isHovered = isHovered(mouseX, mouseY);

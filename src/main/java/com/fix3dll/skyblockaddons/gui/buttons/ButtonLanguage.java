@@ -9,7 +9,7 @@ import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import lombok.Getter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ public class ButtonLanguage extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isHovered(mouseX, mouseY);
 
         DrawUtils.drawRoundedRect(graphics, getX(), getY(), width, height, 4, ARGB.color(230, 28, 29, 41));
@@ -53,7 +53,7 @@ public class ButtonLanguage extends SkyblockAddonsButton {
             }
         }
         color = this.isHovered ? ARGB.color(255, 255, 255, 160) : ColorUtils.getDefaultBlue(255);
-        graphics.drawString(MC.font, languageName, getX() + 5, getY() + 10, color, true);
+        graphics.text(MC.font, languageName, getX() + 5, getY() + 10, color, true);
     }
 
     @Override

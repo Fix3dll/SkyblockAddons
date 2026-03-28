@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -64,7 +64,6 @@ public class ScreenListener {
     private static final Minecraft MC = Minecraft.getInstance();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
-    private InventoryChangeListener inventoryChangeListener;
     private SimpleContainer listenedInventory;
     private ScheduledTask inventoryChangeTimeCheckTask;
 
@@ -96,7 +95,12 @@ public class ScreenListener {
             Component title = containerScreen.getTitle();
             InventoryType inventoryType = main.getInventoryUtils().updateInventoryType(title);
             SimpleContainer chestContainer = (SimpleContainer) chestMenu.getContainer();
-            addInventoryChangeListener(chestContainer);
+
+            lastInventoryChangeMs = System.currentTimeMillis();
+            listenedInventory = chestContainer;
+            if (inventoryChangeTimeCheckTask == null) {
+                inventoryChangeTimeCheckTask = main.getScheduler().scheduleTask (_ -> checkLastInventoryChangeTime(), 20, 5);
+            }
 
             // Backpack opening sound
             if (Feature.BACKPACK_OPENING_SOUND.isEnabled()) {
@@ -123,7 +127,7 @@ public class ScreenListener {
         ScreenEvents.afterBackground(screen).register(this::onAfterRenderScreenBg);
     }
 
-    private void onAfterRenderScreenBg(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
+    private void onAfterRenderScreenBg(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickDelta) {
         DungeonProfitOverlay.render(screen, graphics, mouseX, mouseY, tickDelta);
     }
 
@@ -194,8 +198,12 @@ public class ScreenListener {
 
         // Closing or switching to a different GuiChest
         if (oldGuiScreen instanceof ContainerScreen containerScreen) {
-            if (inventoryChangeListener != null) {
-                removeInventoryChangeListener(listenedInventory);
+            if (listenedInventory != null) {
+                if (inventoryChangeTimeCheckTask != null && !inventoryChangeTimeCheckTask.isCanceled()) {
+                    inventoryChangeTimeCheckTask.cancel();
+                    inventoryChangeTimeCheckTask = null;
+                }
+                listenedInventory = null;
             }
 
             ContainerPreviewManager.onContainerClose();
@@ -210,10 +218,12 @@ public class ScreenListener {
         Screen screen = MC.screen;
         InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
-        if (listenedInventory != null) {
-            removeInventoryChangeListener(listenedInventory);
-            lastInventoryChangeMs = -1;
+        if (inventoryChangeTimeCheckTask != null && !inventoryChangeTimeCheckTask.isCanceled()) {
+            inventoryChangeTimeCheckTask.cancel();
+            inventoryChangeTimeCheckTask = null;
         }
+        listenedInventory = null;
+        lastInventoryChangeMs = -1;
 
         if (screen instanceof AbstractContainerScreen<?> containerScreen && containerScreen.getMenu() instanceof ChestMenu chestMenu) {
             SimpleContainer chestContainer = (SimpleContainer) chestMenu.getContainer();
@@ -359,7 +369,7 @@ public class ScreenListener {
     /**
      * Called when a slot in the currently opened {@code GuiContainer} changes. Used to determine if all its items have been loaded.
      */
-    void containerChanged(SimpleContainer inventory) {
+    public void containerChanged(SimpleContainer inventory) {
         if (inventory.getItem(inventory.getContainerSize() - 1) != ItemStack.EMPTY) {
             SkyblockAddonsEvents.INVENTORY_LOADING_DONE.invoker().onInventoryLoadingDone();
         } else {
@@ -367,23 +377,7 @@ public class ScreenListener {
         }
     }
 
-    /**
-     * Adds a change listener to a given inventory.
-     * @param inventory the inventory to add the change listener to
-     */
-    private void addInventoryChangeListener(SimpleContainer inventory) {
-        if (inventory == null) {
-            throw new NullPointerException("Tried to add listener to null inventory.");
-        }
 
-        lastInventoryChangeMs = System.currentTimeMillis();
-        inventoryChangeListener = new InventoryChangeListener(this);
-        inventory.addListener(inventoryChangeListener);
-        listenedInventory = inventory;
-        inventoryChangeTimeCheckTask = main.getScheduler().scheduleTask(
-                scheduledTask -> checkLastInventoryChangeTime(), 20, 5
-        );
-    }
 
     /**
      * Checks whether it has been more than one second since the last inventory change, which indicates inventory
@@ -394,34 +388,6 @@ public class ScreenListener {
             if (lastInventoryChangeMs > -1 && System.currentTimeMillis() - lastInventoryChangeMs > 1000) {
                 SkyblockAddonsEvents.INVENTORY_LOADING_DONE.invoker().onInventoryLoadingDone();
             }
-        }
-    }
-
-    /**
-     * Removes {@link #inventoryChangeListener} from a given {@link SimpleContainer}.
-     * @param inventory the {@code InventoryBasic} to remove the listener from
-     */
-    private void removeInventoryChangeListener(SimpleContainer inventory) {
-        if (inventory == null) {
-            throw new NullPointerException("Tried to remove listener from null inventory.");
-        }
-
-        if (inventoryChangeListener != null) {
-            try {
-                inventory.removeListener(inventoryChangeListener);
-            } catch (NullPointerException e) {
-                LOGGER.catching(e);
-            }
-
-            if (inventoryChangeTimeCheckTask != null) {
-                if (!inventoryChangeTimeCheckTask.isCanceled()) {
-                    inventoryChangeTimeCheckTask.cancel();
-                }
-            }
-
-            inventoryChangeListener = null;
-            listenedInventory = null;
-            inventoryChangeTimeCheckTask = null;
         }
     }
 

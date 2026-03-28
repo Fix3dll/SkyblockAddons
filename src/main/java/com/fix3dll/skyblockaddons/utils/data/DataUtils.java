@@ -33,7 +33,6 @@ import com.fix3dll.skyblockaddons.utils.data.requests.SlayerLocationsRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.EnchantmentsData;
-import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LegacyIdItemMapData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LocationData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
@@ -42,7 +41,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
@@ -50,7 +48,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.Items;
 import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
@@ -141,9 +138,10 @@ public class DataUtils {
      * Reads textured heads. Separated from {@link #readLocalFileData()} for early loading.
      */
     public static void readTexturedHeads() {
-        try (InputStream inputStream = DataUtils.class.getResourceAsStream("/texturedHeads.json");
+        path = "/texturedHeads.json";
+        try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            ItemUtils.setTexturedHeads(GSON.fromJson(inputStreamReader, new TypeToken<Object2ObjectOpenHashMap<String, TexturedHead>>() {}.getType()));
+            ItemUtils.setTexturedHeads(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, TexturedHead>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -177,7 +175,7 @@ public class DataUtils {
         path = "/containers.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            ItemUtils.setContainers(GSON.fromJson(inputStreamReader, new TypeToken<Object2ObjectOpenHashMap<String, ContainerData>>() {}.getType()));
+            ItemUtils.setContainers(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, ContainerData>>() {}.getType()));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -186,13 +184,11 @@ public class DataUtils {
         path = "/compactorItems.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            Object2ObjectOpenHashMap<String, CompactorItem> compactorItems = GSON.fromJson(
+            Map<String, CompactorItem> compactorItems = GSON.fromJson(
                     inputStreamReader,
-                    new TypeToken<Object2ObjectOpenHashMap<String, CompactorItem>>() {}.getType()
+                    new TypeToken<Map<String, CompactorItem>>() {}.getType()
             );
-            compactorItems.forEach((skyblockId, compactorItem) ->
-                    ItemUtils.setItemStackSkyblockID(compactorItem.getItemStack(), skyblockId)
-            );
+            compactorItems.forEach((skyblockId, compactorItem) -> compactorItem.setSkyblockId(skyblockId));
             ItemUtils.setCompactorItems(compactorItems);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
@@ -221,7 +217,7 @@ public class DataUtils {
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
             Object2IntOpenHashMap<String> cooldowns = new Object2IntOpenHashMap<>();
-            cooldowns.putAll(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, Integer>>() {}.getType()));
+            cooldowns.putAll(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, Integer>>() {}.getType()));
             CooldownManager.setItemCooldowns(cooldowns);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
@@ -241,7 +237,9 @@ public class DataUtils {
         path = "/petItems.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            PetManager.setPetItems(GSON.fromJson(inputStreamReader, new TypeToken<HashMap<String, PetItem>>() {}.getType()));
+            Map<String, PetItem> pets = GSON.fromJson(inputStreamReader, new TypeToken<Map<String, PetItem>>() {}.getType());
+            pets.forEach((skyblockId, petItem) -> petItem.setSkyblockId(skyblockId));
+            PetManager.setPetItems(pets);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -273,10 +271,6 @@ public class DataUtils {
             );
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
-        }
-
-        if (LegacyIdItemMapData.getItemStack("175:4").getItem() == Items.ROSE_BUSH) {
-            LOGGER.info("roses are red and violets are blue");
         }
     }
 

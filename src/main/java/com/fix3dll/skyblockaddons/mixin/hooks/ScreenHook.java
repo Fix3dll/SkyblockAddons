@@ -7,7 +7,7 @@ import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +39,7 @@ public class ScreenHook {
     /**
      * @return true if ContainerScreen rendering should be bypassed
      */
-    public static boolean drawScreenIslands(Screen instance, GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public static boolean drawScreenIslands(Screen instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (MC.player == null || !main.getUtils().isOnSkyblock()) {
             return false; // don't draw any overlays outside SkyBlock
         }
@@ -55,7 +55,7 @@ public class ScreenHook {
                 }
 
                 try {
-                    islandWarpGui.render(graphics, mouseX, mouseY, partialTick);
+                    islandWarpGui.extractRenderState(graphics, mouseX, mouseY, partialTick);
                 } catch (Throwable ex) {
                     ex.printStackTrace();
                 }

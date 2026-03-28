@@ -43,7 +43,7 @@ public class DeployableManager {
 
     static {
         DUMMY_ARMOR_STAND = new ArmorStand(EntityType.ARMOR_STAND, MC.level);
-        DUMMY_ARMOR_STAND.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHead("WILL_O_WISP"));
+        DUMMY_ARMOR_STAND.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHeadItem("WILL_O_WISP"));
         DUMMY_ARMOR_STAND.setInvisible(true);
         DUMMY_DEPLOYABLE_ENTRY = new DeployableEntry(Deployable.WILL_O_WISP, 300, DUMMY_ARMOR_STAND.getUUID());
     }

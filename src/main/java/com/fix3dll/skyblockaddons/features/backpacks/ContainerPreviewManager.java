@@ -16,7 +16,7 @@ import com.fix3dll.skyblockaddons.utils.data.skyblockdata.LegacyIdItemMapData;
 import lombok.Getter;
 import lombok.NonNull;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -67,7 +67,6 @@ public class ContainerPreviewManager {
     private static final Identifier CHEST_GUI_TEXTURE = SkyblockAddons.identifier("containerpreview.png");
     private static final Pattern BACKPACK_STORAGE_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
     private static final Pattern ENDERCHEST_STORAGE_PATTERN = Pattern.compile("Ender Chest Page (?<page>\\d+)");
-    private static final ItemStack EMPTY_SLOT_ITEM = Items.AIR.getDefaultInstance();
 
     /**
      * The container preview to render
@@ -235,10 +234,10 @@ public class ContainerPreviewManager {
 
                     items.add(i, modernItem);
                 } else if (itemTag.isEmpty()) {
-                    items.add(i, EMPTY_SLOT_ITEM);
+                    items.add(i, null);
                 } else {
                     Optional<ItemStack> itemStack = ItemUtils.parseTag(itemTag);
-                    items.add(i, itemStack.orElse(EMPTY_SLOT_ITEM));
+                    items.add(i, itemStack.orElse(null));
                 }
             }
         } catch (Exception ex) {
@@ -247,7 +246,7 @@ public class ContainerPreviewManager {
         return items;
     }
 
-    public static void drawContainerPreviews(GuiGraphics graphics, Screen screen, int mouseX, int mouseY) {
+    public static void drawContainerPreviews(GuiGraphicsExtractor graphics, Screen screen, int mouseX, int mouseY) {
         Feature backpackPreview = Feature.SHOW_BACKPACK_PREVIEW;
 
         if (currentContainerPreview == null) return;
@@ -325,7 +324,7 @@ public class ContainerPreviewManager {
                 if (main.getUtils().isUsingFSRcontainerPreviewTexture()) {
                     name = ColorCode.GOLD + TextUtils.stripColor(name);
                 }
-                graphics.drawString(MC.font, name, x + 8, y + 6, textColor, false);
+                graphics.text(MC.font, name, x + 8, y + 6, textColor, false);
             }
 
 //            GlStateManager.enableLighting();
@@ -357,12 +356,8 @@ public class ContainerPreviewManager {
                 y = screenHeight - totalHeight;
             }
 
-//            GlStateManager.disableLighting();
             graphics.fill(RenderPipelines.GUI, x - 3, y - 3, x + totalWidth, y + totalHeight, getRectColor());
-//            GlStateManager.enableLighting();
 
-//            RenderHelper.enableGUIStandardItemLighting();
-//            GlStateManager.enableRescaleNormal();
             for (int i = 0; i < length; i++) {
                 ItemStack item = items.get(i);
                 if (item != null) {

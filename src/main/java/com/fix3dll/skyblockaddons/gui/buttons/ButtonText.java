@@ -1,6 +1,6 @@
 package com.fix3dll.skyblockaddons.gui.buttons;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
@@ -17,7 +17,7 @@ public class ButtonText extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
 
@@ -25,7 +25,7 @@ public class ButtonText extends SkyblockAddonsButton {
             x -= MC.font.width(getMessage()) / 2;
         }
 
-        graphics.drawString(MC.font, getMessage(), x, y, color, false);
+        graphics.text(MC.font, getMessage(), x, y, color, false);
     }
 
     @Override

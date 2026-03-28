@@ -18,9 +18,10 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.chat.GuiMessageSource;
+import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -256,7 +257,7 @@ public class Utils {
         if (!eventCanceled) {
             LocalPlayer player = MC.player;
             if (player != null) {
-                MC.gui.getChat().addMessage(message, null, Utils.SBA_MESSAGE_TAG);
+                MC.gui.getChat().addMessage(message, null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG);
             }
         }
     }

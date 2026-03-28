@@ -9,7 +9,7 @@ import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -47,11 +47,11 @@ public class IslandButton extends SkyblockAddonsButton {
     }
 
     @Override
-    public void renderWidget(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         drawButton(graphics, mouseX, mouseY, true);
     }
 
-    public void drawButton(GuiGraphics graphics, int mouseX, int mouseY, boolean actuallyDraw) {
+    public void drawButton(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean actuallyDraw) {
         Pair<Integer, Integer> scaledMouseLocations = IslandWarpGui.getScaledMouseLocation(mouseX, mouseY);
         mouseX = scaledMouseLocations.getLeft();
         mouseY = scaledMouseLocations.getRight();
@@ -148,7 +148,7 @@ public class IslandButton extends SkyblockAddonsButton {
             }
 
             Matrix3x2fStack poseStack = graphics.pose();
-            graphics.guiRenderState.submitGuiElement(
+            graphics.guiRenderState.addGuiElement(
                     new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(island.getIdentifier()), graphics.pose(), x, y, 0, 0, w, h, w, h, color, graphics.scissorStack.peek())
             );
 
@@ -160,7 +160,7 @@ public class IslandButton extends SkyblockAddonsButton {
             float textScale = 3F * expansion;
             poseStack.scale(textScale);
 
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(
                             getMessage().getVisualOrderText(),
                             graphics.pose(),

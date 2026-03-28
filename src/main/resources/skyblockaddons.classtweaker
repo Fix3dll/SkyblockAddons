@@ -1,4 +1,4 @@
-classTweaker v1 named
+classTweaker v1 official
 accessible field net/minecraft/client/gui/Gui SCORE_DISPLAY_ORDER Ljava/util/Comparator;
 accessible field net/minecraft/client/gui/components/PlayerTabOverlay footer Lnet/minecraft/network/chat/Component;
 accessible field net/minecraft/client/gui/components/PlayerTabOverlay header Lnet/minecraft/network/chat/Component;
@@ -6,7 +6,6 @@ accessible field net/minecraft/client/KeyMapping key Lcom/mojang/blaze3d/platfor
 accessible field net/minecraft/client/KeyMapping$Category SORT_ORDER Ljava/util/List;
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen hoveredSlot Lnet/minecraft/world/inventory/Slot;
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
-accessible field net/minecraft/world/SimpleContainer listeners Ljava/util/List;
 accessible field net/minecraft/world/level/chunk/LevelChunk loaded Z
 accessible field net/minecraft/client/particle/Particle x D
 accessible field net/minecraft/client/particle/Particle y D
@@ -30,10 +29,11 @@ accessible field net/minecraft/world/level/saveddata/maps/MapItemSavedData decor
 accessible field net/minecraft/client/Minecraft particleResources Lnet/minecraft/client/particle/ParticleResources;
 accessible class net/minecraft/client/gui/font/glyphs/BakedSheetGlyph$GlyphInstance
 accessible method net/minecraft/client/gui/font/glyphs/BakedSheetGlyph$GlyphInstance style ()Lnet/minecraft/network/chat/Style;
-extendable class net/minecraft/client/gui/render/state/GuiTextRenderState
+extendable class net/minecraft/client/renderer/state/gui/GuiTextRenderState
 accessible field net/minecraft/client/renderer/MapRenderer decorationSprites Lnet/minecraft/client/renderer/texture/TextureAtlas;
 accessible field net/minecraft/client/particle/ParticleResources spriteSets Ljava/util/Map;
 accessible class net/minecraft/client/particle/ParticleResources$MutableSpriteSet
 accessible method net/minecraft/client/gui/components/PlayerTabOverlay getPlayerInfos ()Ljava/util/List;
+accessible method net/minecraft/client/gui/components/ChatComponent addMessage (Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/multiplayer/chat/GuiMessageSource;Lnet/minecraft/client/multiplayer/chat/GuiMessageTag;)V
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageHeight I

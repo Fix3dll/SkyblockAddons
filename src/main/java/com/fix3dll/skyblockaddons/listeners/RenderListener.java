@@ -65,12 +65,11 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
@@ -132,7 +131,6 @@ public class RenderListener {
     private static final Minecraft MC = Minecraft.getInstance();
 //    public static final Identifier SBA_RENDER_LAYER = SkyblockAddons.identifier("hud_layer");
 
-    private static final ItemStack BONE_ITEM = new ItemStack(Items.BONE);
     private static final Identifier ARMOR = Identifier.withDefaultNamespace("hud/armor_full");
     private static final Identifier BARS = SkyblockAddons.identifier("bars_v2.png");
     private static final Identifier DEFENCE_VANILLA = SkyblockAddons.identifier("defence.png");
@@ -148,31 +146,11 @@ public class RenderListener {
     private static final Identifier RIFTSTALKER_BLOODFIEND = SkyblockAddons.identifier("vampire.png");
     private static final Identifier MORT_ICON = SkyblockAddons.identifier("icons/mort.png");
 
-    private static final ItemStack WATER_BUCKET = Items.WATER_BUCKET.getDefaultInstance();
-    private static final ItemStack CHEST = Blocks.CHEST.asItem().getDefaultInstance();
-    private static final SlayerArmorProgress[] DUMMY_PROGRESSES = new SlayerArmorProgress[] {
-            new SlayerArmorProgress(new ItemStack(Items.DIAMOND_BOOTS)),
-            new SlayerArmorProgress(new ItemStack(Items.CHAINMAIL_LEGGINGS)),
-            new SlayerArmorProgress(new ItemStack(Items.DIAMOND_CHESTPLATE)),
-            new SlayerArmorProgress(new ItemStack(Items.LEATHER_HELMET))
-    };
-
-    private static final ObjectArrayList<ItemDiff> DUMMY_PICKUP_LOG = ObjectArrayList.of(
-            new ItemDiff(
-                    Component.literal("Forceful Ember Chestplate").withColor(ColorCode.DARK_PURPLE.getColor()),
-                    1,
-                    new ItemStack(Items.CHAINMAIL_CHESTPLATE)
-            ),
-            new ItemDiff(Component.literal("Oak Boat").withColor(ColorCode.WHITE.getColor()),
-                    -1,
-                    new ItemStack(Items.OAK_BOAT)
-            ),
-            new ItemDiff(
-                    Component.literal("Aspect of the End").withColor(ColorCode.BLUE.getColor()),
-                    1,
-                    new ItemStack(Items.DIAMOND_SWORD)
-            )
-    );
+    private static ItemStack BONE_ITEM;
+    private static ItemStack WATER_BUCKET;
+    private static ItemStack CHEST;
+    private static SlayerArmorProgress[] DUMMY_PROGRESSES;
+    private static List<ItemDiff> DUMMY_PICKUP_LOG;
 
     private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?i)(?:(?:§[a-f0-9])?✪)+(?:§r)?(?:§[a-f0-9]?[➊-➒])?");
 
@@ -244,7 +222,7 @@ public class RenderListener {
     /**
      * Render overlays and warnings for clients.
      */
-    public void onRenderHud(GuiGraphics graphics, DeltaTracker renderTickCounter) {
+    public void onRenderHud(GuiGraphicsExtractor graphics, DeltaTracker renderTickCounter) {
         if (main.getUtils().isOnSkyblock()) {
             renderOverlays(graphics);
             renderWarnings(graphics);
@@ -258,7 +236,7 @@ public class RenderListener {
     /**
      * I have an option so you can see dark auction timer and farm event timer in other games so that's why.
      */
-    private void renderTimersOnly(GuiGraphics graphics) {
+    private void renderTimersOnly(GuiGraphicsExtractor graphics) {
         if (!(MC.screen instanceof LocationEditGui) /*&& !(MC.screen instanceof GuiNotification)*/) {
             if (Feature.DARK_AUCTION_TIMER.isEnabled(FeatureSetting.DARK_AUCTION_TIMER_IN_OTHER_GAMES)) {
                 float scale = Feature.DARK_AUCTION_TIMER.getGuiScale();
@@ -282,7 +260,7 @@ public class RenderListener {
     /**
      * This renders all the title/subtitle warnings from features.
      */
-    private void renderWarnings(GuiGraphics graphics) {
+    private void renderWarnings(GuiGraphicsExtractor graphics) {
         if (MC.level == null || MC.player == null || !main.getUtils().isOnSkyblock()) {
             return;
         }
@@ -377,7 +355,7 @@ public class RenderListener {
     /**
      * This renders all the gui elements (bars, icons, texts, skeleton bar, etc.).
      */
-    private void renderOverlays(GuiGraphics graphics) {
+    private void renderOverlays(GuiGraphicsExtractor graphics) {
         if (!(MC.screen instanceof LocationEditGui) /*&& !(MC.screen instanceof GuiNotification)*/) {
             for (Feature feature : Feature.getGuiFeatures()) {
                 if (feature.isEnabled()) {
@@ -392,7 +370,7 @@ public class RenderListener {
         }
     }
 
-    public void drawFeature(GuiGraphics graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
+    public void drawFeature(GuiGraphicsExtractor graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
         FeatureGuiData guiFeatureData = feature.getFeatureGuiData();
         if (guiFeatureData != null && guiFeatureData.getDrawType() != null) {
             Matrix3x2fStack poseStack = graphics.pose();
@@ -425,7 +403,7 @@ public class RenderListener {
      * @param scale          the scale of the feature
      * @param buttonLocation the resizing gui, if present
      */
-    public void drawBar(GuiGraphics graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
+    public void drawBar(GuiGraphicsExtractor graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
         // The fill of the bar from 0 to 1
         float fill;
         // Whether the player has absorption hearts
@@ -562,7 +540,7 @@ public class RenderListener {
      * @param fill the fraction (from 0 to 1) of the bar that's full
      * @param hasAbsorption {@code true} if the player has absorption hearts
      */
-    private void drawMultiLayeredBar(GuiGraphics graphics, SkyblockColor skyblockColor, float x, float y, float fill, boolean hasAbsorption, float widthScale) {
+    private void drawMultiLayeredBar(GuiGraphicsExtractor graphics, SkyblockColor skyblockColor, float x, float y, float fill, boolean hasAbsorption, float widthScale) {
         int barHeight = 5;
         float barWidth = 71 * widthScale;
         float barFill = barWidth * fill;
@@ -584,7 +562,7 @@ public class RenderListener {
         // Empty bar first
         int emptyBarColor = color;
         final TextureSetup textureSetup = textureSetup(BARS);
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new BlitAbsoluteRenderState(renderPipeline, textureSetup(BARS), graphics.pose(), x, y, 1, 1, barWidth, barHeight, 80, 50, emptyBarColor, graphics.scissorStack.peek())
         );
 
@@ -594,14 +572,14 @@ public class RenderListener {
 
         // Filled bar next
         if (fill != 0) {
-            graphics.guiRenderState.submitGuiElement(
+            graphics.guiRenderState.addGuiElement(
                     new BlitAbsoluteRenderState(renderPipeline, textureSetup, graphics.pose(), x, y, 1, 7, barFill, barHeight, 80, 50, color, graphics.scissorStack.peek())
             );
         }
 
         // Overlay absorption health if needed
         if (hasAbsorption) {
-            graphics.guiRenderState.submitGuiElement(
+            graphics.guiRenderState.addGuiElement(
                     new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + barFill, y, 1 + barFill, 7, barWidth - barFill, barHeight, 80, 50, ColorCode.GOLD.getColor(), graphics.scissorStack.peek())
             );
         }
@@ -619,12 +597,12 @@ public class RenderListener {
             float startTexX = Math.max(padding, oneSide - barFill);
             // End texture at x <= barWidth and 4 <= startTexX + endTexX (total width of overlay texture). Cut off for large fill values.
             float endTexX = Math.min(2 * oneSide - startTexX, barWidth - barFill + oneSide);
-            graphics.guiRenderState.submitGuiElement(
+            graphics.guiRenderState.addGuiElement(
                     new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + startX, y, 1 + startTexX, 24, endTexX, barHeight, 80, 50, ColorCode.WHITE.getColor(), graphics.scissorStack.peek())
             );
         }
         // Overlay uncolored bar display next (texture packs can use this to overlay their own static bar colors)
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x, y, 1, 13, barWidth, barHeight, 80, 50, ColorCode.WHITE.getColor(), graphics.scissorStack.peek())
         );
     }
@@ -632,7 +610,7 @@ public class RenderListener {
     /**
      * Renders the messages from the SkyblockAddons Updater
      */
-    private void drawUpdateMessage(GuiGraphics graphics) {
+    private void drawUpdateMessage(GuiGraphicsExtractor graphics) {
         Updater updater = main.getUpdater();
 
         if (updater.hasUpdate() && !updateMessageDisplayed) {
@@ -654,11 +632,11 @@ public class RenderListener {
                 poseStack.pushMatrix();
                 float scale = 1.5F;
                 poseStack.scale(scale);
-                graphics.drawCenteredString(MC.font, Component.literal(title), (int) (halfWidth / scale), (int) (30 / scale), ColorCode.WHITE.getColor());
+                graphics.centeredText(MC.font, Component.literal(title), (int) (halfWidth / scale), (int) (30 / scale), ColorCode.WHITE.getColor());
                 poseStack.popMatrix();
                 int y = 45;
                 for (String line : textList) {
-                    graphics.drawCenteredString(MC.font, Component.literal(line), halfWidth, y, ColorCode.WHITE.getColor());
+                    graphics.centeredText(MC.font, Component.literal(line), halfWidth, y, ColorCode.WHITE.getColor());
                     y += 10;
                 }
             }
@@ -679,7 +657,7 @@ public class RenderListener {
     /**
      * This renders a bar for the skeleton hat bones bar.
      */
-    public void drawSkeletonBar(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawSkeletonBar(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         float x = Feature.SKELETON_BAR.getActualX();
         float y = Feature.SKELETON_BAR.getActualY();
         int bones;
@@ -707,6 +685,8 @@ public class RenderListener {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
         }
 
+        if (BONE_ITEM == null) BONE_ITEM = Items.BONE.getDefaultInstance();
+
         for (int boneCounter = 0; boneCounter < bones; boneCounter++) {
             renderItem(graphics, BONE_ITEM, x + boneCounter * 16, y);
         }
@@ -716,7 +696,7 @@ public class RenderListener {
     /**
      * This renders the skeleton bar.
      */
-    public void drawScorpionFoilTicker(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawScorpionFoilTicker(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         if (buttonLocation != null || main.getPlayerListener().getTickers() != -1) {
             float x = Feature.TICKER_CHARGES_DISPLAY.getActualX();
             float y = Feature.TICKER_CHARGES_DISPLAY.getActualY();
@@ -739,7 +719,7 @@ public class RenderListener {
                 float uOffset = tickers < (buttonLocation == null ? main.getPlayerListener().getTickers() : 3)
                         ? 0
                         : 9;
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + tickers * 11, y, uOffset, 0, 9, 9, 18, 9, -1, graphics.scissorStack.peek())
                 );
             }
@@ -749,7 +729,7 @@ public class RenderListener {
     /**
      * This renders the defence icon.
      */
-    public void drawIcon(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawIcon(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         // There is no defense stat on Rift Dimension
         if (main.getUtils().isOnRift()) return;
 
@@ -763,7 +743,7 @@ public class RenderListener {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + 9, y, y + 9, scale);
         }
         if (Feature.DEFENCE_ICON.isEnabled(FeatureSetting.USE_VANILLA_TEXTURE)) {
-            graphics.guiRenderState.submitGuiElement(
+            graphics.guiRenderState.addGuiElement(
                     new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(DEFENCE_VANILLA), graphics.pose(), x, y, 0, 0, 9, 9, 9, 9, -1, graphics.scissorStack.peek())
             );
         } else {
@@ -775,7 +755,7 @@ public class RenderListener {
      * This renders all the different types gui text elements.
      */
     @SuppressWarnings("RedundantLabeledSwitchRuleCodeBlock")
-    public void drawText(GuiGraphics graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
+    public void drawText(GuiGraphicsExtractor graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
         String text;
         boolean onRift = main.getUtils().isOnRift();
         int color = feature.getColor();
@@ -1269,45 +1249,45 @@ public class RenderListener {
 
         switch (feature) {
             case DARK_AUCTION_TIMER -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SIRIUS_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case FARM_EVENT_TIMER -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(FARM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case ZEALOT_COUNTER -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case SHOW_TOTAL_ZEALOT_COUNT -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_GROUP_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case SHOW_SUMMONING_EYE_COUNT -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SUMMONING_EYE_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case SHOW_AVERAGE_ZEALOTS_PER_EYE -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ZEALOTS_PER_EYE_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SLASH_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, color, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
@@ -1321,20 +1301,21 @@ public class RenderListener {
 
             }
             case BIRCH_PARK_RAINMAKER_TIMER -> {
+                if (WATER_BUCKET == null) WATER_BUCKET = Items.WATER_BUCKET.getDefaultInstance();
                 renderItem(graphics, WATER_BUCKET, x, y);
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case ENDSTONE_PROTECTOR_DISPLAY -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(IRON_GOLEM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
                 x += 16 + 2 + MC.font.width(renderComponent) + 2;
 
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_GROUP_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
 
@@ -1371,20 +1352,20 @@ public class RenderListener {
                 this.drawCollectedEssences(graphics, x, y, buttonLocation != null, true);
             }
             case DUNGEON_DEATH_COUNTER -> {
-                graphics.guiRenderState.submitGuiElement(
+                graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(MORT_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case ROCK_PET_TRACKER -> {
-                renderItem(graphics, ItemUtils.getTexturedHead("DUMMY_ROCK"), x, y);
+                renderItem(graphics, ItemUtils.getTexturedHeadItem("DUMMY_ROCK"), x, y);
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
             }
             case DOLPHIN_PET_TRACKER -> {
-                renderItem(graphics, ItemUtils.getTexturedHead("DUMMY_DOLPHIN"), x, y);
+                renderItem(graphics, ItemUtils.getTexturedHeadItem("DUMMY_DOLPHIN"), x, y);
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
 
@@ -1435,6 +1416,7 @@ public class RenderListener {
                     DrawUtils.drawText(graphics, secretsLine, centerX - (totalWidth / 2F), drawY, color);
                 }
 
+                if (CHEST == null) CHEST = Blocks.CHEST.asItem().getDefaultInstance();
                 renderItem(graphics, CHEST, x, y);
             }
             case SPIRIT_SCEPTRE_DISPLAY -> {
@@ -1476,7 +1458,7 @@ public class RenderListener {
 
                 if (isDummy || green > 0) {
                     Component greenComponent = Component.literal(TextUtils.formatNumber(green));
-                    renderItem(graphics, ItemUtils.getTexturedHead("GREEN_CANDY"), currentX, y);
+                    renderItem(graphics, ItemUtils.getTexturedHeadItem("GREEN_CANDY"), currentX, y);
                     currentX += 17; // 16 (item) + 1 (gap)
 
                     DrawUtils.drawText(graphics, greenComponent, currentX, y + 4, color);
@@ -1484,7 +1466,7 @@ public class RenderListener {
                 }
 
                 if (isDummy || purple > 0) {
-                    renderItem(graphics, ItemUtils.getTexturedHead("PURPLE_CANDY"), currentX, y);
+                    renderItem(graphics, ItemUtils.getTexturedHeadItem("PURPLE_CANDY"), currentX, y);
                     currentX += 17;
 
                     DrawUtils.drawText(graphics, Component.literal(TextUtils.formatNumber(purple)), currentX, y + 4, color);
@@ -1556,7 +1538,7 @@ public class RenderListener {
                 if (displayBottle != null) {
                     renderItem(graphics, displayBottle.getItemStack(), x, y);
                 } else /*buttonLocation != null*/ {
-                    renderItem(graphics, ItemUtils.getTexturedHead("DUMMY_THUNDER_BOTTLE"), x, y);
+                    renderItem(graphics, ItemUtils.getTexturedHeadItem("DUMMY_THUNDER_BOTTLE"), x, y);
                 }
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
@@ -1652,7 +1634,7 @@ public class RenderListener {
         }
     }
 
-    public void drawCollectedEssences(GuiGraphics graphics, float x, float y, boolean usePlaceholders, boolean hideZeroes) {
+    public void drawCollectedEssences(GuiGraphicsExtractor graphics, float x, float y, boolean usePlaceholders, boolean hideZeroes) {
         InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         float currentX = x;
@@ -1697,7 +1679,7 @@ public class RenderListener {
             }
             currentY = y + row * 18;
 
-            graphics.guiRenderState.submitGuiElement(
+            graphics.guiRenderState.addGuiElement(
                     new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(essenceType.getIdentifier()), graphics.pose(), currentX, currentY, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
             );
 
@@ -1711,7 +1693,7 @@ public class RenderListener {
     /**
      * Displays the bait list. Only shows bait with count > 0.
      */
-    public void drawBaitList(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawBaitList(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         if (!main.getPlayerListener().isHoldingRod() && buttonLocation == null) return;
 
         Map<ItemStack, Integer> baits = BaitManager.getInstance().getBaitsInInventory();
@@ -1762,7 +1744,7 @@ public class RenderListener {
         }
     }
 
-    public void drawSlayerTrackers(GuiGraphics graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
+    public void drawSlayerTrackers(GuiGraphicsExtractor graphics, Feature feature, float scale, ButtonLocation buttonLocation) {
         boolean colorByRarity;
         boolean textMode;
         SlayerBoss slayerBoss;
@@ -1991,7 +1973,7 @@ public class RenderListener {
                         revenant.setItemSlot(EquipmentSlot.FEET, ItemUtils.createItemStack(Items.DIAMOND_BOOTS, false));
                         revenant.setItemSlot(EquipmentSlot.LEGS, ItemUtils.createItemStack(Items.CHAINMAIL_LEGGINGS, true));
                         revenant.setItemSlot(EquipmentSlot.CHEST, ItemUtils.createItemStack(Items.DIAMOND_CHESTPLATE, true));
-                        revenant.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHead("REAPER_MASK"));
+                        revenant.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHeadItem("REAPER_MASK"));
                     }
                     revenant.tickCount = (int) main.getScheduler().getTotalTicks();
                     drawEntity(graphics, revenant, x, y, entityWidth, height, -15, scale); // left is 35
@@ -2095,7 +2077,7 @@ public class RenderListener {
         }
     }
 
-    public void drawDragonTrackers(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawDragonTrackers(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         Feature feature = Feature.DRAGON_STATS_TRACKER;
         if (feature.isEnabled(FeatureSetting.DRAGONS_NEST_ONLY)
                 && !LocationUtils.isOn("Dragon's Nest") && buttonLocation == null) {
@@ -2216,14 +2198,24 @@ public class RenderListener {
         }
     }
 
-    public void drawSlayerArmorProgress(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawSlayerArmorProgress(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         float x = Feature.SLAYER_ARMOR_PROGRESS.getActualX();
         float y = Feature.SLAYER_ARMOR_PROGRESS.getActualY();
         Feature feature = Feature.SLAYER_ARMOR_PROGRESS;
 
         int longest = -1;
-        SlayerArmorProgress[] progresses = main.getInventoryUtils().getSlayerArmorProgresses();
-        if (buttonLocation != null) progresses = DUMMY_PROGRESSES;
+        SlayerArmorProgress[] progresses;
+        if (buttonLocation != null) {
+            if (DUMMY_PROGRESSES == null) DUMMY_PROGRESSES = new SlayerArmorProgress[] {
+                    new SlayerArmorProgress(new ItemStack(Items.DIAMOND_BOOTS)),
+                    new SlayerArmorProgress(new ItemStack(Items.CHAINMAIL_LEGGINGS)),
+                    new SlayerArmorProgress(new ItemStack(Items.DIAMOND_CHESTPLATE)),
+                    new SlayerArmorProgress(new ItemStack(Items.LEATHER_HELMET))
+            };
+            progresses = DUMMY_PROGRESSES;
+        } else {
+            progresses = main.getInventoryUtils().getSlayerArmorProgresses();
+        }
         for (SlayerArmorProgress progress : progresses) {
             if (progress == null) continue;
 
@@ -2271,7 +2263,7 @@ public class RenderListener {
         }
     }
 
-    private void drawPetDisplay(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    private void drawPetDisplay(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         if (main.getUtils().isOnRift()) return;
 
         Feature feature = Feature.PET_DISPLAY;
@@ -2345,14 +2337,14 @@ public class RenderListener {
         renderItem(graphics, petSkull, x, y, line);
     }
 
-    private void renderItem(GuiGraphics graphics, ItemStack item, float x, float y) {
+    private void renderItem(GuiGraphicsExtractor graphics, ItemStack item, float x, float y) {
         renderItem(graphics, item, x, y, 1);
     }
 
     /**
      * The main purpose is scale the item for make it compatible for add new lines e.g. scale with two for add 2nd line
      */
-    private void renderItem(GuiGraphics graphics, ItemStack item, float x, float y, float scale) {
+    private void renderItem(GuiGraphicsExtractor graphics, ItemStack item, float x, float y, float scale) {
         if (item == null || item.isEmpty()) return;
 
         Matrix3x2fStack poseStack = graphics.pose();
@@ -2361,23 +2353,40 @@ public class RenderListener {
             poseStack.scale(scale);
         }
         poseStack.translate(x / scale, y / scale);
-        graphics.renderItem(item, 0, 0);
+        graphics.item(item, 0, 0);
         poseStack.popMatrix();
     }
 
-    public static void renderItemAndOverlay(GuiGraphics graphics, ItemStack item, String name, float x, float y) {
+    public static void renderItemAndOverlay(GuiGraphicsExtractor graphics, ItemStack item, String name, float x, float y) {
         if (item == null || item.isEmpty()) return;
 
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
         poseStack.translate(x, y);
-        graphics.renderItem(item, 0, 0);
-        graphics.renderItemDecorations(MC.font, item, 0, 0, name);
+        graphics.item(item, 0, 0);
+        graphics.itemDecorations(MC.font, item, 0, 0, name);
         poseStack.popMatrix();
     }
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
-    public void drawItemPickupLog(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawItemPickupLog(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
+        if (DUMMY_PICKUP_LOG == null) DUMMY_PICKUP_LOG = List.of(
+                new ItemDiff(
+                        Component.literal("Forceful Ember Chestplate").withColor(ColorCode.DARK_PURPLE.getColor()),
+                        1,
+                        new ItemStack(Items.CHAINMAIL_CHESTPLATE)
+                ),
+                new ItemDiff(Component.literal("Oak Boat").withColor(ColorCode.WHITE.getColor()),
+                        -1,
+                        new ItemStack(Items.OAK_BOAT)
+                ),
+                new ItemDiff(
+                        Component.literal("Aspect of the End").withColor(ColorCode.BLUE.getColor()),
+                        1,
+                        new ItemStack(Items.DIAMOND_SWORD)
+                )
+        );
+
         Feature feature = Feature.ITEM_PICKUP_LOG;
         float x = feature.getActualX();
         float y = feature.getActualY();
@@ -2447,7 +2456,7 @@ public class RenderListener {
         }
     }
 
-    public void drawDeployableStatus(GuiGraphics graphics, float scale, ButtonLocation buttonLocation) {
+    public void drawDeployableStatus(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         DeployableManager.DeployableEntry activeDeployable = DeployableManager.getInstance().getActiveDeployable();
         if (buttonLocation != null && activeDeployable == null) {
             activeDeployable = DeployableManager.DUMMY_DEPLOYABLE_ENTRY;
@@ -2472,7 +2481,7 @@ public class RenderListener {
      * |  | XXs
      * ----
      */
-    private void drawCompactDeployableStatus(GuiGraphics graphics, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
+    private void drawCompactDeployableStatus(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
         Feature feature = Feature.DEPLOYABLE_STATUS_DISPLAY;
         float x = feature.getActualX();
         float y = feature.getActualY();
@@ -2525,7 +2534,7 @@ public class RenderListener {
      * ---- +X ❁
      * XXs
      */
-    private void drawDetailedDeployableStatus(GuiGraphics graphics, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
+    private void drawDetailedDeployableStatus(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation, Deployable deployable, int seconds) {
         Feature feature = Feature.DEPLOYABLE_STATUS_DISPLAY;
         float x = feature.getActualX();
         float y = feature.getActualY();
@@ -2712,7 +2721,7 @@ public class RenderListener {
         HealingCircleManager.renderHealingCircleOverlays(source, poseStack);
     }
 
-    private void drawDeployableArmorStand(GuiGraphics graphics, ArmorStand deployableArmorStand, float x, float y, float scale) {
+    private void drawDeployableArmorStand(GuiGraphicsExtractor graphics, ArmorStand deployableArmorStand, float x, float y, float scale) {
         Vector3f translation = new Vector3f(0.0F, 1.5F + 0.0625F * deployableArmorStand.getScale(), 0.0F);
         Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
         Quaternionf rotation4 = Axis.XP.rotationDegrees(-22.0F);
@@ -2733,17 +2742,17 @@ public class RenderListener {
 
         var entityRenderer = MC.getEntityRenderDispatcher().getRenderer(deployableArmorStand);
         EntityRenderState entityRenderState = entityRenderer.createRenderState(deployableArmorStand, 1.0F);
-        graphics.submitEntityRenderState(entityRenderState, 25.0F / deployableArmorStand.getScale() * scale, translation, rotation, null, Math.round(x), Math.round(y), Math.round(x + scaledWH), Math.round(y + scaledWH));
+        graphics.entity(entityRenderState, 25.0F / deployableArmorStand.getScale() * scale, translation, rotation, null, Math.round(x), Math.round(y), Math.round(x + scaledWH), Math.round(y + scaledWH));
 
         // rollback after rendering
         deployableArmorStand.yBodyRot = prevRenderYawOffset;
         deployableArmorStand.yBodyRotO = prevPrevRenderYawOffset;
     }
-    private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float width, float height, float yaw, float scale) {
+    private void drawEntity(GuiGraphicsExtractor graphics, LivingEntity entity, float x, float y, float width, float height, float yaw, float scale) {
         drawEntity(graphics, entity, x, y, width, height, yaw, scale, 1.0F);
     }
 
-    private void drawEntity(GuiGraphics graphics, LivingEntity entity, float x, float y, float width, float height, float yaw, float scale, float entityScale) {
+    private void drawEntity(GuiGraphicsExtractor graphics, LivingEntity entity, float x, float y, float width, float height, float yaw, float scale, float entityScale) {
         Vector3f translation = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + 0.0625F * entity.getScale(), 0.0F);
         Quaternionf overrideCameraAngel = Axis.YN.rotationDegrees(-180.0F);
         Quaternionf rotation = Axis.ZP.rotationDegrees(180.0F);
@@ -2770,7 +2779,7 @@ public class RenderListener {
         height *= scale;
         var entityRenderer = MC.getEntityRenderDispatcher().getRenderer(entity);
         EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
-        graphics.submitEntityRenderState(entityRenderState, 25.0F / entity.getScale() * entityScale * scale, translation, rotation, overrideCameraAngel, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height));
+        graphics.entity(entityRenderState, 25.0F / entity.getScale() * entityScale * scale, translation, rotation, overrideCameraAngel, Math.round(x), Math.round(y), Math.round(x + width), Math.round(y + height));
 
         // rollback after rendering
         entity.setYRot(oYRot);

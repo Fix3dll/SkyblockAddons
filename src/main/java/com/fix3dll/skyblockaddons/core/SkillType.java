@@ -22,13 +22,26 @@ public enum SkillType {
     HUNTING("Hunting", Items.LEAD, false);
 
     private final String skillName;
-    @Getter private final ItemStack item;
+    private final Item rawItem;
     @Getter private final boolean cosmetic;
 
-    SkillType(String skillName, Item item, boolean isCosmetic) {
+    private ItemStack cachedItemStack;
+
+    SkillType(String skillName, Item rawItem, boolean isCosmetic) {
         this.skillName = skillName;
-        this.item = new ItemStack(item);
+        this.rawItem = rawItem;
         this.cosmetic = isCosmetic;
+    }
+
+    /**
+     * Lazily creates and caches the ItemStack.
+     * @return {@link ItemStack} for this skill type rendering
+     */
+    public ItemStack getItem() {
+        if (this.cachedItemStack == null) {
+            this.cachedItemStack = this.rawItem.getDefaultInstance();
+        }
+        return this.cachedItemStack;
     }
 
     public static SkillType getFromString(String text) {
@@ -39,4 +52,5 @@ public enum SkillType {
         }
         return null;
     }
+
 }

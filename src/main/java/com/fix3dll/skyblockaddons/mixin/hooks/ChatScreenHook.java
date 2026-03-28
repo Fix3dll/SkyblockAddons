@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.multiplayer.chat.GuiMessageSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +67,7 @@ public class ChatScreenHook {
                     main.getScheduler().scheduleTask(scheduledTask -> {
                         if (MC.player != null) {
                             ChatScreenHook.logNextChatComponent = true;
-                            MC.gui.getChat().addMessage(Component.empty(), null, Utils.SBA_MESSAGE_TAG);
+                            MC.gui.getChat().addMessage(Component.empty(), null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG);
                         }
                     }, 0);
 

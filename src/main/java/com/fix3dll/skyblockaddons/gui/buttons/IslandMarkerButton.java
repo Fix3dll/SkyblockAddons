@@ -6,7 +6,7 @@ import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import lombok.Getter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -34,10 +34,10 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
     }
 
     @Override
-    protected void renderWidget(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
-    public void drawButton(GuiGraphics graphics, float islandX, float islandY, float expansion, boolean hovered) {
+    public void drawButton(GuiGraphicsExtractor graphics, float islandX, float islandY, float expansion, boolean hovered) {
         float width = 50 * expansion;
         float height = width * (100 / 81F); // Ratio is 81w : 100h
 
@@ -53,7 +53,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
         int color = ARGB.white(hovered ? 1F : 0.6F);
 
         Matrix3x2fStack poseStack = graphics.pose();
-        graphics.guiRenderState.submitGuiElement(
+        graphics.guiRenderState.addGuiElement(
                 new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, RenderListener.textureSetup(PORTAL_ICON), graphics.pose(), x, y, 0, 0, width, height, width, height, color, graphics.scissorStack.peek())
         );
 
@@ -61,7 +61,7 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
             poseStack.pushMatrix();
             float textScale = 2.5F * expansion;
             poseStack.scale(textScale, textScale);
-            graphics.guiRenderState.submitText(
+            graphics.guiRenderState.addText(
                     new SbaTextRenderState(
                             getMessage().getVisualOrderText(),
                             graphics.pose(),

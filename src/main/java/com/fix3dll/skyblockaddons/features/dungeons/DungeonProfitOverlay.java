@@ -21,7 +21,7 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -598,7 +598,7 @@ public class DungeonProfitOverlay {
 
     /**
      * Flattens a row list into a {@link List} of {@link Component} suitable for
-     * {@link GuiGraphics#setTooltipForNextFrame}. {@link PairRow} entries are joined with space padding;
+     * {@link GuiGraphicsExtractor#setTooltipForNextFrame}. {@link PairRow} entries are joined with space padding;
      * {@link SeparatorRow} entries become empty components.
      * @param font     font used for space-padding calculation
      * @param rows     row list to flatten
@@ -626,7 +626,7 @@ public class DungeonProfitOverlay {
      * Renders the profit overlay to the right of the container GUI using the pre-computed {@link PreparedOverlay}.
      * Pair rows are drawn with label flush-left and value flush-right; separator rows advance the cursor without drawing.
      * For the Croesus context, hovering a row triggers a pre-computed tooltip via
-     * {@link GuiGraphics#setTooltipForNextFrame}. Updates the REI exclusion zone.
+     * {@link GuiGraphicsExtractor#setTooltipForNextFrame}. Updates the REI exclusion zone.
      * No-op if the feature is disabled or no overlay data is cached.
      * @param screen    the currently open screen
      * @param graphics  the current render context
@@ -634,7 +634,7 @@ public class DungeonProfitOverlay {
      * @param mouseY    current mouse y in GUI coordinates
      * @param tickDelta partial tick for animations (currently unused)
      */
-    public static void render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
+    public static void render(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickDelta) {
         if (Feature.DUNGEON_PROFIT_OVERLAY.isDisabled()) return;
         if (!(screen instanceof ContainerScreen cs)) return;
 
