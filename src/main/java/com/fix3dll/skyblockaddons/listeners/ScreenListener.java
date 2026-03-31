@@ -415,10 +415,8 @@ public class ScreenListener {
             if (pet.getPetInfo().isActive()) {
                 petCacheManager.setCurrentPet(null);
             } else {
-                if (clickedButton.getRight() != 1) {
+                if (clickedButton.getRight() != 1 /*1==right click*/) {
                     petCacheManager.setCurrentPet(pet);
-                } else { /*right click*/
-                    petCacheManager.removePet(index);
                 }
             }
             // lastClickedButton has completed its task, time to clean up
