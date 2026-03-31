@@ -448,8 +448,12 @@ public class ScreenListener {
             Pet pet = petMap.get(index);
             if (pet.getPetInfo().isActive()) {
                 petCacheManager.setCurrentPet(null);
-            } else if (clickedButton.getRight() != 1 /*right click*/) {
-                petCacheManager.setCurrentPet(pet);
+            } else {
+                if (clickedButton.getRight() != 1) {
+                    petCacheManager.setCurrentPet(pet);
+                } else { /*right click*/
+                    petCacheManager.removePet(index);
+                }
             }
             // lastClickedButton has completed its task, time to clean up
             AbstractContainerScreenHook.setLastClickedButtonOnPetsMenu(null);

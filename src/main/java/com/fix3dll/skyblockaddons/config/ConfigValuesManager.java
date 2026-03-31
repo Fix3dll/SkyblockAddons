@@ -25,8 +25,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumMap;
@@ -206,20 +206,17 @@ public class ConfigValuesManager {
                 }
             }
 
-            try {
-                File tempFile = File.createTempFile(settingsConfigFile.getName(), ".tmp", settingsConfigFile.getParentFile());
+            Path scPath = settingsConfigFile.toPath();
+            Path tempPath = null;
 
-                try (BufferedWriter writer = Files.newBufferedWriter(
-                        tempFile.toPath(), StandardCharsets.UTF_8,
-                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
-                )) {
+            try {
+                tempPath = Files.createTempFile(scPath.getParent(), scPath.getFileName().toString(), ".tmp");
+
+                try (BufferedWriter writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)) {
                     SkyblockAddons.getGson().toJson(configValues, writer);
                 }
 
-                Files.move(
-                        tempFile.toPath(), settingsConfigFile.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
-                );
+                Files.move(tempPath, scPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
             } catch (Exception ex) {
                 LOGGER.error("Error saving configurations file!", ex);
                 if (Minecraft.getInstance().player != null) {
@@ -227,9 +224,17 @@ public class ConfigValuesManager {
                             "Error saving configurations file! Check log for more detail."
                     );
                 }
+            } finally {
+                if (tempPath != null) {
+                    try {
+                        Files.deleteIfExists(tempPath);
+                    } catch (IOException ex) {
+                        LOGGER.warn("Failed to delete temp settings config file: {}", tempPath, ex);
+                    }
+                }
+                SAVE_LOCK.unlock();
             }
 
-            SAVE_LOCK.unlock();
             if (isDevMode) LOGGER.info("Config saved!");
         });
     }
