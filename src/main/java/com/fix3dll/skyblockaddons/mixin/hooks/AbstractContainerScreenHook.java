@@ -225,9 +225,10 @@ public class AbstractContainerScreenHook {
 
         // Saves clicks in Pets menu
         if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS
-                && screen.getMenu() instanceof ChestMenu
-                && !MC.hasShiftDown()) {
-            lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
+                && screen.getMenu() instanceof ChestMenu) {
+            if (!MC.hasShiftDown()) {
+                lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
+            }
             if (slotId < 54 && clickedButton == 1) {
                 // when right-clicked to pet container and remove a pet, delete the removed pet's data
                 int pageNum = main.getInventoryUtils().getInventoryPageNum();
