@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -104,20 +104,17 @@ public class PersistentValuesManager {
             boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
             if (isDevMode) LOGGER.info("Saving persistent values...");
 
-            try {
-                File tempFile = File.createTempFile(persistentValuesFile.getName(), ".tmp", persistentValuesFile.getParentFile());
+            Path pvPath = persistentValuesFile.toPath();
+            Path tempPath = null;
 
-                try (BufferedWriter writer = Files.newBufferedWriter(
-                        tempFile.toPath(), StandardCharsets.UTF_8,
-                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
-                )) {
+            try {
+                tempPath = Files.createTempFile(pvPath.getParent(), pvPath.getFileName().toString(), ".tmp");
+
+                try (BufferedWriter writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)) {
                     SkyblockAddons.getGson().toJson(persistentValues, writer);
                 }
 
-                Files.move(
-                        tempFile.toPath(), persistentValuesFile.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
-                );
+                Files.move(tempPath, pvPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
             } catch (Exception ex) {
                 LOGGER.error("Error saving persistent values!", ex);
                 if (Minecraft.getInstance().player != null) {
@@ -125,10 +122,18 @@ public class PersistentValuesManager {
                             "Error saving persistent values! Check log for more detail."
                     );
                 }
+            } finally {
+                if (tempPath != null) {
+                    try {
+                        Files.deleteIfExists(tempPath);
+                    } catch (IOException ex) {
+                        LOGGER.warn("Failed to delete temp persistent values file: {}", tempPath, ex);
+                    }
+                }
+                SAVE_LOCK.unlock();
             }
 
             if (isDevMode) LOGGER.info("Persistent values saved!");
-            SAVE_LOCK.unlock();
         });
     }
 
