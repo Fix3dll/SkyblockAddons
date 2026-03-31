@@ -16,10 +16,11 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Setter @Getter
@@ -67,7 +68,7 @@ public class PetCacheManager {
     }
 
     /**
-     * Saves the pet cache to {@code configconfig/skyblockaddons/petCache.json} in the user's Minecraft folder.
+     * Saves the pet cache to {@code config/skyblockaddons/petCache.json} in the user's Minecraft folder.
      */
     public void saveValues() {
         // TODO: Better error handling that tries again/tells the player if it fails
@@ -79,20 +80,17 @@ public class PetCacheManager {
             boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
             if (isDevMode) LOGGER.info("Saving pet cache...");
 
-            try {
-                File tempFile = File.createTempFile(petCacheFile.getName(), ".tmp", petCacheFile.getParentFile());
+            Path petCachePath = petCacheFile.toPath();
+            Path tempPath = null;
 
-                try (BufferedWriter writer = Files.newBufferedWriter(
-                        tempFile.toPath(), StandardCharsets.UTF_8,
-                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
-                )) {
+            try {
+                tempPath = Files.createTempFile(petCachePath.getParent(), petCachePath.getFileName().toString(), ".tmp");
+
+                try (BufferedWriter writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)) {
                     SkyblockAddons.getGson().toJson(petCache, writer);
                 }
 
-                Files.move(
-                        tempFile.toPath(), petCacheFile.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE
-                );
+                Files.move(tempPath, petCachePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
             } catch (Exception ex) {
                 LOGGER.error("Error while saving pet cache!", ex);
                 if (Minecraft.getInstance().player != null) {
@@ -100,10 +98,18 @@ public class PetCacheManager {
                             "Error saving pet cache! Check log for more detail."
                     );
                 }
+            } finally {
+                if (tempPath != null) {
+                    try {
+                        Files.deleteIfExists(tempPath);
+                    } catch (IOException ex) {
+                        LOGGER.warn("Failed to delete temp pet cache file: {}", tempPath, ex);
+                    }
+                }
+                SAVE_LOCK.unlock();
             }
 
             if (isDevMode) LOGGER.info("Pet cache saved!");
-            SAVE_LOCK.unlock();
         });
     }
 
@@ -141,6 +147,15 @@ public class PetCacheManager {
 
     public void putPet(int index, PetManager.Pet pet) {
         petCache.petMap.put(index, pet);
+    }
+
+    /**
+     * Removes the pet at the given index from the cache.
+     * @param index the slot index, computed as {@code index + 45 * (pageNum - 1)}
+     * @return {@code true} if a pet was present and removed, {@code false} if the index was not in the cache
+     */
+    public boolean removePet(int index) {
+        return petCache.petMap.remove(index) != null;
     }
 
 }
