@@ -1655,8 +1655,8 @@ public class PlayerListener {
                         apiItemId = petInfo.getPetSkyblockId() + ";" + petInfo.getPetRarity().ordinal();
 
                         int petLevel = pet.getPetLevel();
-                        if (petLevel != 0 && petLevel % 100 == 0) {
-                            extraString = "+" + petLevel;
+                        if (100 <= petLevel) {
+                            extraString = "+" + (petLevel / 100) * 100;
                             apiItemId += extraString;
                         }
                     }
