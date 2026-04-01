@@ -74,7 +74,7 @@ public enum FeatureSetting {
     HEALING_CIRCLE_OPACITY("settings.healingCircleOpacity", Feature.SHOW_HEALING_CIRCLE_WALL),
     SHOW_MISSING_ENCHANTS("settings.showMissingEnchants", Feature.ENCHANTMENT_LORE_PARSING),
     HIDE_ENCHANTMENT_LORE("settings.hideEnchantDescription", Feature.ENCHANTMENT_LORE_PARSING),
-    HIDE_GREY_ENCHANTS("settings.hideGreyEnchants", Feature.ENCHANTMENT_LORE_PARSING),
+    HIDE_VANILLA_ENCHANTS("settings.hideVanillaEnchants", Feature.ENCHANTMENT_LORE_PARSING),
     ENCHANT_LAYOUT("enchantLayout.title", Feature.ENCHANTMENT_LORE_PARSING),
     HIGHLIGHT_ENCHANTMENTS("settings.highlightSpecialEnchantments", Feature.ENCHANTMENT_LORE_PARSING),
     PERFECT_ENCHANT_COLOR("enchants.superTier", Feature.ENCHANTMENT_LORE_PARSING),

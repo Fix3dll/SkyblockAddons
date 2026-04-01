@@ -50,6 +50,7 @@
     "ConnectionMixin",
     "InventoryMixin",
     "ItemMixin",
+    "ItemStackMixin",
     "libautoupdateMixin",
     "LivingEntityMixin",
     "PauseScreenMixin",

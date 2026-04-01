@@ -28,7 +28,8 @@ public abstract class AvatarRendererMixin {
 
     @WrapOperation(method = "isEntityUpsideDown(Lnet/minecraft/world/entity/Avatar;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Avatar;isModelPartShown(Lnet/minecraft/world/entity/player/PlayerModelPart;)Z"))
     public boolean sba$isModelPartShown(Avatar instance, PlayerModelPart part, Operation<Boolean> original) {
-        return LivingEntityRendererHook.isCoolPerson || instance.isModelPartShown(part);
+        return (LivingEntityRendererHook.isCoolPerson && SkyblockAddons.getInstance().getUtils().isOnSkyblock())
+                || instance.isModelPartShown(part);
     }
 
 }
