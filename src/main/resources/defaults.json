@@ -211,7 +211,7 @@
     "settings": {
       "SHOW_MISSING_ENCHANTS": true,
       "HIDE_ENCHANTMENT_LORE": false,
-      "HIDE_GREY_ENCHANTS": true,
+      "HIDE_VANILLA_ENCHANTS": true,
       "ENCHANT_LAYOUT": "NORMAL",
       "HIGHLIGHT_ENCHANTMENTS": true,
       "PERFECT_ENCHANT_COLOR": -2,
