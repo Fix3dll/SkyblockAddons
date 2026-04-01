@@ -11,6 +11,7 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
 import com.google.gson.annotations.Expose;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -65,7 +66,7 @@ public class PetManager {
 
                     Pet oldPet = main.getPetCacheManager().getPet(sbaPetIndex);
 
-                    if (oldPet == null || oldPet.getItemStack() == null || !oldPet.displayName.equals(pet.displayName) || !oldPet.petInfo.equals(pet.petInfo)) {
+                    if (oldPet == null || oldPet.getItemStack() == null || !oldPet.equals(pet)) {
                         main.getPetCacheManager().putPet(sbaPetIndex, pet);
                         petsUpdated = true;
                     }
@@ -186,8 +187,8 @@ public class PetManager {
             Pet newPet = new Pet(itemStack, displayName, petLevel, petInfo);
 
             if (petInfo.isActive()) {
-                if (oldPet == null || oldPet.getItemStack() == null || !oldPet.displayName.equals(displayName) || !oldPet.petInfo.equals(petInfo)) {
-                    main.getPetCacheManager().setCurrentPet(newPet);
+                if (oldPet == null || oldPet.getItemStack() == null || !oldPet.equals(newPet)) {
+                    main.getPetCacheManager().getPetCache().setCurrentPet(newPet);
                 }
             }
 
@@ -238,14 +239,14 @@ public class PetManager {
     }
 
     @SuppressWarnings("FieldMayBeFinal")
-    @Getter
+    @Getter @EqualsAndHashCode(onlyExplicitlyIncluded = true)
     public static class Pet {
-        private String displayName;
-        private int petLevel;
-        private PetInfo petInfo;
+        @EqualsAndHashCode.Include private String displayName;
+        @EqualsAndHashCode.Include private int petLevel;
+        @EqualsAndHashCode.Include private PetInfo petInfo;
         private CompressedStorage compressedStorage = new CompressedStorage(); // compressed ItemStack
         @Expose(serialize = false, deserialize = false)
-        private ItemStack itemStack;
+        private transient ItemStack itemStack;
 
         public Pet(ItemStack stack, String displayName, int petLevel, PetInfo petInfo) {
             this.displayName = displayName;

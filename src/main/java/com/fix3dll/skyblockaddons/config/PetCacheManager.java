@@ -34,7 +34,7 @@ public class PetCacheManager {
     private PetCache petCache = new PetCache();
 
     public static class PetCache {
-        private PetManager.Pet currentPet = null;
+        @Setter private PetManager.Pet currentPet = null;
 
         /**
          * key = index + 45 * (pageNum - 1), value = {@link PetManager.Pet}
@@ -122,7 +122,7 @@ public class PetCacheManager {
     }
 
     public void setCurrentPet(PetManager.Pet pet, boolean updateEquipment) {
-        if (petCache.currentPet != pet) {
+        if (pet == null || !pet.equals(petCache.currentPet)) {
             petCache.currentPet = pet;
             saveValues();
         }
