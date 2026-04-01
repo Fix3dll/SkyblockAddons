@@ -438,7 +438,6 @@ public class ItemUtils {
         return extraAttributes.getString("petInfo")
                 .map(str -> SkyblockAddons.getGson().fromJson(str, PetInfo.class))
                 .orElse(null);
-
     }
 
     public static List<Component> getItemLoreComponent(ItemStack itemStack) {
