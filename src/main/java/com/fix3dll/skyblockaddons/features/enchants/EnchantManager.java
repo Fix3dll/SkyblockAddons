@@ -22,7 +22,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +39,6 @@ public class EnchantManager {
 
     // Catches successive [ENCHANT] [ROMAN NUMERALS OR DIGITS], as well as stacking enchants listing total stacked number
     public static final Pattern ENCHANTMENT_PATTERN = Pattern.compile("(?<enchant>[A-Za-z][A-Za-z -]+) (?<levelNumeral>[IVXLCDM]+)(?=, |$| [\\d,]+$)");
-    private static final Pattern GREY_ENCHANT_PATTERN = Pattern.compile("^(Respiration|Aqua Affinity|Depth Strider|Efficiency).*");
     private static final String COMMA = ", ";
     private static final Cache LORE_CACHE = new Cache();
     /**
@@ -88,9 +86,8 @@ public class EnchantManager {
 
         Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
         int startEnchant = -1, endEnchant = -1, maxTooltipWidth = 0;
-        int indexOfLastGreyEnchant = accountForAndRemoveGreyEnchants(loreList, item);
         Map<String, Integer> attributes = ItemUtils.getAttributes(item);
-        for (int i = indexOfLastGreyEnchant == -1 ? 0 : indexOfLastGreyEnchant + 1; i < loreList.size(); i++) {
+        for (int i = 0; i < loreList.size(); i++) {
             Component line = loreList.get(i);
             String strippedLine = TextUtils.stripColor(line.getString());
             if (startEnchant == -1) {
@@ -344,39 +341,6 @@ public class EnchantManager {
             }
         }
         return false;
-    }
-
-    /**
-     * Counts (and optionally removes) vanilla grey enchants prepended to the first 1-2 lore lines.
-     * Removal is controlled by {@link FeatureSetting#HIDE_GREY_ENCHANTS}.
-     * @param tooltip the tooltip being built
-     * @param item    the item to which the tooltip corresponds
-     * @return the last index of a grey enchantment line, or {@code -1} if none were found
-     *         or if all grey enchants were removed
-     */
-    private static int accountForAndRemoveGreyEnchants(List<Component> tooltip, ItemStack item) {
-        // No grey enchants will be added if there is no vanilla enchantments tag
-        if (item.getEnchantments() == ItemEnchantments.EMPTY || item.getEnchantments().isEmpty()) {
-            return -1;
-        }
-        int lastGreyEnchant = -1;
-        boolean removeGreyEnchants = Feature.ENCHANTMENT_LORE_PARSING.isEnabled(FeatureSetting.HIDE_GREY_ENCHANTS);
-
-        // Start at index 1 since index 0 is the title
-        int total = 0;
-        for (int i = 1; total < 1 + item.getEnchantments().size() && i < tooltip.size(); total++) { // only a max of 2 gray enchants are possible
-            String line = tooltip.get(i).getString();
-            if (GREY_ENCHANT_PATTERN.matcher(line).matches()) {
-                lastGreyEnchant = i;
-
-                if (removeGreyEnchants) {
-                    tooltip.remove(i);
-                }
-            } else {
-                i++;
-            }
-        }
-        return removeGreyEnchants ? -1 : lastGreyEnchant;
     }
 
     /**
