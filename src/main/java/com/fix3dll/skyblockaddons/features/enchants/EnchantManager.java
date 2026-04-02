@@ -394,6 +394,7 @@ public class EnchantManager {
         static final int MISSING_ENCHANTS_PER_LINE = 3;
 
         private ArrayList<Component> cachedBefore = new ArrayList<>();
+        private ArrayList<String> cachedBeforeStrings = new ArrayList<>();
         @Getter ArrayList<Component> cachedAfter = new ArrayList<>();
         boolean configChanged = false;
         Set<FormattedEnchant> formattedEnchants = Collections.emptySet();
@@ -420,6 +421,10 @@ public class EnchantManager {
          */
         public void updateBefore(List<Component> loreBeforeModifications, ItemStack itemStack) {
             cachedBefore = new ArrayList<>(loreBeforeModifications);
+            this.cachedBeforeStrings = new ArrayList<>(loreBeforeModifications.size());
+            for (Component line : loreBeforeModifications) {
+                this.cachedBeforeStrings.add(line.getString());
+            }
             this.itemStack = itemStack;
             formattedEnchants = Collections.emptySet();
             missingEnchants = null;
@@ -575,9 +580,9 @@ public class EnchantManager {
 
         /**
          * Returns {@code true} if the cache entry is valid for the given lore list and item.
-         * Checks {@link ItemStack} identity, lore size, and element identity via {@code !=}, since
-         * component equality is reference-based. The element check catches the edge case where
-         * another mod replaces a component at an existing index without changing list size.
+         * <p>
+         * Validates the item identity, lore size, and line contents. It uses a fast reference check
+         * followed by a pre-calculated string comparison to maintain performance and handle edge cases.
          * @param loreList  the unmodified lore list passed to {@link EnchantManager#parseEnchants}
          * @param itemStack the item being rendered
          * @return {@code true} if the stored post-parse result can be reused, {@code false} otherwise
@@ -587,7 +592,12 @@ public class EnchantManager {
                 return false;
             }
             for (int i = 0; i < loreList.size(); i++) {
-                if (loreList.get(i) != cachedBefore.get(i)) {
+                Component currentLine = loreList.get(i);
+                Component cachedLine = cachedBefore.get(i);
+                if (currentLine == cachedLine) {
+                    continue;
+                }
+                if (!loreList.get(i).getString().equals(cachedBeforeStrings.get(i))) {
                     return false;
                 }
             }
