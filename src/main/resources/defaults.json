@@ -79,12 +79,18 @@
     }
   },
   "HEALTH_BAR": {
-    "value": false,
+    "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
-      -48.0,
-      -44.0
+      -91.0,
+      -41.0
     ],
+    "barSizes": [
+      0.5,
+      5.0
+    ],
+    "guiScale": 4.5,
+    "color": -65536,
     "settings": {
       "CHANGE_BAR_COLOR_WITH_POTIONS": true,
       "HEALTH_PREDICTION": false,
@@ -95,10 +101,12 @@
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
-      -66.0,
-      -49.0
+      -165.0,
+      -40.75
     ],
+    "guiScale": 1.5,
     "settings": {
+      "X_ALLIGNMENT": true,
       "HIDE_HEALTH_TEXT_ON_RIFT": false,
       "HEART_INSTEAD_HEALTH_ON_RIFT": false,
       "HEALTH_TEXT_ICON": false
@@ -141,10 +149,11 @@
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
-      -19.0,
-      -49.0
+      -52.0,
+      -40.75
     ],
     "settings": {
+      "X_ALLIGNMENT": true,
       "HIDE_HEALTH_UPDATES_ON_RIFT": false
     }
   },
