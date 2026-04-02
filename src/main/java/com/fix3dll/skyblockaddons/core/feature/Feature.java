@@ -459,7 +459,7 @@ public enum Feature {
      * @param scale Float GUI Scale
      */
     public void setGuiScale(float scale) {
-        this.featureData.setGuiScale(Math.max(Math.min(scale, 5.0F), 0.5F));
+        this.featureData.setGuiScale(Math.clamp(scale, 0.5F, 5.0F));
     }
 
     public int getColor() {
@@ -512,6 +512,9 @@ public enum Feature {
     }
 
     public void setChroma(boolean chroma) {
+        if (!chroma && TURN_ALL_FEATURES_CHROMA.isEnabled()) {
+            TURN_ALL_FEATURES_CHROMA.setEnabled(false);
+        }
         this.featureData.setChroma(chroma);
     }
 

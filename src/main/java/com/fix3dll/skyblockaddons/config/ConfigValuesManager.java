@@ -312,7 +312,10 @@ public class ConfigValuesManager {
     }
 
     public void putDefaultCoordinates(Feature feature) {
-        Pair<Float, Float> coords = DEFAULT_FEATURE_DATA.get(feature).getCoords();
+        Pair<Float, Float> coords = Objects.requireNonNull(
+                DEFAULT_FEATURE_DATA.get(feature),
+                "There is no default FeatureData for " + feature
+        ).getCoords();
         if (coords != null) {
             feature.getFeatureData().setCoords(coords.clonePair());
         }
@@ -328,8 +331,25 @@ public class ConfigValuesManager {
     }
 
     public void putDefaultGuiScale(Feature feature) {
-        float defaultScale = DEFAULT_FEATURE_DATA.get(feature).getGuiScale();
+        float defaultScale = Objects.requireNonNull(
+                DEFAULT_FEATURE_DATA.get(feature),
+                "There is no default FeatureData for " + feature
+        ).getGuiScale();
         feature.setGuiScale(defaultScale);
+    }
+
+    public void resetFeatureVisuals(Feature feature) {
+        FeatureData<?> defaults = Objects.requireNonNull(
+                DEFAULT_FEATURE_DATA.get(feature),
+                "There is no default FeatureData for " + feature
+        );
+        FeatureData<?> data = feature.getFeatureData();
+        data.setAnchorPoint(defaults.getAnchorPoint());
+        data.setCoords(defaults.getCoords().clonePair());
+        data.setBarSizes(defaults.getBarSizes().clonePair());
+        data.setGuiScale(defaults.getGuiScale());
+        data.setColor(defaults.getColor());
+        feature.setChroma(false);
     }
 
     /**

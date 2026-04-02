@@ -817,8 +817,12 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             ButtonLocation lastHoveredButton = resizing
                     ? buttonLocations.get(draggedFeature)
                     : getHoveredFeatureButton(event.x(), event.y());
-            if (lastHoveredButton  != null) {
-                main.getConfigValuesManager().putDefaultGuiScale(lastHoveredButton.getFeature());
+            if (lastHoveredButton != null) {
+                if (MC.hasShiftDown()) {
+                    main.getConfigValuesManager().resetFeatureVisuals(lastHoveredButton.getFeature());
+                } else {
+                    main.getConfigValuesManager().putDefaultGuiScale(lastHoveredButton.getFeature());
+                }
             }
         } else if (event.button() == 2) {
             this.isMiddlePressed = true;

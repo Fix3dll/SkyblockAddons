@@ -116,11 +116,11 @@ public class FeatureData<T> {
     }
 
     public float getSizesX() {
-        return Math.min(Math.max(this.barSizes.getLeft(), .25F), 1);
+        return Math.clamp(this.barSizes.getLeft(), .25F, 1);
     }
 
     public float getSizesY() {
-        return Math.min(Math.max(this.barSizes.getRight(), .25F), 1);
+        return Math.clamp(this.barSizes.getRight(), .25F, 1);
     }
 
 }
