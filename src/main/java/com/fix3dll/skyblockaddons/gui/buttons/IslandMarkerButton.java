@@ -50,7 +50,8 @@ public class IslandMarkerButton extends SkyblockAddonsButton {
         float x = centerX - (width / 2);
         float y = centerY - (height / 2);
 
-        int color = ARGB.white(hovered ? 1F : 0.6F);
+        float alpha = hovered ? (IslandWarpGui.selectedMarker == this.marker ? 1.0F : 0.9F) : 0.6F;
+        int color = ARGB.white(alpha);
 
         Matrix3x2fStack poseStack = graphics.pose();
         graphics.guiRenderState.submitGuiElement(
