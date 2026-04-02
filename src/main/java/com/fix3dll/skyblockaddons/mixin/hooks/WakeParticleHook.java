@@ -1,30 +1,27 @@
 package com.fix3dll.skyblockaddons.mixin.hooks;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.atlas.Atlases;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
 
 import java.util.List;
 
-/**
- * @see com.fix3dll.skyblockaddons.mixin.transformers.AtlasManagerMixin
- */
 public class WakeParticleHook {
 
     private static final Minecraft MC = Minecraft.getInstance();
     private static final List<TextureAtlasSprite> sprites;
 
     static {
-        TextureAtlas sbaAtlas = MC.getAtlasManager().getAtlasOrThrow(Atlases.PARTICLES);
+        TextureAtlas vanillaAtlas = MC.getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES);
         sprites = List.of(
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/0")),
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/1")),
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/2")),
-                sbaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/3"))
+                vanillaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/0")),
+                vanillaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/1")),
+                vanillaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/2")),
+                vanillaAtlas.getSprite(SkyblockAddons.resourceLocation("blank_splash/3"))
         );
     }
 
