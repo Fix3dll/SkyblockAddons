@@ -26,10 +26,10 @@ public class WakeParticleMixin implements WakeParticleExtension {
     }
 
     @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/WakeParticle;setSprite(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;)V"))
-    public TextureAtlasSprite sba$tick_setSprite(TextureAtlasSprite original, @Local int i) {
+    public TextureAtlasSprite sba$tick_setSprite(TextureAtlasSprite original, @Local(name = "life") int life) {
         if (!sba$blankSprite) return original;
 
-        TextureAtlasSprite blankSprite = WakeParticleHook.getBlankSprite(i);
+        TextureAtlasSprite blankSprite = WakeParticleHook.getBlankSprite(life);
         return blankSprite == null ? original :  blankSprite;
     }
 
