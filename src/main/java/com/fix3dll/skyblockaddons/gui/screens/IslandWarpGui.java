@@ -34,13 +34,15 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
     private static final Window WINDOW = MC.getWindow();
 
+    public static float IMAGE_SCALED_DOWN_FACTOR = 0.75F;
+
     private static int TOTAL_WIDTH;
     private static int TOTAL_HEIGHT;
 
     public static float SHIFT_LEFT;
     public static float SHIFT_TOP;
 
-    private Marker selectedMarker;
+    public static Marker selectedMarker;
 
     public static float ISLAND_SCALE;
 
@@ -51,6 +53,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     @Override
     public void init() {
         super.init();
+        selectedMarker = null;
 
         for (Island island : Island.values()) {
             if (island == Island.JERRYS_WORKSHOP
@@ -140,8 +143,6 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
         detectClosestMarker(mouseX, mouseY);
     }
-
-    public static float IMAGE_SCALED_DOWN_FACTOR = 0.75F;
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
@@ -342,11 +343,12 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         THE_WASTELAND("wasteland", "The Wasteland", Island.CRIMSON_ISLE, 330, 160),
         DRAGONTAIL("dragontail", "Dragontail", Island.CRIMSON_ISLE, 140, 150),
         SCARLETON("scarleton", "Scarleton", Island.CRIMSON_ISLE, 400, 220),
-        SMOLDERING_TOMB("smoldering", "Smoldering Tomb", Island.CRIMSON_ISLE, 350, 80),
+        SMOLDERING_TOMB("smoldering", "Smoldering Tomb", Island.CRIMSON_ISLE, 480, 140),
 
         THE_BARN("barn", Translations.getMessage("warpMenu.spawn"), Island.THE_BARN, 140, 150),
         MUSHROOM_DESERT("desert", Translations.getMessage("warpMenu.spawn"), Island.MUSHROOM_DESERT, 250, 320),
         TRAPPER("trapper", "Trapper's Hut", Island.MUSHROOM_DESERT, 185, 85),
+        MOBYS_SHOP("glowing", "Moby's Shop", Island.MUSHROOM_DESERT, 165, 165),
 
         GOLD_MINE("gold", Translations.getMessage("warpMenu.spawn"), Island.GOLD_MINE, 86, 259),
 
