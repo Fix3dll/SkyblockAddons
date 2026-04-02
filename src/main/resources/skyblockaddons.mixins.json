@@ -12,7 +12,6 @@
   },
   "client": [
     "AbstractContainerScreenMixin",
-    "AtlasManagerMixin",
     "AvatarRendererMixin",
     "ChatComponentMixin",
     "ChatScreenMixin",
