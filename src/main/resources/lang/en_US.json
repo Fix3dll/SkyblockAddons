@@ -413,7 +413,7 @@
     "reloadingResources": "Reloading resources...",
     "resourcesReloaded": "Resources reloaded.",
     "locationEditGui": {
-      "atOpening": "TIP: You can adjust the scaling with the mouse wheel and increase the ratio by holding Shift. With right mouse click you can change the scale of that feature to default. You can also move the hovered feature with the WASD or arrow keys. You can also open the settings by hovering your mouse over the feature you want to open the settings for and clicking the mouse wheel button."
+      "atOpening": "TIP: Scroll to scale a feature (hold Shift to scale faster). Right-click to reset its scale, or Shift + Right-click to reset all visual properties. Use WASD/arrow keys to move the feature, and middle-click to open its settings."
     },
     "classColoredTeammateRequirement": "Entity Outlines and Outline Dungeon Teammate features must be enabled",
     "perkpocalypseUnknown": "Mayor Jerry's Perkpocalypse mayor is not known! Click here to update Perkpocalypse mayor.",
