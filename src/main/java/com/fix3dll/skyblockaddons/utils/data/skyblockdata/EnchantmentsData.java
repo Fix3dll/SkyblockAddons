@@ -151,17 +151,42 @@ public class EnchantmentsData {
 
         public Style getStyle(int level) {
             Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
-            FeatureSetting setting;
-            if (level >= maxLevel)       setting = FeatureSetting.PERFECT_ENCHANT_COLOR;
-            else if (level > goodLevel)  setting = FeatureSetting.GREAT_ENCHANT_COLOR;
-            else if (level == goodLevel) setting = FeatureSetting.GOOD_ENCHANT_COLOR;
-            else                         setting = FeatureSetting.POOR_ENCHANT_COLOR;
-            int color = feature.getAsNumber(setting).intValue();
-            if (color == ColorCode.CHROMA.getColor()) {
-                return Style.EMPTY.withColor(DrawUtils.CHROMA_TEXT_COLOR);
+            FeatureSetting colorSetting, boldSetting, italicSetting, underlinedSetting, strikethroughSetting;
+            if (level >= maxLevel) {
+                colorSetting         = FeatureSetting.PERFECT_ENCHANT_COLOR;
+                boldSetting          = FeatureSetting.PERFECT_ENCHANT_BOLD;
+                italicSetting        = FeatureSetting.PERFECT_ENCHANT_ITALIC;
+                underlinedSetting    = FeatureSetting.PERFECT_ENCHANT_UNDERLINED;
+                strikethroughSetting = FeatureSetting.PERFECT_ENCHANT_STRIKETHROUGH;
+            } else if (level > goodLevel) {
+                colorSetting         = FeatureSetting.GREAT_ENCHANT_COLOR;
+                boldSetting          = FeatureSetting.GREAT_ENCHANT_BOLD;
+                italicSetting        = FeatureSetting.GREAT_ENCHANT_ITALIC;
+                underlinedSetting    = FeatureSetting.GREAT_ENCHANT_UNDERLINED;
+                strikethroughSetting = FeatureSetting.GREAT_ENCHANT_STRIKETHROUGH;
+            } else if (level == goodLevel) {
+                colorSetting         = FeatureSetting.GOOD_ENCHANT_COLOR;
+                boldSetting          = FeatureSetting.GOOD_ENCHANT_BOLD;
+                italicSetting        = FeatureSetting.GOOD_ENCHANT_ITALIC;
+                underlinedSetting    = FeatureSetting.GOOD_ENCHANT_UNDERLINED;
+                strikethroughSetting = FeatureSetting.GOOD_ENCHANT_STRIKETHROUGH;
             } else {
-                return Style.EMPTY.withColor(color);
+                colorSetting         = FeatureSetting.POOR_ENCHANT_COLOR;
+                boldSetting          = FeatureSetting.POOR_ENCHANT_BOLD;
+                italicSetting        = FeatureSetting.POOR_ENCHANT_ITALIC;
+                underlinedSetting    = FeatureSetting.POOR_ENCHANT_UNDERLINED;
+                strikethroughSetting = FeatureSetting.POOR_ENCHANT_STRIKETHROUGH;
             }
+            Style baseStyle = Style.EMPTY
+                    .withBold(feature.isEnabled(boldSetting))
+                    .withItalic(feature.isEnabled(italicSetting))
+                    .withUnderlined(feature.isEnabled(underlinedSetting))
+                    .withStrikethrough(feature.isEnabled(strikethroughSetting));
+
+            int colorCode = feature.getAsNumber(colorSetting).intValue();
+            return colorCode == ColorCode.CHROMA.getColor()
+                    ? baseStyle.withColor(DrawUtils.CHROMA_TEXT_COLOR)
+                    : baseStyle.withColor(colorCode);
         }
 
         @Override
@@ -195,7 +220,7 @@ public class EnchantmentsData {
 
             public Dummy(String name) {
                 loreName = name;
-                nbtName = name.toLowerCase(Locale.US).replaceAll(" ", "_");
+                nbtName = name.toLowerCase(Locale.US).replace(" ", "_");
             }
 
             @Override
