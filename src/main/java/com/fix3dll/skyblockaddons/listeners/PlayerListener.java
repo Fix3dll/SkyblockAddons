@@ -1646,7 +1646,7 @@ public class PlayerListener {
 
         switch (apiItemId) {
             case "PET" -> {
-                PetManager.Pet pet = PetManager.getInstance().getPetFromItemStack(itemStack);
+                PetManager.Pet pet = PetManager.getInstance().getPetFromItemStack(itemStack, false);
 
                 if (pet != null) {
                     PetInfo petInfo = pet.getPetInfo();

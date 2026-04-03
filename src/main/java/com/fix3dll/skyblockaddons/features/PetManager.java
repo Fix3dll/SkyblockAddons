@@ -169,6 +169,17 @@ public class PetManager {
      * @author Fix3dll
      */
     public Pet getPetFromItemStack(ItemStack itemStack) {
+        return getPetFromItemStack(itemStack, true);
+    }
+
+    /**
+     * Parses the petInfo in the pet's ExtraAttributes to JsonObject after than converts to {@link Pet}
+     * @param itemStack The pet ItemStack
+     * @param setCurrentPet If {@code true}, updates the cached current pet if the pet is active.
+     * @see PetInfo
+     * @author Fix3dll
+     */
+    public Pet getPetFromItemStack(ItemStack itemStack, boolean setCurrentPet) {
         String displayName;
         if (itemStack.getCustomName() != null) {
             displayName = FAVORITE_PATTERN.matcher(
@@ -183,10 +194,10 @@ public class PetManager {
 
         PetInfo petInfo = ItemUtils.getPetInfo(itemStack);
         if (petInfo != null) {
-            Pet oldPet = main.getPetCacheManager().getCurrentPet();
             Pet newPet = new Pet(itemStack, displayName, petLevel, petInfo);
 
-            if (petInfo.isActive()) {
+            if (setCurrentPet && petInfo.isActive()) {
+                Pet oldPet = main.getPetCacheManager().getCurrentPet();
                 if (oldPet == null || oldPet.getItemStack() == null || !oldPet.equals(newPet)) {
                     main.getPetCacheManager().getPetCache().setCurrentPet(newPet);
                 }
