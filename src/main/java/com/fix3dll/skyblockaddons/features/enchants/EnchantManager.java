@@ -115,12 +115,17 @@ public class EnchantManager {
         // Figure out whether the item tooltip is gonna wrap, and if so, try to make our enchantments wrap
         maxTooltipWidth = correctTooltipWidth(maxTooltipWidth);
 
-        // Get format for comma
-        boolean highlightEnchantments = feature.isEnabled(FeatureSetting.HIGHLIGHT_ENCHANTMENTS);
-        boolean commaFormatted = false;
-        MutableComponent comma = highlightEnchantments
-                ? Component.literal(COMMA).withColor(feature.getAsNumber(FeatureSetting.COMMA_ENCHANT_COLOR).intValue())
-                : Component.literal(COMMA);
+        MutableComponent comma = Component.literal(COMMA);
+        if (feature.isEnabled(FeatureSetting.HIGHLIGHT_ENCHANTMENTS)
+                && feature.isDisabled(FeatureSetting.DEFAULT_COMMA_STYLE)) {
+            comma.withStyle(style -> style
+                    .withColor(feature.getAsNumber(FeatureSetting.COMMA_ENCHANT_COLOR).intValue())
+                    .withBold(feature.isEnabled(FeatureSetting.COMMA_ENCHANT_BOLD))
+                    .withItalic(feature.isEnabled(FeatureSetting.COMMA_ENCHANT_ITALIC))
+                    .withUnderlined(feature.isEnabled(FeatureSetting.COMMA_ENCHANT_UNDERLINED))
+                    .withStrikethrough(feature.isEnabled(FeatureSetting.COMMA_ENCHANT_STRIKETHROUGH))
+            );
+        }
 
         int maxEnchantsPerLine = 0;
         boolean hasLore = false;
@@ -138,15 +143,13 @@ public class EnchantManager {
                 EnchantmentsData.Enchant enchant = enchants.getFromLore(m.group("enchant"));
                 int level = RomanNumeralParser.parseNumeral(m.group("levelNumeral"));
                 if (enchant != null) {
-                    List<Component> lineSiblings = originalLine.getSiblings();
-                    Component enchantSibling = lineSiblings.size() > counter ? lineSiblings.get(counter) : null;
+//                    extra:[{color: "light_purple",text: "",bold: 1b},
+//                           {color: "light_purple", text: "Ultimate Wise V, ",bold: 1b},...
+                    // FIXME Hypixel needs to fix these shitty Components
+//                    List<Component> lineSiblings = originalLine.getSiblings();
+//                    Component enchantSibling = lineSiblings.size() > counter ? lineSiblings.get(counter) : null;
 
-                    // Inherit comma style from the first normal enchant sibling when not highlighting
-                    if (!commaFormatted && enchantSibling != null && !highlightEnchantments && enchant.isNormal()) {
-                        commaFormatted = true;
-                        comma.withStyle(enchantSibling.getStyle());
-                    }
-                    lastEnchant = new FormattedEnchant(enchant, level, enchantSibling);
+                    lastEnchant = new FormattedEnchant(enchant, level, findSibling(originalLine, enchant));
                     // Try to add enchant to the list, otherwise find the same enchant that was already present in the list
                     if (!orderedEnchants.add(lastEnchant)) {
                         for (FormattedEnchant e : orderedEnchants) {
@@ -182,6 +185,7 @@ public class EnchantManager {
         loreList.subList(startEnchant, endEnchant + 1).clear();
 
         List<Component> insertEnchants;
+        boolean isCommaDefault = comma.getStyle().isEmpty();
         int commaLength = MC.font.width(COMMA);
         RegistrableEnum layout = feature.getAsEnum(FeatureSetting.ENCHANT_LAYOUT);
         // Pack as many enchantments as we can into one line (while not overstuffing it)
@@ -200,7 +204,10 @@ public class EnchantManager {
                     sum = 0;
                 }
                 // Add to enchant followed by a comma
-                loreLine.append(enchant.getFormattedComponent()).append(comma);
+                Component formattedEnchantComponent = enchant.getFormattedComponent();
+                loreLine.append(formattedEnchantComponent).append(
+                        isCommaDefault ? comma.copy().withStyle(formattedEnchantComponent.getStyle()) : comma
+                );
                 sum += enchant.getRenderLength() + commaLength;
             }
             // Flush any remaining enchants
@@ -216,9 +223,12 @@ public class EnchantManager {
             int i = 0;
             MutableComponent loreLine = Component.empty();
             for (FormattedEnchant enchant : orderedEnchants) {
-                loreLine.append(enchant.getFormattedComponent());
+                Component formattedEnchantComponent = enchant.getFormattedComponent();
+                loreLine.append(formattedEnchantComponent);
                 if (i % maxEnchantsPerLine < maxEnchantsPerLine - 1) {
-                    loreLine.append(comma);
+                    loreLine.append(
+                            isCommaDefault ? comma.copy().withStyle(formattedEnchantComponent.getStyle()) : comma
+                    );
                 } else {
                     insertEnchants.add(loreLine);
                     loreLine = Component.empty();
@@ -371,6 +381,19 @@ public class EnchantManager {
             maxTooltipWidth = window.getGuiScaledWidth();
         }
         return maxTooltipWidth;
+    }
+
+    private static Component findSibling(Component originalLine, EnchantmentsData.Enchant enchant) {
+        List<Component> siblings = originalLine.getSiblings();
+        if (siblings.isEmpty()) return null;
+
+        for (Component sibling : siblings) {
+            if (sibling.getString().contains(enchant.getLoreName())) {
+                return sibling;
+            }
+        }
+
+        return null;
     }
 
     /**

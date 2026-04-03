@@ -116,6 +116,7 @@
     "freezeBackpackPreview": "Freeze Backpack Preview",
     "showMissingEnchants": "Show missing enchants while holding shortcut (see Keybinds)",
     "hideVanillaEnchants": "Hide Vanilla Enchants",
+    "defaultCommaStyle": "Match the comma with the previous Enchant color, which is the default behavior",
     "zealotCounterExplosiveBow": "Zealot Counter Explosive Bow Support",
     "disableEndermanTeleportation": "Disable Enderman Teleportation",
     "changeZealotColor": "Change Zealot Color",
@@ -838,7 +839,11 @@
     "championCombatXp": "Champion Combat XP",
     "toxophiliteCombatXp": "Toxophilite Combat XP",
     "absorbLogsChopped": "Absorb Logs Chopped",
-    "maxed": "Maxed"
+    "maxed": "Maxed",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underlined": "Underlined",
+    "strikethrough": "Strikethrough"
   },
   "tooltip": {
     "lowestBinPrice": "Lowest BIN: ",

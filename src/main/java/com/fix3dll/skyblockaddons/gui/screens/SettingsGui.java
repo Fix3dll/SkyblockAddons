@@ -93,6 +93,9 @@ public class SettingsGui extends SkyblockAddonsScreen {
     private int cachedTrackX;
     private int cachedTrackHeight;
 
+    private int lastEnchantX;
+    private double lastEnchantY;
+
     public SettingsGui(Feature feature, int page, int lastPage, EnumUtils.GuiTab lastTab, EnumUtils.GUIType lastGUI) {
         super(Component.empty());
         this.feature = feature;
@@ -357,7 +360,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                     return;
                 }
 
-                boxWidth = 31;
+                boxWidth = ButtonSettingToggle.WIDTH;
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonSettingToggle(x, y, Translations.getMessage("settings.expandDeployableStatus"), setting));
@@ -435,7 +438,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 break;
 
             case TREVOR_SHOW_QUEST_COOLDOWN:
-                boxWidth = 31; // Default size and stuff.
+                boxWidth = ButtonSettingToggle.WIDTH;
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonSettingToggle(x, y, setting.getMessage(), setting));
@@ -446,7 +449,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 break;
 
             case TREVOR_HIGHLIGHT_TRACKED_ENTITY:
-                boxWidth = 31; // Default size and stuff.
+                boxWidth = ButtonSettingToggle.WIDTH;
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonSettingToggle(x, y, setting.getMessage(), setting));
@@ -457,7 +460,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 break;
 
             case CLASS_COLORED_TEAMMATE:
-                boxWidth = 31; // Default size and stuff.
+                boxWidth = ButtonSettingToggle.WIDTH;
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonSettingToggle(x, y, setting.getMessage(), setting));
@@ -486,10 +489,40 @@ public class SettingsGui extends SkyblockAddonsScreen {
             case POOR_ENCHANT_COLOR:
             case COMMA_ENCHANT_COLOR:
                 boxWidth = 100;
-                x = halfWidth - (boxWidth / 2);
-                y = getRowHeightSetting(row);
+                x = lastEnchantX = halfWidth - (boxWidth / 2) - (ButtonSettingToggle.WIDTH * 4 / 2) - 45;
+                y = lastEnchantY = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonOpenColorMenu(x, y, 100, 20, setting.getMessage(), setting));
-                if (setting == FeatureSetting.COMMA_ENCHANT_COLOR) row += 0.4F; // Last spacing
+                row--;
+                break;
+
+            case PERFECT_ENCHANT_BOLD:
+            case GREAT_ENCHANT_BOLD:
+            case GOOD_ENCHANT_BOLD:
+            case POOR_ENCHANT_BOLD:
+            case COMMA_ENCHANT_BOLD:
+                lastEnchantX += 100 + 10;
+                addRenderableWidget(new ButtonSettingToggle(lastEnchantX, lastEnchantY + 2.5, setting.getMessage(), setting));
+                row--;
+                break;
+            case PERFECT_ENCHANT_ITALIC:
+            case GREAT_ENCHANT_ITALIC:
+            case GOOD_ENCHANT_ITALIC:
+            case POOR_ENCHANT_ITALIC:
+            case COMMA_ENCHANT_ITALIC:
+            case PERFECT_ENCHANT_UNDERLINED:
+            case GREAT_ENCHANT_UNDERLINED:
+            case GOOD_ENCHANT_UNDERLINED:
+            case POOR_ENCHANT_UNDERLINED:
+            case COMMA_ENCHANT_UNDERLINED:
+                lastEnchantX -= 20;
+            case PERFECT_ENCHANT_STRIKETHROUGH:
+            case GREAT_ENCHANT_STRIKETHROUGH:
+            case GOOD_ENCHANT_STRIKETHROUGH:
+            case POOR_ENCHANT_STRIKETHROUGH:
+            case COMMA_ENCHANT_STRIKETHROUGH:
+                lastEnchantX += ButtonSettingToggle.WIDTH + 40;
+                addRenderableWidget(new ButtonSettingToggle(lastEnchantX, lastEnchantY + 2.5, setting.getMessage(), setting));
+                if (!setting.name().endsWith("_STRIKETHROUGH")) row--; // Except last one
                 break;
 
             case ENCHANT_LAYOUT:
@@ -557,7 +590,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
             default:
                 if (setting.isUniversal()) return; // see addUniversalButton()
 
-                boxWidth = 31; // Default size and stuff.
+                boxWidth = ButtonSettingToggle.WIDTH; // Default size and stuff.
                 x = halfWidth - (boxWidth / 2);
                 y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonSettingToggle(x, y, setting.getMessage(), setting));

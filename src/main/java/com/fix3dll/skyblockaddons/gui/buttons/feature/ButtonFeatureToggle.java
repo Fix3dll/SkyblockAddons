@@ -23,6 +23,9 @@ public class ButtonFeatureToggle extends ButtonFeature {
     private static final int ANIMATION_SLIDE_DISTANCE = 12;
     private static final int ANIMATION_SLIDE_TIME = 150;
 
+    public static final int WIDTH = 31;
+    public static final int HEIGHT = 15;
+
     protected long animationButtonClicked = -1;
     protected Supplier<Boolean> isEnabled;
 
@@ -31,8 +34,8 @@ public class ButtonFeatureToggle extends ButtonFeature {
      */
     public ButtonFeatureToggle(double x, double y, Feature feature) {
         super((int) x, (int) y, Component.empty(), feature);
-        this.width = 31;
-        this.height = 15;
+        this.width = WIDTH;
+        this.height = HEIGHT;
         this.isEnabled = feature::isEnabled;
     }
 
