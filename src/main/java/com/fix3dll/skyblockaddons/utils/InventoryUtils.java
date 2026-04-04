@@ -186,6 +186,14 @@ public class InventoryUtils {
 
                     if (item != null && item != ItemStack.EMPTY) {
                         Component customName = item.getCustomName();
+                        String itemId = ItemUtils.getSkyblockItemID(item);
+
+                        if ("ENCHANTED_BOOK".equals(itemId)) {
+                            Component enchantedBookName = ItemUtils.getEnchantedBookName(item);
+                            if (enchantedBookName != null) {
+                                customName = enchantedBookName;
+                            }
+                        }
 
                         if (customName != null) {
                             inventoryDifference.add(new ItemDiff(customName, diff, item));
@@ -559,11 +567,12 @@ public class InventoryUtils {
 
             // Exceptions
             String skyblockId = ItemUtils.getSkyblockItemID(itemStack);
+            String displayString = displayName.getString();
             switch (skyblockId) {
                 case "ENCHANTED_BOOK" -> {
-                    List<Component> lore = ItemUtils.getItemLoreComponent(itemStack);
-                    if (!lore.isEmpty()) {
-                        displayName = lore.getFirst();
+                    Component enchantedBookName = ItemUtils.getEnchantedBookName(itemStack);
+                    if (enchantedBookName != null) {
+                        displayString = enchantedBookName.getString();
                     }
                 }
                 case "INFINITE_SUPERBOOM_TNT", "LESSER_ORB_OF_HEALING" -> {
@@ -575,7 +584,6 @@ public class InventoryUtils {
                 }
             }
 
-            String displayString = displayName.getString();
             if (itemStack.getItem() instanceof DyeItem) {
                 if (main.getUtils().isInDungeon() && displayString.isBlank()) {
                     // Ignore Archer's ghost abilities cooldown

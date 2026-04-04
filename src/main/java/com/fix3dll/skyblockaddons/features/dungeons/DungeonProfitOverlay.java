@@ -248,8 +248,8 @@ public class DungeonProfitOverlay {
                     int amount = countOut[0] != 0 ? countOut[0] : stack.getCount();
                     Component displayName;
                     if (bazaarId.startsWith("ENCHANTMENT_")) {
-                        List<Component> lore = ItemUtils.getItemLoreComponent(stack);
-                        displayName = lore.size() > 1 ? lore.getFirst() : stack.getHoverName();
+                        Component enchantedBookName = ItemUtils.getEnchantedBookName(stack);
+                        displayName = enchantedBookName != null ? enchantedBookName : stack.getHoverName();
                     } else {
                         displayName = stack.getHoverName();
                     }
