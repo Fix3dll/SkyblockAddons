@@ -59,6 +59,7 @@ import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -86,7 +87,10 @@ public class DataUtils {
     private static final AtomicInteger activeRequests = new AtomicInteger(0);
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
+            .version(Arrays.stream(HttpClient.Version.values())
+                    .filter(v -> v.name().equals("HTTP_3"))
+                    .findFirst()
+                    .orElse(HttpClient.Version.HTTP_2))
             .followRedirects(HttpClient.Redirect.NORMAL)
             .connectTimeout(Duration.ofSeconds(30))
             .executor(executorService)
