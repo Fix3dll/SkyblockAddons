@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.core.PetInfo;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.SkyblockRune;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
+import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
@@ -697,6 +698,29 @@ public class ItemUtils {
         UUID uuid = UUID.nameUUIDFromBytes(value.getBytes(StandardCharsets.UTF_8));
 
         return new GameProfile(uuid, "", propertyMap);
+    }
+
+    /**
+     * @since 2.3.1
+     */
+    public static Component getEnchantedBookName(ItemStack itemStack) {
+        if (itemStack == null || itemStack == ItemStack.EMPTY) {
+            return null;
+        }
+        List<Component> lore = getItemLoreComponent(itemStack);
+        if (lore == null || lore.isEmpty()) {
+            return itemStack.getCustomName();
+        }
+        for (Component component : lore) {
+            String line = component.getString();
+            if (StringUtil.isBlank(line)) continue;
+
+            Matcher m = EnchantManager.ENCHANTMENT_PATTERN.matcher(line);
+            if (m.find()) {
+                return component;
+            }
+        }
+        return itemStack.getCustomName();
     }
 
     /**
