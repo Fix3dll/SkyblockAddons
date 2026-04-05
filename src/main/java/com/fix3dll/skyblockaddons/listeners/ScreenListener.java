@@ -170,12 +170,23 @@ public class ScreenListener {
             boolean closed;
 
             if (oldGuiScreen instanceof ContainerScreen containerScreen) {
-                InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
-                if (inventoryType == InventoryType.EQUIPMENT) {
+                switch (main.getInventoryUtils().getInventoryType()) {
                     // Set eqs after close eq menu
-                    this.setEquipments(containerScreen.getMenu());
-                } else if (inventoryType == InventoryType.SKYBLOCK_MENU && main.getUtils().isOnRift()) {
-                    this.setRiftPet(containerScreen.getMenu());
+                    case EQUIPMENT -> this.setEquipments(containerScreen.getMenu());
+                    case SKYBLOCK_MENU -> {
+                        if (main.getUtils().isOnRift()) {
+                            this.setRiftPet(containerScreen.getMenu());
+                        }
+                    }
+                    case PETS -> {
+                        PetManager petManager = PetManager.getInstance();
+                        if (petManager.isCacheDirty()) {
+                            main.getPetCacheManager().saveValues();
+                            main.getPersistentValuesManager().saveValues();
+                            petManager.setCacheDirty(false);
+                        }
+                    }
+                    case null, default -> {}
                 }
                 closed = true;
             } else {
@@ -304,36 +315,42 @@ public class ScreenListener {
                         }
 
                         if (selectedPet != null) {
-                            PetCacheManager petCacheManager = main.getPetCacheManager();
+                            PetCacheManager pcm = main.getPetCacheManager();
 
                             if (selectedPet.contains("None")) {
-                                petCacheManager.setCurrentPet(null);
+                                pcm.setCurrentPetIndex(-1);
                             } else if (!isCurrentPetValid(selectedPet)) {
-                                Pet petToSet = null;
-                                for (Pet pet : petCacheManager.getPetCache().getPetMap().values()) {
+                                int petIdxToSet = Integer.MIN_VALUE;
+                                var iterator = pcm.getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+                                while (iterator.hasNext()) {
+                                    Int2ObjectMap.Entry<Pet> entry = iterator.next();
+                                    int idx = entry.getIntKey();
+                                    Pet pet = entry.getValue();
+
                                     String resolvedBoneName = resolveAncientGoldenDragonException(pet, selectedPet);
                                     String strippedPetName = TextUtils.stripColor(pet.getDisplayName());
 
                                     if (strippedPetName.endsWith(resolvedBoneName)) {
-                                        // If a similar pet is found, set the ‘petToSet’,
+                                        // If a similar pet is found, set the ‘petIdxToSet’,
                                         // but continue searching for similarities.
-                                        if (petToSet == null) {
-                                            petToSet = pet;
+                                        if (petIdxToSet == Integer.MIN_VALUE) {
+                                            petIdxToSet = idx;
                                         }
                                         // Otherwise, if there are more than one pet similarities, do not touch.
                                         else {
-                                            petToSet = null;
+                                            petIdxToSet = Integer.MIN_VALUE;
                                             break;
                                         }
                                     }
                                 }
-                                if (petToSet != null) {
-                                    petCacheManager.setCurrentPet(petToSet);
+                                if (petIdxToSet != Integer.MIN_VALUE) {
+                                    pcm.setCurrentPetIndex(petIdxToSet);
                                 }
                             }
                         }
                     }
                 }
+                PetManager.getInstance().setUpdatePetCache(true);
             } else if (inventoryType == InventoryType.KUUDRA_CHEST
                     || inventoryType == InventoryType.CATACOMBS_CHEST
                     || inventoryType == InventoryType.CROSEUS_CHEST_MENU) {
@@ -434,24 +451,22 @@ public class ScreenListener {
         PetCacheManager petCacheManager = main.getPetCacheManager();
         Int2ObjectOpenHashMap<Pet> petMap = petCacheManager.getPetCache().getPetMap();
 
-        Pair<Integer, Integer> clickedButton = AbstractContainerScreenHook.getLastClickedButtonOnPetsMenu();
+        Pair<Integer, Integer> clickedButton = AbstractContainerScreenHook.consumePetsMenuLastClick();
         if (clickedButton == null || clickedButton.getLeft() >= 54) return;
 
         int pageNum = main.getInventoryUtils().getInventoryPageNum();
         // If pageNum == 0, there is no page indicator in the title, there is only 1 pet page.
         int index = clickedButton.getLeft() + 45 * (pageNum == 0 ? 0 : pageNum -1);
 
-        if (petMap.containsKey(index)) {
-            Pet pet = petMap.get(index);
+        Pet pet = petMap.get(index);
+        if (pet != null) {
             if (pet.getPetInfo().isActive()) {
-                petCacheManager.setCurrentPet(null);
+                petCacheManager.setCurrentPetIndex(-1);
             } else {
                 if (clickedButton.getRight() != 1 /*1==right click*/) {
-                    petCacheManager.setCurrentPet(pet);
+                    petCacheManager.setCurrentPetIndex(index);
                 }
             }
-            // lastClickedButton has completed its task, time to clean up
-            AbstractContainerScreenHook.setLastClickedButtonOnPetsMenu(null);
         }
     }
 
@@ -465,16 +480,18 @@ public class ScreenListener {
 
         if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS_PANE)) {
             // Be sure current pet is same on cache
-            main.getPetCacheManager().setCurrentPet(null, false);
+            main.getPetCacheManager().setCurrentPetIndex(-1, false);
             SkyblockEquipment.PET.setItemStack(petItem);
         } else if (petItem.is(Items.PLAYER_HEAD)) {
             Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
             Int2ObjectOpenHashMap<Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
 
             if (newPet != null) {
-                for (Int2ObjectMap.Entry<Pet> entry : petMap.int2ObjectEntrySet()) {
+                var iterator = petMap.int2ObjectEntrySet().fastIterator();
+                while (iterator.hasNext()) {
+                    Int2ObjectMap.Entry<Pet> entry = iterator.next();
                     int entryKey = entry.getIntKey();
-                    Pet entryValue = petMap.get(entryKey);
+                    Pet entryValue = entry.getValue();
 
                     if (newPet.getPetInfo().getUniqueId().equals(entryValue.getPetInfo().getUniqueId())) {
                         petMap.put(entryKey, newPet);
