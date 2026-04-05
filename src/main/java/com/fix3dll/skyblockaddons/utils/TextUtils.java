@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -572,44 +570,9 @@ public class TextUtils {
         }
         return builder.toString();
     }
-    /**
-     * Recursively performs an action upon a chat component and its siblings
-     * This code is adapted from Skytils
-     * <p>
-     * https://github.com/Skytils/SkytilsMod/commit/35b1fbed1613f07bd422c61dbe3d261218b8edc6
-     * <p>
-     * I, Sychic, the author of this code grant usage under the terms of the MIT License.
-     * @param chatComponent root chat component
-     * @param action action to be performed
-     * @author Sychic
-     */
-    public static void transformAllChatComponents(Component chatComponent, Consumer<Component> action) {
-        action.accept(chatComponent);
-        for (Component sibling : chatComponent.getSiblings()) {
-            transformAllChatComponents(sibling, action);
-        }
-    }
-
-    /**
-     * Recursively searches for a chat component to transform based on a given Predicate.
-     * <p>
-     * Important to note that this function will stop on the first successful transformation, unlike {@link #transformAllChatComponents(Component, Consumer)}
-     * @param chatComponent root chat component
-     * @param action predicate that transforms a component and reports a successful transformation
-     * @return Whether any transformation occurred
-     */
-    public static boolean transformAnyChatComponent(Component chatComponent, Predicate<Component> action) {
-        if (action.test(chatComponent)) return true;
-
-        for (Component sibling : chatComponent.getSiblings()) {
-            if (transformAnyChatComponent(sibling, action)) return true;
-        }
-
-        return false;
-    }
 
     public static String getBackpackIDFromLore(String lore) {
-        return stripColor(lore).replace("✦", "").trim().toUpperCase().replaceAll(" ", "_");
+        return stripColor(lore).replace("✦", "").trim().toUpperCase(Locale.ENGLISH).replace(" ", "_");
     }
 
     /**

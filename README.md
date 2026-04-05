@@ -20,7 +20,7 @@ Also thanks for our countless translators who help us translate this mod!
 
 Thanks to Open Source Software
 ------
-Big thanks to all the open source software we use in this project! They are all listed [here](/.github/docs/OPEN_SOURCE_SOFTWARE.md).
+Big thanks to all the open source software we use in this project! You can check out the full [Open Source Software List](/.github/docs/OPEN_SOURCE_SOFTWARE.md), and find all related copyright and license acknowledgments in our [Attribution Notices](/.github/docs/NOTICES.md).
 
 For Contributors
 ------
