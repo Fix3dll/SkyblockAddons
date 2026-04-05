@@ -26,7 +26,7 @@ public class LowestBinRequest extends RemoteFileRequest<Object2DoubleMap<String>
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final String URL = "https://moulberry.codes/lowestbin.json.gz";
+    private static final String URL = "https://api.eliteskyblock.com/resources/auctions/neu";
 
     private static final AtomicBoolean apiLowestBinError = new AtomicBoolean(false);
     private static final AtomicReference<ScheduledTask> updateTaskRef = new AtomicReference<>();
