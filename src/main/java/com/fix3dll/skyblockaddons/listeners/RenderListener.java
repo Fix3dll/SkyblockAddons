@@ -213,10 +213,6 @@ public class RenderListener {
 
     @Setter private float maxRiftHealth = 0.0F;
 
-    // caching
-    private PetManager.Pet pet = null;
-    private ItemStack petSkull = null;
-
     private final ArrayList<Component> deployableDisplayBuffer = new ArrayList<>();
     private final ArrayList<Component> deployableExpandBuffer = new ArrayList<>();
 
@@ -2275,15 +2271,10 @@ public class RenderListener {
         if (main.getUtils().isOnRift()) return;
 
         Feature feature = Feature.PET_DISPLAY;
-        PetManager.Pet newPet = main.getPetCacheManager().getCurrentPet();
-        if (newPet == null) {
-            return;
-        } else if (pet != newPet) {
-            pet = newPet;
-            petSkull = newPet.getItemStack();
-        }
+        PetManager.Pet currentPet = main.getPetCacheManager().getCurrentPet();
+        if (currentPet == null) return;
 
-        Component displayName = Component.literal(pet.getDisplayName());
+        Component displayName = Component.literal(currentPet.getDisplayName());
 
         float x = feature.getActualX();
         float y = feature.getActualY();
@@ -2294,7 +2285,7 @@ public class RenderListener {
         PetItemStyle style = (PetItemStyle) feature.getAsEnum(FeatureSetting.PET_ITEM_STYLE);
         int line = 1; // maybe new lines can be added in the future?
         // Second line
-        if (style != PetItemStyle.NONE && pet.getPetInfo().getHeldItemId() != null) {
+        if (style != PetItemStyle.NONE && currentPet.getPetInfo().getHeldItemId() != null) {
             height *= 2;
             width += 18;
             line++;
@@ -2312,19 +2303,19 @@ public class RenderListener {
 
         switch (style) {
             case DISPLAY_NAME:
-                if (pet.getPetInfo().getHeldItemId() == null) break;
+                if (currentPet.getPetInfo().getHeldItemId() == null) break;
 
                 String petItemDisplayName = PetManager.getInstance().getPetItemDisplayNameFromId(
-                        pet.getPetInfo().getHeldItemId()
+                        currentPet.getPetInfo().getHeldItemId()
                 );
                 DrawUtils.drawText(graphics, Component.literal("Held Item: " + petItemDisplayName), x + (18 * line), y + 16, color);
                 break;
 
             case SHOW_ITEM:
-                if (pet.getPetInfo().getHeldItemId() == null) break;
+                if (currentPet.getPetInfo().getHeldItemId() == null) break;
 
                 PetManager petManager = PetManager.getInstance();
-                String petHeldItemId = pet.getPetInfo().getHeldItemId();
+                String petHeldItemId = currentPet.getPetInfo().getHeldItemId();
 
                 ItemStack petItemStack = petManager.getPetItemFromId(petHeldItemId);
                 SkyblockRarity petItemRarity = petManager.getPetItemRarityFromId(petHeldItemId);
@@ -2342,7 +2333,7 @@ public class RenderListener {
         }
 
         // render pet
-        renderItem(graphics, petSkull, x, y, line);
+        renderItem(graphics, currentPet.getItemStack(), x, y, line);
     }
 
     private void renderItem(GuiGraphics graphics, ItemStack item, float x, float y) {

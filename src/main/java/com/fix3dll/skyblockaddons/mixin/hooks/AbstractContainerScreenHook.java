@@ -11,6 +11,7 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.features.ItemDropChecker;
+import com.fix3dll.skyblockaddons.features.PetManager;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
@@ -18,8 +19,6 @@ import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -52,6 +51,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AbstractContainerScreenHook {
     
@@ -61,7 +61,7 @@ public class AbstractContainerScreenHook {
     private static final Identifier LOCK = SkyblockAddons.identifier("lock.png");
     private static final int OVERLAY_RED = ColorCode.RED.getColor(127);
     /** (slotId, clickedButton) */
-    @Getter @Setter private static Pair<Integer, Integer> lastClickedButtonOnPetsMenu = new Pair<>(-46, -1);
+    private static final AtomicReference<Pair<Integer, Integer>> petsMenuLastClickedButtonRef = new AtomicReference<>(null);
     protected static final int REFORGE_MENU_HEIGHT = 222 - 108 + 5 * 18;
     /** Strings for reforge filter */
     private static final String TYPE_TO_MATCH = Translations.getMessage("messages.reforges");
@@ -227,19 +227,27 @@ public class AbstractContainerScreenHook {
         if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS
                 && screen.getMenu() instanceof ChestMenu) {
             if (!MC.hasShiftDown()) {
-                lastClickedButtonOnPetsMenu = new Pair<>(slotId, clickedButton);
+                petsMenuLastClickedButtonRef.set(new Pair<>(slotId, clickedButton));
+            } else if (clickedButton == 0) {
+                PetManager.getInstance().setUpdatePetCache(true);
+                petsMenuLastClickedButtonRef.set(null);
             }
             if (slotId < 54 && clickedButton == 1) {
                 // when right-clicked to pet container and remove a pet, delete the removed pet's data
                 int pageNum = main.getInventoryUtils().getInventoryPageNum();
                 int index = slotId + 45 * (pageNum == 0 ? 0 : pageNum -1);
                 main.getPetCacheManager().removePet(index);
+                PetManager.getInstance().setUpdatePetCache(true);
             }
         }
 
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.hasItem()
                 && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && Utils.isBlankGlassPane(slot.getItem())
                 && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || Utils.isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
+    }
+
+    public static Pair<Integer, Integer> consumePetsMenuLastClick() {
+        return petsMenuLastClickedButtonRef.getAndSet(null);
     }
 
     public static void renderReforgeTooltip(AbstractContainerScreen<?> screen, GuiGraphics graphics) {
@@ -494,4 +502,5 @@ public class AbstractContainerScreenHook {
             lineY += 9;
         }
     }
+
 }

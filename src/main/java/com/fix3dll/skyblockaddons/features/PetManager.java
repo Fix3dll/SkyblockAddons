@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.PetInfo;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
@@ -11,6 +12,7 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
 import com.google.gson.annotations.Expose;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +21,7 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
@@ -37,6 +40,10 @@ public class PetManager {
 
     @Setter private static Map<String, PetItem> petItems;
 
+    @Getter @Setter private volatile boolean cacheDirty = false;
+    @Setter private volatile boolean updatePetCache = false;
+    private int previousPage = -1;
+
     /**
      * Inspired by NEU
      * @author Fix3dll
@@ -44,38 +51,70 @@ public class PetManager {
     public void checkCurrentPet(Minecraft mc) {
         if (!main.getUtils().isOnSkyblock()) return;
 
-        boolean petsUpdated = false;
-        if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS && mc.screen instanceof ContainerScreen containerScreen) {
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
+        if (inventoryType == InventoryType.PETS && mc.screen instanceof ContainerScreen containerScreen) {
+            int page = main.getInventoryUtils().getInventoryPageNum();
+            if (page != previousPage) {
+                updatePetCache = true;
+            }
+            if (!updatePetCache) return;
             NonNullList<ItemStack> inventory = containerScreen.getMenu().getItems();
 
             // Pets menu size not lower than 54 slot
             if (inventory.size() < 54) return;
 
-            int pageNum = main.getInventoryUtils().getInventoryPageNum();
+            previousPage = page;
+            // For unique index slot: add 45 slot = 5 row for each page except first page
+            // If page == 0, there is no page indicator in the title, there is only 1 pet page.
+            int pageOffset = (45 * (page == 0 ? 0 : page - 1));
+
             // Ignore first and last row
-            for (int i = 10; i < inventory.size() - 10; i++) {
+            for (int i = 10; i < 54 - 10; i++) {
                 ItemStack item = inventory.get(i);
-                if (item != ItemStack.EMPTY && item.getCustomName() != null) {
+                if (item == ItemStack.EMPTY || !item.is(Items.PLAYER_HEAD)) continue;
 
-                    Pet pet = getPetFromItemStack(item);
-                    if (pet == null) continue;
+                ItemStack itemCopy = item.copy();
+                Pet newPet = getPetFromItemStack(itemCopy);
+                if (newPet == null) continue;
 
-                    // For unique index slot: add 45 slot = 5 row for each page except first page
-                    // If pageNum == 0, there is no page indicator in the title, there is only 1 pet page.
-                    int sbaPetIndex = i + 45 * (pageNum == 0 ? 0 : pageNum - 1);
+                int sbaPetIndex = i + pageOffset;
+                Pet oldPet = main.getPetCacheManager().getPet(sbaPetIndex);
 
-                    Pet oldPet = main.getPetCacheManager().getPet(sbaPetIndex);
-
-                    if (oldPet == null || oldPet.getItemStack() == null || !oldPet.equals(pet)) {
-                        main.getPetCacheManager().putPet(sbaPetIndex, pet);
-                        petsUpdated = true;
+                if (oldPet != null && oldPet.equals(newPet)) {
+                    if (newPet.petInfo.isActive() && syncActivePetEquipment(sbaPetIndex, itemCopy)) {
+                        cacheDirty = true;
                     }
+                    continue;
                 }
+
+                newPet.compressItem();
+
+                if (newPet.petInfo.isActive()) {
+                    syncActivePetEquipment(sbaPetIndex, itemCopy);
+                }
+
+                main.getPetCacheManager().putPet(sbaPetIndex, newPet);
+                cacheDirty = true;
             }
+            updatePetCache = false;
+        } else {
+            updatePetCache = true;
+            previousPage = -1;
         }
-        if (petsUpdated) {
-            main.getPetCacheManager().saveValues();
+    }
+
+    /**
+     * Registers the given index as the current pet and synchronizes its ItemStack with
+     * {@link SkyblockEquipment#PET} if the stack has changed.
+     * @return {@code true} if the equipment stack was updated
+     */
+    private boolean syncActivePetEquipment(int sbaPetIndex, ItemStack itemCopy) {
+        main.getPetCacheManager().getPetCache().setCurrentPetIdx(sbaPetIndex);
+        if (!ItemStack.matches(itemCopy, SkyblockEquipment.PET.getItemStack())) {
+            SkyblockEquipment.PET.setItemStack(itemCopy);
+            return true;
         }
+        return false;
     }
 
     /**
@@ -90,11 +129,16 @@ public class PetManager {
         ColorCode color = ColorCode.getByChar(rarityColor.charAt(0));
         SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
 
-        for (Pet pet : main.getPetCacheManager().getPetCache().getPetMap().values()) {
+        var iterator = main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+        while (iterator.hasNext()) {
+            Int2ObjectMap.Entry<Pet> entry = iterator.next();
+            int index = entry.getIntKey();
+            Pet pet = entry.getValue();
+
             if (TextUtils.stripPetName(pet.displayName).equals(petName)
                     && pet.petLevel == level
                     && pet.petInfo.getPetRarity() == rarity) {
-                main.getPetCacheManager().setCurrentPet(pet);
+                main.getPetCacheManager().setCurrentPetIndex(index);
             }
         }
     }
@@ -111,9 +155,11 @@ public class PetManager {
         SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
 
-        for (Map.Entry<Integer, Pet> petEntry : main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet()) {
-            int index = petEntry.getKey();
-            Pet pet = petEntry.getValue();
+        var iterator = main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+        while (iterator.hasNext()) {
+            Int2ObjectMap.Entry<Pet> entry = iterator.next();
+            int index = entry.getIntKey();
+            Pet pet = entry.getValue();
 
             if (TextUtils.stripPetName(pet.displayName).equals(petName) && pet.petInfo.getPetRarity() == rarity) {
                 Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
@@ -134,9 +180,10 @@ public class PetManager {
                     }
 
                     main.getPetCacheManager().putPet(index, pet);
-                    main.getPetCacheManager().saveValues();
                     if (isCurrentPet) {
-                        main.getPetCacheManager().setCurrentPet(pet);
+                        main.getPetCacheManager().setCurrentPetIndex(index);
+                    } else {
+                        main.getPetCacheManager().saveValues();
                     }
                 }
             }
@@ -149,14 +196,16 @@ public class PetManager {
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
         if (currentPet == null) return;
 
-        for (Map.Entry<Integer, Pet> petEntry : main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet()) {
-            int index = petEntry.getKey();
-            Pet pet = petEntry.getValue();
+        var iterator = main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+        while (iterator.hasNext()) {
+            Int2ObjectMap.Entry<Pet> entry = iterator.next();
+            int index = entry.getIntKey();
+            Pet pet = entry.getValue();
 
             if (pet.petInfo.getUniqueId() == currentPet.petInfo.getUniqueId()) {
                 pet.petInfo.setHeldItemId(petItemId);
                 main.getPetCacheManager().putPet(index, pet);
-                main.getPetCacheManager().setCurrentPet(pet);
+                main.getPetCacheManager().setCurrentPetIndex(index);
             }
         }
     }
@@ -164,22 +213,10 @@ public class PetManager {
     /**
      * Parses the petInfo in the pet's ExtraAttributes to JsonObject after than converts to {@link Pet}
      * @param itemStack The pet ItemStack
-     * @return {@link Pet}
      * @see PetInfo
      * @author Fix3dll
      */
     public Pet getPetFromItemStack(ItemStack itemStack) {
-        return getPetFromItemStack(itemStack, true);
-    }
-
-    /**
-     * Parses the petInfo in the pet's ExtraAttributes to JsonObject after than converts to {@link Pet}
-     * @param itemStack The pet ItemStack
-     * @param setCurrentPet If {@code true}, updates the cached current pet if the pet is active.
-     * @see PetInfo
-     * @author Fix3dll
-     */
-    public Pet getPetFromItemStack(ItemStack itemStack, boolean setCurrentPet) {
         String displayName;
         if (itemStack.getCustomName() != null) {
             displayName = FAVORITE_PATTERN.matcher(
@@ -193,46 +230,22 @@ public class PetManager {
         if (petLevel == -1) return null;
 
         PetInfo petInfo = ItemUtils.getPetInfo(itemStack);
-        if (petInfo != null) {
-            Pet newPet = new Pet(itemStack, displayName, petLevel, petInfo);
-
-            if (setCurrentPet && petInfo.isActive()) {
-                Pet oldPet = main.getPetCacheManager().getCurrentPet();
-                if (oldPet == null || oldPet.getItemStack() == null || !oldPet.equals(newPet)) {
-                    main.getPetCacheManager().getPetCache().setCurrentPet(newPet);
-                }
-            }
-
-            return newPet;
-        }
-        return null;
+        return petInfo != null ? new Pet(itemStack, displayName, petLevel, petInfo) : null;
     }
 
     public ItemStack getPetItemFromId(String petItemId) {
         PetItem petItem = getPetItemById(petItemId);
-        if (petItem != null) {
-            return petItem.getItemStack();
-        } else {
-            return new ItemStack(Blocks.STONE.asItem());
-        }
+        return petItem != null ? petItem.getItemStack(): Blocks.STONE.asItem().getDefaultInstance();
     }
 
     public String getPetItemDisplayNameFromId(String petItemId) {
         PetItem petItem = getPetItemById(petItemId);
-        if (petItem != null) {
-            return petItem.getDisplayName();
-        } else {
-            return "§cNot Found!";
-        }
+        return petItem != null ? petItem.getDisplayName() : "§cNot Found!";
     }
 
     public SkyblockRarity getPetItemRarityFromId(String petItemId) {
         PetItem petItem = getPetItemById(petItemId);
-        if (petItem != null) {
-            return petItem.getRarity();
-        } else {
-            return SkyblockRarity.ADMIN;
-        }
+        return petItem != null ? petItem.getRarity() : SkyblockRarity.ADMIN;
     }
 
     public PetItem getPetItemById(String petItemId) {
@@ -263,12 +276,28 @@ public class PetManager {
             this.displayName = displayName;
             this.petLevel = petLevel;
             this.petInfo = petInfo;
-            this.compressedStorage.setStorage(ItemUtils.getCompressedNBT(new ItemStack[]{stack}).getAsByteArray());
             this.itemStack = stack;
         }
 
+        /**
+         * Serializes {@link #itemStack} into {@link #compressedStorage} for persistent storage.
+         * Must be called before the pet is persisted, as {@link #itemStack} is transient and
+         * will not survive serialization. Has no effect if the storage is already populated.
+         */
+        public void compressItem() {
+            byte[] storage = this.compressedStorage.getStorage();
+            if (storage == null || storage.length == 0) {
+                this.compressedStorage.setStorage(ItemUtils.getCompressedNBT(new ItemStack[]{this.itemStack}).getAsByteArray());
+            }
+        }
+
+        /**
+         * Returns the pet's {@link ItemStack}, deserializing it from {@link #compressedStorage}
+         * if the transient field is absent, such as after the pet is loaded from the pet cache.
+         * Returns {@code null} if both {@link #itemStack} is absent and {@link #compressedStorage} is empty.
+         */
         public ItemStack getItemStack() {
-            if (this.itemStack == null && this.compressedStorage != null) {
+            if (this.itemStack == null && this.compressedStorage.getStorage().length != 0) {
                 List<ItemStack> list = ContainerPreviewManager.decompressItems(this.compressedStorage.getStorage());
                 if (!list.isEmpty()) {
                     this.itemStack = list.getFirst();
