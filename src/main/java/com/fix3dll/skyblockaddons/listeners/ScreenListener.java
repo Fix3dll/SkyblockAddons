@@ -151,7 +151,8 @@ public class ScreenListener {
                     }
                     DevUtils.copyNBTTagToClipboard(
                             ItemUtils.encodeItemStack(currentSlot.getItem()),
-                            ColorCode.GREEN + "Item data was copied to clipboard!"
+                            Component.literal("Item data was copied to clipboard!")
+                                     .withColor(ColorCode.GREEN.getColor())
                     );
                 }
             }

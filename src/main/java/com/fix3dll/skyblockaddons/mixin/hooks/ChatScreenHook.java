@@ -77,13 +77,15 @@ public class ChatScreenHook {
                 if (isLeftShiftDown) {
                     DevUtils.copyStringToClipboard(
                             parentComponent.toString(),
-                            ColorCode.GREEN + Translations.getMessage("messages.chatMessageCopying.formatted"),
+                            Component.literal(Translations.getMessage("messages.chatMessageCopying.formatted"))
+                                     .withColor(ColorCode.GREEN.getColor()),
                             true
                     );
                 } else {
                     DevUtils.copyStringToClipboard(
                             TextUtils.stripColor(parentComponentString),
-                            ColorCode.GREEN + Translations.getMessage("messages.chatMessageCopying.unformatted"),
+                            Component.literal(Translations.getMessage("messages.chatMessageCopying.unformatted"))
+                                     .withColor(ColorCode.GREEN.getColor()),
                             true
                     );
                 }
