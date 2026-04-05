@@ -35,7 +35,7 @@ public class LowestBinRequest extends RemoteFileRequest<Object2DoubleMap<String>
     public LowestBinRequest() {
         super(
                 URL,
-                new JSONResponseHandler<>(new TypeToken<Object2DoubleMap<String>>() {}.getType(), true),
+                new JSONResponseHandler<>(new TypeToken<Object2DoubleMap<String>>() {}.getType()),
                 new LowestBinCallback(),
                 false,
                 true
