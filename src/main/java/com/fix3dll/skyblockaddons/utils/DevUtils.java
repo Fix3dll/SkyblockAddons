@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -142,7 +141,9 @@ public class DevUtils {
                 });
 
         copyStringToClipboard(
-                stringBuilder.toString(), ColorCode.GREEN + "Sidebar copied to clipboard!", true
+                stringBuilder.toString(),
+                Component.literal("Sidebar copied to clipboard!").withColor(ColorCode.GREEN.getColor()),
+                true
         );
     }
 
@@ -204,7 +205,10 @@ public class DevUtils {
 
         if (!stringBuilder.isEmpty()) {
             copyStringToClipboard(
-                    stringBuilder.toString(), ColorCode.GREEN + "Entity data was copied to clipboard!", true
+                    stringBuilder.toString(),
+                    Component.literal("Entity data was copied to clipboard!")
+                             .withColor(ColorCode.GREEN.getColor()),
+                    true
             );
         } else {
             Utils.sendErrorMessage("No entities matching the given parameters were found.");
@@ -299,7 +303,7 @@ public class DevUtils {
      * @param nbtTag the NBT tag to copy
      * @param message the message to show in chat when the NBT tag is copied successfully
      */
-    public static void copyNBTTagToClipboard(Tag nbtTag, String message) {
+    public static void copyNBTTagToClipboard(Tag nbtTag, Component message) {
         if (nbtTag == null) {
             Utils.sendErrorMessage("This item has no NBT data!");
             return;
@@ -335,7 +339,8 @@ public class DevUtils {
 
         copyStringToClipboard(
                 output.toString(),
-                ColorCode.GREEN + "Successfully copied the tab list header and footer to clipboard!",
+                Component.literal("Successfully copied the tab list header and footer to clipboard!")
+                         .withColor(ColorCode.GREEN.getColor()),
                 true
         );
     }
@@ -357,9 +362,9 @@ public class DevUtils {
                 LWJGL: %s
                 ```
                 """.formatted(cpu, gpu, version, lwjgl);
-        copyStringToClipboard(
-                output, ColorCode.GREEN + "Successfully copied the OpenGL logs to clipboard!", true
-        );
+        Component successMessage = Component.literal("Successfully copied the OpenGL logs to clipboard!")
+                                            .withColor(ColorCode.GREEN.getColor());
+        copyStringToClipboard(output, successMessage, true);
     }
 
     /**
@@ -370,7 +375,7 @@ public class DevUtils {
      * @param successMessage the custom message to show after successful copy
      * @param showToast show {@link net.minecraft.client.gui.components.toasts.Toast} instead of chat message
      */
-    public static void copyStringToClipboard(String string, String successMessage, boolean showToast) {
+    public static void copyStringToClipboard(String string, Component successMessage, boolean showToast) {
         writeToClipboard(string, successMessage, showToast);
     }
 
@@ -425,7 +430,9 @@ public class DevUtils {
             }
         }
 
-        writeToClipboard(prettyPrintNBT(nbt), ColorCode.GREEN + "Successfully copied the block data!", true);
+        Component successMessage = Component.literal("Successfully copied the block data!")
+                                            .withColor(ColorCode.GREEN.getColor());
+        writeToClipboard(prettyPrintNBT(nbt), successMessage, true);
     }
 
     /**
@@ -595,17 +602,13 @@ public class DevUtils {
     }
 
     // Internal methods
-    private static void writeToClipboard(String text, String successMessage, boolean showToast) {
+    private static void writeToClipboard(String text, Component successMessage, boolean showToast) {
         try {
             MC.keyboardHandler.setClipboard(text);
             if (successMessage != null) {
                 if (showToast) {
                     try {
-                        MC.getToastManager().addToast(new SystemToast( // TODO custom Toast
-                                new SystemToast.SystemToastId(2000L),
-                                Utils.COMPONENT_TITLE,
-                                Component.literal(successMessage)
-                        ));
+                        Utils.sendToast(successMessage);
                     } catch (Exception e) {
                         LOGGER.error("Couldn't add Toast!", e);
                         Utils.sendMessage(successMessage);

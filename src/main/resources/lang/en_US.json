@@ -318,7 +318,9 @@
     "dungeonProfitOverlay": {
       "title": "Dungeon Profit Overlay",
       "showKismetFeatherLoss": "Show cost of Kismet Feather as loss"
-    }
+    },
+    "configExportButton": "Export Settings",
+    "configImportButton": "Import Settings"
   },
   "messages": {
     "enchants": "Enchants",
@@ -426,6 +428,23 @@
     "itemPricesInTooltip": {
       "apiError": "An error occurred while retrieving %apiName% data from API! Check the console or latest.log for detailed information.",
       "apiUpdated": "%apiName% data has been updated from API."
+    },
+    "configExport": {
+      "success": {
+        "all": "All configurations exported to clipboard.",
+        "single": "\"%feature%\" configurations exported to clipboard.",
+        "multiple": "Specified configurations exported to clipboard."
+      }
+    },
+    "configImport": {
+      "formatError": "There is no data in the required format in the clipboard!",
+      "errorMessage": "Could not decode the clipboard string! (%type% Error)",
+      "noChanges": "No feature configurations found in clipboard data.",
+      "success": {
+        "all": "All configurations imported from clipboard successfully.",
+        "single": "\"%feature%\" configurations imported from clipboard successfully.",
+        "multiple": "Specified configurations imported from clipboard successfully."
+      }
     }
   },
   "discordStatus": {
@@ -551,6 +570,18 @@
         "reloadRes": {
           "help": "Reloads the mod's resources. The game will freeze for a few seconds."
         },
+        "exportConfig": {
+          "help": "Exports the configuration via the clipboard. If no option is specified, it includes the entire configurations.json",
+          "detailedHelp": {
+            "description": "Exports the specified features.",
+            "options": {
+              "feature": "Enum names such as \"LOCK_SLOTS\" and others shown in the command suggestions. You can add multiple features by separating them with a comma."
+            }
+          }
+        },
+        "importConfig": {
+          "help": "It tries to import the configuration assumed to be in the clipboard."
+        },
         "resetZealotCounter": {
           "help": "Resets all the zealot counter counts."
         },
@@ -604,6 +635,9 @@
         },
         "folder": {
           "error": "An error occurred while trying to open the mods folder: %s"
+        },
+        "exportConfig": {
+          "notFound": "'%feature%' feature not found!"
         },
         "resetZealotCounter": {
           "resetSuccess": "Zealot counters reset!"
@@ -860,5 +894,9 @@
     "missingTitle": "Missing: ",
     "valueBin": "Value (BIN):",
     "profitLoss": "Profit/Loss:"
+  },
+  "descriptions": {
+    "exportConfig": "Exports the configuration via the clipboard.",
+    "importConfig": "Imports the configuration assumed to be present in the clipboard."
   }
 }

@@ -17,6 +17,7 @@ import com.fix3dll.skyblockaddons.gui.buttons.ButtonSlider;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonText;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonOpenColorMenu;
 import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonSettingToggle;
+import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonSolid;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
@@ -152,6 +153,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
             }
             addUniversalButton();
             computeScrollGeometry();
+            addImportExportButton();
         }
         addSocials(this::addScrollIgnoredButton);
     }
@@ -618,6 +620,25 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 row++;
             }
         }
+    }
+
+    private void addImportExportButton() {
+        // buttonWidth = 100, buttonHeight = 20
+        double x = width / 2D;
+        double y = BOX_Y + boxHeight + 5; // 5 padding
+
+        addScrollIgnoredButton(new ButtonSolid(
+                x - 110, y, 100, 20, ButtonSolid.DEFAULT_BOX_COLOR,
+                Translations.getMessage("settings.configExportButton"),
+                () -> main.getConfigValuesManager().exportFeatureDataToClipboard(feature),
+                "descriptions.exportConfig"
+        ));
+        addScrollIgnoredButton(new ButtonSolid(
+                x + 10, y, 100, 20, ButtonSolid.DEFAULT_BOX_COLOR,
+                Translations.getMessage("settings.configImportButton"),
+                () -> main.getConfigValuesManager().importFeatureDataFromClipboard(),
+                "descriptions.importConfig"
+        ));
     }
 
     // Each row is spaced 0.08 apart, starting at 0.17.
