@@ -19,6 +19,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.chat.GuiMessageSource;
 import net.minecraft.client.multiplayer.chat.GuiMessageTag;
@@ -292,6 +293,22 @@ public class Utils {
 
     public static void sendErrorMessage(String errorText) {
         sendMessage(Component.literal("Error: ").append(ColorCode.RED + errorText), false);
+    }
+
+    public static void sendToast(Component message) {
+        sendToast(message, Utils.COMPONENT_TITLE);
+    }
+
+    public static void sendToast(Component message, Component title) {
+        sendToast(message, title, 2000L);
+    }
+
+    public static void sendToast(Component message, Component title, long displayTimeMs) {
+        MC.getToastManager().addToast(new SystemToast( // TODO custom Toast
+                new SystemToast.SystemToastId(displayTimeMs),
+                title,
+                message
+        ));
     }
 
     /**
@@ -749,12 +766,6 @@ public class Utils {
         }
         return false;
     }
-
-    private boolean depthEnabled;
-    private boolean blendEnabled;
-    private boolean alphaEnabled;
-    private int blendFunctionSrcFactor;
-    private int blendFunctionDstFactor;
 
     public boolean isModLoaded(String modId) {
         return isModLoaded(modId, null);

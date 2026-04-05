@@ -1,20 +1,28 @@
 package com.fix3dll.skyblockaddons.config;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
+import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.Setter;
+import lombok.ToString;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StringUtil;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -29,9 +37,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -42,6 +52,7 @@ public class ConfigValuesManager {
     private static final int CONFIG_VERSION = 11;
 
     private static final ReentrantLock SAVE_LOCK = new ReentrantLock();
+    private static final String EXPORT_PREFIX = "SBA:";
 
     private final File configFile;
     private final File settingsConfigFile;
@@ -53,7 +64,7 @@ public class ConfigValuesManager {
 
     private ConfigValues configValues = new ConfigValues();
 
-    @Setter
+    @Setter @ToString
     public static class ConfigValues {
 
         private int configVersion = Integer.MIN_VALUE;
@@ -352,6 +363,81 @@ public class ConfigValuesManager {
         feature.setChroma(false);
     }
 
+    public void exportFeatureDataToClipboard(Feature... featureListForExport) {
+        ConfigValues exportValues = new ConfigValues();
+        exportValues.configVersion = configValues.configVersion;
+        exportValues.lastFeatureId = configValues.lastFeatureId;
+        if (featureListForExport != null && featureListForExport.length > 0) {
+            for (Feature featureToExport : featureListForExport) {
+                exportValues.features.put(featureToExport, featureToExport.getFeatureData());
+            }
+        } else {
+            exportValues.features.putAll(configValues.features);
+        }
+
+        String json = SkyblockAddons.getGson().toJson(exportValues);
+        var messages = buildTransferMessage(exportValues.features.keySet(), true);
+        boolean showToast = exportValues.features.size() == 1 || Minecraft.getInstance().player == null;
+
+        if (showToast) {
+            LOGGER.info(messages.success().getString());
+        }
+
+        DevUtils.copyStringToClipboard(
+                EXPORT_PREFIX + new String(Base64.getEncoder().encode(json.getBytes()), StandardCharsets.UTF_8),
+                messages.success().withStyle(style -> style
+                        .withHoverEvent(new HoverEvent.ShowText(messages.hover()))
+                        .withColor(ColorCode.GREEN.getColor())
+                ),
+                showToast
+        );
+    }
+
+    public void importFeatureDataFromClipboard() {
+        String clipboard = Minecraft.getInstance().keyboardHandler.getClipboard();
+        if (StringUtil.isBlank(clipboard) || !clipboard.startsWith(EXPORT_PREFIX)) {
+            sendImportError(Translations.getMessage("messages.configImport.formatError"), null);
+            return;
+        }
+
+        String decodedJson;
+        try {
+            decodedJson = new String(Base64.getDecoder().decode(clipboard.substring(EXPORT_PREFIX.length())), StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            sendImportError(Translations.getMessage("messages.configImport.errorMessage", "Base64"), e);
+            return;
+        }
+
+        ConfigValues importValues;
+        try {
+            importValues = SkyblockAddons.getGson().fromJson(decodedJson, ConfigValues.class);
+        } catch (Exception e) {
+            sendImportError(Translations.getMessage("messages.configImport.errorMessage", "JSON"), e);
+            return;
+        }
+        if (importValues == null) {
+            sendImportError(Translations.getMessage("messages.configImport.errorMessage", "JSON"), null);
+            return;
+        }
+        if (importValues.features.isEmpty()) {
+            sendImportError(Translations.getMessage("messages.configImport.noChanges"), null);
+            return;
+        }
+
+        configValues.features.putAll(importValues.features);
+        var messages = buildTransferMessage(importValues.features.keySet(), false);
+        boolean showToast = importValues.features.size() == 1 || Minecraft.getInstance().player == null;
+
+        if (showToast) {
+            Utils.sendToast(messages.success());
+        } else {
+            Utils.sendMessage(messages.success().withStyle(style -> style
+                    .withHoverEvent(new HoverEvent.ShowText(messages.hover()))
+            ));
+        }
+        saveConfig();
+    }
+
     /**
      * @return deep copy of {@code DEFAULT_FEATURE_DATA}
      */
@@ -382,6 +468,51 @@ public class ConfigValuesManager {
             LOGGER.info("Configurations backed up successfully: {}", backupFile.getPath());
         } catch (IOException e) {
             LOGGER.error("Failed to backup configurations file!", e);
+        }
+    }
+
+    private record ConfigTransferMessage(MutableComponent success, MutableComponent hover) {}
+
+    private ConfigTransferMessage buildTransferMessage(Set<Feature> features, boolean isExport) {
+        String prefix = isExport ? "messages.configExport.success" : "messages.configImport.success";
+        Component bulletPoint = Component.literal("● ").withColor(ColorCode.AQUA.getColor());
+        MutableComponent hover = Component.empty();
+        MutableComponent success;
+        int count = features.size();
+        int total = Feature.values().length;
+        int successColor = ColorCode.GREEN.getColor();
+
+        if (count == total) {
+            success = Component.literal(Translations.getMessage(prefix + ".all")).withColor(successColor);
+            hover.append(bulletPoint).append("* (" + count + "/" + total + ")");
+        } else if (count == 1) {
+            Feature feature = features.iterator().next();
+            success = Component.literal(Translations.getMessage(prefix + ".single", feature.getMessage()))
+                    .withColor(successColor);
+            hover.append(bulletPoint).append(feature.getMessage());
+        } else {
+            success = Component.literal(Translations.getMessage(prefix + ".multiple")).withColor(successColor);
+
+            int i = 0;
+            for (Feature feature : features) {
+                i++;
+                if (feature.getId() == -1) continue;
+                hover.append(bulletPoint).append(feature.getMessage());
+                if (i < count) {
+                    hover.append("\n");
+                }
+            }
+        }
+
+        return new ConfigTransferMessage(success, hover);
+    }
+
+    private void sendImportError(String message, Exception e) {
+        Utils.sendToast(Component.literal(message).withColor(ColorCode.RED.getColor()));
+        if (e != null) {
+            LOGGER.warn(message, e);
+        } else {
+            LOGGER.warn(message);
         }
     }
 

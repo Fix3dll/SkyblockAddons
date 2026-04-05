@@ -16,6 +16,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -26,11 +27,13 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -42,9 +45,9 @@ public class SkyblockAddonsCommand {
     private static final String HEADER = "§7§m                §7[ §b§lSkyblockAddons §7]§7§m                §r";
     private static final String FOOTER = "§7§m                                                     §r";
     private static final String[] SUBCOMMANDS = {"help", "edit", "folder", "resetZealotCounter", "set", "slayer",
-            "version", "reload", "reloadConfig", "reloadRes", "dev", "brand", "copyBlock", "copyEntity", "copySidebar",
-            "copyTabList", "pd", "toggleActionBarLogging", "toggleSlayerTrackerLogging", "copyOpenGL",
-            "toggleSkyBlockOreLogging"
+            "version", "reload", "reloadConfig", "reloadRes", "exportConfig", "importConfig", "dev", "brand",
+            "copyBlock", "copyEntity", "copySidebar", "copyTabList", "pd", "toggleActionBarLogging",
+            "toggleSlayerTrackerLogging", "copyOpenGL", "toggleSkyBlockOreLogging"
     };
 
     public static void initialize() {
@@ -253,17 +256,69 @@ public class SkyblockAddonsCommand {
             return 1;
         }));
 
+        builder.then(literal("exportConfig").executes(ctx -> {
+            main.getConfigValuesManager().exportFeatureDataToClipboard();
+            return 1;
+        }).then(argument("feature", StringArgumentType.greedyString()).suggests((ctx, suggestionsBuilder) -> {
+            String remaining = suggestionsBuilder.getRemaining();
+            int lastComma = remaining.lastIndexOf(',');
+
+            SuggestionsBuilder activeBuilder = lastComma >= 0
+                    ? suggestionsBuilder.createOffset(suggestionsBuilder.getStart() + lastComma + 1)
+                    : suggestionsBuilder;
+
+            String current = remaining.substring(lastComma + 1);
+
+            Set<String> alreadyAdded = lastComma >= 0
+                    ? new HashSet<>(Arrays.asList(remaining.substring(0, lastComma).split(",")))
+                    : Set.of();
+
+            for (Feature feature : Feature.values()) {
+                if (feature.getId() == -1) continue;
+                String name = feature.name();
+                if (name.startsWith(current) && !alreadyAdded.contains(name)) {
+                    activeBuilder.suggest(name);
+                }
+            }
+            return activeBuilder.buildFuture();
+        }).executes(ctx -> {
+            String featureArgs = ctx.getArgument("feature", String.class);
+            String[] parts = featureArgs.split(",");
+
+            List<Feature> features = new ArrayList<>();
+            for (String part : parts) {
+                if (part.isEmpty()) continue;
+                try {
+                    features.add(Feature.valueOf(part));
+                } catch (IllegalArgumentException e) {
+                    Utils.sendErrorMessage(Translations.getMessage("commands.responses.sba.exportConfig.notFound", part));
+                }
+            }
+            if (features.isEmpty()) return 1;
+
+            main.getConfigValuesManager().exportFeatureDataToClipboard(features.toArray(new Feature[0]));
+            return 1;
+        })));
+
+        builder.then(literal("importConfig").executes(ctx -> {
+            main.getConfigValuesManager().importFeatureDataFromClipboard();
+            return 1;
+        }));
+
         // DEV
         builder.then(literal("dev").executes(ctx -> {
             Feature.DEVELOPER_MODE.setEnabled(Feature.DEVELOPER_MODE.isDisabled());
             if (Feature.DEVELOPER_MODE.isEnabled()) {
-                Utils.sendMessage(
-                        ColorCode.GREEN + Translations.getMessage("commands.responses.sba.dev.enabled",
+                Utils.sendMessage(Component.literal(
+                        Translations.getMessage(
+                                "commands.responses.sba.dev.enabled",
                                 SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyBinding().getTranslatedKeyMessage().getString()
                         )
-                );
+                ).withColor(ColorCode.GREEN.getColor()));
             } else {
-                Utils.sendMessage(ColorCode.RED + Translations.getMessage("commands.responses.sba.dev.disabled"));
+                Utils.sendMessage(Component.literal(
+                        Translations.getMessage("commands.responses.sba.dev.disabled")
+                ).withColor(ColorCode.RED.getColor()));
             }
             return 1;
         }));
@@ -418,7 +473,7 @@ public class SkyblockAddonsCommand {
             String command = ctx.getArgument("command", String.class);
             String arg = ctx.getArgument("arg", String.class);
             if ("copy".equalsIgnoreCase(command)) {
-                DevUtils.copyStringToClipboard(arg, Translations.getMessage("messages.copied"), false);
+                DevUtils.copyStringToClipboard(arg, Component.literal(Translations.getMessage("messages.copied")), false);
             }
             return 1;
         }))));
@@ -473,6 +528,7 @@ public class SkyblockAddonsCommand {
         SLAYER_BOSS("Boss", "commands.usage.sba.slayer.detailedHelp.options.boss"),
         SLAYER_NUMBER("Number", "commands.usage.sba.slayer.detailedHelp.options.number"),
         SLAYER_STAT("Stat", "commands.usage.sba.slayer.detailedHelp.options.stat"),
+        FEATURE("Feature", "commands.usage.sba.exportConfig.detailedHelp.options.feature"),
         ;
 
         @Getter
@@ -493,20 +549,22 @@ public class SkyblockAddonsCommand {
 
     private enum Commands {
         BASE("/sba", "commands.usage.sba.base.help", null),
-        HELP("/sba help [command]", "commands.usage.sba.help.help", Collections.singletonList(CommandOption.COMMAND)),
+        HELP("/sba help [command]", "commands.usage.sba.help.help", List.of(CommandOption.COMMAND)),
         EDIT("/sba edit", "commands.usage.sba.edit.help", null),
-        SET("/sba set <zealots|eyes|totalZealots §eor§b total> <number>", "commands.usage.sba.set.zealotCounter.detailedHelp.description", Arrays.asList(CommandOption.ZEALOTS, CommandOption.EYES, CommandOption.TOTAL_ZEALOTS)),
+        SET("/sba set <zealots|eyes|totalZealots §eor§b total> <number>", "commands.usage.sba.set.zealotCounter.detailedHelp.description", List.of(CommandOption.ZEALOTS, CommandOption.EYES, CommandOption.TOTAL_ZEALOTS)),
         RESET_ZEALOT_COUNTER("/sba resetZealotCounter", "commands.usage.sba.resetZealotCounter.help", null),
         FOLDER("/sba folder", "commands.usage.sba.folder.help", null),
-        SLAYER("/sba slayer <boss> <stat> <number>", "commands.usage.sba.slayer.detailedHelp.description", Arrays.asList(CommandOption.SLAYER_BOSS, CommandOption.SLAYER_STAT, CommandOption.SLAYER_NUMBER)),
+        SLAYER("/sba slayer <boss> <stat> <number>", "commands.usage.sba.slayer.detailedHelp.description", List.of(CommandOption.SLAYER_BOSS, CommandOption.SLAYER_STAT, CommandOption.SLAYER_NUMBER)),
         VERSION("/sba version", "commands.usage.sba.version.help", null),
         RELOAD("/sba reload", "commands.usage.sba.reload.help", null),
         RELOAD_CONFIG("/sba reloadConfig", "commands.usage.sba.reloadConfig.help", null),
         RELOAD_RES("/sba reloadRes", "commands.usage.sba.reloadRes.help", null),
+        EXPORT_CONFIG("/sba exportConfig", "commands.usage.sba.exportConfig.help", List.of(CommandOption.FEATURE)),
+        IMPORT_CONFIG("/sba importConfig", "commands.usage.sba.importConfig.help", null),
         DEV("/sba dev", "commands.usage.sba.dev.detailedHelp.description", null),
         BRAND("/sba brand", "commands.usage.sba.brand.help", null,true),
-        COPY_ENTITY("/sba copyEntity [entityNames] [radius: integer]", "commands.usage.sba.copyEntity.detailedHelp.description", Arrays.asList(CommandOption.ENTITY_NAMES, CommandOption.RADIUS), true),
-        COPY_SIDEBAR("/sba copySidebar [formatted: boolean]", "commands.usage.sba.copySidebar.detailedHelp.description", Collections.singletonList(CommandOption.FORMATTED), true),
+        COPY_ENTITY("/sba copyEntity [entityNames] [radius: integer]", "commands.usage.sba.copyEntity.detailedHelp.description", List.of(CommandOption.ENTITY_NAMES, CommandOption.RADIUS), true),
+        COPY_SIDEBAR("/sba copySidebar [formatted: boolean]", "commands.usage.sba.copySidebar.detailedHelp.description", List.of(CommandOption.FORMATTED), true),
         COPY_TAB_LIST("/sba copyTabList", "commands.usage.sba.copyTabList.detailedHelp.description", null, true),
         COPY_OPENGL("/sba copyOpenGL", "commands.usage.sba.copyOpenGL.detailedHelp.description", null, true),
         COPY_BLOCK("/sba copyBlock", "commands.usage.sba.copyBlock.help", null, true),
