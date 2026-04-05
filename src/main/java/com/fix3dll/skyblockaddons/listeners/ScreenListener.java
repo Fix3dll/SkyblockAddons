@@ -446,14 +446,15 @@ public class ScreenListener {
         SkyblockEquipment.GLOVES_BRACELET.setItemStack(chestMenu.getSlot(37).getItem());
 
         ItemStack petItem = chestMenu.getSlot(47).getItem();
+        PetCacheManager pcm = main.getPetCacheManager();
 
         if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS_PANE)) {
             // Be sure current pet is same on cache
-            main.getPetCacheManager().setCurrentPetIndex(-1, false);
+            pcm.setCurrentPetIndex(-1, false);
             SkyblockEquipment.PET.setItemStack(petItem);
         } else if (petItem.is(Items.PLAYER_HEAD)) {
             Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
-            Int2ObjectOpenHashMap<Pet> petMap = main.getPetCacheManager().getPetCache().getPetMap();
+            Int2ObjectOpenHashMap<Pet> petMap = pcm.getPetCache().getPetMap();
 
             if (newPet != null) {
                 var iterator = petMap.int2ObjectEntrySet().fastIterator();
@@ -464,7 +465,8 @@ public class ScreenListener {
 
                     if (newPet.getPetInfo().getUniqueId().equals(entryValue.getPetInfo().getUniqueId())) {
                         petMap.put(entryKey, newPet);
-                        main.getPetCacheManager().saveValues();
+                        pcm.setCurrentPetIndex(entryKey, false);
+                        pcm.saveValues();
                         break;
                     }
                 }
