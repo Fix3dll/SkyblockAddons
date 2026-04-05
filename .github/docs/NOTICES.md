@@ -84,12 +84,6 @@ This project contains Java adoption of some codes from SkyHanni, which is availa
 The full licenses available at https://github.com/hannibal002/SkyHanni/blob/beta/LICENSE
 ```
 
-## Skytils
-```text
-This project contains Java adoption of some codes from Skytils, which is available under the AGPL-3.0 license. The full
-license is available at https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md
-```
-
 ##
 ```text
 This product bundles the files /gradle/wrapper/gradle-wrapper.jar, /gradle/wrapper/gradle-wrapper.properties,
@@ -139,3 +133,8 @@ This project includes images sourced from the [Hypixel Skyblock Wiki](http://hyp
 All original image content from the Hypixel Skyblock Wiki is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA 3.0)](https://creativecommons.org/licenses/by-sa/3.0/).  
 The images used in this project may have been modified (e.g., resized) but remain under the CC BY-SA 3.0 license.  
 Credit belongs to the original Hypixel Skyblock Wiki contributors. No ownership is claimed over their original work. Redistribution or reuse of these images must comply with the CC BY-SA 3.0 license terms.  
+
+
+## api.eliteskyblock.com API
+LICENSE: https://github.com/EliteFarmers/API/blob/master/LICENSE.txt  
+TOS: https://eliteskyblock.com/apiterms  

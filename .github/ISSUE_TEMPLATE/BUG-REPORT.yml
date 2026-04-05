@@ -16,6 +16,13 @@ body:
     validations:
       required: true
   - type: input
+    id: minecraftVersion
+    attributes:
+      label: Minecraft Version
+      placeholder: 26.1.1
+    validations:
+      required: true
+  - type: input
     id: modVersion
     attributes:
       label: SBA Version
@@ -28,11 +35,12 @@ body:
       label: Other Installed Mods
       description: |
         Please list the names and versions of the other mods you have installed.
-        Tip: If you have NEU, you can run `/neustats full` to list your installed mods.
+        Tip: If you are using Prism Launcher, you can export the list via "Edit > Mods > Export List" option.
+        Else If you have SkyHanni, you can run `/shmodlist` to list your installed mods.
       placeholder: |
-        Optifine M5
-        NEU 2.1.1
-        Skytils 2.3.0
+        ImmediatelyFast 1.15.1
+        SkyHanni 7.14.0
+        SkyBlockPv 1.7.3
   - type: input
     id: operatingSystem
     attributes:
