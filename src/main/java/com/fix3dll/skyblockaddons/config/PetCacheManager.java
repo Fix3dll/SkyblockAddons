@@ -34,13 +34,13 @@ public class PetCacheManager {
     private PetCache petCache = new PetCache();
 
     public static class PetCache {
-        @Setter private PetManager.Pet currentPet = null;
+        @Setter private int currentPetIdx = -1;
 
         /**
          * key = index + 45 * (pageNum - 1), value = {@link PetManager.Pet}
          * @see PetInfo
          */
-        @Getter private final Int2ObjectOpenHashMap<PetManager.Pet> petMap = new Int2ObjectOpenHashMap<>();
+        @Getter private final Int2ObjectOpenHashMap<PetManager.Pet> petMap = new Int2ObjectOpenHashMap<>(512);
     }
 
     public PetCacheManager(File mainConfigDir) {
@@ -58,6 +58,9 @@ public class PetCacheManager {
                 // If cache file is completely empty because it is corrupted, Gson will return null
                 if (petCache == null) {
                     petCache = new PetCache();
+                } else {
+                    // Restore guaranteed capacity to prevent rehash
+                    petCache.getPetMap().ensureCapacity(512);
                 }
             } catch (Exception ex) {
                 LOGGER.error("Error while loading pet cache!", ex);
@@ -114,29 +117,39 @@ public class PetCacheManager {
     }
 
     public PetManager.Pet getCurrentPet() {
-        return petCache.currentPet;
+        if (petCache.currentPetIdx == -1) return null;
+        return petCache.getPetMap().get(petCache.currentPetIdx);
     }
 
-    public void setCurrentPet(PetManager.Pet pet) {
-        setCurrentPet(pet, true);
+    public void setCurrentPetIndex(int idx) {
+        setCurrentPetIndex(idx, true);
     }
 
-    public void setCurrentPet(PetManager.Pet pet, boolean updateEquipment) {
-        if (pet == null || !pet.equals(petCache.currentPet)) {
-            petCache.currentPet = pet;
+    public int getCurrentPetIndex() {
+        return petCache.currentPetIdx;
+    }
+
+    public void setCurrentPetIndex(int idx, boolean updateEquipment) {
+        if (petCache.currentPetIdx != idx) {
+            petCache.currentPetIdx = idx;
             saveValues();
         }
 
         if (updateEquipment) {
             SkyblockEquipment eq = SkyblockEquipment.PET;
 
-            if (pet == null && !eq.isEmpty()) {
+            if (idx == -1 && !eq.isEmpty()) {
                 eq.setItemStack(eq.getEmptyStack());
                 SkyblockEquipment.saveEquipments();
-            } else if (pet != null && pet.getItemStack() != null
-                    && !ItemStack.isSameItemSameComponents(pet.getItemStack(), eq.getItemStack())) {
-                eq.setItemStack(pet.getItemStack());
-                SkyblockEquipment.saveEquipments();
+            } else if (idx != -1) {
+                PetManager.Pet currentPet = getCurrentPet();
+                if (currentPet != null) {
+                    ItemStack currentPetItemStack = currentPet.getItemStack();
+                    if (currentPetItemStack != null && !ItemStack.isSameItemSameComponents(currentPetItemStack, eq.getItemStack())) {
+                        eq.setItemStack(currentPetItemStack);
+                        SkyblockEquipment.saveEquipments();
+                    }
+                }
             }
         }
     }
