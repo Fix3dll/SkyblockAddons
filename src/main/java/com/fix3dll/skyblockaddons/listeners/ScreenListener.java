@@ -230,6 +230,7 @@ public class ScreenListener {
         Screen screen = MC.screen;
         InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
+        // Inventory loading is complete. Cancel the monitoring task and reset tracking state.
         if (inventoryChangeTimeCheckTask != null && !inventoryChangeTimeCheckTask.isCanceled()) {
             inventoryChangeTimeCheckTask.cancel();
             inventoryChangeTimeCheckTask = null;
@@ -388,6 +389,8 @@ public class ScreenListener {
      * Called when a slot in the currently opened {@code GuiContainer} changes. Used to determine if all its items have been loaded.
      */
     public void containerChanged(SimpleContainer inventory) {
+        if (listenedInventory == null) return;
+
         if (inventory.getItem(inventory.getContainerSize() - 1) != ItemStack.EMPTY) {
             SkyblockAddonsEvents.INVENTORY_LOADING_DONE.invoker().onInventoryLoadingDone();
         } else {
