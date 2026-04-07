@@ -11,6 +11,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
@@ -124,15 +126,29 @@ public class TextUtils {
      * Returns a gold formatted coin value, or a red localized {@code "None"} if the price is negative.
      * @param price the coin value to format
      * @param decimal the number of decimal places (0–5), passed to {@link #formatCoin(Number, int)}
+     * @param bold {@code true} to make the returned text bold, {@code false} otherwise
      * @return a gold {@link Component} with the formatted price, or a red {@link Component} with {@code "None"}
      * @since 2.2.3
      */
     public static Component formatPrice(double price, int decimal, boolean bold) {
+        return formatPrice(price, decimal, bold, Currency.COIN);
+    }
+
+    /**
+     * Returns a gold formatted coin value, or a red localized {@code "None"} if the price is negative.
+     * @param price the coin value to format
+     * @param decimal the number of decimal places (0–5), passed to {@link #formatCoin(Number, int)}
+     * @param bold {@code true} to make the returned text bold, {@code false} otherwise
+     * @param currency the {@link Currency} determining the suffix and color of the formatted price
+     * @return a gold {@link Component} with the formatted price, or a red {@link Component} with {@code "None"}
+     * @since 2.2.3
+     */
+    public static Component formatPrice(double price, int decimal, boolean bold, Currency currency) {
         return price < 0.0D
                 ? Component.literal(Translations.getMessage("tooltip.none"))
                 .withStyle(style -> style.withBold(bold).withColor(ColorCode.RED.getColor()))
-                : Component.literal(TextUtils.formatCoin(price, decimal) + " coins")
-                .withStyle(style -> style.withBold(bold).withColor(ColorCode.GOLD.getColor()));
+                : Component.literal(TextUtils.formatCoin(price, decimal) + currency.getSuffix())
+                .withStyle(style -> style.withBold(bold).withColor(currency.getColor()));
     }
 
     /**
@@ -857,6 +873,18 @@ public class TextUtils {
             ((StyleExtension) (Object) newStyle).sba$setChromaDisabled(true);
             return newStyle;
         });
+    }
+
+    /**
+     * @since 2.3.3
+     */
+    @AllArgsConstructor @Getter
+    public enum Currency {
+        COIN(" coins", ColorCode.GOLD.getColor()),
+        MOTE(" motes", ColorCode.LIGHT_PURPLE.getColor());
+
+        private final String suffix;
+        private final int color;
     }
 
 }
