@@ -47,6 +47,7 @@ import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.utils.RomanNumeralParser;
 import com.fix3dll.skyblockaddons.utils.ScoreboardManager;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
+import com.fix3dll.skyblockaddons.utils.TextUtils.Currency;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.requests.ElectionRequest;
@@ -1579,12 +1580,21 @@ public class PlayerListener {
                 }
             }
 
-            if (item != null && item.getNpcSellPrice() != 0.0D) {
-                double price = item.getNpcSellPrice() * countToBeShown;
-                Component npcSellPrice = TextUtils.formatPrice(price, price <= 10.0D ? 2 : 0, boldLines);
+            if (item != null) {
+                if (item.getNpcSellPrice() != 0.0D) {
+                    double price = item.getNpcSellPrice() * countToBeShown;
+                    Component npcSellPrice = TextUtils.formatPrice(price, price <= 10.0D ? 2 : 0, boldLines);
 
-                this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.npcSellPrice"))
-                        .withStyle(textColor).append(npcSellPrice));
+                    this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.npcSellPrice"))
+                            .withStyle(textColor).append(npcSellPrice));
+                }
+                if (item.getMotesSellPrice() != 0) {
+                    double price = item.getMotesSellPrice() * countToBeShown;
+                    Component npcSellPrice = TextUtils.formatPrice(price, 0, boldLines, Currency.MOTE);
+
+                    this.cachedPriceComponents.add(Component.literal(Translations.getMessage("tooltip.npcSellPrice"))
+                            .withStyle(textColor).append(npcSellPrice));
+                }
             }
         }
 
