@@ -493,22 +493,6 @@ public enum Feature {
         this.featureData.setColor(color);
     }
 
-    public @Nullable ColorCode getRestrictedColor() {
-        int featureColor = this.getColor();
-
-        for (ColorCode colorCode : ColorCode.values()) {
-            if (!colorCode.isColor()) {
-                continue;
-            }
-
-            if (colorCode.getColor() == featureColor) {
-                return colorCode;
-            }
-        }
-
-        return this.getDefaultColor();
-    }
-
     public boolean isChroma() {
         return this.featureData.isChroma();
     }

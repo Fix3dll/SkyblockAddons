@@ -1,14 +1,15 @@
 package com.fix3dll.skyblockaddons.mixin.hooks;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.ItemDropChecker;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordRPCManager;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -41,7 +42,10 @@ public class MinecraftHook {
                     int slot = MC.player.getInventory().getSelectedSlot() + 36;
                     if (main.getPersistentValuesManager().getLockedSlots().contains(slot) && slot >= 9) {
                         main.getUtils().playLoudSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.5);
-                        Utils.sendMessage(Feature.DROP_CONFIRMATION.getRestrictedColor() + Translations.getMessage("messages.slotLocked"));
+                        Utils.sendMessage(Component
+                                .literal(Translations.getMessage("messages.slotLocked"))
+                                .withColor(Feature.DROP_CONFIRMATION.getColor())
+                        );
                         ci.cancel();
                     }
                 }
@@ -54,18 +58,13 @@ public class MinecraftHook {
 
         if (Feature.LOCK_SLOTS.isEnabled() && (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())) {
             int slot = MC.player.getInventory().getSelectedSlot() + 36;
-            if (Feature.LOCK_SLOTS.isEnabled() && main.getPersistentValuesManager().getLockedSlots().contains(slot)
+            if (main.getPersistentValuesManager().getLockedSlots().contains(slot)
                     && (slot >= 9 || MC.player.containerMenu instanceof InventoryMenu && slot >= 5)) {
-
                 lastLockedSlotItemChange = System.currentTimeMillis();
             }
 
             ItemStack heldItemStack = MC.player.getMainHandItem();
-            if (heldItemStack != ItemStack.EMPTY
-                    && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled()
-                    && !main.getUtils().isInDungeon()
-                    && !ItemDropChecker.canDropItem(heldItemStack, true, false)) {
-
+            if (heldItemStack != ItemStack.EMPTY && !ItemDropChecker.canDropItem(heldItemStack, true, false)) {
                 lastLockedSlotItemChange = System.currentTimeMillis();
             }
         }

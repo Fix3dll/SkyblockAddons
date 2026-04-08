@@ -837,45 +837,42 @@ public class PlayerListener {
         if (extraAttributes != null) {
             if (Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.isEnabled() && extraAttributes.contains("baseStatBoostPercentage")) {
                 int baseStatBoost = extraAttributes.getIntOr("baseStatBoostPercentage", 0);
-                ColorCode colorCode = Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.getRestrictedColor();
-                if (colorCode == null) colorCode = ColorCode.WHITE;
+                int color = Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.getColor();
 
                 if (Feature.SHOW_BASE_STAT_BOOST_PERCENTAGE.isEnabled(FeatureSetting.BASE_STAT_COLOR_BY_RARITY)) {
                     int rarityIndex = baseStatBoost / 10;
                     if (rarityIndex < 0) rarityIndex = 0;
                     if (rarityIndex >= SkyblockRarity.values().length) rarityIndex = SkyblockRarity.values().length - 1;
 
-                    colorCode = SkyblockRarity.values()[rarityIndex].getColorCode();
+                    color = SkyblockRarity.values()[rarityIndex].getColorCode().getColor();
                 }
 
                 cachedTooltipFirstComponents.add(
                         Component.literal(Translations.getMessage("tooltip.baseStatBoost")).withColor(ColorCode.GRAY.getColor())
-                                .append(Component.literal("+" + baseStatBoost + "%").withColor(colorCode.getColor()))
+                                 .append(Component.literal("+" + baseStatBoost + "%").withColor(color))
                 );
             }
 
             EnchantManager.insertStackingEnchantProgress(cachedTooltipFirstComponents, extraAttributes);
 
             if (Feature.SHOW_SWORD_KILLS.isEnabled() && extraAttributes.contains("sword_kills")) {
-                ColorCode colorCode = Feature.SHOW_SWORD_KILLS.getRestrictedColor();
-                if (colorCode == null) colorCode = ColorCode.WHITE;
+                int color = Feature.SHOW_SWORD_KILLS.getColor();
                 int swordKills = extraAttributes.getIntOr("sword_kills", 0);
 
                 cachedTooltipFirstComponents.add(
                         Component.literal(Translations.getMessage("tooltip.swordKills")).withColor(ColorCode.GRAY.getColor())
-                                .append(Component.literal(String.valueOf(swordKills)).withColor(colorCode.getColor()))
+                                 .append(Component.literal(String.valueOf(swordKills)).withColor(color))
                 );
             }
 
             if (Feature.SHOW_ITEM_DUNGEON_FLOOR.isEnabled() && extraAttributes.contains("item_tier")) {
-                ColorCode colorCode = Feature.SHOW_ITEM_DUNGEON_FLOOR.getRestrictedColor();
-                if (colorCode == null) colorCode = ColorCode.WHITE;
+                int colorCode = Feature.SHOW_ITEM_DUNGEON_FLOOR.getColor();
                 int floor = extraAttributes.getIntOr("item_tier", 0);
                 String floorString = floor == 0 ? "Entrance" : Integer.toString(floor);
 
                 cachedTooltipFirstComponents.add(
                         Component.literal(Translations.getMessage("tooltip.itemDungeonFloor")).withColor(ColorCode.GRAY.getColor())
-                                .append(Component.literal(floorString).withColor(colorCode.getColor()))
+                                 .append(Component.literal(floorString).withColor(colorCode))
                 );
             }
         }

@@ -1,7 +1,6 @@
 {
   "DROP_CONFIRMATION": {
     "value": false,
-    "anchorPoint": "BOTTOM_MIDDLE",
     "settings": {
       "DROP_CONFIRMATION_IN_OTHER_GAMES": false
     }
@@ -204,7 +203,9 @@
   },
   "STOP_DROPPING_SELLING_RARE_ITEMS": {
     "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE"
+    "settings": {
+      "WHITELIST_COMPACTOR_ITEMS": true
+    }
   },
   "REPLACE_ROMAN_NUMERALS_WITH_NUMBERS": {
     "value": false,

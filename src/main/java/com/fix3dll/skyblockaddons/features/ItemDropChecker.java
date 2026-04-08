@@ -1,7 +1,7 @@
 package com.fix3dll.skyblockaddons.features;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
@@ -9,12 +9,14 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils.ItemClassification;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+
 /**
  * This class handles the item checking for the Stop Dropping/Selling Rare Items feature.
  * When the player tries to drop or sell an item, {@link #canDropItem(ItemStack, boolean)} is called to check
@@ -24,9 +26,9 @@ import java.util.List;
  */
 public class ItemDropChecker {
 
-    private static final long DROP_CONFIRMATION_TIMEOUT = 3000L;
-
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
+
+    private static final long DROP_CONFIRMATION_TIMEOUT = 3000L;
 
     // Variables used for checking drop confirmations
     private static ItemStack itemOfLastDropAttempt;
@@ -79,7 +81,10 @@ public class ItemDropChecker {
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
     public static boolean canDropItem(ItemStack item, boolean itemIsInHotbar, boolean playAlert) {
-        if (main.getUtils().isOnSkyblock()) {
+        if (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer()
+                && (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() || Feature.DROP_CONFIRMATION.isEnabled())) {
+            if (main.getUtils().isInDungeon()) return true; // Disabled in dungeon
+
             String itemID = ItemUtils.getSkyblockItemID(item);
             ItemClassification itemClassification = ItemUtils.getItemClassification(item);
 
@@ -97,41 +102,37 @@ public class ItemDropChecker {
             OnlineData.DropSettings dropSettings = main.getOnlineData().getDropSettings();
             List<String> blacklist = dropSettings.getDontDropTheseItems();
             List<String> whitelist = dropSettings.getAllowDroppingTheseItems();
+            SkyblockRarity minimumRarityForBlock = itemIsInHotbar
+                    ? dropSettings.getMinimumHotbarRarity()
+                    : dropSettings.getMinimumInventoryRarity();
 
-            if (itemIsInHotbar) {
-                if (itemClassification.rarity().compareTo(dropSettings.getMinimumHotbarRarity()) < 0
-                        && !blacklist.contains(itemID)) {
-                    return true;
-                } else {
-                    // Dropping rare non-whitelisted items from the hotbar is not allowed.
-                    if (whitelist.contains(itemID)) {
-                        return true;
-                    } else {
-                        if (playAlert) {
-                            playAlert();
-                        }
-                        return false;
-                    }
-                }
+            if (itemClassification.rarity().compareTo(minimumRarityForBlock) < 0 && !blacklist.contains(itemID)) {
+                return true;
             } else {
-                if (itemClassification.rarity().compareTo(dropSettings.getMinimumInventoryRarity()) < 0
-                        && !blacklist.contains(itemID)) {
+                boolean canDropItem = false;
+                if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled(FeatureSetting.WHITELIST_COMPACTOR_ITEMS)) {
+                    canDropItem = ItemUtils.getCompactorItems().containsKey(itemID);
+                }
+
+                // Dropping rare non-whitelisted items from the hotbar is not allowed.
+                if (whitelist.contains(itemID)) {
                     return true;
+                } else if (itemIsInHotbar) {
+                    if (canDropItem) return true;
+                    if (playAlert) {
+                        playAlert();
+                    }
+                    return false;
                 } else {
                     /*
                      If the item is above the minimum rarity and not whitelisted, require the player to attempt
                      to drop it three times to confirm they want to drop it.
                     */
-                    if (whitelist.contains(itemID)) {
-                        return true;
-                    } else {
-                        return dropConfirmed(item, 3, playAlert);
-                    }
+                    return canDropItem || dropConfirmed(item, 3);
                 }
             }
         } else if (Feature.DROP_CONFIRMATION.isEnabled(FeatureSetting.DROP_CONFIRMATION_IN_OTHER_GAMES)) {
-            return dropConfirmed(item, 2, playAlert);
-
+            return dropConfirmed(item, 2);
         } else {
             return true;
         }
@@ -141,13 +142,11 @@ public class ItemDropChecker {
      * Checks if the player has confirmed that they want to drop the given item stack.
      * The player confirms that they want to drop the item when they try to drop it the number of
      * times specified in {@code numberOfActions}.
-     *
      * @param item the item stack the player is attempting to drop
      * @param numberOfActions the number of times the player has to drop the item to confirm
-     * @param playAlert plays an alert sound if {@code true} and a drop attempt is denied, otherwise the sound doesn't play
      * @return {@code true} if the player has dropped the item enough
      */
-    public static boolean dropConfirmed(ItemStack item, int numberOfActions, boolean playAlert) {
+    public static boolean dropConfirmed(ItemStack item, int numberOfActions) {
         if (item == null) {
             throw new NullPointerException("Item cannot be null!");
 
@@ -167,8 +166,7 @@ public class ItemDropChecker {
             // Reset the current drop confirmation on time out or if the item being dropped changes.
             if (Util.getMillis() - timeOfLastDropAttempt > DROP_CONFIRMATION_TIMEOUT || !ItemStack.matches(item, itemOfLastDropAttempt)) {
                 resetDropConfirmation();
-                return dropConfirmed(item, numberOfActions, playAlert);
-
+                return dropConfirmed(item, numberOfActions);
             } else {
                 if (attemptsRequiredToConfirm >= 1) {
                     onDropConfirmationFail();
@@ -187,16 +185,13 @@ public class ItemDropChecker {
      * A message is sent and a sound is played notifying the player how many more times they need to drop the item.
      */
     public static void onDropConfirmationFail() {
-        ColorCode colorCode = Feature.DROP_CONFIRMATION.getRestrictedColor();
-
-        if (attemptsRequiredToConfirm >= 2) {
-            String multipleAttemptsRequiredMessage = Translations.getMessage("messages.clickMoreTimes", Integer.toString(attemptsRequiredToConfirm));
-            Utils.sendMessage(colorCode + multipleAttemptsRequiredMessage);
-
-        } else {
-            String oneMoreAttemptRequiredMessage = Translations.getMessage("messages.clickOneMoreTime");
-            Utils.sendMessage(colorCode + oneMoreAttemptRequiredMessage);
+        String message;
+        if (attemptsRequiredToConfirm >= 2) { // multipleAttemptsRequiredMessage
+            message = Translations.getMessage("messages.clickMoreTimes", Integer.toString(attemptsRequiredToConfirm));
+        } else { // oneMoreAttemptRequiredMessage
+            message = Translations.getMessage("messages.clickOneMoreTime");
         }
+        Utils.sendMessage(Component.literal(message).withColor(Feature.DROP_CONFIRMATION.getColor()));
         playAlert();
         attemptsRequiredToConfirm--;
     }
@@ -216,4 +211,5 @@ public class ItemDropChecker {
         timeOfLastDropAttempt = 0L;
         attemptsRequiredToConfirm = 0;
     }
+
 }
