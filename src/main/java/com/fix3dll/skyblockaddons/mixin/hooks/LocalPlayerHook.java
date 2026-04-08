@@ -46,10 +46,12 @@ public class LocalPlayerHook {
 
         if (heldItemStack != ItemStack.EMPTY) {
             if (!ItemDropChecker.canDropItem(heldItemStack, true)) {
-                Utils.sendMessage(Component
-                        .literal(Translations.getMessage("messages.cancelledDropping"))
-                        .withColor(Feature.STOP_DROPPING_SELLING_RARE_ITEMS.getColor())
-                );
+                if (isSkyblock) {
+                    Utils.sendMessage(Component
+                            .literal(Translations.getMessage("messages.cancelledDropping"))
+                            .withColor(Feature.STOP_DROPPING_SELLING_RARE_ITEMS.getColor())
+                    );
+                }
                 return true;
             }
 
