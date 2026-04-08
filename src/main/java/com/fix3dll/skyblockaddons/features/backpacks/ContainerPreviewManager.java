@@ -36,7 +36,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.block.Blocks;
@@ -487,7 +486,7 @@ public class ContainerPreviewManager {
                 }
 
                 if (storageKey != null) {
-                    Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getStorageCache();
+                    Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getStorageCache();
                     if (cache.get(storageKey) != null) {
                         byte[] bytes = cache.get(storageKey).getStorage();
                         List<ItemStack> items = decompressItems(bytes);
@@ -589,7 +588,7 @@ public class ContainerPreviewManager {
             ContainerPreviewManager.storageKey = storageKey;
         } else {
             // Get the cached storage containers
-            Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getStorageCache();
+            Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getStorageCache();
             // Get the cached container stored at this key
             CompressedStorage cachedContainer = cache.get(storageKey);
             byte[] previousCache = cachedContainer == null ? null : cachedContainer.getStorage();

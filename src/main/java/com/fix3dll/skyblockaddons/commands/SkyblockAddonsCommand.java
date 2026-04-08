@@ -106,7 +106,7 @@ public class SkyblockAddonsCommand {
                 .then(argument("number", IntegerArgumentType.integer(0))
                         .executes(ctx -> {
                             int val = ctx.getArgument("number", Integer.class);
-                            main.getPersistentValuesManager().getPersistentValues().setKills(val);
+                            main.getPersistentValuesManager().getData().setKills(val);
                             main.getPersistentValuesManager().saveValues();
                             Utils.sendMessage(
                                     Translations.getMessage("commands.responses.sba.set.zealotCounter.zealotsSet", val)
@@ -117,7 +117,7 @@ public class SkyblockAddonsCommand {
                 .then(argument("number", IntegerArgumentType.integer(0))
                         .executes(ctx -> {
                             int val = ctx.getArgument("number", Integer.class);
-                            main.getPersistentValuesManager().getPersistentValues().setTotalKills(val);
+                            main.getPersistentValuesManager().getData().setTotalKills(val);
                             main.getPersistentValuesManager().saveValues();
                             Utils.sendMessage(
                                     Translations.getMessage("commands.responses.sba.set.zealotCounter.totalZealotsSet", val)
@@ -128,7 +128,7 @@ public class SkyblockAddonsCommand {
                 .then(argument("number", IntegerArgumentType.integer(0))
                         .executes(ctx -> {
                             int val = ctx.getArgument("number", Integer.class);
-                            main.getPersistentValuesManager().getPersistentValues().setSummoningEyeCount(val);
+                            main.getPersistentValuesManager().getData().setSummoningEyeCount(val);
                             main.getPersistentValuesManager().saveValues();
                             Utils.sendMessage(
                                     Translations.getMessage("commands.responses.sba.set.zealotCounter.eyesSet", val)

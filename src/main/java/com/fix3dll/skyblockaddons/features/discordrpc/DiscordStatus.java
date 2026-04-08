@@ -62,22 +62,18 @@ public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
     PURSE("discordStatus.titlePurse", "discordStatus.descriptionPurse",
             () -> {
                 double coins = SkyblockAddons.getInstance().getUtils().getPurse();
-
                 return TextUtils.formatNumber(coins) + " Coin" + (coins == 1 ? "" : "s");
             }),
 
     BITS("discordStatus.titleBits", "discordStatus.descriptionBits",
             ()-> {
                 double bits = SkyblockAddons.getInstance().getUtils().getBits();
-
-
                 return TextUtils.formatNumber(bits) + " Bit" + (bits == 1 ? "" : "s");
             }),
 
     MOTES("discordStatus.titleMotes", "discordStatus.descriptionMotes",
             ()-> {
                 double motes = SkyblockAddons.getInstance().getUtils().getMotes();
-
                 return TextUtils.formatNumber(motes) + " Mote" + (motes == 1 ? "" : "s");
             }),
 
@@ -87,22 +83,21 @@ public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
                 String defense = TextUtils.formatNumber(PlayerStat.DEFENCE.getValue());
                 String mana = TextUtils.formatNumber(PlayerStat.MANA.getValue());
 
-                return String.format("%s\u2764 %s\u2748 %s\u270E", health, defense, mana);
+                return "%s\u2764 %s\u2748 %s\u270E".formatted(health, defense, mana);
             }),
 
     ZEALOTS("discordStatus.titleZealots", "discordStatus.descriptionZealots",
-            () -> String.format(
-                    "%d Zealots killed"
-                    , SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getKills())
-            ),
+            () -> "%d Zealots killed".formatted(
+                    SkyblockAddons.getInstance().getPersistentValuesManager().getData().getKills()
+            )),
 
     ITEM("discordStatus.titleItem", "discordStatus.descriptionItem",
             () -> {
                 final LocalPlayer player = Minecraft.getInstance().player;
-                if(player != null && player.getMainHandItem() != ItemStack.EMPTY) {
+                if (player != null && player.getMainHandItem() != ItemStack.EMPTY) {
                     Component itemName = player.getMainHandItem().getCustomName();
                     if (itemName != null) {
-                        return String.format("Holding %s", itemName.getString());
+                        return "Holding %s".formatted(itemName.getString());
                     }
                 }
                 return "No item in hand";
@@ -117,7 +112,7 @@ public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
     PROFILE("discordStatus.titleProfile", "discordStatus.descriptionProfile",
             () -> {
                 String profile = SkyblockAddons.getInstance().getUtils().getProfileName();
-                return String.format("Profile: %s", profile == null ? "None" : profile);
+                return "Profile: %s".formatted(profile == null ? "None" : profile);
             }),
 
     CUSTOM("discordStatus.titleCustom", "discordStatus.descriptionCustom",
@@ -137,7 +132,7 @@ public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
         SkyblockAddons main = SkyblockAddons.getInstance();
 
         EnumUtils.SlayerQuest slayerQuest = main.getUtils().getSlayerQuest();
-        if (slayerQuest != null && LocationUtils.isOnSlayerLocation(slayerQuest)) {
+        if (LocationUtils.isOnSlayerLocation(slayerQuest)) {
             return (main.getUtils().isSlayerBossAlive() ? "Slaying a " : "Doing a ")
                     + slayerQuest.getScoreboardName() + " " + main.getUtils().getSlayerQuestLevel() + " boss.";
         }
