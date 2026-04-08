@@ -81,7 +81,7 @@ public class ItemDropChecker {
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
     public static boolean canDropItem(ItemStack item, boolean itemIsInHotbar, boolean playAlert) {
-        if (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer()
+        if ((main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())
                 && (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() || Feature.DROP_CONFIRMATION.isEnabled())) {
             if (main.getUtils().isInDungeon()) return true; // Disabled in dungeon
 
