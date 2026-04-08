@@ -15,7 +15,6 @@ import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import com.mojang.blaze3d.platform.Window;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ARGB;
 import org.apache.logging.log4j.Logger;
@@ -491,22 +490,6 @@ public enum Feature {
         this.featureData.setColor(color);
     }
 
-    public ColorCode getRestrictedColor() {
-        int featureColor = this.getColor();
-
-        for (ColorCode colorCode : ColorCode.values()) {
-            if (!colorCode.isColor()) {
-                continue;
-            }
-
-            if (colorCode.getColor() == featureColor) {
-                return colorCode;
-            }
-        }
-
-        return this.getDefaultColor();
-    }
-
     public boolean isChroma() {
         return this.featureData.isChroma();
     }
@@ -557,7 +540,7 @@ public enum Feature {
      * @exception IllegalArgumentException if specified setting value is not instance of {@link Number}
      * @see Feature#get(FeatureSetting)
      */
-    public @NonNull Number getAsNumber(FeatureSetting setting) {
+    public Number getAsNumber(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof Number number) {
             return number;
@@ -573,7 +556,7 @@ public enum Feature {
      * @exception IllegalArgumentException if specified setting value is not instance of {@link RegistrableEnum}
      * @see Feature#get(FeatureSetting)
      */
-    public @NonNull RegistrableEnum getAsEnum(FeatureSetting setting) {
+    public RegistrableEnum getAsEnum(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof RegistrableEnum registrableEnum) {
             return registrableEnum;
@@ -589,7 +572,7 @@ public enum Feature {
      * @exception IllegalArgumentException if specified setting value is not instance of {@link String}
      * @see Feature#get(FeatureSetting)
      */
-    public @NonNull String getAsString(FeatureSetting setting) {
+    public String getAsString(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof String string) {
             return string;
@@ -606,7 +589,7 @@ public enum Feature {
      * @exception IllegalArgumentException if {@code setting} is not related with this Feature
      * @see ConfigValuesManager#setSettingToDefault(FeatureSetting)
      */
-    public @NonNull Object get(FeatureSetting setting) {
+    public Object get(FeatureSetting setting) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
             throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this);
         }
@@ -645,7 +628,7 @@ public enum Feature {
      * @param setting of Feature
      * @return true if {@link Feature}'s settings is not null and contains {@code setting}
      */
-    public boolean has(@NonNull FeatureSetting setting) {
+    public boolean has(FeatureSetting setting) {
         if (this.featureData.getSettings() == null) {
             return false;
         } else {

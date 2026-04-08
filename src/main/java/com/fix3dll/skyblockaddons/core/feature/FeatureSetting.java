@@ -173,6 +173,7 @@ public enum FeatureSetting {
     BAZAAR_PRICES_UPDATE_INTERVAL("settings.itemPricesInTooltip.bazaarUpdateInterval", Feature.ITEM_PRICES_IN_TOOLTIP),
     LBIN_AVERAGES_TYPE("settings.itemPricesInTooltip.lbinAveragesType", Feature.ITEM_PRICES_IN_TOOLTIP),
     SHOW_KISMET_FEATHER_LOSS("settings.dungeonProfitOverlay.showKismetFeatherLoss", Feature.DUNGEON_PROFIT_OVERLAY),
+    WHITELIST_COMPACTOR_ITEMS("settings.whitelistCompactorItems", Feature.STOP_DROPPING_SELLING_RARE_ITEMS),
 
 
     DISCORD_RP_DETAILS("messages.firstStatus", Feature.DISCORD_RPC),
