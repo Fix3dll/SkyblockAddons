@@ -3,9 +3,6 @@ package com.fix3dll.skyblockaddons.core;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
-import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
-import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
-import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -93,7 +90,6 @@ public enum SkyblockEquipment {
         if (this.isHovered) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
         poseStack.popMatrix();
 
-
         if (this.isHovered) {
             graphics.nextStratum();
             graphics.setTooltipForNextFrame(font, this.itemStack, mouseX, mouseY);
@@ -123,6 +119,10 @@ public enum SkyblockEquipment {
         return main.getUtils().isOnSkyblock() && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled();
     }
 
+    /**
+     * Loads equipments from the cache manager and applies them to the current slots.
+     * @param equipmentType The environment type (MAIN or RIFT) to load equipments for.
+     */
     public static void loadEquipments(Type equipmentType) {
         if (equipmentType != null && currentType != equipmentType) {
             currentType = equipmentType;
@@ -130,44 +130,41 @@ public enum SkyblockEquipment {
             return;
         }
 
-        CompressedStorage compressedStorage = main.getPersistentValuesManager().getCompressedEquipments(currentType.getLevelKey());
-        if (compressedStorage != null) {
-            List <ItemStack> list = ContainerPreviewManager.decompressItems(compressedStorage.getStorage());
-            if (list != null) {
-                SkyblockEquipment[] equipments = values();
-                int listSize = list.size();
-                // If there is another null while the list is decompressed, fill it too.
-                for (int i = 0; i < equipments.length; i++) {
-                    if (i < listSize) {
-                        equipments[i].setItemStack(list.get(i));
-                    } else {
-                        equipments[i].itemStack = equipments[i].getEmptyStack();
-                    }
-                }
-            } else {
-                // Fill with empty stacks if not decompressed
-                for (SkyblockEquipment equipment : values()) {
-                    equipment.itemStack = equipment.emptyStack;
+        List<ItemStack> list = main.getEquipmentCacheManager().loadDecompressedEquipments(currentType.getLevelKey());
+        SkyblockEquipment[] equipments = values();
+
+        if (list != null) {
+            int listSize = list.size();
+            // Fill any remaining equipment slots with empty stacks
+            // if the cached list is shorter than the current equipment count.
+            for (int i = 0; i < equipments.length; i++) {
+                if (i < listSize) {
+                    equipments[i].setItemStack(list.get(i));
+                } else {
+                    equipments[i].setItemStack(equipments[i].getEmptyStack());
                 }
             }
         } else {
-            // Fill with empty stacks if there is no cache
-            for (SkyblockEquipment equipment : values()) {
-                equipment.itemStack = equipment.emptyStack;
+            // Fill with empty stacks if cache is missing or empty
+            for (SkyblockEquipment equipment : equipments) {
+                equipment.setItemStack(equipment.getEmptyStack());
             }
         }
     }
 
     /**
-     * Save equipments to persistent values
+     * Collects current equipments and sends them to the cache manager for saving.
      */
     public static void saveEquipments() {
-        ItemStack[] list = Arrays.stream(values()).map(SkyblockEquipment::getItemStack).toArray(ItemStack[]::new);
-        main.getPersistentValuesManager().getPersistentValues().getEquipmentCache().put(
-                main.getUtils().isOnRift() ? Type.RIFT.getLevelKey() : Type.MAIN.getLevelKey(),
-                new CompressedStorage(ItemUtils.getCompressedNBT(list).getAsByteArray())
-        );
-        main.getPersistentValuesManager().saveValues();
+        if (currentType == null) {
+            currentType = main.getUtils().isOnRift() ? Type.RIFT : Type.MAIN;
+        }
+
+        ItemStack[] currentItems = Arrays.stream(values())
+                .map(SkyblockEquipment::getItemStack)
+                .toArray(ItemStack[]::new);
+
+        main.getEquipmentCacheManager().saveEquipments(currentType.getLevelKey(), currentItems);
     }
 
     private static List<Component> createListsForItemLore(String... strings) {

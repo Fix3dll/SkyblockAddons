@@ -28,19 +28,19 @@ public class DragonTracker {
     private final transient Map<Long, List<ItemDiff>> recentInventoryDifferences = new HashMap<>();
 
     public int getDragsSince(DragonsSince dragonsSince) {
-        DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getDragonTracker();
+        DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getDragonTracker();
         return dragonTrackerData.getDragonsSince().getOrDefault(dragonsSince, 0);
     }
 
     public List<DragonType> getRecentDragons() {
-        return SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getDragonTracker().getRecentDragons();
+        return SkyblockAddons.getInstance().getPersistentValuesManager().getData().getDragonTracker().getRecentDragons();
     }
 
     public void dragonSpawned(String dragonTypeText) {
         if (eyesToPlace > 0) {
             contributedToCurrentDragon = true;
 
-            DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getDragonTracker();
+            DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getDragonTracker();
             DragonType dragonType = DragonType.fromName(dragonTypeText);
             if (dragonType != null) {
                 if (dragonTrackerData.getRecentDragons().size() == 3) {
@@ -86,7 +86,7 @@ public class DragonTracker {
                     continue;
                 }
 
-                DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getDragonTracker();
+                DragonTrackerData dragonTrackerData = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getDragonTracker();
                 String skyBlockItemID = ItemUtils.getSkyblockItemID(itemDifference.getItemStack());
                 if (skyBlockItemID == null) continue;
 

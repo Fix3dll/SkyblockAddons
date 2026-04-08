@@ -950,18 +950,18 @@ public class RenderListener {
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
-                text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getKills());
+                text = TextUtils.formatNumber(main.getPersistentValuesManager().getData().getKills());
             }
             case SHOW_TOTAL_ZEALOT_COUNT -> {
                 if (feature.isEnabled(FeatureSetting.TOTAL_ZEALOT_SPAWN_AREAS_ONLY) &&
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
-                if (main.getPersistentValuesManager().getPersistentValues().getTotalKills() <= 0) {
-                    text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getKills());
+                if (main.getPersistentValuesManager().getData().getTotalKills() <= 0) {
+                    text = TextUtils.formatNumber(main.getPersistentValuesManager().getData().getKills());
                 } else {
-                    text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getTotalKills()
-                            + main.getPersistentValuesManager().getPersistentValues().getKills());
+                    text = TextUtils.formatNumber(main.getPersistentValuesManager().getData().getTotalKills()
+                            + main.getPersistentValuesManager().getData().getKills());
                 }
             }
             case SHOW_SUMMONING_EYE_COUNT -> {
@@ -969,18 +969,18 @@ public class RenderListener {
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
-                text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount());
+                text = TextUtils.formatNumber(main.getPersistentValuesManager().getData().getSummoningEyeCount());
             }
             case SHOW_AVERAGE_ZEALOTS_PER_EYE -> {
                 if (feature.isEnabled(FeatureSetting.AVERAGE_ZEALOT_SPAWN_AREAS_ONLY) &&
                         !LocationUtils.isOnZealotSpawnLocation() && buttonLocation == null) {
                     return;
                 }
-                int summoningEyeCount = main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount();
+                int summoningEyeCount = main.getPersistentValuesManager().getData().getSummoningEyeCount();
 
                 if (summoningEyeCount > 0) {
-                    text = TextUtils.formatNumber(Math.round(main.getPersistentValuesManager().getPersistentValues().getTotalKills()
-                            / (double) main.getPersistentValuesManager().getPersistentValues().getSummoningEyeCount()));
+                    text = TextUtils.formatNumber(Math.round(main.getPersistentValuesManager().getData().getTotalKills()
+                            / (double) main.getPersistentValuesManager().getData().getSummoningEyeCount()));
                 } else {
                     text = "0"; // Avoid zero division.
                 }
@@ -1059,14 +1059,14 @@ public class RenderListener {
                         && !main.getPlayerListener().isHoldingMiningTool()) {
                     return;
                 }
-                text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getOresMined());
+                text = TextUtils.formatNumber(main.getPersistentValuesManager().getData().getOresMined());
             }
             case DOLPHIN_PET_TRACKER -> {
                 if (buttonLocation == null && feature.isEnabled(FeatureSetting.SHOW_ONLY_HOLDING_FISHING_ROD)
                         && !main.getPlayerListener().isHoldingRod()) {
                     return;
                 }
-                text = TextUtils.formatNumber(main.getPersistentValuesManager().getPersistentValues().getSeaCreaturesKilled());
+                text = TextUtils.formatNumber(main.getPersistentValuesManager().getData().getSeaCreaturesKilled());
             }
             case DUNGEONS_SECRETS_DISPLAY -> {
                 if (buttonLocation == null && !main.getUtils().isInDungeon()) return;

@@ -21,12 +21,12 @@ public class SlayerTracker {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     public int getSlayerKills(SlayerBoss slayerBoss) {
-        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
+        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getData().getSlayerTracker();
         return slayerTrackerData.getSlayerKills().getOrDefault(slayerBoss, 0);
     }
 
     public int getDropCount(SlayerDrop slayerDrop) {
-        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
+        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getData().getSlayerTracker();
         return slayerTrackerData.getSlayerDropCounts().getOrDefault(slayerDrop, 0);
     }
 
@@ -49,7 +49,7 @@ public class SlayerTracker {
     public void completedSlayer(String slayerTypeText) {
         SlayerBoss slayerBoss = SlayerBoss.getFromMobType(slayerTypeText);
         if (slayerBoss != null) {
-            SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
+            SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getData().getSlayerTracker();
             slayerTrackerData.getSlayerKills().put(slayerBoss, slayerTrackerData.getSlayerKills().getOrDefault(slayerBoss, 0) + 1);
             slayerTrackerData.setLastKilledBoss(slayerBoss);
 
@@ -68,8 +68,7 @@ public class SlayerTracker {
             throw new IllegalArgumentException(Translations.getMessage("commandUsage.sba.slayer.invalidBoss", slayerType));
         }
 
-        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
-
+        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getData().getSlayerTracker();
         slayerTrackerData.getSlayerKills().put(slayerBoss, 0);
 
         for (SlayerDrop slayerDrop : slayerBoss.getDrops()) {
@@ -90,7 +89,7 @@ public class SlayerTracker {
             throw new IllegalArgumentException(Translations.getMessage("commandUsage.sba.slayer.invalidBoss", boss));
         }
 
-        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
+        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getData().getSlayerTracker();
         if ("kills".equalsIgnoreCase(stat)) {
             slayerTrackerData.getSlayerKills().put(slayerBoss, value);
             Utils.sendMessage(Translations.getMessage("commandUsage.sba.slayer.killsSet", boss, value));
@@ -117,7 +116,7 @@ public class SlayerTracker {
 
     // TODO dont count dropped items by player again
     public void addToTrackerData(CompoundTag ea, int amount, EnumUtils.SlayerQuest activeQuest) {
-        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getPersistentValues().getSlayerTracker();
+        SlayerTrackerData slayerTrackerData = main.getPersistentValuesManager().getData().getSlayerTracker();
 
         for (SlayerDrop drop : activeQuest.getBoss().getDrops()) {
             if (!drop.getSkyblockID().equals(ItemUtils.getSkyblockItemID(ea))) continue;
@@ -145,7 +144,7 @@ public class SlayerTracker {
 
             if (DevUtils.isLoggingSlayerTracker()) {
                 Utils.sendMessage(
-                        String.format("§fx%d §%s%s", amount, drop.getRarity().getColorCode().getCode(), drop.getDisplayName()),
+                        "§fx%d §%s%s".formatted(amount, drop.getRarity().getColorCode().getCode(), drop.getDisplayName()),
                         true
                 );
             }

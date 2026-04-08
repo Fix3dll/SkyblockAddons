@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons;
 import com.fix3dll.skyblockaddons.commands.SkyblockAddonsCommand;
 import com.fix3dll.skyblockaddons.config.ConfigValuesManager;
 import com.fix3dll.skyblockaddons.config.ConfigValuesManager.ConfigValues;
+import com.fix3dll.skyblockaddons.config.EquipmentCacheManager;
 import com.fix3dll.skyblockaddons.config.PersistentValuesManager;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
 import com.fix3dll.skyblockaddons.core.ItemType;
@@ -132,6 +133,7 @@ public class SkyblockAddons implements ClientModInitializer {
 	private final ConfigValuesManager configValuesManager;
 	private final PersistentValuesManager persistentValuesManager;
 	private final PetCacheManager petCacheManager;
+	private final EquipmentCacheManager equipmentCacheManager;
 
 	private final PlayerListener playerListener;
 	private final DiscordRPCManager discordRPCManager;
@@ -166,10 +168,12 @@ public class SkyblockAddons implements ClientModInitializer {
 		configValuesManager = new ConfigValuesManager(configFile);
 		persistentValuesManager = new PersistentValuesManager(configFile);
 		petCacheManager = new PetCacheManager(configFile);
+		equipmentCacheManager = new EquipmentCacheManager(configFile);
 		configValuesManager.loadValues();
 		updater = new Updater();
 		persistentValuesManager.loadValues();
 		petCacheManager.loadValues();
+		equipmentCacheManager.loadValues();
 
 		playerListener = new PlayerListener();
 		discordRPCManager = new DiscordRPCManager();
@@ -225,6 +229,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			configValuesManager.saveConfig();
 			persistentValuesManager.saveValues();
 			petCacheManager.saveValues();
+			equipmentCacheManager.saveValues();
 			discordRPCManager.stop();
 
 			THREAD_EXECUTOR.shutdown();

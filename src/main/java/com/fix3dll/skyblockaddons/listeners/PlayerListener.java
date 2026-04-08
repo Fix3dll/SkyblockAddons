@@ -1,7 +1,6 @@
 package com.fix3dll.skyblockaddons.listeners;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.config.PersistentValuesManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
@@ -299,7 +298,7 @@ public class PlayerListener {
                 if (Feature.ZEALOT_COUNTER.isEnabled()) {
                     // Edit the message to include counter.
                     // TODO test
-                    component = Component.literal(formattedText + ColorCode.GRAY + " (" + main.getPersistentValuesManager().getPersistentValues().getKills() + ")");
+                    component = Component.literal(formattedText + ColorCode.GRAY + " (" + main.getPersistentValuesManager().getData().getKills() + ")");
                 }
                 main.getPersistentValuesManager().addEyeResetKills();
             } else if (Feature.PLAYER_SYMBOLS_IN_CHAT.isEnabled() && unformattedText.contains(":")) {
@@ -1342,14 +1341,14 @@ public class PlayerListener {
                     total = Integer.parseInt(m.group("total").replace(",", ""));
                 }
                 if (total > 0) {
-                    PersistentValuesManager.PersistentValues persistentValues = main.getPersistentValuesManager().getPersistentValues();
+                    var persistentValues = main.getPersistentValuesManager().getData();
                     int original;
                     if (skill == SkillType.FISHING) {
                         original = persistentValues.getSeaCreaturesKilled();
-                        main.getPersistentValuesManager().getPersistentValues().setSeaCreaturesKilled(total);
+                        main.getPersistentValuesManager().getData().setSeaCreaturesKilled(total);
                     } else {
                         original = persistentValues.getOresMined();
-                        main.getPersistentValuesManager().getPersistentValues().setOresMined(total);
+                        main.getPersistentValuesManager().getData().setOresMined(total);
                     }
                     if (original != total) {
                         main.getPersistentValuesManager().saveValues();

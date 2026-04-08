@@ -1,49 +1,29 @@
 package com.fix3dll.skyblockaddons.config;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTrackerData;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerTrackerData;
-import com.fix3dll.skyblockaddons.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.StringUtil;
-import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
-@Setter @Getter
-public class PersistentValuesManager {
+public class PersistentValuesManager extends AbstractPersistentDataManager<PersistentValuesManager.PersistentValues> {
 
-    private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final ReentrantLock SAVE_LOCK = new ReentrantLock();
-
-    private final File configFile;
-    private final File persistentValuesFile;
-
-    private PersistentValues persistentValues = new PersistentValues();
+    private final File configDir;
 
     @Getter @Setter
     public static class PersistentValues {
-
         private int kills = 0; // Kills since last eye
         private int totalKills = 0; // Lifetime zealots killed
         private int summoningEyeCount = 0; // Lifetime summoning eyes
@@ -51,9 +31,8 @@ public class PersistentValuesManager {
         private SlayerTrackerData slayerTracker = new SlayerTrackerData();
         private DragonTrackerData dragonTracker = new DragonTrackerData();
 
-        private final Map<String, CompressedStorage> storageCache = new HashMap<>();
-        private final Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
-        private final Map<String, CompressedStorage> equipmentCache = new HashMap<>();
+        private Map<String, CompressedStorage> storageCache = new HashMap<>();
+        private Map<String, Set<Integer>> profileLockedSlots = new HashMap<>();
 
         private int oresMined = 0;
         private int seaCreaturesKilled = 0;
@@ -64,85 +43,31 @@ public class PersistentValuesManager {
     }
 
     public PersistentValuesManager(File mainConfigDir) {
-        this.configFile = mainConfigDir;
-        this.persistentValuesFile = new File(mainConfigDir.getAbsolutePath(), "/skyblockaddons/persistentValues.json");
+        super(mainConfigDir, "persistentValues.json", PersistentValues.class);
+        this.configDir = mainConfigDir;
+    }
+
+    @Override
+    protected PersistentValues createDefault() {
+        return new PersistentValues();
+    }
+
+    @Override
+    protected void onPostLoad() {
+        FetchurManager.getInstance().postPersistentConfigLoad(data.getLastTimeFetchur());
+    }
+
+    @Override
+    protected void handleLoadError() {
+        backupValues();
     }
 
     /**
-     * Loads the persistent values from {@code config/skyblockaddons/persistentValues.json} in the user's Minecraft folder.
-     */
-    public void loadValues() {
-        if (persistentValuesFile.exists()) {
-            try (BufferedReader reader = Files.newBufferedReader(persistentValuesFile.toPath(), StandardCharsets.UTF_8)) {
-                persistentValues = SkyblockAddons.getGson().fromJson(reader, PersistentValues.class);
-
-                // If the file is completely empty because it is corrupted, Gson will return null
-                if (persistentValues == null) {
-                    persistentValues = new PersistentValues();
-                }
-            } catch (Exception ex) {
-                LOGGER.error("Error loading persistent values!", ex);
-                backupValues();
-            }
-        } else {
-            saveValues();
-        }
-        FetchurManager.getInstance().postPersistentConfigLoad(persistentValues.lastTimeFetchur);
-        SkyblockEquipment.loadEquipments(SkyblockEquipment.Type.MAIN);
-    }
-
-    /**
-     * Saves the persistent values to {@code config/skyblockaddons/persistentValues.json} in the user's Minecraft folder.
-     */
-    public void saveValues() {
-        // TODO: Better error handling that tries again/tells the player if it fails
-        SkyblockAddons.runAsync(() -> {
-            if (!SAVE_LOCK.tryLock()) {
-                return;
-            }
-
-            boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
-            if (isDevMode) LOGGER.info("Saving persistent values...");
-
-            Path pvPath = persistentValuesFile.toPath();
-            Path tempPath = null;
-
-            try {
-                tempPath = Files.createTempFile(pvPath.getParent(), pvPath.getFileName().toString(), ".tmp");
-
-                try (BufferedWriter writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)) {
-                    SkyblockAddons.getGson().toJson(persistentValues, writer);
-                }
-
-                Files.move(tempPath, pvPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-            } catch (Exception ex) {
-                LOGGER.error("Error saving persistent values!", ex);
-                if (Minecraft.getInstance().player != null) {
-                    Utils.sendErrorMessage(
-                            "Error saving persistent values! Check log for more detail."
-                    );
-                }
-            } finally {
-                if (tempPath != null) {
-                    try {
-                        Files.deleteIfExists(tempPath);
-                    } catch (IOException ex) {
-                        LOGGER.warn("Failed to delete temp persistent values file: {}", tempPath, ex);
-                    }
-                }
-                SAVE_LOCK.unlock();
-            }
-
-            if (isDevMode) LOGGER.info("Persistent values saved!");
-        });
-    }
-
-    /**
-     * Creates backup of 'persistentValues.json'
+     * Creates a backup of the corrupted 'persistentValues.json' file before it gets overwritten.
      */
     public void backupValues() {
-        if (!persistentValuesFile.exists()) {
-            LOGGER.warn("persistentValues.json file for backup is not exist!");
+        if (!dataFile.exists()) {
+            logger.warn("persistentValues.json file for backup does not exist!");
             return;
         }
         try {
@@ -150,71 +75,60 @@ public class PersistentValuesManager {
             String formattedDate = ZonedDateTime.now().format(formatter);
             String backupFileName = "persistentValues.json." + formattedDate + ".backup";
 
-            File backupFile = new File(configFile, "/skyblockaddons/backup/" + backupFileName);
+            File backupFile = new File(configDir, "/skyblockaddons/backup/" + backupFileName);
             Files.createDirectories(backupFile.getParentFile().toPath());
 
-            Files.copy(persistentValuesFile.toPath(), backupFile.toPath());
-            LOGGER.info("Persistent values backed up successfully: {}", backupFile.getPath());
+            Files.copy(dataFile.toPath(), backupFile.toPath());
+            logger.info("Persistent values backed up successfully: {}", backupFile.getPath());
         } catch (IOException e) {
-            LOGGER.error("Failed to backup persistent values file!", e);
+            logger.error("Failed to backup persistent values file!", e);
         }
     }
 
     /**
-     * Adds one to the summoning eye counter, adds the kills since last eye to the lifetime kill counter, and resets the kills since last eye counter.
+     * Adds one to the summoning eye counter, adds the kills since last eye to the lifetime kill counter,
+     * and resets the kills since last eye counter.
      */
     public void addEyeResetKills() {
-        persistentValues.summoningEyeCount++;
-        persistentValues.totalKills += persistentValues.kills;
-        persistentValues.kills = -1; // This is triggered before the death of the killed zealot, so the kills are set to -1 to account for that.
+        data.setSummoningEyeCount(data.getSummoningEyeCount() + 1);
+        data.setTotalKills(data.getTotalKills() + data.getKills());
+        data.setKills(-1); // This is triggered before the death of the killed zealot, so the kills are set to -1 to account for that.
         saveValues();
     }
 
     /**
-     * Resets all zealot counter stats.
+     * Resets all zealot counter statistics.
      */
     public void resetZealotCounter() {
-        persistentValues.summoningEyeCount = 0;
-        persistentValues.totalKills = 0;
-        persistentValues.kills = 0;
+        data.setSummoningEyeCount(0);
+        data.setTotalKills(0);
+        data.setKills(0);
         saveValues();
     }
 
     public void addOresMined() {
-        persistentValues.oresMined++;
+        data.setOresMined(data.getOresMined() + 1);
         SkyblockAddons.getInstance().getPlayerListener().setSavePersistentFlag(true);
     }
 
     public void addKills() {
-        persistentValues.kills++;
+        data.setKills(data.getKills() + 1);
         saveValues();
     }
 
     public void addSeaCreaturesKilled(int spawned) {
-        persistentValues.seaCreaturesKilled += spawned;
+        data.setSeaCreaturesKilled(data.getSeaCreaturesKilled() + spawned);
         saveValues();
     }
 
     public void setLastTimeFetchur(long lastTimeFetchur) {
-        persistentValues.lastTimeFetchur = lastTimeFetchur;
+        data.setLastTimeFetchur(lastTimeFetchur);
         saveValues();
     }
 
     public Set<Integer> getLockedSlots() {
         String profile = SkyblockAddons.getInstance().getUtils().getProfileName();
-        if (!persistentValues.profileLockedSlots.containsKey(profile)) {
-            persistentValues.profileLockedSlots.put(profile, new HashSet<>());
-        }
-
-        return persistentValues.profileLockedSlots.get(profile);
-    }
-
-    public CompressedStorage getCompressedEquipments(String levelKey) {
-        if (StringUtil.isNullOrEmpty(levelKey)) {
-            return null;
-        } else {
-            return persistentValues.equipmentCache.getOrDefault(levelKey, null);
-        }
+        return data.getProfileLockedSlots().computeIfAbsent(profile, k -> new HashSet<>());
     }
 
 }

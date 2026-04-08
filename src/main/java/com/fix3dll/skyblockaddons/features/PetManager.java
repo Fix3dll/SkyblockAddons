@@ -109,7 +109,7 @@ public class PetManager {
      * @return {@code true} if the equipment stack was updated
      */
     private boolean syncActivePetEquipment(int sbaPetIndex, ItemStack itemCopy) {
-        main.getPetCacheManager().getPetCache().setCurrentPetIdx(sbaPetIndex);
+        main.getPetCacheManager().getData().setCurrentPetIdx(sbaPetIndex);
         if (!ItemStack.matches(itemCopy, SkyblockEquipment.PET.getItemStack())) {
             SkyblockEquipment.PET.setItemStack(itemCopy);
             return true;
@@ -129,7 +129,7 @@ public class PetManager {
         ColorCode color = ColorCode.getByChar(rarityColor.charAt(0));
         SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
 
-        var iterator = main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+        var iterator = main.getPetCacheManager().getData().getPetMap().int2ObjectEntrySet().fastIterator();
         while (iterator.hasNext()) {
             Int2ObjectMap.Entry<Pet> entry = iterator.next();
             int index = entry.getIntKey();
@@ -155,7 +155,7 @@ public class PetManager {
         SkyblockRarity rarity = SkyblockRarity.getByColorCode(color);
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
 
-        var iterator = main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+        var iterator = main.getPetCacheManager().getData().getPetMap().int2ObjectEntrySet().fastIterator();
         while (iterator.hasNext()) {
             Int2ObjectMap.Entry<Pet> entry = iterator.next();
             int index = entry.getIntKey();
@@ -196,7 +196,7 @@ public class PetManager {
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
         if (currentPet == null) return;
 
-        var iterator = main.getPetCacheManager().getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+        var iterator = main.getPetCacheManager().getData().getPetMap().int2ObjectEntrySet().fastIterator();
         while (iterator.hasNext()) {
             Int2ObjectMap.Entry<Pet> entry = iterator.next();
             int index = entry.getIntKey();
