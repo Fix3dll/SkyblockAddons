@@ -1544,7 +1544,8 @@ public class PlayerListener {
                 product = bazaarData.getProducts().get(apiItemId);
             }
 
-            if (product != null) {
+            // If there is no buy and sell price, ignore
+            if (product != null && (product.getInstaBuyPrice() != -1 || product.getInstaSellPrice() != -1)) {
                 Component buyPrice = TextUtils.formatPrice(product.getInstaBuyPrice() * countToBeShown, 1, boldLines);
                 Component sellPrice = TextUtils.formatPrice(product.getInstaSellPrice() * countToBeShown, 1, boldLines);
 
