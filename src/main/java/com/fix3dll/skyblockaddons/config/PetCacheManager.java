@@ -3,135 +3,112 @@ package com.fix3dll.skyblockaddons.config;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.PetInfo;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.PetManager;
-import com.fix3dll.skyblockaddons.utils.Utils;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.JsonAdapter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.concurrent.locks.ReentrantLock;
+import java.lang.reflect.Type;
+import java.util.Map;
 
-@Setter @Getter
-public class PetCacheManager {
+public class PetCacheManager extends AbstractPersistentDataManager<PetCacheManager.PetCache> {
 
-    private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final ReentrantLock SAVE_LOCK = new ReentrantLock();
-
-    private final File petCacheFile;
-
-    private PetCache petCache = new PetCache();
-
+    @JsonAdapter(PetCache.Deserializer.class)
     public static class PetCache {
-        @Setter private int currentPetIdx = -1;
+        @Setter @Getter private int currentPetIdx = -1;
 
         /**
-         * key = index + 45 * (pageNum - 1), value = {@link PetManager.Pet}
+         * Mapping between slot index and pet data.
+         * Key = index + 45 * (pageNum - 1), Value = {@link PetManager.Pet}
          * @see PetInfo
          */
         @Getter private final Int2ObjectOpenHashMap<PetManager.Pet> petMap = new Int2ObjectOpenHashMap<>(512);
-    }
 
-    public PetCacheManager(File mainConfigDir) {
-        this.petCacheFile = new File(mainConfigDir.getAbsolutePath(), "/skyblockaddons/petCache.json");
-    }
+        public static class Deserializer implements JsonDeserializer<PetCache> {
+            @Override
+            public PetCache deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                    throws JsonParseException {
+                Logger logger = SkyblockAddons.getLogger();
+                PetCache cache = new PetCache();
 
-    /**
-     * Loads the persistent values from {@code config/skyblockaddons/petCache.json} in the user's Minecraft folder.
-     */
-    public void loadValues() {
-        if (petCacheFile.exists()) {
-            try (BufferedReader reader = Files.newBufferedReader(petCacheFile.toPath(), StandardCharsets.UTF_8)) {
-                petCache = SkyblockAddons.getGson().fromJson(reader, PetCache.class);
-
-                // If cache file is completely empty because it is corrupted, Gson will return null
-                if (petCache == null) {
-                    petCache = new PetCache();
-                } else {
-                    // Restore guaranteed capacity to prevent rehash
-                    petCache.getPetMap().ensureCapacity(512);
+                if (!json.isJsonObject()) {
+                    logger.warn("petCache.json is corrupted or not a JSON object! Defaulting to empty cache.");
+                    return cache;
                 }
-            } catch (Exception ex) {
-                LOGGER.error("Error while loading pet cache!", ex);
+
+                JsonObject obj = json.getAsJsonObject();
+
+                JsonElement currentPetIdxElem = obj.get("currentPetIdx");
+                if (currentPetIdxElem != null && currentPetIdxElem.isJsonPrimitive()) {
+                    try {
+                        cache.setCurrentPetIdx(currentPetIdxElem.getAsInt());
+                    } catch (NumberFormatException e) {
+                        logger.warn("Invalid currentPetIdx value in JSON. Defaulting to -1.");
+                    }
+                }
+
+                JsonElement petMapElem = obj.get("petMap");
+                if (petMapElem != null && petMapElem.isJsonObject()) {
+                    JsonObject mapObj = petMapElem.getAsJsonObject();
+
+                    for (Map.Entry<String, JsonElement> entry : mapObj.entrySet()) {
+                        int key;
+                        try {
+                            key = Integer.parseInt(entry.getKey());
+                        } catch (NumberFormatException e) {
+                            logger.warn("Invalid integer key found in petMap: {}. Skipping.", entry.getKey());
+                            continue;
+                        }
+
+                        try {
+                            PetManager.Pet pet = context.deserialize(entry.getValue(), PetManager.Pet.class);
+                            if (pet != null) {
+                                cache.getPetMap().put(key, pet);
+                            }
+                        } catch (Exception e) {
+                            logger.error("Failed to deserialize pet at index " + key + ". Skipping this pet to prevent data loss.", e);
+                        }
+                    }
+                }
+                return cache;
             }
-        } else {
-            saveValues();
         }
     }
 
-    /**
-     * Saves the pet cache to {@code config/skyblockaddons/petCache.json} in the user's Minecraft folder.
-     */
-    public void saveValues() {
-        // TODO: Better error handling that tries again/tells the player if it fails
-        SkyblockAddons.runAsync(() -> {
-            if (!SAVE_LOCK.tryLock()) {
-                return;
-            }
+    public PetCacheManager(File mainConfigDir) {
+        super(mainConfigDir, "petCache.json", PetCache.class);
+    }
 
-            boolean isDevMode = Feature.DEVELOPER_MODE.isEnabled();
-            if (isDevMode) LOGGER.info("Saving pet cache...");
-
-            Path petCachePath = petCacheFile.toPath();
-            Path tempPath = null;
-
-            try {
-                tempPath = Files.createTempFile(petCachePath.getParent(), petCachePath.getFileName().toString(), ".tmp");
-
-                try (BufferedWriter writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)) {
-                    SkyblockAddons.getGson().toJson(petCache, writer);
-                }
-
-                Files.move(tempPath, petCachePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-            } catch (Exception ex) {
-                LOGGER.error("Error while saving pet cache!", ex);
-                if (Minecraft.getInstance().player != null) {
-                    Utils.sendErrorMessage(
-                            "Error saving pet cache! Check log for more detail."
-                    );
-                }
-            } finally {
-                if (tempPath != null) {
-                    try {
-                        Files.deleteIfExists(tempPath);
-                    } catch (IOException ex) {
-                        LOGGER.warn("Failed to delete temp pet cache file: {}", tempPath, ex);
-                    }
-                }
-                SAVE_LOCK.unlock();
-            }
-
-            if (isDevMode) LOGGER.info("Pet cache saved!");
-        });
+    @Override
+    protected PetCache createDefault() {
+        return new PetCache();
     }
 
     public PetManager.Pet getCurrentPet() {
-        if (petCache.currentPetIdx == -1) return null;
-        return petCache.getPetMap().get(petCache.currentPetIdx);
+        if (data.getCurrentPetIdx() == -1) return null;
+        return data.getPetMap().get(data.getCurrentPetIdx());
+    }
+
+    public int getCurrentPetIndex() {
+        return data.getCurrentPetIdx();
     }
 
     public void setCurrentPetIndex(int idx) {
         setCurrentPetIndex(idx, true);
     }
 
-    public int getCurrentPetIndex() {
-        return petCache.currentPetIdx;
-    }
-
     public void setCurrentPetIndex(int idx, boolean updateEquipment) {
-        if (petCache.currentPetIdx != idx) {
-            petCache.currentPetIdx = idx;
+        if (data.getCurrentPetIdx() != idx) {
+            data.setCurrentPetIdx(idx);
             saveValues();
         }
 
@@ -155,20 +132,20 @@ public class PetCacheManager {
     }
 
     public PetManager.Pet getPet(int index) {
-        return petCache.petMap.get(index);
+        return data.getPetMap().get(index);
     }
 
     public void putPet(int index, PetManager.Pet pet) {
-        petCache.petMap.put(index, pet);
+        data.getPetMap().put(index, pet);
     }
 
     /**
      * Removes the pet at the given index from the cache.
-     * @param index the slot index, computed as {@code index + 45 * (pageNum - 1)}
-     * @return {@code true} if a pet was present and removed, {@code false} if the index was not in the cache
+     * @param index The slot index, computed as {@code index + 45 * (pageNum - 1)}.
+     * @return {@code true} if a pet was present and removed, {@code false} otherwise.
      */
     public boolean removePet(int index) {
-        return petCache.petMap.remove(index) != null;
+        return data.getPetMap().remove(index) != null;
     }
 
 }

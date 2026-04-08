@@ -483,7 +483,7 @@ public class ContainerPreviewManager {
                 }
 
                 if (storageKey != null) {
-                    Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getStorageCache();
+                    Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getStorageCache();
                     if (cache.get(storageKey) != null) {
                         byte[] bytes = cache.get(storageKey).getStorage();
                         List<ItemStack> items = decompressItems(bytes);
@@ -585,7 +585,7 @@ public class ContainerPreviewManager {
             ContainerPreviewManager.storageKey = storageKey;
         } else {
             // Get the cached storage containers
-            Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getStorageCache();
+            Map<String, CompressedStorage> cache = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getStorageCache();
             // Get the cached container stored at this key
             CompressedStorage cachedContainer = cache.get(storageKey);
             byte[] previousCache = cachedContainer == null ? null : cachedContainer.getStorage();

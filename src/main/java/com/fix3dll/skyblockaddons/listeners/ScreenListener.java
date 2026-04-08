@@ -49,6 +49,7 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.logging.log4j.Logger;
@@ -325,7 +326,7 @@ public class ScreenListener {
                                 pcm.setCurrentPetIndex(-1);
                             } else if (!isCurrentPetValid(selectedPet)) {
                                 int petIdxToSet = Integer.MIN_VALUE;
-                                var iterator = pcm.getPetCache().getPetMap().int2ObjectEntrySet().fastIterator();
+                                var iterator = pcm.getData().getPetMap().int2ObjectEntrySet().fastIterator();
                                 while (iterator.hasNext()) {
                                     Int2ObjectMap.Entry<Pet> entry = iterator.next();
                                     int idx = entry.getIntKey();
@@ -453,7 +454,7 @@ public class ScreenListener {
         if (!isClosedGuiPets) return;
 
         PetCacheManager petCacheManager = main.getPetCacheManager();
-        Int2ObjectOpenHashMap<Pet> petMap = petCacheManager.getPetCache().getPetMap();
+        Int2ObjectOpenHashMap<Pet> petMap = petCacheManager.getData().getPetMap();
 
         Pair<Integer, Integer> clickedButton = AbstractContainerScreenHook.consumePetsMenuLastClick();
         if (clickedButton == null || clickedButton.getLeft() >= 54) return;
@@ -488,8 +489,11 @@ public class ScreenListener {
             pcm.setCurrentPetIndex(-1, false);
             SkyblockEquipment.PET.setItemStack(petItem);
         } else if (petItem.is(Items.PLAYER_HEAD)) {
+            petItem.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data
+                    .update(compoundTag -> compoundTag.remove("timestamp"))
+            );
             Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
-            Int2ObjectOpenHashMap<Pet> petMap = pcm.getPetCache().getPetMap();
+            Int2ObjectOpenHashMap<Pet> petMap = pcm.getData().getPetMap();
 
             if (newPet != null) {
                 var iterator = petMap.int2ObjectEntrySet().fastIterator();
@@ -501,7 +505,18 @@ public class ScreenListener {
                     if (newPet.getPetInfo().getUniqueId().equals(entryValue.getPetInfo().getUniqueId())) {
                         petMap.put(entryKey, newPet);
                         pcm.setCurrentPetIndex(entryKey, false);
-                        pcm.saveValues();
+
+                        ItemStack oldPetItem = entryValue.getItemStack();
+                        if (oldPetItem == null) {
+                            pcm.saveValues();
+                        } else {
+                            oldPetItem.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data
+                                    .update(compoundTag -> compoundTag.remove("timestamp"))
+                            );
+                            if (!ItemStack.matches(oldPetItem, petItem)) {
+                                pcm.saveValues();
+                            }
+                        }
                         break;
                     }
                 }

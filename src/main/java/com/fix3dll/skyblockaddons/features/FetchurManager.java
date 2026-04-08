@@ -65,7 +65,7 @@ public class FetchurManager {
      * @return {@code true} if the player hasn't yet submitted the item in today (EST).
      */
     public boolean hasFetchedToday() {
-        long lastTimeFetched = SkyblockAddons.getInstance().getPersistentValuesManager().getPersistentValues().getLastTimeFetchur();
+        long lastTimeFetched = SkyblockAddons.getInstance().getPersistentValuesManager().getData().getLastTimeFetchur();
         long currTime = System.currentTimeMillis();
         // Return true if the days of the month from last submission and current time match
         return currTime - lastTimeFetched < MILLISECONDS_IN_A_DAY && getFetchurDayOfMonth(lastTimeFetched) == getFetchurDayOfMonth(currTime);
