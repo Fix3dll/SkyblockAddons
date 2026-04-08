@@ -105,12 +105,10 @@ public class LowestBinRequest extends RemoteFileRequest<Object2DoubleMap<String>
         }
 
         private void scheduleNextUpdate() {
-
             int updateInterval = Math.max(
                     Feature.ITEM_PRICES_IN_TOOLTIP.getAsNumber(LOWEST_BIN_PRICES_UPDATE_INTERVAL).intValue(),
                     60
             );
-
             int delayTicks = (updateInterval + 1) * 20;
 
             ScheduledTask newTask = main.getScheduler().scheduleAsyncTask(scheduledTask -> {

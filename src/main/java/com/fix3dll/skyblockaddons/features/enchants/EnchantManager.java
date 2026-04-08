@@ -309,20 +309,19 @@ public class EnchantManager {
             long stackedEnchantNum = extraAttributes.getLongOr(enchant.getNbtNum(), 0L);
             Long nextLevel = enchant.getStackLevel().higher(stackedEnchantNum);
             String statLabel = Translations.getMessage("enchants." + enchant.getStatLabel());
-            ColorCode colorCode = Feature.SHOW_STACKING_ENCHANT_PROGRESS.getRestrictedColor();
-            if (colorCode == null) colorCode = ColorCode.WHITE;
+            int color = Feature.SHOW_STACKING_ENCHANT_PROGRESS.getColor();
             MutableComponent component = Component.literal(statLabel + ": ").withColor(ColorCode.GRAY.getColor());
 
             if (nextLevel == null) {
                 // §7Expertise Kills: §a5000000000 §7(Maxed)
-                component.append(Component.literal(TextUtils.abbreviate(stackedEnchantNum)).withColor(colorCode.getColor())
-                        .append(Component.literal(" (" + Translations.getMessage("enchants.maxed") + ")").withColor(ColorCode.GRAY.getColor())));
+                component.append(Component.literal(TextUtils.abbreviate(stackedEnchantNum)).withColor(color)
+                         .append(Component.literal(" (" + Translations.getMessage("enchants.maxed") + ")").withColor(ColorCode.GRAY.getColor())));
             } else {
                 // §7Expertise Kills: §a500 §7/ 1k
                 String format = TextUtils.formatNumber(stackedEnchantNum);
-                component.append(Component.literal(format).withColor(colorCode.getColor())
-                        .append(Component.literal(" / ").withColor(ColorCode.GRAY.getColor()))
-                        .append(TextUtils.abbreviate(nextLevel)).withColor(colorCode.getColor()));
+                component.append(Component.literal(format).withColor(color)
+                         .append(Component.literal(" / ").withColor(ColorCode.GRAY.getColor()))
+                         .append(TextUtils.abbreviate(nextLevel)).withColor(color));
             }
 
             loreListCache.add(component);

@@ -4,7 +4,6 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonColorBox;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonSlider;
@@ -48,12 +47,10 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
     private final EnumUtils.GuiTab lastTab;
     private final int lastPage;
 
-    private final boolean isRestricted;
     private final Supplier<Boolean> isChroma;
     private final Supplier<Integer> color;
     private final Consumer<Boolean> setChroma;
     private final Consumer<Integer> setColor;
-
 
     private int imageX;
     private int imageY;
@@ -76,8 +73,6 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         this.lastTab = lastTab;
         this.lastGUI = lastGUI;
         this.lastPage = lastPage;
-        FeatureGuiData featureGuiData = feature.getFeatureGuiData();
-        this.isRestricted = featureGuiData != null && featureGuiData.isColorsRestricted();
         this.isChroma = feature::isChroma;
         this.color = feature::getColor;
         this.setColor = feature::setColor;
@@ -106,38 +101,12 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         if (!(settingValue instanceof ColorCode || settingValue instanceof Number)) {
             throw new IllegalArgumentException("Setting value is not a ColorCode or a Number");
         }
-        this.isRestricted = settingValue instanceof ColorCode;
-        this.isChroma= () -> {
-            if (this.isRestricted) {
-                return feature.get(setting) == ColorCode.CHROMA;
-            } else {
-                return feature.getAsNumber(setting).intValue() == ColorCode.CHROMA.getColor();
-            }
-        };
-        this.color = () -> {
-            if (this.isRestricted) {
-                return ((ColorCode) feature.get(setting)).getColor();
-            } else {
-                return feature.getAsNumber(setting).intValue();
-            }
-        };
-        this.setColor = integer -> {
-            if (this.isRestricted) {
-                ColorCode colorCode = ColorCode.getByARGB(integer);
-                if (colorCode != null) {
-                    feature.set(setting, colorCode);
-                }
-            } else {
-                feature.set(setting, integer);
-            }
-        };
+        this.isChroma= () -> feature.getAsNumber(setting).intValue() == ColorCode.CHROMA.getColor();
+        this.color = () -> feature.getAsNumber(setting).intValue();
+        this.setColor = integer -> feature.set(setting, integer);
         this.setChroma = setChroma -> {
             if (setChroma) {
-                if (this.isRestricted) {
-                    feature.set(setting, ColorCode.CHROMA);
-                } else {
-                    feature.set(setting, ColorCode.CHROMA.getColor());
-                }
+                feature.set(setting, ColorCode.CHROMA.getColor());
             } else {
                 main.getConfigValuesManager().setSettingToDefault(setting);
             }
@@ -178,29 +147,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         // Set the current color in the text box after creating it.
         setTextBoxHex(color.get());
 
-        // This creates the 16 buttons for all the color codes.
-        if (isRestricted) {
-            int collumn = 1;
-            int x = width / 2 - 160;
-            int y = 120;
-
-            for (ColorCode colorCode : ColorCode.values()) {
-                if (!colorCode.isColor()) continue;
-
-                addRenderableWidget(new ButtonColorBox(x, y, colorCode));
-
-                if (collumn < 6) { // 6 buttons per row.
-                    collumn++; // Go to the next collumn once the 6 are over.
-                    x += ButtonColorBox.WIDTH + 15; // 15 spacing.
-                } else {
-                    y += ButtonColorBox.HEIGHT + 20; // Go to next row.
-                    collumn = 1; // Reset the collumn.
-                    x = width / 2 - 160; // Reset the x vlue.
-                }
-            }
-        }
-
-        if (isChroma && !isRestricted) {
+        if (isChroma) {
             addChromaSliders();
         }
         addSocials(this::addRenderableWidget);
@@ -216,55 +163,43 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         int defaultBlue = ColorUtils.getDefaultBlue(255);
 
         if (feature.getFeatureGuiData() != null || setting != null) {
-            if (isRestricted) {
-                drawScaledString(
-                        graphics,
-                        this,
-                        Translations.getMessage("messages.chooseAColor"),
-                        90,
-                        defaultBlue,
-                        1.5F,
-                        0
-                );
+            boolean isChroma = this.isChroma.get();
+            int pickerWidth = COLOR_PICKER_IMAGE.getWidth();
+            int pickerHeight = COLOR_PICKER_IMAGE.getHeight();
+
+            imageX = width / 2 - 200;
+            imageY = 90;
+
+            // Fade out color picker if chroma enabled
+            int color;
+            if (isChroma) {
+                color = ARGB.colorFromFloat(0.7F, 0.5F, 0.5F, 0.5F);
             } else {
-                boolean isChroma = this.isChroma.get();
-                int pickerWidth = COLOR_PICKER_IMAGE.getWidth();
-                int pickerHeight = COLOR_PICKER_IMAGE.getHeight();
+                color = ARGB.white(1F);
+            }
 
-                imageX = width / 2 - 200;
-                imageY = 90;
+            graphics.blit(RenderPipelines.GUI_TEXTURED, COLOR_PICKER, imageX, imageY, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight, color);
 
-                // Fade out color picker if chroma enabled
-                int color;
-                if (isChroma) {
-                    color = ARGB.colorFromFloat(0.7F, 0.5F, 0.5F, 0.5F);
-                } else {
-                    color = ARGB.white(1F);
-                }
+            drawScaledString(graphics, this, Translations.getMessage("messages.selectedColor"), 120, defaultBlue, 1.5F, 75);
 
-                graphics.blit(RenderPipelines.GUI_TEXTURED, COLOR_PICKER, imageX, imageY, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight, color);
+            int currentColor = this.color.get();
+            if (setting == null && feature.isChroma() && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                currentColor = ColorCode.CHROMA.getColor(); // alpha is default on here
+            }
+            ButtonColorBox.drawColorRect(graphics, width / 2 + 90, 140, width / 2 + 130, 160, currentColor);
 
-                drawScaledString(graphics, this, Translations.getMessage("messages.selectedColor"), 120, defaultBlue, 1.5F, 75);
+            if (chromaCheckbox != null) chromaCheckbox.draw(graphics);
 
-                int currentColor = this.color.get();
-                if (setting == null && feature.isChroma() && Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
-                    currentColor = ColorCode.CHROMA.getColor(); // alpha is default on here
-                }
-                ButtonColorBox.drawColorRect(graphics, width / 2 + 90, 140, width / 2 + 130, 160, currentColor);
-
-                if (chromaCheckbox != null) chromaCheckbox.draw(graphics);
-
-                if (isChroma) {
-                    drawScaledString(graphics, this, Translations.getMessage("settings.chromaSpeed"), 170 + 25, defaultBlue, 1F, 110);
-                    drawScaledString(graphics, this, Translations.getMessage("settings.chromaFadeWidth"), 170 + 35 + 25, defaultBlue, 1F, 110);
-                } else {
-                    drawScaledString(graphics, this, Translations.getMessage("messages.setHexColor"), 200, defaultBlue, 1.5F, 75);
-                    hexColorField.renderWidget(graphics, mouseX, mouseY, partialTick);
-                    int hcfX = hexColorField.getX();
-                    int hcfY = hexColorField.getY();
-                    hexColorFieldHovered = mouseX >= hcfX && mouseX < hcfX + hexColorField.getWidth()
-                            && mouseY >= hcfY && mouseY < hcfY + hexColorField.getHeight();
-                }
+            if (isChroma) {
+                drawScaledString(graphics, this, Translations.getMessage("settings.chromaSpeed"), 170 + 25, defaultBlue, 1F, 110);
+                drawScaledString(graphics, this, Translations.getMessage("settings.chromaFadeWidth"), 170 + 35 + 25, defaultBlue, 1F, 110);
+            } else {
+                drawScaledString(graphics, this, Translations.getMessage("messages.setHexColor"), 200, defaultBlue, 1.5F, 75);
+                hexColorField.renderWidget(graphics, mouseX, mouseY, partialTick);
+                int hcfX = hexColorField.getX();
+                int hcfY = hexColorField.getY();
+                hexColorFieldHovered = mouseX >= hcfX && mouseX < hcfX + hexColorField.getWidth()
+                        && mouseY >= hcfY && mouseY < hcfY + hexColorField.getHeight();
             }
         }
 
@@ -273,7 +208,7 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
 
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (!isRestricted && !this.isChroma.get()) {
+        if (!this.isChroma.get()) {
             int xPixel = (int) event.x() - imageX;
             int yPixel = (int) event.y() - imageY;
 

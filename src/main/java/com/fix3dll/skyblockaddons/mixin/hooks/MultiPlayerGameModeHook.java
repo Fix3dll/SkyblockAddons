@@ -11,7 +11,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
@@ -68,9 +67,10 @@ public class MultiPlayerGameModeHook {
      * Cancels clicking a locked inventory slot, even from other mods
      */
     public static void handleInventoryMouseClick(int slotId, int mouseButton, ClickType clickType, Player player, CallbackInfo ci) {
-        //if (Minecraft.getMinecraft().thePlayer.openContainer != null) {
-        //    SkyblockAddons.getLogger().info("Handling windowclick--slotnum: " + slotNum + " should be locked: " + SkyblockAddons.getInstance().getConfigValues().getLockedSlots().contains(slotNum) + " mousebutton: " + mouseButtonClicked + " mode: " + mode + " container class: " + player.openContainer.getClass().toString());
-        //}
+//        SkyblockAddons.getLogger().info(
+//                "Handling containerInput. slotNum: {}, should be locked: {}, buttonNum: {}, mode: {}, container class: {}",
+//                slotNum, main.getPersistentValuesManager().getLockedSlots().contains(slotNum), buttonNum, containerInput, player.containerMenu.getClass()
+//        );
 
         // Handle blocking the next click, sorry I did it this way
         if (Utils.blockNextClick) {
@@ -84,42 +84,34 @@ public class MultiPlayerGameModeHook {
 
         if (main.getUtils().isOnSkyblock()) {
             // Prevent dropping rare items
-            if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()) {
-                if (checkItemDrop(clickType, slotId, itemStack)) {
-                    ci.cancel();
-                    return;
-                }
+            if (checkItemDrop(clickType, slotId, itemStack)) {
+                ci.cancel();
+                return;
             }
 
-            if (player.containerMenu != null) {
-                slotId += main.getInventoryUtils().getSlotDifference(player.containerMenu);
+            slotId += main.getInventoryUtils().getSlotDifference(player.containerMenu);
 
-                final AbstractContainerMenu slots = player.containerMenu;
+            Slot slotIn;
+            try {
+                slotIn = slotNum == -999 ? null : player.containerMenu.getSlot(slotNum);
+            } catch (IndexOutOfBoundsException e) {
+                slotIn = null;
+            }
 
-                Slot slotIn;
-                try {
-                    slotIn = slotNum == -999 ? null : slots.getSlot(slotNum);
-                } catch (IndexOutOfBoundsException e) {
-                    slotIn = null;
-                }
-
-                // Prevent clicking on locked slots.
-                if (Feature.LOCK_SLOTS.isEnabled() && main.getPersistentValuesManager().getLockedSlots().contains(slotId)
-                        && (slotId >= 9 || player.containerMenu instanceof InventoryMenu && slotId >= 5)) {
-                    if (mouseButton == 1 && clickType == ClickType.PICKUP && slotIn != null && slotIn.hasItem() && slotIn.getItem().getItem() == Items.PLAYER_HEAD) {
-
-                        String itemID = ItemUtils.getSkyblockItemID(slotIn.getItem());
-                        if (itemID == null) itemID = "";
-
-                        // Now that right-clicking backpacks is removed, remove this check and block right clicking on backpacks if locked
-                        if (/*ItemUtils.isBuildersWand(slotIn.getStack()) || ItemUtils.isBackpack(slotIn.getStack()) || */itemID.contains("SACK")) {
-                            return;
-                        }
+            // Prevent clicking on locked slots.
+            if (Feature.LOCK_SLOTS.isEnabled() && main.getPersistentValuesManager().getLockedSlots().contains(slotId)
+                    && (slotId >= 9 || player.containerMenu instanceof InventoryMenu && slotId >= 5)) {
+                if (mouseButton == 1 && clickType == ClickType.PICKUP && slotIn != null && slotIn.hasItem()
+                        && slotIn.getItem().getItem() == Items.PLAYER_HEAD) {
+                    String itemID = ItemUtils.getSkyblockItemID(slotIn.getItem());
+                    // Even if it's locked, allow right-clicking if it's a sack
+                    if (itemID != null && itemID.contains("SACK")) {
+                        return;
                     }
-
-                    main.getUtils().playLoudSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.5);
-                    ci.cancel();
                 }
+
+                main.getUtils().playLoudSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.5);
+                ci.cancel();
             }
         } else {
             if (checkItemDrop(clickType, slotId, itemStack)) {

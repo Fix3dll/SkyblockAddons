@@ -58,6 +58,7 @@
     "warningDuration": "Warning Duration",
     "dontOpenProfileWithBow": "Don't Open Profile With Bow",
     "stopDroppingSellingRareItems": "Stop Dropping/Selling Rare Items",
+    "whitelistCompactorItems": "Add Compactor Items to whitelist",
     "makeBackpackInventoriesColored": "Color Inventories",
     "replaceRomanNumeralsWithNumbers": "Replace Roman Numerals on Items",
     "changeBarColorForPotions": "Change Bar Color for Wither & Poison",

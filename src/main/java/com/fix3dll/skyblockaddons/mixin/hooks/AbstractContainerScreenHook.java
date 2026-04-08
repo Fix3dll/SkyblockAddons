@@ -169,10 +169,7 @@ public class AbstractContainerScreenHook {
                     }
                 }
             }
-            if (MC.options.keyDrop.key.getValue() == keyCode
-                    && Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled()
-                    && !main.getUtils().isInDungeon()
-                    && !ItemDropChecker.canDropItem(hoveredSlot)) {
+            if (MC.options.keyDrop.key.getValue() == keyCode && !ItemDropChecker.canDropItem(hoveredSlot)) {
                 cir.cancel();
             }
         }
@@ -217,8 +214,7 @@ public class AbstractContainerScreenHook {
             }
         }
 
-        if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() && !main.getUtils().isInDungeon()
-                && NPCUtils.isSellMerchant(screen.getMenu().slots) && slot != null && slot.container instanceof Inventory
+        if (slot != null && slot.container instanceof Inventory && NPCUtils.isSellMerchant(screen.getMenu().slots)
                 && !ItemDropChecker.canDropItem(slot)) {
             return true;
         }
