@@ -486,6 +486,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 if (setting == FeatureSetting.TANK_COLOR) row += 0.4F; // Last spacing
                 break;
 
+            case ULTIMATE_ENCHANT_COLOR:
             case PERFECT_ENCHANT_COLOR:
             case GREAT_ENCHANT_COLOR:
             case GOOD_ENCHANT_COLOR:
@@ -498,6 +499,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 row--;
                 break;
 
+            case ULTIMATE_ENCHANT_BOLD:
             case PERFECT_ENCHANT_BOLD:
             case GREAT_ENCHANT_BOLD:
             case GOOD_ENCHANT_BOLD:
@@ -507,17 +509,20 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 addRenderableWidget(new ButtonSettingToggle(lastEnchantX, lastEnchantY + 2.5, setting.getMessage(), setting));
                 row--;
                 break;
+            case ULTIMATE_ENCHANT_ITALIC:
             case PERFECT_ENCHANT_ITALIC:
             case GREAT_ENCHANT_ITALIC:
             case GOOD_ENCHANT_ITALIC:
             case POOR_ENCHANT_ITALIC:
             case COMMA_ENCHANT_ITALIC:
+            case ULTIMATE_ENCHANT_UNDERLINED:
             case PERFECT_ENCHANT_UNDERLINED:
             case GREAT_ENCHANT_UNDERLINED:
             case GOOD_ENCHANT_UNDERLINED:
             case POOR_ENCHANT_UNDERLINED:
             case COMMA_ENCHANT_UNDERLINED:
                 lastEnchantX -= 20;
+            case ULTIMATE_ENCHANT_STRIKETHROUGH:
             case PERFECT_ENCHANT_STRIKETHROUGH:
             case GREAT_ENCHANT_STRIKETHROUGH:
             case GOOD_ENCHANT_STRIKETHROUGH:
