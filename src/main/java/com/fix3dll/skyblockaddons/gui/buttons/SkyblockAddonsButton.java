@@ -71,7 +71,7 @@ public abstract class SkyblockAddonsButton extends AbstractWidget {
     }
 
     public void drawButtonBoxAndText(GuiGraphics graphics, Component message, int x, int y, int width, int height, int boxColor, float scale, int fontColor) {
-        ButtonColorBox.drawColorRect(graphics, x, y, x + width, y + height, boxColor);
+        DrawUtils.drawColorRect(graphics, x, y, x + width, y + height, boxColor);
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
         poseStack.scale(scale);
