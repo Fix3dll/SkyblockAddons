@@ -492,7 +492,7 @@ public class ScreenListener {
             petItem.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data
                     .update(compoundTag -> compoundTag.remove("timestamp"))
             );
-            Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem);
+            Pet newPet = PetManager.getInstance().getPetFromItemStack(petItem.copy());
             Int2ObjectOpenHashMap<Pet> petMap = pcm.getData().getPetMap();
 
             if (newPet != null) {
@@ -508,12 +508,14 @@ public class ScreenListener {
 
                         ItemStack oldPetItem = entryValue.getItemStack();
                         if (oldPetItem == null) {
+                            newPet.compressItem();
                             pcm.saveValues();
                         } else {
                             oldPetItem.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data
                                     .update(compoundTag -> compoundTag.remove("timestamp"))
                             );
                             if (!ItemStack.matches(oldPetItem, petItem)) {
+                                newPet.compressItem();
                                 pcm.saveValues();
                             }
                         }
