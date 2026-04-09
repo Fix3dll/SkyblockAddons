@@ -149,7 +149,6 @@ public class EnchantmentsData {
         }
 
         public Style getStyle(int level) {
-            Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
             FeatureSetting colorSetting, boldSetting, italicSetting, underlinedSetting, strikethroughSetting;
             if (level >= maxLevel) {
                 colorSetting         = FeatureSetting.PERFECT_ENCHANT_COLOR;
@@ -176,16 +175,22 @@ public class EnchantmentsData {
                 underlinedSetting    = FeatureSetting.POOR_ENCHANT_UNDERLINED;
                 strikethroughSetting = FeatureSetting.POOR_ENCHANT_STRIKETHROUGH;
             }
-            Style baseStyle = Style.EMPTY
+            return buildStyle(colorSetting, boldSetting, italicSetting, underlinedSetting, strikethroughSetting);
+        }
+
+        protected static Style buildStyle(FeatureSetting colorSetting, FeatureSetting boldSetting,
+                                          FeatureSetting italicSetting, FeatureSetting underlinedSetting,
+                                          FeatureSetting strikethroughSetting) {
+            Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
+            Style base = Style.EMPTY
                     .withBold(feature.isEnabled(boldSetting))
                     .withItalic(feature.isEnabled(italicSetting))
                     .withUnderlined(feature.isEnabled(underlinedSetting))
                     .withStrikethrough(feature.isEnabled(strikethroughSetting));
-
             int colorCode = feature.getAsNumber(colorSetting).intValue();
             return colorCode == ColorCode.CHROMA.getColor()
-                    ? baseStyle.withColor(DrawUtils.CHROMA_TEXT_COLOR)
-                    : baseStyle.withColor(colorCode);
+                    ? base.withColor(DrawUtils.CHROMA_TEXT_COLOR)
+                    : base.withColor(colorCode);
         }
 
         @Override
@@ -197,13 +202,16 @@ public class EnchantmentsData {
         }
 
         public static class Ultimate extends Enchant {
-            private static final Style ULTIMATE_STYLE = Style.EMPTY
-                    .withColor(ColorCode.LIGHT_PURPLE.getColor())
-                    .withBold(true);
 
             @Override
             public Style getStyle(int level) {
-                return ULTIMATE_STYLE;
+                return buildStyle(
+                        FeatureSetting.ULTIMATE_ENCHANT_COLOR,
+                        FeatureSetting.ULTIMATE_ENCHANT_BOLD,
+                        FeatureSetting.ULTIMATE_ENCHANT_ITALIC,
+                        FeatureSetting.ULTIMATE_ENCHANT_UNDERLINED,
+                        FeatureSetting.ULTIMATE_ENCHANT_STRIKETHROUGH
+                );
             }
         }
 

@@ -210,7 +210,10 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         for (int i = 0; i < pickerSize; i++) {
             float f = (float) i / pickerSize;
             int c = Color.HSBtoRGB(f, 1f, 1f);
-            graphics.fill(hueX, hueY + i, hueX + hueWidth, hueY + i + 1, ARGB.color(alpha, ARGB.red(c), ARGB.green(c), ARGB.blue(c)));
+            graphics.fill(
+                    hueX, hueY + i, hueX + hueWidth, hueY + i + 1,
+                    ARGB.color(alpha, ARGB.red(c), ARGB.green(c), ARGB.blue(c))
+            );
         }
 
         // Draw Saturation Base (Horizontal: White to pure Hue color)
@@ -218,12 +221,17 @@ public class ColorSelectionGui extends SkyblockAddonsScreen {
         for (int i = 0; i < pickerSize; i++) {
             float s = (float) i / pickerSize;
             int columnColor = Color.HSBtoRGB(hue, s, 1f);
-            graphics.fill(pickerX + i, pickerY, pickerX + i + 1, pickerY + pickerSize, ARGB.color(alpha, ARGB.red(columnColor), ARGB.green(columnColor), ARGB.blue(columnColor)));
+            graphics.fill(
+                    pickerX + i, pickerY, pickerX + i + 1, pickerY + pickerSize,
+                    ARGB.color(alpha, ARGB.red(columnColor), ARGB.green(columnColor), ARGB.blue(columnColor))
+            );
         }
 
         // Draw Brightness Overlay (Vertical: Transparent to Black)
-        graphics.fillGradient(pickerX, pickerY, pickerX + pickerSize, pickerY + pickerSize,
-                ARGB.color(0, 0, 0, 0), ARGB.color(alpha, 0, 0, 0));
+        graphics.fillGradient(
+                pickerX, pickerY, pickerX + pickerSize, pickerY + pickerSize,
+                ARGB.color(0, 0, 0, 0), ARGB.color(alpha, 0, 0, 0)
+        );
 
         // Draw interaction cursors
         if (!disabled) {

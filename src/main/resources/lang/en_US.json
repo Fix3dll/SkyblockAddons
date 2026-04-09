@@ -862,6 +862,7 @@
     "notUnlocked": "Not Unlocked"
   },
   "enchants": {
+    "ultimateTier": "Ultimate Enchants",
     "superTier": "Max Tier",
     "highTier": "High Tier",
     "midTier": "Mid Tier",
