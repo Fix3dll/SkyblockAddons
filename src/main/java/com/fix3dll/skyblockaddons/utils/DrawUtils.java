@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.render.chroma.ChromaRenderType;
 import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
+import com.fix3dll.skyblockaddons.core.render.state.ButtonColorBoxRenderState;
 import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.core.render.state.RoundedRectRenderState;
 import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
@@ -90,6 +91,22 @@ public class DrawUtils {
                 x, y, width, height, radius, color,
                 graphics.scissorStack.peek()
         ));
+    }
+
+    public static void drawColorRect(GuiGraphicsExtractor graphics, int left, int top, int right, int bottom, int color) {
+        boolean isChromaColor = color == ColorCode.CHROMA.getColor(ARGB.alpha(color));
+
+        if (isChromaColor) {
+            if (Feature.CHROMA_MODE.getValue() == ChromaMode.FADE) {
+                graphics.fill(CHROMA_STANDARD, left, top, right, bottom, color);
+            } else {
+                graphics.guiRenderState.addGuiElement(
+                        new ButtonColorBoxRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), graphics.pose(), left, top, right, bottom, ARGB.alpha(color), graphics.scissorStack.peek())
+                );
+            }
+        } else {
+            graphics.fill(left, top, right, bottom, color);
+        }
     }
 
     public static void drawCylinder(PoseStack poseStack,
