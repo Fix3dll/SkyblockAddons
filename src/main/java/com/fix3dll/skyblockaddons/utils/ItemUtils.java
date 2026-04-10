@@ -317,14 +317,18 @@ public class ItemUtils {
      * @return {@code true} if this item is a pickaxe/drill, {@code false} otherwise
      */
     public static boolean isMiningTool(ItemStack itemStack) {
-        // TEST 1.21.5
-        return itemStack.is(ItemTags.PICKAXES) || isDrill(itemStack);
+        if (itemStack == null || itemStack == ItemStack.EMPTY) return false;
+        if (itemStack.is(ItemTags.PICKAXES)) return true;
+
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
+        if (extraAttributes == null) return false;
+
+        return isDrill(extraAttributes) || "GEMSTONE_GAUNTLET".equals(getSkyblockItemID(extraAttributes));
     }
 
     /**
-     * Checks if the given {@code ItemStack} is a drill. It works by checking for the presence of the {@code drill_fuel} NBT tag,
-     * which only drills have.
-     *
+     * Checks if the given {@code ItemStack} is a drill.
+     * It works by checking for the presence of the {@code drill_fuel} NBT tag, which only drills have.
      * @param itemStack the item to check
      * @return {@code true} if this item is a drill, {@code false} otherwise
      */
@@ -334,8 +338,16 @@ public class ItemUtils {
         } else if (itemStack == ItemStack.EMPTY) {
             return false;
         }
+        return isDrill(getExtraAttributes(itemStack));
+    }
 
-        CompoundTag extraAttributes = getExtraAttributes(itemStack);
+    /**
+     * Checks if the given {@code ItemStack} is a drill.
+     * It works by checking for the presence of the {@code drill_fuel} NBT tag, which only drills have.
+     * @param extraAttributes the compound to check
+     * @return {@code true} if this item is a drill, {@code false} otherwise
+     */
+    public static boolean isDrill(CompoundTag extraAttributes) {
         return extraAttributes != null && extraAttributes.contains("drill_fuel");
     }
 

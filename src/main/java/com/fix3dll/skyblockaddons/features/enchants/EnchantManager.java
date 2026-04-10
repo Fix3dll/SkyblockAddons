@@ -150,7 +150,7 @@ public class EnchantManager {
 //                    List<Component> lineSiblings = originalLine.getSiblings();
 //                    Component enchantSibling = lineSiblings.size() > counter ? lineSiblings.get(counter) : null;
 
-                    lastEnchant = new FormattedEnchant(enchant, level, findSibling(originalLine, enchant));
+                    lastEnchant = new FormattedEnchant(item, enchant, level, findSibling(originalLine, enchant));
                     // Try to add enchant to the list, otherwise find the same enchant that was already present in the list
                     if (!orderedEnchants.add(lastEnchant)) {
                         for (FormattedEnchant e : orderedEnchants) {
@@ -635,6 +635,7 @@ public class EnchantManager {
      */
     @Getter
     public static class FormattedEnchant implements Comparable<FormattedEnchant> {
+        ItemStack item;
         EnchantmentsData.Enchant enchant;
         int level;
         List<Component> loreDescription;
@@ -658,7 +659,8 @@ public class EnchantManager {
          */
         private int cachedRenderLength = -1;
 
-        public FormattedEnchant(EnchantmentsData.Enchant enchant, int level, @Nullable Component originalSibling) {
+        public FormattedEnchant(ItemStack item, EnchantmentsData.Enchant enchant, int level, @Nullable Component originalSibling) {
+            this.item = item;
             this.enchant = enchant;
             this.level = level;
             this.originalSibling = originalSibling;
@@ -716,7 +718,20 @@ public class EnchantManager {
                 return cachedFormattedComponent;
             }
 
-            MutableComponent component = enchant.getFormattedName(this.level);
+            // Exceptions
+            MutableComponent component = null;
+            if ("efficiency".equals(enchant.getNbtName())) {
+                // https://wiki.hypixel.net/index.php?title=Efficiency_Enchantment&oldid=297600
+                if (!ItemUtils.isMiningTool(item) || "STONK".equals(ItemUtils.getSkyblockItemID(item))) {
+                    if (5 <= this.level) {
+                        component = enchant.getFormattedName(enchant.getMaxLevel());
+                    }
+                }
+            }
+
+            if (component == null) { // default
+                component = enchant.getFormattedName(this.level);
+            }
             component.append(Component.literal(" " + level).withStyle(component.getStyle()));
             cachedFormattedComponent = component;
             return cachedFormattedComponent;
