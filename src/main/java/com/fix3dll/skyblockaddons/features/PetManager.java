@@ -285,8 +285,7 @@ public class PetManager {
          * will not survive serialization. Has no effect if the storage is already populated.
          */
         public void compressItem() {
-            byte[] storage = this.compressedStorage.getStorage();
-            if (storage == null || storage.length == 0) {
+            if (this.compressedStorage.isStorageEmpty()) {
                 this.compressedStorage.setStorage(ItemUtils.getCompressedNBT(new ItemStack[]{this.itemStack}).getAsByteArray());
             }
         }
@@ -297,7 +296,7 @@ public class PetManager {
          * Returns {@code null} if both {@link #itemStack} is absent and {@link #compressedStorage} is empty.
          */
         public ItemStack getItemStack() {
-            if (this.itemStack == null && this.compressedStorage.getStorage().length != 0) {
+            if (this.itemStack == null && !this.compressedStorage.isStorageEmpty()) {
                 List<ItemStack> list = ContainerPreviewManager.decompressItems(this.compressedStorage.getStorage());
                 if (!list.isEmpty()) {
                     this.itemStack = list.getFirst();

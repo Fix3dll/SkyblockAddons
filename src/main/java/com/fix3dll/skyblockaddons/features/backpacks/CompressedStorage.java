@@ -32,6 +32,10 @@ public class CompressedStorage implements GsonInitializable {
         return transientStorage;
     }
 
+    public boolean isStorageEmpty() {
+        return transientStorage == null || transientStorage.length == 0;
+    }
+
     /**
      * Special setter.
      * Sets the cached value and also updates the serializable string.
