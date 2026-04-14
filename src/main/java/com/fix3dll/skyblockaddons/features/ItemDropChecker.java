@@ -12,7 +12,6 @@ import com.fix3dll.skyblockaddons.utils.data.skyblockdata.OnlineData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -39,23 +38,12 @@ public class ItemDropChecker {
      * Checks if this item can be dropped or sold.
      * This method is for items in the inventory, not those in the hotbar.
      * The alert sound will be played if a drop attempt is denied.
-     *
      * @param item the item to check
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
     public static boolean canDropItem(ItemStack item) {
-        return canDropItem(item, false);
-    }
-
-    /**
-     * Checks if the item in this slot can be dropped or sold. The alert sound will be played if a drop attempt is denied.
-     *
-     * @param slot the inventory slot to check
-     * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
-     */
-    public static boolean canDropItem(Slot slot) {
-        if (slot != null && slot.hasItem()) {
-            return canDropItem(slot.getItem());
+        if (item != null && !item.isEmpty()) {
+            return canDropItem(item, false);
         } else {
             return true;
         }
@@ -63,7 +51,6 @@ public class ItemDropChecker {
 
     /**
      * Checks if this item can be dropped or sold. The alert sound will be played if a drop attempt is denied.
-     *
      * @param item the item to check
      * @param itemIsInHotbar whether this item is in the player's hotbar
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
@@ -74,15 +61,14 @@ public class ItemDropChecker {
 
     /**
      * Checks if this item can be dropped or sold.
-     *
      * @param item the item to check
      * @param itemIsInHotbar whether this item is in the player's hotbar
      * @param playAlert plays an alert sound if {@code true} and a drop attempt is denied, otherwise the sound doesn't play
      * @return {@code true} if this item can be dropped or sold, {@code false} otherwise
      */
     public static boolean canDropItem(ItemStack item, boolean itemIsInHotbar, boolean playAlert) {
-        if ((main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())
-                && (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled() || Feature.DROP_CONFIRMATION.isEnabled())) {
+        Feature feature = Feature.DROP_CONFIRMATION;
+        if (feature.isEnabled() && (main.getUtils().isOnSkyblock() || main.getPlayerListener().aboutToJoinSkyblockServer())) {
             if (main.getUtils().isInDungeon()) return true; // Disabled in dungeon
 
             String itemID = ItemUtils.getSkyblockItemID(item);
@@ -102,15 +88,13 @@ public class ItemDropChecker {
             OnlineData.DropSettings dropSettings = main.getOnlineData().getDropSettings();
             List<String> blacklist = dropSettings.getDontDropTheseItems();
             List<String> whitelist = dropSettings.getAllowDroppingTheseItems();
-            SkyblockRarity minimumRarityForBlock = itemIsInHotbar
-                    ? dropSettings.getMinimumHotbarRarity()
-                    : dropSettings.getMinimumInventoryRarity();
+            SkyblockRarity minimumRarityForBlock = (SkyblockRarity) feature.get(FeatureSetting.MINIMUM_RARITY_FOR_CONFIRMATION);
 
             if (itemClassification.rarity().compareTo(minimumRarityForBlock) < 0 && !blacklist.contains(itemID)) {
                 return true;
             } else {
                 boolean canDropItem = false;
-                if (Feature.STOP_DROPPING_SELLING_RARE_ITEMS.isEnabled(FeatureSetting.WHITELIST_COMPACTOR_ITEMS)) {
+                if (feature.isEnabled(FeatureSetting.WHITELIST_COMPACTOR_ITEMS)) {
                     canDropItem = ItemUtils.getCompactorItems().containsKey(itemID);
                 }
 
@@ -131,7 +115,7 @@ public class ItemDropChecker {
                     return canDropItem || dropConfirmed(item, 3);
                 }
             }
-        } else if (Feature.DROP_CONFIRMATION.isEnabled(FeatureSetting.DROP_CONFIRMATION_IN_OTHER_GAMES)) {
+        } else if (feature.isEnabled(FeatureSetting.DROP_CONFIRMATION_IN_OTHER_GAMES)) {
             return dropConfirmed(item, 2);
         } else {
             return true;

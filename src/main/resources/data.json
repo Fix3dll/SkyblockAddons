@@ -17,8 +17,6 @@
     "all": []
   },
   "dropSettings": {
-    "minimumInventoryRarity": "RARE",
-    "minimumHotbarRarity": "RARE",
     "dontDropTheseItems": [
       "PIGGY_BANK",
       "SMALL_BACKPACK",
