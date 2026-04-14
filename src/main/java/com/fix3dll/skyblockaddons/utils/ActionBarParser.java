@@ -30,27 +30,27 @@ import java.util.regex.Pattern;
  * Action bars can take many shapes, but they're always divided into sections separated by 3 or more spaces
  * (usually 5, zombie tickers by 4, race timer by 12, trials of fire by 3).
  * Here are some examples:
- * <p>
- * Normal:                     §c1390/1390❤     §a720§a❈ Defense     §b183/171✎ Mana§r
- * Normal with Skill XP:       §c1390/1390❤     §3+10.9 Combat (313,937.1/600,000)     §b183/171✎ Mana§r
- * Zombie Sword:               §c1390/1390❤     §a725§a❈ Defense     §b175/233✎ Mana    §a§lⓩⓩⓩⓩ§2§l§r
- * Zombie Sword with Skill XP: §c1390/1390❤     §3+10.9 Combat (313,948/600,000)     §b187/233✎ Mana    §a§lⓩⓩⓩⓩ§2§l§r
- * Normal with Wand:           §c1390/1390❤+§c30▅     §a724§a❈ Defense     §b97/171✎ Mana§r
- * Normal with Absorption:     §61181/1161❤     §a593§a❈ Defense     §b550/550✎ Mana§r
- * Normal with Absorp + Wand:  §61181/1161❤+§c20▆     §a593§a❈ Defense     §b501/550✎ Mana§r
- * End Race:                   §d§lTHE END RACE §e00:52.370            §b147/147✎ Mana§r
- * Woods Race:                 §A§LWOODS RACING §e00:31.520            §b147/147✎ Mana§r
- * Trials of Fire:             §c1078/1078❤   §610 DPS   §c1 second     §b421/421✎ Mana§r
- * Soulflow:                   §b421/421✎ §3100ʬ
- * Tethered + Alignment:      §a1039§a❈ Defense§a |||§a§l  T3!
- * Five stages of healing wand:     §62151/1851❤+§c120▆
- *                                  §62151/1851❤+§c120▅
- *                                  §62151/1851❤+§c120▄
- *                                  §62151/1851❤+§c120▃
- *                                  §62151/1851❤+§c120▂
- *                                  §62151/1851❤+§c120▁
- * <p>
- * To add something new to parse, add an else-if case in {@link #parseActionBar(String)} to call a method that
+ * <pre>
+ * Normal:                      §c1390/1390❤     §a720§a❈ Defense     §b183/171✎ Mana§r
+ * Normal with Skill XP:        §c1390/1390❤     §3+10.9 Combat (313,937.1/600,000)     §b183/171✎ Mana§r
+ * Zombie Sword:                §c1390/1390❤     §a725§a❈ Defense     §b175/233✎ Mana    §a§lⓩⓩⓩⓩ§2§l§r
+ * Zombie Sword with Skill XP:  §c1390/1390❤     §3+10.9 Combat (313,948/600,000)     §b187/233✎ Mana    §a§lⓩⓩⓩⓩ§2§l§r
+ * Normal with Wand:            §c1390/1390❤+§c30▅     §a724§a❈ Defense     §b97/171✎ Mana§r
+ * Normal with Absorption:      §61181/1161❤     §a593§a❈ Defense     §b550/550✎ Mana§r
+ * Normal with Absorp + Wand:   §61181/1161❤+§c20▆     §a593§a❈ Defense     §b501/550✎ Mana§r
+ * End Race:                    §d§lTHE END RACE §e00:52.370            §b147/147✎ Mana§r
+ * Woods Race:                  §A§LWOODS RACING §e00:31.520            §b147/147✎ Mana§r
+ * Trials of Fire:              §c1078/1078❤   §610 DPS   §c1 second     §b421/421✎ Mana§r
+ * Soulflow:                    §b421/421✎ §3100ʬ
+ * Tethered + Alignment:        §a1039§a❈ Defense§a |||§a§l  T3!
+ * Five stages of healing wand: §62151/1851❤+§c120▆
+ *                              §62151/1851❤+§c120▅
+ *                              §62151/1851❤+§c120▄
+ *                              §62151/1851❤+§c120▃
+ *                              §62151/1851❤+§c120▂
+ *                              §62151/1851❤+§c120▁
+ * </pre>
+ * To add something new to parse, add an {@code else-if} case in {@link #parseActionBar(String)} to call a method that
  * parses information from that section.
  */
 @Getter
@@ -116,7 +116,7 @@ public class ActionBarParser {
      */
     public String parseActionBar(String actionBar) {
         // First split the action bar into sections
-        String[] splitMessage = actionBar.split(" {3,}");
+        String[] splitMessage = actionBar.split("(?:§.)* (?:(?:§.)* ){2,}");
         // This list holds the text of unused sections that aren't displayed anywhere else in SBA
         // so they can keep being displayed in the action bar.
         // ArrayList is preferred over LinkedList here: section count is bounded and String.join

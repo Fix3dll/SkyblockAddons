@@ -340,7 +340,7 @@ public class PlayerListener {
             }
 
             // Parse using ActionBarParser and display the rest message instead
-            String restMessage = actionBarParser.parseActionBar(component.getString());
+            String restMessage = actionBarParser.parseActionBar(unformattedText);
             if (restMessage.trim().isEmpty()) {
                 return true;
             }
