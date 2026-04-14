@@ -417,7 +417,7 @@ public class ScreenListener {
      * Set current pet to last clicked pet while pets menu closing
      */
     private void setCurrentPet(ContainerScreen containerScreen) {
-        boolean isClosedGuiPets = InventoryType.PETS.getInventoryPattern().matcher(
+        boolean isClosedGuiPets = InventoryType.PETS.matcher(
                 containerScreen.getTitle().getString()
         ).matches();
         if (!isClosedGuiPets) return;

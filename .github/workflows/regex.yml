@@ -1,0 +1,41 @@
+name: Sync Regex Patterns to Data Repository
+
+on:
+  push:
+    paths:
+      - "src/main/resources/regex.json"
+
+jobs:
+  sync-regex-patterns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Main Repository
+        uses: actions/checkout@v6
+        with:
+          path: SkyblockAddons
+
+      - name: Checkout Data Repository
+        uses: actions/checkout@v6
+        with:
+          repository: Fix3dll/SkyblockAddons-Data
+          token: ${{ secrets.DATA_REPO_PAT }}
+          path: SkyblockAddons-Data
+
+      - name: Copy and Push
+        run: |
+          cp SkyblockAddons/src/main/resources/regex.json SkyblockAddons-Data/skyblock/regex.json
+
+          cd SkyblockAddons-Data
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add skyblock/regex.json
+
+          if git diff --staged --quiet; then
+            echo "No changes detected, skipping."
+            exit 0
+          fi
+
+          git commit -m "chore: sync regex.json from ${{ github.repository }}@${{ github.ref_name }}/${{ github.sha }}"
+          git push origin HEAD

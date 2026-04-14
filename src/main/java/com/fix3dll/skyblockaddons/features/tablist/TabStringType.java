@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.features.tablist;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonClass;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonPlayer;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
@@ -15,7 +16,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public enum TabStringType {
     TITLE,
@@ -24,7 +24,6 @@ public enum TabStringType {
     PLAYER;
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final Pattern USERNAME_TAB_PATTERN = Pattern.compile("^\\[(?<sblevel>\\d+)] (?:\\[\\w+] )?(?<username>\\w+)(?:\\s*.\\s*\\((?<class>\\w+) (?<classLevel>\\w+)\\))?");
 
     public static TabStringType fromLine(String line) {
         String strippedLine = TextUtils.stripColor(line);
@@ -33,7 +32,7 @@ public enum TabStringType {
             return TEXT;
         }
 
-        Matcher matcher = USERNAME_TAB_PATTERN.matcher(strippedLine);
+        Matcher matcher = Regex.USERNAME_TAB_PATTERN.matcher(strippedLine);
         if (matcher.find()) {
             if (LocationUtils.isOn(Island.DUNGEON)) updateDungeonTeammateClass(matcher);
             return PLAYER;
@@ -43,7 +42,7 @@ public enum TabStringType {
     }
 
     public static String usernameFromLine(String input) {
-        Matcher usernameMatcher = USERNAME_TAB_PATTERN.matcher(TextUtils.stripColor(input));
+        Matcher usernameMatcher = Regex.USERNAME_TAB_PATTERN.matcher(TextUtils.stripColor(input));
         if (usernameMatcher.find()) {
             return usernameMatcher.group("username");
         } else {

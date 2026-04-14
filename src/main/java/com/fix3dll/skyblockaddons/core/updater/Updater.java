@@ -30,14 +30,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 /**
  * This class is the SkyblockAddons updater. It checks for updates by reading version information from {@link OnlineData.UpdateInfo}.
  */
 public class Updater {
 
-    private static final Pattern VERSION_PATTERN = Pattern.compile("(?<major>[0-9])\\.(?<minor>[0-9])\\.(?<patch>[0-9]).*");
     private static final UpdateContext AUTO_UPDATE_CONTEXT = new UpdateContext(
             new CustomUpdateSource(),
             UpdateTarget.deleteAndSaveInTheSameFolder(SkyblockAddons.class),

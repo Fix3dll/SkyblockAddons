@@ -4,10 +4,10 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.ItemType;
 import com.fix3dll.skyblockaddons.core.PetInfo;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.SkyblockRune;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
-import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
@@ -20,7 +20,6 @@ import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
@@ -56,7 +55,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Utility methods for Skyblock Items
@@ -64,13 +62,7 @@ import java.util.regex.Pattern;
 public class ItemUtils {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final Minecraft MC = Minecraft.getInstance();
-    /**
-     * This expression matches the line with a Skyblock item's rarity and item type that's at the end of its lore.
-     * <p><i>Recombobulated Special items have exception for rarity pattern.<i/></p>
-     */
-    private static final Pattern ITEM_TYPE_AND_RARITY_PATTERN = Pattern.compile("(?<rarity>[A-Z]+(?: SPECIAL)?)\\s*(?<dungeon>DUNGEON\\b)?\\s*(?<type>[A-Z]+(?: [A-Z]+)*)?\\s*(?:\\(ID (?<id>[A-Z]+\\d+)\\))?");
-    private static final Pattern BACKPACK_SLOT_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
+
     @Getter @Setter private static Map<String, CompactorItem> compactorItems;
     @Setter private static Map<String, ContainerData> containers;
     @Setter private static Map<String, TexturedHead> texturedHeads;
@@ -122,7 +114,7 @@ public class ItemUtils {
             String loreLine = lore.get(i).getString();
             if (loreLine.isBlank()) continue;
 
-            Matcher matcher = ITEM_TYPE_AND_RARITY_PATTERN.matcher(loreLine);
+            Matcher matcher = Regex.ITEM_TYPE_AND_RARITY_PATTERN.matcher(loreLine);
             if (matcher.find()) {
                 String rarityStr = matcher.group("rarity");
                 if (rarityStr == null || rarityStr.isBlank()) continue;
@@ -393,7 +385,7 @@ public class ItemUtils {
 
     /**
      * Gets slot number from the {@link ItemStack} on the slot.
-     * <br>See also {@link ItemUtils#BACKPACK_SLOT_PATTERN}
+     * <br>See also {@link Regex#BACKPACK_SLOT_PATTERN}
      * @param itemStack Backpack {@link ItemStack}
      * @return returns the slot number as integer else 0
      */
@@ -401,7 +393,7 @@ public class ItemUtils {
         if (itemStack == null) return 0;
         else if (itemStack == ItemStack.EMPTY) return 0;
 
-        Matcher matcher = BACKPACK_SLOT_PATTERN.matcher(itemStack.getDisplayName().getString());
+        Matcher matcher = Regex.BACKPACK_SLOT_PATTERN.matcher(itemStack.getDisplayName().getString());
         if (matcher.find()) {
             return Integer.parseInt(matcher.group("slot"));
         }
@@ -752,7 +744,7 @@ public class ItemUtils {
             String line = component.getString();
             if (StringUtil.isBlank(line)) continue;
 
-            Matcher m = EnchantManager.ENCHANTMENT_PATTERN.matcher(line);
+            Matcher m = Regex.ENCHANTMENT_PATTERN.matcher(line);
             if (m.find()) {
                 return component;
             }

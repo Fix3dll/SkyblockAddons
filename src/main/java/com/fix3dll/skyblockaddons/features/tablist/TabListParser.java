@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.features.tablist;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.EssenceType;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkillType;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
@@ -20,7 +21,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TabListParser {
 
@@ -28,18 +28,6 @@ public class TabListParser {
     private static final Minecraft MC = Minecraft.getInstance();
 
     public static final String HYPIXEL_ADVERTISEMENT_CONTAINS = "HYPIXEL.NET";
-
-    private static final Pattern GOD_POTION_PATTERN = Pattern.compile("You have a God Potion active! (?<timer>[\\w ]+)");
-    private static final Pattern ACTIVE_EFFECTS_PATTERN = Pattern.compile("Active Effects(?:§.)*(?:\\n(?:§.)*§7.+)*");
-    private static final Pattern EFFECT_COUNT_PATTERN = Pattern.compile("You have (?<effectCount>[0-9]+) active effect");
-    private static final Pattern COOKIE_BUFF_PATTERN = Pattern.compile("Cookie Buff(?:§.)*(?:\\n(§.)*§7.+)*");
-    private static final Pattern UPGRADES_PATTERN = Pattern.compile("(?<firstPart>§e[A-Za-z ]+)(?<secondPart> §f[\\w ]+)");
-    private static final Pattern CANDY_PATTERN = Pattern.compile("Your Candy: §r§a(?<green>[0-9,]+) Green§r§7, §r§5(?<purple>[0-9,]+) Purple §r§7\\(§r§6(?<points>[0-9,]+) §r§7pts\\.\\)");
-    private static final Pattern DUNGEON_BUFF_PATTERN = Pattern.compile("No Buffs active. Find them by exploring the Dungeon!");
-    private static final Pattern RAIN_TIME_PATTERN = Pattern.compile("Rain: (?<time>[0-9dhms ]+)");
-    private static final Pattern SKILL_LEVEL_PATTERN = Pattern.compile("(?<skill>[A-Za-z]+) (?<level>[0-9]+): (?:[0-9.,]+%|MAX)?");
-    private static final Pattern OLD_SKILL_LEVEL_PATTERN = Pattern.compile("Skills: (?<skill>[A-Za-z]+) (?<level>[0-9]+).*");
-    private static final Pattern JERRY_POWER_UPS_PATTERN = Pattern.compile("Active Power Ups(?:§.)*(?:\\n(§.)*§7.+)*");
 
     /** left is vanilla, right is parsed */
     @Getter private static RenderColumns renderColumns;
@@ -111,7 +99,6 @@ public class TabListParser {
         return columns;
     }
 
-    private static final Pattern TABLIST_S = Pattern.compile("(?i)§S");
     public static ParsedTabColumn parseFooterAsColumn() {
         PlayerTabOverlay tabList = MC.gui.getTabList();
 
@@ -122,25 +109,25 @@ public class TabListParser {
         ParsedTabColumn column = new ParsedTabColumn("§2§lOthers");
 
         String legacyFormattedFooter = TextUtils.getFormattedText(tabList.footer);
-        String footer = TABLIST_S.matcher(legacyFormattedFooter).replaceAll("");
+        String footer = legacyFormattedFooter.replace("§s", "").replace("§S", "");
         String strippedFooter = TextUtils.stripColor(footer);
 
         // Make active effects/booster cookie status compact...
-        Matcher m = GOD_POTION_PATTERN.matcher(strippedFooter);
+        Matcher m = Regex.GOD_POTION_PATTERN.matcher(strippedFooter);
         if (m.find()) {
-            footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: \n§cGod Potion§r: " + m.group("timer"));
+            footer = Regex.ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: \n§cGod Potion§r: " + m.group("timer"));
         } else {
-            if ((m = EFFECT_COUNT_PATTERN.matcher(strippedFooter)).find())
-                footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + m.group("effectCount"));
+            if ((m = Regex.EFFECT_COUNT_PATTERN.matcher(strippedFooter)).find())
+                footer = Regex.ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e" + m.group("effectCount"));
             else
-                footer = ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e0");
+                footer = Regex.ACTIVE_EFFECTS_PATTERN.matcher(footer).replaceAll("Active Effects: §r§e0");
         }
 
-        if ((m = CANDY_PATTERN.matcher(footer)).find()) {
+        if ((m = Regex.CANDY_FORMATTED_PATTERN.matcher(footer)).find()) {
             SpookyEventManager.update(
-                    Integer.parseInt(m.group("green").replaceAll(",", "")),
-                    Integer.parseInt(m.group("purple").replaceAll(",", "")),
-                    Integer.parseInt(m.group("points").replaceAll(",", ""))
+                    Integer.parseInt(m.group("green").replace(",", "")),
+                    Integer.parseInt(m.group("purple").replace(",", "")),
+                    Integer.parseInt(m.group("points").replace(",", ""))
             );
             footer = m.replaceAll("§7Your Candy: (§6" + m.group("points") + " §7pts.)"
                     + "\n §a" + m.group("green") + " Green"
@@ -149,22 +136,21 @@ public class TabListParser {
             SpookyEventManager.reset();
         }
 
-        if ((m = COOKIE_BUFF_PATTERN.matcher(footer)).find() && m.group().contains("Not active!"))
+        if ((m = Regex.COOKIE_BUFF_PATTERN.matcher(footer)).find() && m.group().contains("Not active!"))
             footer = m.replaceAll("Cookie Buff \n§r§7Not Active");
 
-        if (main.getUtils().getJerryWave() != -1 && (m = JERRY_POWER_UPS_PATTERN.matcher(footer)).find()
+        if (main.getUtils().getJerryWave() != -1 && (m = Regex.JERRY_POWER_UPS_PATTERN.matcher(footer)).find()
                 && m.group().contains("No Power Ups"))
             footer = m.replaceAll("Active Power Ups \n§r§7No Power Ups");
 
-        if ((m = DUNGEON_BUFF_PATTERN.matcher(footer)).find())
-            footer = m.replaceAll("No Buffs");
+        footer = footer.replace("No Buffs active. Find them by exploring the Dungeon!", "No Buffs");
 
         for (String line : new ArrayList<>(Arrays.asList(footer.split("\n")))) {
             // Lets not add the advertisements to the columns
             if (line.contains(HYPIXEL_ADVERTISEMENT_CONTAINS)) continue;
 
             // Split every upgrade into 2 lines so it's not too long...
-            if ((m = UPGRADES_PATTERN.matcher(TextUtils.stripResets(line))).matches()) {
+            if ((m = Regex.UPGRADES_PATTERN.matcher(TextUtils.stripResets(line))).matches()) {
                 // Adds a space in front of any text that is not a sub-title
                 String firstPart = TextUtils.trimWhitespaceAndResets(m.group("firstPart"));
                 if (!firstPart.contains("§l")) {
@@ -222,14 +208,14 @@ public class TabListParser {
 
                 if (parsedRainTime == null && Feature.BIRCH_PARK_RAINMAKER_TIMER.isEnabled()
                         && LocationUtils.isOn("Birch Park")
-                        && (m = RAIN_TIME_PATTERN.matcher(stripped)).matches()) {
+                        && (m = Regex.RAIN_TIME_PATTERN.matcher(stripped)).matches()) {
                     parsedRainTime = m.group("time");
                 }
 
                 if (!foundSkillSection && !foundSkill) {
                     // The Catacombs still have old tab list instead of new Widgets
                     if (LocationUtils.isOn(Island.DUNGEON)
-                            && (m = OLD_SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
+                            && (m = Regex.OLD_SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
                         SkillType skillType = SkillType.getFromString(m.group("skill"));
                         int level = Integer.parseInt(m.group("level"));
                         main.getSkillXpManager().setSkillLevel(skillType, level);
@@ -237,7 +223,7 @@ public class TabListParser {
                     } else if (stripped.startsWith("Skills:")){
                         foundSkillSection = true;
                     }
-                } else if (foundSkillSection && (m = SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
+                } else if (foundSkillSection && (m = Regex.SKILL_LEVEL_PATTERN.matcher(stripped)).matches()) {
                     SkillType skillType = SkillType.getFromString(m.group("skill"));
                     int level = Integer.parseInt(m.group("level"));
                     main.getSkillXpManager().setSkillLevel(skillType, level);

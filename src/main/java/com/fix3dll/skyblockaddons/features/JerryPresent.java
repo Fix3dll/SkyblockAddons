@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.features;
 
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import lombok.Getter;
@@ -15,12 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter
 public class JerryPresent {
-
-    private static final Pattern FROM_TO_PATTERN = Pattern.compile("(?:From:|To:) (?:\\[.*?] )?(?<name>\\w{1,16})");
 
     @Getter private static final Map<UUID, JerryPresent> jerryPresents = new HashMap<>();
 
@@ -43,7 +41,7 @@ public class JerryPresent {
         Component fromLineComponent = fromLine.getCustomName();
         if (fromLineComponent != null) {
             String playerName = Minecraft.getInstance().player.getName().getString();
-            Matcher matcher = FROM_TO_PATTERN.matcher(TextUtils.stripColor(fromLineComponent.getString()));
+            Matcher matcher = Regex.FROM_TO_PATTERN.matcher(TextUtils.stripColor(fromLineComponent.getString()));
             this.isFromPlayer = matcher.matches() && playerName.equals(matcher.group("name"));
         } else {
             this.isFromPlayer = false;
