@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.ItemType;
 import com.fix3dll.skyblockaddons.core.PetInfo;
 import com.fix3dll.skyblockaddons.core.PlayerStat;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkillType;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.SkyblockOre;
@@ -129,31 +130,6 @@ public class PlayerListener {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     @Getter private final ActionBarParser actionBarParser = new ActionBarParser();
-
-    private static final Pattern NO_ARROWS_LEFT_PATTERN = Pattern.compile("§c§lQUIVER! §r§cYou have run out of §r(?<type>§.*)§r§c!§r");
-    private static final Pattern ONLY_HAVE_ARROWS_LEFT_PATTERN = Pattern.compile("§c§lQUIVER! §r§cYou only have (?<arrows>[0-9]+) §r(?<type>§.*) §r§cleft!§r");
-    private static final Pattern ABILITY_CHAT_PATTERN = Pattern.compile("§aUsed §r§6[A-Za-z ]+§r§a! §r§b\\([0-9]+ Mana\\)§r");
-    private static final Pattern PROFILE_CHAT_PATTERN = Pattern.compile("You are playing on profile: ([A-Za-z]+).*");
-    private static final Pattern SWITCH_PROFILE_CHAT_PATTERN = Pattern.compile("Your profile was changed to: ([A-Za-z]+).*");
-    private static final Pattern MINION_CANT_REACH_PATTERN = Pattern.compile("§cI can't reach any (?<mobName>\\w+?)(s?)$");
-    private static final Pattern DRAGON_KILLED_PATTERN = Pattern.compile(" *[A-Z]* DRAGON DOWN!");
-    private static final Pattern DRAGON_SPAWNED_PATTERN = Pattern.compile("☬ The (?<dragonType>[A-Za-z ]+) Dragon has spawned!");
-    private static final Pattern SLAYER_COMPLETED_PATTERN = Pattern.compile(" {3}» Talk to Maddox to claim your (?<slayerType>[A-Za-z]+) Slayer XP!");
-    private static final Pattern SLAYER_COMPLETED_PATTERN_AUTO1 = Pattern.compile(" *(?<slayerType>[A-Za-z]+) Slayer LVL \\d+ - (?:Next LVL in [\\d,]+ XP!|LVL MAXED OUT!)");
-    private static final Pattern SLAYER_COMPLETED_PATTERN_AUTO2 = Pattern.compile(" *SLAYER QUEST STARTED!");
-    private static final Pattern DEATH_MESSAGE_PATTERN = Pattern.compile(" ☠ (?<username>\\w+) (?<causeOfDeath>.+)\\.");
-    private static final Pattern REVIVE_MESSAGE_PATTERN = Pattern.compile(" ❣ (?<revivedPlayer>\\w+) was revived(?: by (?<reviver>\\w+))*!");
-    private static final Pattern NEXT_TIER_PET_PROGRESS = Pattern.compile("Next tier: (?<total>[0-9,]+)/.*");
-    private static final Pattern MAXED_TIER_PET_PROGRESS = Pattern.compile(".*: (?<total>[0-9,]+)");
-    private static final Pattern SPIRIT_SCEPTRE_MESSAGE_PATTERN = Pattern.compile("Your (?:Implosion|Spirit Sceptre|Molten Wave) hit (?<hitEnemies>[0-9]+) enem(?:y|ies) for (?<dealtDamage>[0-9]{1,3}(?:,[0-9]{3})*(?:\\.[0-9]+)*) damage\\.");
-    private static final Pattern PROFILE_TYPE_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][♲Ⓑ]");
-    private static final Pattern NETHER_FACTION_SYMBOL = Pattern.compile("(?i)§[0-9A-FK-ORZ][⚒ቾ]");
-    private static final Pattern AUTOPET_PATTERN = Pattern.compile("§cAutopet §eequipped your §7\\[Lvl (?<level>\\d+)](?: §8\\[§6\\d+§8§.✦§8])? §(?<rarityColor>.)(?<name>.*)§e! §a§lVIEW RULE§r");
-    private static final Pattern PET_LEVELED_UP_PATTERN = Pattern.compile("§aYour §r§(?<rarityColor>.)(?<name>.*?)(?<cosmetic>§r§. ✦)? §r§aleveled up to level §r(?:§.)*(?<newLevel>\\d+)§r§a!§r");
-    private static final Pattern PET_ITEM_PATTERN = Pattern.compile("§aYour pet is now holding §r§(?<rarityColor>.)(?<petItem>.*)§r§a.§r");
-    private static final Pattern PET_CUSTOM_NAME_PATTERN = Pattern.compile("(?:(?i)(§r)?§e⭐ )?§7\\[Lvl (?<level>\\d+)](?: §.\\[§.\\d+(§.)+✦§8])? §(?<rarityColor>.)(?<name>[^§]+)(?:§.\\s*✦)?");
-    public static final Pattern ESSENCE_NAME_PATTERN = Pattern.compile("(?<type>[\\w ]+) Essence(?: x(?<amount>\\d+))?");
-    public static final Pattern ATTRIBUTE_SHARD_NAME_PATTERN = Pattern.compile("(?<type>[\\w ]+) Shard(?: x(?<amount>\\d+))?");
 
     private static final ObjectOpenHashSet<String> SOUP_RANDOM_MESSAGES = ObjectOpenHashSet.of(
             "I feel like I can fly!", "What was in that soup?",
@@ -370,12 +346,12 @@ public class PlayerListener {
             } if (main.getRenderListener().isPredictMana() && unformattedText.startsWith("Used ") && unformattedText.endsWith("Mana)")) {
                 int manaLost = Integer.parseInt(unformattedText.split(Pattern.quote("! ("))[1].split(Pattern.quote(" Mana)"))[0]);
                 PlayerStat.MANA.setValue(PlayerStat.MANA.getValue() - manaLost);
-            } else if ((matcher = AUTOPET_PATTERN.matcher(formattedText)).find()) {
+            } else if ((matcher = Regex.AUTOPET_PATTERN.matcher(formattedText)).find()) {
                 PetManager.getInstance().findCurrentPetFromAutopet(
                         matcher.group("level"), matcher.group("rarityColor"), matcher.group("name")
                 );
 
-            } else if ((matcher = PET_LEVELED_UP_PATTERN.matcher(formattedText)).find()) {
+            } else if ((matcher = Regex.PET_LEVELED_UP_PATTERN.matcher(formattedText)).find()) {
                 int newLevel = Integer.parseInt(matcher.group("newLevel"));
                 String petName = matcher.group("name");
                 String petCosmetic = matcher.group("cosmetic");
@@ -390,12 +366,12 @@ public class PlayerListener {
                         newLevel, matcher.group("rarityColor"), petName
                 );
 
-            } else if ((matcher = PET_ITEM_PATTERN.matcher(formattedText)).find()) {
+            } else if ((matcher = Regex.PET_ITEM_PATTERN.matcher(formattedText)).find()) {
                 PetManager.getInstance().updatePetItem(
                         matcher.group("rarityColor"), matcher.group("petItem")
                 );
 
-            } else if ((matcher = DEATH_MESSAGE_PATTERN.matcher(unformattedText)).matches() && MC.level != null) {
+            } else if ((matcher = Regex.DEATH_MESSAGE_PATTERN.matcher(unformattedText)).matches() && MC.level != null) {
                 // Hypixel's dungeon reconnect messages look exactly like death messages.
                 String causeOfDeath = matcher.group("causeOfDeath");
                 if (!causeOfDeath.equals("reconnected")) {
@@ -467,7 +443,7 @@ public class PlayerListener {
                     && strippedText.startsWith("Your Implosion hit")
                     || strippedText.startsWith("Your Spirit Sceptre hit")
                     || strippedText.startsWith("Your Molten Wave hit")) {
-                matcher = SPIRIT_SCEPTRE_MESSAGE_PATTERN.matcher(unformattedText);
+                matcher = Regex.SPIRIT_SCEPTRE_MESSAGE_PATTERN.matcher(unformattedText);
                 // Ensure matcher.group gets what it wants, we don't need the whole result
                 if (matcher.find()) {
                     this.spiritSceptreHitEnemies = Integer.parseInt(matcher.group("hitEnemies"));
@@ -478,14 +454,14 @@ public class PlayerListener {
                     }
                 }
             } else if (SlayerTracker.getInstance().isTrackerEnabled() &&
-                    (matcher = SLAYER_COMPLETED_PATTERN.matcher(unformattedText)).matches()) { // §r   §r§5§l» §r§7Talk to Maddox to claim your Wolf Slayer XP!§r
+                    (matcher = Regex.SLAYER_COMPLETED_PATTERN.matcher(unformattedText)).matches()) { // §r   §r§5§l» §r§7Talk to Maddox to claim your Wolf Slayer XP!§r
                 SlayerTracker.getInstance().completedSlayer(matcher.group("slayerType"));
 
             } else if (SlayerTracker.getInstance().isTrackerEnabled() &&
-                    (matcher = SLAYER_COMPLETED_PATTERN_AUTO1.matcher(strippedText)).matches()) { // Spider Slayer LVL 7 - Next LVL in 181,000 XP!
+                    (matcher = Regex.SLAYER_COMPLETED_PATTERN_AUTO1.matcher(strippedText)).matches()) { // Spider Slayer LVL 7 - Next LVL in 181,000 XP!
                 lastMaddoxLevelTime = System.currentTimeMillis();
                 lastMaddoxSlayerType = matcher.group("slayerType");
-            } else if (SLAYER_COMPLETED_PATTERN_AUTO2.matcher(strippedText).matches() && System.currentTimeMillis() - lastMaddoxLevelTime < 100) {
+            } else if (Regex.SLAYER_COMPLETED_PATTERN_AUTO2.matcher(strippedText).matches() && System.currentTimeMillis() - lastMaddoxLevelTime < 100) {
                 SlayerTracker.getInstance().completedSlayer(lastMaddoxSlayerType);
 
             } else if (Feature.DRAGON_STATS_TRACKER.isEnabled() &&
@@ -497,11 +473,11 @@ public class PlayerListener {
                 DragonTracker.getInstance().removeEye();
 
             } else if (Feature.DRAGON_STATS_TRACKER.isEnabled() &&
-                    (matcher = DRAGON_SPAWNED_PATTERN.matcher(strippedText)).matches()) {
+                    (matcher = Regex.DRAGON_SPAWNED_PATTERN.matcher(strippedText)).matches()) {
                 DragonTracker.getInstance().dragonSpawned(matcher.group("dragonType"));
 
             } else if (Feature.DRAGON_STATS_TRACKER.isEnabled() &&
-                    DRAGON_KILLED_PATTERN.matcher(strippedText).matches()) {
+                    Regex.DRAGON_KILLED_PATTERN.matcher(strippedText).matches()) {
                 DragonTracker.getInstance().dragonKilled();
 
             } else if (Feature.BIRCH_PARK_RAINMAKER_TIMER.isEnabled() && formattedText.startsWith("§eYou added a minute of rain!")) {
@@ -527,13 +503,13 @@ public class PlayerListener {
             }
 
             if (Feature.NO_ARROWS_LEFT_ALERT.isEnabled()) {
-                if (NO_ARROWS_LEFT_PATTERN.matcher(formattedText).matches()) {
+                if (Regex.NO_ARROWS_LEFT_PATTERN.matcher(formattedText).matches()) {
                     main.getUtils().playLoudSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5);
                     main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
                     main.getRenderListener().setArrowsLeft(-1);
                     return false;
 
-                } else if ((matcher = ONLY_HAVE_ARROWS_LEFT_PATTERN.matcher(formattedText)).matches()) {
+                } else if ((matcher = Regex.ONLY_HAVE_ARROWS_LEFT_PATTERN.matcher(formattedText)).matches()) {
                     int arrowsLeft = Integer.parseInt(matcher.group("arrows"));
                     main.getUtils().playLoudSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5);
                     main.getRenderListener().setSubtitleFeature(Feature.NO_ARROWS_LEFT_ALERT);
@@ -549,7 +525,7 @@ public class PlayerListener {
             }
 
             if (main.getUtils().isInDungeon()) {
-                Matcher reviveMessageMatcher = REVIVE_MESSAGE_PATTERN.matcher(unformattedText);
+                Matcher reviveMessageMatcher = Regex.REVIVE_MESSAGE_PATTERN.matcher(unformattedText);
 
                 if (reviveMessageMatcher.matches() && MC.level != null) {
                     List<AbstractClientPlayer> players = MC.level.players();
@@ -590,14 +566,14 @@ public class PlayerListener {
             }
 
 
-            if (ABILITY_CHAT_PATTERN.matcher(formattedText).matches() && MC.player != null) {
+            if (Regex.ABILITY_CHAT_PATTERN.matcher(formattedText).matches() && MC.player != null) {
                 CooldownManager.put(MC.player.getMainHandItem());
 
-            } else if ((matcher = PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
+            } else if ((matcher = Regex.PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
                 String profile = matcher.group(1);
                 main.getUtils().setProfileName(profile);
 
-            } else if ((matcher = SWITCH_PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
+            } else if ((matcher = Regex.SWITCH_PROFILE_CHAT_PATTERN.matcher(strippedText)).matches()) {
                 String profile = matcher.group(1);
                 main.getUtils().setProfileName(profile);
 
@@ -776,7 +752,7 @@ public class PlayerListener {
                             main.getRenderListener().setSubtitleFeature(Feature.MINION_FULL_WARNING);
                         }
                     } else if (Feature.MINION_STOP_WARNING.isEnabled()) {
-                        Matcher matcher = MINION_CANT_REACH_PATTERN.matcher(nameTag);
+                        Matcher matcher = Regex.MINION_CANT_REACH_PATTERN.matcher(nameTag);
                         if (matcher.matches()) {
                             long now = System.currentTimeMillis();
                             if (now - lastMinionSound > cooldown) {
@@ -1271,13 +1247,13 @@ public class PlayerListener {
             String suffix = " ";
 
             if (Feature.PLAYER_SYMBOLS_IN_CHAT.isEnabled(FeatureSetting.SHOW_PROFILE_TYPE)) {
-                Matcher m = PROFILE_TYPE_SYMBOL.matcher(usernameWithSymbols);
+                Matcher m = Regex.PROFILE_TYPE_SYMBOL.matcher(usernameWithSymbols);
                 if (m.find()) {
                     suffix += m.group(0);
                 }
             }
             if (Feature.PLAYER_SYMBOLS_IN_CHAT.isEnabled(FeatureSetting.SHOW_NETHER_FACTION)) {
-                Matcher m = NETHER_FACTION_SYMBOL.matcher(usernameWithSymbols);
+                Matcher m = Regex.NETHER_FACTION_SYMBOL.matcher(usernameWithSymbols);
                 if (m.find()) {
                     suffix += m.group(0);
                 }
@@ -1334,11 +1310,11 @@ public class PlayerListener {
 
                 String milestoneProgress = TextUtils.stripColor(lore.getLast());
 
-                Matcher m = NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
+                Matcher m = Regex.NEXT_TIER_PET_PROGRESS.matcher(milestoneProgress);
                 int total = -1;
                 if (m.matches()) {
                     total = Integer.parseInt(m.group("total").replace(",", ""));
-                } else if ((m = MAXED_TIER_PET_PROGRESS.matcher(milestoneProgress)).matches()) {
+                } else if ((m = Regex.MAXED_TIER_PET_PROGRESS.matcher(milestoneProgress)).matches()) {
                     total = Integer.parseInt(m.group("total").replace(",", ""));
                 }
                 if (total > 0) {
@@ -1712,7 +1688,7 @@ public class PlayerListener {
                 String formattedCustomName = TextUtils.getFormattedText(customName, true);
                 if (formattedCustomName.isBlank()) break;
 
-                Matcher m = PET_CUSTOM_NAME_PATTERN.matcher(formattedCustomName);
+                Matcher m = Regex.PET_CUSTOM_NAME_PATTERN.matcher(formattedCustomName);
                 if (m.find()) {
                     ColorCode rarityColor = ColorCode.getByChar(m.group("rarityColor").charAt(0));
                     if (rarityColor == null) break;
@@ -1787,7 +1763,7 @@ public class PlayerListener {
             String attributeShardResolution = attributeShardResolution(countOutParam, customNameStr);
             if (attributeShardResolution != null) return attributeShardResolution;
 
-            Matcher m = EnchantManager.ENCHANTMENT_PATTERN.matcher(customNameStr);
+            Matcher m = Regex.ENCHANTMENT_PATTERN.matcher(customNameStr);
             boolean isNamedEnchant = m.find();
             boolean isNamedBook = "Enchanted Book".equals(customNameStr);
 
@@ -1798,7 +1774,7 @@ public class PlayerListener {
                     String lineStr = line.getString();
                     if (lineStr.isBlank()) continue;
 
-                    m = EnchantManager.ENCHANTMENT_PATTERN.matcher(lineStr);
+                    m = Regex.ENCHANTMENT_PATTERN.matcher(lineStr);
                     if (m.find()) {
                         return enchantedBookResolution(apiItemId, m);
                     }
@@ -1818,7 +1794,7 @@ public class PlayerListener {
     /**
      * Resolves the SkyBlock API item ID and quantity for an Essence item from its custom name.
      * <p>
-     * Matches the given name against {@link #ESSENCE_NAME_PATTERN}. If a match is found,
+     * Matches the given name against {@link Regex#ESSENCE_NAME_PATTERN}. If a match is found,
      * the parsed amount is stored in {@code countOutParam[0]} (defaulting to 1 if absent),
      * and the formatted API ID is returned.
      * @param countOutParam    a single-element array used as an out parameter to store the parsed item count
@@ -1827,7 +1803,7 @@ public class PlayerListener {
      */
     @Nullable
     public static String essenceResolution(int[] countOutParam, String customNameString) {
-        Matcher m = ESSENCE_NAME_PATTERN.matcher(customNameString);
+        Matcher m = Regex.ESSENCE_NAME_PATTERN.matcher(customNameString);
         if (m.find()) {
             String type   = m.group("type");
             String amount = m.group("amount");
@@ -1840,7 +1816,7 @@ public class PlayerListener {
     /**
      * Resolves the SkyBlock API item ID and quantity for an Attribute Shard from its custom name.
      * <p>
-     * Matches the given name against {@link #ATTRIBUTE_SHARD_NAME_PATTERN}. If a match is found,
+     * Matches the given name against {@link Regex#ATTRIBUTE_SHARD_NAME_PATTERN}. If a match is found,
      * the parsed amount is stored in {@code countOutParam[0]} (defaulting to 1 if absent).
      * This method applies specific string replacements to handle edge cases where the in-game
      * entity name differs from the official API ID (e.g., mapping "Bogged" to "SEA_ARCHER").
@@ -1850,7 +1826,7 @@ public class PlayerListener {
      */
     @Nullable
     public static String attributeShardResolution(int[] countOutParam, String customNameString) {
-        Matcher m = ATTRIBUTE_SHARD_NAME_PATTERN.matcher(customNameString);
+        Matcher m = Regex.ATTRIBUTE_SHARD_NAME_PATTERN.matcher(customNameString);
         if (m.find()) {
             String type   = m.group("type");
             String amount = m.group("amount");

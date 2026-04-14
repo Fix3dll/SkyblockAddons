@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.utils;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkyblockDate;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment.Type;
@@ -10,7 +11,6 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -88,33 +88,9 @@ public class Utils {
     /**
      * "Skyblock" as shown on the scoreboard title in English, Chinese Simplified, Traditional Chinese.
      */
-    private static final Set<String> SKYBLOCK_IN_ALL_LANGUAGES = Sets.newHashSet("SKYBLOCK", "\u7A7A\u5C9B\u751F\u5B58", "\u7A7A\u5CF6\u751F\u5B58");
-
-    /**
-     * Matches the server ID (m##/M##) line on the Skyblock scoreboard
-     */
-    // TODO dungeon room coordinates can be used
-    private static final Pattern SERVER_REGEX = Pattern.compile("^\\d+/\\d+/\\d+ (?<serverType>[Mm])(?<serverCode>[0-9]+[A-Z]+) ?(?:(?<x>-?\\d+),(?<z>-?\\d+))?(?<mineshaft>[A-Z]+\\d)?$");
-    /**
-     * Matches the active slayer quest type line on the Skyblock scoreboard
-     */
-    private static final Pattern SLAYER_TYPE_REGEX = Pattern.compile("(?<type>Tarantula Broodfather|Revenant Horror|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend) (?<level>[IV]+)");
-    /**
-     * Matches the active slayer quest progress line on the Skyblock scoreboard
-     */
-    private static final Pattern SLAYER_PROGRESS_REGEX = Pattern.compile("(?<progress>[0-9.k]*)/(?<total>[0-9.k]*) (?:Kills|Combat XP)$");
-    /**
-     * Matches the date line on the Skyblock scoreboard
-     */
-    private static final Pattern DATE_PATTERN = Pattern.compile("(?<month>[\\w ]+) (?<day>\\d{1,2})(?:th|st|nd|rd)");
-    /**
-     * Matches the time line on the Skyblock scoreboard
-     */
-    private static final Pattern TIME_PATTERN = Pattern.compile("(?<hour>\\d{1,2}):(?<minute>\\d{2})(?<period>am|pm)");
-    /**
-     * Matches the pests on the Skyblock scoreboard
-     */
-    private static final Pattern PEST_PATTERN = Pattern.compile(" ൠ x\\d");
+    private static final Set<String> SKYBLOCK_IN_ALL_LANGUAGES = Set.of(
+            "SKYBLOCK", "\u7A7A\u5C9B\u751F\u5B58", "\u7A7A\u5CF6\u751F\u5B58"
+    );
 
     /**
      * Used for web requests.
@@ -389,7 +365,7 @@ public class Utils {
 
                     // No need to try to find serverID after line 0
                     if (!foundServerID && lineNumber == 0) {
-                        Matcher matcher = SERVER_REGEX.matcher(strippedLine);
+                        Matcher matcher = Regex.SERVER_REGEX.matcher(strippedLine);
 
                         if (matcher.find()) {
                             String serverType = matcher.group("serverType");
@@ -407,7 +383,7 @@ public class Utils {
 
                     // No need to try to find date after line 2
                     if (!foundDate && lineNumber < 3) {
-                        Matcher dateM = DATE_PATTERN.matcher(strippedLine);
+                        Matcher dateM = Regex.SIDEBAR_DATE_PATTERN.matcher(strippedLine);
                         if (dateM.find()) {
                             dateMatcher = dateM;
                             foundDate = true;
@@ -417,7 +393,7 @@ public class Utils {
 
                     // No need to try to find date after line 3
                     if (foundDate && !foundTime && lineNumber < 4) {
-                        Matcher timeM = TIME_PATTERN.matcher(strippedLine);
+                        Matcher timeM = Regex.SIDEBAR_TIME_PATTERN.matcher(strippedLine);
                         if (timeM.find()) {
                             currentDate = SkyblockDate.parse(dateMatcher, timeM);
                             foundTime = true;
@@ -456,7 +432,7 @@ public class Utils {
                         } else if (!foundPlot && map == Island.GARDEN /* && foundLocation*/) {
                             if (strippedLine.contains("Plot -")) {
                                 String rawPlotName = strippedLine.substring(strippedLine.indexOf('-') + 2);
-                                plotName = PEST_PATTERN.matcher(rawPlotName).replaceAll("");
+                                plotName = Regex.PEST_PATTERN.matcher(rawPlotName).replaceAll("");
                                 foundPlot = true;
                             }
                         }
@@ -548,7 +524,7 @@ public class Utils {
                     }
 
                     if (!foundSlayerQuest) {
-                        Matcher slayerMatcher = SLAYER_TYPE_REGEX.matcher(strippedLine);
+                        Matcher slayerMatcher = Regex.SLAYER_TYPE_REGEX.matcher(strippedLine);
                         if (slayerMatcher.matches()) {
                             String type = slayerMatcher.group("type");
                             String levelRomanNumeral = slayerMatcher.group("level");
@@ -638,7 +614,7 @@ public class Utils {
     private void parseSlayerProgress(String line) {
         if (Feature.BOSS_APPROACH_ALERT.isDisabled()) return;
 
-        Matcher matcher = SLAYER_PROGRESS_REGEX.matcher(line);
+        Matcher matcher = Regex.SLAYER_PROGRESS_REGEX.matcher(line);
         if (matcher.find()) {
             String progressString = matcher.group("progress");
             String totalString = matcher.group("total");

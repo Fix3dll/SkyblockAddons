@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.PetInfo;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
@@ -27,12 +28,8 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PetManager {
-
-    private static final Pattern PET_LEVEL_PATTERN = Pattern.compile("(§7\\[Lvl )(?<level>\\d+)(] )(§8\\[§.)?(?<cosmeticLevel>\\d+)?(.*)");
-    private static final Pattern FAVORITE_PATTERN = Pattern.compile("(?i)(§r)?§e⭐ ");
 
     /** The PetManager instance.*/
     @Getter private static final PetManager instance = new PetManager();
@@ -162,7 +159,7 @@ public class PetManager {
             Pet pet = entry.getValue();
 
             if (TextUtils.stripPetName(pet.displayName).equals(petName) && pet.petInfo.getPetRarity() == rarity) {
-                Matcher m = PET_LEVEL_PATTERN.matcher(pet.displayName);
+                Matcher m = Regex.PET_LEVEL_PATTERN.matcher(pet.displayName);
                 if (m.matches()) {
                     boolean isCurrentPet = currentPet != null && currentPet.petInfo.getUniqueId() == pet.petInfo.getUniqueId();
                     String cosmeticLevelGroup = m.group("cosmeticLevel");
@@ -219,7 +216,7 @@ public class PetManager {
     public Pet getPetFromItemStack(ItemStack itemStack) {
         String displayName;
         if (itemStack.getCustomName() != null) {
-            displayName = FAVORITE_PATTERN.matcher(
+            displayName = Regex.FAVORITE_PATTERN.matcher(
                     TextUtils.getFormattedText(itemStack.getCustomName(), true)
             ).replaceAll("");
         } else {

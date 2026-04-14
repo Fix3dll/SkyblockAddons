@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.ItemDiff;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SlayerArmorProgress;
 import com.fix3dll.skyblockaddons.core.ThunderBottle;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
@@ -49,7 +50,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Utility methods related to player inventories
@@ -61,7 +61,6 @@ public class InventoryUtils {
     public static final HashSet<String> BAT_PERSON_SET_IDS = new HashSet<>(
             Arrays.asList("BAT_PERSON_BOOTS", "BAT_PERSON_LEGGINGS", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_HELMET")
     );
-    private static final Pattern SLAYER_ARMOR_STACK_PATTERN = Pattern.compile("Next Upgrade: \\+([0-9]+❈) \\(([0-9,]+)/([0-9,]+)\\)");
     private List<ItemStack> previousInventory;
     private final Multimap<String, ItemDiff> itemPickupLog = ArrayListMultimap.create();
     /**
@@ -435,7 +434,7 @@ public class InventoryUtils {
                 String defence = null;
                 List<String> lore = ItemUtils.getItemLore(itemStack);
                 for (String loreLine : lore) {
-                    Matcher matcher = SLAYER_ARMOR_STACK_PATTERN.matcher(TextUtils.stripColor(loreLine));
+                    Matcher matcher = Regex.SLAYER_ARMOR_STACK_PATTERN.matcher(TextUtils.stripColor(loreLine));
                     if (matcher.matches()) { // Example: line§5§o§7Next Upgrade: §a+240❈ §8(§a14,418§7/§c15,000§8)
                         try {
                             float percentage = Float.parseFloat(matcher.group(2).replace(",", "")) /
@@ -512,7 +511,7 @@ public class InventoryUtils {
 
         // Find an inventory match if possible
         for (InventoryType inventoryTypeItr : InventoryType.values()) {
-            Matcher m = inventoryTypeItr.getInventoryPattern().matcher(chestName);
+            Matcher m = inventoryTypeItr.matcher(chestName);
             if (m.matches()) {
                 if (m.groupCount() > 0) {
                     if (inventoryTypeItr == InventoryType.MAYOR) {

@@ -1,29 +1,16 @@
 package com.fix3dll.skyblockaddons.utils;
 
+import com.fix3dll.skyblockaddons.core.Regex;
 import net.minecraft.network.chat.Component;
 
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Utility class for working with Roman numerals
  */
 public class RomanNumeralParser {
-
-    /**
-     * Pattern that validates a string as a correct Roman numeral
-     */
-    private static final Pattern NUMERAL_VALIDATION_PATTERN = Pattern.compile("^(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$");
-    /**
-     * Pattern that finds words that begin with a Roman numeral
-     */
-    private static final Pattern NUMERAL_FINDING_PATTERN = Pattern.compile(" (?=[MDCLXVI])(?<roman>M*(?:C[MD]|D?C{0,3})(?:X[CL]|L?X{0,3})(?:I[XV]|V?I{0,3}))(?<after>(?: ✖|.)?)");
-    /**
-     * Pattern that checks whether the character after a Roman numeral is part of a word.
-     */
-    private static final Pattern WORD_PART_PATTERN = Pattern.compile("^[\\w-']");
 
     /**
      * Map that contains mappings for decimal-to-roman conversion
@@ -67,7 +54,7 @@ public class RomanNumeralParser {
      */
     public static Component replaceNumeralsWithIntegers(Component inputComponent) {
         String inputString = inputComponent.getString();
-        Matcher matcher = NUMERAL_FINDING_PATTERN.matcher(inputString);
+        Matcher matcher = Regex.NUMERAL_FINDING_PATTERN.matcher(inputString);
         Component result = inputComponent;
         boolean modified = false;
 
@@ -77,7 +64,7 @@ public class RomanNumeralParser {
             String after = matcher.group("after");
 
             // Ignore this match if it is a capital letter that is part of a word or if the first capture group matches an empty String.
-            if (WORD_PART_PATTERN.matcher(after).matches() || roman.isEmpty()) {
+            if (Regex.WORD_PART_PATTERN.matcher(after).matches() || roman.isEmpty()) {
                 continue;
             }
 
@@ -101,7 +88,7 @@ public class RomanNumeralParser {
      * @return Whether that string represents a valid Roman numeral
      */
     public static boolean isNumeralValid(String romanNumeral) {
-        return NUMERAL_VALIDATION_PATTERN.matcher(romanNumeral).matches();
+        return Regex.NUMERAL_VALIDATION_PATTERN.matcher(romanNumeral).matches();
     }
 
     /**

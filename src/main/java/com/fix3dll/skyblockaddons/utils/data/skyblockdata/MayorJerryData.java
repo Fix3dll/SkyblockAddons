@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.utils.data.skyblockdata;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkyblockMayor;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
@@ -14,14 +15,12 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter @Setter @ToString
 public class MayorJerryData {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final long ONE_MINUTE = 60 * 1000;
-    private static final Pattern DATE_PATTERN = Pattern.compile("Next set of perks in (?:(?<hours>\\d+)h)?(?: ?(?<minutes>\\d+)m)?(?: ?(?<seconds>\\d+)s)?!");
 
     private Long nextSwitch = 0L;
     private SkyblockMayor mayor = null;
@@ -70,7 +69,7 @@ public class MayorJerryData {
     }
 
     private void parseNextSwitch(String strippedLine) {
-        Matcher matcher = DATE_PATTERN.matcher(strippedLine);
+        Matcher matcher = Regex.NEXT_PERK_DATE_PATTERN.matcher(strippedLine);
         if (!matcher.matches()) return;
 
         try {

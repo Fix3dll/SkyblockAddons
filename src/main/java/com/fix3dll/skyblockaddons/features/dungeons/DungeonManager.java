@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.features.dungeons;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.EssenceType;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
@@ -42,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class contains a set of utility methods for Skyblock Dungeons.
@@ -53,16 +53,8 @@ public class DungeonManager {
     private static final Minecraft MC = Minecraft.getInstance();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
-    private static final Pattern PATTERN_MILESTONE = Pattern.compile("^.+?(Healer|Tank|Mage|Archer|Berserk) Milestone .+?([❶-❿]).+?§r§.([\\d,]+)");
-    private static final Pattern PATTERN_COLLECTED_ESSENCES = Pattern.compile("§.+?(\\d+) (Wither|Spider|Undead|Dragon|Gold|Diamond|Ice|Crimson) Essence");
-    private static final Pattern PATTERN_BONUS_ESSENCE = Pattern.compile("^§.+?[^You] .+?found a .+?(Wither|Spider|Undead|Dragon|Gold|Diamond|Ice|Crimson) Essence.+?");
-    private static final Pattern PATTERN_SALVAGE_ESSENCES = Pattern.compile("\\+(?<essenceNum>[0-9]+) (?<essenceType>Wither|Spider|Undead|Dragon|Gold|Diamond|Ice|Crimson) Essence!");
-    private static final Pattern PATTERN_SECRETS = Pattern.compile("§7([0-9]+)/([0-9]+) Secrets");
-    private static final Pattern PATTERN_PLAYER_LINE = Pattern.compile("§.\\[(?<classLetter>.)] (?<name>[\\w§]+) §(?<healthColor>.)(?:§l)?(?<health>[\\w,§]+)(?:[§c❤]{0,3})?");
-    private static final Pattern PATTERN_PLAYER_LIST_INFO_DEATHS = Pattern.compile("Team Deaths: (?<deaths>\\d+)");
-    private static final Pattern PATTERN_STRIP_FORMAT = Pattern.compile("§.?");
-    private static final Identifier CRITICAL = SkyblockAddons.identifier("critical.png");
     private static final int CRITICAL_ICON_SIZE = 25;
+    private static final Identifier CRITICAL = SkyblockAddons.identifier("critical.png");
     private static final Component HEART_COMPONENT = Component.literal("❤").withColor(ColorCode.RED.getColor());
     private static final Component LOW_COMPONENT = Component.literal("LOW").withColor(ColorCode.YELLOW.getColor());
     private static final Component CRITICAL_COMPONENT = Component.literal("CRITICAL").withColor(ColorCode.RED.getColor());
@@ -176,7 +168,7 @@ public class DungeonManager {
      * @return a {@code DungeonMilestone} object representing the milestone if one is found, or {@code null} if no milestone is found
      */
     public DungeonMilestone parseMilestone(String message) {
-        Matcher matcher = PATTERN_MILESTONE.matcher(message);
+        Matcher matcher = Regex.PATTERN_MILESTONE.matcher(message);
         if (!matcher.lookingAt()) {
             return null;
         }
@@ -193,7 +185,7 @@ public class DungeonManager {
      * @param message the action bar message to parse essence information from
      */
     public void addEssence(String message) {
-        Matcher matcher = PATTERN_COLLECTED_ESSENCES.matcher(message);
+        Matcher matcher = Regex.PATTERN_COLLECTED_ESSENCES.matcher(message);
 
         while (matcher.find()) {
 
@@ -227,7 +219,7 @@ public class DungeonManager {
      * @param message the chat message to parse essence information from
      */
     public void addBonusEssence(String message) {
-        Matcher matcher = PATTERN_BONUS_ESSENCE.matcher(message);
+        Matcher matcher = Regex.PATTERN_BONUS_ESSENCE.matcher(message);
 
         if (matcher.matches()) {
             EssenceType essenceType = EssenceType.fromName(matcher.group(1));
@@ -241,7 +233,7 @@ public class DungeonManager {
      * @param message the action bar message to parse secrets information from
      */
     public void addSecrets(String message) {
-        Matcher matcher = PATTERN_SECRETS.matcher(message);
+        Matcher matcher = Regex.PATTERN_SECRETS.matcher(message);
         if (!matcher.find()) {
             secrets = -1;
             maxSecrets = 0;
@@ -259,7 +251,7 @@ public class DungeonManager {
      * @param message the chat message to parse the obtained essences from
      */
     public void addSalvagedEssences(String message) {
-        Matcher matcher = PATTERN_SALVAGE_ESSENCES.matcher(message);
+        Matcher matcher = Regex.PATTERN_SALVAGE_ESSENCES.matcher(message);
 
         while (matcher.find()) {
             EssenceType essenceType = EssenceType.fromName(matcher.group("essenceType"));
@@ -291,7 +283,7 @@ public class DungeonManager {
      * are shown in the line).
      */
     public void updateDungeonPlayer(String scoreboardLine) {
-        Matcher matcher = PATTERN_PLAYER_LINE.matcher(scoreboardLine);
+        Matcher matcher = Regex.PATTERN_PLAYER_LINE.matcher(scoreboardLine);
 
         if (matcher.find()) {
             String name = TextUtils.stripColor(matcher.group("name"));
@@ -305,7 +297,7 @@ public class DungeonManager {
 
             DungeonClass dungeonClass = DungeonClass.fromFirstLetter(matcher.group("classLetter").charAt(0));
             ColorCode healthColor = ColorCode.getByChar(matcher.group("healthColor").charAt(0));
-            String healthText = PATTERN_STRIP_FORMAT.matcher(matcher.group("health")).replaceAll("");
+            String healthText = Regex.PATTERN_STRIP_FORMAT.matcher(matcher.group("health")).replaceAll("");
             int health;
 
             if (healthText.equals("DEAD")) {
@@ -387,7 +379,7 @@ public class DungeonManager {
 
         if (deathDisplayPlayerInfo != null && deathDisplayPlayerInfo.getTabListDisplayName() != null) {
             String deathDisplayString = deathDisplayPlayerInfo.getTabListDisplayName().getString();
-            Matcher deathDisplayMatcher = PATTERN_PLAYER_LIST_INFO_DEATHS.matcher(deathDisplayString);
+            Matcher deathDisplayMatcher = Regex.PATTERN_PLAYER_LIST_INFO_DEATHS.matcher(deathDisplayString);
 
             if (deathDisplayMatcher.matches()) {
                 playerListInfoDeaths = Integer.parseInt(deathDisplayMatcher.group("deaths"));

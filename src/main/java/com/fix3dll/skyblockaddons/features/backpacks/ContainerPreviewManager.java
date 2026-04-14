@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.features.backpacks;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
@@ -53,7 +54,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class contains utility methods for backpacks and stores the color of the backpack the player has open.
@@ -65,8 +65,6 @@ public class ContainerPreviewManager {
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
     private static final Identifier CHEST_GUI_TEXTURE = SkyblockAddons.identifier("containerpreview.png");
-    private static final Pattern BACKPACK_STORAGE_PATTERN = Pattern.compile("Backpack Slot (?<slot>\\d+)");
-    private static final Pattern ENDERCHEST_STORAGE_PATTERN = Pattern.compile("Ender Chest Page (?<page>\\d+)");
     private static final ItemStack EMPTY_SLOT_ITEM = Items.AIR.getDefaultInstance();
 
     /**
@@ -461,7 +459,7 @@ public class ContainerPreviewManager {
         // Do not waste resources to process non-UUID items (except Ender Chests cus icons doesn't have UUID)
         UUID newUuid = ItemUtils.getUuid(itemStack);
         String hoverName = itemStack.getHoverName().getString();
-        Matcher m = ENDERCHEST_STORAGE_PATTERN.matcher(hoverName);
+        Matcher m = Regex.ENDERCHEST_STORAGE_PATTERN.matcher(hoverName);
         if (newUuid == null && !m.find()) {
             return false;
         }
@@ -477,7 +475,7 @@ public class ContainerPreviewManager {
                 if (m.hasMatch()) {
                     int enderChestPage = Integer.parseInt(m.group("page"));
                     storageKey = InventoryType.ENDER_CHEST.getInventoryName() + enderChestPage;
-                } else if ((m = BACKPACK_STORAGE_PATTERN.matcher(hoverName)).matches()) {
+                } else if ((m = Regex.BACKPACK_STORAGE_PATTERN.matcher(hoverName)).matches()) {
                     int pageNum = Integer.parseInt(m.group("slot"));
                     storageKey = InventoryType.STORAGE_BACKPACK.getInventoryName() + pageNum;
                 }
