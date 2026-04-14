@@ -9,13 +9,10 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Translations {
 
     private static final Minecraft MC = Minecraft.getInstance();
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("%[A-Za-z-]+%");
-    private static final Pattern PATH_SPLIT_PATTERN = Pattern.compile("\\.");
 
     @Getter @Setter private static JsonObject languageJson = new JsonObject();
     @Setter private static JsonObject defaultLangJson = null;
@@ -38,7 +35,7 @@ public class Translations {
         }
 
         if (variables != null && variables.length > 0) {
-            Matcher matcher = VARIABLE_PATTERN.matcher(text);
+            Matcher matcher = Regex.VARIABLE_PATTERN.matcher(text);
             StringBuilder sb = null;
             int i = 0;
             while (matcher.find() && i < variables.length) {
@@ -66,7 +63,7 @@ public class Translations {
             return "";
         }
 
-        String[] pathSplit = PATH_SPLIT_PATTERN.split(path);
+        String[] pathSplit = path.split("\\.");
         for (String pathPart : pathSplit) {
             if (pathPart.isEmpty()) continue;
 

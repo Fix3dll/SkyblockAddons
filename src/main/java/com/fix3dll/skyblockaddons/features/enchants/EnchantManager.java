@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.ItemType;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
@@ -31,14 +32,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EnchantManager {
 
     private static final Minecraft MC = Minecraft.getInstance();
 
-    // Catches successive [ENCHANT] [ROMAN NUMERALS OR DIGITS], as well as stacking enchants listing total stacked number
-    public static final Pattern ENCHANTMENT_PATTERN = Pattern.compile("(?<enchant>[A-Za-z][A-Za-z -]+) (?<levelNumeral>[IVXLCDM]+)(?=, |$| [\\d,]+$)");
     private static final String COMMA = ", ";
     private static final Cache LORE_CACHE = new Cache();
     /**
@@ -135,7 +133,7 @@ public class EnchantManager {
         for (int i = startEnchant; i <= endEnchant; i++) {
             Component originalLine = loreList.get(i);
             String unformattedLine = TextUtils.stripColor(originalLine.getString());
-            Matcher m = ENCHANTMENT_PATTERN.matcher(unformattedLine);
+            Matcher m = Regex.ENCHANTMENT_PATTERN.matcher(unformattedLine);
             boolean containsEnchant = false;
             int counter = 0;
             while (m.find()) {
@@ -340,7 +338,7 @@ public class EnchantManager {
      *         {@code false} otherwise
      */
     public static boolean containsEnchantment(Map<String, Integer> enchantments, Map<String, Integer> attributes, String strippedLine) {
-        Matcher m = ENCHANTMENT_PATTERN.matcher(strippedLine);
+        Matcher m = Regex.ENCHANTMENT_PATTERN.matcher(strippedLine);
         while (m.find()) {
             EnchantmentsData.Enchant enchant = enchants.getFromLore(m.group("enchant"));
             if (enchantments == null || enchantments.containsKey(enchant.getNbtName())) {

@@ -4,10 +4,10 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.compat.ReiCompat;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
-import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
 import com.fix3dll.skyblockaddons.listeners.PlayerListener;
 import com.fix3dll.skyblockaddons.listeners.PlayerListener.ResolvedItemId;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
@@ -43,7 +43,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Parses and renders the dungeon chest profit overlay.
@@ -68,8 +67,6 @@ public class DungeonProfitOverlay {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     private static final ResourceLocation DUNGEON_PROFIT_LOCATION = SkyblockAddons.resourceLocation("dungeon_profit");
-
-    private static final Pattern COIN_COST_PATTERN = Pattern.compile("([\\d,]+) Coins");
 
     private static final int PADDING     = 10;
     private static final int LINE_HEIGHT = 13;
@@ -285,8 +282,8 @@ public class DungeonProfitOverlay {
      * resolved. Lines are classified as:
      * <ul>
      * <li><b>Enchanted Book</b> - text between {@code "Enchanted Book ("} and {@code ")"} is matched against
-     * {@link EnchantManager#ENCHANTMENT_PATTERN} and resolved via {@link PlayerListener#enchantedBookResolution}.</li>
-     * <li><b>Essence</b> - matched against {@link PlayerListener#ESSENCE_NAME_PATTERN},
+     * {@link Regex#ENCHANTMENT_PATTERN} and resolved via {@link PlayerListener#enchantedBookResolution}.</li>
+     * <li><b>Essence</b> - matched against {@link Regex#ESSENCE_NAME_PATTERN},
      * producing e.g. {@code ESSENCE_WITHER}.</li>
      * <li><b>Default</b> - plain name looked up in {@link ItemsData#getByName(String)}},
      * falling back to an uppercased underscore-separated ID.</li>
@@ -332,7 +329,7 @@ public class DungeonProfitOverlay {
                 } else if ((requiredKuudraKey = KuudraKey.getByName(s)) != null) {
                     costToOpen += requiredKuudraKey.maxPrice();
                 } else {
-                    Matcher m = COIN_COST_PATTERN.matcher(s);
+                    Matcher m = Regex.COIN_COST_PATTERN.matcher(s);
                     if (m.find()) {
                         try {
                             costToOpen += Integer.parseInt(m.group(1).replace(",", ""));
@@ -361,7 +358,7 @@ public class DungeonProfitOverlay {
         // Enchanted Book
         if (plain.startsWith("Enchanted Book (") && plain.endsWith(")")) {
             String content = plain.substring("Enchanted Book (".length(), plain.length() - 1);
-            Matcher m = EnchantManager.ENCHANTMENT_PATTERN.matcher(content);
+            Matcher m = Regex.ENCHANTMENT_PATTERN.matcher(content);
             if (!m.find()) return null;
 
             String apiId = PlayerListener.enchantedBookResolution(null, m);

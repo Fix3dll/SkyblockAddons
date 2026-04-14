@@ -2,8 +2,10 @@ package com.fix3dll.skyblockaddons.utils.data;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.Language;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.seacreatures.SeaCreature;
@@ -27,6 +29,7 @@ import com.fix3dll.skyblockaddons.utils.data.requests.LocalizationsRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.LocationsRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.OnlineDataRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.PetItemsRequest;
+import com.fix3dll.skyblockaddons.utils.data.requests.RegexRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.SeaCreaturesRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.SkillXpRequest;
 import com.fix3dll.skyblockaddons.utils.data.requests.SlayerLocationsRequest;
@@ -75,6 +78,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.regex.Pattern;
 
 /**
  * This class reads data from the JSON files in the mod's resources or on the mod's Github repo and loads it into memory.
@@ -161,12 +165,36 @@ public class DataUtils {
     }
 
     /**
-     * Reads textured heads. Separated from {@link #readLocalFileData()} for early loading.
+     * Reads data files early. Separated from {@link #readLocalFileData()} for early loading.
      */
-    public static void readTexturedHeads() {
-        try (InputStream inputStream = DataUtils.class.getResourceAsStream("/texturedHeads.json");
+    public static void preReadLocalFileData() {
+        // Textured Player Heads Data
+        path = "/texturedHeads.json";
+        try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
             ItemUtils.setTexturedHeads(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, TexturedHead>>() {}.getType()));
+        } catch (Exception ex) {
+            handleLocalFileReadException(path,ex);
+        }
+
+        // Regex Patterns Data
+        path = "/regex.json";
+        try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
+             InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)){
+            Map<String, Pattern> data = GSON.fromJson(inputStreamReader, new TypeToken<Map<String, Pattern>>() {}.getType());
+            for (Map.Entry<String, Pattern> entry : data.entrySet()) {
+                String key = entry.getKey();
+                Pattern pattern = entry.getValue();
+                try {
+                    Regex.valueOf(key).setPattern(pattern);
+                } catch (IllegalArgumentException e) {
+                    try {
+                        InventoryType.valueOf(key).setInventoryPattern(pattern);
+                    } catch (IllegalArgumentException e2) {
+                        LOGGER.warn("Patterns data contains unrecognized key '{}', skipping.", key);
+                    }
+                }
+            }
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -267,7 +295,9 @@ public class DataUtils {
         path = "/petItems.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            PetManager.setPetItems(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, PetItem>>() {}.getType()));
+            Map<String, PetItem> pets = GSON.fromJson(inputStreamReader, new TypeToken<Map<String, PetItem>>() {}.getType());
+            pets.forEach((skyblockId, petItem) -> ItemUtils.setItemStackSkyblockID(petItem.getItemStack(), skyblockId));
+            PetManager.setPetItems(pets);
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -409,9 +439,7 @@ public class DataUtils {
 
             MutableComponent buttonRowComponent = Component.literal("[" + Translations.getMessage("messages.copy") + "]").withStyle(style ->
                     style.withClickEvent(
-                            new ClickEvent.RunCommand(
-                                    ColorCode.WHITE + String.format("/sba internal copy %s", errorMessageBuilder)
-                            )
+                            new ClickEvent.RunCommand("/sba internal copy %s".formatted(errorMessageBuilder))
                     )
             );
             buttonRowComponent.append("  ");
@@ -467,6 +495,7 @@ public class DataUtils {
         remoteRequests.add(new PetItemsRequest());
         remoteRequests.add(new LocationsRequest());
         remoteRequests.add(new SlayerLocationsRequest());
+        remoteRequests.add(new RegexRequest());
         remoteRequests.add(new ElectionRequest()); // API data
         remoteRequests.add(new ItemsRequest()); // API data
     }

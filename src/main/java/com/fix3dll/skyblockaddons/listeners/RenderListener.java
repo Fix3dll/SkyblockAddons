@@ -8,6 +8,7 @@ import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.ItemDiff;
 import com.fix3dll.skyblockaddons.core.PlayerStat;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkillType;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.SlayerArmorProgress;
@@ -125,7 +126,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class RenderListener {
 
@@ -174,8 +174,6 @@ public class RenderListener {
                     new ItemStack(Items.DIAMOND_SWORD)
             )
     );
-
-    private static final Pattern DUNGEON_STAR_PATTERN = Pattern.compile("(?i)(?:(?:§[a-f0-9])?✪)+(?:§r)?(?:§[a-f0-9]?[➊-➒])?");
 
     private static final int DEPLOYABLE_GUI_SIZE = 27; // MC.font.lineHeight * 3 because it looked the best
 
@@ -1085,7 +1083,7 @@ public class RenderListener {
                 if (holdingItem == ItemStack.EMPTY || skyblockItemID == null) {
                     return;
                 } else if (DamageDisplayItem.getByID(skyblockItemID) != null) {
-                    text = DUNGEON_STAR_PATTERN.matcher(
+                    text = Regex.DUNGEON_STAR_PATTERN.matcher(
                             TextUtils.getFormattedText(holdingItem.getCustomName())
                     ).replaceFirst("");
                 } else {

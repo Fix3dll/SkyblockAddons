@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
@@ -37,7 +38,6 @@ import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Collection of text/string related utility methods
@@ -54,22 +54,6 @@ public class TextUtils {
      */
     public static final NumberFormat NUMBER_FORMAT_NO_GROUPING = NumberFormat.getInstance(Locale.US);
     private static final NumberFormat[] COIN_FORMATS = new NumberFormat[6]; // 0-5
-
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-ORZ]");
-    private static final Pattern STRIP_ICONS_PATTERN = Pattern.compile("\\[✌]|[♲Ⓑ⚒ቾ]+");
-    private static final Pattern STRIP_PREFIX_PATTERN = Pattern.compile("\\[\\d+]");
-    private static final Pattern STRIP_PET_DISPLAY_NAME = Pattern.compile("]\\s(?:§.)*([\\w- ]+(?:§. ✦)?)");
-    private static final Pattern REPEATED_COLOR_PATTERN = Pattern.compile("(?i)(§[0-9A-FK-ORZ])+");
-    private static final Pattern NUMBERS_SLASHES = Pattern.compile("[^0-9 /]");
-    private static final Pattern SCOREBOARD_CHARACTERS = Pattern.compile("[^a-z A-Z:0-9_/'.!§\\[\\]❤]");
-    private static final Pattern FLOAT_CHARACTERS = Pattern.compile("[^.0-9\\-]");
-    private static final Pattern INTEGER_CHARACTERS = Pattern.compile("[^0-9]");
-    private static final Pattern TRIM_WHITESPACE_RESETS = Pattern.compile("^(?:\\s|§r)*|(?:\\s|§r)*$");
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^(?:\\[.+?] )?(?<username>\\w+)(?: \\[.+?])?$");
-    private static final Pattern RESET_CODE_PATTERN = Pattern.compile("(?i)§R");
-    private static final Pattern MAGNITUDE_PATTERN = Pattern.compile("(\\d[\\d,.]*\\d*)+([kKmMbBtT])");
-    private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s?:\\s?\".+/(?<textureId>\\w+)\"");
-    private static final Pattern QUANTITY_PATTERN = Pattern.compile("^x\\d+$");
 
     private static final NavigableMap<Long, String> SUFFIXES = new TreeMap<>();
     static {
@@ -158,7 +142,7 @@ public class TextUtils {
      * @return Text without color codes
      */
     public static String stripColor(final String input) {
-        return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+        return Regex.STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
     }
 
     /**
@@ -167,7 +151,7 @@ public class TextUtils {
      * @return Text without icons
      */
     public static String stripIcons(String input) {
-        return STRIP_ICONS_PATTERN.matcher(input).replaceAll("");
+        return Regex.STRIP_ICONS_PATTERN.matcher(input).replaceAll("");
     }
 
     /**
@@ -176,7 +160,7 @@ public class TextUtils {
      * @return Stripped text. If the username is not found, the input returns back.
      */
     public static String stripUsername(String input) {
-        Matcher usernameMatcher = USERNAME_PATTERN.matcher(input);
+        Matcher usernameMatcher = Regex.USERNAME_PATTERN.matcher(input);
         if (usernameMatcher.matches())
             return usernameMatcher.group("username");
         else
@@ -184,7 +168,7 @@ public class TextUtils {
     }
 
     public static String stripPrefix(String input) {
-        return STRIP_PREFIX_PATTERN.matcher(input).replaceAll("");
+        return Regex.STRIP_PREFIX_PATTERN.matcher(input).replaceAll("");
     }
 
     /**
@@ -194,7 +178,7 @@ public class TextUtils {
      * @return Whether this input can be Minecraft username or not
      */
     public static boolean isUsername(String input) {
-        return USERNAME_PATTERN.matcher(input).matches();
+        return Regex.USERNAME_PATTERN.matcher(input).matches();
     }
 
     /**
@@ -203,7 +187,7 @@ public class TextUtils {
      * @return {@code true} if the input string is length 0 or only contains repeated formatting codes
      */
     public static boolean isZeroLength(String input) {
-        return input.isEmpty() || REPEATED_COLOR_PATTERN.matcher(input).matches();
+        return input.isEmpty() || Regex.REPEATED_COLOR_PATTERN.matcher(input).matches();
     }
 
 
@@ -214,7 +198,7 @@ public class TextUtils {
      * @return Input text with only letters and numbers
      */
     public static String keepScoreboardCharacters(String text) {
-        return SCOREBOARD_CHARACTERS.matcher(text).replaceAll("");
+        return Regex.SCOREBOARD_CHARACTERS.matcher(text).replaceAll("");
     }
 
     /**
@@ -224,7 +208,7 @@ public class TextUtils {
      * @return Input text with only valid float number characters
      */
     public static String keepFloatCharactersOnly(String text) {
-        return FLOAT_CHARACTERS.matcher(text).replaceAll("");
+        return Regex.FLOAT_CHARACTERS.matcher(text).replaceAll("");
     }
 
     /**
@@ -234,7 +218,7 @@ public class TextUtils {
      * @return Input text with only valid integer number characters
      */
     public static String keepIntegerCharactersOnly(String text) {
-        return INTEGER_CHARACTERS.matcher(text).replaceAll("");
+        return Regex.INTEGER_CHARACTERS.matcher(text).replaceAll("");
     }
 
     /**
@@ -244,7 +228,7 @@ public class TextUtils {
      * @return Input text with only numbers
      */
     public static String getNumbersOnly(String text) {
-        return NUMBERS_SLASHES.matcher(text).replaceAll("");
+        return Regex.NUMBERS_SLASHES.matcher(text).replaceAll("");
     }
 
     /**
@@ -267,8 +251,8 @@ public class TextUtils {
      * @return Input text with converted magnitudes
      */
     public static String convertMagnitudes(String text) throws ParseException {
-        Matcher matcher = MAGNITUDE_PATTERN.matcher(text);
-        StringBuffer sb = new StringBuffer();
+        Matcher matcher = Regex.MAGNITUDE_PATTERN.matcher(text);
+        StringBuilder sb = new StringBuilder();
 
         while (matcher.find()) {
             double parsedDouble = NUMBER_FORMAT.parse(matcher.group(1)).doubleValue();
@@ -390,7 +374,7 @@ public class TextUtils {
         );
 
         if (justTextureUrl) {
-            Matcher matcher = TEXTURE_URL_PATTERN.matcher(decodedString);
+            Matcher matcher = Regex.TEXTURE_URL_PATTERN.matcher(decodedString);
             if (matcher.find()) {
                 return matcher.group("textureId");
             } else {
@@ -426,7 +410,7 @@ public class TextUtils {
      * @return Text without leading or trailing reset color codes and whitespace
      */
     public static String trimWhitespaceAndResets(String input) {
-        return TRIM_WHITESPACE_RESETS.matcher(input).replaceAll("");
+        return Regex.TRIM_WHITESPACE_RESETS.matcher(input).replaceAll("");
     }
 
     /**
@@ -435,7 +419,7 @@ public class TextUtils {
      * @return Text with all reset color codes removed
      */
     public static String stripResets(String input) {
-        return RESET_CODE_PATTERN.matcher(input).replaceAll("");
+        return input.replace("§r", "").replace("§R", "");
     }
 
     /**
@@ -615,7 +599,7 @@ public class TextUtils {
      * @return Stripped display name. If the name cannot be stripped, the input returns back.
      */
     public static String stripPetName(String displayName) {
-        Matcher matcher = STRIP_PET_DISPLAY_NAME.matcher(displayName);
+        Matcher matcher = Regex.STRIP_PET_DISPLAY_NAME.matcher(displayName);
         return matcher.find() ? matcher.group(1) : displayName;
     }
 
@@ -749,7 +733,7 @@ public class TextUtils {
 
         // Validate the quantity node (must be plain text matching "x[number]")
         if (!(quantityNode.getContents() instanceof PlainTextContents quantityContents)
-                || !QUANTITY_PATTERN.matcher(quantityContents.text()).matches()) {
+                || !Regex.QUANTITY_PATTERN.matcher(quantityContents.text()).matches()) {
             return original;
         }
 

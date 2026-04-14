@@ -1,40 +1,63 @@
 package com.fix3dll.skyblockaddons.core;
 
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This is an enum containing different menus in Skyblock. It's used in logic where the menu the player is in matters.
  */
-@Getter
 public enum InventoryType {
-    BASIC_REFORGING("Reforge Item", "Reforge Item"),
-    HEX_REFORGING("Hex Reforge", "The Hex ➜ Reforges"),
-    SALVAGING("Salvage Items", "Salvage Items"),
-    ULTRASEQUENCER("Ultrasequencer", "Ultrasequencer \\((?<type>[a-zA-Z]+)\\)"),
-    CHRONOMATRON("Chronomatron", "Chronomatron \\((?<type>[a-zA-Z]+)\\)"),
-    SUPERPAIRS("Superpairs", "Superpairs \\((?<type>[a-zA-Z]+)\\)"),
-    EXP_TABLE_RNG("Experimentation Table RNG", "\\((?<page>\\d+)/\\d+\\) Experimentation Table RNG"),
-    STORAGE("Storage", "Storage"),
-    STORAGE_BACKPACK("BackpackStorage", "(?<type>[a-zA-Z]+) Backpack ?✦? \\(Slot #(?<page>\\d+)\\)"),
-    SKILL_TYPE_MENU("Skill Type Menu", "(?<type>[a-zA-Z]+) Skill"),
-    ENDER_CHEST("EnderChest", "Ender Chest \\((?<page>\\d+)/\\d+\\)"),
-    MAYOR("Mayor", "Mayor (?<mayor>.*)"),
-    CALENDAR("Calendar", "Calendar and Events"),
-    PETS("Pets","Pets( \\((?<page>\\d+)/\\d+\\) )?"), // "Pets (1/3) "
-    EQUIPMENT("Your Equipment and Stats", "Your Equipment and Stats"),
-    SKYBLOCK_MENU("SkyBlock Menu", "SkyBlock Menu"),
-    CATACOMBS_CHEST("Catacombs Chest", "(?<type>Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)"),
-    KUUDRA_CHEST("Kuudra Chest", "(?<type>Free|Paid) Chest"),
-    CROSEUS_CHEST_MENU("Croseus Chest Menu", "(?<type>(?:Master )?Catacombs|Kuudra) - .+");
+    BASIC_REFORGING("Reforge Item"),
+    HEX_REFORGING("Hex Reforge"),
+    SALVAGING("Salvage Items"),
+    ULTRASEQUENCER("Ultrasequencer"),
+    CHRONOMATRON("Chronomatron"),
+    SUPERPAIRS("Superpairs"),
+    EXP_TABLE_RNG("Experimentation Table RNG"),
+    STORAGE("Storage"),
+    STORAGE_BACKPACK("BackpackStorage"),
+    SKILL_TYPE_MENU("Skill Type Menu"),
+    ENDER_CHEST("EnderChest"),
+    MAYOR("Mayor"),
+    CALENDAR("Calendar"),
+    PETS("Pets"),
+    EQUIPMENT("Your Equipment and Stats"),
+    SKYBLOCK_MENU("SkyBlock Menu"),
+    CATACOMBS_CHEST("Catacombs Chest"),
+    KUUDRA_CHEST("Kuudra Chest"),
+    CROSEUS_CHEST_MENU("Croseus Chest Menu");
 
-    private final String inventoryName;
-    private final Pattern inventoryPattern;
+    @Getter private final String inventoryName;
 
-    InventoryType(String inventoryName, String regex) {
+    /** The compiled pattern loaded from regex.json */
+    @Setter private volatile Pattern inventoryPattern;
+
+    InventoryType(String inventoryName) {
         this.inventoryName = inventoryName;
-        this.inventoryPattern = Pattern.compile(regex);
     }
 
+    /**
+     * Returns the compiled pattern for this inventory.
+     * @return the compiled Pattern
+     * @throws IllegalStateException if the pattern is not yet loaded
+     */
+    public Pattern getPattern() {
+        Pattern p = this.inventoryPattern;
+        if (p == null) {
+            throw new IllegalStateException("Inventory pattern has not been initialized: " + this.name());
+        }
+        return p;
+    }
+
+    /**
+     * Creates a Matcher for the given title.
+     * @param title the inventory title
+     * @return a Matcher object
+     */
+    public Matcher matcher(String title) {
+        return getPattern().matcher(title);
+    }
 }

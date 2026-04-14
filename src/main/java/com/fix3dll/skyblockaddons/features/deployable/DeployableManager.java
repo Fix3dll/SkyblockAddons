@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.features.deployable;
 
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
@@ -20,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Class for managing active Deployable around the player.
@@ -32,8 +32,6 @@ public class DeployableManager {
     /** The DeployableManager instance. */
     @Getter private static final DeployableManager instance = new DeployableManager();
     private static final Minecraft MC = Minecraft.getInstance();
-    private static final Pattern DEPLOYABLE_PATTERN = Pattern.compile("[A-Za-z '-]* (?<seconds>[0-9]*)s");
-    private static final Pattern TOTEM_PATTERN = Pattern.compile("Remaining: (?:(?<minutes>\\d{1,2})m )?(?<seconds>\\d{1,2})s");
 
     /** Entry displaying {@link Deployable#SOS_FLARE} at 90 seconds for the edit screen */
     public static ArmorStand DUMMY_ARMOR_STAND;
@@ -103,7 +101,7 @@ public class DeployableManager {
                         if (entryCustomName == null) continue;
 
                         String entryCustomNameString = entryCustomName.getString();
-                        Matcher matcher = TOTEM_PATTERN.matcher(entryCustomNameString);
+                        Matcher matcher = Regex.TOTEM_PATTERN.matcher(entryCustomNameString);
                         if (!patternFound && matcher.matches()) {
                             seconds = getSeconds(matcher);
                             uuid = entry.getUUID();
@@ -117,7 +115,7 @@ public class DeployableManager {
                         }
                     }
                 } else {
-                    Matcher matcher = DEPLOYABLE_PATTERN.matcher(customNameString);
+                    Matcher matcher = Regex.DEPLOYABLE_PATTERN.matcher(customNameString);
 
                     if (matcher.matches()) {
                         int seconds;

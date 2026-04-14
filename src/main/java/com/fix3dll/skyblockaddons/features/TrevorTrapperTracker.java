@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.features;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
@@ -49,7 +50,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TrevorTrapperTracker {
 
@@ -58,10 +58,6 @@ public class TrevorTrapperTracker {
 
     @Getter private static final TrevorTrapperTracker instance = new TrevorTrapperTracker();
 
-    private static final Pattern TRACKED_ANIMAL_NAME_PATTERN = Pattern.compile("\\[Lv[0-9]+](?: (?<mobType>[^a-zA-Z0-9]))? (?<rarity>[a-zA-Z]+) (?<animal>[a-zA-Z]+) .*❤");
-    private static final Pattern TREVOR_FIND_ANIMAL_PATTERN = Pattern.compile("\\[NPC] Trevor: You can find your (?<rarity>[A-Z]+) animal near the [a-zA-Z ]+\\.");
-    private static final Pattern ANIMAL_DIED_PATTERN = Pattern.compile("Your mob died randomly, you are rewarded [0-9]+ pelts?\\.");
-    private static final Pattern ANIMAL_KILLED_PATTERN = Pattern.compile("Killing the animal rewarded you [0-9]+ pelts?\\.");
     private static final ResourceLocation TICKER_SYMBOL = SkyblockAddons.resourceLocation("tracker.png");
 
     private static TrackerRarity trackingAnimalRarity = null;
@@ -145,7 +141,7 @@ public class TrevorTrapperTracker {
             Component customName = livingEntity.getCustomName();
             if (customName == null) return;
 
-            Matcher m = TRACKED_ANIMAL_NAME_PATTERN.matcher(TextUtils.stripColor(customName.getString()));
+            Matcher m = Regex.TRACKED_ANIMAL_NAME_PATTERN.matcher(TextUtils.stripColor(customName.getString()));
             if (m.matches()) {
                 TrackerRarity rarity = TrackerRarity.getFromString(m.group("rarity"));
                 if (rarity == null || !rarity.equals(trackingAnimalRarity))
@@ -186,7 +182,7 @@ public class TrevorTrapperTracker {
         if (LocationUtils.isOn(Island.THE_FARMING_ISLANDS) && !actionBar) {
             String stripped = TextUtils.stripColor(component.getString());
             // Once the player has started the hunt, start some timers
-            Matcher matcher = TREVOR_FIND_ANIMAL_PATTERN.matcher(stripped);
+            Matcher matcher = Regex.TREVOR_FIND_ANIMAL_PATTERN.matcher(stripped);
             if (matcher.matches()) {
                 // Capitalized rarity from chat p.s. charAt(0) already upper case
                 String rarity = matcher.group("rarity");
@@ -203,7 +199,7 @@ public class TrevorTrapperTracker {
                 }
             }
             // Once the player has killed the animal, remove the hunt timer
-            else if (ANIMAL_DIED_PATTERN.matcher(stripped).matches() || ANIMAL_KILLED_PATTERN.matcher(stripped).matches()) {
+            else if (Regex.ANIMAL_DIED_PATTERN.matcher(stripped).matches() || Regex.ANIMAL_KILLED_PATTERN.matcher(stripped).matches()) {
                 CooldownManager.remove("TREVOR_THE_TRAPPER_HUNT");
                 onQuestEnded();
             }

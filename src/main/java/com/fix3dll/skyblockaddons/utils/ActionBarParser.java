@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.utils;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.CrimsonArmorAbilityStack;
 import com.fix3dll.skyblockaddons.core.PlayerStat;
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkillType;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
@@ -58,12 +59,6 @@ public class ActionBarParser {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-
-    private static final Pattern COLLECTIONS_CHAT_PATTERN = Pattern.compile("\\+(?<gained>[0-9,.]+) (?<skillName>[A-Za-z]+) (?<progress>\\((((?<current>[0-9.,kM]+)/(?<total>[0-9.,kM]+))|((?<percent>[0-9.,]+)%))\\))");
-    private static final Pattern SKILL_GAIN_PATTERN_S = Pattern.compile("\\+(?<gained>[0-9,.]+) (?<skillName>[A-Za-z]+) (?<progress>\\((((?<current>[0-9.,]+)/(?<total>[0-9.,]+))|((?<percent>[0-9.,]+)%))\\))");
-    private static final Pattern MANA_PATTERN_S = Pattern.compile("(?<num>[0-9,.]+)/(?<den>[0-9,.]+)✎(| Mana| (?<overflow>-?[0-9,.]+)ʬ)");
-    private static final Pattern DEFENSE_PATTERN_S = Pattern.compile("(?<defense>[0-9,.]+)❈ Defense(?<other>( (?<align>\\|\\|\\|))?( {2}(?<tether>T[0-9,.]+!?))?.*)?");
-    private static final Pattern HEALTH_PATTERN_S = Pattern.compile("(?<health>[0-9,.]+)/(?<maxHealth>[0-9,.]+)❤(?<wand>\\+(?<wandHeal>[0-9,.]+)[▆▅▄▃▂▁])?(?: {2}(?<tether>T[0-9,.]+!?))?");
 
     /**
      * Cached NumberFormat instance for skill XP parsing.
@@ -332,7 +327,7 @@ public class ActionBarParser {
         String returnString = healthSection;
         float newHealth;
         float maxHealth;
-        Matcher m = HEALTH_PATTERN_S.matcher(stripped);
+        Matcher m = Regex.HEALTH_PATTERN_S.matcher(stripped);
         if ((Feature.EFFECTIVE_HEALTH_TEXT.isEnabled() || separateDisplay) && m.matches()) {
             newHealth = parseFloat(m.group("health"));
             maxHealth = parseFloat(m.group("maxHealth"));
@@ -371,7 +366,7 @@ public class ActionBarParser {
         // 183/171✎ Mana
         // 421/421✎ 10ʬ
         // 421/421✎ -10ʬ
-        Matcher m = MANA_PATTERN_S.matcher(strippedTrimmed);
+        Matcher m = Regex.MANA_PATTERN_S.matcher(strippedTrimmed);
         if (m.matches()) {
             PlayerStat.MANA.setValue(parseFloat(m.group("num")));
             PlayerStat.MAX_MANA.setValue(parseFloat(m.group("den")));
@@ -425,7 +420,7 @@ public class ActionBarParser {
         // Tethered T1 (Dungeon Healer)--means tethered to 1 person I think: §a1024§a? Defense§6  T1
         // Tethered T3! (Dungeon Healer)--not sure why exclamation mark: §a1039§a? Defense§a§l  T3!
         // Tethered T3! (Dungeon Healer) + Aligned ||| (Gyrokinetic Wand): §a1039§a? Defense§a |||§a§l  T3!
-        Matcher m = DEFENSE_PATTERN_S.matcher(stripped);
+        Matcher m = Regex.DEFENSE_PATTERN_S.matcher(stripped);
         if (m.matches()) {
             float defense = parseFloat(m.group("defense"));
             PlayerStat.DEFENCE.setValue(defense);
@@ -460,7 +455,7 @@ public class ActionBarParser {
      */
     private String parseSkill(String skillSection, String convertMag) throws ParseException {
         if (Feature.SKILL_DISPLAY.isEnabled() || Feature.SKILL_PROGRESS_BAR.isEnabled()) {
-            Matcher matcher = SKILL_GAIN_PATTERN_S.matcher(TextUtils.stripColor(convertMag));
+            Matcher matcher = Regex.SKILL_GAIN_PATTERN_S.matcher(TextUtils.stripColor(convertMag));
             StringBuilder skillTextBuilder = new StringBuilder();
             SkillType skillType = null;
 

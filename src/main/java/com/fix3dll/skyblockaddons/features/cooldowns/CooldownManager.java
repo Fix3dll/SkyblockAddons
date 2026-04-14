@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.features.cooldowns;
 
+import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -10,7 +11,6 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Manager class for items on cooldown. <br/>
@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
 public class CooldownManager {
 
     @Setter private static Object2IntMap<String> itemCooldowns = Object2IntMaps.emptyMap();
-    private static final Pattern ITEM_COOLDOWN_PATTERN = Pattern.compile("Cooldown: ([0-9]+)s");
-    private static final Pattern ALTERNATE_COOLDOWN_PATTERN = Pattern.compile("([0-9]+) Second Cooldown");
 
     private static final Object2ObjectOpenHashMap<String, CooldownEntry> cooldowns = new Object2ObjectOpenHashMap<>();
 
@@ -169,21 +167,21 @@ public class CooldownManager {
      *
      * @param itemStack Item to read cooldown from
      * @return Read cooldown in seconds or {@code -1} if no cooldown was found
-     * @see #ITEM_COOLDOWN_PATTERN
-     * @see #ALTERNATE_COOLDOWN_PATTERN
+     * @see Regex#ITEM_COOLDOWN_PATTERN
+     * @see Regex#ALTERNATE_COOLDOWN_PATTERN
      */
     private static int getLoreCooldown(ItemStack itemStack) {
         for (String loreLine : ItemUtils.getItemLore(itemStack)) {
             String strippedLoreLine = TextUtils.stripColor(loreLine);
 
-            Matcher matcher = ITEM_COOLDOWN_PATTERN.matcher(strippedLoreLine);
+            Matcher matcher = Regex.ITEM_COOLDOWN_PATTERN.matcher(strippedLoreLine);
             if (matcher.matches()) {
                 try {
                     return Integer.parseInt(matcher.group(1));
                 } catch (NumberFormatException ignored) {}
 
             } else {
-                matcher = ALTERNATE_COOLDOWN_PATTERN.matcher(strippedLoreLine);
+                matcher = Regex.ALTERNATE_COOLDOWN_PATTERN.matcher(strippedLoreLine);
                 if (matcher.matches()) {
                     try {
                         return Integer.parseInt(matcher.group(1));

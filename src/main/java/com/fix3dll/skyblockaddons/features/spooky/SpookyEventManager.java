@@ -1,28 +1,24 @@
 package com.fix3dll.skyblockaddons.features.spooky;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.Regex;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 // TODO: Feature Rewrite
 public class SpookyEventManager {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
-    private static final Pattern CANDY_PATTERN = Pattern.compile("Your Candy: (?<greenCandy>\\d+) Green, (?<purpleCandy>\\d+) Purple \\((?<points>\\d+) pts\\.\\)");
-    @Getter private static final Map<CandyType, Integer> dummyCandyCounts = new HashMap<>();
-    @Getter private static final Map<CandyType, Integer> candyCounts = new HashMap<>();
+    @Getter private static final Object2IntMap<CandyType> dummyCandyCounts = new Object2IntOpenHashMap<>(
+            Map.of(CandyType.GREEN, 12, CandyType.PURPLE, 34)
+    );
+    @Getter private static final Object2IntMap<CandyType> candyCounts = new Object2IntOpenHashMap<>();
     @Getter private static int points;
-
-    static {
-        dummyCandyCounts.put(CandyType.GREEN, 12);
-        dummyCandyCounts.put(CandyType.PURPLE, 34);
-        reset();
-    }
 
     public static void reset() {
         for (CandyType candyType : CandyType.values()) {
@@ -32,7 +28,7 @@ public class SpookyEventManager {
     }
 
     public static boolean isActive() {
-        return SpookyEventManager.getCandyCounts().get(CandyType.GREEN) != 0 || SpookyEventManager.getCandyCounts().get(CandyType.PURPLE) != 0;
+        return candyCounts.getInt(CandyType.GREEN) != 0 || candyCounts.getInt(CandyType.PURPLE) != 0;
     }
 
     public static void update(String strippedTabFooterString) {
@@ -42,11 +38,11 @@ public class SpookyEventManager {
         }
 
         try {
-            Matcher matcher = CANDY_PATTERN.matcher(strippedTabFooterString);
+            Matcher matcher = Regex.CANDY_PATTERN.matcher(strippedTabFooterString);
             if (matcher.find()) {
-                candyCounts.put(CandyType.GREEN, Integer.valueOf(matcher.group("greenCandy")));
-                candyCounts.put(CandyType.PURPLE, Integer.valueOf(matcher.group("purpleCandy")));
-                points = Integer.parseInt(matcher.group("points"));
+                candyCounts.put(CandyType.GREEN, Integer.parseInt(matcher.group("green").replace(",", "")));
+                candyCounts.put(CandyType.PURPLE, Integer.parseInt(matcher.group("purple").replace(",", "")));
+                points = Integer.parseInt(matcher.group("points").replace(",", ""));
             }
         } catch (Exception ex) {
             LOGGER.error("An error occurred while parsing the spooky event event text in the tab list!", ex);
@@ -55,7 +51,6 @@ public class SpookyEventManager {
 
     /**
      * Temp function until feature re-write
-     *
      * @param green
      * @param purple
      * @param pts
@@ -65,4 +60,5 @@ public class SpookyEventManager {
         candyCounts.put(CandyType.PURPLE, purple);
         points = pts;
     }
+
 }
