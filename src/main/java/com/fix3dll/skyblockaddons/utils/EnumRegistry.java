@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Language;
+import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordStatus;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantLayout;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
@@ -36,6 +37,7 @@ public class EnumRegistry {
         REGISTRY.put("BERSERK_COLOR", ColorCode.class);
         REGISTRY.put("ARCHER_COLOR", ColorCode.class);
         REGISTRY.put("TANK_COLOR", ColorCode.class);
+        REGISTRY.put("MINIMUM_RARITY_FOR_CONFIRMATION", SkyblockRarity.class);
     }
 
     public static RegistrableEnum getEnumValue(String enumType, String enumKey) {

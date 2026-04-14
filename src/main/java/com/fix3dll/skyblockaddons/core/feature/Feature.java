@@ -56,7 +56,6 @@ public enum Feature {
     LOCK_SLOTS(38, "settings.lockSlots", null),
     SUMMONING_EYE_ALERT(39, "settings.summoningEyeAlert", new FeatureGuiData(ColorCode.RED)),
     MAKE_ENDERCHESTS_GREEN_IN_END(40, "settings.makeEnderchestsInEndGreen", new FeatureGuiData(ColorCode.GREEN)),
-    STOP_DROPPING_SELLING_RARE_ITEMS(42, "settings.stopDroppingSellingRareItems", new FeatureGuiData(ColorCode.RED)),
     REPLACE_ROMAN_NUMERALS_WITH_NUMBERS(45, "settings.replaceRomanNumeralsWithNumbers", null),
     MINION_DISABLE_LOCATION_WARNING(50, "settings.disableMinionLocationWarning", null),
     ENCHANTMENT_LORE_PARSING(52, "settings.enchantmentLoreParsing", null),

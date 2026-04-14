@@ -169,7 +169,9 @@ public class AbstractContainerScreenHook {
                     }
                 }
             }
-            if (MC.options.keyDrop.key.getValue() == keyCode && !ItemDropChecker.canDropItem(hoveredSlot)) {
+
+            if (MC.options.keyDrop.key.getValue() == keyCode && hoveredSlot != null
+                    && !ItemDropChecker.canDropItem(hoveredSlot.getItem())) {
                 cir.cancel();
             }
         }
@@ -215,7 +217,7 @@ public class AbstractContainerScreenHook {
         }
 
         if (slot != null && slot.container instanceof Inventory && NPCUtils.isSellMerchant(screen.getMenu().slots)
-                && !ItemDropChecker.canDropItem(slot)) {
+                && !ItemDropChecker.canDropItem(slot.getItem())) {
             return true;
         }
 
