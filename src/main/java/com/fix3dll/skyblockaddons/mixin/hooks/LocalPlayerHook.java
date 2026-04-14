@@ -49,7 +49,7 @@ public class LocalPlayerHook {
                 if (isSkyblock) {
                     Utils.sendMessage(Component
                             .literal(Translations.getMessage("messages.cancelledDropping"))
-                            .withColor(Feature.STOP_DROPPING_SELLING_RARE_ITEMS.getColor())
+                            .withColor(Feature.DROP_CONFIRMATION.getColor())
                     );
                 }
                 return true;

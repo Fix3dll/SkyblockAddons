@@ -82,13 +82,13 @@ public class MultiPlayerGameModeHook {
         ItemStack itemStack = player.inventoryMenu.getCarried();
         int slotNum = slotId;
 
-        if (main.getUtils().isOnSkyblock()) {
-            // Prevent dropping rare items
-            if (checkItemDrop(clickType, slotId, itemStack)) {
-                ci.cancel();
-                return;
-            }
+        // Prevent dropping rare items
+        if (checkItemDrop(clickType, slotId, itemStack)) {
+            ci.cancel();
+            return;
+        }
 
+        if (main.getUtils().isOnSkyblock()) {
             slotId += main.getInventoryUtils().getSlotDifference(player.containerMenu);
 
             Slot slotIn;
@@ -111,10 +111,6 @@ public class MultiPlayerGameModeHook {
                 }
 
                 main.getUtils().playLoudSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.5);
-                ci.cancel();
-            }
-        } else {
-            if (checkItemDrop(clickType, slotId, itemStack)) {
                 ci.cancel();
             }
         }

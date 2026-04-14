@@ -1,5 +1,7 @@
 package com.fix3dll.skyblockaddons.core;
 
+import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
+import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.Getter;
 
 /**
@@ -7,7 +9,7 @@ import lombok.Getter;
  * @see <a href="https://wiki.hypixel.net/Rarity">https://wiki.hypixel.net/Rarity</a>
  */
 @Getter
-public enum SkyblockRarity {
+public enum SkyblockRarity implements ButtonCycling.SelectItem, RegistrableEnum  {
     COMMON("COMMON", ColorCode.WHITE),
     UNCOMMON("UNCOMMON", ColorCode.GREEN),
     RARE("RARE", ColorCode.BLUE),
@@ -48,4 +50,15 @@ public enum SkyblockRarity {
         }
         return null;
     }
+
+    @Override
+    public String getDisplayName() {
+        return this.loreName;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
 }

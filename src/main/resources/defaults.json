@@ -2,7 +2,9 @@
   "DROP_CONFIRMATION": {
     "value": false,
     "settings": {
-      "DROP_CONFIRMATION_IN_OTHER_GAMES": false
+      "DROP_CONFIRMATION_IN_OTHER_GAMES": false,
+      "WHITELIST_COMPACTOR_ITEMS": true,
+      "MINIMUM_RARITY_FOR_CONFIRMATION": "RARE"
     }
   },
   "SHOW_BACKPACK_PREVIEW": {
@@ -200,12 +202,6 @@
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
     "color": -11141291
-  },
-  "STOP_DROPPING_SELLING_RARE_ITEMS": {
-    "value": true,
-    "settings": {
-      "WHITELIST_COMPACTOR_ITEMS": true
-    }
   },
   "REPLACE_ROMAN_NUMERALS_WITH_NUMBERS": {
     "value": false,

@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.gui.screens;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Language;
+import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureGuiData;
@@ -593,6 +594,19 @@ public class SettingsGui extends SkyblockAddonsScreen {
                 y = getRowHeightSetting(row);
                 addRenderableWidget(new ButtonText(halfWidth, (int) y + 15, Translations.getMessage("settings.itemPricesInTooltip.lbinAveragesWarning"), true, ColorCode.GRAY.getColor()));
                 row += .2F;
+                break;
+
+            case MINIMUM_RARITY_FOR_CONFIRMATION:
+                boxWidth = 140;
+                x = halfWidth - (boxWidth / 2);
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10, setting.getMessage(), true, ColorCode.GRAY.getColor()));
+                addRenderableWidget(new ButtonCycling(x, (int) y, 140, 20,
+                        Arrays.asList(SkyblockRarity.values()),
+                        feature.getAsEnum(setting).ordinal(),
+                        index -> feature.set(setting, SkyblockRarity.values()[index])
+                ));
+                row += .4F;
                 break;
 
             default:
