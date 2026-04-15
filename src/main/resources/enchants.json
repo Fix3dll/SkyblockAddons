@@ -1311,15 +1311,15 @@
       "nbtNum": "champion_combat_xp",
       "stackLevel": [
         0,
+        50000,
         100000,
+        250000,
+        500000,
         1000000,
         1500000,
         2000000,
-        250000,
         2500000,
-        3000000,
-        50000,
-        500000
+        3000000
       ],
       "statLabel": "championCombatXp",
       "appliedTo": [
@@ -1338,14 +1338,14 @@
       "stackLevel": [
         0,
         100,
-        1000000,
-        1500,
-        15000,
-        150000,
         500,
+        1500,
         5000,
+        15000,
         50000,
-        500000
+        150000,
+        500000,
+        1000000
       ],
       "statLabel": "compactedBlocks",
       "appliedTo": [
@@ -1385,15 +1385,15 @@
       "nbtNum": "expertise_kills",
       "stackLevel": [
         0,
-        100,
-        1000,
-        10000,
-        15000,
-        250,
-        2500,
         50,
+        100,
+        250,
         500,
-        5500
+        1000,
+        2500,
+        5500,
+        10000,
+        15000
       ],
       "statLabel": "expertiseKills",
       "appliedTo": [
@@ -1409,15 +1409,15 @@
       "nbtNum": "hecatomb_s_runs",
       "stackLevel": [
         0,
-        10,
-        100,
         2,
+        5,
+        10,
         20,
         30,
         40,
-        5,
         60,
-        80
+        80,
+        100
       ],
       "statLabel": "hecatombsSRuns",
       "appliedTo": [
@@ -1432,15 +1432,15 @@
       "nbtNum": "toxophilite_combat_xp",
       "stackLevel": [
         0,
+        50000,
         100000,
+        250000,
+        500000,
         1000000,
         1500000,
         2000000,
-        250000,
         2500000,
-        3000000,
-        50000,
-        500000
+        3000000
       ],
       "statLabel": "toxophiliteCombatXp",
       "appliedTo": [
