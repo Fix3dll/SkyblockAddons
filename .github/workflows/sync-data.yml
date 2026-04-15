@@ -1,0 +1,104 @@
+name: Sync Resources to Data Repository via PR
+
+on:
+  push:
+    paths:
+      # Define the specific resource files to monitor for changes.
+      - "src/main/resources/compactorItems.json"
+      - "src/main/resources/containers.json"
+      - "src/main/resources/cooldowns.json"
+      - "src/main/resources/enchants.json"
+      - "src/main/resources/locations.json"
+      - "src/main/resources/regex.json"
+      - "src/main/resources/seaCreatures.json"
+      - "src/main/resources/skillXp.json"
+      - "src/main/resources/slayerLocations.json"
+
+jobs:
+  sync-resources-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Main Repository
+        uses: actions/checkout@v6
+        with:
+          path: SkyblockAddons
+
+      - name: Checkout Data Repository
+        uses: actions/checkout@v6
+        with:
+          repository: Fix3dll/SkyblockAddons-Data
+          token: ${{ secrets.DATA_REPO_PAT }}
+          path: SkyblockAddons-Data
+          # Fetch all history for all branches and tags.
+          # This is critical to ensure the subsequent branch existence check functions correctly.
+          fetch-depth: 0
+
+      - name: Create Pull Request in Data Repository
+        # We need to pass the PAT to the GitHub CLI for cross-repository authentication
+        env:
+          GH_TOKEN: ${{ secrets.DATA_REPO_PAT }}
+        run: |
+          TARGET_BRANCH="${{ github.ref_name }}"
+          # Create a unique branch name for the PR using the run ID to prevent conflicts
+          PR_BRANCH="sync/${TARGET_BRANCH}-${{ github.run_id }}"
+          
+          echo "Target branch: $TARGET_BRANCH"
+          echo "PR branch: $PR_BRANCH"
+
+          cd SkyblockAddons-Data
+
+          # Configure Git identity
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Ensure the target base branch exists on the remote repository.
+          # A PR must have a valid base branch to target.
+          if git show-ref --verify --quiet refs/remotes/origin/$TARGET_BRANCH; then
+            echo "Base branch '$TARGET_BRANCH' exists. Checking out."
+            git checkout $TARGET_BRANCH
+          else
+            echo "Base branch '$TARGET_BRANCH' does not exist. Creating and pushing it first."
+            git checkout -b $TARGET_BRANCH
+            git push -u origin $TARGET_BRANCH
+          fi
+
+          # Create and switch to the temporary branch for the PR
+          git checkout -b $PR_BRANCH
+
+          cd ..
+          
+          # Copy all relevant JSON resources to the data repository
+          cp SkyblockAddons/src/main/resources/compactorItems.json SkyblockAddons-Data/skyblock/compactorItems.json
+          cp SkyblockAddons/src/main/resources/containers.json SkyblockAddons-Data/skyblock/containers.json
+          cp SkyblockAddons/src/main/resources/cooldowns.json SkyblockAddons-Data/skyblock/cooldowns.json
+          cp SkyblockAddons/src/main/resources/enchants.json SkyblockAddons-Data/skyblock/enchants.json
+          cp SkyblockAddons/src/main/resources/locations.json SkyblockAddons-Data/skyblock/locations.json
+          cp SkyblockAddons/src/main/resources/regex.json SkyblockAddons-Data/skyblock/regex.json
+          cp SkyblockAddons/src/main/resources/seaCreatures.json SkyblockAddons-Data/skyblock/seaCreatures.json
+          cp SkyblockAddons/src/main/resources/skillXp.json SkyblockAddons-Data/skyblock/skillXp.json
+          cp SkyblockAddons/src/main/resources/slayerLocations.json SkyblockAddons-Data/skyblock/slayerLocations.json
+
+          cd SkyblockAddons-Data
+          git add skyblock/
+
+          # Evaluate if any changes occurred. Exit gracefully if no changes exist.
+          if git diff --staged --quiet; then
+            echo "No modifiable changes detected. Terminating process without creating a PR."
+            exit 0
+          fi
+
+          # Commit the synchronized files
+          COMMIT_MSG="chore: update data files from main repo ${{ github.repository }}@${{ github.sha }}"
+          git commit -m "$COMMIT_MSG"
+          
+          # Push the temporary PR branch to the remote repository
+          git push -u origin $PR_BRANCH
+
+          # Use GitHub CLI to create the Pull Request
+          echo "Creating Pull Request..."
+          gh pr create \
+            --repo Fix3dll/SkyblockAddons-Data \
+            --base $TARGET_BRANCH \
+            --head $PR_BRANCH \
+            --title "Update data files for $TARGET_BRANCH" \
+            --body "Automated Pull Request to sync JSON data files from main repository commit ${{ github.repository }}@${{ github.sha }}."

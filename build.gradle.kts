@@ -120,7 +120,9 @@ dependencies {
     implementation("net.hypixel:mod-api:1.0.2")
     implementation("maven.modrinth:hypixel-mod-api:1.0.2+build.1+mc26.1")
     //bundle("moe.nea:libautoupdate:1.3.1")
-    bundle("com.github.nea89o:libautoupdate:841d9f7e78")
+    bundle("com.github.nea89o:libautoupdate:841d9f7e78") {
+        exclude(module = "gson")
+    }
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("io.github.cdagaming:DiscordIPC:0.11.3") {
         exclude(module = "log4j")
@@ -185,6 +187,12 @@ tasks.jar {
 }
 
 tasks.shadowJar {
+    exclude("META-INF/versions/9/**")
+    exclude("META-INF/versions/11/**")
+    exclude("META-INF/versions/14/**")
+    exclude("META-INF/versions/15/**")
+    exclude("META-INF/versions/16/**")
+    exclude("META-INF/versions/20/**")
     archiveFileName.set("${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar")
     configurations = listOf(bundle)
 
