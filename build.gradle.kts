@@ -131,7 +131,9 @@ dependencies {
     implementation("net.hypixel:mod-api:1.0.1")
     modImplementation("maven.modrinth:hypixel-mod-api:1.0.1+build.1+mc1.21")
     //bundle("moe.nea:libautoupdate:1.3.1")
-    bundle("com.github.nea89o:libautoupdate:841d9f7e78")
+    bundle("com.github.nea89o:libautoupdate:841d9f7e78") {
+        exclude(module = "gson")
+    }
     // Discord RPC for Java https://github.com/jagrosh/DiscordIPC
     bundle("io.github.cdagaming:DiscordIPC:0.11.3") {
         exclude(module = "log4j")
@@ -202,6 +204,13 @@ tasks.jar {
 
 tasks.shadowJar {
     destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
+    exclude("META-INF/versions/9/**")
+    exclude("META-INF/versions/11/**")
+    exclude("META-INF/versions/14/**")
+    exclude("META-INF/versions/15/**")
+    exclude("META-INF/versions/16/**")
+    exclude("META-INF/versions/20/**")
+    archiveFileName.set("${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar")
     configurations = listOf(bundle)
 
     val basePackage = "${project.group}.${project.name.lowercase(Locale.US)}"
