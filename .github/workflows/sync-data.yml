@@ -39,8 +39,7 @@ jobs:
           GH_TOKEN: ${{ secrets.DATA_REPO_PAT }}
         run: |
           TARGET_BRANCH="${{ github.ref_name }}"
-          # Create a unique branch name for the PR using the run ID to prevent conflicts
-          PR_BRANCH="sync/${TARGET_BRANCH}-${{ github.run_id }}"
+          PR_BRANCH="sync-${TARGET_BRANCH}"
           
           echo "Target branch: $TARGET_BRANCH"
           echo "PR branch: $PR_BRANCH"
@@ -51,8 +50,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Ensure the target base branch exists on the remote repository.
-          # A PR must have a valid base branch to target.
+          # Ensure the target base branch exists
           if git show-ref --verify --quiet refs/remotes/origin/$TARGET_BRANCH; then
             echo "Base branch '$TARGET_BRANCH' exists. Checking out."
             git checkout $TARGET_BRANCH
@@ -62,8 +60,8 @@ jobs:
             git push -u origin $TARGET_BRANCH
           fi
 
-          # Create and switch to the temporary branch for the PR
-          git checkout -b $PR_BRANCH
+          # Create or switch to the persistent sync branch
+          git checkout -b $PR_BRANCH || git checkout $PR_BRANCH
 
           cd ..
           
@@ -83,22 +81,20 @@ jobs:
 
           # Evaluate if any changes occurred. Exit gracefully if no changes exist.
           if git diff --staged --quiet; then
-            echo "No modifiable changes detected. Terminating process without creating a PR."
+            echo "No changes detected. Skipping."
             exit 0
           fi
 
-          # Commit the synchronized files
-          COMMIT_MSG="chore: update data files from main repo ${{ github.repository }}@${{ github.sha }}"
-          git commit -m "$COMMIT_MSG"
-          
-          # Push the temporary PR branch to the remote repository
-          git push -u origin $PR_BRANCH
+          git commit -m "chore: update data files from ${{ github.repository }}@${{ github.sha }}"
 
-          # Use GitHub CLI to create the Pull Request
+          # Force push is necessary to update the same branch with new changes
+          git push -f origin $PR_BRANCH
+
+          # Attempt to create PR, but don't fail if it already exists
           echo "Creating Pull Request..."
           gh pr create \
             --repo Fix3dll/SkyblockAddons-Data \
             --base $TARGET_BRANCH \
             --head $PR_BRANCH \
             --title "Update data files for $TARGET_BRANCH" \
-            --body "Automated Pull Request to sync JSON data files from main repository commit ${{ github.repository }}@${{ github.sha }}."
+            --body "Automated Pull Request to sync JSON data files from main repository commit ${{ github.repository }}@${{ github.sha }}." || echo "Pull request already exists, branch updated."

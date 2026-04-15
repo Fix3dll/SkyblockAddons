@@ -353,5 +353,10 @@
     "name": "Bogged",
     "rarity": "COMMON",
     "spawnMessage": "You've hooked a Bogged!"
+  },
+  "NESSIE": {
+    "name": "Nessie",
+    "rarity": "MYTHIC",
+    "spawnMessage": "You've caused a disturbance in the loch. Could it be... Nessie?"
   }
 }
