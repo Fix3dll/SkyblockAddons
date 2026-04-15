@@ -269,8 +269,8 @@
     "enchanted": true,
     "material": "stone"
   },
-  "ENCHANTED_HAY_BLOCK": {
-    "displayName": {"text":"","extra":[{"text":"Enchanted Hay Bale","color":"green"}],"italic":false},
+  "ENCHANTED_HAY_BALE": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Hay Bale","color":"blue"}],"italic":false},
     "enchanted": true,
     "material": "hay_block"
   },
@@ -598,6 +598,11 @@
     "displayName": {"text":"","extra":[{"text":"Enchanted Wet Sponge","color":"blue"}],"italic":false},
     "enchanted": true,
     "material": "sponge"
+  },
+  "ENCHANTED_WHEAT": {
+    "displayName": {"text":"","extra":[{"text":"Enchanted Wheat","color":"green"}],"italic":false},
+    "enchanted": true,
+    "material": "wheat"
   },
   "ENCHANTED_WOOL": {
     "displayName": {"text":"","extra":[{"text":"Enchanted Wool","color":"green"}],"italic":false},
