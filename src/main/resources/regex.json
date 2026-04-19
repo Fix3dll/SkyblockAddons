@@ -23,7 +23,7 @@
   "PATTERN_PLAYER_LIST_INFO_DEATHS": "Team Deaths: (?<deaths>\\d+)",
   "PATTERN_STRIP_FORMAT": "§.?",
   "COIN_COST_PATTERN": "([\\d,]+) Coins",
-  "ENCHANTMENT_PATTERN": "(?<enchant>[A-Za-z][A-Za-z -]+) (?<levelNumeral>[IVXLCDM]+)(?=, |$| [\\d,]+$)",
+  "ENCHANTMENT_PATTERN": "(?<enchant>[A-Za-z][A-Za-z -]+) (?<levelNumeral>(?=[MDCLXVI])M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3}))(?=, |$| [\\d,]+$)",
   "CANDY_PATTERN": "Your Candy: (?<green>\\d+) Green, (?<purple>\\d+) Purple \\((?<points>\\d+) pts\\.\\)",
   "CANDY_FORMATTED_PATTERN":"Your Candy: §r§a(?<green>[0-9,]+) Green§r§7, §r§5(?<purple>[0-9,]+) Purple §r§7\\(§r§6(?<points>[0-9,]+) §r§7pts\\.\\)",
   "GOD_POTION_PATTERN": "You have a God Potion active! (?<timer>[\\w ]+)",
