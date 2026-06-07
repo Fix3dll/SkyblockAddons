@@ -176,7 +176,7 @@
       "maxLevel": 4,
       "nbtName": "dedication",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "delicate": {
@@ -185,7 +185,7 @@
       "maxLevel": 5,
       "nbtName": "delicate",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "depth strider": {
@@ -288,7 +288,7 @@
       "maxLevel": 5,
       "nbtName": "feast",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "feather falling": {
@@ -484,7 +484,7 @@
       "maxLevel": 6,
       "nbtName": "harvesting",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "ice cold": {
@@ -850,7 +850,7 @@
       "maxLevel": 1,
       "nbtName": "replenish",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "respiration": {
@@ -1139,7 +1139,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_cactus",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-cane": {
@@ -1148,7 +1148,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_cane",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-carrot": {
@@ -1157,7 +1157,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_carrot",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-cocoa": {
@@ -1166,7 +1166,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_coco",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-melon": {
@@ -1175,7 +1175,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_melon",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-moonflower": {
@@ -1184,7 +1184,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_moonflower",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-mushrooms": {
@@ -1193,7 +1193,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_mushrooms",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-potato": {
@@ -1202,7 +1202,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_potato",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-pumpkin": {
@@ -1211,7 +1211,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_pumpkin",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-rose": {
@@ -1220,7 +1220,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_rose",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-sunflower": {
@@ -1229,7 +1229,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_sunflower",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-warts": {
@@ -1238,7 +1238,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_warts",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "turbo-wheat": {
@@ -1247,7 +1247,7 @@
       "maxLevel": 7,
       "nbtName": "turbo_wheat",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "vampirism": {
@@ -1392,7 +1392,7 @@
       ],
       "statLabel": "cultivatedCrops",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "expertise": {
@@ -1524,7 +1524,7 @@
       "maxLevel": 5,
       "nbtName": "ultimate_crop_fever",
       "appliedTo": [
-        "FARMING TOOL"
+        "FARMING_TOOL"
       ]
     },
     "duplex": {
