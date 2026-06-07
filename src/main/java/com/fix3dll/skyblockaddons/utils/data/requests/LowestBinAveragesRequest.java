@@ -32,7 +32,7 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Object2DoubleMap
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    private static final String BASE_URL = "https://moulberry.codes/auction_averages_lbin/";
+    private static final String BASE_URL = "https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/";
 
     private static final AtomicBoolean apiAuctionAverageLBinError = new AtomicBoolean(false);
     private static final AtomicReference<ScheduledTask> updateTaskRef = new AtomicReference<>();

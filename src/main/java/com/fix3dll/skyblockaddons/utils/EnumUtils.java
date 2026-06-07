@@ -230,9 +230,9 @@ public class EnumUtils {
     }
 
     public enum LBinAveragesType implements ButtonCycling.SelectItem, RegistrableEnum {
-        ONE_DAY("settings.itemPricesInTooltip.avgTypes.1day", "1day.json.gz"),
-        THREE_DAY("settings.itemPricesInTooltip.avgTypes.3day", "3day.json.gz"),
-        SEVEN_DAY("settings.itemPricesInTooltip.avgTypes.7day", "7day.json.gz");
+        ONE_DAY("settings.itemPricesInTooltip.avgTypes.1day", "1day.gz"),
+        THREE_DAY("settings.itemPricesInTooltip.avgTypes.3day", "3day.gz"),
+        SEVEN_DAY("settings.itemPricesInTooltip.avgTypes.7day", "7day.gz");
 
         private final String TRANSLATION_KEY;
         @Getter private final String urlPath;
