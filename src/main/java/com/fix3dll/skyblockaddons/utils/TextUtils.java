@@ -581,16 +581,23 @@ public class TextUtils {
      * @return Integer pet level. If cannot find returns -1
      */
     public static int getPetLevelFromDisplayName(String displayName) {
+        if (displayName == null) return -1;
+
         int startIndex = displayName.indexOf("[Lvl ");
-        // 5 length of "[Lvl "
-        if (startIndex != -1) {
-            startIndex += 5;
-            int endIndex = displayName.indexOf("]", startIndex);
-            if (endIndex != -1) {
-                return Integer.parseInt(displayName.substring(startIndex, endIndex));
-            }
+        if (startIndex == -1) return -1;
+
+        startIndex += 5;
+        int endIndex = displayName.indexOf(']', startIndex);
+        if (endIndex == -1 || endIndex == startIndex) return -1;
+        if (endIndex - startIndex > 9) return -1;
+
+        int level = 0;
+        for (int i = startIndex; i < endIndex; i++) {
+            char c = displayName.charAt(i);
+            if (c < '0' || c > '9') return -1;
+            level = level * 10 + (c - '0');
         }
-        return -1;
+        return level;
     }
 
     /**

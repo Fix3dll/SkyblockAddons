@@ -26,7 +26,6 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -577,25 +576,7 @@ public class DevUtils {
         main.getScheduler().scheduleAsyncTask(scheduledTask -> {
             if (!scheduledTask.isCanceled() && DataUtils.getActiveRequestCount() == 0) {
                 DataUtils.onSkyblockJoined();
-                PackRepository packs = MC.getResourcePackRepository();
                 SkyblockAddons.runAsync(ButtonBanner.REGISTER_BANNER);
-                if (packs.isAvailable(SkyblockAddons.MOD_ID) && packs.getSelectedIds().contains(SkyblockAddons.MOD_ID)) {
-                    MC.reloadResourcePacks().whenComplete((unused, throwable) -> {
-                        if (throwable == null) {
-                            Utils.sendMessageOrElseLog(
-                                    Translations.getMessage("messages.resourcesReloaded"), LOGGER, false
-                            );
-                        } else {
-                            Utils.sendMessageOrElseLog(
-                                    throwable.getMessage(), LOGGER, false
-                            );
-                        }
-                    });
-                } else {
-                    Utils.sendMessageOrElseLog(
-                            Translations.getMessage("messages.resourcesReloaded"), LOGGER, false
-                    );
-                }
                 scheduledTask.cancel();
             }
         }, 0, 2);
