@@ -63,6 +63,15 @@
         "FISHING_WEAPON"
       ]
     },
+    "bug blender": {
+      "goodLevel": 0,
+      "loreName": "Bug Blender",
+      "maxLevel": 5,
+      "nbtName": "bug_blender",
+      "appliedTo": [
+        "VACUUM"
+      ]
+    },
     "caster": {
       "goodLevel": 5,
       "loreName": "Caster",
@@ -167,8 +176,7 @@
       "maxLevel": 4,
       "nbtName": "dedication",
       "appliedTo": [
-        "AXE",
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "delicate": {
@@ -177,8 +185,7 @@
       "maxLevel": 5,
       "nbtName": "delicate",
       "appliedTo": [
-        "AXE",
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "depth strider": {
@@ -273,6 +280,15 @@
         "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
+      ]
+    },
+    "feast": {
+      "goodLevel": 0,
+      "loreName": "Feast",
+      "maxLevel": 5,
+      "nbtName": "feast",
+      "appliedTo": [
+        "FARMING TOOL"
       ]
     },
     "feather falling": {
@@ -468,7 +484,7 @@
       "maxLevel": 6,
       "nbtName": "harvesting",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "ice cold": {
@@ -607,6 +623,18 @@
       "appliedTo": [
         "FISHING_ROD",
         "FISHING_WEAPON"
+      ]
+    },
+    "magmarizer": {
+      "goodLevel": 5,
+      "loreName": "Magmarizer",
+      "maxLevel": 6,
+      "nbtName": "magmarizer",
+      "appliedTo": [
+        "SWORD",
+        "FISHING_WEAPON",
+        "LONGSWORD",
+        "GAUNTLET"
       ]
     },
     "mana steal": {
@@ -822,8 +850,7 @@
       "maxLevel": 1,
       "nbtName": "replenish",
       "appliedTo": [
-        "AXE",
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "respiration": {
@@ -863,7 +890,7 @@
     "scuba": {
       "goodLevel": 0,
       "loreName": "Scuba",
-      "maxLevel": 5,
+      "maxLevel": 6,
       "nbtName": "scuba",
       "appliedTo": [
         "HELMET",
@@ -1004,15 +1031,6 @@
         "BOOTS"
       ]
     },
-    "sunder": {
-      "goodLevel": 0,
-      "loreName": "Sunder",
-      "maxLevel": 6,
-      "nbtName": "sunder",
-      "appliedTo": [
-        "AXE"
-      ]
-    },
     "tabasco": {
       "goodLevel": 0,
       "loreName": "Tabasco",
@@ -1118,118 +1136,118 @@
     "turbo-cacti": {
       "goodLevel": 0,
       "loreName": "Turbo-Cacti",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_cactus",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-cane": {
       "goodLevel": 0,
       "loreName": "Turbo-Cane",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_cane",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-carrot": {
       "goodLevel": 0,
       "loreName": "Turbo-Carrot",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_carrot",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-cocoa": {
       "goodLevel": 0,
       "loreName": "Turbo-Cocoa",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_coco",
       "appliedTo": [
-        "AXE"
+        "FARMING TOOL"
       ]
     },
     "turbo-melon": {
       "goodLevel": 0,
       "loreName": "Turbo-Melon",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_melon",
       "appliedTo": [
-        "AXE"
+        "FARMING TOOL"
       ]
     },
     "turbo-moonflower": {
       "goodLevel": 0,
       "loreName": "Turbo-Moonflower",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_moonflower",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-mushrooms": {
       "goodLevel": 0,
       "loreName": "Turbo-Mushrooms",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_mushrooms",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-potato": {
       "goodLevel": 0,
       "loreName": "Turbo-Potato",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_potato",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-pumpkin": {
       "goodLevel": 0,
       "loreName": "Turbo-Pumpkin",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_pumpkin",
       "appliedTo": [
-        "AXE"
+        "FARMING TOOL"
       ]
     },
     "turbo-rose": {
       "goodLevel": 0,
       "loreName": "Turbo-Rose",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_rose",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-sunflower": {
       "goodLevel": 0,
       "loreName": "Turbo-Sunflower",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_sunflower",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-warts": {
       "goodLevel": 0,
       "loreName": "Turbo-Warts",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_warts",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "turbo-wheat": {
       "goodLevel": 0,
       "loreName": "Turbo-Wheat",
-      "maxLevel": 5,
+      "maxLevel": 7,
       "nbtName": "turbo_wheat",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "vampirism": {
@@ -1374,7 +1392,7 @@
       ],
       "statLabel": "cultivatedCrops",
       "appliedTo": [
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "expertise": {
@@ -1506,8 +1524,7 @@
       "maxLevel": 5,
       "nbtName": "ultimate_crop_fever",
       "appliedTo": [
-        "AXE",
-        "HOE"
+        "FARMING TOOL"
       ]
     },
     "duplex": {
@@ -1696,6 +1713,18 @@
         "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
+      ]
+    },
+    "sunset": {
+      "goodLevel": 0,
+      "loreName": "Sunset",
+      "maxLevel": 5,
+      "nbtName": "ultimate_sunset",
+      "appliedTo": [
+        "HELMET",
+        "CHESTPLATE",
+        "LEGGINGS",
+        "BOOTS"
       ]
     },
     "the one": {

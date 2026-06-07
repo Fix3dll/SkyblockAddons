@@ -25,6 +25,8 @@ public enum ItemType {
     SWORD("SWORD"),
     PICKAXE("PICKAXE"),
     WAND("WAND"),
+    VACUUM("VACUUM"),
+    FARMING_TOOL("FARMING TOOL"),
 
     // Armor
     HELMET("HELMET"),
