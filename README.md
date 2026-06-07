@@ -8,7 +8,14 @@
   <a href="https://modrinth.com/project/F35D4vTL" target="_blank">
     <img alt="modrinth" src="https://img.shields.io/modrinth/dt/F35D4vTL?color=00AF5C&label=Download&labelColor=cecece00AF5C&logo=modrinth" />
   </a>
+  <img alt="maintenance" src="https://img.shields.io/badge/maintenance-minimal-yellow" />
 </div>
+
+> [!IMPORTANT]
+> **SkyblockAddons is in minimal maintenance mode.**
+> The mod is no longer actively developed - no new features are planned - but
+> small and critical issues are still fixed occasionally. You can reach the
+> latest builds from GitHub Actions, or grab a stable version from Modrinth (links below).
 
 SkyblockAddons has reached end of life. This fork contains updates from me. You can reach latest builds from GitHub Actions.
 If you are looking for a stable version, you can check the [Modrinth](https://modrinth.com/project/F35D4vTL) page.  
