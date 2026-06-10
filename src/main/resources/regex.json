@@ -106,7 +106,7 @@
   "ENDER_CHEST": "Ender Chest \\((?<page>\\d+)/\\d+\\)",
   "MAYOR": "Mayor (?<mayor>.*)",
   "CALENDAR": "Calendar and Events",
-  "PETS": "Pets( \\((?<page>\\d+)/\\d+\\) )?",
+  "PETS": "(?:\\((?<page>\\d+)/\\d+\\) +)?Pets *",
   "EQUIPMENT": "Your Equipment and Stats",
   "SKYBLOCK_MENU": "SkyBlock Menu",
   "CATACOMBS_CHEST": "(?<type>Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)",
