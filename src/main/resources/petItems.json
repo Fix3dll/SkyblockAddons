@@ -692,7 +692,7 @@
     }
   },
   "WASHED_UP_SOUVENIR": {
-    "displayName": "§6Washed-up Souvenir",
+    "displayName": "§5Washed-up Souvenir",
     "material": "skull_item",
     "rarity": "EPIC",
     "resolvableProfile": {
@@ -847,6 +847,72 @@
           "name": "textures",
           "signature": "WxXaZD9eM62TB10bFSRmUOndvu9JaHp/u9aNXfJtYvCEJMW0Q2oU8SlYCI6APtGW6GncIJeDqXwpCHRUc7GSnJHLRniyoGFBqT4OqnsCWJyTMgk1JrUvYUDdSeWkwrHXmun3EzldvLV8ZEqbGR4zmj/PhoPg0RChNBlEjqStnmk6dIoMbDNU8bMs4uoGEs0Gog+kYY+LElO7oasQ2LW6EMiKQw9NPVOO0iLXqSLgBDUSKB/y+q6V1sA420u1CfzytLQy+JJAJaK1Hs8YVZYcOk1aw55sCpg50HCW09EzSMrLwXc9EJL98bYxf4mTrbtK/pz2XTaTrp8XG3pktF5RjtM599ekFFXzFxLZxrKmVfppekTrbzD0QIvxUI4fMAfq8lXlf0XDgGy7t+QJUEzzgNk0qNvTswUMVHwe2b2TVldv7Lms4lPpLgRZdb1VPWo6vEAb/89BX80GrJGTfDj+FdCVrk/Sg4B/hc/rNs/eKv0mupFP+UJZZkY8U53UJDWsjoFcL8cQcx9R2vJ1O0gh1WlWm4laB/AMF7mmyM7lpqKASi7+kQOU0yENqmbV0vV+UmfMctv9W9muSZAssCqIJnWmofnTmRiNhA8nc5eLAd/3rdLazyH9SomzXBW+9b2/RHZEOlbrjAhOldo3weX70QYz7BY65JUxC8lMXS1fOsA=",
           "value": "ewogICJ0aW1lc3RhbXAiIDogMTc1MTY2MTk4NjU0OSwKICAicHJvZmlsZUlkIiA6ICJhYzY1NDYwOWVkZjM0ODhmOTM0ZWNhMDRmNjlkNGIwMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJzcGFjZUd1cmxTa3kiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTEyY2I0YmM4MmNlOWZlMDZlYzQwZTc5OGQxNGFjMmU5NTQ0MDViNWY2OWNjNjI3MmU3NDJlZjMxZDAwOGMxMCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+        }
+      ]
+    }
+  },
+  "POIGNANT_LUCKY_CLOVER": {
+    "displayName": "§6Poignant Lucky Clover",
+    "enchanted": true,
+    "material": "big_dripleaf",
+    "rarity": "LEGENDARY"
+  },
+  "SNAKE_EYES": {
+    "displayName": "§6Snake Eyes",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        -170053283,
+        -1848183265,
+        -412021938,
+        1647096229
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "jQeeLgIXCi/E+Vl191jKNzqUnSY8/M3j9yOLUTGbbzW9TFMcJese9TBtv2bOJxg/SF6JikssSXoEftVTx/eQ/mjD/61455j9KGIt5dnIrp9e/5AhX9yWOz9pBlEfkSKa5IPalGcs5jfYQyprMt4WzY9egGLv1cxOFy6FeC0OHS82+9C39flPSPtvd7ggZlWGygEr8sAWyvZk6BYZhRUNMSk5qhnU0EeAVlwWN/y7mChSvhKLIYiQ6VDpxedol5QkS8aymsMQGUIt7apt5w18l8SMNz0zqSG0di5U7Gu2RkRmgYYQniwSFqYG6BVm6eefJzaz7Q2ig1uP25wIq9/PywzoxjXzoaaZeCYVnGbU9NT0k8ucwSCDw28Ze2JlO9bD1lPQ3ERB1Bu+R+75dt97rmRQI3hlF12owL+68Fnxttr80JgLicygvI50tDWjRMmbQkJZBbt3Nux802YJt3CBgQrYeR+jiBmhlLZ4dKAvmA6A1awc5ZN32gumGHa1yFLQQuJ1sZsD/cAefkG381x+o9tus6DvOdlrSdS+WKsgIdrx5YSuUFoD2J3C7wUWokaZ5K/EXSlRHBy04Z17yUELHpR/hfVtM8pHDcgQV5d2NIRsLHgrjrBRRTVtcOLZa/5foUuEXCaV/Xl//LIghmuSRD6Y7xrExcsRmjaFrQR79Ss=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc3MzMyOTEwMjEzOCwKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84N2Y2NTg1MGMzN2JkZmY3ODAyYTdkZDFjZDRkYzY3OTgzMDgzMThlNTNkMTU4OGRmMGZiYTEwOGM5ZTRkNmZlIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+        }
+      ]
+    }
+  },
+  "BARREL_OF_RICHES": {
+    "displayName": "§5Barrel of Riches",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {
+      "id": [
+        -1295755174,
+        -1807704545,
+        48212981,
+        776880086
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "aV7vQu/I51n+P1i2IVbokxkkScsjbT/brfcEDP2voKxzElbOb345Q2Ybk1pCZakL18EdcYIlFbYpH3a+tH4ya0S5Dzu+qjoMZbZI+mIHaTmmCDdg8AbkvqslueJAMYUexpW1OY9fGHqLGGHjHD/YdifAZqMox6SZcRWoliwWQmUppdYezmhYiDHdAzRfjDS7XEDESb2pf70HO8pTK7IlOV0sTqJjHbwdyA6MehdEoz3B5ByngynFZnytiO/P+z/kEY1vXCSrhWmoMjKILf5mi+cOgdtyXZoF/VVQUCRbGzjS+/0kqODlU9A9E/h5e0OoXG5pMa5AwdOsOGnSHlTI277+vt1pZabVuh3KXV906rLWk1tAcUK6he9Od0UkQxkheFMuREF6kp7o7irEG13uJKSjfadWrMtJi5K1QQ0I/J+inHWO/FAqi9tebOZQ3s8SLfpF0SpOubOHrvT6/W1O3Fimf4vVRrUGLZBYZxIjQJ939+ZAiguAdvKpoPhgJnEP5kCHgJEcJ9p5cSK8P4MgdJ2iApzd2MMZ/lBmGkmcevOnRwOhlUIXcOckhI8LF95V3OCw0JOtTy4MDuBiD5anwugj+unVcZ1H9Q/pUQTKGajtIiWJltSE2JOcm06TZJglJ3bj1cL9mwPCOq68dw8+V61JSFqkqLGruMCFgrVd4j8=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc3MzM2NzEzNDk5OSwKICAicHJvZmlsZUlkIiA6ICIwM2FlZmNjYWE2NzE0ZDFhOThhY2Q2N2QxNjA0NzQyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUYXpyaXh4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2E4YzMzMmQ2YTAwMzJjYjM3ZTNkMmRlN2JkN2ZhNjcyZDFmYmYwZDY3YmViMDIzODgxNzRhMDFlZDQ0ZGU3MmIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+        }
+      ]
+    }
+  },
+  "LOTUS_CROWN": {
+    "displayName": "§6Lotus Crown",
+    "material": "skull_item",
+    "rarity": "LEGENDARY",
+    "resolvableProfile": {
+      "id": [
+        -1247250999,
+        -1353368769,
+        -1908162330,
+        -669569153
+      ],
+      "properties": [
+        {
+          "name": "textures",
+          "signature": "n/QUb92orWHYSoptydiybYpX6cvfa1lctCzFKReS2M3TFDqexHBF2/SC7P3F4Jp3rA8sPE5uIapgqpLD3/1uzd/upxBKhFdxpWpdCODmylAn6FKdvnaeEqGvGXq2HLbj+W6iKsmgjDvo+3hIs7+u7SErUv/zSxy1vWciCATpPKEHdWGDdM5VlkzN74zd/BvDw0IuuEIE9OUjb7e5i4JPw7OfWTWJUqFrEfoZSAMMNMKo43MD1vfwvlfNQzD2kM6r+wEK1Swkqb+NGUeEWnRMJScNdPb0tq9RDsWbSyqp8JBJIPyqQ/nOfzMIZv871uEKYoO8YAmgru+OaUsBLeZHzpfPUaIdT4etiTn4dK8cPSKbYra3qVodHcrs0WmkQrjp3KAfXFbNcD4AkwSAfo3lq2GTGWLhLapl9GQwDUZEUEHNbcEDkBm3Sa8pJNG4hdMajeAXwDjxkFDqd6XWNvEQWaccWtjyU5dmibhOHbNiDYQ14fuAbnknESN6zTgFbSO+B3Q+pxG1n2ADXy+v8xEg648bj5Oi5AILdZyx4+q7DbUSGSiJep6OYHCX6o8s0w6xUzu4BaMoK7adWk2Bk60dpdlgeGIs2kaNJDy/Fe4tbH4Z6OwYAGj14JY8NPlWnAOxwWxY7nCpD8g/eK/1neb1SccNUUl4AYdPYfsDIwsg7Fc=",
+          "value": "ewogICJ0aW1lc3RhbXAiIDogMTc3NTE0Nzk2OTI4MSwKICAicHJvZmlsZUlkIiA6ICI5ZjJiY2M1M2U4YzM0OTY4YTc5Yzc0NTExYWQ2NmQyYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJLYWJveWlvIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzcyMTBjOGZiOGJkZmNkNTkyNmE3YWNiMDA2MzA1OTIyZmU4NjJjZDFlMjQ1MDVlNmVjZTliN2YxNzRkNWUzZDYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
         }
       ]
     }
