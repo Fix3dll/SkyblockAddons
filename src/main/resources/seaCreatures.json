@@ -358,5 +358,55 @@
     "name": "Nessie",
     "rarity": "MYTHIC",
     "spawnMessage": "You've caused a disturbance in the loch. Could it be... Nessie?"
+  },
+  "INKLING": {
+    "name": "Inkling",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "You get an inkling that you've caught... an Inkling!"
+  },
+  "MANTA_RAY": {
+    "name": "Manta Ray",
+    "rarity": "EPIC",
+    "spawnMessage": "A majestic creature rises from the water. It's a Manta Ray."
+  },
+  "ATOLL_CROAKER": {
+    "name": "Atoll Croaker",
+    "rarity": "COMMON",
+    "spawnMessage": "An inquisitive Atoll Croaker takes the bait!"
+  },
+  "LOTUS_GUARDIAN": {
+    "name": "Lotus Guardian",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "A Lotus Guardian emerges, ready to protect the Atoll."
+  },
+  "GORF": {
+    "name": "gorF",
+    "rarity": "RARE",
+    "spawnMessage": "What even is that?! A... gorF?"
+  },
+  "DROWNED_CAPTAIN": {
+    "name": "Drowned Captain",
+    "rarity": "EPIC",
+    "spawnMessage": "A Drowned Captain takes hold of your bobber!"
+  },
+  "PUDDLE_JUMPER": {
+    "name": "Puddle Jumper",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "A Puddle Jumper is preparing for liftoff—cast your rod into it and hold on tight!"
+  },
+  "FROG_PRINCE": {
+    "name": "Frog Prince",
+    "rarity": "MYTHIC",
+    "spawnMessage": "Bow down before the Frog Prince... or pay the hefty price!"
+  },
+  "VOLCANIC_SNAIL": {
+    "name": "Volcanic Snail",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "You feel a burning sensation as you reel in a Volcanic Snail!"
+  },
+  "MAGMA_PILLAR": {
+    "name": "Magma Pillar",
+    "rarity": "EPIC",
+    "spawnMessage": "A Magma Pillar rises from the lava."
   }
 }
