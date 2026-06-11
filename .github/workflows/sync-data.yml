@@ -9,6 +9,7 @@ on:
       - "src/main/resources/cooldowns.json"
       - "src/main/resources/enchants.json"
       - "src/main/resources/locations.json"
+      - "src/main/resources/petItems.json"
       - "src/main/resources/regex.json"
       - "src/main/resources/seaCreatures.json"
       - "src/main/resources/skillXp.json"
@@ -71,6 +72,7 @@ jobs:
           cp SkyblockAddons/src/main/resources/cooldowns.json SkyblockAddons-Data/skyblock/cooldowns.json
           cp SkyblockAddons/src/main/resources/enchants.json SkyblockAddons-Data/skyblock/enchants.json
           cp SkyblockAddons/src/main/resources/locations.json SkyblockAddons-Data/skyblock/locations.json
+          cp SkyblockAddons/src/main/resources/petItems.json SkyblockAddons-Data/skyblock/petItems.json
           cp SkyblockAddons/src/main/resources/regex.json SkyblockAddons-Data/skyblock/regex.json
           cp SkyblockAddons/src/main/resources/seaCreatures.json SkyblockAddons-Data/skyblock/seaCreatures.json
           cp SkyblockAddons/src/main/resources/skillXp.json SkyblockAddons-Data/skyblock/skillXp.json
