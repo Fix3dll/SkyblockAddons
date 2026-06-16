@@ -92,7 +92,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.MagmaCube;
+import net.minecraft.world.entity.monster.cubemob.MagmaCube;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.Item;
@@ -662,7 +662,7 @@ public class PlayerListener {
                     checkPetMilestones(mc);
                 }
 
-                if (mc.screen == null && main.getPlayerListener().didntRecentlyJoinWorld()
+                if (mc.gui.screen() == null && main.getPlayerListener().didntRecentlyJoinWorld()
                         && (!main.getUtils().isInDungeon()
                         || Util.getMillis() - lastDeath > 1000
                         && Util.getMillis() - lastRevive > 1000)) {
@@ -1237,7 +1237,7 @@ public class PlayerListener {
 
         // Put in cache if found
         if (result.isPresent()) {
-            PlayerTabOverlay tabList = Minecraft.getInstance().gui.getTabList();
+            PlayerTabOverlay tabList = Minecraft.getInstance().gui.hud.getTabList();
             namesWithSymbols.put(username, TextUtils.getFormattedText(tabList.getNameForDisplay(result.get())).trim());
         }
 
@@ -1296,7 +1296,7 @@ public class PlayerListener {
     private void checkPetMilestones(Minecraft mc) {
         if (main.getInventoryUtils().getInventoryType() == InventoryType.SKILL_TYPE_MENU) {
             SkillType skill = SkillType.getFromString(main.getInventoryUtils().getInventorySubtype());
-            if (mc.screen instanceof ContainerScreen containerScreen && (skill == SkillType.MINING || skill == SkillType.FISHING)) {
+            if (mc.gui.screen() instanceof ContainerScreen containerScreen && (skill == SkillType.MINING || skill == SkillType.FISHING)) {
                 ChestMenu container = containerScreen.getMenu();
                 NonNullList<ItemStack> itemList = container.getItems();
 
@@ -1542,7 +1542,7 @@ public class PlayerListener {
                 Component customName = itemStack.getCustomName();
                 if (customName != null) {
                     String customNameString = customName.getString();
-                    if ((itemStack.is(Items.ORANGE_STAINED_GLASS) || itemStack.is(Items.ORANGE_TERRACOTTA))
+                    if ((itemStack.is(Items.STAINED_GLASS.orange()) || itemStack.is(Items.DYED_TERRACOTTA.orange()))
                             && "Orange".equals(customNameString)) {
                         // Exception for InventoryType#CHRONOMATRON
                         //noinspection DataFlowIssue Exception

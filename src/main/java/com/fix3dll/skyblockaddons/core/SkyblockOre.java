@@ -3,12 +3,12 @@ package com.fix3dll.skyblockaddons.core;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -140,12 +140,12 @@ public enum SkyblockOre {
     ),
     HARD_STONE_GLACIAL(
             // Blocks.stone changed with Blocks.monster_egg on 0.20.6 update
-            state -> state.is(Blocks.INFESTED_STONE) || state.is(Blocks.LIGHT_GRAY_WOOL),
+            state -> state.is(Blocks.INFESTED_STONE) || state.is(Blocks.WOOL.lightGray()),
             LocationUtils::isOnGlaciteTunnelsLocation,
             BlockType.BLOCK
     ),
     HARD_STONE_MINESHAFT(
-            state -> state.is(Blocks.STONE) || state.is(Blocks.LIGHT_GRAY_WOOL),
+            state -> state.is(Blocks.STONE) || state.is(Blocks.WOOL.lightGray()),
             () -> LocationUtils.isOn(Island.MINESHAFT),
             BlockType.BLOCK
     ),
@@ -194,69 +194,69 @@ public enum SkyblockOre {
 
     // GEMSTONES
     RUBY(
-            state -> state.is(Blocks.RED_STAINED_GLASS) || state.is(Blocks.RED_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.red()) || state.is(Blocks.STAINED_GLASS_PANE.red()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     AMBER(
-            state -> state.is(Blocks.ORANGE_STAINED_GLASS) || state.is(Blocks.ORANGE_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.orange()) || state.is(Blocks.STAINED_GLASS_PANE.orange()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     AMETHYST(
-            state -> state.is(Blocks.PURPLE_STAINED_GLASS) || state.is(Blocks.PURPLE_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.purple()) || state.is(Blocks.STAINED_GLASS_PANE.purple()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     JADE(
-            state -> state.is(Blocks.LIME_STAINED_GLASS) || state.is(Blocks.LIME_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.lime()) || state.is(Blocks.STAINED_GLASS_PANE.lime()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     SAPPHIRE(
-            state -> state.is(Blocks.LIGHT_BLUE_STAINED_GLASS) || state.is(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.lightBlue()) || state.is(Blocks.STAINED_GLASS_PANE.lightBlue()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     TOPAZ(
-            state -> state.is(Blocks.YELLOW_STAINED_GLASS) || state.is(Blocks.YELLOW_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.yellow()) || state.is(Blocks.STAINED_GLASS_PANE.yellow()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     JASPER(
-            state -> state.is(Blocks.MAGENTA_STAINED_GLASS) || state.is(Blocks.MAGENTA_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.magenta()) || state.is(Blocks.STAINED_GLASS_PANE.magenta()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     OPAL(
-            state -> state.is(Blocks.WHITE_STAINED_GLASS) || state.is(Blocks.WHITE_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.white()) || state.is(Blocks.STAINED_GLASS_PANE.white()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT, Island.CRIMSON_ISLE),
             BlockType.GEMSTONE
     ),
     AQUAMARINE(
-            state -> state.is(Blocks.BLUE_STAINED_GLASS) || state.is(Blocks.BLUE_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.blue()) || state.is(Blocks.STAINED_GLASS_PANE.blue()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     CITRINE(
-            state -> state.is(Blocks.BROWN_STAINED_GLASS) || state.is(Blocks.BROWN_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.brown()) || state.is(Blocks.STAINED_GLASS_PANE.brown()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     ONYX(
-            state -> state.is(Blocks.BLACK_STAINED_GLASS) || state.is(Blocks.BLACK_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.black()) || state.is(Blocks.STAINED_GLASS_PANE.black()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
     PERIDOT(
-            state -> state.is(Blocks.GREEN_STAINED_GLASS) || state.is(Blocks.GREEN_STAINED_GLASS_PANE),
+            state -> state.is(Blocks.STAINED_GLASS.green()) || state.is(Blocks.STAINED_GLASS_PANE.green()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
             BlockType.GEMSTONE
     ),
 
     // MITHRIL
     LOW_TIER_MITHRIL(
-            state -> state.is(Blocks.GRAY_WOOL) || state.is(Blocks.CYAN_TERRACOTTA),
+            state -> state.is(Blocks.WOOL.gray()) || state.is(Blocks.DYED_TERRACOTTA.cyan()),
             () -> LocationUtils.isOn(Island.DWARVEN_MINES, Island.MINESHAFT),
             BlockType.DWARVEN_METAL
     ),
@@ -266,7 +266,7 @@ public enum SkyblockOre {
             BlockType.DWARVEN_METAL
     ),
     HIGH_TIER_MITHRIL(
-            state -> state.is(Blocks.LIGHT_BLUE_WOOL),
+            state -> state.is(Blocks.WOOL.lightBlue()),
             () -> LocationUtils.isOn(Island.DWARVEN_MINES, Island.CRYSTAL_HOLLOWS, Island.MINESHAFT),
             BlockType.DWARVEN_METAL
     ),
@@ -280,7 +280,7 @@ public enum SkyblockOre {
 
     // GLACIAL
     LOW_TIER_UMBER(
-            state -> state.is(Blocks.TERRACOTTA) || state.is(Blocks.BROWN_TERRACOTTA),
+            state -> state.is(Blocks.TERRACOTTA) || state.is(Blocks.DYED_TERRACOTTA.brown()),
             () -> LocationUtils.isOnGlaciteTunnelsLocation() || LocationUtils.isOn(Island.MINESHAFT),
             BlockType.DWARVEN_METAL
     ),
@@ -322,13 +322,13 @@ public enum SkyblockOre {
         this.blockType = blockType;
     }
 
-    private static final ObjectOpenHashSet<Block> HOLLOWS_HARD_STONE_BLOCKS = ObjectOpenHashSet.of(
+    private static final Set<Block> HOLLOWS_HARD_STONE_BLOCKS = Set.of(
             // wool
-            Blocks.GRAY_WOOL, Blocks.GREEN_WOOL,
+            Blocks.WOOL.gray(), Blocks.WOOL.green(),
             // terracotta
-            Blocks.CYAN_TERRACOTTA, Blocks.BROWN_TERRACOTTA, Blocks.GRAY_TERRACOTTA, Blocks.BLACK_TERRACOTTA,
-            Blocks.LIME_TERRACOTTA, Blocks.GREEN_TERRACOTTA, Blocks.BLUE_TERRACOTTA, Blocks.RED_TERRACOTTA,
-            Blocks.LIGHT_GRAY_TERRACOTTA,
+            Blocks.DYED_TERRACOTTA.cyan(), Blocks.DYED_TERRACOTTA.brown(), Blocks.DYED_TERRACOTTA.gray(),
+            Blocks.DYED_TERRACOTTA.lime(), Blocks.DYED_TERRACOTTA.green(), Blocks.DYED_TERRACOTTA.blue(),
+            Blocks.DYED_TERRACOTTA.red(), Blocks.DYED_TERRACOTTA.lightGray(),
             // plain
             Blocks.CLAY, Blocks.STONE_BRICKS,
             // stone family

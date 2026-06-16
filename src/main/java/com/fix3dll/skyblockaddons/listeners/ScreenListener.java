@@ -139,7 +139,7 @@ public class ScreenListener {
 
         if (Feature.DEVELOPER_MODE.isEnabled() && event.key() == SkyblockKeyBinding.DEVELOPER_COPY_NBT.getKeyCode()) {
             // Copy Item NBT, check if the player is in an inventory.
-            if (MC.screen instanceof AbstractContainerScreen<?> containerScreen) {
+            if (MC.gui.screen() instanceof AbstractContainerScreen<?> containerScreen) {
                 Slot currentSlot = containerScreen.hoveredSlot;
                 if (currentSlot != null && currentSlot.hasItem() && MC.level != null) {
                     DevUtils.setCopyMode(DevUtils.CopyMode.ITEM);
@@ -172,7 +172,7 @@ public class ScreenListener {
             return false;
         }
 
-        Screen oldGuiScreen = MC.screen;
+        Screen oldGuiScreen = MC.gui.screen();
 
         // Closing a container
         if (screen == null) {
@@ -228,7 +228,7 @@ public class ScreenListener {
     }
 
     public void onInventoryLoadingDone() {
-        Screen screen = MC.screen;
+        Screen screen = MC.gui.screen();
         InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         // Inventory loading is complete. Cancel the monitoring task and reset tracking state.
@@ -453,7 +453,7 @@ public class ScreenListener {
         ItemStack petItem = chestMenu.getSlot(47).getItem();
         PetCacheManager pcm = main.getPetCacheManager();
 
-        if (petItem.is(Items.LIGHT_GRAY_STAINED_GLASS_PANE)) {
+        if (petItem.is(Items.STAINED_GLASS_PANE.lightGray())) {
             // Be sure current pet is same on cache
             pcm.setCurrentPetIndex(-1, false);
             SkyblockEquipment.PET.setItemStack(petItem);

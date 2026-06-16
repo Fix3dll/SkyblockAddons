@@ -3,7 +3,6 @@ package com.fix3dll.skyblockaddons.utils;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.core.render.chroma.ChromaRenderType;
 import com.fix3dll.skyblockaddons.core.render.chroma.ManualChromaManager;
 import com.fix3dll.skyblockaddons.core.render.state.ButtonColorBoxRenderState;
 import com.fix3dll.skyblockaddons.core.render.state.FillAbsoluteRenderState;
@@ -12,6 +11,8 @@ import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
+import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.pipeline.BindGroupLayout;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
@@ -21,7 +22,6 @@ import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
@@ -44,35 +44,44 @@ import java.util.function.Function;
 public class DrawUtils {
 
     public static final RenderPipeline CHROMA_STANDARD = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+            RenderPipeline.builder()
+                    .withBindGroupLayout(BindGroupLayout.builder()
+                            .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+                            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+                            .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
+                            .build())
                     .withLocation(SkyblockAddons.identifier("sba_chroma_standard"))
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+                    .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+                    .withPrimitiveTopology(PrimitiveTopology.QUADS)
                     .withVertexShader(SkyblockAddons.identifier("chroma_standard"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_standard"))
-                    .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
                     .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     public static final RenderPipeline CHROMA_TEXT = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+            RenderPipeline.builder()
+                    .withBindGroupLayout(BindGroupLayout.builder()
+                            .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+                            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+                            .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
+                            .withSampler("Sampler0")
+                            .build())
                     .withLocation(SkyblockAddons.identifier("sba_chroma_text"))
-                    .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+                    .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
+                    .withPrimitiveTopology(PrimitiveTopology.QUADS)
                     .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .withVertexShader(SkyblockAddons.identifier("chroma_textured"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_textured"))
-                    .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
-                    .withSampler("Sampler0")
                     .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     private static final Function<Identifier, RenderType> CHROMA_TEXTURED = Util.memoize(
-            (texture -> new ChromaRenderType(
-                    "sba_chroma_textured",
-                    RenderSetup.builder(CHROMA_TEXT)
-                            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
-                            .withTexture("Sampler0", texture)
-                            .createRenderSetup()
-            ))
+            texture -> {
+                RenderSetup state = RenderSetup.builder(CHROMA_TEXT)
+                        .withTexture("Sampler0", texture)
+                        .createRenderSetup();
+                return RenderType.create("sba_chroma_textured", state);
+            }
     );
     public static final TextColor CHROMA_TEXT_COLOR = new TextColor(ColorCode.CHROMA.getColor(), "chroma");
 
@@ -109,18 +118,16 @@ public class DrawUtils {
         }
     }
 
-    public static void drawCylinder(PoseStack poseStack,
+    public static void drawCylinder(PoseStack.Pose pose,
                                     VertexConsumer vc,
                                     double x, double y, double z,
                                     float radius,
                                     float height,
                                     SkyblockColor color) {
-
         // Move into eye‑space
-        final Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().position();
-        poseStack.pushPose();
-        poseStack.translate(x - cam.x, y - cam.y, z - cam.z);
-        Matrix4f pose = poseStack.last().pose();
+        final Vec3 cam = Minecraft.getInstance().gameRenderer.mainCamera().position();
+        pose.translate((float) (x - cam.x), (float) (y - cam.y), (float) (z - cam.z));
+        Matrix4f pose4f = pose.pose();
 
         // Full‑bright lightmap
         final int packed = LightCoordsUtil.FULL_BRIGHT;
@@ -129,7 +136,7 @@ public class DrawUtils {
 
         boolean multi = color.drawMulticolorManually();
 
-        int rI = 255, gI = 255, bI = 255, aI = 255;  // defaults for shader / white
+        int rI = 255, gI = 255, bI = 255, aI = 255; // defaults for shader / white
         if (!multi) {
             int argb = color.getColor();
             rI = ARGB.red(argb);
@@ -146,14 +153,12 @@ public class DrawUtils {
 
         for (int seg = 0; seg < SEG / 2; seg++) {
             // positive offset
-            addQuad(vc, pose, startAngle + seg * STEP, startAngle + (seg + 1) * STEP,
+            addQuad(vc, pose4f, startAngle + seg * STEP, startAngle + (seg + 1) * STEP,
                     radius, height, color, multi, rI, gI, bI, aI, lu, lv);
             // negative mirror offset
-            addQuad(vc, pose, startAngle - seg * STEP, startAngle - (seg + 1) * STEP,
+            addQuad(vc, pose4f, startAngle - seg * STEP, startAngle - (seg + 1) * STEP,
                     radius, height, color, multi, rI, gI, bI, aI, lu, lv);
         }
-
-        poseStack.popPose();
     }
 
     public static void renderOutlineAbsolute(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, TextureSetup textureSetup, float x, float y, float width, float height, int thickness, int color) {

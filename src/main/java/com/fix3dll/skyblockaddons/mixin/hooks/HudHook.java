@@ -4,7 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 
-public class GuiHook {
+public class HudHook {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 

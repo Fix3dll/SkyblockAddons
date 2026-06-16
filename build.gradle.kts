@@ -4,9 +4,9 @@ import java.text.ParseException
 
 plugins {
     java
-    id("net.fabricmc.fabric-loom") version ("1.15-SNAPSHOT")
-    id("com.gradleup.shadow") version ("9.4.1")
-    id("io.freefair.lombok") version ("9.2.0")
+    id("net.fabricmc.fabric-loom") version ("1.17-SNAPSHOT")
+    id("com.gradleup.shadow") version ("9.4.2")
+    id("io.freefair.lombok") version ("9.5.0")
 }
 
 ext {

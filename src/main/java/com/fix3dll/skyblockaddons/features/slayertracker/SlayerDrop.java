@@ -40,7 +40,7 @@ public enum SlayerDrop {
 
     // Tarantula Drops
     TARANTULA_WEB(Items.STRING, "Tarantula Web", "TARANTULA_WEB", SkyblockRarity.UNCOMMON, true),
-    TOXIC_ARROW_POISON(Items.LIME_DYE, "Toxic Arrow Poison", "TOXIC_ARROW_POISON", SkyblockRarity.RARE),
+    TOXIC_ARROW_POISON(Items.DYE.lime(), "Toxic Arrow Poison", "TOXIC_ARROW_POISON", SkyblockRarity.RARE),
     BITE_RUNE("BITE_RUNE", "BITE", SkyblockRarity.EPIC),
     DARKNESS_WITHIN_RUNE("DARKNESS_WITHIN_RUNE", "DARKNESS_WITHIN", SkyblockRarity.EPIC),
     SPIDER_CATALYST("SPIDER_CATALYST", SkyblockRarity.RARE),
@@ -70,7 +70,7 @@ public enum SlayerDrop {
 
     // Enderman Drops
     NULL_SPHERE(Items.FIREWORK_STAR, "Null Sphere", "NULL_SPHERE", SkyblockRarity.UNCOMMON, true),
-    TWILIGHT_ARROW_POISON(Items.PURPLE_DYE, "Twilight Arrow Poison", "TWILIGHT_ARROW_POISON", SkyblockRarity.UNCOMMON),
+    TWILIGHT_ARROW_POISON(Items.DYE.purple(), "Twilight Arrow Poison", "TWILIGHT_ARROW_POISON", SkyblockRarity.UNCOMMON),
     ENDERSNAKE_RUNE("ENDERSNAKE_RUNE", "ENDERSNAKE", SkyblockRarity.LEGENDARY),
     SUMMONING_EYE("SUMMONING_EYE", SkyblockRarity.EPIC),
     MANA_STEAL_ONE(SkyblockRarity.RARE, "mana_steal", 1),

@@ -42,7 +42,7 @@ public class ChatScreenHook {
                 : InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL);
 
         if (isLeftControlDown) {
-            ChatComponentExtension extendedChatComponent = (ChatComponentExtension) MC.gui.getChat();
+            ChatComponentExtension extendedChatComponent = (ChatComponentExtension) MC.gui.hud.getChat();
             GuiMessageLineExtension extendedLine = extendedChatComponent.sba$getGuiMessageLineAt(event, isDoubleClick);
 
             if (extendedLine != null) {
@@ -55,8 +55,7 @@ public class ChatScreenHook {
                     parentComponentString = parentComponent.getString();
                 } catch (Exception e) {
                     String failMessage = Translations.getMessage("messages.chatMessageCopying.failed");
-                    MC.getToastManager().addToast(SystemToast.multiline(
-                            MC,
+                    MC.gui.toastManager().addToast(new SystemToast(
                             new SystemToast.SystemToastId(3000L),
                             Utils.COMPONENT_TITLE,
                             Component.literal(failMessage).withColor(ColorCode.RED.getColor())
@@ -67,7 +66,7 @@ public class ChatScreenHook {
                     main.getScheduler().scheduleTask(scheduledTask -> {
                         if (MC.player != null) {
                             ChatScreenHook.logNextChatComponent = true;
-                            MC.gui.getChat().addMessage(Component.empty(), null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG);
+                            MC.gui.hud.getChat().addMessage(Component.empty(), null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG);
                         }
                     }, 0);
 

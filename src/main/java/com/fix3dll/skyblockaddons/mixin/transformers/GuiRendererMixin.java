@@ -4,12 +4,10 @@ import com.fix3dll.skyblockaddons.mixin.hooks.GuiRendererHook;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,27 +26,21 @@ import java.util.function.Supplier;
 public class GuiRendererMixin {
 
     @Inject(method = "executeDrawRange", at = @At("HEAD"))
-    public void computeChromaBufferSlice(Supplier<String> debugGroup,
-                                         RenderTarget renderTarget,
-                                         GpuBufferSlice fogUniforms,
+    public void computeChromaBufferSlice(Supplier<String> label,
+                                         RenderTarget mainRenderTarget,
                                          GpuBufferSlice dynamicTransforms,
-                                         GpuBuffer buffer,
-                                         VertexFormat.IndexType indexType,
-                                         int start,
-                                         int end,
+                                         int startIndex,
+                                         int endIndex,
                                          CallbackInfo ci) {
         GuiRendererHook.computeChromaBufferSlice();
     }
 
     @Inject(method = "executeDrawRange", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V"))
-    public void insertChromaSetUniform(Supplier<String> debugGroup,
-                                       RenderTarget renderTarget,
-                                       GpuBufferSlice fogUniforms,
+    public void insertChromaSetUniform(Supplier<String> label,
+                                       RenderTarget mainRenderTarget,
                                        GpuBufferSlice dynamicTransforms,
-                                       GpuBuffer buffer,
-                                       VertexFormat.IndexType indexType,
-                                       int start,
-                                       int end,
+                                       int startIndex,
+                                       int endIndex,
                                        CallbackInfo ci,
                                        @Local(name = "renderPass") RenderPass renderPass) {
         GuiRendererHook.insertChromaSetUniform(renderPass);

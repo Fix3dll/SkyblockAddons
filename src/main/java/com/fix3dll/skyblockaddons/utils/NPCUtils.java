@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This is a set of utility methods relating to Skyblock NPCs
@@ -21,6 +22,7 @@ public class NPCUtils {
 
     private static final Minecraft MC = Minecraft.getInstance();
     private static final int HIDE_RADIUS_SQUARED = (int) Math.round(2.5 * 2.5);
+    private static final AtomicInteger DUMMY_ENTITY_COUNTER = new AtomicInteger(-1000);
 
     @Getter private static final Int2ObjectOpenHashMap<Vec3> npcLocations = new Int2ObjectOpenHashMap<>();
 
@@ -80,6 +82,14 @@ public class NPCUtils {
         }
 
         return entity.getUUID().version() == 2 && remotePlayer.getHealth() == 20.0F && !remotePlayer.isSleeping();
+    }
+
+    public static int getNextDummyId() {
+        int nextId = DUMMY_ENTITY_COUNTER.decrementAndGet();
+        while (MC.level != null && MC.level.getEntity(nextId) != null) {
+            nextId = DUMMY_ENTITY_COUNTER.decrementAndGet();
+        }
+        return nextId;
     }
 
 }

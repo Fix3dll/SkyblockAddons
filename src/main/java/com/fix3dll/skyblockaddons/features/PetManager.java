@@ -49,7 +49,7 @@ public class PetManager {
         if (!main.getUtils().isOnSkyblock()) return;
 
         InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
-        if (inventoryType == InventoryType.PETS && mc.screen instanceof ContainerScreen containerScreen) {
+        if (inventoryType == InventoryType.PETS && mc.gui.screen() instanceof ContainerScreen containerScreen) {
             int page = main.getInventoryUtils().getInventoryPageNum();
             if (page != previousPage) {
                 updatePetCache = true;

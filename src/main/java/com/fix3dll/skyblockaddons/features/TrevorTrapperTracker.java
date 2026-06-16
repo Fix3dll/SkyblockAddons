@@ -246,7 +246,7 @@ public class TrevorTrapperTracker {
 
                 poseStack.pushPose();
                 poseStack.scale(distanceScale, distanceScale, distanceScale);
-                nodeCollector.submitNameTag(poseStack, vec3, 0, nameTag, true, LightCoordsUtil.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                nodeCollector.submitNameTag(poseStack, vec3, 0, nameTag, true, LightCoordsUtil.FULL_BRIGHT, cameraRenderState);
                 poseStack.popPose();
                 return true;
             }
@@ -261,7 +261,7 @@ public class TrevorTrapperTracker {
                 ));
                 poseStack.pushPose();
                 poseStack.translate(0.0F, 9.0F * 1.15F * 0.025F, 0.0F);
-                nodeCollector.submitNameTag(poseStack, vec3, 0, title, true, LightCoordsUtil.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                nodeCollector.submitNameTag(poseStack, vec3, 0, title, true, LightCoordsUtil.FULL_BRIGHT, cameraRenderState);
                 poseStack.popPose();
             }
         }

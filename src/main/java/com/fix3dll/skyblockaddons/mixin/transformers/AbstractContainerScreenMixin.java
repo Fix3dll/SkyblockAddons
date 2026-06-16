@@ -14,7 +14,6 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -142,7 +141,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
             cir.cancel();
         }
         AbstractContainerScreenHook.keyPressed(this.hoveredSlot, event.input() - 100, cir);
-        if (SkyblockEquipment.equipmentsInInventory() && Minecraft.getInstance().screen instanceof InventoryScreen) {
+        if (SkyblockEquipment.equipmentsInInventory() && this.minecraft.gui.screen() instanceof InventoryScreen) {
             for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
                 equipment.onClick(event.button());
             }

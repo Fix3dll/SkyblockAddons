@@ -81,7 +81,7 @@ public class ButtonCycling extends SkyblockAddonsButton {
         this.itemList = items;
         this.index = selectedIndex > 0 && selectedIndex < itemList.size() ? selectedIndex : 0;
         this.callback = callback;
-        this.isSettingsGui = Minecraft.getInstance().screen instanceof SettingsGui;
+        this.isSettingsGui = Minecraft.getInstance().gui.screen() instanceof SettingsGui;
     }
 
     @Override

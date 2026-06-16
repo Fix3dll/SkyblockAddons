@@ -20,9 +20,9 @@ public class GlyphRenderTypesMixin {
     @Unique
     private Identifier sba$identifier;
 
-    @ModifyReturnValue(method = { "createForColorTexture", "createForIntensityTexture" }, at = @At("RETURN"))
-    private static GlyphRenderTypes sba$createForColorTextureMethods(GlyphRenderTypes original, @Local(argsOnly = true) Identifier id) {
-        ((GlyphRenderTypesMixin) (Object) original).sba$identifier = id;
+    @ModifyReturnValue(method = { "createForColorTexture", "createForGrayscaleTexture" }, at = @At("RETURN"))
+    private static GlyphRenderTypes sba$createForColorTextureMethods(GlyphRenderTypes original, @Local(argsOnly = true, name = "name") Identifier name) {
+        ((GlyphRenderTypesMixin) (Object) original).sba$identifier = name;
         return original;
     }
 

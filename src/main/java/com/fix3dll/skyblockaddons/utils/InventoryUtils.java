@@ -299,7 +299,7 @@ public class InventoryUtils {
             inQuiverMode = false;
 
             // If we make it here, the inventory is full. Show the warning.
-            if (mc.screen == null && main.getPlayerListener().didntRecentlyJoinWorld()) {
+            if (mc.gui.screen() == null && main.getPlayerListener().didntRecentlyJoinWorld()) {
                 if (!inventoryWarningShown) {
                     showFullInventoryWarning();
                     inventoryWarningShown = true;

@@ -1,9 +1,9 @@
 package com.fix3dll.skyblockaddons.mixin.hooks;
 
 import com.fix3dll.skyblockaddons.core.Island;
-import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ClientLevelHook {
 
-    private static final Minecraft MC =  Minecraft.getInstance();
+    private static final Minecraft MC = Minecraft.getInstance();
 
     public static void onRemoveEntity(int entityId) {
         NPCUtils.getNpcLocations().remove(entityId);
@@ -52,7 +52,7 @@ public class ClientLevelHook {
                 // But the alternative is to overcount your blocks if someone else breaks the block before you...not much better
                 // Also could mathematically determine a probability based on pos, yaw, pitch of other entities...worth it? ehh...
                 boolean noOneElseMining = true;
-                for (Int2ObjectMap.Entry<BlockDestructionProgress> block : MC.levelRenderer.destroyingBlocks.int2ObjectEntrySet()) {
+                for (Int2ObjectMap.Entry<BlockDestructionProgress> block : MC.level.destroyingBlocks.int2ObjectEntrySet()) {
                     // TODO improve
                     boolean isPlayer = block.getIntKey() == 0 || block.getIntKey() == playerID;
                     if (!isPlayer && block.getValue().getPos().equals(pos)) {
@@ -64,6 +64,15 @@ public class ClientLevelHook {
                     SkyblockEvents.BLOCK_BREAK.invoker().onBlockBreak(pos, mineTime);
                 }
             }
+        }
+    }
+
+    public static void onAddBlockBreakParticle(int breakerId, BlockPos pos, int progress) {
+        // On public islands, hypixel sends a progress = 10 update once it registers the start of block breaking
+        if (breakerId == 0 && !LocationUtils.isOn(Island.PRIVATE_ISLAND) && pos.equals(MinecraftHook.prevClickBlock)
+                && progress == 10) {
+            //System.out.println(progress);
+            MinecraftHook.startMineTime = System.currentTimeMillis();
         }
     }
 

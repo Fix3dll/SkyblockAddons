@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class StringDecomposerMixin {
 
     @ModifyVariable(method = "iterateFormatted(Ljava/lang/String;ILnet/minecraft/network/chat/Style;Lnet/minecraft/network/chat/Style;Lnet/minecraft/util/FormattedCharSink;)Z", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/ChatFormatting;getByCode(C)Lnet/minecraft/ChatFormatting;"), ordinal = 2)
-    private static Style sba$iterateFormatted(Style value, @Local(argsOnly = true) String text, @Local(ordinal = 1) char colorCode) {
-        return FontHook.setChromaColorStyle(value, text, Character.toLowerCase(colorCode));
+    private static Style sba$iterateFormatted(Style style, @Local(argsOnly = true, name = "string") String string, @Local(name = "code") char code) {
+        return FontHook.setChromaColorStyle(style, string, Character.toLowerCase(code));
     }
 
 }

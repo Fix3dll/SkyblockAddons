@@ -8,11 +8,10 @@ import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.logging.LogUtils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -47,6 +46,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +64,7 @@ public class DevUtils {
     private static final Logger LOGGER = SkyblockAddons.getLogger();
     private static final org.slf4j.Logger slf4jLogger = LogUtils.getLogger();
 
-    public static final Object2ObjectOpenHashMap<String, Class<? extends Entity>> ALL_ENTITIES = new Object2ObjectOpenHashMap<>();
+    public static final HashMap<String, Class<? extends Entity>> ALL_ENTITIES = new HashMap<>();
 
     // If you change this, please change it in the string "commands.usage.sba.help.copyEntity" as well.
     public static final int DEFAULT_ENTITY_COPY_RADIUS = 3;
@@ -120,7 +120,7 @@ public class DevUtils {
 
         scoreboard.listPlayerScores(sideBarObjective).stream()
                 .filter(scoreboardEntry -> !scoreboardEntry.isHidden())
-                .sorted(Gui.SCORE_DISPLAY_ORDER)
+                .sorted(Hud.SCORE_DISPLAY_ORDER)
                 .limit(15)
                 .forEach(scoreboardEntry -> {
                     String owner = scoreboardEntry.owner();
@@ -315,8 +315,8 @@ public class DevUtils {
      * @see net.minecraft.client.gui.components.PlayerTabOverlay
      */
     public static void copyTabListHeaderAndFooter() {
-        Component tabHeader = MC.gui.getTabList().header;
-        Component tabFooter = MC.gui.getTabList().footer;
+        Component tabHeader = MC.gui.hud.getTabList().header;
+        Component tabFooter = MC.gui.hud.getTabList().footer;
 
         if (tabHeader == null && tabFooter == null) {
             Utils.sendErrorMessage("There is no header or footer!");

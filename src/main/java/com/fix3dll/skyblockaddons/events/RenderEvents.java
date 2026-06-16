@@ -5,7 +5,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -31,12 +30,6 @@ public class RenderEvents {
         return canceled;
     });
 
-    public static final Event<RenderLevelLast> LEVEL_LAST = EventFactory.createArrayBacked(RenderLevelLast.class, callbacks -> (source, poseStack) -> {
-        for (RenderLevelLast callback : callbacks) {
-            callback.onRenderLevelLast(source, poseStack);
-        }
-    });
-
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface RenderLivingName {
@@ -50,12 +43,6 @@ public class RenderEvents {
          * @return true if name tag rendering will be canceled
          */
         boolean onSubmitEntityNameTag(S renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci);
-    }
-
-    @Environment(EnvType.CLIENT)
-    @FunctionalInterface
-    public interface RenderLevelLast {
-        void onRenderLevelLast(MultiBufferSource.BufferSource source, PoseStack poseStack);
     }
 
 }

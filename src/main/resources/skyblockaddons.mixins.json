@@ -3,7 +3,7 @@
   "package": "com.fix3dll.skyblockaddons.mixin.transformers",
   "refmap": "mixins.skyblockaddons.refmap.json",
   "plugin": "com.fix3dll.skyblockaddons.mixin.SkyblockAddonsMixinPlugin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "injectors": {
     "defaultRequire": 1
   },
@@ -28,6 +28,7 @@
     "GuiMessageLineMixin",
     "GuiMixin",
     "GuiRendererMixin",
+    "HudMixin",
     "InventoryScreenMixin",
     "KeyBindsListMixin",
     "KeyMappingCategoryMixin",
@@ -39,8 +40,9 @@
     "MultiPlayerGameModeMixin",
     "ParticleEngineMixin",
     "ParticleMixin",
+    "PreparedRenderTypeMixin",
     "RecipeBookComponentMixin",
-    "RenderSystemMixin",
+    "DynamicUniformsMixin",
     "ScreenMixin",
     "SoundEngineMixin",
     "WakeParticleMixin"

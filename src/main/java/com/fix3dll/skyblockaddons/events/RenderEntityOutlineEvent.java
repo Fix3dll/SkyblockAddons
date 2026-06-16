@@ -134,7 +134,7 @@ public class RenderEntityOutlineEvent {
         entities.forEach(e -> {
             if (e == null) return;
 
-            Frustum cullingFrustum = Minecraft.getInstance().gameRenderer.getMainCamera().getCullFrustum();
+            Frustum cullingFrustum = Minecraft.getInstance().gameRenderer.mainCamera().getCullFrustum();
             if (!cullingFrustum.isVisible(e.getBoundingBox())) return;
 
             if (!(e instanceof ArmorStand && e.isInvisible()) && !(e instanceof ItemFrame)) {

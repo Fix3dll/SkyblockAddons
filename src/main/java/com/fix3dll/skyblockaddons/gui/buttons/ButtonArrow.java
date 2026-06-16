@@ -50,18 +50,18 @@ public class ButtonArrow extends SkyblockAddonsButton {
         if (!this.max) {
             main.getUtils().setFadingIn(false);
 
-            if (MC.screen instanceof SkyblockAddonsGui gui) {
+            if (MC.gui.screen() instanceof SkyblockAddonsGui gui) {
                 if (gui.getTab() == EnumUtils.GuiTab.GENERAL_SETTINGS) gui.setCancelClose(true);
 
                 int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
-                MC.setScreen(new SkyblockAddonsGui(page, gui.getTab()));
+                MC.gui.setScreen(new SkyblockAddonsGui(page, gui.getTab()));
 
                 if (gui.getTab() == EnumUtils.GuiTab.GENERAL_SETTINGS) gui.setCancelClose(false);
-            } else if (MC.screen instanceof SettingsGui gui) {
+            } else if (MC.gui.screen() instanceof SettingsGui gui) {
                 gui.setClosingGui(true);
 
                 int page = gui.getPage() + (arrowType == ArrowType.LEFT ? -1 : +1);
-                MC.setScreen(new SettingsGui(gui.getFeature(), page, gui.getLastPage(), gui.getLastTab(), gui.getLastGUI()));
+                MC.gui.setScreen(new SettingsGui(gui.getFeature(), page, gui.getLastPage(), gui.getLastTab(), gui.getLastGUI()));
             }
         }
     }

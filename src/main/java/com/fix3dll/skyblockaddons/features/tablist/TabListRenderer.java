@@ -45,7 +45,7 @@ public class TabListRenderer {
         int totalHeight = maxLines * LINE_HEIGHT;
 
         // Filter header and footer to only show hypixel advertisements...
-        PlayerTabOverlay tabList = mc.gui.getTabList();
+        PlayerTabOverlay tabList = mc.gui.hud.getTabList();
         List<String> header = null;
         if (tabList.header != null) {
             String legacyFormattedHeader = TextUtils.getFormattedText(tabList.header);

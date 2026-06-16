@@ -470,7 +470,7 @@ public class DungeonManager {
                     if (component != null) {
                         poseStack.pushPose();
                         poseStack.translate(0, 18.0F * 1.15F * 0.025F, 0); // 18.0F == 2 * lineHeight
-                        submitNodeCollector.submitNameTag(poseStack, vec3, 0, component, true, LightCoordsUtil.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                        submitNodeCollector.submitNameTag(poseStack, vec3, 0, component, true, LightCoordsUtil.FULL_BRIGHT, cameraRenderState);
                         poseStack.popPose();
                     }
                     canceled = true;
@@ -494,9 +494,9 @@ public class DungeonManager {
 
                     poseStack.pushPose();
                     MutableComponent health = Component.literal(dungeonPlayer.getHealth() + " ").append(HEART_COMPONENT);
-                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, health, true, LightCoordsUtil.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, health, true, LightCoordsUtil.FULL_BRIGHT, cameraRenderState);
                     poseStack.translate(0, 9.0F * 1.15F * 0.025F, 0);
-                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, playerNameTag, true, LightCoordsUtil.FULL_BRIGHT, state.distanceToCameraSq, cameraRenderState);
+                    submitNodeCollector.submitNameTag(poseStack, vec3, 0, playerNameTag, true, LightCoordsUtil.FULL_BRIGHT, cameraRenderState);
                     poseStack.popPose();
                     canceled = true;
                 }

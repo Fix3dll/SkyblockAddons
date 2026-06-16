@@ -746,7 +746,7 @@ public class TextUtils {
 
         // Validate the color (Must not be null and must strictly match DARK_GRAY)
         TextColor quantityColor = quantityNode.getStyle().getColor();
-        if (quantityColor == null || quantityColor.getValue() != ChatFormatting.DARK_GRAY.getColor()) {
+        if (quantityColor == null || quantityColor.getValue() != TextColor.DARK_GRAY.getValue()) {
             return original;
         }
 

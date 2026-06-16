@@ -32,7 +32,7 @@ public class ChromaUniform implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         storage.close();
     }
 

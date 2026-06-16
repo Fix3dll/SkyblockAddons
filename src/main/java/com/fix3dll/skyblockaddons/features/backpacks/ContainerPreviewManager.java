@@ -127,7 +127,7 @@ public class ContainerPreviewManager {
                             items.add(ItemUtils.getPersonalCompactorItemStack(id))
                         );
                     } else {
-                        ItemStack pane = Blocks.LIME_STAINED_GLASS_PANE.asItem().getDefaultInstance();
+                        ItemStack pane = Blocks.STAINED_GLASS_PANE.lime().asItem().getDefaultInstance();
                         pane.set(DataComponents.CUSTOM_NAME, Component.literal("§aAuto-Craft Slot #" + (itemNumber + 1)));
                         items.add(pane);
                     }
@@ -513,7 +513,7 @@ public class ContainerPreviewManager {
 
                 //TODO: Probably some optimizations here we can do. Can we check chest equivalence?
                 // Avoid showing backpack preview in auction stuff.
-                Screen screen = MC.screen;
+                Screen screen = MC.gui.screen();
                 if (screen instanceof ContainerScreen cScreen && cScreen.getMenu() instanceof ChestMenu chestMenu) {
                     Container chestInventory = chestMenu.getContainer(); // lowerChestInventory
                     String chestName = cScreen.getTitle().getString();

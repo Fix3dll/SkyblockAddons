@@ -148,7 +148,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (event.button() == 0 && selectedMarker != null) {
-            MC.setScreen(null);
+            MC.gui.setScreen(null);
 
             if (Feature.FANCY_WARP_MENU.isEnabled(FeatureSetting.DOUBLE_WARP)) {
                 doubleWarpMarker = selectedMarker;

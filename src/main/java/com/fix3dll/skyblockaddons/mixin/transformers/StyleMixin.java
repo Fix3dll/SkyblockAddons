@@ -26,8 +26,8 @@ import static com.fix3dll.skyblockaddons.core.feature.Feature.SHOW_CLICKABLE_MES
 @Mixin(Style.class)
 public class StyleMixin implements StyleExtension {
 
-    @Shadow @Final @Nullable ClickEvent clickEvent;
-    @Mutable @Shadow @Final @Nullable HoverEvent hoverEvent;
+    @Shadow @Final @Nullable private ClickEvent clickEvent;
+    @Mutable @Shadow @Final @Nullable private HoverEvent hoverEvent;
 
     @Unique private boolean sba$chromaDisabled = false;
 

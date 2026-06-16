@@ -2,7 +2,7 @@ package com.fix3dll.skyblockaddons.utils;
 
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
@@ -46,7 +46,7 @@ public class ScoreboardManager {
         // Update score lines
         Collection<String> lines = scoreboard.listPlayerScores(sidebarObjective).stream()
                 .filter(scoreboardEntry -> !scoreboardEntry.isHidden())
-                .sorted(Gui.SCORE_DISPLAY_ORDER)
+                .sorted(Hud.SCORE_DISPLAY_ORDER)
                 .limit(15)
                 .map(scoreboardEntry -> {
                     String owner = scoreboardEntry.owner();

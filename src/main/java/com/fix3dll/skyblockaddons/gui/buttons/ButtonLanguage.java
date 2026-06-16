@@ -58,7 +58,7 @@ public class ButtonLanguage extends SkyblockAddonsButton {
 
     @Override
     public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (MC.screen instanceof SettingsGui gui) {
+        if (MC.gui.screen() instanceof SettingsGui gui) {
             DataUtils.loadLocalizedStrings(this.language, true);
             gui.setClosingGui(true);
             main.getRenderListener().setGuiToOpen(EnumUtils.GUIType.MAIN, gui.getLastPage(), gui.getLastTab());

@@ -32,7 +32,7 @@ public class FetchurManager {
      * Changing the order will affect the algorithm
      */
     private static final FetchurItem[] items = new FetchurItem[] {
-            new FetchurItem(Items.YELLOW_STAINED_GLASS, 20, "Yellow Stained Glass"),
+            new FetchurItem(Items.STAINED_GLASS.yellow(), 20, "Yellow Stained Glass"),
             new FetchurItem(Items.COMPASS, "Compass"),
             new FetchurItem(Items.PRISMARINE_CRYSTALS, 20, "Mithril"),
             new FetchurItem(Items.FIREWORK_ROCKET, "Firework Rocket"),
@@ -44,7 +44,7 @@ public class FetchurManager {
             new FetchurItem(Items.FLINT_AND_STEEL, "Flint and Steel"),
             new FetchurItem(Items.EMERALD, 50, "Emerald"),
             //new FetchurItem(new ItemStack(Items.ender_pearl, 16), "Ender Pearl"),
-            new FetchurItem(Blocks.RED_WOOL.asItem(), 50, "Red Wool")
+            new FetchurItem(Blocks.WOOL.red().asItem(), 50, "Red Wool")
     };
 
     // Used for storage, essential for Fetchur Warner

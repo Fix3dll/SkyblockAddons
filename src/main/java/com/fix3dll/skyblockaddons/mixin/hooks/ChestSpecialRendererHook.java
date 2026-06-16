@@ -19,7 +19,7 @@ public class ChestSpecialRendererHook {
     }
 
     public static Integer getCustomEnderChestColor() {
-        if (Minecraft.getInstance().screen == null
+        if (Minecraft.getInstance().gui.screen() == null
                 && SkyblockAddons.getInstance().getUtils().isOnSkyblock()
                 && Feature.MAKE_ENDERCHESTS_GREEN_IN_END.isEnabled()
                 && LocationUtils.isOnZealotSpawnLocation()) {

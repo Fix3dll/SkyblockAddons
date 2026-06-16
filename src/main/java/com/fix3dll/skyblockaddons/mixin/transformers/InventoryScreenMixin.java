@@ -5,7 +5,7 @@ import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
-import com.fix3dll.skyblockaddons.mixin.hooks.GuiHook;
+import com.fix3dll.skyblockaddons.mixin.hooks.HudHook;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -39,7 +39,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
 
     @WrapWithCondition(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V"))
     public boolean sba$renderEffects(EffectsInInventory instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        return GuiHook.renderEffectsHud;
+        return HudHook.renderEffectsHud;
     }
 
     @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("RETURN"))

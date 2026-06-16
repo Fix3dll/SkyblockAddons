@@ -213,7 +213,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
         if (reInit) {
             reInit = false;
             cancelClose = true;
-            MC.setScreen(this);
+            MC.gui.setScreen(this);
             cancelClose = false;
         }
 
@@ -386,7 +386,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 Feature.LANGUAGE,
                 button -> {
                     main.getUtils().setFadingIn(false);
-                    MC.setScreen(new SettingsGui(Feature.LANGUAGE,1, page, tab, GUIType.MAIN));
+                    MC.gui.setScreen(new SettingsGui(Feature.LANGUAGE,1, page, tab, GUIType.MAIN));
                 })
         );
     }
@@ -404,7 +404,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
                 main.getScheduler().scheduleTask(scheduledTask -> showWarning = false, 60);
             } else {
                 main.getUtils().setFadingIn(false);
-                MC.setScreen(new LocationEditGui(page, tab));
+                MC.gui.setScreen(new LocationEditGui(page, tab));
             }
         }));
     }
@@ -421,10 +421,10 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
 
             if (tab == GuiTab.GENERAL_SETTINGS) {
                 main.getUtils().setFadingIn(false);
-                MC.setScreen(new SkyblockAddonsGui(1, GuiTab.MAIN));
+                MC.gui.setScreen(new SkyblockAddonsGui(1, GuiTab.MAIN));
             } else {
                 main.getUtils().setFadingIn(false);
-                MC.setScreen(new SkyblockAddonsGui(1, GuiTab.GENERAL_SETTINGS));
+                MC.gui.setScreen(new SkyblockAddonsGui(1, GuiTab.GENERAL_SETTINGS));
             }
         }));
     }

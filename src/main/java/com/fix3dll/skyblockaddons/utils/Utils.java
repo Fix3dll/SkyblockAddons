@@ -234,7 +234,7 @@ public class Utils {
         if (!eventCanceled) {
             LocalPlayer player = MC.player;
             if (player != null) {
-                MC.gui.getChat().addMessage(message, null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG);
+                MC.gui.hud.getChat().addMessage(message, null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG);
             }
         }
     }
@@ -280,7 +280,7 @@ public class Utils {
     }
 
     public static void sendToast(Component message, Component title, long displayTimeMs) {
-        MC.getToastManager().addToast(new SystemToast( // TODO custom Toast
+        MC.gui.toastManager().addToast(new SystemToast( // TODO custom Toast
                 new SystemToast.SystemToastId(displayTimeMs),
                 title,
                 message

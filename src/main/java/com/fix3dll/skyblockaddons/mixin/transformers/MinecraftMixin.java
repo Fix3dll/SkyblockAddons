@@ -4,7 +4,6 @@ import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.features.outline.EntityOutlineRenderer;
 import com.fix3dll.skyblockaddons.mixin.hooks.MinecraftHook;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -19,19 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-    @Shadow
-    static Minecraft instance;
+    @Shadow private static Minecraft instance;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void sba$afterInitializeClient(GameConfig runArgs, CallbackInfo ci) {
         ClientEvents.AFTER_INITIALIZATION.invoker().afterInitializeClient(instance);
-    }
-
-    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", ordinal = 0, opcode = Opcodes.GETFIELD), cancellable = true)
-    public void sba$beforeScreenInit(Screen screen, CallbackInfo ci) {
-        if (ClientEvents.BEFORE_SET_SCREEN.invoker().beforeSetScreen(screen)) {
-            ci.cancel();
-        }
     }
 
     @Inject(method = "handleKeybinds", at = @At("TAIL"))

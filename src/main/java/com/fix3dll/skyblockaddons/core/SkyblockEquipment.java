@@ -50,7 +50,7 @@ public enum SkyblockEquipment {
             loreList.removeFirst();
         }
         builder.set(DataComponents.LORE, new ItemLore(loreList));
-        this.emptyStackTemplate = new ItemStackTemplate(Items.LIGHT_GRAY_STAINED_GLASS_PANE, builder.build());
+        this.emptyStackTemplate = new ItemStackTemplate(Items.STAINED_GLASS_PANE.lightGray(), builder.build());
     }
 
     public void setItemStack(ItemStack itemStack) {

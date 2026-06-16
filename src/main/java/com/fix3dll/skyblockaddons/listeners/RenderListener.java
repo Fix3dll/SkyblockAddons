@@ -20,7 +20,6 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.core.updater.Updater;
-import com.fix3dll.skyblockaddons.events.RenderEvents;
 import com.fix3dll.skyblockaddons.features.BaitManager;
 import com.fix3dll.skyblockaddons.features.EndstoneProtectorManager;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
@@ -59,22 +58,22 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils.PetItemStyle;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.MathUtils;
+import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.utils.SkyblockColor;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import lombok.Getter;
 import lombok.Setter;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -87,7 +86,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -210,7 +209,7 @@ public class RenderListener {
 //                SBA_RENDER_LAYER,
 //                this::onRenderHud
 //        );
-        RenderEvents.LEVEL_LAST.register(this::onRenderWorld);
+        LevelRenderEvents.END_MAIN.register(HealingCircleManager::renderHealingCircleOverlays);
     }
 
     /**
@@ -231,7 +230,7 @@ public class RenderListener {
      * I have an option so you can see dark auction timer and farm event timer in other games so that's why.
      */
     private void renderTimersOnly(GuiGraphicsExtractor graphics) {
-        if (!(MC.screen instanceof LocationEditGui) /*&& !(MC.screen instanceof GuiNotification)*/) {
+        if (!(MC.gui.screen() instanceof LocationEditGui) /*&& !(MC.screen instanceof GuiNotification)*/) {
             if (Feature.DARK_AUCTION_TIMER.isEnabled(FeatureSetting.DARK_AUCTION_TIMER_IN_OTHER_GAMES)) {
                 float scale = Feature.DARK_AUCTION_TIMER.getGuiScale();
                 Matrix3x2fStack poseStack = graphics.pose();
@@ -350,7 +349,7 @@ public class RenderListener {
      * This renders all the gui elements (bars, icons, texts, skeleton bar, etc.).
      */
     private void renderOverlays(GuiGraphicsExtractor graphics) {
-        if (!(MC.screen instanceof LocationEditGui) /*&& !(MC.screen instanceof GuiNotification)*/) {
+        if (!(MC.gui.screen() instanceof LocationEditGui) /*&& !(MC.screen instanceof GuiNotification)*/) {
             for (Feature feature : Feature.getGuiFeatures()) {
                 if (feature.isEnabled()) {
                     if (feature == Feature.SKELETON_BAR && !main.getInventoryUtils().isWearingSkeletonHelmet())
@@ -655,7 +654,7 @@ public class RenderListener {
         float x = Feature.SKELETON_BAR.getActualX();
         float y = Feature.SKELETON_BAR.getActualY();
         int bones;
-        if (!(MC.screen instanceof LocationEditGui) && MC.level != null && MC.player != null) {
+        if (!(MC.gui.screen() instanceof LocationEditGui) && MC.level != null && MC.player != null) {
              List<ItemEntity> bonesEntityList = MC.level.getEntitiesOfClass(
                     ItemEntity.class,
                     MC.player.getBoundingBox().inflate(8),
@@ -1479,7 +1478,7 @@ public class RenderListener {
             }
             case FETCHUR_TODAY -> {
                 boolean showDwarven = feature.isDisabled(FeatureSetting.SHOW_FETCHUR_ONLY_IN_DWARVENS) || LocationUtils.isOn(Island.DWARVEN_MINES);
-                boolean showInventory = feature.isDisabled(FeatureSetting.SHOW_FETCHUR_INVENTORY_OPEN_ONLY) || MC.screen != null;
+                boolean showInventory = feature.isDisabled(FeatureSetting.SHOW_FETCHUR_INVENTORY_OPEN_ONLY) || MC.gui.screen() != null;
                 FetchurManager.FetchurItem fetchurItem = FetchurManager.getInstance().getCurrentFetchurItem();
 
                 // Show if it's the gui button position, or the player hasn't given Fetchur,
@@ -1961,7 +1960,8 @@ public class RenderListener {
             switch (feature) {
                 case REVENANT_SLAYER_TRACKER:
                     if (revenant == null) {
-                        revenant = new Zombie(EntityType.ZOMBIE, MC.level);
+                        revenant = new Zombie(EntityTypes.ZOMBIE, MC.level);
+                        revenant.setId(NPCUtils.getNextDummyId());
 
                         revenant.setItemSlot(EquipmentSlot.MAINHAND, ItemUtils.createItemStack(Items.DIAMOND_HOE, true));
                         revenant.setItemSlot(EquipmentSlot.FEET, ItemUtils.createItemStack(Items.DIAMOND_BOOTS, false));
@@ -1975,8 +1975,10 @@ public class RenderListener {
 
                 case TARANTULA_SLAYER_TRACKER:
                     if (tarantula == null) {
-                        tarantula = new Spider(EntityType.SPIDER, MC.level);
-                        caveSpider = new CaveSpider(EntityType.CAVE_SPIDER, MC.level);
+                        tarantula = new Spider(EntityTypes.SPIDER, MC.level);
+                        tarantula.setId(NPCUtils.getNextDummyId());
+                        caveSpider = new CaveSpider(EntityTypes.CAVE_SPIDER, MC.level);
+                        caveSpider.setId(NPCUtils.getNextDummyId());
                     }
                     drawEntity(graphics, tarantula, x + 3, y, entityWidth, height, -30, scale);
                     drawEntity(graphics, caveSpider, x, y - 10, entityWidth, height, -30, scale);
@@ -1984,7 +1986,8 @@ public class RenderListener {
 
                 case SVEN_SLAYER_TRACKER:
                     if (sven == null) {
-                        sven = new Wolf(EntityType.WOLF, MC.level);
+                        sven = new Wolf(EntityTypes.WOLF, MC.level);
+                        sven.setId(NPCUtils.getNextDummyId());
                         sven.setTimeToRemainAngry(Long.MAX_VALUE);
                     }
                     drawEntity(graphics, sven, x, y - 2, entityWidth, height, -35, scale, 1.2F);
@@ -1992,7 +1995,8 @@ public class RenderListener {
 
                 case VOIDGLOOM_SLAYER_TRACKER:
                     if (enderman == null) {
-                        enderman = new EnderMan(EntityType.ENDERMAN, MC.level);
+                        enderman = new EnderMan(EntityTypes.ENDERMAN, MC.level);
+                        enderman.setId(NPCUtils.getNextDummyId());
                         enderman.setCarriedBlock(Blocks.BEACON.defaultBlockState());
                     }
                     enderman.tickCount = (int) main.getScheduler().getTotalTicks();
@@ -2001,7 +2005,8 @@ public class RenderListener {
 
                 case INFERNO_SLAYER_TRACKER:
                     if (inferno == null) {
-                        inferno = new Blaze(EntityType.BLAZE, MC.level);
+                        inferno = new Blaze(EntityTypes.BLAZE, MC.level);
+                        inferno.setId(NPCUtils.getNextDummyId());
                         inferno.setCharged(true);
                     }
                     inferno.tickCount = (int) main.getScheduler().getTotalTicks();
@@ -2022,6 +2027,7 @@ public class RenderListener {
                                 return false;
                             }
                         };
+                        riftstalker.setId(NPCUtils.getNextDummyId());
                     }
                     drawEntity(graphics, riftstalker, x, y, entityWidth, height, -15, scale);
                     break;
@@ -2663,13 +2669,13 @@ public class RenderListener {
 
     public void setGui() {
         if (this.guiToOpen == GUIType.MAIN) {
-            MC.setScreen(new SkyblockAddonsGui(this.guiPageToOpen, this.guiTabToOpen));
+            MC.gui.setScreen(new SkyblockAddonsGui(this.guiPageToOpen, this.guiTabToOpen));
         } else if (this.guiToOpen == GUIType.EDIT_LOCATIONS) {
-            MC.setScreen(new LocationEditGui(this.guiPageToOpen, this.guiTabToOpen));
+            MC.gui.setScreen(new LocationEditGui(this.guiPageToOpen, this.guiTabToOpen));
         } else if (this.guiToOpen == GUIType.SETTINGS) {
-            MC.setScreen(new SettingsGui(this.guiFeatureToOpen, 1, this.guiPageToOpen, this.guiTabToOpen, GUIType.MAIN));
+            MC.gui.setScreen(new SettingsGui(this.guiFeatureToOpen, 1, this.guiPageToOpen, this.guiTabToOpen, GUIType.MAIN));
         } else if (this.guiToOpen == GUIType.WARP) {
-            MC.setScreen(new IslandWarpGui());
+            MC.gui.setScreen(new IslandWarpGui());
         }
         this.guiToOpen = null;
     }
@@ -2704,10 +2710,6 @@ public class RenderListener {
         y -= height / 2F * scale;
         y = (float) (Math.round(y * minecraftScale) / minecraftScale);
         return y / scale;
-    }
-
-    public void onRenderWorld(MultiBufferSource.BufferSource source, PoseStack poseStack) {
-        HealingCircleManager.renderHealingCircleOverlays(source, poseStack);
     }
 
     private void drawDeployableArmorStand(GuiGraphicsExtractor graphics, ArmorStand deployableArmorStand, float x, float y, float scale) {

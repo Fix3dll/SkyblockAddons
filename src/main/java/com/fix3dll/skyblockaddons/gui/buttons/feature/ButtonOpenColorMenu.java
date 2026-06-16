@@ -74,12 +74,12 @@ public class ButtonOpenColorMenu extends ButtonFeature {
      */
     @Override
     public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (this.feature != null && MC.screen instanceof SettingsGui gui) {
+        if (this.feature != null && MC.gui.screen() instanceof SettingsGui gui) {
             gui.setClosingGui(true);
             if (this.setting != null) {
-                MC.setScreen(new ColorSelectionGui(setting, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
+                MC.gui.setScreen(new ColorSelectionGui(setting, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
             } else {
-                MC.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
+                MC.gui.setScreen(new ColorSelectionGui(feature, EnumUtils.GUIType.SETTINGS, gui.getLastTab(), gui.getLastPage()));
             }
         }
     }

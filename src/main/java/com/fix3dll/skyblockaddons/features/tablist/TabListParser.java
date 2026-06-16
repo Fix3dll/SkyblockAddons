@@ -44,7 +44,7 @@ public class TabListParser {
             return;
         }
 
-        List<PlayerInfo> fullList = MC.gui.getTabList().getPlayerInfos();
+        List<PlayerInfo> fullList = MC.gui.hud.getTabList().getPlayerInfos();
         if (fullList.size() < 80) {
             renderColumns = null;
             return;
@@ -79,7 +79,7 @@ public class TabListParser {
     }
 
     private static List<ParsedTabColumn> parseColumns(List<PlayerInfo> fullList) {
-        PlayerTabOverlay tabList = MC.gui.getTabList();
+        PlayerTabOverlay tabList = MC.gui.hud.getTabList();
 
         List<ParsedTabColumn> columns = new LinkedList<>();
         for (int entry = 0; entry < fullList.size(); entry += 20) {
@@ -100,7 +100,7 @@ public class TabListParser {
     }
 
     public static ParsedTabColumn parseFooterAsColumn() {
-        PlayerTabOverlay tabList = MC.gui.getTabList();
+        PlayerTabOverlay tabList = MC.gui.hud.getTabList();
 
         if (tabList.footer == null) {
             return null;

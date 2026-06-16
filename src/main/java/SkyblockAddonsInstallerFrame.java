@@ -18,7 +18,7 @@ import java.util.zip.ZipEntry;
 
 public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListener, MouseListener {
 
-    private static final Pattern IN_MODS_SUBFOLDER = Pattern.compile("26\\.1[/\\\\]?$");
+    private static final Pattern IN_MODS_SUBFOLDER = Pattern.compile("26\\.2[/\\\\]?$");
 
     private JLabel logo = null;
     private JLabel versionInfo = null;
@@ -155,7 +155,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 versionInfo.setFont(new Font(Font.DIALOG, Font.BOLD, 14));
                 versionInfo.setHorizontalAlignment(SwingConstants.CENTER);
                 versionInfo.setPreferredSize(new Dimension(w, h));
-                versionInfo.setText("v"+ this.getStringFieldFromModInfo("version")+" reborn by Fix3dll - for Minecraft 26.1");
+                versionInfo.setText("v"+ this.getStringFieldFromModInfo("version")+" reborn by Fix3dll - for Minecraft 26.2");
 
                 y += h;
             } catch (Throwable ivjExc) {
@@ -431,13 +431,13 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
                 boolean failed = findSkyblockAddonsAndDelete(modsFolder.listFiles());
                 if (failed) deletingFailure = true;
             }
-            if (inSubFolder) { // We are in the 26.1 folder, delete in the parent folder as well.
+            if (inSubFolder) { // We are in the 26.2 folder, delete in the parent folder as well.
                 if (modsFolder.getParentFile().isDirectory()) {
                     boolean failed = findSkyblockAddonsAndDelete(modsFolder.getParentFile().listFiles());
                     if (failed) deletingFailure = true;
                 }
-            } else { // We are in the main mods folder, but the 26.1 subfolder exists... delete in there too.
-                File subFolder = new File(modsFolder, "26.1");
+            } else { // We are in the main mods folder, but the 26.2 subfolder exists... delete in there too.
+                File subFolder = new File(modsFolder, "26.2");
                 if (subFolder.exists() && subFolder.isDirectory()) {
                     boolean failed = findSkyblockAddonsAndDelete(subFolder.listFiles());
                     if (failed) deletingFailure = true;
@@ -513,7 +513,7 @@ public class SkyblockAddonsInstallerFrame extends JFrame implements ActionListen
     public File getModsFolder() {
         String userHome = System.getProperty("user.home", ".");
 
-        File modsFolder = getFile(userHome, "minecraft/mods/26.1");
+        File modsFolder = getFile(userHome, "minecraft/mods/26.2");
         if (!modsFolder.exists()) {
             modsFolder = getFile(userHome, "minecraft/mods");
         }

@@ -39,7 +39,7 @@ public class ButtonSettingToggle extends ButtonFeatureToggle {
             } else {
                 feature.set(setting, false);
             }
-            if (setting == FeatureSetting.CLASS_COLORED_TEAMMATE && MC.screen instanceof SettingsGui settingsGui) {
+            if (setting == FeatureSetting.CLASS_COLORED_TEAMMATE && MC.gui.screen() instanceof SettingsGui settingsGui) {
                 settingsGui.setReInit(true);
             }
             this.animationButtonClicked = System.currentTimeMillis();

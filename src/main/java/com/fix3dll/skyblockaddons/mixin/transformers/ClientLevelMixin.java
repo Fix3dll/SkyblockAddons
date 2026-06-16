@@ -29,4 +29,9 @@ public class ClientLevelMixin {
         ClientLevelHook.blockUpdated(pos, state);
     }
 
+    @Inject(method = "destroyBlockProgress", at = @At("HEAD"))
+    public void sba$destroyBlockProgress(int id, BlockPos pos, int progress, CallbackInfo ci) {
+        ClientLevelHook.onAddBlockBreakParticle(id, pos, progress);
+    }
+
 }

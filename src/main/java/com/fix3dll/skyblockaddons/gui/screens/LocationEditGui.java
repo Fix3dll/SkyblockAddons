@@ -118,7 +118,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                 addRenderableWidget(new ButtonCycling(x, y, boxWidth, BOX_HEIGHT, Arrays.asList(EditMode.values()), editMode.ordinal(), index -> {
                     editMode = EditMode.values()[index];
                     closing = true;
-                    MC.setScreen(new LocationEditGui(lastPage, lastTab));
+                    MC.gui.setScreen(new LocationEditGui(lastPage, lastTab));
                     closing = false;
                     addResizeButtons();
                 }));
@@ -205,7 +205,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
         if (lastHoveredButton != null && this.isMiddlePressed) {
             closing = true;
-            MC.setScreen(new SettingsGui(lastHoveredButton.feature, 1, lastPage, lastTab, EnumUtils.GUIType.EDIT_LOCATIONS));
+            MC.gui.setScreen(new SettingsGui(lastHoveredButton.feature, 1, lastPage, lastTab, EnumUtils.GUIType.EDIT_LOCATIONS));
         }
     }
 

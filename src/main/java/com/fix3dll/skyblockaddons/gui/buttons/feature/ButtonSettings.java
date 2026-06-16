@@ -39,11 +39,11 @@ public class ButtonSettings extends ButtonFeature {
 
     @Override
     public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (MC.screen instanceof SkyblockAddonsGui gui) {
+        if (MC.gui.screen() instanceof SkyblockAddonsGui gui) {
             main.getUtils().setFadingIn(false);
             boolean generalSettings = gui.getTab() == GuiTab.GENERAL_SETTINGS;
             if (generalSettings) gui.setCancelClose(true);
-            MC.setScreen(new SettingsGui(this.feature, 1, gui.getPage(), gui.getTab(), GUIType.MAIN));
+            MC.gui.setScreen(new SettingsGui(this.feature, 1, gui.getPage(), gui.getTab(), GUIType.MAIN));
             if (generalSettings) gui.setCancelClose(false);
         }
     }

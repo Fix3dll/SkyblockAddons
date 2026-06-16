@@ -4,12 +4,13 @@ import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
+import com.fix3dll.skyblockaddons.utils.NPCUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +41,8 @@ public class DeployableManager {
     private final Map<Deployable, DeployableEntry> deployableEntryMap = new HashMap<>();
 
     static {
-        DUMMY_ARMOR_STAND = new ArmorStand(EntityType.ARMOR_STAND, MC.level);
+        DUMMY_ARMOR_STAND = new ArmorStand(EntityTypes.ARMOR_STAND, MC.level);
+        DUMMY_ARMOR_STAND.setId(NPCUtils.getNextDummyId());
         DUMMY_ARMOR_STAND.setItemSlot(EquipmentSlot.HEAD, ItemUtils.getTexturedHeadItem("WILL_O_WISP"));
         DUMMY_ARMOR_STAND.setInvisible(true);
         DUMMY_DEPLOYABLE_ENTRY = new DeployableEntry(Deployable.WILL_O_WISP, 300, DUMMY_ARMOR_STAND.getUUID());

@@ -1,5 +1,5 @@
 classTweaker v1 official
-accessible field net/minecraft/client/gui/Gui SCORE_DISPLAY_ORDER Ljava/util/Comparator;
+accessible field net/minecraft/client/gui/Hud SCORE_DISPLAY_ORDER Ljava/util/Comparator;
 accessible field net/minecraft/client/gui/components/PlayerTabOverlay footer Lnet/minecraft/network/chat/Component;
 accessible field net/minecraft/client/gui/components/PlayerTabOverlay header Lnet/minecraft/network/chat/Component;
 accessible field net/minecraft/client/KeyMapping key Lcom/mojang/blaze3d/platform/InputConstants$Key;
@@ -12,27 +12,18 @@ accessible field net/minecraft/client/particle/Particle y D
 accessible field net/minecraft/client/particle/Particle z D
 accessible method net/minecraft/world/entity/monster/Blaze setCharged (Z)V
 accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyBlockPos Lnet/minecraft/core/BlockPos;
-accessible field net/minecraft/client/renderer/LevelRenderer destroyingBlocks Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
+accessible field net/minecraft/client/multiplayer/ClientLevel destroyingBlocks Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
 accessible field net/minecraft/client/gui/components/ChatComponent trimmedMessages Ljava/util/List;
 accessible field net/minecraft/network/chat/TextColor name Ljava/lang/String;
 accessible method net/minecraft/network/chat/TextColor <init> (ILjava/lang/String;)V
 accessible class net/minecraft/client/gui/Font$PreparedTextBuilder
-extendable class net/minecraft/client/renderer/rendertype/RenderType
-accessible method net/minecraft/client/renderer/rendertype/RenderType <init> (Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)V
-accessible field net/minecraft/client/renderer/rendertype/RenderType state Lnet/minecraft/client/renderer/rendertype/RenderSetup;
-accessible field net/minecraft/client/renderer/rendertype/RenderSetup layeringTransform Lnet/minecraft/client/renderer/rendertype/LayeringTransform;
-accessible field net/minecraft/client/renderer/rendertype/RenderSetup textureTransform Lnet/minecraft/client/renderer/rendertype/TextureTransform;
-accessible field net/minecraft/client/renderer/rendertype/RenderSetup outputTarget Lnet/minecraft/client/renderer/rendertype/OutputTarget;
 accessible field net/minecraft/client/player/LocalPlayer xLast D
 accessible field net/minecraft/client/player/LocalPlayer zLast D
 accessible field net/minecraft/world/level/saveddata/maps/MapItemSavedData decorations Ljava/util/Map;
-accessible field net/minecraft/client/Minecraft particleResources Lnet/minecraft/client/particle/ParticleResources;
 accessible class net/minecraft/client/gui/font/glyphs/BakedSheetGlyph$GlyphInstance
 accessible method net/minecraft/client/gui/font/glyphs/BakedSheetGlyph$GlyphInstance style ()Lnet/minecraft/network/chat/Style;
 extendable class net/minecraft/client/renderer/state/gui/GuiTextRenderState
 accessible field net/minecraft/client/renderer/MapRenderer decorationSprites Lnet/minecraft/client/renderer/texture/TextureAtlas;
-accessible field net/minecraft/client/particle/ParticleResources spriteSets Ljava/util/Map;
-accessible class net/minecraft/client/particle/ParticleResources$MutableSpriteSet
 accessible method net/minecraft/client/gui/components/PlayerTabOverlay getPlayerInfos ()Ljava/util/List;
 accessible method net/minecraft/client/gui/components/ChatComponent addMessage (Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/multiplayer/chat/GuiMessageSource;Lnet/minecraft/client/multiplayer/chat/GuiMessageTag;)V
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
