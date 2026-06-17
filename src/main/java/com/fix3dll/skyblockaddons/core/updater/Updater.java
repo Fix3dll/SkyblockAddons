@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This class is the SkyblockAddons updater. It checks for updates by reading version information from {@link OnlineData.UpdateInfo}.
@@ -54,7 +55,6 @@ public class Updater {
     private String note = "";
 
     private boolean hasUpdate = false;
-    private boolean isPatch = false;
     private boolean sentUpdateMessage = false;
     private PotentialUpdate cachedPotentialUpdate = null;
     private boolean updateLaunched = false;
@@ -231,7 +231,7 @@ public class Updater {
             }
 
             // It's a patch if the major & minor numbers are the same & the player isn't upgrading from a beta.
-            isPatch = current.getVersionComponent(0) == target.getVersionComponent(0)
+            boolean isPatch = current.getVersionComponent(0) == target.getVersionComponent(0)
                     && current.getVersionComponent(1) == target.getVersionComponent(1)
                     && !isCurrentBeta;
 
@@ -314,7 +314,12 @@ public class Updater {
                         ? null
                         : cachedPotentialUpdate.getUpdate().getVersionName();
                 String mcVersionXYZ = SharedConstants.getCurrentVersion().name().split("-")[0];
-                if (!StringUtil.isNullOrEmpty(targetVersionName) && !targetVersionName.contains(mcVersionXYZ)) {
+                Set<String> compatibleMcVersions = autoUpdateMode == AutoUpdateMode.STABLE
+                        ? main.getOnlineData().getUpdateInfo().getReleaseCompatibleMcVersions()
+                        : main.getOnlineData().getUpdateInfo().getBetaCompatibleMcVersions();
+                if (!StringUtil.isNullOrEmpty(targetVersionName)
+                        && !targetVersionName.contains(mcVersionXYZ)
+                        && !compatibleMcVersions.contains(mcVersionXYZ)) {
                     autoDownloadButton = Component.literal(
                             String.format("§8§m[%s]§r", Translations.getMessage("messages.updateChecker.autoDownloadButton"))
                     ).withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal(

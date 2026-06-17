@@ -11,6 +11,7 @@ import net.fabricmc.loader.api.SemanticVersion;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -73,12 +74,16 @@ public class OnlineData {
         private String releaseDownload;
         @SerializedName("releaseChangelog")
         private String releaseChangelog;
+        @SerializedName("releaseCompatibleMcVersions")
+        private Set<String> releaseCompatibleMcVersions = Set.of();
         @SerializedName("latestBeta")
         private SemanticVersion latestBeta;
         @SerializedName("betaDownload")
         private String betaDownload;
         @SerializedName("betaChangelog")
         private String betaChangelog;
+        @SerializedName("betaCompatibleMcVersions")
+        private Set<String> betaCompatibleMcVersions = Set.of();
         @SerializedName("updateNotes")
         private TreeMap<Integer, String> updateNotes = new TreeMap<>();
     }
