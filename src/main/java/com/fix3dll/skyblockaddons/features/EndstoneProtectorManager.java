@@ -1,17 +1,18 @@
 package com.fix3dll.skyblockaddons.features;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Getter;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.apache.logging.log4j.Logger;
 
@@ -107,8 +108,12 @@ public class EndstoneProtectorManager {
         private static BlockPos lastPos = null;
 
         private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor(
-                new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.METADATA.getName() + " - Endstone Protector #%d").build()
+                Thread.ofPlatform().name(SkyblockAddons.METADATA.getName() + " - Endstone Protector #", 0).factory()
         );
+
+        static {
+            ClientLifecycleEvents.CLIENT_STOPPING.register(mc -> EXECUTOR.shutdownNow());
+        }
 
         public static Stage detectStage() {
             EXECUTOR.submit(() -> {
@@ -116,21 +121,26 @@ public class EndstoneProtectorManager {
                     ClientLevel level = Minecraft.getInstance().level;
                     if (level == null) return;
 
-                    if (lastStage != null && lastPos != null && level.getBlockState(lastPos).is(Blocks.PLAYER_HEAD)) {
-                        return;
+                    if (lastStage != null && lastPos != null) {
+                        BlockState lastBlockState = level.getBlockState(lastPos);
+                        if (lastBlockState.is(Blocks.PLAYER_HEAD) || lastBlockState.is(Blocks.PLAYER_WALL_HEAD)) {
+                            return;
+                        }
                     }
 
+                    BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
                     for (Stage stage : values()) {
-                        if (stage.blocksUp != -1) {
-                            // These 4 coordinates are the bounds of the dragon's nest.
-                            for (int x = -749; x < -602; x++) {
-                                for (int z = -353; z < -202; z++) {
-                                    BlockPos blockPos = new BlockPos(x, 5 + stage.blocksUp, z);
-                                    if (level.getBlockState(blockPos).is(Blocks.PLAYER_HEAD)) {
-                                        lastStage = stage;
-                                        lastPos = blockPos;
-                                        return;
-                                    }
+                        if (stage.blocksUp == -1) continue;
+
+                        // These 4 coordinates are the bounds of the dragon's nest.
+                        for (int x = -749; x < -602; x++) {
+                            for (int z = -353; z < -202; z++) {
+                                blockPos.set(x, 5 + stage.blocksUp, z);
+                                BlockState blockState = level.getBlockState(blockPos);
+                                if (blockState.is(Blocks.PLAYER_HEAD) || blockState.is(Blocks.PLAYER_WALL_HEAD)) {
+                                    lastStage = stage;
+                                    lastPos = blockPos.immutable();
+                                    return;
                                 }
                             }
                         }
