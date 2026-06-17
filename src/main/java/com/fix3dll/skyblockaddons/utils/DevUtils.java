@@ -57,7 +57,6 @@ import java.util.regex.Pattern;
  * This is a class of utilities for SkyblockAddons developers.
  */
 public class DevUtils {
-    //TODO: Add an option to log changed action bar messages only to reduce log spam
 
     private static final Minecraft MC = Minecraft.getInstance();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
@@ -577,6 +576,9 @@ public class DevUtils {
             if (!scheduledTask.isCanceled() && DataUtils.getActiveRequestCount() == 0) {
                 DataUtils.onSkyblockJoined();
                 SkyblockAddons.runAsync(ButtonBanner.REGISTER_BANNER);
+                Utils.sendMessageOrElseLog(
+                        Translations.getMessage("messages.resourcesReloaded"), LOGGER, false
+                );
                 scheduledTask.cancel();
             }
         }, 0, 2);
