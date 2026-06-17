@@ -27,6 +27,7 @@ public enum Island {
     DARK_AUCTION("Dark Auction", "dark_auction"),
     BACKWATER_BAYOU("Backwater Bayou", "fishing_1"),
     GALATEA("Galatea", "foraging_2"),
+    LOTUS_ATOLL("Lotus Atoll", "lotus_atoll"),
     UNKNOWN("null","null")
     ;
 

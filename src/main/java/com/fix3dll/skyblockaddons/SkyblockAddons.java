@@ -45,7 +45,6 @@ import com.fix3dll.skyblockaddons.utils.gson.SkyblockRarityAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.String2DoubleMapAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.UuidAdapter;
 import com.google.common.reflect.TypeToken;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
@@ -54,6 +53,7 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -74,6 +74,7 @@ import java.time.ZonedDateTime;
 import java.util.EnumMap;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -98,7 +99,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			60L,
 			TimeUnit.SECONDS,
 			new LinkedBlockingQueue<>(),
-			new ThreadFactoryBuilder().setNameFormat(SkyblockAddons.METADATA.getName() + " - #%d").build()
+			Thread.ofPlatform().name(SkyblockAddons.METADATA.getName() + " - #", 0).factory()
 	);
 
 	@Getter
@@ -225,7 +226,7 @@ public class SkyblockAddons implements ClientModInitializer {
             TextUtils.setInstanceLoaded(true);
 		});
 
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		ClientLifecycleEvents.CLIENT_STOPPING.register(mc -> {
 			configValuesManager.saveConfig();
 			persistentValuesManager.saveValues();
 			petCacheManager.saveValues();
@@ -234,14 +235,14 @@ public class SkyblockAddons implements ClientModInitializer {
 
 			THREAD_EXECUTOR.shutdown();
 			try {
-				//noinspection ResultOfMethodCallIgnored
-				THREAD_EXECUTOR.awaitTermination(5, TimeUnit.SECONDS);
+				if (!THREAD_EXECUTOR.awaitTermination(5, TimeUnit.SECONDS)) {
+					THREAD_EXECUTOR.shutdownNow();
+				}
 			} catch (InterruptedException ex) {
-				ex.printStackTrace();
 				THREAD_EXECUTOR.shutdownNow();
 				Thread.currentThread().interrupt();
 			}
-		}, "SkyblockAddons-Shutdown"));
+		});
 	}
 
 	public static Logger getLogger() {
@@ -260,7 +261,12 @@ public class SkyblockAddons implements ClientModInitializer {
 	}
 
 	public static void runAsync(Runnable runnable) {
-		THREAD_EXECUTOR.execute(runnable);
+		try {
+			THREAD_EXECUTOR.execute(runnable);
+		} catch (RejectedExecutionException ex) {
+			// Executor already shut down (game closing); run inline so the save still happens
+			runnable.run();
+		}
 	}
 
 	public static ResourceLocation resourceLocation(String location) {

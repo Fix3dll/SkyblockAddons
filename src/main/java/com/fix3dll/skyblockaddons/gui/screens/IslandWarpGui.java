@@ -257,7 +257,9 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         JERRYS_WORKSHOP("Jerry's Workshop", 1660, 1239),
         THE_RIFT("The Rift", 2120, 995),
         BACKWATER_BAYOU("Backwater Bayou", 1285, 1250),
-        GALATEA("Galatea", -140, 240);
+        GALATEA("Galatea", -140, 240),
+        LOTUS_ATOLL("Lotus Atoll", 1587, 1183)
+        ;
 
         private final String label;
         private final int x;
@@ -312,6 +314,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         THE_RIFT("rift", "", Island.THE_RIFT, 35, 90),
 
         BACKWATER_BAYOU("backwater", Translations.getMessage("warpMenu.spawn"), Island.BACKWATER_BAYOU, 40, 200),
+
+        LOTUS_ATOLL("lotus", Translations.getMessage("warpMenu.spawn"), Island.LOTUS_ATOLL, 60, 240),
 
         HUB("hub", Translations.getMessage("warpMenu.spawn"), Island.HUB, 630, 230),
         ELIZABETH("elizabeth", "Elizabeth", Island.HUB, 700, 180),
