@@ -37,6 +37,7 @@ public class MayorJerryData {
         List<String> loreList = ItemUtils.getItemLore(mayorItem);
 
         boolean perkpocalypsePerksFound = false;
+        boolean perkpocalypseMayorFound = false;
         boolean perksStartFlag = false;
         for (String line : loreList) {
             String stripped = TextUtils.stripColor(line);
@@ -50,11 +51,14 @@ public class MayorJerryData {
 
             if (line.contains("§m")) {
                 perksStartFlag = !perksStartFlag;
-            } else if (perksStartFlag) {
+            } else if (perksStartFlag && !perkpocalypseMayorFound) {
                 String resetStripped = TextUtils.stripResets(line);
                 if (!resetStripped.startsWith("§7")) {
                     this.mayor = SkyblockMayor.getByPerkName(stripped);
-                    if (this.mayor != null) continue;
+                    if (this.mayor != null) {
+                        perkpocalypseMayorFound = true;
+                        continue;
+                    }
                 }
             }
 
