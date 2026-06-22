@@ -11,6 +11,7 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import lombok.Getter;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
@@ -35,7 +36,7 @@ public class HealingCircleManager {
                     .withFragmentShader("core/position_color")
                     .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .withCull(false)
-                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
                     .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
                     .withPrimitiveTopology(PrimitiveTopology.QUADS)
                     .build()
@@ -72,6 +73,7 @@ public class HealingCircleManager {
         if (nearbyHealingCircle != null) {
             nearbyHealingCircle.addPoint(healingCircleParticle);
         } else {
+            HealingCircle.setRadius(0F);
             healingCircles.add(new HealingCircle(healingCircleParticle));
         }
     }
