@@ -32,7 +32,7 @@ public class HealingCircleManager {
                     .withFragmentShader("core/position_color")
                     .withBlend(BlendFunction.TRANSLUCENT)
                     .withCull(false)
-                    .withDepthWrite(true)
+                    .withDepthWrite(false)
                     .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
                     .build()
     );
@@ -69,6 +69,7 @@ public class HealingCircleManager {
         if (nearbyHealingCircle != null) {
             nearbyHealingCircle.addPoint(healingCircleParticle);
         } else {
+            HealingCircle.setRadius(0F);
             healingCircles.add(new HealingCircle(healingCircleParticle));
         }
     }
