@@ -11,6 +11,7 @@ import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.JSONResponseHandler;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ElectionData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -135,7 +136,7 @@ public class ElectionRequest extends RemoteFileRequest<ElectionData> {
                             .withClickEvent(new ClickEvent.RunCommand("/calendar"))
                             .withHoverEvent(new HoverEvent.ShowText(Component.literal("§7/calendar")))
                     );
-                    Utils.sendMessage(updateText, true);
+                    Minecraft.getInstance().execute(() -> Utils.sendMessage(updateText, true));
                 }
             }, 0, 3 * 20);
         }
