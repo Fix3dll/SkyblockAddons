@@ -61,9 +61,9 @@ public class EntityRendererHook {
             }
             if (Feature.HIDE_SPAWN_POINT_PLAYERS.isEnabled()) {
                 if (entityIn instanceof Player && LocationUtils.isOn("Village")
-                        && entityIn.getX() == -2.5D
-                        && entityIn.getY() == 70.0D
-                        && entityIn.getZ() == -69.5D) {
+                        && entityIn.getX() == 0.5D
+                        && entityIn.getY() == 77.0D
+                        && entityIn.getZ() == -0.5D) {
                     return false;
                 }
             }
