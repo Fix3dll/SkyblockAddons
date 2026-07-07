@@ -6,8 +6,7 @@
       "maxLevel": 6,
       "nbtName": "angler",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "aqua affinity": {
@@ -26,7 +25,6 @@
       "nbtName": "bane_of_arthropods",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -59,8 +57,7 @@
       "maxLevel": 6,
       "nbtName": "blessing",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "bug blender": {
@@ -78,8 +75,7 @@
       "maxLevel": 6,
       "nbtName": "caster",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "cayenne": {
@@ -110,8 +106,7 @@
       "maxLevel": 6,
       "nbtName": "charm",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "cleave": {
@@ -121,7 +116,6 @@
       "nbtName": "cleave",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -132,8 +126,7 @@
       "maxLevel": 5,
       "nbtName": "corruption",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "counter-strike": {
@@ -152,7 +145,6 @@
       "nbtName": "critical",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -165,7 +157,6 @@
       "appliedTo": [
         "SWORD",
         "BOW",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -205,7 +196,6 @@
       "appliedTo": [
         "SWORD",
         "BOW",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -226,7 +216,6 @@
       "nbtName": "syphon",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -251,7 +240,6 @@
       "nbtName": "ender_slayer",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -263,7 +251,6 @@
       "nbtName": "execute",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -277,7 +264,6 @@
         "SWORD",
         "PICKAXE",
         "DRILL",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -320,7 +306,6 @@
       "nbtName": "fire_aspect",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -345,7 +330,6 @@
       "nbtName": "first_strike",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -389,8 +373,7 @@
       "maxLevel": 7,
       "nbtName": "frail",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "frost walker": {
@@ -409,7 +392,6 @@
       "nbtName": "giant_killer",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -422,7 +404,6 @@
       "appliedTo": [
         "SWORD",
         "BOW",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -509,7 +490,6 @@
         "SWORD",
         "BOW",
         "FISHING_ROD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -530,7 +510,6 @@
       "nbtName": "knockback",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -553,7 +532,6 @@
       "nbtName": "lethality",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -565,7 +543,6 @@
       "nbtName": "life_steal",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -578,7 +555,6 @@
       "appliedTo": [
         "SWORD",
         "FISHING_ROD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -590,7 +566,6 @@
       "nbtName": "luck",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -601,8 +576,7 @@
       "maxLevel": 7,
       "nbtName": "luck_of_the_sea",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "lure": {
@@ -611,8 +585,7 @@
       "maxLevel": 6,
       "nbtName": "lure",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "magnet": {
@@ -621,18 +594,17 @@
       "maxLevel": 6,
       "nbtName": "magnet",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
-    "magmarizer": {
+    "pyroclasm": {
       "goodLevel": 5,
-      "loreName": "Magmarizer",
+      "loreName": "Pyroclasm",
       "maxLevel": 6,
       "nbtName": "magmarizer",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
+        "FISHING_ROD",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -644,7 +616,6 @@
       "nbtName": "mana_steal",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -710,8 +681,7 @@
       "maxLevel": 7,
       "nbtName": "piscary",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "power": {
@@ -754,7 +724,6 @@
       "nbtName": "PROSECUTE",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -809,8 +778,7 @@
       "maxLevel": 5,
       "nbtName": "quick_bite",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "rainbow": {
@@ -882,7 +850,6 @@
       "nbtName": "scavenger",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -907,7 +874,6 @@
       "nbtName": "sharpness",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -962,7 +928,6 @@
       "nbtName": "smite",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -975,8 +940,6 @@
       "appliedTo": [
         "SWORD",
         "BOW",
-        "FISHING_ROD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -996,8 +959,7 @@
       "maxLevel": 7,
       "nbtName": "spiked_hook",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "stealth": {
@@ -1040,7 +1002,7 @@
         "SWORD",
         "BOW",
         "FISHING_ROD",
-        "FISHING_WEAPON",
+        "AXE",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1065,7 +1027,6 @@
       "nbtName": "thunderbolt",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1077,7 +1038,6 @@
       "nbtName": "thunderlord",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1098,7 +1058,6 @@
       "nbtName": "titan_killer",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1119,7 +1078,6 @@
       "nbtName": "triple_strike",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1257,7 +1215,6 @@
       "nbtName": "vampirism",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1269,7 +1226,6 @@
       "nbtName": "venomous",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1282,7 +1238,6 @@
       "appliedTo": [
         "SWORD",
         "BOW",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1342,7 +1297,6 @@
       "statLabel": "championCombatXp",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1415,8 +1369,7 @@
       ],
       "statLabel": "expertiseKills",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "hecatomb": {
@@ -1500,8 +1453,6 @@
       "nbtName": "ultimate_chimera",
       "appliedTo": [
         "SWORD",
-        "BOW",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1513,7 +1464,6 @@
       "nbtName": "ultimate_combo",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1545,7 +1495,7 @@
         "SWORD",
         "BOW",
         "FISHING_ROD",
-        "FISHING_WEAPON",
+        "AXE",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1565,8 +1515,7 @@
       "maxLevel": 5,
       "nbtName": "ultimate_flash",
       "appliedTo": [
-        "FISHING_ROD",
-        "FISHING_WEAPON"
+        "FISHING_ROD"
       ]
     },
     "flowstate": {
@@ -1602,7 +1551,7 @@
         "SWORD",
         "BOW",
         "FISHING_ROD",
-        "FISHING_WEAPON",
+        "AXE",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1662,9 +1611,7 @@
       "nbtName": "ultimate_one_for_all",
       "appliedTo": [
         "SWORD",
-        "FISHING_WEAPON",
-        "LONGSWORD",
-        "GAUNTLET"
+        "LONGSWORD"
       ]
     },
     "refrigerate": {
@@ -1696,10 +1643,8 @@
       "nbtName": "ultimate_soul_eater",
       "appliedTo": [
         "SWORD",
-        "BOW",
-        "FISHING_WEAPON",
         "LONGSWORD",
-        "GAUNTLET"
+        "BOW"
       ]
     },
     "swarm": {
@@ -1709,8 +1654,6 @@
       "nbtName": "ultimate_swarm",
       "appliedTo": [
         "SWORD",
-        "BOW",
-        "FISHING_WEAPON",
         "LONGSWORD",
         "GAUNTLET"
       ]
@@ -1749,13 +1692,18 @@
       "maxLevel": 5,
       "nbtName": "ultimate_wise",
       "appliedTo": [
-        "SWORD",
-        "BOW",
-        "FISHING_WEAPON",
-        "LONGSWORD",
-        "GAUNTLET",
+        "FISHING_ROD",
+        "WAND",
+        "SHOVEL",
+        "PICKAXE",
+        "DRILL",
         "SHEARS",
-        "SHOVEL"
+        "SWORD",
+        "FARMING_TOOL",
+        "LONGSWORD",
+        "AXE",
+        "BOW",
+        "GAUNTLET"
       ]
     },
     "wisdom": {

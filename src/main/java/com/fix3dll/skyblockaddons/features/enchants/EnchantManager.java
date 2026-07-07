@@ -526,8 +526,9 @@ public class EnchantManager {
             EnchantmentsData.Enchant singleUltimate = null;
             for (EnchantmentsData.Enchant enchant : enchants.getAllEnchants()) {
                 if (enchant instanceof EnchantmentsData.Enchant.Dummy) continue;
-                List<ItemType> appliedTo = enchant.getAppliedTo();
-                if (appliedTo.isEmpty() || !appliedTo.contains(itemClassification.type())) continue;
+                List<String> appliedTo = enchant.getAppliedTo();
+                ItemType itemType = itemClassification.type();
+                if (appliedTo.isEmpty() || itemType == null || !appliedTo.contains(itemType.name())) continue;
                 if (presentNbtNames.contains(enchant.getNbtName())) continue;
                 if (blockedByPool.contains(enchant.getNbtName())) continue;
                 // Skip all ultimates - a placeholder is added below if none are present
