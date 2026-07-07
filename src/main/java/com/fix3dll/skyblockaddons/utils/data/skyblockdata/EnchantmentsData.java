@@ -126,7 +126,7 @@ public class EnchantmentsData {
          * are known and this enchant will never appear in the missing enchants list.
          */
         @SerializedName("appliedTo")
-        List<ItemType> appliedTo = List.of();
+        List<String> appliedTo = List.of();
 
         public boolean isNormal() {
             return this instanceof Normal;
