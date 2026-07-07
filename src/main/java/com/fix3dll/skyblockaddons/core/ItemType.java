@@ -16,7 +16,6 @@ public enum ItemType {
     BOW("BOW"),
     DRILL("DRILL"),
     FISHING_ROD("FISHING ROD"),
-    FISHING_WEAPON("FISHING WEAPON"),
     GAUNTLET("GAUNTLET"),
     HOE("HOE"),
     LONGSWORD("LONGSWORD"),
