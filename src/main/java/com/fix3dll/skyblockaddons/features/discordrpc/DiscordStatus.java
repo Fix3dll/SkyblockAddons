@@ -32,7 +32,7 @@ public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
 
                 String location = main.getUtils().getLocation();
                 Island map = main.getUtils().getMap();
-                String prefix = main.getUtils().isOnRift() ? "\uE020 " : "\uE067 ";
+                String prefix = main.getUtils().isOnRift() ? "ф " : "⏣ ";
 
                 switch (map) {
                     // Don't display "Your Island"
@@ -40,7 +40,7 @@ public enum DiscordStatus implements ButtonCycling.SelectItem, RegistrableEnum {
                         if (main.getUtils().isGuest()) {
                             return "Visiting " + location.trim();
                         } else {
-                            return "\uE067 Private Island";
+                            return "⏣ Private Island";
                         }
                     case GARDEN:
                         // If the title line ends with "GUEST", then the player is visiting someone else's island.
