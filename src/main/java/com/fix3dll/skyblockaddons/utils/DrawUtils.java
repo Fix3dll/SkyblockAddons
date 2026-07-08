@@ -109,18 +109,16 @@ public class DrawUtils {
         }
     }
 
-    public static void drawCylinder(PoseStack poseStack,
+    public static void drawCylinder(PoseStack.Pose pose,
                                     VertexConsumer vc,
                                     double x, double y, double z,
                                     float radius,
                                     float height,
                                     SkyblockColor color) {
-
         // Move into eye‑space
         final Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().position();
-        poseStack.pushPose();
-        poseStack.translate(x - cam.x, y - cam.y, z - cam.z);
-        Matrix4f pose = poseStack.last().pose();
+        pose.translate((float) (x - cam.x), (float) (y - cam.y), (float) (z - cam.z));
+        Matrix4f pose4f = pose.pose();
 
         // Full‑bright lightmap
         final int packed = LightCoordsUtil.FULL_BRIGHT;
@@ -146,14 +144,12 @@ public class DrawUtils {
 
         for (int seg = 0; seg < SEG / 2; seg++) {
             // positive offset
-            addQuad(vc, pose, startAngle + seg * STEP, startAngle + (seg + 1) * STEP,
+            addQuad(vc, pose4f, startAngle + seg * STEP, startAngle + (seg + 1) * STEP,
                     radius, height, color, multi, rI, gI, bI, aI, lu, lv);
             // negative mirror offset
-            addQuad(vc, pose, startAngle - seg * STEP, startAngle - (seg + 1) * STEP,
+            addQuad(vc, pose4f, startAngle - seg * STEP, startAngle - (seg + 1) * STEP,
                     radius, height, color, multi, rI, gI, bI, aI, lu, lv);
         }
-
-        poseStack.popPose();
     }
 
     public static void renderOutlineAbsolute(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, TextureSetup textureSetup, float x, float y, float width, float height, int thickness, int color) {

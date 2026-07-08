@@ -12,10 +12,9 @@ import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -35,7 +34,7 @@ public class HealingCircleManager {
                     .withFragmentShader("core/position_color")
                     .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .withCull(false)
-                    .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
+                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
                     .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
                     .build()
     );
@@ -43,7 +42,6 @@ public class HealingCircleManager {
     private static final RenderType HEALING_CIRCLE = RenderType.create(
             "sba_healing_circle",
             RenderSetup.builder(HEALING_CIRCLE_PIPELINE)
-                    .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
                     .affectsCrumbling()
                     .sortOnUpload()
                     .createRenderSetup()
@@ -77,7 +75,7 @@ public class HealingCircleManager {
         }
     }
 
-    public static void renderHealingCircleOverlays(MultiBufferSource.BufferSource source, PoseStack poseStack) {
+    public static void renderHealingCircleOverlays(LevelRenderContext endMain) {
         Feature feature = Feature.SHOW_HEALING_CIRCLE_WALL;
         if (main.getUtils().isOnSkyblock() && feature.isEnabled()) {
 
@@ -93,7 +91,6 @@ public class HealingCircleManager {
 
                 Point2D.Double circleCenter = healingCircle.getCircleCenter();
                 if (circleCenter != null && !Double.isNaN(circleCenter.getX()) && !Double.isNaN(circleCenter.getY())) {
-                    if (poseStack == null || source == null) continue;
 
                     int color = feature.getColor(
                             ColorUtils.getAlphaIntFromFloat(
@@ -102,15 +99,19 @@ public class HealingCircleManager {
                                     )
                             )
                     );
-                    DrawUtils.drawCylinder(
-                            poseStack,
-                            source.getBuffer(HEALING_CIRCLE),
-                            circleCenter.getX(),
-                            0,
-                            circleCenter.getY(),
-                            HealingCircle.getRadius(),
-                            255,
-                            ColorUtils.getDummySkyblockColor(color, feature.isChroma())
+                    endMain.submitNodeCollector().submitCustomGeometry(
+                            endMain.poseStack(),
+                            HEALING_CIRCLE,
+                            (pose, buffer) -> DrawUtils.drawCylinder(
+                                    pose,
+                                    buffer,
+                                    circleCenter.getX(),
+                                    0,
+                                    circleCenter.getY(),
+                                    HealingCircle.getRadius(),
+                                    255,
+                                    ColorUtils.getDummySkyblockColor(color, feature.isChroma())
+                            )
                     );
                 }
             }

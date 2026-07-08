@@ -20,7 +20,6 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.core.updater.Updater;
-import com.fix3dll.skyblockaddons.events.RenderEvents;
 import com.fix3dll.skyblockaddons.features.BaitManager;
 import com.fix3dll.skyblockaddons.features.EndstoneProtectorManager;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
@@ -64,17 +63,16 @@ import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import lombok.Getter;
 import lombok.Setter;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -210,7 +208,7 @@ public class RenderListener {
 //                SBA_RENDER_LAYER,
 //                this::onRenderHud
 //        );
-        RenderEvents.LEVEL_LAST.register(this::onRenderWorld);
+        LevelRenderEvents.COLLECT_SUBMITS.register(HealingCircleManager::renderHealingCircleOverlays);
     }
 
     /**
@@ -2704,10 +2702,6 @@ public class RenderListener {
         y -= height / 2F * scale;
         y = (float) (Math.round(y * minecraftScale) / minecraftScale);
         return y / scale;
-    }
-
-    public void onRenderWorld(MultiBufferSource.BufferSource source, PoseStack poseStack) {
-        HealingCircleManager.renderHealingCircleOverlays(source, poseStack);
     }
 
     private void drawDeployableArmorStand(GuiGraphicsExtractor graphics, ArmorStand deployableArmorStand, float x, float y, float scale) {
