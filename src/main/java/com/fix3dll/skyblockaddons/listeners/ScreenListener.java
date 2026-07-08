@@ -538,7 +538,7 @@ public class ScreenListener {
         for (int i = 36; i <= 44; i++) {
             Slot slot = chestMenu.slots.get(i);
 
-            if (slot.getItem().is(Items.DYE.lime())) {
+            if (slot.getItem().is(Items.LIME_DYE)) {
                 ItemStack necklace = chestMenu.getSlot(i - 36).getItem();
                 ItemStack cloak = chestMenu.getSlot(i - 27).getItem();
                 ItemStack belt = chestMenu.getSlot(i - 18).getItem();
