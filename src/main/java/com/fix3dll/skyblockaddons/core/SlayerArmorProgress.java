@@ -29,7 +29,7 @@ public class SlayerArmorProgress {
     public SlayerArmorProgress(ItemStack itemStack) {
         this.itemStack = new ItemStack(itemStack.getItem()); // Cloned because we change the helmet color later.
         this.percent = Component.literal("55");
-        this.defence = Component.literal("40❈").withColor(ColorCode.GREEN.getColor());
+        this.defence = Component.literal("40\uE008").withColor(ColorCode.GREEN.getColor());
         SkyblockAddons.getInstance().getScheduler().scheduleTask(scheduledTask -> {
             if (!SkyblockAddons.getInstance().isFullyInitialized()) return;
             this.percentWidth = Minecraft.getInstance().font.width(percent);

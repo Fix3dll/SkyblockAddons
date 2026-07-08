@@ -32,24 +32,24 @@ import java.util.regex.Pattern;
  * (usually 5, zombie tickers by 4, race timer by 12, trials of fire by 3).
  * Here are some examples:
  * <pre>
- * Normal:                      §c1390/1390❤     §a720§a❈ Defense     §b183/171✎ Mana§r
- * Normal with Skill XP:        §c1390/1390❤     §3+10.9 Combat (313,937.1/600,000)     §b183/171✎ Mana§r
- * Zombie Sword:                §c1390/1390❤     §a725§a❈ Defense     §b175/233✎ Mana    §a§lⓩⓩⓩⓩ§2§l§r
- * Zombie Sword with Skill XP:  §c1390/1390❤     §3+10.9 Combat (313,948/600,000)     §b187/233✎ Mana    §a§lⓩⓩⓩⓩ§2§l§r
- * Normal with Wand:            §c1390/1390❤+§c30▅     §a724§a❈ Defense     §b97/171✎ Mana§r
- * Normal with Absorption:      §61181/1161❤     §a593§a❈ Defense     §b550/550✎ Mana§r
- * Normal with Absorp + Wand:   §61181/1161❤+§c20▆     §a593§a❈ Defense     §b501/550✎ Mana§r
- * End Race:                    §d§lTHE END RACE §e00:52.370            §b147/147✎ Mana§r
- * Woods Race:                  §A§LWOODS RACING §e00:31.520            §b147/147✎ Mana§r
- * Trials of Fire:              §c1078/1078❤   §610 DPS   §c1 second     §b421/421✎ Mana§r
- * Soulflow:                    §b421/421✎ §3100ʬ
- * Tethered + Alignment:        §a1039§a❈ Defense§a |||§a§l  T3!
- * Five stages of healing wand: §62151/1851❤+§c120▆
- *                              §62151/1851❤+§c120▅
- *                              §62151/1851❤+§c120▄
- *                              §62151/1851❤+§c120▃
- *                              §62151/1851❤+§c120▂
- *                              §62151/1851❤+§c120▁
+ * Normal:                      §c1390/1390\uE010     §a720§a\uE008 Defense     §b183/171\uE003 Mana§r
+ * Normal with Skill XP:        §c1390/1390\uE010     §3+10.9 Combat (313,937.1/600,000)     §b183/171\uE003 Mana§r
+ * Zombie Sword:                §c1390/1390\uE010     §a725§a\uE008 Defense     §b175/233\uE003 Mana    §a§lⓩⓩⓩⓩ§2§l§r
+ * Zombie Sword with Skill XP:  §c1390/1390\uE010     §3+10.9 Combat (313,948/600,000)     §b187/233\uE003 Mana    §a§lⓩⓩⓩⓩ§2§l§r
+ * Normal with Wand:            §c1390/1390\uE010+§c30▅     §a724§a\uE008 Defense     §b97/171\uE003 Mana§r
+ * Normal with Absorption:      §61181/1161\uE010     §a593§a\uE008 Defense     §b550/550\uE003 Mana§r
+ * Normal with Absorp + Wand:   §61181/1161\uE010+§c20▆     §a593§a\uE008 Defense     §b501/550\uE003 Mana§r
+ * End Race:                    §d§lTHE END RACE §e00:52.370            §b147/147\uE003 Mana§r
+ * Woods Race:                  §A§LWOODS RACING §e00:31.520            §b147/147\uE003 Mana§r
+ * Trials of Fire:              §c1078/1078\uE010   §610 DPS   §c1 second     §b421/421\uE003 Mana§r
+ * Soulflow:                    §b421/421\uE003 §3100\uE017
+ * Tethered + Alignment:        §a1039§a\uE008 Defense§a |||§a§l  T3!
+ * Five stages of healing wand: §62151/1851\uE010+§c120▆
+ *                              §62151/1851\uE010+§c120▅
+ *                              §62151/1851\uE010+§c120▄
+ *                              §62151/1851\uE010+§c120▃
+ *                              §62151/1851\uE010+§c120▂
+ *                              §62151/1851\uE010+§c120▁
  * </pre>
  * To add something new to parse, add an {@code else-if} case in {@link #parseActionBar(String)} to call a method that
  * parses information from that section.
@@ -126,11 +126,11 @@ public class ActionBarParser {
         tickers = -1;
 
         // If the action bar is displaying player stats and the defense section is absent, the player's defense is zero.
-        if (actionBar.contains("❤") && !actionBar.contains("❈") && splitMessage.length == 2) {
+        if (actionBar.contains("\uE010") && !actionBar.contains("\uE008") && splitMessage.length == 2) {
             PlayerStat.DEFENCE.setValue(0);
         }
         // If there is no pressure section on the bar and the player is not in the water, set the pressure to -1.
-        if (!actionBar.contains("❍")) {
+        if (!actionBar.contains("\uE01B")) {
             if (Minecraft.getInstance().player.isUnderWater()) {
                 useLastRememberedPressure = true;
             } else {
@@ -174,7 +174,7 @@ public class ActionBarParser {
         String stripped = TextUtils.stripColor(section);
 
         try {
-            if (section.contains("❤")) {
+            if (section.contains("\uE010")) {
                 // cutting the crimson stack information out
                 section = parseCrimsonArmorAbilityStack(section);
 
@@ -186,17 +186,17 @@ public class ActionBarParser {
                     }
                 }
 
-                // ❤ indicates a health section; re-strip after crimson and glare damage mutations
+                // \uE010 indicates a health section; re-strip after crimson and glare damage mutations
                 return parseHealth(section, TextUtils.stripColor(section));
-            } else if (section.contains("❍")) {
+            } else if (section.contains("\uE01B")) {
                 return parsePressure(section);
-            } else if (section.contains("❈")) {
-                // ❈ indicates a defense section
+            } else if (section.contains("\uE008")) {
+                // \uE008 indicates a defense section
                 return parseDefense(section, stripped);
-            } else if (section.endsWith("§f❂ True Defense")) {
+            } else if (section.endsWith("§f\uE027 True Defense")) {
                 return parseTrueDefence(section);
-            } else if (section.contains("✎")) {
-                // tf are u doing hypixel §b692/736✎ Mana§e§lⓩⓩⓩ§6§lⓄⓄ
+            } else if (section.contains("\uE003")) {
+                // tf are u doing hypixel §b692/736\uE003 Mana§e§lⓩⓩⓩ§6§lⓄⓄ
                 if (section.contains("Ⓞ") || section.contains("ⓩ")) {
                     String[] split = splitManaAndTicker(section);
                     String manaSection = parseMana(split[0], TextUtils.stripColor(split[0]).trim());
@@ -251,13 +251,13 @@ public class ActionBarParser {
      * <p>
      * <b>Example action bar sections with a single stack indicator:</b>
      * <pre>
-     * §c4,515/4,515❤  §62Ѫ
-     * §c4,695/4,695❤  §6§l10⁑§r
+     * §c4,515/4,515\uE010  §62Ѫ
+     * §c4,695/4,695\uE010  §6§l10⁑§r
      * </pre>
      * <b>Example action bar sections with multiple stack indicators:</b>
      * <pre>
-     * §c4,695/4,695❤  §65Ѫ §6§l10⁑§r
-     * §65,183/4,515❤  §6§l10Ѫ§r §6§l10⁑§r
+     * §c4,695/4,695\uE010  §65Ѫ §6§l10⁑§r
+     * §65,183/4,515\uE010  §6§l10Ѫ§r §6§l10⁑§r
      * </pre>
      * Multiple indicators are peeled off right-to-left one per iteration using {@code lastIndexOf("§6")},
      * which always targets the rightmost stack regardless of how many are present.
@@ -321,8 +321,8 @@ public class ActionBarParser {
      * @return null, or Wand healing indicator, or {@code healthSection} if neither health bar nor health text are enabled
      */
     private String parseHealth(String healthSection, String stripped) {
-        // Normal:      §c1390/1390❤
-        // With Wand:   §c1390/1390❤+§c30▅
+        // Normal:      §c1390/1390\uE010
+        // With Wand:   §c1390/1390\uE010+§c30▅
         final boolean separateDisplay = Feature.HEALTH_BAR.isEnabled() || Feature.HEALTH_TEXT.isEnabled();
         String returnString = healthSection;
         float newHealth;
@@ -363,9 +363,9 @@ public class ActionBarParser {
      * @return null or {@code manaSection} if neither mana bar nor mana text are enabled
      */
     private String parseMana(String manaSection, String strippedTrimmed) {
-        // 183/171✎ Mana
-        // 421/421✎ 10ʬ
-        // 421/421✎ -10ʬ
+        // 183/171\uE003 Mana
+        // 421/421\uE003 10\uE017
+        // 421/421\uE003 -10\uE017
         Matcher m = Regex.MANA_PATTERN_S.matcher(strippedTrimmed);
         if (m.matches()) {
             PlayerStat.MANA.setValue(parseFloat(m.group("num")));
@@ -386,12 +386,12 @@ public class ActionBarParser {
     /**
      * Example:
      * <p>
-     * §63,938/3,837❤     §9Pressure: ❍38%     §b858/858✎ Mana
+     * §63,938/3,837\uE010     §9Pressure: 38%     §b858/858\uE003 Mana
      * @param pressureSection Pressure section of the action bar
      * @return null or {@code pressureSection} if neither pressure bar nor pressure text are enabled
      */
     private String parsePressure(String pressureSection) {
-        int left  = pressureSection.indexOf('❍');
+        int left  = pressureSection.indexOf('\uE01B');
         int right = pressureSection.indexOf('%', left);
 
         if (left == -1 || right == -1 || right <= left + 1) {
@@ -416,7 +416,7 @@ public class ActionBarParser {
      * @return null or {@code defenseSection} if neither defense text nor defense percentage are enabled
      */
     private String parseDefense(String defenseSection, String stripped) {
-        // §a720§a❈ Defense
+        // §a720§a\uE008 Defense
         // Tethered T1 (Dungeon Healer)--means tethered to 1 person I think: §a1024§a? Defense§6  T1
         // Tethered T3! (Dungeon Healer)--not sure why exclamation mark: §a1039§a? Defense§a§l  T3!
         // Tethered T3! (Dungeon Healer) + Aligned ||| (Gyrokinetic Wand): §a1039§a? Defense§a |||§a§l  T3!
@@ -619,36 +619,44 @@ public class ActionBarParser {
     }
 
     /**
-     * Splits the input string into two parts based on the word "Mana":
+     * Splits an action bar mana segment into two parts:
      * <ol>
-     *   <li>The prefix, including "Mana" (e.g., {@code §b692/736✎ Mana})</li>
-     *   <li>The suffix, after "Mana" (e.g., {@code §e§lⓩⓩⓩ§6§lⓄⓄ})</li>
+     *   <li>The mana display, including the overflow mana value when present
+     *       (e.g. {@code §b4,270/4,270} or {@code §b4,270/4,270 §3600\uE017}).</li>
+     *   <li>The ability ticker that follows (e.g. {@code §e§lⓩⓩⓩⓩⓩ§6§l}), or an
+     *       empty string when there is none.</li>
      * </ol>
-     * @param inputString The string to be split.
-     * @return A {@code String[]} containing the two parts.
+     * The mana display ends at the mana symbol ({@code \uE003}), or at the overflow mana
+     * symbol ({@code \uE017}) when an overflow value is present.
+     * @param inputString the action bar mana segment to split.
+     * @return a two-element {@code String[]} of {@code {manaDisplay, ticker}}.
      */
     public static String[] splitManaAndTicker(String inputString) {
-        final String searchWord = "Mana";
+        final char manaSymbol = '\uE003';
+        final char overflowManaSymbol = '\uE017';
 
-        // Find the index right after the word "Mana" ends.
-        int manaStartIndex = inputString.indexOf(searchWord);
-
-        // If "Mana" is not found in the string, return the original string and an empty string.
-        if (manaStartIndex == -1) {
+        int manaSymbolIndex = inputString.indexOf(manaSymbol);
+        if (manaSymbolIndex == -1) {
             return new String[]{inputString, ""};
         }
 
-        // Calculate the end index for the first part (where "Mana" finishes).
-        int manaEndIndex = manaStartIndex + searchWord.length();
+        // Extend the mana display past the overflow mana value when one is present.
+        int splitIndex = manaSymbolIndex + 1;
+        int overflowSymbolIndex = inputString.indexOf(overflowManaSymbol, splitIndex);
+        if (overflowSymbolIndex != -1) {
+            splitIndex = overflowSymbolIndex + 1;
+        }
 
-        // Part 1: Prefix including "Mana"
-        String partBeforeAndMana = inputString.substring(0, manaEndIndex);
+        // Hypixel emits a separator space before the ticker only when there is no overflow
+        // value; keep it with the mana part so the ticker always starts at its own codes.
+        if (splitIndex < inputString.length() && inputString.charAt(splitIndex) == ' ') {
+            splitIndex++;
+        }
 
-        // Part 2: Suffix after "Mana"
-        String partAfter = inputString.substring(manaEndIndex);
-
-        // Return the list containing the two resulting strings.
-        return new String[]{partBeforeAndMana, partAfter};
+        return new String[]{
+                inputString.substring(0, splitIndex),
+                inputString.substring(splitIndex)
+        };
     }
 
 }

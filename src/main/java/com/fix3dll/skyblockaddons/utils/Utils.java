@@ -406,9 +406,9 @@ public class Utils {
 
                     // No need to try to find location after line 5
                     if (lineNumber < 6) {
-                        if (!foundLocation && (strippedLine.contains("⏣") || strippedLine.contains("ф"))) {
+                        if (!foundLocation && (strippedLine.contains("\uE067") || strippedLine.contains("\uE020"))) {
                             String locationLine = strippedLine.trim();
-                            onRift = locationLine.contains("ф");
+                            onRift = locationLine.contains("\uE020");
                             SkyblockEquipment.loadEquipments(onRift ? Type.RIFT : Type.MAIN);
                             location = locationLine.substring(locationLine.indexOf(' ') + 1);
 

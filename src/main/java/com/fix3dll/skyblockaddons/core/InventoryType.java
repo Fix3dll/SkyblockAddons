@@ -28,7 +28,9 @@ public enum InventoryType {
     SKYBLOCK_MENU("SkyBlock Menu"),
     CATACOMBS_CHEST("Catacombs Chest"),
     KUUDRA_CHEST("Kuudra Chest"),
-    CROSEUS_CHEST_MENU("Croseus Chest Menu");
+    CROSEUS_CHEST_MENU("Croseus Chest Menu"),
+    EQUIPMENT_SETS("Equipment Sets"),
+    LOADOUTS("Loadouts");
 
     @Getter private final String inventoryName;
 
