@@ -756,11 +756,11 @@ public class RenderListener {
             case MANA_TEXT -> {
                 text = TextUtils.formatNumber(PlayerStat.MANA.getValue()) + "/"
                         + TextUtils.formatNumber(PlayerStat.MAX_MANA.getValue())
-                        + (feature.isEnabled(FeatureSetting.MANA_TEXT_ICON) ? "✎" : "");
+                        + (feature.isEnabled(FeatureSetting.MANA_TEXT_ICON) ? "\uE003" : "");
             }
             case OVERFLOW_MANA -> {
                 if (PlayerStat.OVERFLOW_MANA.getValue() == 0 && buttonLocation == null) return;
-                text = TextUtils.formatNumber(PlayerStat.OVERFLOW_MANA.getValue()) + "ʬ";
+                text = TextUtils.formatNumber(PlayerStat.OVERFLOW_MANA.getValue()) + "\uE017";
             }
             case HEALTH_TEXT -> {
                 if (feature.isEnabled(FeatureSetting.HIDE_HEALTH_TEXT_ON_RIFT) && onRift) return;
@@ -775,7 +775,7 @@ public class RenderListener {
                     text += TextUtils.formatNumber(PlayerStat.MAX_HEALTH.getValue());
                 }
                 if (feature.isEnabled(FeatureSetting.HEALTH_TEXT_ICON)) {
-                    text += "❤";
+                    text += "\uE010";
                 }
 
             }
@@ -790,7 +790,7 @@ public class RenderListener {
             case DEFENCE_TEXT -> {
                 if (onRift) return;
                 text = TextUtils.formatNumber(PlayerStat.DEFENCE.getValue())
-                        + (feature.isEnabled(FeatureSetting.DEFENCE_TEXT_ICON) ? "❈" : "");
+                        + (feature.isEnabled(FeatureSetting.DEFENCE_TEXT_ICON) ? "\uE008" : "");
             }
             case OTHER_DEFENCE_STATS -> {
                 text = main.getPlayerListener().getActionBarParser().getOtherDefense();
@@ -806,7 +806,7 @@ public class RenderListener {
                 if (onRift) return;
                 text = TextUtils.formatNumber(
                         Math.round(PlayerStat.HEALTH.getValue() * (1 + PlayerStat.DEFENCE.getValue() / 100F))
-                ) + (feature.isEnabled(FeatureSetting.EFFECTIVE_HEALTH_TEXT_ICON) ? "❤" : "");
+                ) + (feature.isEnabled(FeatureSetting.EFFECTIVE_HEALTH_TEXT_ICON) ? "\uE010" : "");
             }
             case DRILL_FUEL_TEXT -> {
                 boolean heldDrill = MC.player != null && ItemUtils.isDrill(MC.player.getMainHandItem());
@@ -1507,7 +1507,7 @@ public class RenderListener {
                         && PlayerStat.HEALTH.getValue() > PlayerStat.MAX_HEALTH.getValue()) {
                     String healthStr = TextUtils.formatNumber(PlayerStat.HEALTH.getValue());
                     String maxHealthStr = TextUtils.formatNumber(PlayerStat.MAX_HEALTH.getValue());
-                    String icon = feature.isEnabled(FeatureSetting.HEALTH_TEXT_ICON) ? "❤" : "";
+                    String icon = feature.isEnabled(FeatureSetting.HEALTH_TEXT_ICON) ? "\uE010" : "";
 
                     int absorptionColor = ColorUtils.getDummySkyblockColor(ColorCode.GOLD.getColor(), feature.isChroma()).getColor();
                     int baseColor = feature.getColor();
@@ -2516,8 +2516,8 @@ public class RenderListener {
     /**
      * Displays the deployable with detailed stats about the boost you're receiving.
      * <p>
-     * ---- +X ❤/s
-     * |  | +X ✎/s
+     * ---- +X \uE010/s
+     * |  | +X \uE003/s
      * ---- +X ❁
      * XXs
      */
@@ -2538,7 +2538,7 @@ public class RenderListener {
                 healthRegen *= 0.5F; // Tarantula boss 2+ reduces healing by 50%.
             }
             deployableDisplayBuffer.add(TextUtils.withFixedColor(
-                    Component.literal("+" + TextUtils.formatNumber(healthRegen) + " ❤/s"),
+                    Component.literal("+" + TextUtils.formatNumber(healthRegen) + " \uE010/s"),
                     ColorCode.RED.getColor()
             ));
             passIndex++;
@@ -2548,7 +2548,7 @@ public class RenderListener {
             float maxMana = PlayerStat.MAX_MANA.getValue();
             float manaRegen = (float) (maxMana * deployable.getManaRegen() / 50);
             deployableDisplayBuffer.add(TextUtils.withFixedColor(
-                    Component.literal("+" + TextUtils.formatNumber(manaRegen) + " ✎/s"),
+                    Component.literal("+" + TextUtils.formatNumber(manaRegen) + " \uE003/s"),
                     ColorCode.AQUA.getColor()
             ));
             passIndex++;
