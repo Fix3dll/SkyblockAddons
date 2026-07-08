@@ -269,51 +269,51 @@ public enum Deployable {
 
         ArrayList<Component> staticLines = new ArrayList<>();
         if (this.strength > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s ❁ ".formatted(this.strength)),
+                Component.literal("+%s \uE00D ".formatted(this.strength)),
                 ColorCode.RED.getColor()
         ));
         if (this.vitality > 0.0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s ♨ ".formatted(TextUtils.formatNumber(this.vitality))),
+                Component.literal("+%s \uE028 ".formatted(TextUtils.formatNumber(this.vitality))),
                 ColorCode.DARK_RED.getColor()
         ));
         if (this.mending > 0.0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s ☄ ".formatted(TextUtils.formatNumber(this.mending))),
+                Component.literal("+%s \uE028 ".formatted(TextUtils.formatNumber(this.mending))),
                 ColorCode.GREEN.getColor()
         ));
         if (this.trueDefense > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d ❂ ".formatted(this.trueDefense)),
+                Component.literal("+%d \uE027 ".formatted(this.trueDefense)),
                 ColorCode.WHITE.getColor()
         ));
         if (this.ferocity > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d ⫽ ".formatted(this.ferocity)),
+                Component.literal("+%d \uE00B ".formatted(this.ferocity)),
                 ColorCode.RED.getColor()
         ));
         if (this.bonusAttackSpeed > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d%% ⚔ ".formatted(this.bonusAttackSpeed)),
+                Component.literal("+%d%% \uE001 ".formatted(this.bonusAttackSpeed)),
                 ColorCode.YELLOW.getColor()
         ));
         if (this.trophyFishChance > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d ♔ ".formatted(this.trophyFishChance)),
+                Component.literal("+%d \uE02A ".formatted(this.trophyFishChance)),
                 ColorCode.GOLD.getColor()
         ));
         if (this.miningSpeed > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d ⸕ ".formatted(this.miningSpeed)),
+                Component.literal("+%d \uE015 ".formatted(this.miningSpeed)),
                 ColorCode.GOLD.getColor()
         ));
         if (this.miningFortune > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d ☘ ".formatted(this.miningFortune)),
+                Component.literal("+%d \uE053 ".formatted(this.miningFortune)),
                 ColorCode.GOLD.getColor()
         ));
         if (this.heatResistance > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d ♨ ".formatted(this.heatResistance)),
+                Component.literal("+%d \uE012 ".formatted(this.heatResistance)),
                 ColorCode.RED.getColor()
         ));
         if (this.coldResistance > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d ❄ ".formatted(this.coldResistance)),
+                Component.literal("+%d \uE006 ".formatted(this.coldResistance)),
                 ColorCode.AQUA.getColor()
         ));
         if (this.gemstoneSpread > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s ▚ ".formatted(TextUtils.formatNumber(this.gemstoneSpread))),
+                Component.literal("+%s \uE00F ".formatted(TextUtils.formatNumber(this.gemstoneSpread))),
                 ColorCode.YELLOW.getColor()
         ));
 
