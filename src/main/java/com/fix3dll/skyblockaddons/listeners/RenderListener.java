@@ -1161,7 +1161,7 @@ public class RenderListener {
                 if (pressure == -1) return;
                 boolean icon = feature.isEnabled(FeatureSetting.PRESSURE_TEXT_ICON);
                 boolean lastRemembered = main.getPlayerListener().getActionBarParser().isUseLastRememberedPressure();
-                text = (icon ? "❍" : "") + (lastRemembered ? "~" : "") + TextUtils.formatNumber(pressure) + "%";
+                text = (icon ? "\uE008" : "") + (lastRemembered ? "~" : "") + TextUtils.formatNumber(pressure) + "%";
             }
             default -> {
                 return;
