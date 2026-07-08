@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.config.PersistentValuesManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
@@ -182,13 +183,13 @@ public class AbstractContainerScreenHook {
      */
     public static boolean onHandleMouseClick(AbstractContainerScreen<?> screen, Slot slot, int slotId, int clickedButton, ContainerInput containerInput) {
         if (MC.player != null && !main.getUtils().isOnSkyblock()) return false;
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         if (Feature.REFORGE_FILTER.isEnabled() && !main.getUtils().getReforgeMatches().isEmpty()) {
             if (slot != null && slot.container != MC.player.getInventory() && slot.hasItem()) {
-                InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
-
                 NonNullList<Slot> slots = screen.getMenu().slots;
                 Slot itemSlot = null;
+
                 if (slot.index == 22 && inventoryType == InventoryType.BASIC_REFORGING) {
                     itemSlot = slots.get(13);
                 } else if (inventoryType == InventoryType.HEX_REFORGING) {
@@ -221,27 +222,35 @@ public class AbstractContainerScreenHook {
             return true;
         }
 
-        // Saves clicks in Pets menu
-        if (main.getInventoryUtils().getInventoryType() == InventoryType.PETS
-                && screen.getMenu() instanceof ChestMenu) {
-            if (!MC.hasShiftDown()) {
-                petsMenuLastClickedButtonRef.set(new Pair<>(slotId, clickedButton));
-            } else if (clickedButton == 0) {
-                PetManager.getInstance().setUpdatePetCache(true);
-                petsMenuLastClickedButtonRef.set(null);
-            }
-            if (slotId < 54 && clickedButton == 1) {
-                // when right-clicked to pet container and remove a pet, delete the removed pet's data
-                int pageNum = main.getInventoryUtils().getInventoryPageNum();
-                int index = slotId + 45 * (pageNum == 0 ? 0 : pageNum -1);
-                main.getPetCacheManager().removePet(index);
-                PetManager.getInstance().setUpdatePetCache(true);
+        if (screen.getMenu() instanceof ChestMenu) {
+            // Saves clicks in Pets menu
+            if (inventoryType == InventoryType.PETS) {
+                if (!MC.hasShiftDown()) {
+                    petsMenuLastClickedButtonRef.set(new Pair<>(slotId, clickedButton));
+                } else if (clickedButton == 0) {
+                    PetManager.getInstance().setUpdatePetCache(true);
+                    petsMenuLastClickedButtonRef.set(null);
+                }
+                if (slotId < 54 && clickedButton == 1) {
+                    // when right-clicked to pet container and remove a pet, delete the removed pet's data
+                    int pageNum = main.getInventoryUtils().getInventoryPageNum();
+                    int index = slotId + 45 * (pageNum == 0 ? 0 : pageNum -1);
+                    main.getPetCacheManager().removePet(index);
+                    PetManager.getInstance().setUpdatePetCache(true);
+                }
+            } else if (inventoryType == InventoryType.EQUIPMENT_SETS) {
+                if (slot != null && slot.getItem().is(Items.LIME_DYE)) {
+                    SkyblockEquipment.NECKLACE.setItemStack(SkyblockEquipment.NECKLACE.getEmptyStack());
+                    SkyblockEquipment.CLOAK.setItemStack(SkyblockEquipment.CLOAK.getEmptyStack());
+                    SkyblockEquipment.BELT.setItemStack(SkyblockEquipment.BELT.getEmptyStack());
+                    SkyblockEquipment.GLOVES_BRACELET.setItemStack(SkyblockEquipment.GLOVES_BRACELET.getEmptyStack());
+                }
             }
         }
 
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.hasItem()
                 && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && Utils.isBlankGlassPane(slot.getItem())
-                && (main.getInventoryUtils().getInventoryType() != InventoryType.ULTRASEQUENCER || Utils.isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
+                && (inventoryType != InventoryType.ULTRASEQUENCER || Utils.isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
     }
 
     public static Pair<Integer, Integer> consumePetsMenuLastClick() {
