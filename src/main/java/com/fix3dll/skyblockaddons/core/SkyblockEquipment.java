@@ -39,7 +39,7 @@ public enum SkyblockEquipment {
 
     private final ItemStackTemplate emptyStackTemplate;
     @Getter private ItemStack itemStack = ItemStack.EMPTY;
-    @Getter private ItemStack emptyStack = ItemStack.EMPTY;
+    private ItemStack emptyStack = ItemStack.EMPTY;
     private boolean isHovered = false;
 
     SkyblockEquipment(String... defaultName) {
@@ -146,13 +146,13 @@ public enum SkyblockEquipment {
                 if (i < listSize) {
                     equipments[i].setItemStack(list.get(i));
                 } else {
-                    equipments[i].setItemStack(equipments[i].getEmptyStack());
+                    equipments[i].setItemStack(equipments[i].emptyStack);
                 }
             }
         } else {
             // Fill with empty stacks if cache is missing or empty
             for (SkyblockEquipment equipment : equipments) {
-                equipment.setItemStack(equipment.getEmptyStack());
+                equipment.setItemStack(equipment.emptyStack);
             }
         }
     }
