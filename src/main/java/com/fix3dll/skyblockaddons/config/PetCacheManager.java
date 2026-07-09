@@ -116,7 +116,7 @@ public class PetCacheManager extends AbstractPersistentDataManager<PetCacheManag
             SkyblockEquipment eq = SkyblockEquipment.PET;
 
             if (idx == -1 && !eq.isEmpty()) {
-                eq.setItemStack(eq.getEmptyStack());
+                eq.setItemStack(null);
                 SkyblockEquipment.saveEquipments();
             } else if (idx != -1) {
                 PetManager.Pet currentPet = getCurrentPet();

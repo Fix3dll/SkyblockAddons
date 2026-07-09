@@ -240,10 +240,10 @@ public class AbstractContainerScreenHook {
                 }
             } else if (inventoryType == InventoryType.EQUIPMENT_SETS) {
                 if (slot != null && slot.getItem().is(Items.LIME_DYE)) {
-                    SkyblockEquipment.NECKLACE.setItemStack(SkyblockEquipment.NECKLACE.getEmptyStack());
-                    SkyblockEquipment.CLOAK.setItemStack(SkyblockEquipment.CLOAK.getEmptyStack());
-                    SkyblockEquipment.BELT.setItemStack(SkyblockEquipment.BELT.getEmptyStack());
-                    SkyblockEquipment.GLOVES_BRACELET.setItemStack(SkyblockEquipment.GLOVES_BRACELET.getEmptyStack());
+                    SkyblockEquipment.NECKLACE.setItemStack(null);
+                    SkyblockEquipment.CLOAK.setItemStack(null);
+                    SkyblockEquipment.BELT.setItemStack(null);
+                    SkyblockEquipment.GLOVES_BRACELET.setItemStack(null);
                 }
             }
         }
