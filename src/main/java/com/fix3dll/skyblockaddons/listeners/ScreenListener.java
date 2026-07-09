@@ -192,6 +192,7 @@ public class ScreenListener {
                         }
                     }
                     case EQUIPMENT_SETS -> this.setEquipmentsInSetsMenu(containerScreen.getMenu());
+                    case LOADOUTS -> this.setEquipmentsInLoadoutMenu(containerScreen.getMenu());
                     case null, default -> {}
                 }
                 closed = true;
@@ -299,6 +300,8 @@ public class ScreenListener {
                 this.setEquipmentsInStatsMenu(chestMenu);
             } else if (inventoryType == InventoryType.EQUIPMENT_SETS) {
                 this.setEquipmentsInSetsMenu(chestMenu);
+            } else if (inventoryType == InventoryType.LOADOUTS) {
+                this.setEquipmentsInLoadoutMenu(chestMenu);
             } else if (inventoryType == InventoryType.SKYBLOCK_MENU) {
                 if (main.getUtils().isOnRift()) {
                     this.setRiftPet(chestMenu);
@@ -564,6 +567,16 @@ public class ScreenListener {
         if (foundEnabled) {
             SkyblockEquipment.saveEquipments();
         }
+    }
+
+    private void setEquipmentsInLoadoutMenu(ChestMenu chestMenu) {
+        if (chestMenu.slots.size() < 37) return;
+
+        SkyblockEquipment.NECKLACE.setItemStack(chestMenu.getSlot(10).getItem());
+        SkyblockEquipment.CLOAK.setItemStack(chestMenu.getSlot(19) .getItem());
+        SkyblockEquipment.BELT.setItemStack(chestMenu.getSlot(28).getItem());
+        SkyblockEquipment.GLOVES_BRACELET.setItemStack(chestMenu.getSlot(37).getItem());
+        SkyblockEquipment.PET.setItemStack(chestMenu.getSlot(21).getItem());
     }
 
     private void setRiftPet(ChestMenu chestMenu) {
