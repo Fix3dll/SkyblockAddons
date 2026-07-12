@@ -532,10 +532,10 @@
             "description": "This command copies the header and footer of the tab player list. Formatting codes are included."
           }
         },
-        "copyOpenGL": {
-          "help": "Copies the OpenGL logs, CPU and GPU models",
+        "copyRendererInfo": {
+          "help": "Copies the renderer info, CPU and GPU models",
           "detailedHelp": {
-            "description": "This command copies the OpenGL logs, CPU and GPU models."
+            "description": "This command copies the renderer info, CPU and GPU models."
           }
         },
         "dev": {

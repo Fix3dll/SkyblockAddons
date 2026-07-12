@@ -47,7 +47,7 @@ public class SkyblockAddonsCommand {
     private static final String[] SUBCOMMANDS = {"help", "edit", "folder", "resetZealotCounter", "set", "slayer",
             "version", "reload", "reloadConfig", "reloadRes", "exportConfig", "importConfig", "dev", "brand",
             "copyBlock", "copyEntity", "copySidebar", "copyTabList", "pd", "toggleActionBarLogging",
-            "toggleSlayerTrackerLogging", "copyOpenGL", "toggleSkyBlockOreLogging"
+            "toggleSlayerTrackerLogging", "copyRendererInfo", "toggleSkyBlockOreLogging"
     };
 
     public static void initialize() {
@@ -391,9 +391,9 @@ public class SkyblockAddonsCommand {
             return 1;
         }));
 
-        // COPY_OPEN_GL
-        builder.then(literal("copyOpenGl").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
-            DevUtils.copyOpenGLLogs();
+        // COPY_RENDERER_INFO
+        builder.then(literal("copyRendererInfo").requires(rq -> Feature.DEVELOPER_MODE.isEnabled()).executes(ctx -> {
+            DevUtils.copyRendererInfo();
             return 1;
         }));
 
@@ -566,7 +566,7 @@ public class SkyblockAddonsCommand {
         COPY_ENTITY("/sba copyEntity [entityNames] [radius: integer]", "commands.usage.sba.copyEntity.detailedHelp.description", List.of(CommandOption.ENTITY_NAMES, CommandOption.RADIUS), true),
         COPY_SIDEBAR("/sba copySidebar [formatted: boolean]", "commands.usage.sba.copySidebar.detailedHelp.description", List.of(CommandOption.FORMATTED), true),
         COPY_TAB_LIST("/sba copyTabList", "commands.usage.sba.copyTabList.detailedHelp.description", null, true),
-        COPY_OPENGL("/sba copyOpenGL", "commands.usage.sba.copyOpenGL.detailedHelp.description", null, true),
+        COPY_RENDERER_INFO("/sba copyRendererInfo", "commands.usage.sba.copyRendererInfo.detailedHelp.description", null, true),
         COPY_BLOCK("/sba copyBlock", "commands.usage.sba.copyBlock.help", null, true),
         PD("/sba pd", "commands.usage.sba.printDeaths.help", null, true),
         TOGGLE_ACTION_BAR_LOGGING("/sba toggleActionBarLogging", "commands.usage.sba.toggleActionBarLogging.help", null, true),

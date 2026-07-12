@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.core.Translations;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,6 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.GL11;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -347,9 +347,9 @@ public class DevUtils {
      * Copies CPU model, GPU model and driver, LWJGL version to clipboard.
      * @see com.mojang.blaze3d.platform.GLX
      */
-    public static void copyOpenGLLogs() {
-        String gpu = GL11.glGetString(GL11.GL_RENDERER);
-        String version = GL11.glGetString(GL11.GL_VERSION);
+    public static void copyRendererInfo() {
+        String gpu = RenderSystem.getDevice().getDeviceInfo().name();
+        String version = RenderSystem.getDevice().getDeviceInfo().driverInfo();
         String cpu = GLX._getCpuInfo();
         String lwjgl = GLX._getLWJGLVersion();
         String output = """
@@ -360,7 +360,7 @@ public class DevUtils {
                 LWJGL: %s
                 ```
                 """.formatted(cpu, gpu, version, lwjgl);
-        Component successMessage = Component.literal("Successfully copied the OpenGL logs to clipboard!")
+        Component successMessage = Component.literal("Successfully copied the renderer info to clipboard!")
                                             .withColor(ColorCode.GREEN.getColor());
         copyStringToClipboard(output, successMessage, true);
     }
