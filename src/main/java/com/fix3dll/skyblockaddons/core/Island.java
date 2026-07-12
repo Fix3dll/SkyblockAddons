@@ -29,6 +29,7 @@ public enum Island {
     GALATEA("Galatea", "foraging_2"),
     LOTUS_ATOLL("Lotus Atoll", "lotus_atoll"),
     TORRHUS_CANYON("Torrhus Canyon", "foraging_3"),
+    SAFARI("Safari", "safari"),
     UNKNOWN("null","null")
     ;
 
