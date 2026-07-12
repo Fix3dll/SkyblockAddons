@@ -28,6 +28,7 @@ public enum Island {
     BACKWATER_BAYOU("Backwater Bayou", "fishing_1"),
     GALATEA("Galatea", "foraging_2"),
     LOTUS_ATOLL("Lotus Atoll", "lotus_atoll"),
+    TORRHUS_CANYON("Torrhus Canyon", "foraging_3"),
     UNKNOWN("null","null")
     ;
 
