@@ -36,6 +36,8 @@ public class CompactorItem implements GsonInitializable {
     private boolean enchanted;
     @SerializedName("resolvableProfile")
     private JsonElement resolvableProfile;
+    @SerializedName("itemModel")
+    private String itemModel;
 
     @Setter private String skyblockId;
 
@@ -50,8 +52,9 @@ public class CompactorItem implements GsonInitializable {
     private void makeItemStackTemplate() {
         try {
             if (material != null) {
+                Identifier itemModelId = itemModel == null ? null : Identifier.parse(itemModel);
                 if (material.equals("skull_item")) {
-                    itemStackTemplate = ItemUtils.createSkullTemplate(resolvableProfile, displayName, null);
+                    itemStackTemplate = ItemUtils.createSkullTemplate(itemModelId, resolvableProfile, displayName, null);
                 } else {
                     Item item = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(material));
                     if (item == Items.AIR) {

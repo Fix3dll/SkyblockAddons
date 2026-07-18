@@ -34,6 +34,8 @@ public class PetItem implements GsonInitializable {
     @Getter private SkyblockRarity rarity;
     @SerializedName("resolvableProfile")
     private JsonElement resolvableProfile;
+    @SerializedName("itemModel")
+    private String itemModel;
 
     @Setter private String skyblockId;
 
@@ -48,8 +50,9 @@ public class PetItem implements GsonInitializable {
     private void makeItemStackTemplate() {
         try {
             if (material != null) {
+                Identifier itemModelId = itemModel == null ? null : Identifier.parse(itemModel);
                 if (material.equals("skull_item")) {
-                    itemStackTemplate = ItemUtils.createSkullTemplate(resolvableProfile, null, "PET_ITEM");
+                    itemStackTemplate = ItemUtils.createSkullTemplate(itemModelId, resolvableProfile, null, "PET_ITEM");
                 } else {
                     Item item = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(material));
                     if (item == Items.AIR) {

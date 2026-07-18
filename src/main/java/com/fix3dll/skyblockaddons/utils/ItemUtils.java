@@ -31,6 +31,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.Item;
@@ -702,18 +703,33 @@ public class ItemUtils {
         return createEnchantedBookTemplate(rarity, enchantName, enchantLevel).create();
     }
 
-    public static ItemStackTemplate createSkullTemplate(@NonNull JsonElement profile, JsonElement customName, String skyblockId) {
+    public static ItemStackTemplate createSkullTemplate(Identifier itemModel, JsonElement profile, JsonElement customName, String skyblockId) {
+        ResolvableProfile resolvableProfile = null;
+        if (profile != null) {
+            resolvableProfile = ResolvableProfile.CODEC.parse(JsonOps.INSTANCE, profile).result().get();
+        }
+
+        MutableComponent component = null;
+        if (customName != null) {
+            component = TextUtils.componentFromJson(customName);
+        }
+
+        return createSkullTemplate(itemModel, resolvableProfile, component, skyblockId);
+    }
+
+    public static ItemStackTemplate createSkullTemplate(Identifier itemModel, ResolvableProfile profile, Component customName, String skyblockId) {
         DataComponentPatch.Builder builder = DataComponentPatch.builder();
 
-        ResolvableProfile.CODEC.parse(JsonOps.INSTANCE, profile).result().ifPresent(
-                resolvableProfile -> builder.set(DataComponents.PROFILE, resolvableProfile)
-        );
+        if (itemModel != null) {
+            builder.set(DataComponents.ITEM_MODEL, itemModel);
+        }
+
+        if (profile != null) {
+            builder.set(DataComponents.PROFILE, profile);
+        }
 
         if (customName != null) {
-            MutableComponent component = TextUtils.componentFromJson(customName);
-            if (component != null) {
-                builder.set(DataComponents.CUSTOM_NAME, component);
-            }
+            builder.set(DataComponents.CUSTOM_NAME, customName);
         }
 
         if (skyblockId != null) {
@@ -725,8 +741,12 @@ public class ItemUtils {
         return new ItemStackTemplate(Items.PLAYER_HEAD, builder.build());
     }
 
-    public static ItemStack createSkullItemStack(@NonNull JsonElement profile, JsonElement customName, String skyblockId) {
-        return createSkullTemplate(profile, customName, skyblockId).create();
+    public static ItemStack createSkullItemStack(Identifier itemModel, JsonElement profile, JsonElement customName, String skyblockId) {
+        return createSkullTemplate(itemModel, profile, customName, skyblockId).create();
+    }
+
+    public static ItemStack createSkullItemStack(Identifier itemModel, ResolvableProfile profile, Component customName, String skyblockId) {
+        return createSkullTemplate(itemModel, profile, customName, skyblockId).create();
     }
 
     /**
