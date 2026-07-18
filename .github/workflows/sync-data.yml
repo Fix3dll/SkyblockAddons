@@ -2,6 +2,10 @@ name: Sync Resources to Data Repository via PR
 
 on:
   push:
+    branches:
+      - "1.21.11"
+      - "26.1"
+      - "26.2"
     paths:
       # Define the specific resource files to monitor for changes.
       - "src/main/resources/compactorItems.json"
