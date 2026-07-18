@@ -6,6 +6,7 @@ import com.fix3dll.skyblockaddons.utils.gson.GsonInitializable;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +21,8 @@ public class TexturedHead implements GsonInitializable {
     private JsonElement customName;
     @SerializedName("skyblockId")
     private String skyblockId;
+    @SerializedName("itemModel")
+    private String itemModel;
 
     @Getter private transient ItemStack itemStack;
 
@@ -30,7 +33,8 @@ public class TexturedHead implements GsonInitializable {
 
     private void makeItemStack() {
         try {
-            itemStack = ItemUtils.createSkullItemStack(profile, customName, skyblockId);
+            Identifier itemModelId = itemModel == null ? null : Identifier.parse(itemModel);
+            itemStack = ItemUtils.createSkullItemStack(itemModelId, profile, customName, skyblockId);
         } catch (Exception ex) {
             itemStack = Items.BARRIER.getDefaultInstance();
             LOGGER.error(

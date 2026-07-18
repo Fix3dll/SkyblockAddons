@@ -30,6 +30,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.Item;
@@ -554,19 +555,33 @@ public class ItemUtils {
         return stack;
     }
 
-    public static ItemStack createSkullItemStack(@NonNull JsonElement profile, JsonElement customName, String skyblockId) {
-        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-
-        ResolvableProfile.CODEC.parse(JsonOps.INSTANCE, profile).result().ifPresent(
-                resolvableProfile -> stack.set(DataComponents.PROFILE, resolvableProfile)
-        );
+    public static ItemStack createSkullItemStack(Identifier itemModel, JsonElement profile, JsonElement customName, String skyblockId) {
+        ResolvableProfile resolvableProfile = null;
+        if (profile != null) {
+            resolvableProfile = ResolvableProfile.CODEC.parse(JsonOps.INSTANCE, profile).result().get();
+        }
 
         MutableComponent component = null;
         if (customName != null) {
             component = TextUtils.componentFromJson(customName);
         }
-        if (component != null) {
-            stack.set(DataComponents.CUSTOM_NAME, component);
+
+        return createSkullItemStack(itemModel, resolvableProfile, component, skyblockId);
+    }
+
+    public static ItemStack createSkullItemStack(Identifier itemModel, ResolvableProfile profile, Component customName, String skyblockId) {
+        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+
+        if (itemModel != null) {
+            stack.set(DataComponents.ITEM_MODEL, itemModel);
+        }
+
+        if (profile != null) {
+            stack.set(DataComponents.PROFILE, profile);
+        }
+
+        if (customName != null) {
+            stack.set(DataComponents.CUSTOM_NAME, customName);
         }
 
         if (skyblockId != null) {

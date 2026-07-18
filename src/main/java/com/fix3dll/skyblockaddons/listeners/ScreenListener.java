@@ -42,6 +42,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.SimpleContainer;
@@ -140,18 +141,21 @@ public class ScreenListener {
                 if (currentSlot != null && currentSlot.hasItem() && MC.level != null) {
                     DevUtils.setCopyMode(DevUtils.CopyMode.ITEM);
                     // TODO add to DevUtils
-                    if (currentSlot.getItem().has(DataComponents.PROFILE)) {
-                        ResolvableProfile.CODEC.encodeStart(
-                                JsonOps.INSTANCE, currentSlot.getItem().get(DataComponents.PROFILE)
-                        ).result().ifPresent(LOGGER::info);
+                    ItemStack currentSlotItem = currentSlot.getItem();
+                    ResolvableProfile profile = currentSlotItem.get(DataComponents.PROFILE);
+                    if (profile != null) {
+                        ResolvableProfile.CODEC.encodeStart(JsonOps.INSTANCE, profile).result().ifPresent(LOGGER::info);
                     }
-                    if (currentSlot.getItem().has(DataComponents.CUSTOM_NAME)) {
-                        LOGGER.info(TextUtils.componentToJson(
-                                currentSlot.getItem().getCustomName()
-                        ));
+                    Identifier itemModel = currentSlotItem.get(DataComponents.ITEM_MODEL);
+                    if (itemModel != null) {
+                        LOGGER.info("\"itemModel\": \"{}\"", itemModel);
+                    }
+                    Component customName = currentSlotItem.getCustomName();
+                    if (customName != null) {
+                        LOGGER.info(TextUtils.componentToJson(customName));
                     }
                     DevUtils.copyNBTTagToClipboard(
-                            ItemUtils.encodeItemStack(currentSlot.getItem()),
+                            ItemUtils.encodeItemStack(currentSlotItem),
                             Component.literal("Item data was copied to clipboard!")
                                      .withColor(ColorCode.GREEN.getColor())
                     );

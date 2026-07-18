@@ -34,6 +34,8 @@ public class CompactorItem implements GsonInitializable {
     private boolean enchanted;
     @SerializedName("resolvableProfile")
     private JsonElement resolvableProfile;
+    @SerializedName("itemModel")
+    private String itemModel;
 
     @Getter private transient ItemStack itemStack;
 
@@ -45,8 +47,9 @@ public class CompactorItem implements GsonInitializable {
     private void makeItemStack() {
         try {
             if (material != null) {
+                Identifier itemModelId = itemModel == null ? null : Identifier.parse(itemModel);
                 if (material.equals("skull_item")) {
-                    itemStack = ItemUtils.createSkullItemStack(resolvableProfile, displayName, null);
+                    itemStack = ItemUtils.createSkullItemStack(itemModelId, resolvableProfile, displayName, null);
                 } else {
                     Item item = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(material));
                     if (item != Items.AIR) {
