@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.utils.data.skyblockdata;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
@@ -19,6 +20,7 @@ import com.mojang.authlib.GameProfile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraft.util.StringUtil;
+import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -37,16 +39,19 @@ import java.util.Map;
  * ├── success      : boolean
  * ├── lastUpdated  : long
  * └── items[]      → indexed into byId / byName maps
- *     └── Item     : ~50+ fields (see field-level Javadoc)
+ *     └── Item     : ~55+ fields (see field-level Javadoc)
  *         ├── Skin, Cost, Requirement, SubRequirement
  *         ├── GemstoneSlot, GemstoneSlotCost, GemstoneSlotRequirement
  *         ├── MuseumData, Prestige, Salvage, Component
  *         └── item_specific (raw JsonObject), recipes (raw JsonArray)
  * </pre>
+ * Field documentation reflects the response shape as of the 2026-07-08 snapshot (5524 items).
  */
 @Getter
 @JsonAdapter(ItemsData.Deserializer.class)
 public class ItemsData {
+
+    private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     @SerializedName("success")
     private boolean success = false;
@@ -58,11 +63,14 @@ public class ItemsData {
     */
     /**
      * An unmodifiable map containing all parsed SkyBlock items, indexed by their unique item ID.
+     * IDs are unique across the dataset, so this map holds every successfully parsed item.
      * @see Item#getId()
      */
     private Map<String, Item> byId = Map.of();
     /**
      * An unmodifiable map containing all parsed SkyBlock items, indexed by their exact display name.
+     * Display names are <b>not</b> unique (e.g. {@code "Small Backpack"} is shared by 17 distinct IDs),
+     * so this map is smaller than {@link #byId} and the last item wins for a colliding name.
      * @see Item#getName()
      */
     private Map<String, Item> byName = Map.of();
@@ -106,7 +114,7 @@ public class ItemsData {
                     }
                 } catch (Exception e) {
                     // Skip malformed items so a single bad entry does not discard the entire dataset
-                    e.printStackTrace();
+                    LOGGER.warn("Skipping malformed item entry in items data.", e);
                 }
             }
             data.byId = Map.copyOf(byId);
@@ -126,7 +134,7 @@ public class ItemsData {
         @SerializedName("id")
         private String id;
 
-        /** Display name, e.g. {@code "Arack"}. */
+        /** Display name, e.g. {@code "Arack"}. Not unique across items. */
         @SerializedName("name")
         private String name;
 
@@ -144,13 +152,18 @@ public class ItemsData {
         private int durability;
 
         /**
-         * Rarity tier: {@code COMMON}, {@code UNCOMMON}, {@code RARE}, {@code EPIC},
-         * {@code LEGENDARY}, {@code MYTHIC}, {@code DIVINE}, {@code SPECIAL}.
+         * Rarity tier. Observed values: {@code COMMON}, {@code UNCOMMON}, {@code RARE},
+         * {@code EPIC}, {@code LEGENDARY}, {@code MYTHIC}, {@code SPECIAL},
+         * {@code VERY_SPECIAL}, {@code SUPREME}, {@code UNOBTAINABLE}.
          * <p>
          * The API uses {@code "tier"} for the vast majority of items and
          * {@code "rarity"} for a handful of items (e.g. pet personalities).
          * The two keys are <b>never</b> present simultaneously, so they are
          * unified into a single field via {@code alternate}.
+         * <p>
+         * {@code SUPREME} and {@code UNOBTAINABLE} have no matching {@link SkyblockRarity}
+         * constant and therefore deserialize to {@code null}, as does an item that sends
+         * neither key (roughly 870 items, mostly bait, personalities and pet items).
          */
         @SerializedName(value = "tier", alternate = "rarity")
         private SkyblockRarity tier;
@@ -158,6 +171,14 @@ public class ItemsData {
         /** Item category, e.g. {@code "SWORD"}, {@code "HELMET"}, {@code "REFORGE_STONE"}, {@code "ACCESSORY"}. */
         @SerializedName("category")
         private String category;
+
+        /**
+         * Category label shown in the item lore when it differs from the internal
+         * {@link #category}, e.g. {@code "ORE"}, {@code "DWARVEN METAL"}. May contain
+         * {@code %%} formatting codes. Mutually exclusive with {@link #category}.
+         */
+        @SerializedName("category_display")
+        private String categoryDisplay;
 
         /** Lore description. May contain {@code %%} formatting codes. */
         @SerializedName("description")
@@ -195,28 +216,47 @@ public class ItemsData {
         @SerializedName("gear_score")
         private int gearScore;
 
-        /** Base item stats, e.g. {@code {"DAMAGE": 69, "HEALTH": 2000}}. Keys are stat IDs (mixed case in API). */
+        /**
+         * Base item stats, e.g. {@code {"DAMAGE": 69, "HEALTH": 2000}}.
+         * <p>
+         * Keys are stat IDs in <b>inconsistent case</b>: the same stat may arrive as
+         * {@code "DAMAGE"} on one item and {@code "damage"} on another, so normalize the
+         * key before looking a stat up. Values may be fractional (e.g. {@code "PRISTINE": 0.5}).
+         */
         @SerializedName("stats")
-        private Map<String, Double> stats;
+        private Map<String, Double> stats = Map.of();
 
         /**
          * Tiered stats that scale with item rarity. Each key is a stat ID and the value
          * is a list of values per tier, e.g. {@code {"DAMAGE": [10, 15, 20, 25]}}.
+         * Unlike {@link #stats}, keys are consistently upper case.
          */
         @SerializedName("tiered_stats")
-        private Map<String, List<Integer>> tieredStats;
+        private Map<String, List<Integer>> tieredStats = Map.of();
+
+        /**
+         * Skill experience granted by this item, keyed by lower case skill name and then by
+         * the action that awards it, e.g.
+         * {@code {"mining": {"BREAK_BLOCK": 0.5, "MINION_STORAGE": 0.05}}}.
+         * <p>
+         * Observed skills: {@code farming}, {@code mining}, {@code fishing}, {@code alchemy},
+         * {@code foraging}, {@code combat}. Observed actions: {@code MINION_STORAGE},
+         * {@code BREAK_BLOCK}, {@code INGREDIENT_BREW}, {@code FISH_ITEM}, {@code COLLECT_ITEM}.
+         */
+        @SerializedName("experience")
+        private Map<String, Map<String, Double>> experience = Map.of();
 
         /** Ability damage scaling coefficient. */
         @SerializedName("ability_damage_scaling")
         private double abilityDamageScaling;
 
-        /** Sword subtype, e.g. {@code "CLEAVE"}. */
+        /** Sword subtype: {@code "DAGGER"}, {@code "KATANA"}, {@code "SCYTHE"} or {@code "KARAMBIT"}. */
         @SerializedName("sword_type")
         private String swordType;
 
-        /** Default enchantments pre-applied to this item. Keys are enchantment IDs, values are levels. */
+        /** Default enchantments pre-applied to this item. Keys are lower case enchantment IDs, values are levels. */
         @SerializedName("enchantments")
-        private Map<String, Integer> enchantments;
+        private Map<String, Integer> enchantments = Map.of();
 
         /** If {@code true}, this item can be listed on the auction house. */
         @SerializedName("can_auction")
@@ -234,7 +274,7 @@ public class ItemsData {
         @SerializedName("rarity_salvageable")
         private boolean raritySalvageable;
 
-        /** Soulbound type, e.g. {@code "COOP"} or {@code "SOLO"}. {@code null} if not soulbound. */
+        /** Soulbound type: {@code "SOLO"} or {@code "COOP"}. {@code null} if not soulbound. */
         @SerializedName("soulbound")
         private String soulbound;
 
@@ -345,7 +385,7 @@ public class ItemsData {
         @SerializedName("generator_tier")
         private int generatorTier;
 
-        /** Crystal type, e.g. {@code "FARM_CRYSTAL_DICER"}. */
+        /** Private island crystal type, e.g. {@code "MITHRIL"}, {@code "WHEAT_ISLAND"}. */
         @SerializedName("crystal")
         private String crystal;
 
@@ -353,11 +393,11 @@ public class ItemsData {
         @SerializedName("furniture")
         private String furniture;
 
-        /** Origin identifier for item source tracking. */
+        /** Origin identifier for item source tracking: {@code "RIFT"} or {@code "BINGO"}. */
         @SerializedName("origin")
         private String origin;
 
-        /** Private island type, e.g. {@code "STANDARD"}, {@code "BINGO"}. */
+        /** Private island generator biome, e.g. {@code "BARN"}, {@code "NETHER"}, {@code "WINTER"}. */
         @SerializedName("private_island")
         private String privateIsland;
 
@@ -372,7 +412,10 @@ public class ItemsData {
         @SerializedName("salvage")
         private Salvage salvage;
 
-        /** Cost to convert this item into its dungeon variant. */
+        /**
+         * Cost to convert this item into its dungeon variant. Always an essence cost;
+         * the {@link Cost#getType()} key is omitted by the API here.
+         */
         @SerializedName("dungeon_item_conversion_cost")
         private Cost dungeonItemConversionCost;
 
@@ -391,7 +434,10 @@ public class ItemsData {
         @SerializedName("requirements")
         private List<Requirement> requirements = List.of();
 
-        /** Catacombs (dungeon floor) requirements, separate from general requirements. */
+        /**
+         * Catacombs requirements, separate from general requirements. Every observed entry
+         * is a {@code DUNGEON_SKILL} requirement.
+         */
         @SerializedName("catacombs_requirements")
         private List<Requirement> catacombsRequirements = List.of();
 
@@ -412,7 +458,10 @@ public class ItemsData {
 
         // TODO: Model recipes properly with a dedicated Recipe class when crafting
         //  data is needed by the mod. For now, the raw JSON is preserved.
-        /** Raw crafting recipe data. */
+        /**
+         * Raw crafting recipe data. Each entry holds {@code output}, {@code ingredient_symbols},
+         * a 3x3 {@code matrix} and {@code allow_quick_crafting}.
+         */
         @SerializedName("recipes")
         private JsonArray recipes;
 
@@ -442,7 +491,7 @@ public class ItemsData {
         @SerializedName("value")
         private String value;
 
-        /** Mojang signature for the skin value. */
+        /** Mojang signature for the skin value. May be absent on a small number of items. */
         @SerializedName("signature")
         private String signature;
 
@@ -466,18 +515,19 @@ public class ItemsData {
     }
 
     /**
-     * A single cost entry used in salvage, upgrade, and dungeon conversion costs.
+     * A single cost entry used in salvage, upgrade, prestige, and dungeon conversion costs.
      * <p>The {@code type} field determines which optional fields are present:
      * <ul>
      *   <li>{@code ESSENCE} — {@link #essenceType} is set, e.g. {@code "SPIDER"}</li>
      *   <li>{@code ITEM}    — {@link #itemId} is set, e.g. {@code "ENCHANTED_LAPIS"}</li>
-     *   <li>{@code COINS}   — only {@link #amount} is relevant</li>
      * </ul>
+     * {@link Item#getDungeonItemConversionCost()} omits {@code type} entirely and is always
+     * an essence cost, so {@link #type} may be {@code null}.
      */
     @Getter
     public static class Cost {
 
-        /** Cost type: {@code ESSENCE}, {@code ITEM}, or {@code COINS}. */
+        /** Cost type: {@code ESSENCE} or {@code ITEM}. {@code null} for dungeon conversion costs. */
         @SerializedName("type")
         private String type;
 
@@ -489,46 +539,65 @@ public class ItemsData {
         @SerializedName("item_id")
         private String itemId;
 
-        /** Quantity required. */
+        /** Quantity required. Always present. */
         @SerializedName("amount")
         private int amount;
     }
 
     /**
      * A prerequisite that must be met before the item can be used or equipped.
-     * Also reused for {@code catacombs_requirements}.
+     * Also reused for {@code catacombs_requirements} and for the nested requirements of
+     * {@code ANY_OF} / {@code ONE_OF}.
      */
     @Getter
     public static class Requirement {
 
         /**
-         * Requirement type, e.g. {@code "SLAYER"}, {@code "SKILL"},
-         * {@code "COLLECTION"}, {@code "DUNGEON_TIER"}, {@code "TROPHY_FISHING"},
-         * {@code "GARDEN_LEVEL"}, {@code "KUUDRA_TIER"}, {@code "HEART_OF_THE_MOUNTAIN"}.
+         * Requirement type. Which sibling fields are populated depends on this value:
+         * <ul>
+         *   <li>{@code SKILL} — {@link #skill}, {@link #level}</li>
+         *   <li>{@code DUNGEON_SKILL} — {@link #dungeonType}, {@link #level}</li>
+         *   <li>{@code SLAYER} — {@link #slayerBossType}, {@link #level}</li>
+         *   <li>{@code KUUDRA_COMPLETION} — {@link #kuudraTier}</li>
+         *   <li>{@code DUNGEON_TIER} — {@link #dungeonType}, {@link #tier}</li>
+         *   <li>{@code DUNGEON_BOSS_COLLECTION} — {@link #dungeonType}, {@link #tier}, {@link #amount}</li>
+         *   <li>{@code HEART_OF_THE_MOUNTAIN} — {@link #tier}</li>
+         *   <li>{@code GARDEN_LEVEL}, {@code CHOCOLATE_FACTORY} — {@link #level}</li>
+         *   <li>{@code TROPHY_FISHING} — {@link #trophyType}, {@link #reward}</li>
+         *   <li>{@code COLLECTION} — {@link #collection}, {@link #tier}</li>
+         *   <li>{@code CRIMSON_ISLE_REPUTATION} — {@link #faction}, {@link #reputation}</li>
+         *   <li>{@code TARGET_PRACTICE} — {@link #mode}</li>
+         *   <li>{@code EASTER_RABBIT} — {@link #rabbit}</li>
+         *   <li>{@code PROFILE_AGE} — {@link #minimumAge}, {@link #minimumAgeUnit}</li>
+         *   <li>{@code ANY_OF}, {@code ONE_OF} — {@link #subRequirements}</li>
+         *   <li>{@code MELODY_HAIR} — no additional fields</li>
+         * </ul>
          */
         @SerializedName("type")
         private String type;
 
-        /** Slayer boss identifier when {@link #type} is {@code SLAYER}, e.g. {@code "spider"}. */
+        /** Slayer boss identifier when {@link #type} is {@code SLAYER}, e.g. {@code "spider"} (lower case). */
         @SerializedName("slayer_boss_type")
         private String slayerBossType;
 
-        /** Skill name when {@link #type} is {@code SKILL}, e.g. {@code "FARMING"}. */
+        /** Skill name when {@link #type} is {@code SKILL}, e.g. {@code "FARMING"}, {@code "HUNTING"}. */
         @SerializedName("skill")
         private String skill;
 
-        /** Dungeon type when {@link #type} is {@code DUNGEON_TIER}, e.g. {@code "CATACOMBS"}. */
+        /** Dungeon type, e.g. {@code "CATACOMBS"} or {@code "MASTER_CATACOMBS"}. */
         @SerializedName("dungeon_type")
         private String dungeonType;
 
         /**
-         * Required dungeon tier when {@link #type} is {@code DUNGEON_TIER}.
+         * Required tier. Used by {@code DUNGEON_TIER}, {@code DUNGEON_BOSS_COLLECTION},
+         * {@code HEART_OF_THE_MOUNTAIN} and {@code COLLECTION}.
          */
         @SerializedName("tier")
-        private int dungeonTier;
+        private int tier;
 
         /**
-         * Required level or tier. Used by {@code SKILL}, {@code SLAYER}, {@code COLLECTION}, {@code GARDEN_LEVEL}, etc.
+         * Required level. Used by {@code SKILL}, {@code DUNGEON_SKILL}, {@code SLAYER},
+         * {@code GARDEN_LEVEL} and {@code CHOCOLATE_FACTORY}.
          */
         @SerializedName("level")
         private int level;
@@ -537,23 +606,33 @@ public class ItemsData {
         @SerializedName("collection")
         private String collection;
 
-        /** Faction name when {@link #type} is faction-gated. */
+        /** Faction name when {@link #type} is {@code CRIMSON_ISLE_REPUTATION}, e.g. {@code "BARBARIANS"}. */
         @SerializedName("faction")
         private String faction;
 
-        /** Kuudra tier, e.g. {@code "HOT"}, {@code "BURNING"}. */
+        /**
+         * Kuudra tier when {@link #type} is {@code KUUDRA_COMPLETION}: {@code "NONE"},
+         * {@code "HOT"}, {@code "BURNING"}, {@code "FIERY"} or {@code "INFERNAL"}.
+         */
         @SerializedName("kuudra_tier")
         private String kuudraTier;
 
-        /** Required reputation level. */
+        /** Required reputation amount when {@link #type} is {@code CRIMSON_ISLE_REPUTATION}. */
         @SerializedName("reputation")
         private int reputation;
 
-        /** Reward tier for trophy fishing requirements, e.g. {@code "BRONZE"}, {@code "SILVER"}. */
+        /** Trophy fish type when {@link #type} is {@code TROPHY_FISHING}, e.g. {@code "FROG"}, {@code "LAVA"}. */
+        @SerializedName("trophy_type")
+        private String trophyType;
+
+        /**
+         * Trophy fishing reward tier when {@link #type} is {@code TROPHY_FISHING}:
+         * {@code "BRONZE"}, {@code "SILVER"}, {@code "GOLD"} or {@code "DIAMOND"}.
+         */
         @SerializedName("reward")
         private String reward;
 
-        /** Required amount (e.g. collection count). */
+        /** Required amount when {@link #type} is {@code DUNGEON_BOSS_COLLECTION}. */
         @SerializedName("amount")
         private int amount;
 
@@ -561,7 +640,7 @@ public class ItemsData {
         @SerializedName("lore_index")
         private int loreIndex;
 
-        /** Minimum account age required. */
+        /** Minimum account age when {@link #type} is {@code PROFILE_AGE}. */
         @SerializedName("minimum_age")
         private int minimumAge;
 
@@ -569,34 +648,38 @@ public class ItemsData {
         @SerializedName("minimum_age_unit")
         private String minimumAgeUnit;
 
-        /** Game mode requirement, e.g. {@code "IRONMAN"}. */
+        /** Target practice mode when {@link #type} is {@code TARGET_PRACTICE}: {@code "I"}, {@code "II"} or {@code "III"}. */
         @SerializedName("mode")
         private String mode;
 
-        /** Chocolate Factory rabbit ID. */
+        /** Chocolate Factory rabbit ID when {@link #type} is {@code EASTER_RABBIT}. */
         @SerializedName("rabbit")
         private String rabbit;
 
-        /** Nested sub-requirements (e.g. profile type + tier checks). */
+        /**
+         * Nested sub-requirements when {@link #type} is {@code ANY_OF} or {@code ONE_OF}.
+         * Observed nested types are {@code PROFILE_TYPE} and {@code HEART_OF_THE_MOUNTAIN}.
+         */
         @SerializedName("requirements")
         private List<SubRequirement> subRequirements = List.of();
     }
 
     /**
-     * A nested requirement inside a {@link Requirement}, used for compound checks such as profile type restrictions.
+     * A nested requirement inside a {@link Requirement}, used by the {@code ANY_OF} and
+     * {@code ONE_OF} compound types.
      */
     @Getter
     public static class SubRequirement {
 
-        /** Sub-requirement type, e.g. {@code "PROFILE_TYPE"}. */
+        /** Sub-requirement type: {@code "PROFILE_TYPE"} or {@code "HEART_OF_THE_MOUNTAIN"}. */
         @SerializedName("type")
         private String type;
 
-        /** Profile type, e.g. {@code "IRONMAN"}, {@code "BINGO"}. */
+        /** Profile type when {@link #type} is {@code PROFILE_TYPE}, e.g. {@code "ISLAND"}. */
         @SerializedName("profile_type")
         private String profileType;
 
-        /** Numeric tier for the sub-requirement. */
+        /** Required tier when {@link #type} is {@code HEART_OF_THE_MOUNTAIN}. */
         @SerializedName("tier")
         private int tier;
     }
@@ -609,8 +692,9 @@ public class ItemsData {
     public static class GemstoneSlot {
 
         /**
-         * Gem type this slot accepts, e.g. {@code "PERIDOT"}, {@code "JASPER"}.
-         * Generic attribute types like {@code "COMBAT"} accept any gem of that class.
+         * Gem type this slot accepts, e.g. {@code "PERIDOT"}, {@code "JASPER"}, {@code "ONYX"}.
+         * Generic attribute types ({@code "COMBAT"}, {@code "DEFENSIVE"}, {@code "MINING"},
+         * {@code "UNIVERSAL"}) accept any gem of that class; {@code "CHISEL"} is a chisel-only slot.
          */
         @SerializedName("slot_type")
         private String slotType;
@@ -686,8 +770,7 @@ public class ItemsData {
         private String value;
 
         /**
-         * Comparison operator, e.g. {@code "GREATER_THAN_OR_EQUALS"},
-         * {@code "EQUALS"}, {@code "LESS_THAN"}.
+         * Comparison operator. Only {@code "GREATER_THAN_OR_EQUALS"} is currently observed.
          */
         @SerializedName("operator")
         private String operator;
@@ -697,17 +780,24 @@ public class ItemsData {
     @Getter
     public static class MuseumData {
 
-        /** XP awarded when donating this item to the museum. */
+        /**
+         * XP awarded when donating this individual item. Mutually exclusive with
+         * {@link #armorSetDonationXp}: an entry carries one or the other, never both.
+         */
         @SerializedName("donation_xp")
         private int donationXp;
 
-        /** Museum category, e.g. {@code "WEAPONS"}, {@code "ARMOR_SETS"}, {@code "FARMING"}, {@code "RARITIES"}. */
+        /**
+         * Museum category: {@code "COMBAT"}, {@code "DUNGEONEERING"}, {@code "FARMING"},
+         * {@code "FISHING"}, {@code "MINING"}, {@code "FORAGING"} or {@code "HUNTING"}.
+         */
         @SerializedName("category")
         private String category;
 
         /**
-         * Player progression stage required, e.g. {@code "AMATEUR"}, {@code "INTERMEDIATE"},
-         * {@code "SKILLED"}, {@code "EXPERT"}.
+         * Player progression stage required: {@code "STARTER"}, {@code "AMATEUR"},
+         * {@code "INTERMEDIATE"}, {@code "SKILLED"}, {@code "PROFESSIONAL"},
+         * {@code "EXPERT"} or {@code "MASTER"}.
          */
         @SerializedName("game_stage")
         private String gameStage;
@@ -717,7 +807,7 @@ public class ItemsData {
          * e.g. {@code {"CACTUS_KNIFE": "CACTUS_KNIFE_2"}}. Empty object ({@code {}}) when there is no parent.
          */
         @SerializedName("parent")
-        private Map<String, String> parent;
+        private Map<String, String> parent = Map.of();
 
         /** Other item IDs that map to this museum slot. */
         @SerializedName("mapped_item_ids")
@@ -725,10 +815,11 @@ public class ItemsData {
 
         /**
          * XP contributed per armor set donation. Key is the set name (e.g. {@code "ARACHNE"}),
-         * value is the XP amount. Only present for {@code ARMOR_SETS} category items.
+         * value is the XP amount. Present instead of {@link #donationXp} for items that are
+         * part of a donatable armor set.
          */
         @SerializedName("armor_set_donation_xp")
-        private Map<String, Integer> armorSetDonationXp;
+        private Map<String, Integer> armorSetDonationXp = Map.of();
     }
 
     /** Prestige upgrade data. Defines the target item and costs required to prestige this item. */
@@ -761,13 +852,14 @@ public class ItemsData {
     }
 
     /**
-     * An item component definition, e.g. recipe ingredient rules or accessory
-     * bag sorting configuration.
+     * An item component definition. Only {@code RECIPE_INGREDIENT} is currently sent by the API,
+     * but the sorting and filtering fields below describe container behaviour such as
+     * accessory bag ordering.
      */
     @Getter
     public static class Component {
 
-        /** Component type, e.g. {@code "RECIPE_INGREDIENT"}, {@code "ACCESSORY_BAG"}. */
+        /** Component type. Only {@code "RECIPE_INGREDIENT"} is currently observed. */
         @SerializedName("type")
         private String type;
 

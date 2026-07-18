@@ -15,7 +15,7 @@ public enum SkyblockMayor {
     Cole("Mining Fiesta", "Mining XP Buff", "Molten Forge", "Prospection"),
     Diana("Pet XP Buff", "Lucky!", "Mythological Ritual", "Sharing is Caring"),
     Diaz("Long Term Investment", "Shopping Spree", "Stock Exchange", "Volume Trading: Double"),
-    Finnegan("Blooming Business", "GOATed", "Pelt-pocalypse", "Pest Eradicator"),
+    Finnegan("Blooming Business", "GOATed", "Grand Feast", "Pest Eradicator"),
     Foxy("A Time for Giving", "Chivalrous Carnival", "Extra Event", "Sweet Benevolence"),
     Marina("Double Trouble", "Fishing XP Buff", "Fishing Festival", "Luck of the Sea 2.0"),
     Paul("Benediction", "Marauder", "EZPZ"),

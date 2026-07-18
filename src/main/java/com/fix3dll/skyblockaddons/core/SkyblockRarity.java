@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.core;
 
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
 /**
@@ -16,10 +17,12 @@ public enum SkyblockRarity implements ButtonCycling.SelectItem, RegistrableEnum 
     EPIC("EPIC", ColorCode.DARK_PURPLE),
     LEGENDARY("LEGENDARY", ColorCode.GOLD),
     MYTHIC("MYTHIC", ColorCode.LIGHT_PURPLE),
+    @SerializedName(value = "DIVINE", alternate = "SUPREME")
     DIVINE("DIVINE", ColorCode.AQUA),
     SPECIAL("SPECIAL", ColorCode.RED),
     VERY_SPECIAL("VERY SPECIAL", ColorCode.RED),
     ULTIMATE("ULTIMATE", ColorCode.DARK_RED),
+    @SerializedName(value = "ADMIN", alternate = "UNOBTAINABLE")
     ADMIN("ADMIN", ColorCode.DARK_RED);
 
     /** The name of the rarity as displayed in an item's lore */
