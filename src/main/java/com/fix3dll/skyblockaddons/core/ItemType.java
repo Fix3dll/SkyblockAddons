@@ -49,6 +49,7 @@ public enum ItemType {
     COMBAT_SHARD("COMBAT SHARD"),
     FOREST_SHARD("FOREST SHARD"),
     WATER_SHARD("WATER SHARD"),
+    SACK("SACK"),
     /** Used when the item has only a rarity and no item type */
     OTHER("");
 
