@@ -32,7 +32,7 @@
     "manaNumber": "Mana Number",
     "healthBar": "Health Bar",
     "healthNumber": "Health Number",
-    "defenseIcon": "Defense Symbol",
+    "defenseIcon": "Draw armor behind the number",
     "defenseNumber": "Defense Number",
     "defensePercentage": "Defense Percentage",
     "healthUpdates": "Health Change Number",
@@ -49,7 +49,6 @@
     "makeEnderchestsInEndGreen": "Change Enderchest Color in The End",
     "changeColor": "Change Color",
     "showInOtherGames": "Show in Other Games",
-    "useVanillaTexture": "Use the Vanilla Texture",
     "textStyle": "Text Style",
     "textStyles": {
       "one": "Style One",

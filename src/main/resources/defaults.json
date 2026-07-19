@@ -113,18 +113,6 @@
       "HEALTH_TEXT_ICON": false
     }
   },
-  "DEFENCE_ICON": {
-    "value": true,
-    "anchorPoint": "BOTTOM_MIDDLE",
-    "coords": [
-      114.0,
-      -18.0
-    ],
-    "guiScale": 1.625,
-    "settings": {
-      "USE_VANILLA_TEXTURE": false
-    }
-  },
   "DEFENCE_TEXT": {
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
@@ -134,7 +122,8 @@
     ],
     "color": -11141291,
     "settings": {
-      "DEFENCE_TEXT_ICON": false
+      "DEFENCE_TEXT_ICON": false,
+      "DEFENCE_ICON": true
     }
   },
   "DEFENCE_PERCENTAGE": {

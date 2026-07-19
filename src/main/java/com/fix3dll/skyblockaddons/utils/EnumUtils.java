@@ -325,7 +325,6 @@ public class EnumUtils {
         BAR,
         TEXT,
         PICKUP_LOG,
-        DEFENCE_ICON,
         SLAYER_ARMOR_PROGRESS,
         DEPLOYABLE_DISPLAY,
         TICKER,

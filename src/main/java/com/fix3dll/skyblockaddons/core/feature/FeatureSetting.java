@@ -54,7 +54,7 @@ public enum FeatureSetting {
     DEPLOYABLE_DISPLAY_STYLE("settings.deployableDisplayStyle", Feature.DEPLOYABLE_STATUS_DISPLAY),
     PET_ITEM_STYLE("settings.petItemStyle", Feature.PET_DISPLAY),
     DRAGONS_NEST_ONLY("settings.dragonsNestOnly", Feature.DRAGON_STATS_TRACKER),
-    USE_VANILLA_TEXTURE("settings.useVanillaTexture", Feature.DEFENCE_ICON),
+    DEFENCE_ICON("settings.defenseIcon", Feature.DEFENCE_TEXT),
     SHOW_ONLY_WHEN_HOLDING_SHIFT("settings.showOnlyWhenHoldingShift", Feature.SHOW_BACKPACK_PREVIEW),
     MAKE_INVENTORY_COLORED("settings.makeBackpackInventoriesColored", Feature.SHOW_BACKPACK_PREVIEW),
     CHANGE_BAR_COLOR_WITH_POTIONS("settings.changeBarColorForPotions", Feature.HEALTH_BAR),
