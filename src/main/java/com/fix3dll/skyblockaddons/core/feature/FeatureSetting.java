@@ -150,6 +150,7 @@ public enum FeatureSetting {
     MANA_TEXT_ICON("settings.manaTextIcon", Feature.MANA_TEXT),
     DEFENCE_TEXT_ICON("settings.defenceTextIcon", Feature.DEFENCE_TEXT),
     EFFECTIVE_HEALTH_TEXT_ICON("settings.effectiveHealthTextIcon", Feature.EFFECTIVE_HEALTH_TEXT),
+    VITALITY_TEXT_ICON("settings.vitalityTextIcon", Feature.VITALITY_TEXT),
     ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR("settings.abbreviateThunderDisplaysDenominator", Feature.THUNDER_BOTTLE_DISPLAY),
     CLASS_COLORED_TEAMMATE("settings.classColoredTeammate", Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY),
     DRAW_LOCK_ONLY_WHEN_HOVERED("settings.drawLockOnlyWhenHovered", Feature.LOCK_SLOTS),

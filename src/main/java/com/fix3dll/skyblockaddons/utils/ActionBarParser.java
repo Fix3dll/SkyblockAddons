@@ -122,6 +122,7 @@ public class ActionBarParser {
         // health and mana section methods determine if prediction can be disabled, so enable both at first
         main.getRenderListener().setPredictMana(true);
         main.getRenderListener().setPredictHealth(true);
+        main.getRenderListener().setPredictVitality(true);
         // set ticker to -1 so the GUI element doesn't get displayed while they're not displayed in the action bar
         tickers = -1;
 
@@ -213,6 +214,8 @@ public class ActionBarParser {
                 } else {
                     return parseMana(section, stripped.trim());
                 }
+            } else if (section.contains("\uE028")) {
+                return parseVitality(section, stripped);
             } else if (section.contains("(")) {
                 // Magnitude conversion is only needed for the skill branch
                 String convertMag = TextUtils.convertMagnitudes(stripped);
@@ -381,6 +384,19 @@ public class ActionBarParser {
             }
         }
         return manaSection;
+    }
+
+    private String parseVitality(String vitalitySection, String stripped) {
+        Matcher m = Regex.VITALITY_PATTERN_S.matcher(stripped);
+        if (m.find()) {
+            PlayerStat.VITALITY.setValue(parseFloat(m.group("vitality")));
+            PlayerStat.MAX_VITALITY.setValue(parseFloat(m.group("maxVitality")));
+            main.getRenderListener().setPredictVitality(false);
+            if (Feature.VITALITY_BAR.isEnabled() || Feature.VITALITY_TEXT.isEnabled()) {
+                return null;
+            }
+        }
+        return vitalitySection;
     }
 
     /**

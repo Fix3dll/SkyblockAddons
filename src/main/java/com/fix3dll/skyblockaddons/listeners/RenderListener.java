@@ -162,6 +162,7 @@ public class RenderListener {
 
     @Getter @Setter private boolean predictHealth;
     @Getter @Setter private boolean predictMana;
+    @Getter @Setter private boolean predictVitality;
 
     @Setter private boolean updateMessageDisplayed;
     private ScheduledTask updateMessageDisplayTask;
@@ -404,13 +405,9 @@ public class RenderListener {
         float widthScale = 1.0F;
 
         switch (feature) {
-            case MANA_BAR:
-                fill = PlayerStat.MANA.getValue() / PlayerStat.MAX_MANA.getValue();
-                break;
-            case DRILL_FUEL_BAR:
-                fill = PlayerStat.FUEL.getValue() / PlayerStat.MAX_FUEL.getValue();
-                break;
-            case SKILL_PROGRESS_BAR:
+            case MANA_BAR -> fill = PlayerStat.MANA.getValue() / PlayerStat.MAX_MANA.getValue();
+            case DRILL_FUEL_BAR -> fill = PlayerStat.FUEL.getValue() / PlayerStat.MAX_FUEL.getValue();
+            case SKILL_PROGRESS_BAR -> {
                 if (buttonLocation == null) {
                     ActionBarParser parser = main.getPlayerListener().getActionBarParser();
                     if (parser.getPercent() == 0 || parser.getPercent() == 100) {
@@ -421,19 +418,21 @@ public class RenderListener {
                 } else {
                     fill = 0.40F;
                 }
-                break;
-            case HEALTH_BAR:
+            }
+            case HEALTH_BAR -> {
                 if (Feature.HEALTH_BAR.isEnabled(FeatureSetting.HIDE_HEALTH_BAR_ON_RIFT) && main.getUtils().isOnRift())
                     return;
                 fill = PlayerStat.HEALTH.getValue() / PlayerStat.MAX_HEALTH.getValue();
-                break;
-            case PRESSURE_BAR:
+            }
+            case PRESSURE_BAR -> {
                 float pressure = buttonLocation != null ? 50 : PlayerStat.PRESSURE.getValue();
                 if (pressure == -1) return;
                 fill = pressure / 100.0F;
-                break;
-            default:
+            }
+            case VITALITY_BAR -> fill = PlayerStat.VITALITY.getValue() / PlayerStat.MAX_VITALITY.getValue();
+            case null, default -> {
                 return;
+            }
         }
 
         if (fill > 1) fill = 1;
@@ -807,6 +806,11 @@ public class RenderListener {
                 text = TextUtils.formatNumber(
                         Math.round(PlayerStat.HEALTH.getValue() * (1 + PlayerStat.DEFENCE.getValue() / 100F))
                 ) + (feature.isEnabled(FeatureSetting.EFFECTIVE_HEALTH_TEXT_ICON) ? "\uE010" : "");
+            }
+            case VITALITY_TEXT -> {
+                text = TextUtils.formatNumber(PlayerStat.VITALITY.getValue()) + "/"
+                        + TextUtils.formatNumber(PlayerStat.MAX_VITALITY.getValue())
+                        + (feature.isEnabled(FeatureSetting.VITALITY_TEXT_ICON) ? "\uE028" : "");
             }
             case DRILL_FUEL_TEXT -> {
                 boolean heldDrill = MC.player != null && ItemUtils.isDrill(MC.player.getMainHandItem());
