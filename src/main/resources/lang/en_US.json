@@ -250,6 +250,7 @@
     "manaTextIcon": "Mana Number Icon",
     "defenceTextIcon": "Defence Number Icon",
     "effectiveHealthTextIcon": "Effective Health Number Icon",
+    "vitalityTextIcon": "Vitality Number Icon",
     "xAllignment": "X Allignment",
     "classColoredTeammate": "Class Colored Outline",
     "drawLockOnlyWhenHovered": "Draw Lock Icon only when hovered with mouse",
@@ -321,7 +322,9 @@
       "showKismetFeatherLoss": "Show cost of Kismet Feather as loss"
     },
     "configExportButton": "Export Settings",
-    "configImportButton": "Import Settings"
+    "configImportButton": "Import Settings",
+    "vitalityBar": "Vitality Bar",
+    "vitalityNumber": "Vitality Number"
   },
   "messages": {
     "enchants": "Enchants",

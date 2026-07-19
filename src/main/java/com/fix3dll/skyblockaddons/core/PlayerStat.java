@@ -16,7 +16,9 @@ public enum PlayerStat {
     FUEL(3000),
     MAX_FUEL(3000),
     OVERFLOW_MANA(20),
-    PRESSURE(-1) // -1 is not in water
+    PRESSURE(-1), // -1 is not in water
+    VITALITY(100),
+    MAX_VITALITY(100)
     ;
 
     @Getter @Setter private float value;
