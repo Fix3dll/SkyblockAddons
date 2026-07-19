@@ -162,6 +162,8 @@ public enum Feature {
     ITEM_PRICES_IN_TOOLTIP(265, "settings.itemPricesInTooltip.title", new FeatureGuiData(ColorCode.YELLOW)),
     SHOW_CLICKABLE_MESSAGES_CONTENT(266, "settings.showClickableMessagesContent", new FeatureGuiData(ColorCode.GRAY)),
     DUNGEON_PROFIT_OVERLAY(267, "settings.dungeonProfitOverlay.title", new FeatureGuiData(ColorCode.WHITE)),
+    VITALITY_BAR(268, "settings.vitalityBar", new FeatureGuiData(DrawType.BAR, ColorCode.RED)),
+    VITALITY_TEXT(269, "settings.vitalityNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.RED)),
 
 
     // These are not actual features.

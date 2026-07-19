@@ -633,7 +633,18 @@ public class PlayerListener {
                 }
                 // If above mana cap, do nothing
             }
+            if (main.getRenderListener().isPredictVitality()) {
+                float vitality = PlayerStat.VITALITY.getValue();
+                float maxVitality = PlayerStat.MAX_VITALITY.getValue();
 
+                // If regen-ing, cap at the max vitality
+                if (vitality < maxVitality) {
+                    // Vitality regenerates at a rate of 5% per second, based on your Vitality stat.
+                    float predictedRegenVitality = maxVitality / 20;
+                    PlayerStat.VITALITY.setValue(Math.min(vitality + predictedRegenVitality, maxVitality));
+                }
+                // If above vitality cap, do nothing
+            }
             if (Feature.DUNGEON_DEATH_COUNTER.isEnabled() && main.getUtils().isInDungeon()
                     && main.getDungeonManager().isPlayerListInfoEnabled()) {
                 main.getDungeonManager().updateDeathsFromPlayerListInfo();

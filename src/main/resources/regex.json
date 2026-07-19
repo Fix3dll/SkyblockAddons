@@ -65,6 +65,7 @@
   "MANA_PATTERN_S": "(?<num>[0-9,.]+)/(?<den>[0-9,.]+)\\uE003(| Mana| (?<overflow>-?[0-9,.]+)\\uE017)",
   "DEFENSE_PATTERN_S": "(?<defense>[0-9,.]+)\\uE008( Defense)?(?<other>( (?<align>\\|\\|\\|))?( {2}(?<tether>T[0-9,.]+!?))?.*)?",
   "HEALTH_PATTERN_S": "(?<health>[0-9,.]+)/(?<maxHealth>[0-9,.]+)\\uE010(?<wand>\\+(?<wandHeal>[0-9,.]+)[▆▅▄▃▂▁])?(?: {2}(?<tether>T[0-9,.]+!?))?",
+  "VITALITY_PATTERN_S": "(?<vitality>[0-9,.]+)/(?<maxVitality>[0-9,.]+)\\uE028",
   "SLAYER_ARMOR_STACK_PATTERN": "Next Upgrade: \\+([0-9]+\\uE008) \\(([0-9,]+)/([0-9,]+)\\)",
   "ITEM_TYPE_AND_RARITY_PATTERN": "(?<rarity>[A-Z]+(?: SPECIAL)?)\\s*(?<dungeon>DUNGEON\\b)?\\s*(?<type>[A-Z]+(?: [A-Z]+)*)?\\s*(?:\\(ID (?<id>[A-Z]+\\d+)\\))?",
   "BACKPACK_SLOT_PATTERN": "Backpack Slot (?<slot>\\d+)",

@@ -1062,5 +1062,26 @@
     "settings": {
       "SHOW_KISMET_FEATHER_LOSS": true
     }
+  },
+  "VITALITY_BAR": {
+    "value": true,
+    "anchorPoint": "BOTTOM_MIDDLE",
+    "coords": [
+      49.0,
+      -56.0
+    ],
+    "color": -65536
+  },
+  "VITALITY_TEXT": {
+    "value": true,
+    "anchorPoint": "BOTTOM_MIDDLE",
+    "coords": [
+      49.0,
+      -61.0
+    ],
+    "color": -65536,
+    "settings": {
+      "VITALITY_TEXT_ICON": true
+    }
   }
 }
