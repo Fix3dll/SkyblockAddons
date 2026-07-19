@@ -48,7 +48,6 @@ public enum Feature {
     MANA_TEXT(20, "settings.manaNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.AQUA)),
     HEALTH_BAR(21, "settings.healthBar", new FeatureGuiData(DrawType.BAR, ColorCode.RED)),
     HEALTH_TEXT(22, "settings.healthNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.RED)),
-    DEFENCE_ICON(23, "settings.defenseIcon", new FeatureGuiData(DrawType.DEFENCE_ICON)),
     DEFENCE_TEXT(24, "settings.defenseNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.GREEN)),
     DEFENCE_PERCENTAGE(25, "settings.defensePercentage", new FeatureGuiData(DrawType.TEXT, ColorCode.GREEN)),
     HEALTH_UPDATES(26, "settings.healthUpdates", new FeatureGuiData(DrawType.TEXT)),

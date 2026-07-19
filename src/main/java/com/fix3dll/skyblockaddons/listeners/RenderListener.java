@@ -130,7 +130,6 @@ public class RenderListener {
     private static final Minecraft MC = Minecraft.getInstance();
 //    public static final Identifier SBA_RENDER_LAYER = SkyblockAddons.identifier("hud_layer");
 
-    private static final Identifier ARMOR = Identifier.withDefaultNamespace("hud/armor_full");
     private static final Identifier BARS = SkyblockAddons.identifier("bars_v2.png");
     private static final Identifier DEFENCE_VANILLA = SkyblockAddons.identifier("defence.png");
     private static final Identifier TICKER_SYMBOL = SkyblockAddons.identifier("ticker.png");
@@ -375,7 +374,6 @@ public class RenderListener {
                 case BAR -> main.getRenderListener().drawBar(graphics, feature, scale, buttonLocation);
                 case TEXT -> main.getRenderListener().drawText(graphics, feature, scale, buttonLocation);
                 case PICKUP_LOG -> main.getRenderListener().drawItemPickupLog(graphics, scale, buttonLocation);
-                case DEFENCE_ICON -> main.getRenderListener().drawIcon(graphics, scale, buttonLocation);
                 case SLAYER_ARMOR_PROGRESS -> main.getRenderListener().drawSlayerArmorProgress(graphics, scale, buttonLocation);
                 case DEPLOYABLE_DISPLAY -> main.getRenderListener().drawDeployableStatus(graphics, scale, buttonLocation);
                 case TICKER -> main.getRenderListener().drawScorpionFoilTicker(graphics, scale, buttonLocation);
@@ -706,7 +704,6 @@ public class RenderListener {
             final TextureSetup textureSetup = textureSetup(TICKER_SYMBOL);
             int maxTickers = (buttonLocation == null) ? main.getPlayerListener().getMaxTickers() : 4;
             for (int tickers = 0; tickers < maxTickers; tickers++) {
-//                GlStateManager.enableAlpha();
 
                 float uOffset = tickers < (buttonLocation == null ? main.getPlayerListener().getTickers() : 3)
                         ? 0
@@ -715,31 +712,6 @@ public class RenderListener {
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup, graphics.pose(), x + tickers * 11, y, uOffset, 0, 9, 9, 18, 9, -1, graphics.scissorStack.peek())
                 );
             }
-        }
-    }
-
-    /**
-     * This renders the defence icon.
-     */
-    public void drawIcon(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
-        // There is no defense stat on Rift Dimension
-        if (main.getUtils().isOnRift()) return;
-
-        // The height and width of this element (box not included)
-        float x = Feature.DEFENCE_ICON.getActualX();
-        float y = Feature.DEFENCE_ICON.getActualY();
-        x = transformX(x, 9, scale, false);
-        y = transformY(y, 9, scale);
-
-        if (buttonLocation != null) {
-            buttonLocation.checkHoveredAndDrawBox(graphics, x, x + 9, y, y + 9, scale);
-        }
-        if (Feature.DEFENCE_ICON.isEnabled(FeatureSetting.USE_VANILLA_TEXTURE)) {
-            graphics.guiRenderState.addGuiElement(
-                    new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(DEFENCE_VANILLA), graphics.pose(), x, y, 0, 0, 9, 9, 9, 9, -1, graphics.scissorStack.peek())
-            );
-        } else {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR, (int) x, (int) y, 9, 9);
         }
     }
 
@@ -788,6 +760,7 @@ public class RenderListener {
                 if (text == null) return;
             }
             case DEFENCE_TEXT -> {
+                // There is no defense stat on Rift Dimension
                 if (onRift) return;
                 text = TextUtils.formatNumber(PlayerStat.DEFENCE.getValue())
                         + (feature.isEnabled(FeatureSetting.DEFENCE_TEXT_ICON) ? "\uE008" : "");
@@ -1550,11 +1523,26 @@ public class RenderListener {
 
                 DrawUtils.drawText(graphics, renderComponent, x, y, color);
             }
+            case DEFENCE_TEXT -> {
+                if (feature.isEnabled(FeatureSetting.DEFENCE_ICON)) {
+                    final float SCALE_RATIO = 1.625F;
+                    float iconWHScaled = 9F * SCALE_RATIO;
+                    float padX = (MC.font.width(text) - iconWHScaled) / (2F * SCALE_RATIO);
+                    float padY = (iconWHScaled - height) / (2F * SCALE_RATIO);
+                    Matrix3x2fStack pose = graphics.pose();
+                    pose.scale(SCALE_RATIO);
+                    graphics.guiRenderState.addGuiElement(
+                            new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(DEFENCE_VANILLA), pose, (x / SCALE_RATIO) + padX, (y / SCALE_RATIO) - padY, 0, 0, 9, 9, 9, 9, -1, graphics.scissorStack.peek())
+                    );
+                    pose.scale(1.0F / SCALE_RATIO);
+                }
+
+                DrawUtils.drawText(graphics, renderComponent, x, y, color);
+            }
             default -> {
                 DrawUtils.drawText(graphics, renderComponent, x, y, color);
             }
         }
-
     }
 
     /**
