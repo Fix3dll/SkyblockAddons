@@ -630,8 +630,8 @@
     "value": false,
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
-      0.16668701,
-      -60.5
+      0.0,
+      -74.0
     ],
     "color": -11141291
   },
@@ -667,8 +667,8 @@
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
-      49.0,
-      -36.0
+      0.0,
+      -115.5
     ],
     "color": -16733696
   },
@@ -676,12 +676,12 @@
     "value": true,
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
-      49.0,
-      -33.0
+      0.0,
+      -111.5
     ],
     "color": -16733696,
     "settings": {
-      "ABBREVIATE_DRILL_FUEL_DENOMINATOR": false
+      "ABBREVIATE_DRILL_FUEL_DENOMINATOR": true
     }
   },
   "REFORGE_FILTER": {
@@ -906,7 +906,7 @@
     ],
     "color": -5635926,
     "settings": {
-      "ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR": false
+      "ABBREVIATE_THUNDER_DISPLAYS_DENOMINATOR": true
     }
   },
   "PET_DISPLAY": {
@@ -942,7 +942,7 @@
     ],
     "color": -11184641,
     "settings": {
-      "PRESSURE_TEXT_ALERT":  true,
+      "PRESSURE_TEXT_ALERT": true,
       "PRESSURE_TEXT_ICON": true
     }
   },
@@ -1057,7 +1057,7 @@
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
       49.0,
-      -56.0
+      -37.0
     ],
     "color": -65536
   },
@@ -1066,7 +1066,7 @@
     "anchorPoint": "BOTTOM_MIDDLE",
     "coords": [
       49.0,
-      -61.0
+      -33.0
     ],
     "color": -65536,
     "settings": {
