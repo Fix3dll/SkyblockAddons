@@ -116,11 +116,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -189,7 +187,6 @@ public class RenderListener {
     @Setter private float maxRiftHealth = 0.0F;
 
     private final ArrayList<Component> deployableDisplayBuffer = new ArrayList<>();
-    private final ArrayList<Component> deployableExpandBuffer = new ArrayList<>();
 
     /**
      * Tracks which stacks have their corresponding armor bonus active (§6 Tiered Bonus line in lore).
@@ -2530,25 +2527,11 @@ public class RenderListener {
         // Counts already long strings
         int passIndex = 0;
 
-        if (deployable.getHealthRegen() > 0.0) {
-            float maxHealth = PlayerStat.MAX_HEALTH.getValue();
-            float healthRegen = (float) (maxHealth * deployable.getHealthRegen());
-            if (main.getUtils().getSlayerQuest() == EnumUtils.SlayerQuest.TARANTULA_BROODFATHER
-                    && main.getUtils().getSlayerQuestLevel() >= 2) {
-                healthRegen *= 0.5F; // Tarantula boss 2+ reduces healing by 50%.
-            }
-            deployableDisplayBuffer.add(TextUtils.withFixedColor(
-                    Component.literal("+" + TextUtils.formatNumber(healthRegen) + " \uE010/s"),
-                    ColorCode.RED.getColor()
-            ));
-            passIndex++;
-        }
-
         if (deployable.getManaRegen() > 0.0) {
             float maxMana = PlayerStat.MAX_MANA.getValue();
             float manaRegen = (float) (maxMana * deployable.getManaRegen() / 50);
             deployableDisplayBuffer.add(TextUtils.withFixedColor(
-                    Component.literal("+" + TextUtils.formatNumber(manaRegen) + " \uE003/s"),
+                    Component.literal("+" + TextUtils.formatNumber(manaRegen) + "\uE003/s "),
                     ColorCode.AQUA.getColor()
             ));
             passIndex++;
@@ -2557,40 +2540,37 @@ public class RenderListener {
         // constant stats static lines
         deployableDisplayBuffer.addAll(deployable.getStaticDisplayLines());
 
-        // For better visual (maybe?)
-        if (feature.isEnabled(FeatureSetting.EXPAND_DEPLOYABLE_STATUS) && deployableDisplayBuffer.size() > 3) {
-            deployableExpandBuffer.clear();
+        // Stats past the mana line are laid out in two columns. Lines before pairedStart, and a
+        // trailing stat left without a partner, span the full width instead of being confined to
+        // the first column, so they cannot push the second column to the right.
+        int lineCount = deployableDisplayBuffer.size();
+        int pairedStart = feature.isEnabled(FeatureSetting.EXPAND_DEPLOYABLE_STATUS) && lineCount > 3
+                ? passIndex
+                : lineCount;
 
-            // Firstly add mana and health strings which already long
-            for (int i = 0; i < passIndex; i++)
-                deployableExpandBuffer.add(deployableDisplayBuffer.get(i));
-
-            // Concatenate the remaining strings in pairs
-            for (int i = passIndex; i < deployableDisplayBuffer.size() - 1; i += 2) {
-                Component combinedLine = deployableDisplayBuffer.get(i).copy().append(deployableDisplayBuffer.get(i + 1));
-                deployableExpandBuffer.add(combinedLine);
+        int firstColumnWidth = 0;
+        int secondColumnWidth = 0;
+        int fullLineWidth = 0;
+        for (int i = 0; i < lineCount; i++) {
+            int lineWidth = MC.font.width(deployableDisplayBuffer.get(i));
+            int pairOffset = i - pairedStart;
+            if (pairOffset < 0) {
+                fullLineWidth = Math.max(fullLineWidth, lineWidth);
+            } else if (pairOffset % 2 != 0) {
+                secondColumnWidth = Math.max(secondColumnWidth, lineWidth);
+            } else if (i + 1 < lineCount) {
+                firstColumnWidth = Math.max(firstColumnWidth, lineWidth);
+            } else {
+                fullLineWidth = Math.max(fullLineWidth, lineWidth);
             }
-
-            // Last touch
-            if ((deployableDisplayBuffer.size() - passIndex) % 2 != 0) {
-                deployableExpandBuffer.add(deployableDisplayBuffer.getLast());
-            }
-
-            deployableDisplayBuffer.clear();
-            deployableDisplayBuffer.addAll(deployableExpandBuffer);
         }
-
-        Optional<Component> longestLine = deployableDisplayBuffer.stream().max(
-                Comparator.comparingInt(c -> c.getString().length())
-        );
 
         int spacingBetweenLines = 1;
         int iconAndSecondsHeight = DEPLOYABLE_GUI_SIZE + MC.font.lineHeight;
 
-        int effectsHeight = (MC.font.lineHeight + spacingBetweenLines) * deployableDisplayBuffer.size();
-        int width = DEPLOYABLE_GUI_SIZE + 2 + longestLine.map(MC.font::width).orElseGet(
-                () -> deployableDisplayBuffer.isEmpty() ? 0 : MC.font.width(deployableDisplayBuffer.getFirst())
-        );
+        int rowCount = pairedStart + ((lineCount - pairedStart + 1) / 2);
+        int effectsHeight = (MC.font.lineHeight + spacingBetweenLines) * rowCount;
+        int width = DEPLOYABLE_GUI_SIZE + 2 + Math.max(fullLineWidth, firstColumnWidth + secondColumnWidth);
         int height = Math.max(effectsHeight, iconAndSecondsHeight);
 
         x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
@@ -2635,12 +2615,19 @@ public class RenderListener {
         );
 
         float displayTextX = x + DEPLOYABLE_GUI_SIZE + 2;
-        for (int i = 0; i < deployableDisplayBuffer.size(); i++) {
+        int rowHeight = MC.font.lineHeight + spacingBetweenLines;
+        for (int i = 0; i < lineCount; i++) {
+            int pairOffset = i - pairedStart;
+            int row = pairOffset < 0 ? i : pairedStart + (pairOffset / 2);
+            float lineX = pairOffset >= 0 && pairOffset % 2 != 0
+                    ? displayTextX + firstColumnWidth
+                    : displayTextX;
+
             DrawUtils.drawText(
                     graphics,
                     deployableDisplayBuffer.get(i),
-                    displayTextX,
-                    startY + (i * (MC.font.lineHeight + spacingBetweenLines)),
+                    lineX,
+                    startY + (row * rowHeight),
                     ColorCode.WHITE.getColor()
             );
         }
