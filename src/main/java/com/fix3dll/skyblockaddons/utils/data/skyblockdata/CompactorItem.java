@@ -75,6 +75,10 @@ public class CompactorItem implements GsonInitializable {
                         }
                     }
 
+                    if (itemModelId != null) {
+                        builder.set(DataComponents.ITEM_MODEL, itemModelId);
+                    }
+
                     itemStackTemplate = new ItemStackTemplate(item, builder.build());
                 }
             }
