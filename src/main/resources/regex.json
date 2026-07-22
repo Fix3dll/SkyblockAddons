@@ -108,7 +108,7 @@
   "MAYOR": "Mayor (?<mayor>.*)",
   "CALENDAR": "Calendar and Events",
   "PETS": "(?:\\((?<page>\\d+)/\\d+\\) +)?Pets *",
-  "EQUIPMENT": "Your Equipment and Stats",
+  "EQUIPMENT": "Stats & Equipment",
   "SKYBLOCK_MENU": "SkyBlock Menu",
   "CATACOMBS_CHEST": "(?<type>Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)",
   "KUUDRA_CHEST": "(?<type>Free|Paid) Chest",
