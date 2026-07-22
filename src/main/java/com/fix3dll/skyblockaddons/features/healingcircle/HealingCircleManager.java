@@ -75,7 +75,7 @@ public class HealingCircleManager {
         }
     }
 
-    public static void renderHealingCircleOverlays(LevelRenderContext endMain) {
+    public static void renderHealingCircleOverlays(LevelRenderContext levelRenderContext) {
         Feature feature = Feature.SHOW_HEALING_CIRCLE_WALL;
         if (main.getUtils().isOnSkyblock() && feature.isEnabled()) {
 
@@ -99,8 +99,8 @@ public class HealingCircleManager {
                                     )
                             )
                     );
-                    endMain.submitNodeCollector().submitCustomGeometry(
-                            endMain.poseStack(),
+                    levelRenderContext.submitNodeCollector().submitCustomGeometry(
+                            levelRenderContext.poseStack(),
                             HEALING_CIRCLE,
                             (pose, buffer) -> DrawUtils.drawCylinder(
                                     pose,
