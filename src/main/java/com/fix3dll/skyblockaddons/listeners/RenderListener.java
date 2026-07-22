@@ -206,7 +206,7 @@ public class RenderListener {
 //                SBA_RENDER_LAYER,
 //                this::onRenderHud
 //        );
-        LevelRenderEvents.END_MAIN.register(HealingCircleManager::renderHealingCircleOverlays);
+        LevelRenderEvents.COLLECT_SUBMITS.register(HealingCircleManager::renderHealingCircleOverlays);
     }
 
     /**
