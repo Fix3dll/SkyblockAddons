@@ -916,5 +916,12 @@
         }
       ]
     }
+  },
+  "MAGIC_FOR_PETS": {
+    "displayName": "§aMagic For Pets In A Hurry",
+    "enchanted": true,
+    "material": "skull_item",
+    "rarity": "UNCOMMON",
+    "itemModel": "hypixel_skyblock:item/uncategorized/magic_for_pets"
   }
 }

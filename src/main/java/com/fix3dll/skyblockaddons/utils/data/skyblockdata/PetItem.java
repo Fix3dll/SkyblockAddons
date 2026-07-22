@@ -63,6 +63,10 @@ public class PetItem implements GsonInitializable {
                     if (enchanted) {
                         itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
                     }
+
+                    if (itemModelId != null) {
+                        itemStack.set(DataComponents.ITEM_MODEL, itemModelId);
+                    }
                 }
             }
         } catch (Exception ex) {
