@@ -20,28 +20,28 @@ public enum Deployable {
     // Orbs
     RADIANT(Properties.builder()
             .display("Radiant ")
-            .healthRegen(0.01)
+            .healing(30).healthRegen(25)
             .rangeSquared(18 * 18)
             .resourcePath("radiant")
             .build()),
 
     MANA_FLUX(Properties.builder()
             .display("Mana Flux ")
-            .healthRegen(0.02).manaRegen(0.5).strength(10)
+            .healing(40).healthRegen(50).manaRegen(0.5).strength(10)
             .rangeSquared(18 * 18)
             .resourcePath("manaflux")
             .build()),
 
     OVERFLUX(Properties.builder()
             .display("Overflux ")
-            .healthRegen(0.025).manaRegen(1.0).strength(25).vitality(5.0).mending(5.0)
+            .healing(50).healthRegen(100).manaRegen(1.0).strength(25)
             .rangeSquared(18 * 18)
             .resourcePath("overflux")
             .build()),
 
     PLASMAFLUX(Properties.builder()
             .display("Plasmaflux ")
-            .healthRegen(0.03).manaRegen(1.25).strength(35).vitality(7.5).mending(7.5)
+            .healing(60).healthRegen(125).manaRegen(1.25).strength(35)
             .rangeSquared(20 * 20)
             .resourcePath("plasmaflux")
             .build()),
@@ -49,7 +49,7 @@ public enum Deployable {
     // Flares
     WARNING_FLARE(Properties.builder()
             .display("Warning")
-            .manaRegen(0.0).vitality(10.0).trueDefense(10)
+            .healing(30).manaRegen(0.0).vitality(10.0).trueDefense(10)
             .textureId("22e2bf6c1ec330247927ba63479e5872ac66b06903c86c82b52dac9f1c971458")
             .rangeSquared(40 * 40)
             .resourcePath("warning")
@@ -57,7 +57,7 @@ public enum Deployable {
 
     ALERT_FLARE(Properties.builder()
             .display("Alert")
-            .manaRegen(0.5).vitality(20.0).trueDefense(20).ferocity(10)
+            .healing(40).manaRegen(0.5).vitality(15.0).trueDefense(20).ferocity(10)
             .textureId("9d2bf9864720d87fd06b84efa80b795c48ed539b16523c3b1f1990b40c003f6b")
             .rangeSquared(40 * 40)
             .resourcePath("alert")
@@ -65,7 +65,7 @@ public enum Deployable {
 
     SOS_FLARE(Properties.builder()
             .display("SOS")
-            .manaRegen(1.25).vitality(30.0).trueDefense(25).ferocity(10).bonusAttackSpeed(5)
+            .healing(50).manaRegen(1.25).vitality(25.0).trueDefense(30).ferocity(10).bonusAttackSpeed(5)
             .textureId("c0062cc98ebda72a6a4b89783adcef2815b483a01d73ea87b3df76072a89d13b")
             .rangeSquared(40 * 40)
             .resourcePath("sos")
@@ -128,9 +128,14 @@ public enum Deployable {
     private final String display;
 
     /**
+     * Amount of healing given by the deployable
+     */
+    private final int healing;
+
+    /**
      * Percentage of max health that's regenerated every second
      */
-    private final double healthRegen;
+    private final int healthRegen;
 
     /**
      * Percentage of mana regeneration increase given by the deployable
@@ -226,7 +231,8 @@ public enum Deployable {
     @Builder
     private static class Properties {
         @Builder.Default String display = "";
-        @Builder.Default double healthRegen = 0.0D;
+        @Builder.Default int healing = 0;
+        @Builder.Default int healthRegen = 0;
         @Builder.Default double manaRegen = 0.0;
         @Builder.Default int strength = 0;
         @Builder.Default double vitality = 0.0D;
@@ -249,6 +255,7 @@ public enum Deployable {
 
     Deployable(Properties props) {
         this.display = props.display;
+        this.healing = props.healing;
         this.healthRegen = props.healthRegen;
         this.manaRegen = props.manaRegen;
         this.strength = props.strength;
@@ -268,52 +275,60 @@ public enum Deployable {
         this.identifier = SkyblockAddons.identifier("deployables/" + props.resourcePath + ".png");
 
         ArrayList<Component> staticLines = new ArrayList<>();
+        if (this.healing > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%s\uE010/s ".formatted(this.healing)),
+                ColorCode.RED.getColor()
+        ));
+        if (this.healthRegen > 0) staticLines.add(TextUtils.withFixedColor(
+                Component.literal("+%s\uE011 ".formatted(this.healthRegen)),
+                ColorCode.RED.getColor()
+        ));
         if (this.strength > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s \uE00D ".formatted(this.strength)),
+                Component.literal("+%s\uE00D ".formatted(this.strength)),
                 ColorCode.RED.getColor()
         ));
         if (this.vitality > 0.0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s \uE028 ".formatted(TextUtils.formatNumber(this.vitality))),
+                Component.literal("+%s\uE028 ".formatted(TextUtils.formatNumber(this.vitality))),
                 ColorCode.DARK_RED.getColor()
         ));
         if (this.mending > 0.0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s \uE028 ".formatted(TextUtils.formatNumber(this.mending))),
+                Component.literal("+%s\uE028 ".formatted(TextUtils.formatNumber(this.mending))),
                 ColorCode.GREEN.getColor()
         ));
         if (this.trueDefense > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d \uE027 ".formatted(this.trueDefense)),
+                Component.literal("+%d\uE027 ".formatted(this.trueDefense)),
                 ColorCode.WHITE.getColor()
         ));
         if (this.ferocity > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d \uE00B ".formatted(this.ferocity)),
+                Component.literal("+%d\uE00B ".formatted(this.ferocity)),
                 ColorCode.RED.getColor()
         ));
         if (this.bonusAttackSpeed > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d%% \uE001 ".formatted(this.bonusAttackSpeed)),
+                Component.literal("+%d%%\uE001 ".formatted(this.bonusAttackSpeed)),
                 ColorCode.YELLOW.getColor()
         ));
         if (this.trophyFishChance > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d \uE02A ".formatted(this.trophyFishChance)),
+                Component.literal("+%d\uE02A ".formatted(this.trophyFishChance)),
                 ColorCode.GOLD.getColor()
         ));
         if (this.miningSpeed > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d \uE015 ".formatted(this.miningSpeed)),
+                Component.literal("+%d\uE015 ".formatted(this.miningSpeed)),
                 ColorCode.GOLD.getColor()
         ));
         if (this.miningFortune > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d \uE053 ".formatted(this.miningFortune)),
+                Component.literal("+%d\uE053 ".formatted(this.miningFortune)),
                 ColorCode.GOLD.getColor()
         ));
         if (this.heatResistance > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d \uE012 ".formatted(this.heatResistance)),
+                Component.literal("+%d\uE012 ".formatted(this.heatResistance)),
                 ColorCode.RED.getColor()
         ));
         if (this.coldResistance > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%d \uE006 ".formatted(this.coldResistance)),
+                Component.literal("+%d\uE006 ".formatted(this.coldResistance)),
                 ColorCode.AQUA.getColor()
         ));
         if (this.gemstoneSpread > 0) staticLines.add(TextUtils.withFixedColor(
-                Component.literal("+%s \uE00F ".formatted(TextUtils.formatNumber(this.gemstoneSpread))),
+                Component.literal("+%s\uE00F ".formatted(TextUtils.formatNumber(this.gemstoneSpread))),
                 ColorCode.YELLOW.getColor()
         ));
 
