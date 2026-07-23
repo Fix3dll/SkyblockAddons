@@ -28,3 +28,4 @@ accessible method net/minecraft/client/gui/components/PlayerTabOverlay getPlayer
 accessible method net/minecraft/client/gui/components/ChatComponent addMessage (Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/multiplayer/chat/GuiMessageSource;Lnet/minecraft/client/multiplayer/chat/GuiMessageTag;)V
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageHeight I
+accessible method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen extractSlot (Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/inventory/Slot;II)V
