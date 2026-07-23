@@ -85,7 +85,7 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-    maven("https://maven.terraformersmc.com/") {
+    maven("https://maven.terraformersmc.com/repository/maven-terraformers/") {
         content {
             includeGroup("com.terraformersmc")
         }

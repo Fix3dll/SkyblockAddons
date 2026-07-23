@@ -14,6 +14,7 @@ import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.features.ItemDropChecker;
 import com.fix3dll.skyblockaddons.features.PetManager;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
+import com.fix3dll.skyblockaddons.features.slots.VirtualSlot;
 import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.LocationUtils;
@@ -122,6 +123,8 @@ public class AbstractContainerScreenHook {
     }
 
     public static void renderSlot(GuiGraphicsExtractor graphics, Slot slot) {
+        if (slot instanceof VirtualSlot) return;
+
         if (MC.player != null && slot != null && Feature.LOCK_SLOTS.isEnabled() && main.getUtils().isOnSkyblock()) {
             if (Feature.LOCK_SLOTS.isEnabled(FeatureSetting.DRAW_LOCK_ONLY_WHEN_HOVERED)) return;
 
