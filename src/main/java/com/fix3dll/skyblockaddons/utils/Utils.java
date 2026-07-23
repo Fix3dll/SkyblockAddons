@@ -5,8 +5,6 @@ import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkyblockDate;
-import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
-import com.fix3dll.skyblockaddons.core.SkyblockEquipment.Type;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
@@ -409,7 +407,6 @@ public class Utils {
                         if (!foundLocation && (strippedLine.contains("\uE067") || strippedLine.contains("\uE020"))) {
                             String locationLine = strippedLine.trim();
                             onRift = locationLine.contains("\uE020");
-                            SkyblockEquipment.loadEquipments(onRift ? Type.RIFT : Type.MAIN);
                             location = locationLine.substring(locationLine.indexOf(' ') + 1);
 
                             if (map == Island.KUUDRA || map == Island.DUNGEON) {
