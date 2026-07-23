@@ -313,7 +313,8 @@
         "1day": "1-day averages",
         "3day": "3-day averages",
         "7day": "7-day averages"
-      }
+      },
+      "showOutsideSkyblock": "Show prices outside of Skyblock too"
     },
     "showClickableMessagesContent": "Show Clickable Messages Content",
     "dungeonProfitOverlay": {

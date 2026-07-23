@@ -77,9 +77,11 @@ public class NetworkListener {
             updateHealth.cancel();
             updateHealth = null;
         }
-        BazaarRequest.setActive(false);
-        LowestBinRequest.setActive(false);
-        LowestBinAveragesRequest.setActive(false);
+        if (Feature.ITEM_PRICES_IN_TOOLTIP.isDisabled(FeatureSetting.SHOW_OUTSIDE_SKYBLOCK)) {
+            BazaarRequest.setActive(false);
+            LowestBinRequest.setActive(false);
+            LowestBinAveragesRequest.setActive(false);
+        }
     }
 
     private void onPacketRead(ChannelHandlerContext channelHandlerContext, Packet<?> packet) {
@@ -147,13 +149,13 @@ public class NetworkListener {
      * Should be called after the feature or any of its price-related settings are changed.
      */
     public static void updateApiRequests() {
-        if (!main.getUtils().isOnSkyblock()) {
+        Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
+        if (!main.getUtils().isOnSkyblock() && feature.isDisabled(FeatureSetting.SHOW_OUTSIDE_SKYBLOCK)) {
             BazaarRequest.setActive(false);
             LowestBinRequest.setActive(false);
             LowestBinAveragesRequest.setActive(false);
             return;
         }
-        Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
         boolean itemPricesInTooltip = feature.isEnabled();
         if (itemPricesInTooltip) {
             BazaarRequest.setActive(feature.isEnabled(FeatureSetting.BAZAAR_PRICES_IN_TOOLTIP));
