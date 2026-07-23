@@ -408,5 +408,35 @@
     "name": "Magma Pillar",
     "rarity": "EPIC",
     "spawnMessage": "A Magma Pillar rises from the lava."
+  },
+  "HAGGARD": {
+    "name": "Haggard",
+    "rarity": "COMMON",
+    "spawnMessage": "A Haggard stumbles to the shore, ready for a fight!"
+  },
+  "BRINELING": {
+    "name": "Brineling",
+    "rarity": "UNCOMMON",
+    "spawnMessage": "A Brineling interrupts you with a stream of bubbles!"
+  },
+  "SPRAWL": {
+    "name": "Sprawl",
+    "rarity": "RARE",
+    "spawnMessage": "A Sprawl emerges from the blue, and it’s looking for you!"
+  },
+  "TORRID": {
+    "name": "Torrid",
+    "rarity": "EPIC",
+    "spawnMessage": "The laughter of a Torrid echoes through the air."
+  },
+  "SILKBREEZE": {
+    "name": "Silkbreeze",
+    "rarity": "LEGENDARY",
+    "spawnMessage": "Something zips through the air - it’s a Silkbreeze!"
+  },
+  "GIANT_ISOPOD": {
+    "name": "Giant Isopod",
+    "rarity": "MYTHIC",
+    "spawnMessage": "A Giant Isopod was dredged up from the depths!"
   }
 }
