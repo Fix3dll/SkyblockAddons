@@ -5,6 +5,7 @@ import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
+import com.fix3dll.skyblockaddons.features.slots.EquipmentSlots;
 import com.fix3dll.skyblockaddons.mixin.hooks.GuiHook;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
@@ -42,14 +43,12 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         return GuiHook.renderEffectsHud;
     }
 
+    /**
+     * {@link AbstractRecipeBookScreen} does not call {@code super.extractRenderState}, so the equivalent injection in
+     * {@code AbstractContainerScreenMixin} never runs for this screen.
+     */
     @Inject(method = "render", at = @At("RETURN"))
-    public void sba$renderEquipmentsInInventory(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        // Draw items for Feature.EQUIPMENTS_IN_INVENTORY
-        if (SkyblockEquipment.equipmentsInInventory()) {
-            for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
-                equipment.render(graphics, mouseX, mouseY, this.leftPos, this.topPos);
-            }
-        }
+    public void sba$drawContainerPreviews(GuiGraphics graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         ContainerPreviewManager.drawContainerPreviews(graphics, this, mouseX, mouseY);
     }
 
@@ -58,9 +57,10 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         if (SkyblockEquipment.equipmentsInInventory()) {
             Feature feature = Feature.EQUIPMENTS_IN_INVENTORY;
             RenderPipeline pipeline = feature.isChroma() ? DrawUtils.CHROMA_TEXT : RenderPipelines.GUI_TEXTURED;
-            graphics.blit(pipeline, sba$equipmentPanel, this.leftPos - 23, this.topPos, 0.0F, 0.0F, 28, 86, 256, 256, feature.getColor());
+            int panelX = this.leftPos + EquipmentSlots.PANEL_X;
+            graphics.blit(pipeline, sba$equipmentPanel, panelX, this.topPos, 0.0F, 0.0F, EquipmentSlots.PANEL_WIDTH, EquipmentSlots.PANEL_HEIGHT, 256, 256, feature.getColor());
             if (feature.isEnabled(FeatureSetting.PET_PANEL)) {
-                graphics.blit(pipeline, sba$petPanel, this.leftPos - 23, this.topPos + 83, 0.0F, 0.0F, 28, 25, 256, 256, feature.getColor());
+                graphics.blit(pipeline, sba$petPanel, panelX, this.topPos + EquipmentSlots.PET_PANEL_Y, 0.0F, 0.0F, EquipmentSlots.PANEL_WIDTH, EquipmentSlots.PET_PANEL_HEIGHT, 256, 256, feature.getColor());
             }
         }
     }

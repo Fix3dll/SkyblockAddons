@@ -7,7 +7,7 @@ import com.fix3dll.skyblockaddons.core.Regex;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
-import com.fix3dll.skyblockaddons.listeners.RenderListener;
+import com.fix3dll.skyblockaddons.features.slots.ContainerPreviewSlots;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
@@ -245,17 +245,24 @@ public class ContainerPreviewManager {
         return items;
     }
 
-    public static void drawContainerPreviews(GuiGraphics graphics, Screen screen, int mouseX, int mouseY) {
+    public static void drawContainerPreviews(GuiGraphics graphics, AbstractContainerScreen<?> screen, int mouseX, int mouseY) {
         Feature backpackPreview = Feature.SHOW_BACKPACK_PREVIEW;
 
         if (currentContainerPreview == null) return;
+
+        List<ItemStack> items = currentContainerPreview.getItems();
+        if (items == null) {
+            // decompressItems returns null when the container data cannot be read
+            currentContainerPreview = null;
+            frozen = false;
+            return;
+        }
+
         graphics.nextStratum();
 
         int x = currentContainerPreview.getX();
         int y = currentContainerPreview.getY();
 
-        List<ItemStack> items = currentContainerPreview.getItems();
-        int length = items.size();
         int rows = currentContainerPreview.getNumRows();
         int cols = currentContainerPreview.getNumCols();
 
@@ -327,19 +334,8 @@ public class ContainerPreviewManager {
 
             int itemStartX = x + textureBorder + 1;
             int itemStartY = y + topBorder + 1;
-            for (int i = 0; i < length; i++) {
-                ItemStack item = items.get(i);
-                if (item != null) {
-                    int itemX = itemStartX + ((i % cols) * textureItemSquare);
-                    int itemY = itemStartY + ((i / cols) * textureItemSquare);
-
-                    RenderListener.renderItemAndOverlay(graphics, item, null, itemX, itemY);
-
-                    if (frozen && mouseX > itemX && mouseX < itemX + 16 && mouseY > itemY && mouseY < itemY + 16) {
-                        tooltipItem = item;
-                    }
-                }
-            }
+            ContainerPreviewSlots.render(screen, graphics, items, cols, textureItemSquare, itemStartX, itemStartY, mouseX, mouseY);
+            tooltipItem = hoveredItem(items, cols, textureItemSquare, itemStartX, itemStartY, mouseX, mouseY);
         } else {
             int totalWidth = (16 * cols) + 3;
             if (x + totalWidth > screen.width) {
@@ -352,19 +348,8 @@ public class ContainerPreviewManager {
 
             graphics.fill(RenderPipelines.GUI, x - 3, y - 3, x + totalWidth, y + totalHeight, getRectColor());
 
-            for (int i = 0; i < length; i++) {
-                ItemStack item = items.get(i);
-                if (item != null) {
-                    int itemX = x + ((i % cols) * 16);
-                    int itemY = y + ((i / cols) * 16);
-
-                    RenderListener.renderItemAndOverlay(graphics, item, null, itemX, itemY);
-
-                    if (frozen && mouseX > itemX && mouseX < itemX+16 && mouseY > itemY && mouseY < itemY+16) {
-                        tooltipItem = item;
-                    }
-                }
-            }
+            ContainerPreviewSlots.render(screen, graphics, items, cols, 16, x, y, mouseX, mouseY);
+            tooltipItem = hoveredItem(items, cols, 16, x, y, mouseX, mouseY);
         }
         if (!tooltipItem.isEmpty()) {
             // Translate up to fix patcher glitch
@@ -376,9 +361,26 @@ public class ContainerPreviewManager {
         if (!frozen) {
             currentContainerPreview = null;
         }
-//        GlStateManager.enableLighting();
-//        GlStateManager.enableDepth();
-//        RenderHelper.enableStandardItemLighting();
+    }
+
+    /**
+     * The preview item under the mouse, which is only reachable while the preview is frozen.
+     */
+    private static ItemStack hoveredItem(List<ItemStack> items, int cols, int spacing, int startX, int startY, int mouseX, int mouseY) {
+        if (!frozen) return ItemStack.EMPTY;
+
+        int length = Math.min(items.size(), ContainerPreviewSlots.MAX_SLOTS);
+        for (int i = 0; i < length; i++) {
+            ItemStack item = items.get(i);
+            if (item == null) continue;
+
+            int itemX = startX + ((i % cols) * spacing);
+            int itemY = startY + ((i / cols) * spacing);
+            if (mouseX > itemX && mouseX < itemX + 16 && mouseY > itemY && mouseY < itemY + 16) {
+                return item;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     /**

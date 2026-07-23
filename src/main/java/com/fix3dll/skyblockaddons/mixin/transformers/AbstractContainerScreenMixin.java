@@ -7,18 +7,18 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackInventoryManager;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
+import com.fix3dll.skyblockaddons.features.slots.EquipmentSlots;
+import com.fix3dll.skyblockaddons.features.slots.EquipmentSlots.EquipmentSlot;
+import com.fix3dll.skyblockaddons.features.slots.VirtualSlot;
 import com.fix3dll.skyblockaddons.mixin.hooks.AbstractContainerScreenHook;
 import com.fix3dll.skyblockaddons.mixin.hooks.ScreenHook;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -78,9 +78,18 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         return AbstractContainerScreenHook.renderSlotHighlightFront(graphics, x, y, this.hoveredSlot);
     }
 
-    @Inject(method = "renderSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;II)V", shift = At.Shift.AFTER))
-    public void sba$renderSlots(GuiGraphics graphics, int mouseX, int mouseY, CallbackInfo ci, @Local Slot slot) {
+    @Inject(method = "renderSlot", at = @At("RETURN"))
+    public void sba$renderSlot(GuiGraphics graphics, Slot slot, int mouseX, int mouseY, CallbackInfo ci) {
         AbstractContainerScreenHook.renderSlot(graphics, slot);
+    }
+
+    @Inject(method = "renderSlots", at = @At("TAIL"))
+    public void sba$extractEquipmentSlots(GuiGraphics graphics, int mouseX, int mouseY, CallbackInfo ci) {
+        if (SkyblockEquipment.equipmentsInInventory()) {
+            //noinspection unchecked
+            AbstractContainerScreen<T> instance = (AbstractContainerScreen<T>) (Object) this;
+            EquipmentSlots.render(instance, graphics, mouseX, mouseY, this.leftPos, this.topPos);
+        }
     }
 
     @Inject(method = "render", at = @At("RETURN"))
@@ -101,6 +110,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
     public void sba$slotClicked(Slot slot, int slotId, int mouseButton, ClickType type, CallbackInfo ci) {
+        // Virtual slots are kept out of hoveredSlot, so they cannot get here. This is the packet boundary, so it
+        // stays as a backstop against any future path that would hand one to the container input handler.
+        if (slot instanceof VirtualSlot) {
+            ci.cancel();
+            return;
+        }
+
         //noinspection unchecked
         if (AbstractContainerScreenHook.onHandleMouseClick((AbstractContainerScreen<T>) (Object) this, slot, slotId, mouseButton, type)) {
             ci.cancel();
@@ -142,9 +158,15 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
             cir.cancel();
         }
         AbstractContainerScreenHook.keyPressed(this.hoveredSlot, event.input() - 100, cir);
-        if (SkyblockEquipment.equipmentsInInventory() && Minecraft.getInstance().screen instanceof InventoryScreen) {
-            for (SkyblockEquipment equipment : SkyblockEquipment.values()) {
-                equipment.onClick(event.button());
+
+        if (SkyblockEquipment.equipmentsInInventory()) {
+            EquipmentSlot equipmentSlot = EquipmentSlots.hoveredSlotAt(this.leftPos, this.topPos, event.x(), event.y());
+            if (equipmentSlot != null) {
+                equipmentSlot.getEquipment().onClick(event.button());
+                cir.setReturnValue(true);
+            } else if (EquipmentSlots.isOverPanel(this.leftPos, this.topPos, event.x(), event.y())) {
+                // The panel sticks out of the GUI rect, so an unconsumed click there would drop the carried item
+                cir.setReturnValue(true);
             }
         }
     }

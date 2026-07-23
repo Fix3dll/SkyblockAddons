@@ -37,3 +37,4 @@ accessible class net/minecraft/client/particle/ParticleResources$MutableSpriteSe
 accessible method net/minecraft/client/gui/components/PlayerTabOverlay getPlayerInfos ()Ljava/util/List;
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageHeight I
+accessible method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen renderSlot (Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;II)V

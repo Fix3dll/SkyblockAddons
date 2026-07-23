@@ -6,21 +6,17 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
-import org.joml.Matrix3x2fStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public enum SkyblockEquipment {
@@ -32,75 +28,57 @@ public enum SkyblockEquipment {
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
     private static final Minecraft MC = Minecraft.getInstance();
-    private static final Identifier SLOT_HIGHLIGHT_FRONT_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_front");
-    private static final ItemStack NULL =  Items.BARRIER.getDefaultInstance();
 
-    static {
-        NULL.set(DataComponents.CUSTOM_NAME, Component.literal("ERROR").withColor(ColorCode.RED.getColor()));
-        NULL.set(DataComponents.LORE, new ItemLore(Collections.singletonList(
-                Component.literal("You have to update equipments and pets from '/petsmenu' and '/equipment'!")
-                        .withColor(ColorCode.GRAY.getColor())
-        )));
-    }
+    /** Slot placement, relative to the screen's {@code leftPos}/{@code topPos}. */
+    private static final int SLOT_X = -15;
+    private static final int SLOT_Y = 8;
+    private static final int SLOT_SPACING = 18;
+    private static final int PET_SLOT_Y_OFFSET = 4;
 
     private static Type currentType;
 
-    @Getter private ItemStack itemStack;
+    @Getter private ItemStack itemStack = ItemStack.EMPTY;
     private final ItemStack emptyStack;
-    private boolean isHovered = false;
 
     SkyblockEquipment(String... defaultName) {
-        this.emptyStack = Items.LIGHT_GRAY_STAINED_GLASS_PANE.getDefaultInstance();
+        DataComponentPatch.Builder builder = DataComponentPatch.builder();
         List<Component> loreList = createListsForItemLore(defaultName);
         if (!loreList.isEmpty()) {
-            this.emptyStack.set(DataComponents.CUSTOM_NAME, loreList.getFirst());
+            builder.set(DataComponents.CUSTOM_NAME, loreList.getFirst());
             loreList.removeFirst();
         }
-        this.emptyStack.set(DataComponents.LORE, new ItemLore(loreList));
-        this.itemStack = emptyStack;
+        builder.set(DataComponents.LORE, new ItemLore(loreList));
+        this.emptyStack = new ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE.builtInRegistryHolder(), 1, builder.build());
     }
 
     public void setItemStack(ItemStack itemStack) {
-        if (itemStack == null || itemStack.isEmpty()) {
-            this.itemStack = emptyStack;
-        } else {
-            this.itemStack = itemStack;
-        }
+        this.itemStack = itemStack == null || itemStack.isEmpty() ? this.emptyStack : itemStack;
     }
 
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, int leftPos, int topPos) {
-        if (this == PET && Feature.EQUIPMENTS_IN_INVENTORY.isDisabled(FeatureSetting.PET_PANEL)) return;
-        if (this.itemStack == null) this.itemStack = NULL;
+    public int getSlotX() {
+        return SLOT_X;
+    }
 
-        int x = -15;
-        int y = 8 + this.ordinal() * 18 + (this == PET ? 4 : 0);
-        int seed = x + y * 176;
-        Font font = MC.font;
+    public int getSlotY() {
+        return SLOT_Y + this.ordinal() * SLOT_SPACING + (this == PET ? PET_SLOT_Y_OFFSET : 0);
+    }
 
-        int translatedMouseX = mouseX - leftPos;
-        int translatedMouseY = mouseY - topPos;
-        this.isHovered = translatedMouseX >= x - 1 && translatedMouseX < x + 16 + 1
-                      && translatedMouseY >= y - 1 && translatedMouseY < y + 16 + 1;
+    /** Whether this slot takes part in rendering and hovering while the panel is shown. */
+    public boolean isSlotActive() {
+        return this != PET || Feature.EQUIPMENTS_IN_INVENTORY.isEnabled(FeatureSetting.PET_PANEL);
+    }
 
-        Matrix3x2fStack poseStack = graphics.pose();
-        poseStack.pushMatrix();
-        poseStack.translate((float)leftPos, (float)topPos);
-        graphics.renderItem(this.itemStack, x, y, seed);
-        graphics.renderItemDecorations(font, this.itemStack, x, y);
-        if (this.isHovered) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
-        poseStack.popMatrix();
-
-        if (this.isHovered) {
-            graphics.nextStratum();
-            graphics.setTooltipForNextFrame(font, this.itemStack, mouseX, mouseY);
-        }
+    /** The stack to draw, falling back to the placeholder so the slot is never rendered as an empty one. */
+    public ItemStack getDisplayStack() {
+        return this.itemStack.isEmpty() ? this.emptyStack : this.itemStack;
     }
 
     public void onClick(int button) {
         LocalPlayer player = MC.player;
-        if (player == null || !isHovered || button != 0) return;
+        if (player == null || button != 0) return;
 
-        if (this == PET && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled(FeatureSetting.PET_PANEL)) {
+        // These are user commands rather than container interactions, so they are sent from the click directly
+        if (this == PET) {
             if (main.getUtils().isOnRift()) {
                 player.connection.sendChat("/sbmenu");
             } else {
@@ -116,11 +94,13 @@ public enum SkyblockEquipment {
     }
 
     public boolean isEmpty() {
-        return ItemStack.matches(itemStack, emptyStack) || ItemStack.isSameItem(itemStack, NULL);
+        return itemStack.isEmpty() || ItemStack.matches(itemStack, this.emptyStack);
     }
 
     public static boolean equipmentsInInventory() {
-        return main.getUtils().isOnSkyblock() && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled();
+        return main.getUtils().isOnSkyblock()
+                && Feature.EQUIPMENTS_IN_INVENTORY.isEnabled()
+                && MC.screen instanceof InventoryScreen;
     }
 
     /**
@@ -145,13 +125,13 @@ public enum SkyblockEquipment {
                 if (i < listSize) {
                     equipments[i].setItemStack(list.get(i));
                 } else {
-                    equipments[i].setItemStack(equipments[i].emptyStack);
+                    equipments[i].setItemStack(ItemStack.EMPTY);
                 }
             }
         } else {
             // Fill with empty stacks if cache is missing or empty
             for (SkyblockEquipment equipment : equipments) {
-                equipment.setItemStack(equipment.emptyStack);
+                equipment.setItemStack(ItemStack.EMPTY);
             }
         }
     }

@@ -90,7 +90,7 @@ repositories {
             includeGroupByRegex("org\\.parchmentmc.*")
         }
     }
-    maven("https://maven.terraformersmc.com/") {
+    maven("https://maven.terraformersmc.com/repository/maven-terraformers/") {
         content {
             includeGroup("com.terraformersmc")
         }
@@ -120,7 +120,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
-    modImplementation("maven.modrinth:modmenu:${properties["modmenu_version"]}")
+    modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
     // REI compat
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${properties["rei_version"]}") {
