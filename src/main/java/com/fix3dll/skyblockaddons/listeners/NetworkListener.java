@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.listeners;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.Island;
+import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
@@ -123,7 +124,9 @@ public class NetworkListener {
             }
             String mode = packet.getMode().orElse("null");
             main.getUtils().setMode(mode);
-            main.getUtils().setMap(Island.getByMode(mode));
+            Island island = Island.getByMode(mode);
+            main.getUtils().setMap(island);
+            SkyblockEquipment.loadEquipments(island);
             main.getUtils().setServerID(packet.getServerName());
             if (packet.getServerType().orElse(null) == GameType.SKYBLOCK) {
                 if (Feature.DISCORD_RPC.isEnabled() && !main.getDiscordRPCManager().isActive()) {

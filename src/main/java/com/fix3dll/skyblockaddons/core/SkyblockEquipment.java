@@ -78,19 +78,20 @@ public enum SkyblockEquipment {
         if (player == null || button != 0) return;
 
         // These are user commands rather than container interactions, so they are sent from the click directly
+        String command;
         if (this == PET) {
-            if (main.getUtils().isOnRift()) {
-                player.connection.sendChat("/sbmenu");
-            } else {
-                player.connection.sendChat("/petsmenu");
-            }
+            command = switch (main.getUtils().getMap()) {
+                case THE_RIFT -> "/sbmenu";
+                case SAFARI -> "/stats";
+                case null, default -> "/petsmenu";
+            };
         } else {
-            if (main.getUtils().isOnRift()) {
-                player.connection.sendChat("/stats");
-            } else {
-                player.connection.sendChat("/equipment");
-            }
+            command = switch (main.getUtils().getMap()) {
+                case THE_RIFT, SAFARI -> "/stats";
+                case null, default -> "/equipment";
+            };
         }
+        player.connection.sendChat(command);
     }
 
     public boolean isEmpty() {
@@ -105,11 +106,17 @@ public enum SkyblockEquipment {
 
     /**
      * Loads equipments from the cache manager and applies them to the current slots.
-     * @param equipmentType The environment type (MAIN or RIFT) to load equipments for.
+     * @param island The {@link Island} provided by the Mod API.
      */
-    public static void loadEquipments(Type equipmentType) {
-        if (equipmentType != null && currentType != equipmentType) {
-            currentType = equipmentType;
+    public static void loadEquipments(Island island) {
+        Type type = switch (island) {
+            case THE_RIFT -> Type.RIFT;
+            case SAFARI -> Type.SAFARI;
+            case null, default -> Type.MAIN;
+        };
+
+        if (currentType != type) {
+            currentType = type;
         } else {
             return;
         }
@@ -141,7 +148,11 @@ public enum SkyblockEquipment {
      */
     public static void saveEquipments() {
         if (currentType == null) {
-            currentType = main.getUtils().isOnRift() ? Type.RIFT : Type.MAIN;
+            currentType = switch (main.getUtils().getMap()) {
+                case THE_RIFT -> Type.RIFT;
+                case SAFARI -> Type.SAFARI;
+                case null, default -> Type.MAIN;
+            };
         }
 
         ItemStack[] currentItems = Arrays.stream(values())
@@ -166,7 +177,8 @@ public enum SkyblockEquipment {
     @AllArgsConstructor @Getter
     public enum Type {
         MAIN("main"),
-        RIFT("rift");
+        RIFT("rift"),
+        SAFARI("safari");
 
         public final String levelKey;
     }
