@@ -867,10 +867,22 @@ public class PlayerListener {
     }
 
     private void onGetComponentLast(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
-        if (components.isEmpty() || !main.getUtils().isOnSkyblock()) return;
+        if (components.isEmpty()) return;
+
+        boolean isOnSkyblock = main.getUtils().isOnSkyblock();
+        String itemId = null;
+        Feature feature = Feature.ITEM_PRICES_IN_TOOLTIP;
+        if (feature.isEnabled()) {
+            if (isOnSkyblock || feature.isEnabled(FeatureSetting.SHOW_OUTSIDE_SKYBLOCK)) {
+                itemId = ItemUtils.getSkyblockItemID(itemStack);
+                addItemPricesToTooltip(itemId, itemStack, tooltipContext, tooltipFlag, components);
+            }
+        }
+
+        if (!isOnSkyblock) return;
 
         // Last
-        Feature feature = Feature.ENCHANTMENT_LORE_PARSING;
+        feature = Feature.ENCHANTMENT_LORE_PARSING;
         int[] enchantmentLoreIdx = null;
         if (feature.isEnabled()) {
             enchantmentLoreIdx = EnchantManager.parseEnchants(components, itemStack);
@@ -906,10 +918,9 @@ public class PlayerListener {
             }
         }
 
-        if (Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS.isEnabled()) {
-            boolean replaceItemName = Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS.isEnabled(
-                    FeatureSetting.DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME
-            );
+        feature = Feature.REPLACE_ROMAN_NUMERALS_WITH_NUMBERS;
+        if (feature.isEnabled()) {
+            boolean replaceItemName = feature.isEnabled(FeatureSetting.DONT_REPLACE_ROMAN_NUMERALS_IN_ITEM_NAME);
             int startIndex = replaceItemName ? 1 : 0;
 
             for (int i = startIndex; i < components.size(); i++) {
@@ -927,10 +938,8 @@ public class PlayerListener {
             }
         }
 
-        String itemId = null;
         if (Feature.SHOW_SKYBLOCK_ITEM_ID.isEnabled() || Feature.DEVELOPER_MODE.isEnabled()) {
-            itemId = ItemUtils.getSkyblockItemID(itemStack);
-
+            if (itemId == null) itemId = ItemUtils.getSkyblockItemID(itemStack);
             if (itemId != null) {
                 Component tooltipLine = Component.literal( "skyblock:" + itemId).withColor(ColorCode.DARK_GRAY.getColor());
 
@@ -947,10 +956,6 @@ public class PlayerListener {
                     components.add(tooltipLine);
                 }
             }
-        }
-
-        if (Feature.ITEM_PRICES_IN_TOOLTIP.isEnabled()) {
-            addItemPricesToTooltip(itemId, itemStack, tooltipContext, tooltipFlag, components);
         }
     }
 
