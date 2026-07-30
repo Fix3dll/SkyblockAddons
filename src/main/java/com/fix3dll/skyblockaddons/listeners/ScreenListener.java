@@ -48,6 +48,7 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
@@ -505,7 +506,7 @@ public class ScreenListener {
         if (petItem == null) return;
         PetCacheManager pcm = main.getPetCacheManager();
 
-        if (Utils.isGlassPane(petItem)) {
+        if (Utils.isGlassPane(petItem, DyeColor.LIGHT_GRAY)) {
             // Be sure current pet is same on cache
             pcm.setCurrentPetIndex(-1, false);
             SkyblockEquipment.PET.setItemStack(petItem);
