@@ -109,7 +109,9 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     implementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
-    implementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+
+    //implementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+    implementation("maven.modrinth:modmenu:${properties["modmenu_version"]}")
 
     // REI compat
     compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${properties["rei_version"]}") {
