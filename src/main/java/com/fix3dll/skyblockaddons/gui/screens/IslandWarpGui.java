@@ -93,7 +93,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
     @Override
     public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.nextStratum();
-        drawGradientBackground(graphics, Math.round(255/3F), Math.round(255/2F));
+        drawGradientBackground(graphics, 100, 144);
 
         graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.click"), WINDOW.getGuiScaledWidth() / 2, 10, -1);
         graphics.drawCenteredString(MC.font, Translations.getMessage("warpMenu.mustUnlock"), WINDOW.getGuiScaledWidth() / 2, 20, -1);
@@ -239,27 +239,28 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
     @Getter
     public enum Island {
-        THE_END("The End", 350, 20),
-        CRIMSON_ISLE("Crimson Isle", 960, 90),
-        THE_PARK("The Park", 160, 440),
-        SPIDERS_DEN("Spider's Den", 740, 470),
-        DEEP_CAVERNS("Deep Caverns", 1610, 245),
-        THE_FORGE("The Forge", 2200, 218),
-        DWARVEN_MINES("Dwarven Mines", 2000, 340),
-        DWARVEN_BASE_CAMP("Dwarven Base Camp", 2200, 462),
-        CRYSTAL_HOLLOWS("Crystal Hollows", 2000, 96),
-        GOLD_MINE("Gold Mine", 1360, 500),
-        MUSHROOM_DESERT("Mushroom Desert", 1830, 600),
-        THE_BARN("The Barn", 1500, 870),
-        HUB("Hub", 510, 820),
-        PRIVATE_ISLAND("Private Island", 385, 1172),
-        THE_GARDEN("The Garden", 160, 1050),
-        DUNGEON_HUB("Dungeon Hub", 1890, 1117),
-        JERRYS_WORKSHOP("Jerry's Workshop", 605, 1239),
-        THE_RIFT("The Rift", 2120, 995),
-        BACKWATER_BAYOU("Backwater Bayou", 1285, 1250),
-        GALATEA("Galatea", -140, 240),
-        LOTUS_ATOLL("Lotus Atoll", 1587, 1183)
+        THE_END("The End", 400, 20),
+        CRIMSON_ISLE("Crimson Isle", 1010, 90),
+        THE_PARK("The Park", 210, 440),
+        SPIDERS_DEN("Spider's Den", 810, 470),
+        DEEP_CAVERNS("Deep Caverns", 1660, 245),
+        THE_FORGE("The Forge", 2250, 218),
+        DWARVEN_MINES("Dwarven Mines", 2050, 340),
+        DWARVEN_BASE_CAMP("Dwarven Base Camp", 2250, 462),
+        CRYSTAL_HOLLOWS("Crystal Hollows", 2050, 96),
+        GOLD_MINE("Gold Mine", 1410, 500),
+        MUSHROOM_DESERT("Mushroom Desert", 1880, 600),
+        THE_BARN("The Barn", 1550, 870),
+        HUB("Hub", 560, 820),
+        PRIVATE_ISLAND("Private Island", 435, 1172),
+        THE_GARDEN("The Garden", 210, 1050),
+        DUNGEON_HUB("Dungeon Hub", 1940, 1117),
+        JERRYS_WORKSHOP("Jerry's Workshop", 655, 1239),
+        THE_RIFT("The Rift", 2170, 995),
+        BACKWATER_BAYOU("Backwater Bayou", 1335, 1250),
+        GALATEA("Galatea", -150, 380),
+        LOTUS_ATOLL("Lotus Atoll", 1637, 1183),
+        TORRHUS_CANYON("Torrhus Canyon", -20, 30)
         ;
 
         private final String label;
@@ -336,8 +337,12 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         HOWLING_CAVE("howl", "Howling Cave", Island.THE_PARK, 310, 180),
         THE_PARK_JUNGLE("jungle", "Jungle", Island.THE_PARK, 150, 100),
 
-        GALATEA("galatea", Translations.getMessage("warpMenu.spawn"), Island.GALATEA, 160, 260),
-        MURKWATER_LOCH("murkwater", "Murkwater Loch", Island.GALATEA, 220, 140),
+        GALATEA("galatea", Translations.getMessage("warpMenu.spawn"), Island.GALATEA, 130, 190),
+        MURKWATER_LOCH("murkwater", "Murkwater Loch", Island.GALATEA, 210, 120),
+
+        TORRHUS_CANYON("torrhus", Translations.getMessage("warpMenu.spawn"), Island.TORRHUS_CANYON, 60, 100),
+        TORRHUS_SPRINGS("springs", "Torrhus Springs", Island.TORRHUS_CANYON, 130, 40),
+        CRITTER_SAFARI_ENTRANCE("safari", "Critter Safari Entrance", Island.TORRHUS_CANYON, 50, 180),
 
         THE_END("end", Translations.getMessage("warpMenu.spawn"), Island.THE_END, 465, 290),
         DRAGONS_NEST("drag", "Dragon's Nest", Island.THE_END, 260, 240),
