@@ -23,7 +23,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -39,14 +38,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Logger;
-import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.FloatBuffer;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -763,22 +758,6 @@ public class Utils {
         return false;
     }
 
-    public float[] getCurrentGLTransformations() {
-        FloatBuffer buf = BufferUtils.createFloatBuffer(16);
-        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, buf);
-        buf.rewind();
-        Matrix4f mat = new Matrix4f();
-        mat.get(buf);
-
-        float x = mat.m30();
-        float y = mat.m31();
-        float z = mat.m32();
-
-        float scale = (float) Math.sqrt(mat.m00() * mat.m00() + mat.m01() * mat.m01() + mat.m02() * mat.m02());
-
-        return new float[]{x, y, z, scale};
-    }
-
     public static Player getPlayerFromName(@NonNull String name) {
         ClientLevel level = MC.level;
         if (level != null) {
@@ -791,21 +770,37 @@ public class Utils {
         return null;
     }
 
+    /**
+     * Checks whether the given item stack represents any type of glass pane (stained or unstained).
+     * @param itemStack the {@link ItemStack} to check
+     * @return {@code true} if the item is a glass pane; {@code false} otherwise
+     */
     public static boolean isGlassPane(ItemStack itemStack) {
+        return isGlassPane(itemStack, null);
+    }
+
+    /**
+     * Checks whether the given item stack represents a glass pane matching an optional dye color.
+     * @param itemStack the {@link ItemStack} to check
+     * @param dyeColor  the required {@link DyeColor}, or {@code null} to match any glass pane
+     * @return {@code true} if the item matches the specified glass pane criteria; {@code false} otherwise
+     */
+    public static boolean isGlassPane(ItemStack itemStack, DyeColor dyeColor) {
         if (itemStack == null || itemStack.isEmpty()) {
             return false;
         }
         Block block = Block.byItem(itemStack.getItem());
-        return block == Blocks.GLASS_PANE || block instanceof StainedGlassPaneBlock;
+        if (block == Blocks.GLASS_PANE && dyeColor == null) {
+            return true;
+        } else if (block instanceof StainedGlassPaneBlock stainedBlock) {
+            return dyeColor == null || stainedBlock.getColor() == dyeColor;
+        }
+        return false;
     }
 
     public static boolean isBlankGlassPane(ItemStack itemStack) {
         if (!isGlassPane(itemStack)) return false;
         return itemStack.getHoverName().getString().isBlank();
-    }
-
-    public static boolean isGlassPaneColor(ItemStack itemStack, DyeColor color) {
-        return itemStack != null && itemStack.getOrDefault(DataComponents.MAP_COLOR, -1) == color.getMapColor();
     }
 
     public static float getPartialTicks() {
