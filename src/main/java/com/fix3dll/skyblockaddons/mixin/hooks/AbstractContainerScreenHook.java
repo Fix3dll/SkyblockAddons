@@ -253,7 +253,7 @@ public class AbstractContainerScreenHook {
 
         return main.getUtils().isOnSkyblock() && !main.getUtils().isInDungeon() && slot != null && slot.hasItem()
                 && Feature.DISABLE_EMPTY_GLASS_PANES.isEnabled() && Utils.isBlankGlassPane(slot.getItem())
-                && (inventoryType != InventoryType.ULTRASEQUENCER || Utils.isGlassPaneColor(slot.getItem(), DyeColor.BLACK));
+                && (inventoryType != InventoryType.ULTRASEQUENCER || Utils.isGlassPane(slot.getItem(), DyeColor.BLACK));
     }
 
     public static Pair<Integer, Integer> consumePetsMenuLastClick() {
