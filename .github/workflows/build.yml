@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
@@ -35,14 +35,14 @@ jobs:
         project_version: ${{ steps.read_properties.outputs.value }}
       uses: actions/upload-artifact@v7
       with:
-        name: build_artifacts
-        path: build/libs/*
+        path: build/libs/*.jar
         retention-days: 90
+        archive: false
 
   client_game_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
