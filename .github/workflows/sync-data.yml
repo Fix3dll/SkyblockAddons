@@ -26,12 +26,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Main Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: SkyblockAddons
 
       - name: Checkout Data Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Fix3dll/SkyblockAddons-Data
           token: ${{ secrets.DATA_REPO_PAT }}
