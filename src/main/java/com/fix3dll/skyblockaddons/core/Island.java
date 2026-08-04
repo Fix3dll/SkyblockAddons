@@ -26,7 +26,7 @@ public enum Island {
     MINESHAFT("Mineshaft", "mineshaft"),
     DARK_AUCTION("Dark Auction", "dark_auction"),
     BACKWATER_BAYOU("Backwater Bayou", "fishing_1"),
-    GALATEA("Galatea", "foraging_2"),
+    MOONGLADE_MARSH("Moonglade Marsh", "foraging_2"),
     LOTUS_ATOLL("Lotus Atoll", "lotus_atoll"),
     TORRHUS_CANYON("Torrhus Canyon", "foraging_3"),
     SAFARI("Safari", "safari"),
