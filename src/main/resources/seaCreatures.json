@@ -16,7 +16,7 @@
   },
   "BLUE_SHARK": {
     "name": "Blue Shark",
-    "rarity": "UNCOMMON",
+    "rarity": "RARE",
     "spawnMessage": "You spot a fin as blue as the water it came from, it's a Blue Shark."
   },
   "CARROT_KING": {
@@ -61,7 +61,7 @@
   },
   "GRIM_REAPER": {
     "name": "Grim Reaper",
-    "rarity": "LEGENDARY",
+    "rarity": "MYTHIC",
     "spawnMessage": "This can't be! The manifestation of death himself!"
   },
   "GRINCH": {
@@ -129,14 +129,9 @@
     "rarity": "RARE",
     "spawnMessage": "You hear trotting from beneath the waves, you caught a Nightmare."
   },
-  "NIGHT_SQUID": {
-    "name": "Night Squid",
-    "rarity": "COMMON",
-    "spawnMessage": "Pitch Darkness reveals you've caught a Night Squid."
-  },
   "NURSE_SHARK": {
     "name": "Nurse Shark",
-    "rarity": "COMMON",
+    "rarity": "UNCOMMON",
     "spawnMessage": "A tiny fin emerges from the water, you've caught a Nurse Shark."
   },
   "NUTCRACKER": {
@@ -186,7 +181,7 @@
   },
   "SCARECROW": {
     "name": "Scarecrow",
-    "rarity": "COMMON",
+    "rarity": "UNCOMMON",
     "spawnMessage": "Phew! It's only a Scarecrow."
   },
   "SEA_ARCHER": {
@@ -199,10 +194,10 @@
     "rarity": "LEGENDARY",
     "spawnMessage": "The Loch Emperor arises from the depths."
   },
-  "SEA_GUARDIAN": {
-    "name": "Sea Guardian",
+  "JUMPIN_JACK": {
+    "name": "Jumpin' Jack",
     "rarity": "COMMON",
-    "spawnMessage": "You stumbled upon a Sea Guardian."
+    "spawnMessage": "Watch out! It's Jumpin' Jack."
   },
   "SEA_LEECH": {
     "name": "Sea Leech",
