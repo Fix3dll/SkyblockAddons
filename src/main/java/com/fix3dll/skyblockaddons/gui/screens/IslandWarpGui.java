@@ -258,7 +258,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         JERRYS_WORKSHOP("Jerry's Workshop", 655, 1239),
         THE_RIFT("The Rift", 2170, 995),
         BACKWATER_BAYOU("Backwater Bayou", 1335, 1250),
-        GALATEA("Galatea", -150, 380),
+        MOONGLADE_MARSH("Moonglade Marsh", -150, 380),
         LOTUS_ATOLL("Lotus Atoll", 1637, 1183),
         TORRHUS_CANYON("Torrhus Canyon", -20, 30)
         ;
@@ -337,8 +337,8 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
         HOWLING_CAVE("howl", "Howling Cave", Island.THE_PARK, 310, 180),
         THE_PARK_JUNGLE("jungle", "Jungle", Island.THE_PARK, 150, 100),
 
-        GALATEA("galatea", Translations.getMessage("warpMenu.spawn"), Island.GALATEA, 130, 190),
-        MURKWATER_LOCH("murkwater", "Murkwater Loch", Island.GALATEA, 210, 120),
+        MOONGLADE_MARSH("moonglade", Translations.getMessage("warpMenu.spawn"), Island.MOONGLADE_MARSH, 130, 190),
+        MURKWATER_LOCH("murkwater", "Murkwater Loch", Island.MOONGLADE_MARSH, 210, 120),
 
         TORRHUS_CANYON("torrhus", Translations.getMessage("warpMenu.spawn"), Island.TORRHUS_CANYON, 60, 100),
         TORRHUS_SPRINGS("springs", "Torrhus Springs", Island.TORRHUS_CANYON, 130, 40),
