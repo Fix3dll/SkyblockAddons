@@ -286,9 +286,9 @@
         "BOOTS"
       ]
     },
-    "ferocious mana": {
+    "vivacious vitality": {
       "goodLevel": 10,
-      "loreName": "Ferocious Mana",
+      "loreName": "Vivacious Vitality",
       "maxLevel": 10,
       "nbtName": "ferocious_mana",
       "appliedTo": [
@@ -446,9 +446,9 @@
         "CARNIVAL_MASK"
       ]
     },
-    "hardened mana": {
+    "hardened vitality": {
       "goodLevel": 10,
-      "loreName": "Hardened Mana",
+      "loreName": "Hardened Vitality",
       "maxLevel": 10,
       "nbtName": "hardened_mana",
       "appliedTo": [
@@ -501,6 +501,15 @@
       "nbtName": "infinite_quiver",
       "appliedTo": [
         "BOW"
+      ]
+    },
+    "karma": {
+      "goodLevel": 5,
+      "loreName": "Karma",
+      "maxLevel": 6,
+      "nbtName": "Karma",
+      "appliedTo": [
+        "AXE"
       ]
     },
     "knockback": {
@@ -620,9 +629,9 @@
         "GAUNTLET"
       ]
     },
-    "mana vampire": {
+    "vampiric vitality": {
       "goodLevel": 10,
-      "loreName": "Mana Vampire",
+      "loreName": "Vampiric Vitality",
       "maxLevel": 10,
       "nbtName": "mana_vampire",
       "appliedTo": [
@@ -664,6 +673,15 @@
         "LEGGINGS",
         "BOOTS",
         "CARNIVAL_MASK"
+      ]
+    },
+    "petalfall": {
+      "goodLevel": 0,
+      "loreName": "Petalfall",
+      "maxLevel": 5,
+      "nbtName": "petalfall",
+      "appliedTo": [
+        "AXE"
       ]
     },
     "piercing": {
@@ -971,9 +989,9 @@
         "BOOTS"
       ]
     },
-    "strong mana": {
+    "strong vitality": {
       "goodLevel": 10,
-      "loreName": "Strong Mana",
+      "loreName": "Strong Vitality",
       "maxLevel": 10,
       "nbtName": "strong_mana",
       "appliedTo": [
@@ -1010,7 +1028,7 @@
     "thorns": {
       "goodLevel": 3,
       "loreName": "Thorns",
-      "maxLevel": 3,
+      "maxLevel": 4,
       "nbtName": "thorns",
       "appliedTo": [
         "HELMET",
