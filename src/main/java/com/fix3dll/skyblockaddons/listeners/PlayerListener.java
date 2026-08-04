@@ -1855,7 +1855,18 @@ public class PlayerListener {
                     .replace("STRIDERSURFER", "STRIDER_SURFER")
                     .replace("ABYSSAL_LANTERNFISH", "ABYSSAL_LANTERN")
                     .replace("LOCH_EMPEROR", "SEA_EMPEROR")
-                    .replace("CINDERBAT", "CINDER_BAT");
+                    .replace("CINDERBAT", "CINDER_BAT")
+                    .replace("INKLING", "NIGHT_SQUID")
+                    .replace("FIELD_MOUSE", "PEST")
+                    .replace("LOTUSFISH", "LOTUS_FISH")
+                    .replace("ZEALOT_BRUISER", "BRUISER")
+                    .replace("EARTHWORM", "TERMITE")
+                    .replace("FLIPFLOPPER", "FLIP_FLOPPER")
+                    .replace("BEETLE", "CROPEETLE")
+                    .replace("SEASHINE", "SEA_SHINE")
+                    .replace("WITHER_SPECTRE", "WITHER_SPECTER")
+                    .replace("INFERNO_DEMONLORD", "BURNINGSOUL")
+                    ;
         }
         return null;
     }
