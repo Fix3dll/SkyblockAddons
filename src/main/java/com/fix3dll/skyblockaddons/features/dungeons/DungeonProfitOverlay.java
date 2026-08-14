@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.features.dungeons;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.compat.ReiCompat;
+import com.fix3dll.skyblockaddons.compat.SilCompat;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
 import com.fix3dll.skyblockaddons.core.Regex;
@@ -702,12 +703,19 @@ public class DungeonProfitOverlay {
     }
 
     /**
-     * Updates the REI button exclusion zone to cover the overlay area.
+     * Updates item list exclusion zone to cover the overlay area.
      * No-op if REI is not loaded.
      */
     private static void setDungeonProfitOverlayBounds(int x, int y, int width, int height) {
-        if (!main.isReiLoaded()) return;
-        ReiCompat.DUNGEON_PROFIT_OVERLAY.setBounds(x, y, width, height);
+        if (main.isReiLoaded()) {
+            ReiCompat.DUNGEON_PROFIT_OVERLAY.setBounds(x, y, width, height);
+        }
+        if (main.isSilLoaded()) {
+            SilCompat.DUNGEON_PROFIT_OVERLAY.setX(x);
+            SilCompat.DUNGEON_PROFIT_OVERLAY.setY(y);
+            SilCompat.DUNGEON_PROFIT_OVERLAY.setWidth(width);
+            SilCompat.DUNGEON_PROFIT_OVERLAY.setHeight(height);
+        }
     }
 
     /**

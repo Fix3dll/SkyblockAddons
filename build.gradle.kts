@@ -96,6 +96,11 @@ repositories {
             includeGroup("dev.architectury")
         }
     }
+    maven("https://maven.operationpotato.com/releases") {
+        content {
+            includeGroup("com.operationpotato")
+        }
+    }
 }
 
 val bundle : Configuration by configurations.creating {
@@ -117,6 +122,8 @@ dependencies {
     compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${properties["rei_version"]}") {
         exclude("net.fabricmc.fabric-api")
     }
+    // SkyBlock Item List compat
+    compileOnly("com.operationpotato:skyblock-item-list-api:0.0.20+26.2")
 
     runtimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
     implementation("net.hypixel:mod-api:1.0.2")
