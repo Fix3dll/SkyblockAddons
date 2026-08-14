@@ -16,18 +16,15 @@ public class ReiCompat implements REIClientPlugin {
 
     @Override
     public void registerExclusionZones(ExclusionZones zones) {
-        zones.register(
-                ContainerScreen.class,
-                screen -> {
-                    if (ScreenHook.islandWarpGui != null) {
-                        return List.of(new Rectangle(0, 0, screen.width, screen.height));
-                    }
-                    if (!DUNGEON_PROFIT_OVERLAY.isEmpty()) {
-                        return List.of(DUNGEON_PROFIT_OVERLAY);
-                    }
-                    return EMPTY;
-                }
-        );
+        zones.register(ContainerScreen.class, screen -> {
+            if (ScreenHook.islandWarpGui != null) {
+                return List.of(new Rectangle(0, 0, screen.width, screen.height));
+            }
+            if (!DUNGEON_PROFIT_OVERLAY.isEmpty()) {
+                return List.of(DUNGEON_PROFIT_OVERLAY);
+            }
+            return EMPTY;
+        });
     }
 
 }

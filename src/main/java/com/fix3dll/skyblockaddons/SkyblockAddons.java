@@ -126,6 +126,7 @@ public class SkyblockAddons implements ClientModInitializer {
 	private boolean immediatelyFastLoaded = false;
 	private boolean entityCullingLoaded = false;
 	private boolean reiLoaded = false;
+	private boolean silLoaded = false;
 
 	@Getter private static final ZoneId hypixelZoneId = ZoneId.of("America/New_York");
 	@Getter private static SkyblockAddons instance;
@@ -222,6 +223,7 @@ public class SkyblockAddons implements ClientModInitializer {
 			immediatelyFastLoaded = utils.isModLoaded("immediatelyfast");
 			entityCullingLoaded = utils.isModLoaded("entityculling");
 			reiLoaded = utils.isModLoaded("roughlyenoughitems");
+			silLoaded = utils.isModLoaded("skyblock-item-list");
 			fullyInitialized = true;
             TextUtils.setInstanceLoaded(true);
 		});

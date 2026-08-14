@@ -25,6 +25,9 @@
 		],
 		"rei_client": [
 			"com.fix3dll.skyblockaddons.compat.ReiCompat"
+		],
+		"skyblock-item-list": [
+			"com.fix3dll.skyblockaddons.compat.SilCompat"
 		]
 	},
 	"mixins": [
