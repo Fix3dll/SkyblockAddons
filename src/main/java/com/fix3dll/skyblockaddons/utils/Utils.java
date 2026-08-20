@@ -19,6 +19,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.chat.GuiMessageSource;
 import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 import net.minecraft.client.player.LocalPlayer;
@@ -832,12 +833,8 @@ public class Utils {
     }
 
     public static RegistryAccess registryAccess() {
-        ClientLevel world = MC.level;
-        if (world == null) {
-            return RegistryAccess.EMPTY;
-        } else {
-            return world.registryAccess();
-        }
+        ClientPacketListener connection = MC.getConnection();
+        return connection != null ? connection.registryAccess() : RegistryAccess.EMPTY;
     }
 
 }

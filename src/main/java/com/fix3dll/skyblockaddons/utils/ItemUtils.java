@@ -16,10 +16,12 @@ import com.google.gson.JsonElement;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
@@ -63,6 +65,23 @@ import java.util.regex.Matcher;
 public class ItemUtils {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
+    private static final ItemStackTemplate ERROR_BARRIER_TEMPLATE = new ItemStackTemplate(
+            Items.BARRIER.builtInRegistryHolder(),
+            1,
+            DataComponentPatch.builder()
+                    .set(
+                            DataComponents.CUSTOM_NAME,
+                            Component.literal("Encoding Error").withStyle(ChatFormatting.RED)
+                    )
+                    .set(
+                            DataComponents.LORE,
+                            new ItemLore(List.of(
+                                    Component.literal("Failed to serialize item due to registry mismatch or corrupted data.")
+                                            .withStyle(ChatFormatting.GRAY)
+                            ))
+                    )
+                    .build()
+    );
 
     @Getter @Setter private static Map<String, CompactorItem> compactorItems;
     @Setter private static Map<String, ContainerData> containers;
@@ -586,10 +605,13 @@ public class ItemUtils {
 
     public static Tag encodeItemStack(ItemStack itemStack) {
         RegistryAccess registryAccess = Utils.registryAccess();
+        DynamicOps<Tag> ops = registryAccess.createSerializationContext(NbtOps.INSTANCE);
 
-        return ItemStack.CODEC.encodeStart(
-                registryAccess.createSerializationContext(NbtOps.INSTANCE), itemStack
-        ).getOrThrow();
+        return ItemStack.CODEC.encodeStart(ops, itemStack)
+                .resultOrPartial(error -> LOGGER.warn("Failed to encode ItemStack[{}]: {}", itemStack, error))
+                .orElseGet(() -> ItemStackTemplate.CODEC.encodeStart(ops, ERROR_BARRIER_TEMPLATE)
+                        .result()
+                        .orElseGet(CompoundTag::new));
     }
 
     public static Optional<ItemStack> parseTag(Tag tag) {
@@ -597,7 +619,7 @@ public class ItemUtils {
 
         return ItemStack.CODEC.parse(
                 registryAccess.createSerializationContext(NbtOps.INSTANCE), tag
-        ).resultOrPartial(string -> LOGGER.error("Tried to load invalid item: '{}'", string));
+        ).resultOrPartial(error -> LOGGER.warn("Failed to parse Tag[{}]: {}", tag, error));
     }
 
     /**
