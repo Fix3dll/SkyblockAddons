@@ -64,6 +64,7 @@ import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.math.Axis;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
@@ -1677,20 +1678,32 @@ public class RenderListener {
     public void drawBaitList(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
         if (!main.getPlayerListener().isHoldingRod() && buttonLocation == null) return;
 
-        Map<ItemStack, Integer> baits = BaitManager.getInstance().getBaitsInInventory();
+        BaitManager bm = BaitManager.getInstance();
+        Object2IntMap<String> baits = bm.getBaitsInInventory();
         if (buttonLocation != null) {
             baits = BaitManager.DUMMY_BAITS;
         }
 
+        String selectedBaitId = bm.getSelectedBaitId();
+        int selectedRemainingBaits = bm.getSelectedRemainingBaits();
+
         int longestLineWidth = 0;
-        for (Map.Entry<ItemStack, Integer> entry : baits.entrySet()) {
-            longestLineWidth = Math.max(
-                    longestLineWidth,
-                    MC.font.width(TextUtils.formatNumber(entry.getValue()))
-            );
+        for (Object2IntMap.Entry<String> entry : baits.object2IntEntrySet()) {
+            String baitId = entry.getKey();
+            int baitCount = entry.getIntValue();
+
+            int width;
+            if (buttonLocation == null && selectedRemainingBaits > 0 && baitId.equals(selectedBaitId)) {
+                width = MC.font.width(selectedRemainingBaits + " + " + TextUtils.formatNumber(baitCount));
+            } else {
+                width = MC.font.width(TextUtils.formatNumber(baitCount));
+            }
+
+            longestLineWidth = Math.max(longestLineWidth, width);
         }
 
         Feature feature = Feature.BAIT_LIST;
+        int color = feature.getColor();
         float x = feature.getActualX();
         float y = feature.getActualY();
 
@@ -1706,13 +1719,21 @@ public class RenderListener {
             buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
         }
 
-        for (Map.Entry<ItemStack, Integer> entry : baits.entrySet()) {
-            if (entry.getValue() == 0) continue;
+        boolean selectedBaitInList = false;
+        for (Object2IntMap.Entry<String> entry : baits.object2IntEntrySet()) {
+            int baitCount = entry.getIntValue();
+            String baitId = entry.getKey();
 
-            renderItem(graphics, entry.getKey(), x, y);
-
-            int color = feature.getColor();
-            Component formattedValue = Component.literal(TextUtils.formatNumber(entry.getValue()));
+            Component formattedValue;
+            if (baitId.equals(selectedBaitId)) {
+                formattedValue = Component.literal(TextUtils.formatNumber(selectedRemainingBaits))
+                        .append(" + " + TextUtils.formatNumber(baitCount));
+                selectedBaitInList = true;
+            } else {
+                if (baitCount == 0) continue;
+                formattedValue = Component.literal(TextUtils.formatNumber(baitCount));
+            }
+            renderItem(graphics, ItemUtils.getTexturedHeadItem(baitId), x, y);
             DrawUtils.drawText(
                     graphics,
                     formattedValue,
@@ -1722,6 +1743,16 @@ public class RenderListener {
             );
 
             y += iconSize;
+        }
+        if (buttonLocation == null && selectedBaitId != null && !selectedBaitInList) {
+            renderItem(graphics, ItemUtils.getTexturedHeadItem(selectedBaitId), x, y);
+            DrawUtils.drawText(
+                    graphics,
+                    Component.literal(TextUtils.formatNumber(selectedRemainingBaits)),
+                    x + iconSize + spacing,
+                    y + (iconSize / 2F) - (8 / 2F),
+                    color
+            );
         }
     }
 
@@ -2673,14 +2704,16 @@ public class RenderListener {
             // x -= width * scale;
         }
         x = (float) (Math.round(x * minecraftScale) / minecraftScale);
-        return x / scale;
+        float transformedX = x / scale;
+        return Math.max(transformedX, 0F);
     }
 
     public float transformY(float y, int height, float scale) {
         double minecraftScale = MC.getWindow().getGuiScale();
         y -= height / 2F * scale;
         y = (float) (Math.round(y * minecraftScale) / minecraftScale);
-        return y / scale;
+        float transformedY = y / scale;
+        return Math.max(transformedY, 0F);
     }
 
     private void drawDeployableArmorStand(GuiGraphicsExtractor graphics, ArmorStand deployableArmorStand, float x, float y, float scale) {

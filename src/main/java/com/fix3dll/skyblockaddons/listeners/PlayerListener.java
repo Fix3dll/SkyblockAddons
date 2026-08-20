@@ -337,7 +337,11 @@ public class PlayerListener {
 //            LOGGER.info("Unformatted chat: {}", component.getString());
             Matcher matcher;
 
-            if (cachedChatRunCommand == null && formattedText.contains("§2§l[PICK UP]")) {
+            if (strippedText.equals("Use Baits From Bag is now disabled!")) {
+                BaitManager.getInstance().setFishingBagEnabled(false);
+            } else if (strippedText.equals("Use Baits From Bag is now enabled!")) {
+                BaitManager.getInstance().setFishingBagEnabled(true);
+            } else if (cachedChatRunCommand == null && formattedText.contains("§2§l[PICK UP]")) {
                 this.setChatRunCommandFromComponent(component);
 
             } else if (formattedText.contains("§a§l[YES]") || formattedText.contains("§a[Yes]")) {
