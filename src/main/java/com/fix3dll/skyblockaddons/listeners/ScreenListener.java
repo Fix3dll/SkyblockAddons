@@ -11,6 +11,7 @@ import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.events.SkyblockAddonsEvents;
+import com.fix3dll.skyblockaddons.features.BaitManager;
 import com.fix3dll.skyblockaddons.features.PetManager;
 import com.fix3dll.skyblockaddons.features.PetManager.Pet;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
@@ -210,6 +211,14 @@ public class ScreenListener {
                         ChestMenu chestMenu = containerScreen.getMenu();
                         if (chestMenu.slots.size() > 37) {
                             this.setEquipmentsWithSlotIdx(containerScreen.getMenu(), 10, 19, 28, 37, 21);
+                        }
+                    }
+                    case FISHING_BAG -> {
+                        ChestMenu chestMenu = containerScreen.getMenu();
+                        if (chestMenu.slots.size() > 50) {
+                            ItemStack toggleItem = chestMenu.getSlot(50).getItem();
+                            boolean fishingBagEnabled = toggleItem.is(Items.DYE.lime());
+                            BaitManager.getInstance().setFishingBagEnabled(fishingBagEnabled);
                         }
                     }
                     case null, default -> {}

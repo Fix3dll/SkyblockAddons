@@ -424,7 +424,10 @@
       15.5,
       -164.0
     ],
-    "color": -11141121
+    "color": -11141121,
+    "settings": {
+      "X_ALLIGNMENT": true
+    }
   },
   "ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT": {
     "value": false

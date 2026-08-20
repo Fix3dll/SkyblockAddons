@@ -114,5 +114,6 @@
   "KUUDRA_CHEST": "(?<type>Free|Paid) Chest",
   "CROSEUS_CHEST_MENU": "(?<type>(?:Master )?Catacombs|Kuudra) - .+",
   "EQUIPMENT_SETS": "(?:\\((?<page>\\d+)/\\d+\\) +)?Equipment Sets *",
-  "LOADOUTS": "(?:\\((?<page>\\d+)/\\d+\\) +)?Loadouts *"
+  "LOADOUTS": "(?:\\((?<page>\\d+)/\\d+\\) +)?Loadouts *",
+  "FISHING_BAG": "Fishing Bag"
 }
