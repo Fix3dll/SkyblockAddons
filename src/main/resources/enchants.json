@@ -981,9 +981,9 @@
       ]
     },
     "stealth": {
-      "goodLevel": 0,
+      "goodLevel": 5,
       "loreName": "Stealth",
-      "maxLevel": 1,
+      "maxLevel": 6,
       "nbtName": "stealth",
       "appliedTo": [
         "BOOTS"
