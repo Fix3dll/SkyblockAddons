@@ -11,8 +11,10 @@ import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
 import com.fix3dll.skyblockaddons.features.backpacks.ContainerPreviewManager;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
 import com.google.gson.annotations.Expose;
+import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,13 +22,19 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class PetManager {
@@ -189,7 +197,16 @@ public class PetManager {
 
     public void updatePetItem(String rarityColor, String petItem) {
         String petItemId = getPetIdFromDisplayName("§" + rarityColor + petItem);
-        if (petItemId == null) return;
+        if (petItemId == null) {
+            ItemsData.Item item = main.getItemsData().getByName(petItem);
+
+            if (item != null) {
+                petItemId = item.getId();
+            } else {
+                return;
+            }
+        }
+
         Pet currentPet = main.getPetCacheManager().getCurrentPet();
         if (currentPet == null) return;
 
@@ -242,12 +259,46 @@ public class PetManager {
 
     public SkyblockRarity getPetItemRarityFromId(String petItemId) {
         PetItem petItem = getPetItemById(petItemId);
-        return petItem != null ? petItem.getRarity() : SkyblockRarity.ADMIN;
+        return petItem != null ? petItem.getRarity() : SkyblockRarity.COMMON;
     }
 
     public PetItem getPetItemById(String petItemId) {
         if (StringUtil.isNullOrEmpty(petItemId)) return null;
-        return petItems.get(petItemId);
+        PetItem petItem = petItems.get(petItemId);
+
+        if (petItem == null) {
+            ItemsData.Item item = main.getItemsData().getById(petItemId);
+            if (item == null) return null;
+
+            petItem = new PetItem(
+                    item.getName(),
+                    item.isGlowing(),
+                    Optional.ofNullable(item.getMaterial())
+                            .map(m -> m.toLowerCase(Locale.ENGLISH))
+                            .orElse(null),
+                    item.getTier(),
+                    null,
+                    item.getItemModel(),
+                    petItemId
+            );
+            GameProfile gameProfile = Optional.ofNullable(item.getSkin())
+                    .map(ItemsData.Skin::getGameProfile)
+                    .orElse(null);
+            if (gameProfile != null) {
+                petItem.applyPatch(
+                        DataComponentPatch.builder()
+                                .set(DataComponents.PROFILE, ResolvableProfile.createResolved(gameProfile))
+                                .build()
+                );
+            }
+
+            var copy = HashMap.<String, PetItem>newHashMap(petItems.size() + 1);
+            copy.putAll(petItems);
+            copy.put(petItemId, petItem);
+            petItems = Map.copyOf(copy);
+        }
+
+        return petItem;
     }
 
     public String getPetIdFromDisplayName(String petItemDisplayName) {

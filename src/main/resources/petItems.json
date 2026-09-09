@@ -920,8 +920,56 @@
   "MAGIC_FOR_PETS": {
     "displayName": "§aMagic For Pets In A Hurry",
     "enchanted": true,
-    "material": "skull_item",
+    "material": "paper",
     "rarity": "UNCOMMON",
     "itemModel": "hypixel_skyblock:item/uncategorized/magic_for_pets"
+  },
+  "CRETAN_URN": {
+    "displayName": "§5Cretan Urn",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {"id":[900080715,505361441,-2107208761,475464474],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc1MTY1ODU3Mzk0MywKICAicHJvZmlsZUlkIiA6ICJjN2Y2Nzk3ZmE4ZGM0NTdiYTkxNTU0NWIwMGU3M2UzMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZGd5c3BlbmNlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg5NWRmNDIwNTZkNzk2MDJhNjkxNWZlYzZlZjgwNGJiZTU3YjQ1MGEwYTQ4NGNlOTk5NzQwM2QwYzkwNGQzNTYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==","signature":"MxeGkK52lZlT2Ux7eX+r85g3KOWNbwX427ZGD3JBHYXKjmusDHN4YHZ1WdJ2Cjif6km65rVIMI+tJvZHfQdifn4okzKkeqE3u+YmIWN402V+FpG2K/Qf14IbV53yRsu9IrxaEADO5cFIKBMDKQZEj36pkII1PIAKwvsECzRbkRG+bmZIsZ30Yooum/e1PptE4QMkJaCPkDxaO7PnqRijFL4PZRsDnrx11bzgJSpUsMNBXGhGKm4nrJ/ilDTBvWD05KvGP1yGVrcr0uR1dA2OSVP3fvc4PkDtbPZVBpb/x5EjrBGqXNJDd51VrrghKNk3gJlJkBRhPYow/hbdWfzukKXE4lyR9R2HjHkLPXgLwXMr/hHORDdIhrv0O1MS1H2MMj+TCdQQaRAAzrhD2jGeKbZAovV9F0/NyK3nOZn9HM75AFI6+ioXHqBXkifmv/7F11xSX/OjMdD8tt2xsU9stCZS0rpZTiK+miNkGq0jxBrc3+bPrZf0x7f+Y4VmczFFZXF0+VI0y+tBJDfheNIKHF9Qs5pyUpJ4aAOQcEpD9dQ9vl3AAy1UojLFo4vm1s4nov4y8B2B1tev8MVtlx6Zu6K/sTOBxl3UBDUo5PwVISAY7BQDuZI4IULAHrlUE4zfLjJEL+MuitnERNbShHUQqF874bKuJ9nmGrIQ7xAbvus="}]}
+  },
+  "GIANT_SLOTH_CLAW": {
+    "displayName": "§6Giant Sloth Claw",
+    "material": "paper",
+    "rarity": "LEGENDARY",
+    "itemModel": "hypixel_skyblock:item/island_relevant/foraging_3/petupgrades/sloth_claw_giant"
+  },
+  "LARGE_SLOTH_CLAW": {
+    "displayName": "§5Large Sloth Claw",
+    "material": "paper",
+    "rarity": "EPIC",
+    "itemModel": "hypixel_skyblock:item/island_relevant/foraging_3/petupgrades/sloth_claw_large"
+  },
+  "MEDIUM_SLOTH_CLAW": {
+    "displayName": "§9Medium Sloth Claw",
+    "material": "paper",
+    "rarity": "RARE",
+    "itemModel": "hypixel_skyblock:item/island_relevant/foraging_3/petupgrades/sloth_claw_medium"
+  },
+  "SMALL_SLOTH_CLAW": {
+    "displayName": "§aSmall Sloth Claw",
+    "material": "paper",
+    "rarity": "UNCOMMON",
+    "itemModel": "hypixel_skyblock:item/island_relevant/foraging_3/petupgrades/sloth_claw_small"
+  },
+  "RUBBER_SNORKEL": {
+    "displayName": "§9Rubber Snorkel",
+    "material": "paper",
+    "rarity": "RARE",
+    "itemModel": "hypixel_skyblock:item/island_relevant/foraging_3/petitems/rubber_snorkel"
+  },
+  "UNALLOYED_SPEED": {
+    "displayName": "§5Unalloyed Speed",
+    "material": "skull_item",
+    "rarity": "EPIC",
+    "resolvableProfile": {"id":[-1861437161,-851823210,-1329126674,-1200635335],"properties":[{"name":"textures","value":"ewogICJ0aW1lc3RhbXAiIDogMTc0OTE2NTE0NDc2MCwKICAicHJvZmlsZUlkIiA6ICI2YWVmMjM3Y2RhNDY0Y2QzYTdiZDcxYjg3YzFlMDEwNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJLYWlqdW5va2kiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWFiYjFmYTQ3ZmUzZGM3NmVjODg2MTRiNGViNzY0NWU4ZTg4ZmNmMzZiYjYyYmMyYmZkZDE3ZWRlNzUwMmRkMSIKICAgIH0KICB9Cn0=","signature":"PuTrvtxqhRALYhIydbhIHbBInMkrqKuNoIbpbnIz0JatflGzGQoJmRwPgpqXkKRvpBu49qd35I/Y68jIpAxkN7BeCRU2vRzoJRnwMhvgCiJyk9c2w/qmQh8UdRfhccwoZXwCgOnvEghOxpczQ1cV6/witkQbsmNZtujbLC1/yIdvYUZ8cBW9x3agpF25Dxk/auRiihN4/dSnSZE64XAjpranOS0oQYnCT0uNVjVl9cdQG90ZOH9LxEWjtRj6i/cjXVd4MxIEvhmumD2sbcwkWk75lKnLoA7ly8xmRWaSILqbqfFvYooJsR0hlDrEox0P4/WVhtUVvX4XfD07omgoG2WBAgsa9I7P9eOtYtAwgFXlhf6VR0tugvnBvWYrQZEu8JiPUcFPYpqoTYSeTewraTUFiDSNNN2O4jFhej/00fV1ARFUUtyxFz0OK/Sk0lj6equVvWhXv8bR4NDsdMcPvWeNXTDUO6nQOHa5NdVpM+SPdoT9LH4W7SOEImJYQEn/hm53Rhu8KfmuOOrgqlnvFw2YKRub0o+pL70vooJ6qWwHHW5pcoUA9zTNUDYxaA9Zqlhkj14qVSoXXQ1kpIRG/xnMa9iDRxB0r7pmG8ahkEud5h0pJxHbW6fV/Dm5IA4PAbrlbIhZG3eoUX6UTHbv5Td/QKookcJ5F47X2Znyq7U="}]}
+  },
+  "WINDING_IVY": {
+    "displayName": "§9Winding Ivy",
+    "material": "paper",
+    "rarity": "RARE",
+    "itemModel": "hypixel_skyblock:item/island_relevant/foraging_3/petitems/winding_ivy"
   }
 }

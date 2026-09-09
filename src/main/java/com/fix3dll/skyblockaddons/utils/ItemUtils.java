@@ -654,8 +654,9 @@ public class ItemUtils {
      * @since 2.2.3
      */
     public static GameProfile createGameProfile(String value, String signature) {
-        PropertyMap propertyMap = new PropertyMap(ImmutableMultimap.of());
-        propertyMap.put("textures", new Property("textures", value, signature));
+        PropertyMap propertyMap = new PropertyMap(ImmutableMultimap.of(
+                "textures", new Property("textures", value, signature)
+        ));
 
         UUID uuid = UUID.nameUUIDFromBytes(value.getBytes(StandardCharsets.UTF_8));
 

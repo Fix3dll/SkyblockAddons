@@ -274,7 +274,7 @@ public class DataUtils {
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
             Map<String, PetItem> pets = GSON.fromJson(inputStreamReader, new TypeToken<Map<String, PetItem>>() {}.getType());
             pets.forEach((skyblockId, petItem) -> petItem.setSkyblockId(skyblockId));
-            PetManager.setPetItems(pets);
+            PetManager.setPetItems(Map.copyOf(pets));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }

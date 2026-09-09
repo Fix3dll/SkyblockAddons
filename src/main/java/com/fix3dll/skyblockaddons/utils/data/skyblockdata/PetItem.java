@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.utils.gson.GsonInitializable;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
@@ -20,18 +21,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.logging.log4j.Logger;
 
+@NoArgsConstructor
 public class PetItem implements GsonInitializable {
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
     @SerializedName("displayName")
-    @Getter private String displayName;
+    @Getter private String displayName = "§cNot Found!";
     @SerializedName("enchanted")
     private boolean enchanted;
     @SerializedName("material")
     private String material;
+    // Some items not have a rarity in API like PET_ITEM_*_COMMON
     @SerializedName("rarity")
-    @Getter private SkyblockRarity rarity;
+    @Getter private SkyblockRarity rarity = SkyblockRarity.COMMON;
     @SerializedName("resolvableProfile")
     private JsonElement resolvableProfile;
     @SerializedName("itemModel")
@@ -41,6 +44,17 @@ public class PetItem implements GsonInitializable {
 
     private transient ItemStackTemplate itemStackTemplate;
     private transient ItemStack itemStack;
+
+    public PetItem(String displayName, boolean enchanted, String material, SkyblockRarity rarity, JsonElement resolvableProfile, String itemModel, String skyblockId) {
+        this.displayName = displayName;
+        this.enchanted = enchanted;
+        this.material = material;
+        this.rarity = rarity;
+        this.resolvableProfile = resolvableProfile;
+        this.itemModel = itemModel;
+        this.skyblockId = skyblockId;
+        makeItemStackTemplate();
+    }
 
     @Override
     public void gsonInit() {
@@ -92,6 +106,18 @@ public class PetItem implements GsonInitializable {
             if (skyblockId != null) ItemUtils.setItemStackSkyblockID(itemStack, skyblockId);
         }
         return itemStack;
+    }
+
+    /**
+     * Applies {@code patch} to existing {@code itemStackTemplate}
+     * @param patch {@link DataComponentPatch}
+     * @return Validated {@link ItemStack} after the patch
+     */
+    public ItemStack applyPatch(DataComponentPatch patch) {
+        if (itemStackTemplate != null) {
+            return itemStack = itemStackTemplate.apply(patch);
+        }
+        return getItemStack();
     }
 
 }

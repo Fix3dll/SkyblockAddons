@@ -7,6 +7,7 @@ import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.PetItem;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
@@ -35,7 +36,9 @@ public class PetItemsRequest extends RemoteFileRequest<Map<String, PetItem>> {
         @Override
         public void completed(Map<String, PetItem> result) {
             super.completed(result);
-            PetManager.setPetItems(Map.copyOf(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR)));
+            Minecraft.getInstance().execute(() ->
+                    PetManager.setPetItems(Map.copyOf(Objects.requireNonNull(result, NO_DATA_RECEIVED_ERROR)))
+            );
         }
 
     }
