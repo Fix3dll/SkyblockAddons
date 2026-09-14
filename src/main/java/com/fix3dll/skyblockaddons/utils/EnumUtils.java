@@ -9,6 +9,8 @@ import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -253,58 +255,58 @@ public class EnumUtils {
         }
     }
 
+    /** If you make a feature, feel free to add your GitHub username here. */
+    @NullMarked
     public enum FeatureCredit {
-        // If you make a feature, feel free to add your name here with an associated website of your choice.
-        ORCHID_ALLOY("orchidalloy", "github.com/orchidalloy", SUMMONING_EYE_ALERT, ENCHANTMENT_LORE_PARSING),
-        HIGH_CRIT("HighCrit", "github.com/HighCrit", PREVENT_MOVEMENT_ON_DEATH),
-        MOULBERRY("Moulberry", "github.com/Moulberry", DONT_RESET_CURSOR_INVENTORY),
-        TOMOCRAFTER("tomocrafter", "github.com/tomocrafter", SLAYER_ARMOR_PROGRESS, NO_ARROWS_LEFT_ALERT,
-                BOSS_APPROACH_ALERT),
-        DAPIGGUY("DaPigGuy", "github.com/DaPigGuy", MINION_DISABLE_LOCATION_WARNING),
-        KEAGEL("Keagel", "github.com/Keagel", DISABLE_MAGICAL_SOUP_MESSAGES),
-        SUPERHIZE("SuperHiZe", "github.com/superhize", SPECIAL_ZEALOT_ALERT),
-        DIDI_SKYWALKER("DidiSkywalker", "twitter.com/didiskywalker", ITEM_PICKUP_LOG, HEALTH_UPDATES,
-                REPLACE_ROMAN_NUMERALS_WITH_NUMBERS),
-        P0KE("P0ke", "p0ke.dev", ZEALOT_COUNTER),
-        DJTHEREDSTONER("DJtheRedstoner", "github.com/DJtheRedstoner", LEGENDARY_SEA_CREATURE_WARNING,
-                HIDE_SVEN_PUP_NAMETAGS),
-        CHARZARD("Charzard4261", "github.com/Charzard4261", DISABLE_TELEPORT_PAD_MESSAGES, BAIT_LIST,
-                SHOW_BASE_STAT_BOOST_PERCENTAGE, SHOW_ITEM_DUNGEON_FLOOR, SHOW_BASE_STAT_BOOST_PERCENTAGE,
-                REVENANT_SLAYER_TRACKER, TARANTULA_SLAYER_TRACKER, SVEN_SLAYER_TRACKER, DRAGON_STATS_TRACKER,
-                SHOW_STACKING_ENCHANT_PROGRESS, STOP_BONZO_STAFF_SOUNDS, DISABLE_MORT_MESSAGES, DISABLE_BOSS_MESSAGES),
-        IHDEVELOPER("iHDeveloper", "github.com/iHDeveloper", SHOW_DUNGEON_MILESTONE,
-                DUNGEONS_COLLECTED_ESSENCES_DISPLAY, SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY, DUNGEONS_SECRETS_DISPLAY,
-                SHOW_SWORD_KILLS),
-        TIRELESS_TRAVELER("TirelessTraveler", "github.com/ILikePlayingGames", DUNGEON_DEATH_COUNTER),
-        KAASBROODJU("kaasbroodju", "github.com/kaasbroodju", SKILL_PROGRESS_BAR),
-        PHOUBE("Phoube", "github.com/Phoube", HIDE_OTHER_PLAYERS_PRESENTS, SHOW_EXPERIMENTATION_TABLE_TOOLTIPS,
-                DRILL_FUEL_BAR, DRILL_FUEL_TEXT),
-        PEDRO9558("Pedro9558", "github.com/Pedro9558", TREVOR_THE_TRAPPER_FEATURES, FETCHUR_TODAY, STOP_RAT_SOUNDS),
-        ROBOTHANZO("RobotHanzo", "robothanzo.dev", HIDE_SPAWN_POINT_PLAYERS),
-        IRONM00N("IRONM00N", "github.com/IRONM00N", FARM_EVENT_TIMER),
-        SKYCATMINEPOKIE("skycatminepokie", "github.com/skycatminepokie", OUTBID_ALERT_SOUND),
-        TIMOLOB("TimoLob", "github.com/TimoLob", BROOD_MOTHER_ALERT),
-        NOPOTHEGAMER("NopoTheGamer", "twitch.tv/nopothegamer", BAL_BOSS_ALERT),
-        CATFACE("CatFace","github.com/CattoFace", PLAYER_SYMBOLS_IN_CHAT),
-        HANNIBAL2("Hannibal2", "github.com/hannibal00212", CRIMSON_ARMOR_ABILITY_STACKS, HIDE_TRUE_DEFENSE),
-        JASON54("jason54jg", "github.com/jason54jg", INFERNO_SLAYER_TRACKER),
-        GLACIALVITALITY("GlacialVitality", "github.com/glacialvitality", RIFTSTALKER_SLAYER_TRACKER),
-        FIX3DLL("Fix3dll", "github.com/Fix3dll", FIRE_FREEZE_TIMER, HIDE_HAUNTED_SKULLS, THUNDER_BOTTLE_DISPLAY,
-                PET_DISPLAY, PRESSURE_BAR, PRESSURE_TEXT, HIDE_EFFECTS_HUD, EQUIPMENTS_IN_INVENTORY,
-                COLORED_FISHING_PARTICLES, ITEM_PRICES_IN_TOOLTIP, SHOW_CLICKABLE_MESSAGES_CONTENT,
-                DUNGEON_PROFIT_OVERLAY, VITALITY_BAR, VITALITY_TEXT);
+        ORCHID_ALLOY("orchidalloy", SUMMONING_EYE_ALERT, ENCHANTMENT_LORE_PARSING),
+        HIGH_CRIT("HighCrit", PREVENT_MOVEMENT_ON_DEATH),
+        MOULBERRY("Moulberry", DONT_RESET_CURSOR_INVENTORY),
+        TOMOCRAFTER("tomocrafter", SLAYER_ARMOR_PROGRESS, NO_ARROWS_LEFT_ALERT, BOSS_APPROACH_ALERT),
+        DAPIGGUY("DaPigGuy", MINION_DISABLE_LOCATION_WARNING),
+        KEAGEL("Keagel", DISABLE_MAGICAL_SOUP_MESSAGES),
+        SUPERHIZE("SuperHiZe", SPECIAL_ZEALOT_ALERT),
+        DIDI_SKYWALKER("DidiSkywalker", ITEM_PICKUP_LOG, HEALTH_UPDATES, REPLACE_ROMAN_NUMERALS_WITH_NUMBERS),
+        P0KE("P0keDev", ZEALOT_COUNTER),
+        DJTHEREDSTONER("DJtheRedstoner", LEGENDARY_SEA_CREATURE_WARNING, HIDE_SVEN_PUP_NAMETAGS),
+        CHARZARD("Charzard4261", DISABLE_TELEPORT_PAD_MESSAGES, BAIT_LIST, SHOW_BASE_STAT_BOOST_PERCENTAGE,
+                SHOW_ITEM_DUNGEON_FLOOR, SHOW_BASE_STAT_BOOST_PERCENTAGE, REVENANT_SLAYER_TRACKER,
+                TARANTULA_SLAYER_TRACKER, SVEN_SLAYER_TRACKER, DRAGON_STATS_TRACKER, SHOW_STACKING_ENCHANT_PROGRESS,
+                STOP_BONZO_STAFF_SOUNDS, DISABLE_MORT_MESSAGES, DISABLE_BOSS_MESSAGES),
+        IHDEVELOPER("iHDeveloper", SHOW_DUNGEON_MILESTONE, DUNGEONS_COLLECTED_ESSENCES_DISPLAY, SHOW_SWORD_KILLS,
+                SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY, DUNGEONS_SECRETS_DISPLAY),
+        TIRELESS_TRAVELER("ILikePlayingGames", DUNGEON_DEATH_COUNTER),
+        KAASBROODJU("kaasbroodju", SKILL_PROGRESS_BAR),
+        PHOUBE("Phoube", HIDE_OTHER_PLAYERS_PRESENTS, SHOW_EXPERIMENTATION_TABLE_TOOLTIPS, DRILL_FUEL_BAR,
+                DRILL_FUEL_TEXT),
+        PEDRO9558("Pedro9558", TREVOR_THE_TRAPPER_FEATURES, FETCHUR_TODAY, STOP_RAT_SOUNDS),
+        ROBOTHANZO("RobotHanzo", HIDE_SPAWN_POINT_PLAYERS),
+        IRONM00N("IRONM00N", FARM_EVENT_TIMER),
+        SKYCATMINEPOKIE("skycatminepokie", OUTBID_ALERT_SOUND),
+        TIMOLOB("TimoLob", BROOD_MOTHER_ALERT),
+        NOPOTHEGAMER("NopoTheGamer", BAL_BOSS_ALERT),
+        CATFACE("CattoFace", PLAYER_SYMBOLS_IN_CHAT),
+        HANNIBAL2("hannibal002", CRIMSON_ARMOR_ABILITY_STACKS, HIDE_TRUE_DEFENSE),
+        JASON54("Jason54jg", INFERNO_SLAYER_TRACKER),
+        GLACIALVITALITY("GlacialVitality", RIFTSTALKER_SLAYER_TRACKER),
+        FIX3DLL("Fix3dll", FIRE_FREEZE_TIMER, HIDE_HAUNTED_SKULLS, THUNDER_BOTTLE_DISPLAY, PET_DISPLAY, PRESSURE_BAR,
+                PRESSURE_TEXT, HIDE_EFFECTS_HUD, EQUIPMENTS_IN_INVENTORY, COLORED_FISHING_PARTICLES, VITALITY_TEXT,
+                ITEM_PRICES_IN_TOOLTIP, SHOW_CLICKABLE_MESSAGES_CONTENT, DUNGEON_PROFIT_OVERLAY, VITALITY_BAR);
 
         private final Set<Feature> features;
         private final String author;
-        private final String url;
+        @Getter private final URI uri;
 
-        FeatureCredit(String author, String url, Feature... features) {
+        FeatureCredit(String githubUsername, Feature... features) {
             this.features = EnumSet.of(features[0], features);
-            this.author = author;
-            this.url = url;
+            this.author = githubUsername;
+            try {
+                this.uri = new URI("https", "github.com", "/" + githubUsername, null);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("Invalid github username", e);
+            }
         }
 
-        public static FeatureCredit fromFeature(Feature feature) {
+        public static @Nullable FeatureCredit fromFeature(Feature feature) {
             for (FeatureCredit credit : values()) {
                 if (credit.features.contains(feature)) return credit;
             }
@@ -313,10 +315,6 @@ public class EnumUtils {
 
         public String getAuthor() {
             return "Contrib. " + author;
-        }
-
-        public String getUrl() {
-            return "https://" + url;
         }
     }
 
@@ -337,20 +335,21 @@ public class EnumUtils {
     }
 
     @Getter
+    @NullMarked
     public enum Social {
         GITHUB("github", "https://github.com/Fix3dll/SkyblockAddons"),
         MODRINTH("modrinth", "https://modrinth.com/project/F35D4vTL"),
         BUYMEACOFFEE("buymeacoffee", "https://www.buymeacoffee.com/fix3dll");
 
         private final Identifier identifier;
-        private URI url;
+        private final URI uri;
 
         Social(String resourcePath, String url) {
             this.identifier = SkyblockAddons.identifier("gui/" + resourcePath + ".png");
             try {
-                this.url = new URI(url);
+                this.uri = new URI(url);
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                throw new IllegalArgumentException("Invalid %s social url".formatted(this.name()), e);
             }
         }
     }

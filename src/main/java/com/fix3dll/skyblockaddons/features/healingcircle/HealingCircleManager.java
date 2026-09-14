@@ -48,7 +48,7 @@ public class HealingCircleManager {
     );
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    @Getter private static final Set<HealingCircle> healingCircles = Sets.newConcurrentHashSet();
+    @Getter private static final Set<HealingCircle> healingCircles = Sets.newHashSet();
 
     public static void addHealingCircleParticle(HealingCircleParticle healingCircleParticle) {
         HealingCircle nearbyHealingCircle = null;
