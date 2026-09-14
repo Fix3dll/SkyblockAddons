@@ -1,9 +1,10 @@
 package com.fix3dll.skyblockaddons.core.render.chroma;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import net.minecraft.client.renderer.DynamicUniformStorage;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import net.minecraft.client.renderer.DynamicGpuDataStorage;
+import net.minecraft.client.renderer.DynamicGpuDataStorageMapped;
 import org.jspecify.annotations.NonNull;
 
 import java.nio.ByteBuffer;
@@ -17,10 +18,10 @@ public class ChromaUniform implements AutoCloseable {
 
     private final int UNIFORM_SIZE = new Std140SizeCalculator().putFloat().putFloat().putFloat().get();
 
-    private final DynamicUniformStorage<UniformValue> storage = new DynamicUniformStorage<>("SBA Chroma UBO", UNIFORM_SIZE, 2);
+    private final DynamicGpuDataStorageMapped<UniformValue> storage = new DynamicGpuDataStorageMapped<>("SBA Chroma UBO", UNIFORM_SIZE, 128, 2);
 
     public GpuBufferSlice writeWith(Float chromaSize, Float timeOffset, Float saturation) {
-        return storage.writeUniform(
+        return storage.writeData(
                 new UniformValue(chromaSize, timeOffset, saturation)
         );
     }
@@ -36,7 +37,7 @@ public class ChromaUniform implements AutoCloseable {
         storage.close();
     }
 
-    record UniformValue(Float chromaSize, Float timeOffset, Float saturation) implements DynamicUniformStorage.DynamicUniform{
+    record UniformValue(Float chromaSize, Float timeOffset, Float saturation) implements DynamicGpuDataStorage.DynamicGpuData{
         @Override
         public void write(@NonNull ByteBuffer buffer) {
             Std140Builder.intoBuffer(buffer)

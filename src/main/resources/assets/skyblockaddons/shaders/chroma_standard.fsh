@@ -1,14 +1,14 @@
-#version 150
+#version 450
 
-in vec4 vertexColor;
+layout(location = 0) in vec4 vertexColor;
+
+layout(location = 0) out vec4 fragColor;
 
 layout(std140) uniform ChromaUniforms {
     float chromaSize;
     float timeOffset;
     float saturation;
 };
-
-out vec4 fragColor;
 
 float rgb2b(vec3 rgb) {
     return max(max(rgb.r, rgb.g), rgb.b);

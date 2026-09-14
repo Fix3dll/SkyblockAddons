@@ -1,13 +1,13 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.mixin.hooks.GuiRendererHook;
-import net.minecraft.client.renderer.DynamicUniforms;
+import net.minecraft.client.renderer.DynamicGpuData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(DynamicUniforms.class)
+@Mixin(DynamicGpuData.class)
 public class DynamicUniformsMixin {
 
     @Inject(method = "reset", at = @At("HEAD"))

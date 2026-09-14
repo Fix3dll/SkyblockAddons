@@ -31,7 +31,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -680,11 +679,11 @@ public class LocationEditGui extends SkyblockAddonsScreen {
 
         // Rescale feature with mouse scroll
         if (scrollX > 0 || scrollY > 0) {
-            float newScale = oldScale + (InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 1.0F : 0.1F);
+            float newScale = oldScale + (InputConstants.isKeyDown(InputConstants.KEY_LSHIFT) ? 1.0F : 0.1F);
             lastHoveredFeature.setGuiScale(newScale);
             recalculateResizeButtons();
         } else if (scrollX < 0 || scrollY < 0) {
-            float newScale = oldScale - (InputConstants.isKeyDown(MC.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 1.0F : 0.1F);
+            float newScale = oldScale - (InputConstants.isKeyDown(InputConstants.KEY_LSHIFT) ? 1.0F : 0.1F);
             lastHoveredFeature.setGuiScale(newScale);
             recalculateResizeButtons();
         }
@@ -814,7 +813,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
         this.isMiddlePressed = false;
 
         // Reset to default scale with right mouse button click
-        if (event.button() == 1) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             ButtonLocation lastHoveredButton = resizing
                     ? buttonLocations.get(draggedFeature)
                     : getHoveredFeatureButton(event.x(), event.y());
@@ -825,7 +824,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
                     main.getConfigValuesManager().putDefaultGuiScale(lastHoveredButton.getFeature());
                 }
             }
-        } else if (event.button() == 2) {
+        } else if (event.button() == InputConstants.MOUSE_BUTTON_MIDDLE) {
             this.isMiddlePressed = true;
         }
 
@@ -844,7 +843,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             GuiEventListener guiEventListener = optional.get();
             if (guiEventListener.mouseClicked(event, isDoubleClick)) {
                 this.setFocused(guiEventListener);
-                if (event.button() == 0) {
+                if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                     this.setDragging(true);
                 }
                 actionPerformed(guiEventListener, event);
@@ -864,14 +863,14 @@ public class LocationEditGui extends SkyblockAddonsScreen {
             int xOffset = 0;
             int yOffset = 0;
             switch (event.key()) {
-                case GLFW.GLFW_KEY_LEFT -> xOffset--;
-                case GLFW.GLFW_KEY_UP -> yOffset--;
-                case GLFW.GLFW_KEY_RIGHT -> xOffset++;
-                case GLFW.GLFW_KEY_DOWN -> yOffset++;
-                case GLFW.GLFW_KEY_A -> xOffset -= 10;
-                case GLFW.GLFW_KEY_W -> yOffset -= 10;
-                case GLFW.GLFW_KEY_D -> xOffset += 10;
-                case GLFW.GLFW_KEY_S -> yOffset += 10;
+                case InputConstants.KEY_LEFT -> xOffset--;
+                case InputConstants.KEY_UP -> yOffset--;
+                case InputConstants.KEY_RIGHT -> xOffset++;
+                case InputConstants.KEY_DOWN -> yOffset++;
+                case InputConstants.KEY_A -> xOffset -= 10;
+                case InputConstants.KEY_W -> yOffset -= 10;
+                case InputConstants.KEY_D -> xOffset += 10;
+                case InputConstants.KEY_S -> yOffset += 10;
             }
             Pair<Float, Float> relativeCoords = hoveredFeature.getRelativeCoords();
             hoveredFeature.getFeatureData().setCoords(
@@ -896,7 +895,7 @@ public class LocationEditGui extends SkyblockAddonsScreen {
      */
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        if (event.button() == 0 && this.isDragging()) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isDragging()) {
             draggedFeature = null;
             resizing = false;
             this.setDragging(false);

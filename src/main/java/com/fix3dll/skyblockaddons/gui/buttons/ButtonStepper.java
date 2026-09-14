@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -78,7 +79,7 @@ public class ButtonStepper extends SkyblockAddonsButton {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.button() == 0) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             if (isOverSubtractButton(event.x(), event.y())) {
                 callback.accept(Modifier.SUBTRACT);
                 if (!hitMaximum(Modifier.SUBTRACT, event.x(), event.y())) {

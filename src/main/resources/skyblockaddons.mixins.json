@@ -19,6 +19,7 @@
     "ClientLevelMixin",
     "ContainerScreenMixin",
     "DisconnectedScreenMixin",
+    "DynamicUniformsMixin",
     "EndermanRendererMixin",
     "EntityRendererMixin",
     "EntityRenderStateMixin",
@@ -34,7 +35,6 @@
     "KeyMappingCategoryMixin",
     "LevelRendererMixin",
     "LivingEntityRendererMixin",
-    "LocalPlayerMixin",
     "MinecraftMixin",
     "MouseHandlerMixin",
     "MultiPlayerGameModeMixin",
@@ -42,7 +42,6 @@
     "ParticleMixin",
     "PreparedRenderTypeMixin",
     "RecipeBookComponentMixin",
-    "DynamicUniformsMixin",
     "ScreenMixin",
     "SoundEngineMixin",
     "WakeParticleMixin"

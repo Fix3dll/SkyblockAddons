@@ -4,10 +4,10 @@ import com.fix3dll.skyblockaddons.mixin.hooks.GuiRendererHook;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +35,7 @@ public class GuiRendererMixin {
         GuiRendererHook.computeChromaBufferSlice();
     }
 
-    @Inject(method = "executeDrawRange", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V"))
+    @Inject(method = "executeDrawRange", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/renderpearl/api/buffers/GpuBufferSlice;)V"))
     public void insertChromaSetUniform(Supplier<String> label,
                                        RenderTarget mainRenderTarget,
                                        GpuBufferSlice dynamicTransforms,
@@ -46,7 +46,7 @@ public class GuiRendererMixin {
         GuiRendererHook.insertChromaSetUniform(renderPass);
     }
 
-    @WrapOperation(method = "addElementToMesh", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/state/gui/GuiElementRenderState;pipeline()Lcom/mojang/blaze3d/pipeline/RenderPipeline;"))
+    @WrapOperation(method = "addElementToMesh", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/state/gui/GuiElementRenderState;pipeline()Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;"))
     public RenderPipeline replacePipeline(GuiElementRenderState state, Operation<RenderPipeline> original) {
         return GuiRendererHook.replacePipeline(state, original);
     }

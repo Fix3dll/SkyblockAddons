@@ -29,3 +29,4 @@ accessible method net/minecraft/client/gui/components/ChatComponent addMessage (
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageHeight I
 accessible method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen extractSlot (Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/inventory/Slot;II)V
+accessible field net/minecraft/client/renderer/LevelRenderer targets Lnet/minecraft/client/renderer/LevelTargetBundle;

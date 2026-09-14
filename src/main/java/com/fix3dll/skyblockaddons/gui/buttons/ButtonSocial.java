@@ -1,13 +1,13 @@
 package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
+import com.mojang.blaze3d.Blaze3D;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Util;
 import org.jspecify.annotations.NonNull;
 
 @Getter
@@ -36,7 +36,7 @@ public class ButtonSocial extends SkyblockAddonsButton {
 
     @Override
     public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        Util.getPlatform().openUri(social.getUrl());
+        Blaze3D.openUri(social.getUri());
     }
 
 }

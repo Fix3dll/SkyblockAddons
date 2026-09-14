@@ -63,8 +63,8 @@ import com.fix3dll.skyblockaddons.utils.SkyblockColor;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.math.Axis;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -94,7 +94,7 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Blaze;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.spider.CaveSpider;
 import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.monster.zombie.Zombie;
@@ -155,7 +155,7 @@ public class RenderListener {
     private static Spider tarantula;
     private static CaveSpider caveSpider;
     private static Wolf sven;
-    private static EnderMan enderman;
+    private static Enderman enderman;
     private static Blaze inferno;
     private static RemotePlayer riftstalker;
 
@@ -2015,7 +2015,7 @@ public class RenderListener {
 
                 case VOIDGLOOM_SLAYER_TRACKER:
                     if (enderman == null) {
-                        enderman = new EnderMan(EntityTypes.ENDERMAN, MC.level);
+                        enderman = new Enderman(EntityTypes.ENDERMAN, MC.level);
                         enderman.setId(NPCUtils.getNextDummyId());
                         enderman.setCarriedBlock(Blocks.BEACON.defaultBlockState());
                     }

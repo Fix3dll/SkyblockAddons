@@ -4,7 +4,6 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.events.RenderEntityOutlineEvent;
 import com.fix3dll.skyblockaddons.mixin.extensions.EntityRenderStateExtension;
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -148,9 +147,9 @@ public class EntityOutlineRenderer {
             entityRenderCache.setNoOutlineCache(noxrayOutlineEvent.getEntitiesToChooseFrom());
 
             if (isCacheEmpty()) {
-                RenderTarget entityOutlineTarget = mc.levelRenderer.entityOutlineTarget();
-                if (!emptyLastTick && entityOutlineTarget != null) {
-                    entityOutlineTarget.destroyBuffers();
+                var entityOutlineHandle = mc.levelRenderer.targets.entityOutline;
+                if (!emptyLastTick && entityOutlineHandle != null) {
+                    entityOutlineHandle.get().destroyBuffers();
                 }
                 emptyLastTick = true;
             } else {
@@ -160,9 +159,9 @@ public class EntityOutlineRenderer {
             entityRenderCache.setXrayCache(null);
             entityRenderCache.setNoXrayCache(null);
             entityRenderCache.setNoOutlineCache(null);
-            RenderTarget entityOutlineTarget = mc.levelRenderer.entityOutlineTarget();
-            if (entityOutlineTarget != null) {
-                entityOutlineTarget.destroyBuffers();
+            var entityOutlineHandle = mc.levelRenderer.targets.entityOutline;
+            if (entityOutlineHandle != null) {
+                entityOutlineHandle.get().destroyBuffers();
             }
             emptyLastTick = true;
         }

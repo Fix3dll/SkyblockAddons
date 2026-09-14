@@ -8,7 +8,6 @@ import java.util.HashSet;
 /**
  * Integration tests for {@link Feature}.
  */
-@SuppressWarnings("UnstableApiUsage")
 public class FeatureTest extends SkyblockAddonsTestSuite {
 
     @Override

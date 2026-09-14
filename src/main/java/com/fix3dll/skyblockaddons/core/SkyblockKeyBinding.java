@@ -7,11 +7,9 @@ import lombok.Getter;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.util.Util;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,16 +18,16 @@ import static com.fix3dll.skyblockaddons.SkyblockAddons.CATEGORY;
 
 @Getter
 public enum SkyblockKeyBinding {
-    OPEN_SETTINGS(GLFW.GLFW_KEY_UNKNOWN, "settings.settings"),
-    OPEN_EDIT_GUI(GLFW.GLFW_KEY_UNKNOWN, "settings.editLocations"),
-    LOCK_SLOT(GLFW.GLFW_KEY_L, "settings.lockSlot"),
-    FREEZE_BACKPACK(GLFW.GLFW_KEY_F, "settings.freezeBackpackPreview"),
-    INCREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_ADD, "keyBindings.increaseDungeonMapZoom"),
-    DECREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
-    ANSWER_ABIPHONE_OR_OPTION(GLFW.GLFW_KEY_UNKNOWN, "keyBindings.answerAbiphoneOrOption"),
-    SHOW_BULK_PRICE(GLFW.GLFW_KEY_LEFT_SHIFT, "keyBindings.showBulkPrice"),
-    SHOW_MISSING_ENCHANTS(GLFW.GLFW_KEY_LEFT_SHIFT, "keyBindings.showMissingEnchants"),
-    DEVELOPER_COPY_NBT(Util.getPlatform() == Util.OS.OSX ? GLFW.GLFW_KEY_LEFT_ALT : GLFW.GLFW_KEY_RIGHT_CONTROL, "keyBindings.developerCopyNBT");
+    OPEN_SETTINGS(InputConstants.UNKNOWN.getValue(), "settings.settings"),
+    OPEN_EDIT_GUI(InputConstants.UNKNOWN.getValue(), "settings.editLocations"),
+    LOCK_SLOT(InputConstants.KEY_L, "settings.lockSlot"),
+    FREEZE_BACKPACK(InputConstants.KEY_F, "settings.freezeBackpackPreview"),
+    INCREASE_DUNGEON_MAP_ZOOM(InputConstants.KEY_ADD, "keyBindings.increaseDungeonMapZoom"),
+    DECREASE_DUNGEON_MAP_ZOOM(InputConstants.KEY_MINUS, "keyBindings.decreaseDungeonMapZoom"),
+    ANSWER_ABIPHONE_OR_OPTION(InputConstants.UNKNOWN.getValue(), "keyBindings.answerAbiphoneOrOption"),
+    SHOW_BULK_PRICE(InputConstants.KEY_LSHIFT, "keyBindings.showBulkPrice"),
+    SHOW_MISSING_ENCHANTS(InputConstants.KEY_LSHIFT, "keyBindings.showMissingEnchants"),
+    DEVELOPER_COPY_NBT(InputConstants.MOUSE_BUTTON_4, "keyBindings.developerCopyNBT");
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
@@ -45,11 +43,13 @@ public enum SkyblockKeyBinding {
      */
     private InputConstants.Key previousKey = InputConstants.UNKNOWN;
 
-    SkyblockKeyBinding(int defaultKeyCode, String translationKey) {
-        this.defaultKey = InputConstants.getKey(new KeyEvent(defaultKeyCode, -1, -1));
+    SkyblockKeyBinding(int defaultKey, String translationKey) {
+        this.defaultKey = 1 <= defaultKey && defaultKey <= 8
+                ? InputConstants.Type.MOUSE.getOrCreate(defaultKey)
+                : InputConstants.Type.KEYBOARD.getOrCreate(defaultKey);
         this.translationKey = translationKey;
-        String key = "key.skyblockaddons." + this.name().toLowerCase(Locale.US);
-        this.keyBinding = new KeyMapping(key, defaultKeyCode, CATEGORY);
+        String key = "key.skyblockaddons." + this.name().toLowerCase(Locale.ENGLISH);
+        this.keyBinding = new KeyMapping(key, defaultKey, CATEGORY);
     }
 
     /**
@@ -87,12 +87,12 @@ public enum SkyblockKeyBinding {
     public boolean isKeyDown() {
         int keyCode = this.getKeyCode();
 
-        if (keyCode == -1) {
+        if (keyCode == 0) {
             return false;
-        } else if (0 <= keyCode && keyCode <= 7) {
-            return GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), keyCode) == 1;
+        } else if (1 <= keyCode && keyCode <= 8) {
+            return (SDLMouse.SDL_GetMouseState(null, null) & (1 << (keyCode - 1))) != 0;
         } else {
-            return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keyCode);
+            return InputConstants.isKeyDown(keyCode);
         }
     }
 

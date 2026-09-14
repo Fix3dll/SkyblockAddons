@@ -23,6 +23,7 @@ import com.fix3dll.skyblockaddons.utils.EnumUtils.GuiTab;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.TextStyle;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
 import com.google.common.collect.Sets;
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -32,7 +33,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -433,7 +433,7 @@ public class SkyblockAddonsGui extends SkyblockAddonsScreen {
     public boolean keyPressed(@NonNull KeyEvent event) {
         if (featureSearchBar.isFocused()) {
             featureSearchBar.keyPressed(event);
-            if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
+            if (event.key() == InputConstants.KEY_BACKSPACE) {
                 searchString = featureSearchBar.getValue();
 
                 main.getUtils().setFadingIn(false);

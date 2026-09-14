@@ -15,7 +15,7 @@ import com.fix3dll.skyblockaddons.mixin.hooks.ScreenHook;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -56,9 +56,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         super(title);
     }
 
-    @Inject(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    public void sba$onRenderTooltip(GuiGraphicsExtractor guiGraphics, int x, int y, CallbackInfo ci, ItemStack itemStack) {
-        if (ScreenHook.onRenderTooltip(itemStack, x, y)) {
+    @Inject(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;Z)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void sba$onRenderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci, ItemStack itemStack) {
+        if (ScreenHook.onRenderTooltip(itemStack, mouseX, mouseY)) {
             ci.cancel();
         }
     }
@@ -73,8 +73,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         SkyblockAddons.getInstance().getUtils().setLastHoveredSlot(-1);
     }
 
-    @WrapWithCondition(method = "extractSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
-    public boolean sba$renderSlotHighlightFront(GuiGraphicsExtractor graphics, RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height) {
+    @WrapWithCondition(method = "extractSlotHighlightFront", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+    public boolean sba$renderSlotHighlightFront(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height) {
         return AbstractContainerScreenHook.renderSlotHighlightFront(graphics, x, y, this.hoveredSlot);
     }
 
@@ -108,7 +108,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V", at = @At("HEAD"), cancellable = true)
     public void sba$slotClicked(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
         // Virtual slots are kept out of hoveredSlot, so they cannot get here. This is the packet boundary, so it
         // stays as a backstop against any future path that would hand one to the container input handler.

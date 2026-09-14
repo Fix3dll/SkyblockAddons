@@ -17,7 +17,7 @@ import com.fix3dll.skyblockaddons.utils.ItemUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;

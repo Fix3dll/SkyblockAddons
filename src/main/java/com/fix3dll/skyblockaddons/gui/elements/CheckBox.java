@@ -6,6 +6,7 @@ import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.listeners.RenderListener;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -90,7 +91,7 @@ public class CheckBox {
     }
 
     public void onMouseClick(MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.button() == 0
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT
                 && event.x() > this.x && event.x() < this.x + this.size + this.textWidth
                 && event.y() > this.y && event.y() < this.y + this.size) {
             value = !value;

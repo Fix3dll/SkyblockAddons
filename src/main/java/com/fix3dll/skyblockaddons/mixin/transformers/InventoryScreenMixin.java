@@ -9,7 +9,7 @@ import com.fix3dll.skyblockaddons.features.slots.EquipmentSlots;
 import com.fix3dll.skyblockaddons.mixin.hooks.HudHook;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.inventory.EffectsInInventory;
@@ -52,7 +52,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         ContainerPreviewManager.drawContainerPreviews(graphics, this, mouseX, mouseY);
     }
 
-    @Inject(method = "extractBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V", shift = At.Shift.AFTER))
+    @Inject(method = "extractBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V", shift = At.Shift.AFTER))
     public void sba$renderEqs(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         if (SkyblockEquipment.equipmentsInInventory()) {
             Feature feature = Feature.EQUIPMENTS_IN_INVENTORY;

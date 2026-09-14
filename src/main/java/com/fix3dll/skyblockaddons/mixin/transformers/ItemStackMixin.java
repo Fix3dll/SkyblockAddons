@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
 
-    @Inject(method = "addToTooltip", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "addToTooltip(Lnet/minecraft/core/component/DataComponentType;Lnet/minecraft/world/item/Item$TooltipContext;Lnet/minecraft/world/item/component/TooltipDisplay;Ljava/util/function/Consumer;Lnet/minecraft/world/item/TooltipFlag;)V", at = @At("HEAD"), cancellable = true)
     public <T extends TooltipProvider> void sba$hideVanillaEnchants(DataComponentType<T> type, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> consumer, TooltipFlag flag, CallbackInfo ci) {
         if (type != DataComponents.ENCHANTMENTS || !SkyblockAddons.getInstance().getUtils().isOnSkyblock()) return;
         if (Feature.ENCHANTMENT_LORE_PARSING.isEnabled(FeatureSetting.HIDE_VANILLA_ENCHANTS)) {

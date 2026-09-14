@@ -9,6 +9,7 @@ import com.fix3dll.skyblockaddons.gui.buttons.ButtonCustomToggle;
 import com.fix3dll.skyblockaddons.gui.buttons.IslandButton;
 import com.fix3dll.skyblockaddons.gui.buttons.IslandMarkerButton;
 import com.fix3dll.skyblockaddons.utils.objects.Pair;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.Window;
 import lombok.Getter;
@@ -147,7 +148,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
 
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.button() == 0 && selectedMarker != null) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && selectedMarker != null) {
             MC.gui.setScreen(null);
 
             if (Feature.FANCY_WARP_MENU.isEnabled(FeatureSetting.DOUBLE_WARP)) {
@@ -174,7 +175,7 @@ public class IslandWarpGui extends SkyblockAddonsScreen {
             if (guiEventListener.isMouseOver(scaledMouseLocations.getLeft(), scaledMouseLocations.getRight())) {
                 if (guiEventListener.mouseClicked(mouseButtonEvent, isDoubleClick)) {
                     this.setFocused(guiEventListener);
-                    if (event.button() == 0) {
+                    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                         this.setDragging(true);
                     }
                 }

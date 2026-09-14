@@ -12,6 +12,7 @@ import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.google.common.base.CaseFormat;
+import com.mojang.blaze3d.Blaze3D;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -25,7 +26,6 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,7 +146,7 @@ public class SkyblockAddonsCommand {
 
         // FOLDER
         builder.then(literal("folder").executes(ctx -> {
-            Util.getPlatform().openFile(main.getUtils().getSBAFolder());
+            Blaze3D.openPath(main.getUtils().getSBAConfigPath());
             return 1;
         }));
 

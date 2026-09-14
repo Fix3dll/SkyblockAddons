@@ -42,7 +42,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -697,15 +696,15 @@ public class Utils {
     }
 
     /**
-     * Returns the folder that SkyblockAddons is located in.
-     * @return the folder the SkyblockAddons jar is located in
+     * @return SkyblockAddons's config directory {@link Path}. If it cannot resolve it,
+     * it returns the path to the global configuration directory.
      */
-    public File getSBAFolder() {
+    public Path getSBAConfigPath() {
         Path container = FabricLoader.getInstance().getConfigDir();
         try {
-            return container.resolve(SkyblockAddons.MOD_ID).toFile();
+            return container.resolve(SkyblockAddons.MOD_ID);
         } catch (Exception ignored) {
-            return container.toFile();
+            return container;
         }
     }
 

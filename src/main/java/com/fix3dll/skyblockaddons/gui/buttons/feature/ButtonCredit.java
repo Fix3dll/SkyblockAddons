@@ -2,7 +2,8 @@ package com.fix3dll.skyblockaddons.gui.buttons.feature;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
-import com.fix3dll.skyblockaddons.utils.EnumUtils;
+import com.fix3dll.skyblockaddons.utils.EnumUtils.FeatureCredit;
+import com.mojang.blaze3d.Blaze3D;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -10,7 +11,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Util;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.NonNull;
 
@@ -19,9 +19,9 @@ public class ButtonCredit extends ButtonFeature {
 
     private static final Identifier WEB = SkyblockAddons.identifier("gui/web.png");
 
-    private final EnumUtils.FeatureCredit credit;
+    private final FeatureCredit credit;
 
-    public ButtonCredit(double x, double y, String buttonText, EnumUtils.FeatureCredit credit, Feature feature, boolean smaller) {
+    public ButtonCredit(double x, double y, String buttonText, FeatureCredit credit, Feature feature, boolean smaller) {
         super((int) x, (int) y, Component.literal(buttonText), feature);
         this.width = 12;
         this.height = 12;
@@ -47,10 +47,8 @@ public class ButtonCredit extends ButtonFeature {
 
     @Override
     public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (!feature.isRemoteDisabled()) {
-            try {
-                Util.getPlatform().openUri(credit.getUrl());
-            } catch (Exception ignored) {}
+        if (!feature.isRemoteDisabled() && credit != null) {
+            Blaze3D.openUri(credit.getUri());
         }
     }
 

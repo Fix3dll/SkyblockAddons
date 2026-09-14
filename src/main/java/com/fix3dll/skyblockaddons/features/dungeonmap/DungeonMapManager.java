@@ -10,7 +10,7 @@ import com.fix3dll.skyblockaddons.gui.buttons.feature.ButtonLocation;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;

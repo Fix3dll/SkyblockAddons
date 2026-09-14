@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.core;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -77,7 +78,7 @@ public enum SkyblockEquipment {
 
     public void onClick(int button) {
         LocalPlayer player = MC.player;
-        if (player == null || button != 0) return;
+        if (player == null || button != InputConstants.MOUSE_BUTTON_LEFT) return;
 
         // These are user commands rather than container interactions, so they are sent from the click directly
         String command;

@@ -12,7 +12,6 @@ import net.minecraft.util.StringUtil;
  *   <li><b>Dynamic</b>   — has a {@code relatedFeature} but no {@code translationKey}, {@code universal=false}</li>
  * </ul>
  */
-@SuppressWarnings("UnstableApiUsage")
 public class FeatureSettingTest extends SkyblockAddonsTestSuite {
 
     @Override

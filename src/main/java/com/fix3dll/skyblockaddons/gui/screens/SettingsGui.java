@@ -23,6 +23,7 @@ import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.EnumUtils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -723,7 +724,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
 
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (isScrollable && event.button() == 0) {
+        if (isScrollable && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             double mx = event.x();
             double my = event.y();
             if (mx >= cachedTrackX && mx <= cachedTrackX + SCROLLBAR_WIDTH
@@ -741,7 +742,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
 
     @Override
     public boolean mouseDragged(@NonNull MouseButtonEvent event, double dragX, double dragY) {
-        if (isDraggingScrollbar && event.button() == 0 && isScrollable) {
+        if (isDraggingScrollbar && event.button() == InputConstants.MOUSE_BUTTON_LEFT && isScrollable) {
             double mouseDelta = event.y() - dragStartMouseY;
             double scrollablePx = cachedTrackHeight - cachedThumbHeight;
             if (scrollablePx > 0) {
@@ -754,7 +755,7 @@ public class SettingsGui extends SkyblockAddonsScreen {
 
     @Override
     public boolean mouseReleased(@NonNull MouseButtonEvent event) {
-        if (isDraggingScrollbar && event.button() == 0) {
+        if (isDraggingScrollbar && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             isDraggingScrollbar = false;
         }
         return super.mouseReleased(event);

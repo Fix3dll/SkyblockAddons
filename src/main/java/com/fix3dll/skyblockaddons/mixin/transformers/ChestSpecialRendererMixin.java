@@ -13,7 +13,7 @@ import static com.fix3dll.skyblockaddons.mixin.hooks.ChestSpecialRendererHook.BL
 @Mixin(ChestSpecialRenderer.class)
 public class ChestSpecialRendererMixin {
 
-    @ModifyArgs(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;IIILnet/minecraft/client/resources/model/sprite/SpriteId;Lnet/minecraft/client/resources/model/sprite/SpriteGetter;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
+    @ModifyArgs(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;IIILnet/minecraft/client/resources/model/sprite/SpriteId;Lnet/minecraft/client/resources/model/sprite/SpriteGetter;I)V"))
     public void sba$submit(Args args) {
         Integer customEnderChestColor = ChestSpecialRendererHook.getCustomEnderChestColor();
         if (customEnderChestColor != null) {

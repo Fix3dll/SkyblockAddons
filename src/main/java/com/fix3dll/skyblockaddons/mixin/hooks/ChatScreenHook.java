@@ -11,15 +11,12 @@ import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.chat.GuiMessageSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 public class ChatScreenHook {
@@ -31,15 +28,12 @@ public class ChatScreenHook {
     public static boolean logNextChatComponent = false;
 
     public static void copyChatMessage(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
-        if (event.button() != 0) return;
+        if (event.button() != InputConstants.MOUSE_BUTTON_LEFT) return;
         if (Feature.DEVELOPER_MODE.isDisabled() && !canCopyMessages()) {
             return;
         }
 
-        Window handle = MC.getWindow();
-        boolean isLeftControlDown = Util.getPlatform() == Util.OS.OSX
-                ? InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SUPER)
-                : InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL);
+        boolean isLeftControlDown = InputConstants.isKeyDown(InputConstants.KEY_LCONTROL);
 
         if (isLeftControlDown) {
             ChatComponentExtension extendedChatComponent = (ChatComponentExtension) MC.gui.hud.getChat();
@@ -73,7 +67,7 @@ public class ChatScreenHook {
                     return;
                 }
 
-                boolean isLeftShiftDown = InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT);
+                boolean isLeftShiftDown = InputConstants.isKeyDown(InputConstants.KEY_LSHIFT);
                 if (isLeftShiftDown) {
                     DevUtils.copyStringToClipboard(
                             parentComponent.toString(),

@@ -11,20 +11,21 @@ import com.fix3dll.skyblockaddons.core.render.state.SbaTextRenderState;
 import com.fix3dll.skyblockaddons.mixin.extensions.StyleExtension;
 import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
-import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.UniformType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -53,6 +54,7 @@ public class DrawUtils {
                     .withLocation(SkyblockAddons.identifier("sba_chroma_standard"))
                     .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
                     .withPrimitiveTopology(PrimitiveTopology.QUADS)
+                    .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .withVertexShader(SkyblockAddons.identifier("chroma_standard"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_standard"))
                     .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
@@ -64,8 +66,8 @@ public class DrawUtils {
                             .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
                             .withUniform("Projection", UniformType.UNIFORM_BUFFER)
                             .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
-                            .withSampler("Sampler0")
                             .build())
+                    .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
                     .withLocation(SkyblockAddons.identifier("sba_chroma_text"))
                     .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
                     .withPrimitiveTopology(PrimitiveTopology.QUADS)

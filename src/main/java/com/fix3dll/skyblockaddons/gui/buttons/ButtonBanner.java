@@ -2,6 +2,7 @@ package com.fix3dll.skyblockaddons.gui.buttons;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.utils.Utils;
+import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -11,7 +12,6 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.NonNull;
@@ -127,7 +127,7 @@ public class ButtonBanner extends SkyblockAddonsButton {
         String link = main.getOnlineData().getBannerLink();
         if (link != null && !link.isBlank()) {
             try {
-                Util.getPlatform().openUri(link);
+                Blaze3D.openUri(new URI(link));
             } catch (Exception ignored) {}
         }
     }

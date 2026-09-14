@@ -1,7 +1,9 @@
 package com.fix3dll.skyblockaddons.mixin.transformers;
 
+import com.fix3dll.skyblockaddons.mixin.hooks.LocalPlayerHook;
 import com.fix3dll.skyblockaddons.mixin.hooks.MultiPlayerGameModeHook;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
@@ -28,6 +30,13 @@ public class MultiPlayerGameModeMixin {
     @Inject(method = "stopDestroyBlock", at = @At("HEAD"))
     public void sba$stopDestroyBlock(CallbackInfo ci) {
         MultiPlayerGameModeHook.onStopDestroyBlock();
+    }
+
+    @Inject(method = "dropItem", at = @At("HEAD"), cancellable = true)
+    public void sba$dropItem(LocalPlayer player, boolean all, CallbackInfo ci) {
+        if (LocalPlayerHook.dropOneItemConfirmation()) {
+            ci.cancel();
+        }
     }
 
 }

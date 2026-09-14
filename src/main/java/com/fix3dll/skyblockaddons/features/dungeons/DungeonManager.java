@@ -449,7 +449,7 @@ public class DungeonManager {
                     poseStack.pushPose();
                     poseStack.translate(0, (CRITICAL_ICON_SIZE + 18.0F) * 1.15F * 0.025F, 0);
                     poseStack.translate(vec3.x, vec3.y + 0.5, vec3.z);
-                    poseStack.mulPose(cameraRenderState.orientation);
+                    poseStack.rotate(cameraRenderState.orientation);
                     poseStack.scale(0.025F, -0.025F, 0.025F);
                     submitNodeCollector.submitCustomGeometry(
                             poseStack,

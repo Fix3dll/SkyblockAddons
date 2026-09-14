@@ -6,14 +6,13 @@ import com.fix3dll.skyblockaddons.utils.ColorUtils;
 import com.fix3dll.skyblockaddons.utils.DrawUtils;
 import com.fix3dll.skyblockaddons.utils.MathUtils;
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import lombok.Getter;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -30,7 +29,8 @@ public class HealingCircleManager {
 
     public static final RenderPipeline HEALING_CIRCLE_PIPELINE = RenderPipelines.register(
             RenderPipeline.builder()
-                    .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
+                    .withBindGroupLayout(BindGroupLayouts.PROJECTION)
+                    .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
                     .withLocation("sba_healing_circle")
                     .withVertexShader("core/position_color")
                     .withFragmentShader("core/position_color")
@@ -47,11 +47,12 @@ public class HealingCircleManager {
             RenderSetup.builder(HEALING_CIRCLE_PIPELINE)
                     .affectsCrumbling()
                     .sortOnUpload()
+                    .setOitPipelines(RenderPipelines.OIT_DEBUG_QUADS)
                     .createRenderSetup()
     );
 
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
-    @Getter private static final Set<HealingCircle> healingCircles = Sets.newConcurrentHashSet();
+    private static final Set<HealingCircle> healingCircles = Sets.newHashSet();
 
     public static void addHealingCircleParticle(HealingCircleParticle healingCircleParticle) {
         HealingCircle nearbyHealingCircle = null;
