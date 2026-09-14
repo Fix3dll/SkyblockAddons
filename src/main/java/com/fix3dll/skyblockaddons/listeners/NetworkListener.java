@@ -34,7 +34,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.Logger;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class NetworkListener {
 
@@ -50,7 +50,7 @@ public class NetworkListener {
         PacketEvents.READ.register(this::onPacketRead);
     }
 
-    private final Cache<Integer, Integer> collectedCache = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.SECONDS).build();
+    private final Cache<Integer, Integer> collectedCache = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofSeconds(2)).build();
 
     private void onSkyblockJoined() {
         LOGGER.info("Detected joining skyblock!");
@@ -93,7 +93,7 @@ public class NetworkListener {
             if (!SlayerTracker.getInstance().isTrackerEnabled()) return;
 
             SlayerQuest activeQuest = main.getUtils().getSlayerQuest();
-            if (activeQuest == null || !LocationUtils.isOnSlayerLocation(activeQuest)) return;
+            if (!LocationUtils.isOnSlayerLocation(activeQuest)) return;
 
             int entityID = takeItemPacket.getItemId();
             Entity entity = level.getEntity(entityID);

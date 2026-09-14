@@ -49,7 +49,7 @@ public class ButtonCredit extends ButtonFeature {
     public void onClick(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
         if (!feature.isRemoteDisabled()) {
             try {
-                Util.getPlatform().openUri(credit.getUrl());
+                Util.getPlatform().openUri(credit.getUri());
             } catch (Exception ignored) {}
         }
     }
