@@ -1,20 +1,26 @@
 package com.fix3dll.skyblockaddons.features.slayertracker;
 
+import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
+import com.mojang.authlib.GameProfile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumMap;
+import java.util.Optional;
 
 @Getter
 public enum SlayerDrop {
@@ -54,6 +60,7 @@ public enum SlayerDrop {
     SHRIVELED_WASP("SHRIVELED_WASP", SkyblockRarity.LEGENDARY),
     ENSNARED_SNAIL("ENSNARED_SNAIL", SkyblockRarity.LEGENDARY),
     PRIMORDIAL_EYE("PRIMORDIAL_EYE", SkyblockRarity.LEGENDARY),
+    PRIMORDIAL_SHARD("PRIMORDIAL_SHARD", "cocoon_chance", "L45", SkyblockRarity.LEGENDARY),
     DYE_BRICK_RED("DYE_BRICK_RED", SkyblockRarity.LEGENDARY),
 
     // Sven Drops
@@ -126,15 +133,18 @@ public enum SlayerDrop {
     MCGRUBBERS_BURGER("MCGRUBBER_BURGER", SkyblockRarity.EPIC),
     UNFANGED_VAMPIRE_PART("UNFANGED_VAMPIRE_PART", SkyblockRarity.LEGENDARY),
     THE_ONE_BOOK_BUNDLE("ENCHANTED_BOOK_BUNDLE_THE_ONE", SkyblockRarity.LEGENDARY),
-    DYE_SANGRIA("DYE_SANGRIA", SkyblockRarity.LEGENDARY);
+    DYE_SANGRIA("DYE_SANGRIA", SkyblockRarity.LEGENDARY),
+
+    //Universal (could be exceptions)
+    PARAGON_SHARD("PARAGON_SHARD", "slayer_discount", "L54",  SkyblockRarity.LEGENDARY);
 
     private final String skyblockID;
     private final SkyblockRarity rarity;
+    private String identifier;
     private String runeID;
     private String attributeNbtKey;
     private String attributeID;
     @Getter(AccessLevel.NONE) private ItemStackTemplate itemStackTemplate;
-    @Getter(AccessLevel.NONE) private TexturedHead texturedHead;
     @Getter(AccessLevel.NONE) private ItemStack itemStack;
 
     /**
@@ -166,7 +176,6 @@ public enum SlayerDrop {
      * Creates a slayer drop with textured skull from {@link ItemUtils#getTexturedHeadItem(String)} with skyblockId
      */
     SlayerDrop(String skyblockID, SkyblockRarity rarity) {
-        this.texturedHead = ItemUtils.getTexturedHead(skyblockID);
         this.skyblockID = skyblockID;
         this.rarity = rarity;
     }
@@ -175,7 +184,7 @@ public enum SlayerDrop {
      * Creates a rune slayer drop with identifier and runeId field
      */
     SlayerDrop(String identifier, String runeID, SkyblockRarity rarity) {
-        this.texturedHead = ItemUtils.getTexturedHead(identifier);
+        this.identifier = identifier;
         this.skyblockID = "RUNE";
         this.rarity = rarity;
         this.runeID = runeID;
@@ -185,7 +194,7 @@ public enum SlayerDrop {
      * Creates an attribute shard slayer drop with identifier, attributeNbtKey and attributeID field
      */
     SlayerDrop(String identifier, String attributeNbtKey, String attributeID, SkyblockRarity rarity) {
-        this.texturedHead = ItemUtils.getTexturedHead(identifier);
+        this.identifier = identifier;
         this.skyblockID = "ATTRIBUTE_SHARD";
         this.rarity = rarity;
         this.attributeNbtKey = attributeNbtKey;
@@ -194,11 +203,55 @@ public enum SlayerDrop {
 
     @Nullable
     public ItemStack getItemStack() {
-        if (texturedHead != null) {
-            return texturedHead.getItemStack();
-        }
-        if (itemStack == null && itemStackTemplate != null) {
-            return itemStack = itemStackTemplate.create();
+        if (itemStack == null) {
+            // Items without a custom texture
+            if (itemStackTemplate != null) {
+                return itemStack = itemStackTemplate.create();
+            }
+
+            // 1st priority is API
+            ItemsData.Item item = switch (skyblockID) {
+                case null -> null;
+                case "RUNE", "ATTRIBUTE_SHARD" -> null; // not exist in API
+                default -> SkyblockAddons.getInstance().getItemsData().getById(skyblockID);
+            };
+            if (item != null) {
+                GameProfile gameProfile = Optional.ofNullable(item.getSkin())
+                        .map(ItemsData.Skin::getGameProfile)
+                        .orElse(null);
+
+                if (gameProfile != null) {
+                    return itemStack = ItemUtils.createSkullItemStack(
+                            null,
+                            ResolvableProfile.createResolved(gameProfile),
+                            Component.literal(item.getName()),
+                            skyblockID
+                    );
+                } else {
+                    Identifier itemModel = Optional.ofNullable(item.getItemModel())
+                            .map(Identifier::tryParse)
+                            .orElse(null);
+
+                    if (itemModel != null) {
+                        itemStack = Items.PAPER.getDefaultInstance();
+                        itemStack.set(DataComponents.ITEM_MODEL, itemModel);
+                        return itemStack;
+                    }
+                }
+            }
+
+            // 2nd priority is constant TexturedHeads
+            TexturedHead texturedHead = switch (skyblockID) {
+                case null -> null;
+                case "RUNE", "ATTRIBUTE_SHARD" -> ItemUtils.getTexturedHead(identifier);
+                default -> ItemUtils.getTexturedHead(skyblockID);
+            };
+            if (texturedHead != null) {
+                return itemStack = texturedHead.getItemStack();
+            }
+
+            // Not found in API or in constants. Its probably a dye or attribute shard
+            itemStack = Items.BARRIER.getDefaultInstance();
         }
         return itemStack;
     }
@@ -220,7 +273,7 @@ public enum SlayerDrop {
         internalItemTranslations.put(REVENANT_VISCERA, Component.literal("Revenant Viscera"));
         internalItemTranslations.put(SCYTHE_BLADE, Component.literal("Scythe Blade"));
         internalItemTranslations.put(SMITE_SEVEN, Component.literal("Smite 7"));
-        internalItemTranslations.put(SHARD_OF_SHREDDED, Component.literal("Shard of Shredded"));
+        internalItemTranslations.put(SHARD_OF_SHREDDED, Component.literal("Shredded Sinew"));
         internalItemTranslations.put(WARDEN_HEART, Component.literal("Warden Heart"));
         internalItemTranslations.put(DYE_MATCHA, Component.literal("Matcha Dye"));
 
@@ -240,6 +293,7 @@ public enum SlayerDrop {
         internalItemTranslations.put(SHRIVELED_WASP, Component.literal("Shriveled Wasp"));
         internalItemTranslations.put(ENSNARED_SNAIL, Component.literal("Ensnared Snail"));
         internalItemTranslations.put(PRIMORDIAL_EYE, Component.literal("Primordial Eye"));
+        internalItemTranslations.put(PRIMORDIAL_SHARD, Component.literal("Primordial Shard"));
         internalItemTranslations.put(DYE_BRICK_RED, Component.literal("Brick Red Dye"));
 
         // wolf
@@ -312,6 +366,9 @@ public enum SlayerDrop {
         internalItemTranslations.put(UNFANGED_VAMPIRE_PART, Component.literal("Unfanged Vampire Part"));
         internalItemTranslations.put(THE_ONE_BOOK_BUNDLE, Component.literal("The One (Book Bundle)"));
         internalItemTranslations.put(DYE_SANGRIA, Component.literal("Sangria Dye"));
+
+        // universal
+        internalItemTranslations.put(PARAGON_SHARD, Component.literal("Paragon Shard"));
     }
 
     public Component getDisplayName() {
