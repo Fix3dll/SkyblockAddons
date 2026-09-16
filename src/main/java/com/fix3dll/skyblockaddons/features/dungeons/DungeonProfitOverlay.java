@@ -40,11 +40,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 
 /**
@@ -184,26 +182,27 @@ public class DungeonProfitOverlay {
         boolean requiresChestKey = false;
         KuudraKey requiredKuudraKey = null;
         boolean isKismetUsed = false;
+        boolean chestParsed = false;
 
         List<ItemStack> containerStacks = new ArrayList<>();
         for (int i = 0; i < container.getContainerSize() - 1; i++) {
             ItemStack stack = container.getItem(i);
-            if (stack.isEmpty())
-                continue;
+            if (stack.isEmpty() || Utils.isGlassPane(stack) || stack.getItem() == Items.BARRIER) continue;
 
-            if (stack.getItem() == Items.FEATHER && !isKismetUsed) {
-                for (Component component : ItemUtils.getItemLoreComponent(stack).reversed()) {
-                    if (component.getString().equals("You already rerolled a chest!")) {
-                        isKismetUsed = true;
-                        break;
+            if (stack.getItem() == Items.FEATHER) {
+                if (!isKismetUsed) {
+                    for (Component component : ItemUtils.getItemLoreComponent(stack).reversed()) {
+                        if (component.getString().equals("You already rerolled a chest!")) {
+                            isKismetUsed = true;
+                            break;
+                        }
                     }
                 }
+                continue;
             }
 
-            if (Utils.isGlassPane(stack) || stack.getItem() == Items.BARRIER) continue;
-
             if (stack.getItem() == Items.CHEST) {
-                if (loreItems.isEmpty()) {
+                if (!chestParsed) {
                     Component name = stack.getCustomName();
                     if (name != null && "Open Reward Chest".equals(name.getString())) {
                         ParsedChestLore parsed = parseChestLore(ItemUtils.getItemLoreComponent(stack), isKismetUsed);
@@ -213,6 +212,7 @@ public class DungeonProfitOverlay {
                             requiresChestKey = parsed.requiresChestKey();
                             requiredKuudraKey = parsed.requiredKuudraKey();
                             isKismetUsed = parsed.kismetUsed();
+                            chestParsed = true;
                         }
                     }
                 }
@@ -223,54 +223,76 @@ public class DungeonProfitOverlay {
         }
 
         List<PricedItem> result = new ArrayList<>();
-        Set<String> coveredIds = new HashSet<>();
+        List<ChestItem> remainingLore = new ArrayList<>(loreItems);
 
         // Primary: resolve actual container stacks
         for (ItemStack stack : containerStacks) {
             String itemId = ItemUtils.getSkyblockItemID(stack);
+            PricedItem pricedItem = null;
 
             // 1. Lowest BIN path
             ResolvedItemId binResolved = PlayerListener.resolveLowestBinItemId(itemId, stack);
-            if (binResolved != null && !coveredIds.contains(binResolved.apiItemId())) {
+            if (binResolved != null) {
                 double price = lookupBinPrice(binResolved);
                 if (price > 0) {
-                    result.add(new PricedItem(binResolved.apiItemId(), stack.getCount(), stack.getHoverName(), price));
-                    coveredIds.add(binResolved.apiItemId());
-                    continue;
+                    pricedItem = new PricedItem(binResolved.apiItemId(), stack.getCount(), stack.getHoverName(), price);
                 }
             }
 
             // 2. Bazaar path
-            int[] countOut = {0};
-            String bazaarId = PlayerListener.resolveBazaarItemId(itemId, stack, main.getItemsData(), countOut);
-            if (bazaarId != null && !coveredIds.contains(bazaarId)) {
-                double price = lookupBazaarPrice(bazaarId);
-                if (price > 0) {
-                    int amount = countOut[0] != 0 ? countOut[0] : stack.getCount();
-                    Component displayName;
-                    if (bazaarId.startsWith("ENCHANTMENT_")) {
-                        Component enchantedBookName = ItemUtils.getEnchantedBookName(stack);
-                        displayName = enchantedBookName != null ? enchantedBookName : stack.getHoverName();
-                    } else {
-                        displayName = stack.getHoverName();
+            if (pricedItem == null) {
+                int[] countOut = {0};
+                String bazaarId = PlayerListener.resolveBazaarItemId(itemId, stack, main.getItemsData(), countOut);
+                if (bazaarId != null) {
+                    double price = lookupBazaarPrice(bazaarId);
+                    if (price > 0) {
+                        int amount = countOut[0] != 0 ? countOut[0] : stack.getCount();
+                        Component displayName;
+                        if (bazaarId.startsWith("ENCHANTMENT_")) {
+                            Component enchantedBookName = ItemUtils.getEnchantedBookName(stack);
+                            displayName = enchantedBookName != null ? enchantedBookName : stack.getHoverName();
+                        } else {
+                            displayName = stack.getHoverName();
+                        }
+                        pricedItem = new PricedItem(bazaarId, amount, displayName, price);
                     }
-                    result.add(new PricedItem(bazaarId, amount, displayName, price));
-                    coveredIds.add(bazaarId);
                 }
+            }
+
+            if (pricedItem != null) {
+                result.add(pricedItem);
+
+                // Reconcile against remaining lore items (supporting variant prefixes and partial quantities)
+                for (int i = 0; i < remainingLore.size(); i++) {
+                    ChestItem candidate = remainingLore.get(i);
+                    String loreId = candidate.skyblockId();
+                    String pricedId = pricedItem.skyblockId();
+
+                    boolean idMatch = pricedId.equals(loreId)
+                            || (itemId != null && itemId.equals(loreId))
+                            || pricedId.startsWith(loreId + "+")
+                            || pricedId.startsWith(loreId + ";");
+
+                    if (idMatch) {
+                        if (candidate.amount() > pricedItem.amount()) {
+                            remainingLore.set(i, new ChestItem(loreId, candidate.amount() - pricedItem.amount(), candidate.displayName()));
+                        } else {
+                            remainingLore.remove(i);
+                        }
+                        break;
+                    }
+                }
+            } else {
+                LOGGER.debug("Unpriced or unrecognized container stack: {}", stack.getHoverName().getString());
             }
         }
 
         // Fallback: lore items not accounted for by container stacks
-        if (loreItems.size() > containerStacks.size()) {
-            for (ChestItem item : loreItems) {
-                if (coveredIds.contains(item.skyblockId())) continue;
+        for (ChestItem item : remainingLore) {
+            double price = priceLookup(item.skyblockId());
+            if (price <= 0) continue;
 
-                double price = priceLookup(item.skyblockId());
-                if (price <= 0) continue;
-
-                result.add(new PricedItem(item.skyblockId(), item.amount(), item.displayName(), price));
-                coveredIds.add(item.skyblockId());
-            }
+            result.add(new PricedItem(item.skyblockId(), item.amount(), item.displayName(), price));
         }
 
         double totalValue = result.stream().mapToDouble(p -> p.price() * p.amount()).sum();
@@ -280,10 +302,10 @@ public class DungeonProfitOverlay {
     }
 
     /**
-     * Parses a chest item's lore into its {@code "Contents"} item list and coin opening cost.
+     * Parses a chest item's lore into its optional {@code "Contents"} item list and opening cost.
      * <p>
-     * Parsing begins after the mandatory {@code "Contents"} header and stops after the {@code "Cost"} section is
-     * resolved. Lines are classified as:
+     * Supports overview chests (both {@code "Contents"} and {@code "Cost"}) and instance chests
+     * (e.g. Kuudra chests with only {@code "Cost"}). Lines are classified as:
      * <ul>
      * <li><b>Enchanted Book</b> - text between {@code "Enchanted Book ("} and {@code ")"} is matched against
      * {@link Regex#ENCHANTMENT_PATTERN} and resolved via {@link PlayerListener#enchantedBookResolution}.</li>
@@ -294,62 +316,73 @@ public class DungeonProfitOverlay {
      * </ul>
      * @param lore       raw lore component list from the chest item stack
      * @param kismetUsed {@code true} if a Kismet Feather was used to reroll the chest
-     * @return parsed result, or {@code null} if the lore structure is invalid or no opening cost could be determined
+     * @return parsed result, or {@code null} if no opening cost could be determined or the chest was already opened
      */
     @Nullable
     public static ParsedChestLore parseChestLore(List<Component> lore, boolean kismetUsed) {
-        if (lore.size() < 2) return null;
-        if (!"Contents".equals(lore.getFirst().getString())) return null;
+        if (lore.isEmpty()) return null;
 
         List<ChestItem> items = new ArrayList<>();
         KuudraKey requiredKuudraKey = null;
         double costToOpen = kismetUsed && Feature.DUNGEON_PROFIT_OVERLAY.isEnabled(FeatureSetting.SHOW_KISMET_FEATHER_LOSS)
                 ? priceLookup("KISMET_FEATHER")
-                : -1;
+                : 0.0D;
+        boolean costParsed = false;
         boolean inCost = false;
+        boolean inContents = false;
         boolean requiresChestKey = false;
 
         for (Component line : lore) {
             String s = line.getString();
             switch (s) {
-                case "", "Contents", "Can't open another chest!", "Click to open!" -> {
+                case "", "Can't open another chest!", "Click to open!" -> {
                     continue;
                 }
-                case "Already opened!" -> {
-                    costToOpen = -1;
+                case "Contents" -> {
+                    inContents = true;
+                    inCost = false;
                     continue;
                 }
                 case "Cost" -> {
                     inCost = true;
+                    inContents = false;
                     continue;
+                }
+                case "Already opened!" -> {
+                    return null;
                 }
             }
 
             if (inCost) {
                 if ("FREE".equals(s)) {
-                    costToOpen = 0;
+                    costParsed = true;
                 } else if (s.contains("Dungeon Chest Key")) {
+                    costParsed = true;
                     requiresChestKey = true;
                     costToOpen += priceLookup("DUNGEON_CHEST_KEY");
                 } else if ((requiredKuudraKey = KuudraKey.getByName(s)) != null) {
+                    costParsed = true;
                     costToOpen += requiredKuudraKey.maxPrice();
                 } else {
                     Matcher m = Regex.COIN_COST_PATTERN.matcher(s);
                     if (m.find()) {
                         try {
                             costToOpen += Integer.parseInt(m.group(1).replace(",", ""));
+                            costParsed = true;
                         } catch (NumberFormatException ignored) {}
                     }
                 }
                 continue;
             }
 
-            ChestItem item = parseContentLine(s, line);
-            if (item != null) items.add(item);
-            else LOGGER.debug("Unrecognized chest lore line: {}", s);
+            if (inContents) {
+                ChestItem item = parseContentLine(s, line);
+                if (item != null) items.add(item);
+                else LOGGER.debug("Unrecognized chest lore line: {}", s);
+            }
         }
 
-        if (costToOpen == -1.0D) return null;
+        if (!costParsed) return null;
         return new ParsedChestLore(List.copyOf(items), costToOpen, requiredKuudraKey, requiresChestKey, kismetUsed);
     }
 
@@ -737,8 +770,8 @@ public class DungeonProfitOverlay {
      * @param requiresChestKey  {@code true} if a Dungeon Chest Key was required to open this chest
      * @param kismetUsed        {@code true} if a Kismet Feather was used to reroll the chest
      */
-    public record ChestInsideData(List<PricedItem> items, double totalValue, double costToOpen,
-                                  KuudraKey requiredKuudraKey, boolean requiresChestKey, boolean kismetUsed) {
+    public record ChestInsideData(@NonNull List<@NonNull PricedItem> items, double totalValue, double costToOpen,
+                                  @Nullable KuudraKey requiredKuudraKey, boolean requiresChestKey, boolean kismetUsed) {
         /**
          * Calculates the net profit.
          * Subtracts the chest opening cost and, if applicable, the current market price of a Kismet Feather.
@@ -760,7 +793,7 @@ public class DungeonProfitOverlay {
      * @param displayName display component shown in the overlay
      * @param price       unit price in coins; {@code 0} if the item could not be priced
      */
-    public record PricedItem(String skyblockId, int amount, Component displayName, double price) {
+    public record PricedItem(@NonNull String skyblockId, int amount, @NonNull Component displayName, double price) {
     }
 
     /**
@@ -770,7 +803,7 @@ public class DungeonProfitOverlay {
      * @param requiresChestKey  {@code true} if a Dungeon Chest Key is required to open this chest
      * @param kismetUsed        {@code true} if a Kismet Feather was used to reroll the chest
      */
-    public record ParsedChestLore(List<ChestItem> items, double costToOpen, KuudraKey requiredKuudraKey,
+    public record ParsedChestLore(@NonNull List<@NonNull ChestItem> items, double costToOpen, @Nullable KuudraKey requiredKuudraKey,
                                   boolean requiresChestKey, boolean kismetUsed) {
     }
 
@@ -780,7 +813,7 @@ public class DungeonProfitOverlay {
      * @param amount      quantity indicated by the lore line
      * @param displayName original lore component preserved for display
      */
-    public record ChestItem(String skyblockId, int amount, Component displayName) {
+    public record ChestItem(@NonNull String skyblockId, int amount, @NonNull Component displayName) {
     }
 
     /**
