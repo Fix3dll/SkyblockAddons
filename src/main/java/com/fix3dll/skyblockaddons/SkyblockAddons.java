@@ -17,6 +17,7 @@ import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.features.SkillXpManager;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordRPCManager;
 import com.fix3dll.skyblockaddons.features.dungeons.DungeonManager;
+import com.fix3dll.skyblockaddons.features.dungeons.HyperionAntiBarrier;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonBanner;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.listeners.NetworkListener;
@@ -141,6 +142,7 @@ public class SkyblockAddons implements ClientModInitializer {
 	private final DiscordRPCManager discordRPCManager;
 	private final Utils utils;
 	private final DungeonManager dungeonManager;
+	private final HyperionAntiBarrier hyperionAntiBarrier;
 	private final Scheduler scheduler;
 	private final Updater updater;
 	private final RenderListener renderListener;
@@ -181,6 +183,7 @@ public class SkyblockAddons implements ClientModInitializer {
 		discordRPCManager = new DiscordRPCManager();
 		utils = new Utils();
 		dungeonManager = new DungeonManager();
+		hyperionAntiBarrier = new HyperionAntiBarrier();
 		scheduler = new Scheduler();
 		renderListener = new RenderListener();
 		inventoryUtils = new InventoryUtils();
