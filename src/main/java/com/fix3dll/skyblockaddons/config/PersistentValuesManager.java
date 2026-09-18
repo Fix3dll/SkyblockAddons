@@ -1,6 +1,7 @@
 package com.fix3dll.skyblockaddons.config;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.core.SkyblockMayor;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTrackerData;
@@ -28,6 +29,7 @@ public class PersistentValuesManager extends AbstractPersistentDataManager<Persi
         private int totalKills = 0; // Lifetime zealots killed
         private int summoningEyeCount = 0; // Lifetime summoning eyes
 
+        private PerkpocalypseMayor perkpocalypseMayor = null;
         private SlayerTrackerData slayerTracker = new SlayerTrackerData();
         private DragonTrackerData dragonTracker = new DragonTrackerData();
 
@@ -55,6 +57,13 @@ public class PersistentValuesManager extends AbstractPersistentDataManager<Persi
     @Override
     protected void onPostLoad() {
         FetchurManager.getInstance().postPersistentConfigLoad(data.getLastTimeFetchur());
+        var perkpocalypseMayor = data.getPerkpocalypseMayor();
+        if (perkpocalypseMayor != null && perkpocalypseMayor.isValid()) {
+            var jerryData = SkyblockAddons.getInstance().getMayorJerryData();
+            jerryData.setMayor(perkpocalypseMayor.mayor());
+            jerryData.setNextSwitch(perkpocalypseMayor.nextSwitch());
+            logger.info(jerryData);
+        }
     }
 
     @Override
@@ -129,6 +138,25 @@ public class PersistentValuesManager extends AbstractPersistentDataManager<Persi
     public Set<Integer> getLockedSlots() {
         String profile = SkyblockAddons.getInstance().getUtils().getProfileName();
         return data.getProfileLockedSlots().computeIfAbsent(profile, k -> new HashSet<>());
+    }
+
+    public void setJerryPerkpocalypseMayor(SkyblockMayor mayor, Long nextSwitch) {
+        long now = System.currentTimeMillis();
+        if (mayor == null || nextSwitch == null || nextSwitch <= now || nextSwitch > now + MAX_SWITCH_WINDOW_MS) {
+            data.setPerkpocalypseMayor(null);
+        } else {
+            data.setPerkpocalypseMayor(new PerkpocalypseMayor(mayor, nextSwitch));
+        }
+    }
+
+    // https://hypixelskyblock.minecraft.wiki/w/Candidate_Jerry#Perkpocalypse -> It should not exceed 6 IRL hours
+    private static final long MAX_SWITCH_WINDOW_MS = 6L * 60 * 60 * 1000 + 60 * 1000; // + 1 min tolerance
+
+    public record PerkpocalypseMayor(SkyblockMayor mayor, Long nextSwitch) {
+        public boolean isValid() {
+            long now = System.currentTimeMillis();
+            return mayor != null && nextSwitch != null && nextSwitch > now && nextSwitch <= now + MAX_SWITCH_WINDOW_MS;
+        }
     }
 
 }
