@@ -105,7 +105,7 @@ public class ElectionRequest extends RemoteFileRequest<ElectionData> {
                 oldTask.cancel();
             }
 
-            LOGGER.info("Election update task scheduled.");
+            LOGGER.info("Election update task scheduled in {} ticks", delayTicks);
         }
 
         private void ensureJerryMayorTask() {

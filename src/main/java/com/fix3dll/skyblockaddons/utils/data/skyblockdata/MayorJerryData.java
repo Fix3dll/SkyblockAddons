@@ -77,18 +77,18 @@ public class MayorJerryData {
         if (!matcher.matches()) return;
 
         try {
-            int delayMs = 0;
+            long delayMs = 0;
             String hours = matcher.group("hours");
             if (!StringUtil.isNullOrEmpty(hours)) {
-                delayMs += Integer.parseInt(hours) * 60 * 60 * 1000;
+                delayMs += Long.parseLong(hours) * 60 * ONE_MINUTE;
             }
             String minutes = matcher.group("minutes");
             if (!StringUtil.isNullOrEmpty(minutes)) {
-                delayMs += Integer.parseInt(minutes) * 60 * 1000;
+                delayMs += Long.parseLong(minutes) * ONE_MINUTE;
             }
             String seconds = matcher.group("seconds");
             if (!StringUtil.isNullOrEmpty(seconds)) {
-                delayMs += Integer.parseInt(seconds) * 1000;
+                delayMs += Long.parseLong(seconds) * 1000;
             }
             // round up to the next minute
             this.nextSwitch = ((System.currentTimeMillis() + delayMs + ONE_MINUTE - 1) / ONE_MINUTE) * ONE_MINUTE;

@@ -167,6 +167,10 @@ public class SkyblockAddons implements ClientModInitializer {
 		} catch (IOException ex) {
 			LOGGER.error("Could not create SkyblockAddons folder", ex);
 		}
+
+		electionData = new ElectionData();
+		mayorJerryData = new MayorJerryData();
+
 		configValuesManager = new ConfigValuesManager(configFile);
 		persistentValuesManager = new PersistentValuesManager(configFile);
 		petCacheManager = new PetCacheManager(configFile);
@@ -187,9 +191,6 @@ public class SkyblockAddons implements ClientModInitializer {
 		screenListener = new ScreenListener();
 		networkListener = new NetworkListener();
 		skillXpManager = new SkillXpManager();
-
-		electionData = new ElectionData();
-		mayorJerryData = new MayorJerryData();
 
 		DataUtils.readLocalAndFetchOnline();
 	}
@@ -229,6 +230,10 @@ public class SkyblockAddons implements ClientModInitializer {
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(mc -> {
+			persistentValuesManager.setJerryPerkpocalypseMayor(
+					mayorJerryData.getMayor(), mayorJerryData.getNextSwitch()
+			);
+
 			configValuesManager.saveConfig();
 			persistentValuesManager.saveValues();
 			petCacheManager.saveValues();
