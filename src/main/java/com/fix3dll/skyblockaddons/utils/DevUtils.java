@@ -41,10 +41,14 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.Version;
+import org.lwjgl.sdl.SDLClipboard;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -584,24 +588,44 @@ public class DevUtils {
         }, 0, 2);
     }
 
-    // Internal methods
-    private static void writeToClipboard(String text, Component successMessage, boolean showToast) {
+    /**
+     * Copies text to the system clipboard and notifies the player.
+     * <p>
+     * Unlike {@link net.minecraft.client.KeyboardHandler#setClipboard(String)}, this handles very large text
+     * (such as NBT data or long JSON dumps) safely without crashing the game with an OutOfMemoryError.
+     * @param text           The text to copy. Does nothing if null.
+     * @param successMessage Optional message to display to the player after copying.
+     * @param showToast      If true, tries to show a toast notification first; falls back to chat if the toast fails.
+     */
+    private static void writeToClipboard(@Nullable String text, @Nullable Component successMessage, boolean showToast) {
+        if (text == null) {
+            LOGGER.warn("writeToClipboard invoked with a null payload; skipping.");
+            return;
+        }
+
         try {
-            MC.keyboardHandler.setClipboard(text);
-            if (successMessage != null) {
-                if (showToast) {
-                    try {
-                        Utils.sendToast(successMessage);
-                    } catch (Exception e) {
-                        LOGGER.error("Couldn't add Toast!", e);
-                        Utils.sendMessage(successMessage);
-                    }
-                } else {
-                    Utils.sendMessage(successMessage);
+            final ByteBuffer nativeBuffer = MemoryUtil.memUTF8(text, true);
+            try {
+                SDLClipboard.nSDL_SetClipboardText(MemoryUtil.memAddress(nativeBuffer));
+            } finally {
+                MemoryUtil.memFree(nativeBuffer);
+            }
+        } catch (Throwable t) {
+            LOGGER.error("Failed to copy payload ({} chars) to system clipboard", text.length(), t);
+            Utils.sendErrorMessage("Clipboard is currently unavailable.");
+            return;
+        }
+
+        if (successMessage != null) {
+            if (showToast) {
+                try {
+                    Utils.sendToast(successMessage);
+                    return;
+                } catch (Exception e) {
+                    LOGGER.warn("Failed to render toast feedback; falling back to in-game chat.", e);
                 }
             }
-        } catch (IllegalStateException exception) {
-            Utils.sendErrorMessage("Clipboard not available!");
+            Utils.sendMessage(successMessage);
         }
     }
 
