@@ -17,8 +17,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
 import com.mojang.renderpearl.api.pipeline.BlendFunction;
 import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.CompareOp;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.mojang.renderpearl.api.pipeline.UniformType;
@@ -57,7 +55,6 @@ public class DrawUtils {
                     .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .withVertexShader(SkyblockAddons.identifier("chroma_standard"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_standard"))
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     public static final RenderPipeline CHROMA_TEXT = RenderPipelines.register(
@@ -74,13 +71,13 @@ public class DrawUtils {
                     .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .withVertexShader(SkyblockAddons.identifier("chroma_textured"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_textured"))
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     private static final Function<Identifier, RenderType> CHROMA_TEXTURED = Util.memoize(
             texture -> {
                 RenderSetup state = RenderSetup.builder(CHROMA_TEXT)
                         .withTexture("Sampler0", texture)
+                        .setOitPipelines(RenderPipelines.OIT_TEXT)
                         .createRenderSetup();
                 return RenderType.create("sba_chroma_textured", state);
             }
