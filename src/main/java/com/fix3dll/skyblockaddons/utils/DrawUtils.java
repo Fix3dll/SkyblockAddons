@@ -14,9 +14,7 @@ import com.fix3dll.skyblockaddons.mixin.hooks.FontHook;
 import com.fix3dll.skyblockaddons.utils.EnumUtils.ChromaMode;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -50,7 +48,6 @@ public class DrawUtils {
                     .withVertexShader(SkyblockAddons.identifier("chroma_standard"))
                     .withFragmentShader(SkyblockAddons.identifier("chroma_standard"))
                     .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     public static final RenderPipeline CHROMA_TEXT = RenderPipelines.register(
@@ -62,7 +59,6 @@ public class DrawUtils {
                     .withFragmentShader(SkyblockAddons.identifier("chroma_textured"))
                     .withUniform("ChromaUniforms", UniformType.UNIFORM_BUFFER)
                     .withSampler("Sampler0")
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
                     .build()
     );
     private static final Function<Identifier, RenderType> CHROMA_TEXTURED = Util.memoize(
