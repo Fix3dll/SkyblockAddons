@@ -3,7 +3,6 @@ package com.fix3dll.skyblockaddons.utils.data.requests;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.Translations;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
@@ -60,9 +59,7 @@ public class ElectionRequest extends RemoteFileRequest<ElectionData> {
             String mayorName = result.getMayor().getName();
             boolean isMayorJerry = "Jerry".equals(mayorName);
 
-            if (Feature.DEVELOPER_MODE.isEnabled()) {
-                LOGGER.info("lastUpdated: {}, mayor: {}", new Date(result.getLastUpdated()), mayorName);
-            }
+            LOGGER.info("lastUpdated: {}, mayor: {}", new Date(result.getLastUpdated()), mayorName);
 
             // If initial request or request completed with expected result
             if (expectedMayorName.isEmpty() || expectedMayorName.equals(mayorName)) {

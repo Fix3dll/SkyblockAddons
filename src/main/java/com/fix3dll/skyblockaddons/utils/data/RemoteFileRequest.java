@@ -55,7 +55,23 @@ public class RemoteFileRequest<T> {
         this.futureTask = null;
     }
 
+    /**
+     * Executes the request asynchronously (fire-and-forget).
+     * @param client   the HTTP client to dispatch the request
+     * @param executor the executor service to run callback operations on
+     */
     public void execute(@NonNull HttpClient client, @NonNull ExecutorService executor) {
+        execute(client, executor, false);
+    }
+
+    /**
+     * Executes the request with optional synchronous blocking.
+     * @param client   the HTTP client to dispatch the request
+     * @param executor the executor service to run callback operations on
+     * @param blocking if true, blocks the calling thread until the HTTP call,
+     *                 parsing, and all callback logic (including cleanup) complete
+     */
+    public void execute(@NonNull HttpClient client, @NonNull ExecutorService executor, boolean blocking) {
         // Request is starting, increment the counter.
         DataUtils.onRequestStart();
 
@@ -72,7 +88,9 @@ public class RemoteFileRequest<T> {
                         : GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), type)
                 );
         this.futureTask = mainOperation;
-        mainOperation.whenCompleteAsync((result, ex) -> {
+
+        // Stage that encapsulates both the response processing and the callback dispatch.
+        CompletableFuture<T> completionStage = mainOperation.whenCompleteAsync((result, ex) -> {
             try {
                 if (ex != null) {
                     Throwable cause = ex instanceof CompletionException ? ex.getCause() : ex;
@@ -90,6 +108,15 @@ public class RemoteFileRequest<T> {
                 DataUtils.onRequestFinish();
             }
         }, executor);
+
+        if (blocking) {
+            try {
+                // Wait for the entire pipeline, including callback execution, to finish.
+                completionStage.join();
+            } catch (CancellationException | CompletionException ignored) {
+                // Suppress exception here because the callback has already received the failure or cancellation notice.
+            }
+        }
     }
 
     private CompletableFuture<byte[]> sendRequestWithRetry(HttpClient client, HttpRequest request, int retries) {
