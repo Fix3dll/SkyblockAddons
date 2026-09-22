@@ -1,8 +1,8 @@
 package com.fix3dll.skyblockaddons.utils;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
-import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.Translations;
+import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerBoss;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
 import com.fix3dll.skyblockaddons.utils.objects.RegistrableEnum;
@@ -268,10 +268,10 @@ public class EnumUtils {
         DIDI_SKYWALKER("DidiSkywalker", ITEM_PICKUP_LOG, HEALTH_UPDATES, REPLACE_ROMAN_NUMERALS_WITH_NUMBERS),
         P0KE("P0keDev", ZEALOT_COUNTER),
         DJTHEREDSTONER("DJtheRedstoner", LEGENDARY_SEA_CREATURE_WARNING, HIDE_SVEN_PUP_NAMETAGS),
-        CHARZARD("Charzard4261", DISABLE_TELEPORT_PAD_MESSAGES, BAIT_LIST, SHOW_BASE_STAT_BOOST_PERCENTAGE,
+        CHARZARD("Charzard4261", DISABLE_TELEPORT_PAD_MESSAGES, SHOW_BASE_STAT_BOOST_PERCENTAGE, DISABLE_BOSS_MESSAGES,
                 SHOW_ITEM_DUNGEON_FLOOR, SHOW_BASE_STAT_BOOST_PERCENTAGE, REVENANT_SLAYER_TRACKER,
                 TARANTULA_SLAYER_TRACKER, SVEN_SLAYER_TRACKER, DRAGON_STATS_TRACKER, SHOW_STACKING_ENCHANT_PROGRESS,
-                STOP_BONZO_STAFF_SOUNDS, DISABLE_MORT_MESSAGES, DISABLE_BOSS_MESSAGES),
+                STOP_BONZO_STAFF_SOUNDS, DISABLE_MORT_MESSAGES),
         IHDEVELOPER("iHDeveloper", SHOW_DUNGEON_MILESTONE, DUNGEONS_COLLECTED_ESSENCES_DISPLAY, SHOW_SWORD_KILLS,
                 SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY, DUNGEONS_SECRETS_DISPLAY),
         TIRELESS_TRAVELER("ILikePlayingGames", DUNGEON_DEATH_COUNTER),
@@ -326,7 +326,6 @@ public class EnumUtils {
         SLAYER_ARMOR_PROGRESS,
         DEPLOYABLE_DISPLAY,
         TICKER,
-        BAIT_LIST_DISPLAY,
         DUNGEONS_MAP,
         SLAYER_TRACKERS,
         DRAGON_STATS_TRACKER,

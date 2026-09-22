@@ -417,18 +417,6 @@
   "DISABLE_TELEPORT_PAD_MESSAGES": {
     "value": true
   },
-  "BAIT_LIST": {
-    "value": true,
-    "anchorPoint": "BOTTOM_LEFT",
-    "coords": [
-      15.5,
-      -164.0
-    ],
-    "color": -11141121,
-    "settings": {
-      "X_ALLIGNMENT": true
-    }
-  },
   "ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT": {
     "value": false
   },
@@ -1075,6 +1063,18 @@
     "color": -65536,
     "settings": {
       "VITALITY_TEXT_ICON": true
+    }
+  },
+  "REMAINING_BAITS_DISPLAY": {
+    "value": true,
+    "anchorPoint": "BOTTOM_LEFT",
+    "coords": [
+      15.5,
+      -164.0
+    ],
+    "color": -11141121,
+    "settings": {
+      "X_ALLIGNMENT": true
     }
   }
 }
