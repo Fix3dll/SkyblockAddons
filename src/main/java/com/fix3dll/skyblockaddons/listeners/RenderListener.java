@@ -83,7 +83,6 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.StringUtil;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
@@ -1116,11 +1115,9 @@ public class RenderListener {
                 text = (icon ? "\uE01B" : "") + (lastRemembered ? "~" : "") + TextUtils.formatNumber(pressure) + "%";
             }
             case REMAINING_BAITS_DISPLAY -> {
-                int remainingBaits;
-                if (buttonLocation == null) {
-                    remainingBaits = main.getPlayerListener().getSelectedRemainingBaits();
-                    if (remainingBaits <= 0) return;
-                } else {
+                int remainingBaits = main.getPlayerListener().getSelectedRemainingBaits();
+                if (remainingBaits <= 0) {
+                    if (buttonLocation == null) return;
                     remainingBaits = 1923;
                 }
 
@@ -1536,11 +1533,9 @@ public class RenderListener {
                 DrawUtils.drawText(graphics, renderComponent, x, y, color);
             }
             case REMAINING_BAITS_DISPLAY -> {
-                String baitId;
-                if (buttonLocation == null) {
-                    baitId = main.getPlayerListener().getSelectedBaitId();
-                    if (StringUtil.isNullOrEmpty(baitId)) return;
-                } else {
+                String baitId = main.getPlayerListener().getSelectedBaitId();
+                if (baitId == null || baitId.isEmpty()) {
+                    if (buttonLocation == null) return;
                     baitId = "WHALE_BAIT";
                 }
 
