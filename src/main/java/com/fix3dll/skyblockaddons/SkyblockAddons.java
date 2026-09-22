@@ -156,7 +156,7 @@ public class SkyblockAddons implements ClientModInitializer {
 
 	public SkyblockAddons() {
 		instance = this;
-		DataUtils.preReadLocalFileData();
+		DataUtils.preReadLocalAndFetchOnline();
 
 		File configFile = FabricLoader.getInstance().getConfigDir().toFile();
 		try {

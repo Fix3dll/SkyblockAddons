@@ -10,6 +10,7 @@ import com.fix3dll.skyblockaddons.core.SkyblockRune;
 import com.fix3dll.skyblockaddons.features.backpacks.BackpackColor;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.CompactorItem;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ContainerData;
+import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.gson.JsonElement;
@@ -19,7 +20,6 @@ import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.RegistryAccess;
@@ -45,6 +45,7 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -82,22 +83,67 @@ public class ItemUtils {
                     )
                     .build()
     );
+    private static final TexturedHead NOT_FOUND = new TexturedHead().setApiChecked(true);
 
-    @Getter @Setter private static Map<String, CompactorItem> compactorItems;
-    @Setter private static Map<String, ContainerData> containers;
-    @Setter private static Map<String, TexturedHead> texturedHeads;
+    @Getter @Setter private static Map<String, CompactorItem> compactorItems = Map.of();
+    @Setter private static Map<String, ContainerData> containers = Map.of();
+    // Volatile reference guarantees thread visibility across render and worker threads.
+    @Setter private static volatile Map<String, TexturedHead> texturedHeads = Map.of();
 
     public static @NonNull ItemStack getTexturedHeadItem(String identifier) {
-        if (texturedHeads != null) {
-            TexturedHead texturedHead = texturedHeads.get(identifier);
-            return texturedHead == null ? Items.BARRIER.getDefaultInstance() : texturedHead.getItemStack();
+        TexturedHead head = getTexturedHead(identifier);
+        if (head != null) {
+            ItemStack stack = head.getItemStack();
+            if (stack != null) return stack;
         }
-
         return Items.BARRIER.getDefaultInstance();
     }
 
     public static @Nullable TexturedHead getTexturedHead(String identifier) {
-        return texturedHeads != null ? texturedHeads.get(identifier) : null;
+        if (identifier == null || identifier.isEmpty()) return null;
+
+        TexturedHead texturedHead = texturedHeads.get(identifier);
+        if (texturedHead != null && (texturedHead.isApiChecked() || !SkyblockAddons.getInstance().isFullyInitialized())) {
+            return texturedHead;
+        }
+
+        return resolveAndCache(identifier, texturedHead);
+    }
+
+    private static synchronized @Nullable TexturedHead resolveAndCache(
+            @NonNull String identifier,
+            @Nullable TexturedHead current
+    ) {
+        // Double-checked locking guard
+        TexturedHead recheck = texturedHeads.get(identifier);
+        if (recheck != null && recheck.isApiChecked()) {
+            return recheck;
+        }
+
+        ItemsData.Item apiItem = SkyblockAddons.getInstance().getItemsData().getById(identifier);
+        if (apiItem != null) {
+            TexturedHead newTexturedHead = new TexturedHead(apiItem);
+
+            if (newTexturedHead.isApiChecked()) {
+                var copy = HashMap.<String, TexturedHead>newHashMap(texturedHeads.size() + 1);
+                copy.putAll(texturedHeads);
+                copy.put(identifier, newTexturedHead);
+                texturedHeads = Map.copyOf(copy);
+
+                return newTexturedHead;
+            }
+        }
+
+        if (current != null) {
+            return current.setApiChecked(true);
+        }
+
+        LOGGER.warn("Could not resolve textured head for item '{}' from local data or API.", identifier);
+        var copy = HashMap.<String, TexturedHead>newHashMap(texturedHeads.size() + 1);
+        copy.putAll(texturedHeads);
+        copy.put(identifier, NOT_FOUND);
+        texturedHeads = Map.copyOf(copy);
+        return null;
     }
 
     /**
