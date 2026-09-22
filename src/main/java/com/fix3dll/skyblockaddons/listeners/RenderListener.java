@@ -20,7 +20,6 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.render.state.BlitAbsoluteRenderState;
 import com.fix3dll.skyblockaddons.core.scheduler.ScheduledTask;
 import com.fix3dll.skyblockaddons.core.updater.Updater;
-import com.fix3dll.skyblockaddons.features.BaitManager;
 import com.fix3dll.skyblockaddons.features.EndstoneProtectorManager;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.PetManager;
@@ -65,7 +64,6 @@ import com.fix3dll.skyblockaddons.utils.Utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.math.Axis;
 import com.mojang.renderpearl.api.pipeline.RenderPipeline;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
@@ -85,6 +83,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
@@ -375,7 +374,6 @@ public class RenderListener {
                 case SLAYER_ARMOR_PROGRESS -> main.getRenderListener().drawSlayerArmorProgress(graphics, scale, buttonLocation);
                 case DEPLOYABLE_DISPLAY -> main.getRenderListener().drawDeployableStatus(graphics, scale, buttonLocation);
                 case TICKER -> main.getRenderListener().drawScorpionFoilTicker(graphics, scale, buttonLocation);
-                case BAIT_LIST_DISPLAY -> main.getRenderListener().drawBaitList(graphics, scale, buttonLocation);
                 case DUNGEONS_MAP -> DungeonMapManager.drawDungeonsMap(graphics, scale, buttonLocation);
                 case SLAYER_TRACKERS -> main.getRenderListener().drawSlayerTrackers(graphics, feature, scale, buttonLocation);
                 case DRAGON_STATS_TRACKER -> main.getRenderListener().drawDragonTrackers(graphics, scale, buttonLocation);
@@ -1117,6 +1115,17 @@ public class RenderListener {
                 boolean lastRemembered = main.getPlayerListener().getActionBarParser().isUseLastRememberedPressure();
                 text = (icon ? "\uE01B" : "") + (lastRemembered ? "~" : "") + TextUtils.formatNumber(pressure) + "%";
             }
+            case REMAINING_BAITS_DISPLAY -> {
+                int remainingBaits;
+                if (buttonLocation == null) {
+                    remainingBaits = main.getPlayerListener().getSelectedRemainingBaits();
+                    if (remainingBaits <= 0) return;
+                } else {
+                    remainingBaits = 1923;
+                }
+
+                text = TextUtils.formatNumber(remainingBaits);
+            }
             default -> {
                 return;
             }
@@ -1203,6 +1212,7 @@ public class RenderListener {
             case FIRE_FREEZE_TIMER:
             case THUNDER_BOTTLE_DISPLAY:
             case ROCK_PET_TRACKER:
+            case REMAINING_BAITS_DISPLAY:
                 width += 18;
                 height += 9;
                 break;
@@ -1221,35 +1231,30 @@ public class RenderListener {
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SIRIUS_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case FARM_EVENT_TIMER -> {
                 graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(FARM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case ZEALOT_COUNTER -> {
                 graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case SHOW_TOTAL_ZEALOT_COUNT -> {
                 graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(ENDERMAN_GROUP_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case SHOW_SUMMONING_EYE_COUNT -> {
                 graphics.guiRenderState.addGuiElement(
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SUMMONING_EYE_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case SHOW_AVERAGE_ZEALOTS_PER_EYE -> {
                 graphics.guiRenderState.addGuiElement(
@@ -1259,21 +1264,18 @@ public class RenderListener {
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(SLASH_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, color, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case SKILL_DISPLAY -> {
                 if ((skill == null || skill.getItem() == null) && buttonLocation == null) return;
                 renderItem(graphics, buttonLocation == null ? skill.getItem() : SkillType.FARMING.getItem(), x, y);
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case BIRCH_PARK_RAINMAKER_TIMER -> {
                 if (WATER_BUCKET == null) WATER_BUCKET = Items.WATER_BUCKET.getDefaultInstance();
                 renderItem(graphics, WATER_BUCKET, x, y);
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case ENDSTONE_PROTECTOR_DISPLAY -> {
                 graphics.guiRenderState.addGuiElement(
@@ -1289,7 +1291,6 @@ public class RenderListener {
 
                 String formattedCount = TextUtils.formatNumber(EndstoneProtectorManager.getZealotCount());
                 DrawUtils.drawText(graphics, Component.literal(formattedCount), x + 16 + 2, y + 4, color);
-
             }
             case SHOW_DUNGEON_MILESTONE -> {
                 DungeonMilestone dungeonMilestone = main.getDungeonManager().getDungeonMilestone();
@@ -1324,19 +1325,16 @@ public class RenderListener {
                         new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(MORT_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case ROCK_PET_TRACKER -> {
                 renderItem(graphics, ItemUtils.getTexturedHeadItem("DUMMY_ROCK"), x, y);
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case DOLPHIN_PET_TRACKER -> {
                 renderItem(graphics, ItemUtils.getTexturedHeadItem("DUMMY_DOLPHIN"), x, y);
 
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
-
             }
             case DUNGEONS_SECRETS_DISPLAY -> {
                 DungeonManager dungeonManager = main.getDungeonManager();
@@ -1537,6 +1535,18 @@ public class RenderListener {
 
                 DrawUtils.drawText(graphics, renderComponent, x, y, color);
             }
+            case REMAINING_BAITS_DISPLAY -> {
+                String baitId;
+                if (buttonLocation == null) {
+                    baitId = main.getPlayerListener().getSelectedBaitId();
+                    if (StringUtil.isNullOrEmpty(baitId)) return;
+                } else {
+                    baitId = "WHALE_BAIT";
+                }
+
+                renderItem(graphics, ItemUtils.getTexturedHeadItem(baitId), x, y);
+                DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
+            }
             default -> {
                 DrawUtils.drawText(graphics, renderComponent, x, y, color);
             }
@@ -1670,90 +1680,6 @@ public class RenderListener {
             DrawUtils.drawText(graphics, formattedValue, currentX + 18 + 2, currentY + 5, color);
 
             count++;
-        }
-    }
-
-    /**
-     * Displays the bait list. Only shows bait with count > 0.
-     */
-    public void drawBaitList(GuiGraphicsExtractor graphics, float scale, ButtonLocation buttonLocation) {
-        if (!main.getPlayerListener().isHoldingRod() && buttonLocation == null) return;
-
-        BaitManager bm = BaitManager.getInstance();
-        Object2IntMap<String> baits = bm.getBaitsInInventory();
-        if (buttonLocation != null) {
-            baits = BaitManager.DUMMY_BAITS;
-        }
-
-        String selectedBaitId = bm.getSelectedBaitId();
-        int selectedRemainingBaits = bm.getSelectedRemainingBaits();
-
-        int longestLineWidth = 0;
-        for (Object2IntMap.Entry<String> entry : baits.object2IntEntrySet()) {
-            String baitId = entry.getKey();
-            int baitCount = entry.getIntValue();
-
-            int width;
-            if (buttonLocation == null && selectedRemainingBaits > 0 && baitId.equals(selectedBaitId)) {
-                width = MC.font.width(selectedRemainingBaits + " + " + TextUtils.formatNumber(baitCount));
-            } else {
-                width = MC.font.width(TextUtils.formatNumber(baitCount));
-            }
-
-            longestLineWidth = Math.max(longestLineWidth, width);
-        }
-
-        Feature feature = Feature.BAIT_LIST;
-        int color = feature.getColor();
-        float x = feature.getActualX();
-        float y = feature.getActualY();
-
-        int spacing = 1;
-        int iconSize = 16;
-        int width = iconSize + spacing + longestLineWidth;
-        int height = iconSize * baits.size();
-
-        x = transformX(x, width, scale, feature.isEnabled(FeatureSetting.X_ALLIGNMENT));
-        y = transformY(y, height, scale);
-
-        if (buttonLocation != null) {
-            buttonLocation.checkHoveredAndDrawBox(graphics, x, x + width, y, y + height, scale);
-        }
-
-        boolean selectedBaitInList = false;
-        for (Object2IntMap.Entry<String> entry : baits.object2IntEntrySet()) {
-            int baitCount = entry.getIntValue();
-            String baitId = entry.getKey();
-
-            Component formattedValue;
-            if (baitId.equals(selectedBaitId)) {
-                formattedValue = Component.literal(TextUtils.formatNumber(selectedRemainingBaits))
-                        .append(" + " + TextUtils.formatNumber(baitCount));
-                selectedBaitInList = true;
-            } else {
-                if (baitCount == 0) continue;
-                formattedValue = Component.literal(TextUtils.formatNumber(baitCount));
-            }
-            renderItem(graphics, ItemUtils.getTexturedHeadItem(baitId), x, y);
-            DrawUtils.drawText(
-                    graphics,
-                    formattedValue,
-                    x + iconSize + spacing,
-                    y + (iconSize / 2F) - (8 / 2F),
-                    color
-            );
-
-            y += iconSize;
-        }
-        if (buttonLocation == null && selectedBaitId != null && !selectedBaitInList) {
-            renderItem(graphics, ItemUtils.getTexturedHeadItem(selectedBaitId), x, y);
-            DrawUtils.drawText(
-                    graphics,
-                    Component.literal(TextUtils.formatNumber(selectedRemainingBaits)),
-                    x + iconSize + spacing,
-                    y + (iconSize / 2F) - (8 / 2F),
-                    color
-            );
         }
     }
 

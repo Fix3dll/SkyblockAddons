@@ -85,7 +85,6 @@ public enum Feature {
     LEGENDARY_SEA_CREATURE_WARNING(88, "settings.legendarySeaCreatureWarning", new FeatureGuiData(ColorCode.RED)),
     BOSS_APPROACH_ALERT(91, "settings.bossApproachAlert", null),
     DISABLE_TELEPORT_PAD_MESSAGES(92, "settings.disableTeleportPadMessages", null),
-    BAIT_LIST(93, "settings.baitListDisplay", new FeatureGuiData(DrawType.BAIT_LIST_DISPLAY, ColorCode.AQUA)),
     ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT(94, "settings.zealotCounterExplosiveBow", null),
     DISABLE_ENDERMAN_TELEPORTATION_EFFECT(95, "settings.disableEndermanTeleportation", null),
     CHANGE_ZEALOT_COLOR(96, "settings.changeZealotColor", new FeatureGuiData(ColorCode.LIGHT_PURPLE)),
@@ -163,6 +162,7 @@ public enum Feature {
     DUNGEON_PROFIT_OVERLAY(267, "settings.dungeonProfitOverlay.title", new FeatureGuiData(ColorCode.WHITE)),
     VITALITY_BAR(268, "settings.vitalityBar", new FeatureGuiData(DrawType.BAR, ColorCode.RED)),
     VITALITY_TEXT(269, "settings.vitalityNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.RED)),
+    REMAINING_BAITS_DISPLAY(270, "settings.remainingBaitsDisplay", new FeatureGuiData(DrawType.TEXT, ColorCode.AQUA)),
 
 
     // These are not actual features.
@@ -300,7 +300,6 @@ public enum Feature {
             case TEXT,
                  SLAYER_ARMOR_PROGRESS,
                  DEPLOYABLE_DISPLAY,
-                 BAIT_LIST_DISPLAY,
                  SLAYER_TRACKERS,
                  DRAGON_STATS_TRACKER,
                  PET_DISPLAY -> true;
