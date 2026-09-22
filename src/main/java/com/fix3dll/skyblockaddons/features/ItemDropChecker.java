@@ -89,8 +89,13 @@ public class ItemDropChecker {
             List<String> blacklist = dropSettings.getDontDropTheseItems();
             List<String> whitelist = dropSettings.getAllowDroppingTheseItems();
             SkyblockRarity minimumRarityForBlock = (SkyblockRarity) feature.get(FeatureSetting.MINIMUM_RARITY_FOR_CONFIRMATION);
+            if (minimumRarityForBlock == null) {
+                minimumRarityForBlock = (SkyblockRarity) main.getConfigValuesManager().setSettingToDefault(
+                        FeatureSetting.MINIMUM_RARITY_FOR_CONFIRMATION
+                );
+            }
 
-            if (itemClassification.rarity().compareTo(minimumRarityForBlock) < 0 && !blacklist.contains(itemID)) {
+            if (minimumRarityForBlock != null && itemClassification.rarity().compareTo(minimumRarityForBlock) < 0 && !blacklist.contains(itemID)) {
                 return true;
             } else {
                 boolean canDropItem = false;

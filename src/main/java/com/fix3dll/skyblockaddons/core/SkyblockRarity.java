@@ -37,7 +37,7 @@ public enum SkyblockRarity implements ButtonCycling.SelectItem, RegistrableEnum 
 
     public static SkyblockRarity getByLoreName(String loreName) {
         for (SkyblockRarity rarity : SkyblockRarity.values()) {
-            if (rarity.getLoreName().equalsIgnoreCase(loreName)) {
+            if (rarity.getLoreName().equals(loreName)) {
                 return rarity;
             }
         }
