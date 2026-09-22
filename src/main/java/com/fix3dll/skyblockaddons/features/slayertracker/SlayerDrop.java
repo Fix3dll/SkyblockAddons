@@ -1,26 +1,19 @@
 package com.fix3dll.skyblockaddons.features.slayertracker;
 
-import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
-import com.fix3dll.skyblockaddons.utils.data.skyblockdata.ItemsData;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.TexturedHead;
-import com.mojang.authlib.GameProfile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.Blocks;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumMap;
-import java.util.Optional;
 
 @Getter
 public enum SlayerDrop {
@@ -173,7 +166,7 @@ public enum SlayerDrop {
     }
 
     /**
-     * Creates a slayer drop with textured skull from {@link ItemUtils#getTexturedHeadItem(String)} with skyblockId
+     * Creates a slayer drop with textured skull from {@link ItemUtils#getTexturedHead(String)} with skyblockId
      */
     SlayerDrop(String skyblockID, SkyblockRarity rarity) {
         this.skyblockID = skyblockID;
@@ -201,7 +194,6 @@ public enum SlayerDrop {
         this.attributeID = attributeID;
     }
 
-    @Nullable
     public ItemStack getItemStack() {
         if (itemStack == null) {
             // Items without a custom texture
@@ -209,49 +201,19 @@ public enum SlayerDrop {
                 return itemStack = itemStackTemplate.create();
             }
 
-            // 1st priority is API
-            ItemsData.Item item = switch (skyblockID) {
-                case null -> null;
-                case "RUNE", "ATTRIBUTE_SHARD" -> null; // not exist in API
-                default -> SkyblockAddons.getInstance().getItemsData().getById(skyblockID);
-            };
-            if (item != null) {
-                GameProfile gameProfile = Optional.ofNullable(item.getSkin())
-                        .map(ItemsData.Skin::getGameProfile)
-                        .orElse(null);
-
-                if (gameProfile != null) {
-                    return itemStack = ItemUtils.createSkullItemStack(
-                            null,
-                            ResolvableProfile.createResolved(gameProfile),
-                            Component.literal(item.getName()),
-                            skyblockID
-                    );
-                } else {
-                    Identifier itemModel = Optional.ofNullable(item.getItemModel())
-                            .map(Identifier::tryParse)
-                            .orElse(null);
-
-                    if (itemModel != null) {
-                        itemStack = Items.PAPER.getDefaultInstance();
-                        itemStack.set(DataComponents.ITEM_MODEL, itemModel);
-                        return itemStack;
-                    }
-                }
-            }
-
-            // 2nd priority is constant TexturedHeads
             TexturedHead texturedHead = switch (skyblockID) {
                 case null -> null;
                 case "RUNE", "ATTRIBUTE_SHARD" -> ItemUtils.getTexturedHead(identifier);
                 default -> ItemUtils.getTexturedHead(skyblockID);
             };
             if (texturedHead != null) {
-                return itemStack = texturedHead.getItemStack();
+                itemStack = texturedHead.getItemStack();
             }
 
             // Not found in API or in constants. Its probably a dye or attribute shard
-            itemStack = Items.BARRIER.getDefaultInstance();
+            if (itemStack == null) {
+                itemStack = Items.BARRIER.getDefaultInstance();
+            }
         }
         return itemStack;
     }

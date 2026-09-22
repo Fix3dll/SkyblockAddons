@@ -138,19 +138,24 @@ public class DataUtils {
         } else {
             SkyblockAddons.getInstance().getUpdater().checkForUpdate();
             DataUtils.loadOnlineData(new ElectionRequest()); // API constant data
-            DataUtils.loadOnlineData(new ItemsRequest()); // API constant data
         }
     }
 
     /**
-     * Reads data files early. Separated from {@link #readLocalFileData()} for early loading.
+     * Reads data files early. Separated from {@link #readLocalAndFetchOnline()} for early loading.
      */
-    public static void preReadLocalFileData() {
+    public static void preReadLocalAndFetchOnline() {
+        LOGGER.info("preReadLocalAndFetchOnline: Fetching items from API...");
+        DataUtils.loadOnlineData(new ItemsRequest(), true); // API constant data
+
         // Textured Player Heads Data
         path = "/texturedHeads.json";
         try (InputStream inputStream = DataUtils.class.getResourceAsStream(path);
              InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8)) {
-            ItemUtils.setTexturedHeads(GSON.fromJson(inputStreamReader, new TypeToken<Map<String, TexturedHead>>() {}.getType()));
+            Map<String, TexturedHead> map = GSON.fromJson(
+                    inputStreamReader, new TypeToken<Map<String, TexturedHead>>() {}.getType()
+            );
+            ItemUtils.setTexturedHeads(Map.copyOf(map));
         } catch (Exception ex) {
             handleLocalFileReadException(path,ex);
         }
@@ -340,7 +345,11 @@ public class DataUtils {
     }
 
     public static void loadOnlineData(RemoteFileRequest<?> request) {
-        request.execute(httpClient, executorService);
+        request.execute(httpClient, executorService, false);
+    }
+
+    public static void loadOnlineData(RemoteFileRequest<?> request, boolean blocking) {
+        request.execute(httpClient, executorService, blocking);
     }
 
     /**
@@ -471,7 +480,6 @@ public class DataUtils {
         remoteRequests.add(new SlayerLocationsRequest());
         remoteRequests.add(new RegexRequest());
         remoteRequests.add(new ElectionRequest()); // API data
-        remoteRequests.add(new ItemsRequest()); // API data
     }
 
     /**
