@@ -103,8 +103,13 @@ repositories {
     }
 }
 
-val bundle : Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
+val bundle = configurations.register("bundle") {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+}
+
+configurations.implementation {
+    extendsFrom(bundle.get())
 }
 
 fun gradleProperty(key: String): String = providers.gradleProperty(key).get()
@@ -198,14 +203,9 @@ tasks.jar {
 }
 
 tasks.shadowJar {
-    exclude("META-INF/versions/9/**")
-    exclude("META-INF/versions/11/**")
-    exclude("META-INF/versions/14/**")
-    exclude("META-INF/versions/15/**")
-    exclude("META-INF/versions/16/**")
-    exclude("META-INF/versions/20/**")
+    exclude("META-INF/versions/**")
     archiveFileName.set("${project.name}-${ext.get("formattedVersion")}-for-MC-${gradleProperty("minecraft_version")}.jar")
-    configurations = listOf(bundle)
+    configurations = listOf(bundle.get())
 
     val basePackage = "${project.group}.${project.name.lowercase(Locale.ENGLISH)}"
     relocate("com.jagrosh.discordipc", "${basePackage}.discordipc")

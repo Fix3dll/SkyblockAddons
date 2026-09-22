@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.core;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.mixin.accessors.GameOptionsAccessor;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Type;
 import lombok.Getter;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -18,16 +19,16 @@ import static com.fix3dll.skyblockaddons.SkyblockAddons.CATEGORY;
 
 @Getter
 public enum SkyblockKeyBinding {
-    OPEN_SETTINGS(InputConstants.UNKNOWN.getValue(), "settings.settings"),
-    OPEN_EDIT_GUI(InputConstants.UNKNOWN.getValue(), "settings.editLocations"),
-    LOCK_SLOT(InputConstants.KEY_L, "settings.lockSlot"),
-    FREEZE_BACKPACK(InputConstants.KEY_F, "settings.freezeBackpackPreview"),
-    INCREASE_DUNGEON_MAP_ZOOM(InputConstants.KEY_ADD, "keyBindings.increaseDungeonMapZoom"),
-    DECREASE_DUNGEON_MAP_ZOOM(InputConstants.KEY_MINUS, "keyBindings.decreaseDungeonMapZoom"),
-    ANSWER_ABIPHONE_OR_OPTION(InputConstants.UNKNOWN.getValue(), "keyBindings.answerAbiphoneOrOption"),
-    SHOW_BULK_PRICE(InputConstants.KEY_LSHIFT, "keyBindings.showBulkPrice"),
-    SHOW_MISSING_ENCHANTS(InputConstants.KEY_LSHIFT, "keyBindings.showMissingEnchants"),
-    DEVELOPER_COPY_NBT(InputConstants.MOUSE_BUTTON_4, "keyBindings.developerCopyNBT");
+    OPEN_SETTINGS(InputConstants.UNKNOWN.getValue(), Type.KEYBOARD, "settings.settings"),
+    OPEN_EDIT_GUI(InputConstants.UNKNOWN.getValue(), Type.KEYBOARD, "settings.editLocations"),
+    LOCK_SLOT(InputConstants.KEY_L, Type.KEYBOARD, "settings.lockSlot"),
+    FREEZE_BACKPACK(InputConstants.KEY_F, Type.KEYBOARD, "settings.freezeBackpackPreview"),
+    INCREASE_DUNGEON_MAP_ZOOM(InputConstants.KEY_ADD, Type.KEYBOARD, "keyBindings.increaseDungeonMapZoom"),
+    DECREASE_DUNGEON_MAP_ZOOM(86/*SUBTRACT*/, Type.KEYBOARD, "keyBindings.decreaseDungeonMapZoom"),
+    ANSWER_ABIPHONE_OR_OPTION(InputConstants.UNKNOWN.getValue(), Type.KEYBOARD, "keyBindings.answerAbiphoneOrOption"),
+    SHOW_BULK_PRICE(InputConstants.KEY_LSHIFT, Type.KEYBOARD, "keyBindings.showBulkPrice"),
+    SHOW_MISSING_ENCHANTS(InputConstants.KEY_LSHIFT, Type.KEYBOARD, "keyBindings.showMissingEnchants"),
+    DEVELOPER_COPY_NBT(InputConstants.KEY_RCONTROL, Type.KEYBOARD, "keyBindings.developerCopyNBT");
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
@@ -43,13 +44,11 @@ public enum SkyblockKeyBinding {
      */
     private InputConstants.Key previousKey = InputConstants.UNKNOWN;
 
-    SkyblockKeyBinding(int defaultKey, String translationKey) {
-        this.defaultKey = 1 <= defaultKey && defaultKey <= 8
-                ? InputConstants.Type.MOUSE.getOrCreate(defaultKey)
-                : InputConstants.Type.KEYBOARD.getOrCreate(defaultKey);
+    SkyblockKeyBinding(int defaultKey, Type type, String translationKey) {
+        this.defaultKey = type.getOrCreate(defaultKey);
         this.translationKey = translationKey;
         String key = "key.skyblockaddons." + this.name().toLowerCase(Locale.ENGLISH);
-        this.keyBinding = new KeyMapping(key, defaultKey, CATEGORY);
+        this.keyBinding = new KeyMapping(key, type, defaultKey, CATEGORY);
     }
 
     /**
