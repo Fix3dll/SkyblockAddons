@@ -3,12 +3,11 @@ package com.fix3dll.skyblockaddons.core;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.mixin.accessors.GameOptionsAccessor;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Type;
 import lombok.Getter;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.util.Util;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -20,16 +19,16 @@ import static com.fix3dll.skyblockaddons.SkyblockAddons.CATEGORY;
 
 @Getter
 public enum SkyblockKeyBinding {
-    OPEN_SETTINGS(GLFW.GLFW_KEY_UNKNOWN, "settings.settings"),
-    OPEN_EDIT_GUI(GLFW.GLFW_KEY_UNKNOWN, "settings.editLocations"),
-    LOCK_SLOT(GLFW.GLFW_KEY_L, "settings.lockSlot"),
-    FREEZE_BACKPACK(GLFW.GLFW_KEY_F, "settings.freezeBackpackPreview"),
-    INCREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_ADD, "keyBindings.increaseDungeonMapZoom"),
-    DECREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_SUBTRACT, "keyBindings.decreaseDungeonMapZoom"),
-    ANSWER_ABIPHONE_OR_OPTION(GLFW.GLFW_KEY_UNKNOWN, "keyBindings.answerAbiphoneOrOption"),
-    SHOW_BULK_PRICE(GLFW.GLFW_KEY_LEFT_SHIFT, "keyBindings.showBulkPrice"),
-    SHOW_MISSING_ENCHANTS(GLFW.GLFW_KEY_LEFT_SHIFT, "keyBindings.showMissingEnchants"),
-    DEVELOPER_COPY_NBT(Util.getPlatform() == Util.OS.OSX ? GLFW.GLFW_KEY_LEFT_ALT : GLFW.GLFW_KEY_RIGHT_CONTROL, "keyBindings.developerCopyNBT");
+    OPEN_SETTINGS(GLFW.GLFW_KEY_UNKNOWN, Type.KEYSYM, "settings.settings"),
+    OPEN_EDIT_GUI(GLFW.GLFW_KEY_UNKNOWN, Type.KEYSYM, "settings.editLocations"),
+    LOCK_SLOT(GLFW.GLFW_KEY_L, Type.KEYSYM, "settings.lockSlot"),
+    FREEZE_BACKPACK(GLFW.GLFW_KEY_F, Type.KEYSYM, "settings.freezeBackpackPreview"),
+    INCREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_ADD, Type.KEYSYM, "keyBindings.increaseDungeonMapZoom"),
+    DECREASE_DUNGEON_MAP_ZOOM(GLFW.GLFW_KEY_KP_SUBTRACT, Type.KEYSYM, "keyBindings.decreaseDungeonMapZoom"),
+    ANSWER_ABIPHONE_OR_OPTION(GLFW.GLFW_KEY_UNKNOWN, Type.KEYSYM, "keyBindings.answerAbiphoneOrOption"),
+    SHOW_BULK_PRICE(GLFW.GLFW_KEY_LEFT_SHIFT, Type.KEYSYM, "keyBindings.showBulkPrice"),
+    SHOW_MISSING_ENCHANTS(GLFW.GLFW_KEY_LEFT_SHIFT, Type.KEYSYM, "keyBindings.showMissingEnchants"),
+    DEVELOPER_COPY_NBT(GLFW.GLFW_KEY_RIGHT_CONTROL, Type.KEYSYM, "keyBindings.developerCopyNBT");
 
     private static final Logger LOGGER = SkyblockAddons.getLogger();
 
@@ -45,11 +44,11 @@ public enum SkyblockKeyBinding {
      */
     private InputConstants.Key previousKey = InputConstants.UNKNOWN;
 
-    SkyblockKeyBinding(int defaultKeyCode, String translationKey) {
-        this.defaultKey = InputConstants.getKey(new KeyEvent(defaultKeyCode, -1, -1));
+    SkyblockKeyBinding(int defaultKeyCode, Type type, String translationKey) {
+        this.defaultKey = type.getOrCreate(defaultKeyCode);
         this.translationKey = translationKey;
         String key = "key.skyblockaddons." + this.name().toLowerCase(Locale.US);
-        this.keyBinding = new KeyMapping(key, defaultKeyCode, CATEGORY);
+        this.keyBinding = new KeyMapping(key, type, defaultKeyCode, CATEGORY);
     }
 
     /**

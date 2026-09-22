@@ -5,7 +5,7 @@ import java.text.ParseException
 plugins {
     java
     id("net.fabricmc.fabric-loom") version ("1.17-SNAPSHOT")
-    id("com.gradleup.shadow") version ("9.4.2")
+    id("com.gradleup.shadow") version ("9.6.1")
     id("io.freefair.lombok") version ("9.5.0")
 }
 
@@ -39,10 +39,10 @@ loom {
     accessWidenerPath.set(project.file("src/main/resources/skyblockaddons.classtweaker"))
     runConfigs {
         getByName("client") {
-            vmArg("-Xmx4G")
-            property("mixin.debug", "true")
-            property("devauth.enabled", "false")
-            property("sba.data.online", "false")
+            jvmArguments.add("-Xmx4G")
+            systemProperties.put("mixin.debug", "true")
+            systemProperties.put("devauth.enabled", "false")
+            systemProperties.put("sba.data.online", "false")
         }
         remove(getByName("server"))
     }
@@ -103,23 +103,30 @@ repositories {
     }
 }
 
-val bundle : Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
+val bundle = configurations.register("bundle") {
+    isCanBeConsumed = false
+    isCanBeResolved = true
 }
+
+configurations.implementation {
+    extendsFrom(bundle.get())
+}
+
+fun gradleProperty(key: String): String = providers.gradleProperty(key).get()
 
 dependencies {
     // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
-    implementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
+    minecraft("com.mojang:minecraft:${gradleProperty("minecraft_version")}")
+    implementation("net.fabricmc:fabric-loader:${gradleProperty("loader_version")}")
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    implementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${gradleProperty("fabric_version")}")
 
-    //implementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
-    implementation("maven.modrinth:modmenu:${properties["modmenu_version"]}")
+    //implementation("com.terraformersmc:modmenu:${gradleProperty("modmenu_version")}")
+    implementation("maven.modrinth:modmenu:${gradleProperty("modmenu_version")}")
 
     // REI compat
-    compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${properties["rei_version"]}") {
+    compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${gradleProperty("rei_version")}") {
         exclude("net.fabricmc.fabric-api")
     }
     // SkyBlock Item List compat
@@ -143,7 +150,7 @@ dependencies {
     // Test
     testImplementation(platform("org.junit:junit-bom:6.0.3"))
     testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testImplementation("net.fabricmc:fabric-loader-junit:${properties["loader_version"]}")
+    testImplementation("net.fabricmc:fabric-loader-junit:${gradleProperty("loader_version")}")
 }
 
 tasks.withType(JavaCompile::class).configureEach {
@@ -160,7 +167,7 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(mapOf(
             "version" to ext.get("formattedVersion"),
-            "sbaJarName" to "${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar",
+            "sbaJarName" to "${project.name}-${ext.get("formattedVersion")}-for-MC-${gradleProperty("minecraft_version")}.jar",
             "sbaBuildNumber" to project.property("buildNumber"),
             "loader_version" to project.property("loader_version"),
             "minecraft_version" to project.property("minecraft_version"),
@@ -202,8 +209,8 @@ tasks.shadowJar {
     exclude("META-INF/versions/15/**")
     exclude("META-INF/versions/16/**")
     exclude("META-INF/versions/20/**")
-    archiveFileName.set("${project.name}-${ext.get("formattedVersion")}-for-MC-${properties["minecraft_version"]}.jar")
-    configurations = listOf(bundle)
+    archiveFileName.set("${project.name}-${ext.get("formattedVersion")}-for-MC-${gradleProperty("minecraft_version")}.jar")
+    configurations = listOf(bundle.get())
 
     val basePackage = "${project.group}.${project.name.lowercase(Locale.US)}"
     relocate("com.jagrosh.discordipc", "${basePackage}.discordipc")
