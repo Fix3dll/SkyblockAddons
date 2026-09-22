@@ -357,6 +357,22 @@ public class ItemUtils {
         return extraAttributes != null && extraAttributes.contains("drill_fuel");
     }
 
+    public static boolean isBait(ItemStack itemStack) {
+        if (itemStack == null || itemStack == ItemStack.EMPTY) return false;
+
+        CompoundTag extraAttributes = getExtraAttributes(itemStack);
+        if (extraAttributes == null) return false;
+
+        return isBait(extraAttributes);
+    }
+
+    public static boolean isBait(CompoundTag extraAttributes) {
+        String id = getSkyblockItemID(extraAttributes);
+        if (StringUtil.isNullOrEmpty(id)) return false;
+
+        return id.endsWith("_BAIT") || id.startsWith("OBFUSCATED_FISH_1") || id.startsWith("OBFUSCATED_FISH_2");
+    }
+
     /**
      * Returns the Skyblock Item ID of a given Skyblock item
      * @param itemStack the Skyblock item to check

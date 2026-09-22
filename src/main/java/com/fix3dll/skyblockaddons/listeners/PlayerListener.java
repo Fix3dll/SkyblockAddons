@@ -19,7 +19,6 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.core.seacreatures.SeaCreatureManager;
 import com.fix3dll.skyblockaddons.events.ClientEvents;
 import com.fix3dll.skyblockaddons.events.SkyblockEvents;
-import com.fix3dll.skyblockaddons.features.BaitManager;
 import com.fix3dll.skyblockaddons.features.EndstoneProtectorManager;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
 import com.fix3dll.skyblockaddons.features.JerryPresent;
@@ -108,6 +107,7 @@ import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -136,6 +136,7 @@ public class PlayerListener {
             "Hmm… tasty!", "Hmm... tasty!", "You can now fly for 2 minutes.", "Your flight has been extended for 2 extra minutes.",
             "You can now fly for 200 minutes.", "Your flight has been extended for 200 extra minutes."
     );
+    private static final String BAIT_REMAINING_PREFIX = "Bait Remaining: ";
 
     private static final Set<Identifier> BONZO_STAFF_SOUNDS = Set.of(
             SoundEvents.FIREWORK_ROCKET_BLAST.location(),
@@ -200,6 +201,9 @@ public class PlayerListener {
     private int       lastLBinAveragesIdentity = 0;
     private long      lastBazaarIdentity       = 0;
     private long      lastItemsDataIdentity    = 0;
+
+    @Getter private String selectedBaitId = null;
+    @Getter private int selectedRemainingBaits = 0;
 
     public static final Identifier SBA_FIRST_PHASE = SkyblockAddons.identifier("first");
     public static final Identifier SBA_LAST_PHASE = SkyblockAddons.identifier("last");
@@ -337,11 +341,7 @@ public class PlayerListener {
 //            LOGGER.info("Unformatted chat: {}", component.getString());
             Matcher matcher;
 
-            if (strippedText.equals("Use Baits From Bag is now disabled!")) {
-                BaitManager.getInstance().setFishingBagEnabled(false);
-            } else if (strippedText.equals("Use Baits From Bag is now enabled!")) {
-                BaitManager.getInstance().setFishingBagEnabled(true);
-            } else if (cachedChatRunCommand == null && formattedText.contains("§2§l[PICK UP]")) {
+            if (cachedChatRunCommand == null && formattedText.contains("§2§l[PICK UP]")) {
                 this.setChatRunCommandFromComponent(component);
 
             } else if (formattedText.contains("§a§l[YES]") || formattedText.contains("§a[Yes]")) {
@@ -684,8 +684,8 @@ public class PlayerListener {
                     main.getInventoryUtils().calculateInventoryDifference(player.getInventory().getNonEquipmentItems());
                 }
 
-                if (Feature.BAIT_LIST.isEnabled() && isHoldingRod()) {
-                    BaitManager.getInstance().refreshBaits(player);
+                if (Feature.REMAINING_BAITS_DISPLAY.isEnabled()) {
+                    parseSelectedBait(player);
                 }
             }
             main.getInventoryUtils().cleanUpPickupLog();
@@ -1905,6 +1905,46 @@ public class PlayerListener {
             }
         }
         return apiItemId;
+    }
+
+    private void parseSelectedBait(LocalPlayer player) {
+        if (!isHoldingRod()) {
+            selectedBaitId = null;
+            selectedRemainingBaits = 0;
+            return;
+        }
+
+        NonNullList<ItemStack> nonEquipmentItems = player.getInventory().getNonEquipmentItems();
+        ItemStack menuItem = nonEquipmentItems.get(8);
+        CompoundTag ea = ItemUtils.getExtraAttributes(menuItem);
+
+        if (ItemUtils.isBait(ea)) {
+            List<Component> loreList = ItemUtils.getItemLoreComponent(menuItem).reversed();
+            int loreCount = 0;
+
+            for (Component component : loreList) {
+                String line = component.getString();
+                int index = line.indexOf(BAIT_REMAINING_PREFIX);
+
+                if (index != -1) {
+                    String countStr = line.substring(index + BAIT_REMAINING_PREFIX.length());
+                    if (!countStr.isEmpty() && Character.isDigit(countStr.charAt(0))) {
+                        try {
+                            loreCount = TextUtils.NUMBER_FORMAT.parse(countStr).intValue();
+                        } catch (ParseException ignored) {}
+                    }
+                    break;
+                }
+            }
+
+            if (loreCount > 0) {
+                selectedBaitId = ItemUtils.getSkyblockItemID(ea);
+                selectedRemainingBaits = loreCount;
+            }
+        } else {
+            selectedBaitId = null;
+            selectedRemainingBaits = 0;
+        }
     }
 
     /**

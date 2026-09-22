@@ -112,7 +112,6 @@
     "legendarySeaCreatureWarning": "Legendary Sea Creature Warning",
     "bossApproachAlert": "Slayer Boss Approach Alert",
     "disableTeleportPadMessages": "Disable Teleport Pad Messages",
-    "baitListDisplay": "Show Bait List While Holding a Rod",
     "freezeBackpackPreview": "Freeze Backpack Preview",
     "showMissingEnchants": "Show missing enchants while holding shortcut (see Keybinds)",
     "hideVanillaEnchants": "Hide Vanilla Enchants",
@@ -324,7 +323,8 @@
     "configExportButton": "Export Settings",
     "configImportButton": "Import Settings",
     "vitalityBar": "Vitality Bar",
-    "vitalityNumber": "Vitality Number"
+    "vitalityNumber": "Vitality Number",
+    "remainingBaitsDisplay": "Remaining Baits Display"
   },
   "messages": {
     "enchants": "Enchants",
