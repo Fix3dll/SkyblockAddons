@@ -203,12 +203,7 @@ tasks.jar {
 }
 
 tasks.shadowJar {
-    exclude("META-INF/versions/9/**")
-    exclude("META-INF/versions/11/**")
-    exclude("META-INF/versions/14/**")
-    exclude("META-INF/versions/15/**")
-    exclude("META-INF/versions/16/**")
-    exclude("META-INF/versions/20/**")
+    exclude("META-INF/versions/**")
     archiveFileName.set("${project.name}-${ext.get("formattedVersion")}-for-MC-${gradleProperty("minecraft_version")}.jar")
     configurations = listOf(bundle.get())
 
