@@ -31,7 +31,7 @@ public enum InventoryType {
     CROSEUS_CHEST_MENU("Croseus Chest Menu"),
     EQUIPMENT_SETS("Equipment Sets"),
     LOADOUTS("Loadouts"),
-    FISHING_BAG("Fishing Bag");
+    BAIT_SACK("Bait Sack");
 
     @Getter private final String inventoryName;
 
