@@ -1657,12 +1657,16 @@ public class PlayerListener {
                     PetInfo petInfo = pet.getPetInfo();
 
                     if (petInfo != null) {
-                        apiItemId = petInfo.getPetSkyblockId() + ";" + petInfo.getPetRarity().ordinal();
+                        SkyblockRarity petRarity = petInfo.getPetRarity();
 
-                        int petLevel = pet.getPetLevel();
-                        if (100 <= petLevel) {
-                            extraString = "+" + (petLevel / 100) * 100;
-                            apiItemId += extraString;
+                        if  (petRarity != null) {
+                            apiItemId = petInfo.getPetSkyblockId() + ";" + petInfo.getPetRarity().ordinal();
+
+                            int petLevel = pet.getPetLevel();
+                            if (100 <= petLevel) {
+                                extraString = "+" + (petLevel / 100) * 100;
+                                apiItemId += extraString;
+                            }
                         }
                     }
                 }

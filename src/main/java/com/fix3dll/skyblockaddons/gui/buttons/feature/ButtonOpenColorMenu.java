@@ -43,10 +43,13 @@ public class ButtonOpenColorMenu extends ButtonFeature {
         this.setting = setting;
         this.boxColorSupplier = (boxAlpha) -> {
             Object color = feature.get(setting);
-            if (color instanceof ColorCode) {
-                return ((ColorCode) color).getColor(boxAlpha);
+            if (color instanceof ColorCode colorCode) {
+                return colorCode.getColor(boxAlpha);
+            } else if (color instanceof Number number) {
+                return ARGB.color(boxAlpha, number.intValue());
             } else {
-                return ARGB.color(boxAlpha, ((Number) color).intValue());
+                main.getConfigValuesManager().setSettingToDefault(setting);
+                return ColorCode.RED.getColor(); // FeatureData#color default
             }
         };
     }
