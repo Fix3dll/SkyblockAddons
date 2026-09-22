@@ -537,51 +537,87 @@ public enum Feature {
     }
 
     /**
-     * Returns setting value as {@link Number}
+     * Returns setting value as {@link Number}.
+     * <p>
+     * If the current value is {@code null} or not an instance of {@link Number},
+     * the setting will be reset to its default value and returned.
      * @param setting Feature related setting
      * @return The value of the {@code setting} as {@link Number}
-     * @exception IllegalArgumentException if specified setting value is not instance of {@link Number}
+     * @throws IllegalStateException if {@code setting} cannot be resolved to a {@link Number}
      * @see Feature#get(FeatureSetting)
+     * @see ConfigValuesManager#setSettingToDefault(FeatureSetting)
      */
     public Number getAsNumber(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof Number number) {
             return number;
         }
-        SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
-        throw new IllegalArgumentException("Setting " + setting + " is not a number. Type: " + value);
+        Object defaultValue;
+        try {
+            defaultValue = SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
+            if (defaultValue instanceof Number number) {
+                return number;
+            }
+        } catch (NullPointerException e) {
+            throw new IllegalStateException("Setting " + setting + " is not a valid Number (value: " + value + "), and no default value is available.", e);
+        }
+        throw new IllegalStateException("Setting " + setting + " is not a valid Number (value: " + value + "), and its default value is also invalid (default: " + defaultValue + ").");
     }
 
     /**
-     * Returns setting value as {@link RegistrableEnum}
+     * Returns setting value as {@link RegistrableEnum}.
+     * <p>
+     * If the current value is {@code null} or not an instance of {@link RegistrableEnum},
+     * the setting will be reset to its default value and returned.
      * @param setting Feature related setting
      * @return The value of the {@code setting} as {@link RegistrableEnum}
-     * @exception IllegalArgumentException if specified setting value is not instance of {@link RegistrableEnum}
+     * @throws IllegalStateException if {@code setting} cannot be resolved to a {@link RegistrableEnum}
      * @see Feature#get(FeatureSetting)
+     * @see ConfigValuesManager#setSettingToDefault(FeatureSetting)
      */
     public RegistrableEnum getAsEnum(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof RegistrableEnum registrableEnum) {
             return registrableEnum;
         }
-        SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
-        throw new IllegalArgumentException("Setting " + setting + " is not a RegistrableEnum. Type: " + value);
+        Object defaultValue;
+        try {
+            defaultValue = SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
+            if (defaultValue instanceof RegistrableEnum registrableEnum) {
+                return registrableEnum;
+            }
+        } catch (NullPointerException e) {
+            throw new IllegalStateException("Setting " + setting + " is not a valid RegistrableEnum (value: " + value + "), and no default value is available.", e);
+        }
+        throw new IllegalStateException("Setting " + setting + " is not a valid RegistrableEnum (value: " + value + "), and its default value is also invalid (default: " + defaultValue + ").");
     }
 
     /**
-     * Returns setting value as {@link String}
+     * Returns setting value as {@link String}.
+     * <p>
+     * If the current value is {@code null} or not an instance of {@link String},
+     * the setting will be reset to its default value and returned.
      * @param setting Feature related setting
      * @return The value of the {@code setting} as {@link String}
-     * @exception IllegalArgumentException if specified setting value is not instance of {@link String}
+     * @throws IllegalStateException if {@code setting} cannot be resolved to a {@link String}
      * @see Feature#get(FeatureSetting)
+     * @see ConfigValuesManager#setSettingToDefault(FeatureSetting)
      */
     public String getAsString(FeatureSetting setting) {
         Object value = this.get(setting);
         if (value instanceof String string) {
             return string;
         }
-        SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
-        throw new IllegalArgumentException("Setting " + setting + " is not a string. Type: " + value);
+        Object defaultValue;
+        try {
+            defaultValue = SkyblockAddons.getInstance().getConfigValuesManager().setSettingToDefault(setting);
+            if (defaultValue instanceof String string) {
+                return string;
+            }
+        } catch (NullPointerException e) {
+            throw new IllegalStateException("Setting " + setting + " is not a valid String (value: " + value + "), and no default value is available.", e);
+        }
+        throw new IllegalStateException("Setting " + setting + " is not a valid String (value: " + value + "), and its default value is also invalid (default: " + defaultValue + ").");
     }
 
     /**
@@ -592,7 +628,7 @@ public enum Feature {
      * @exception IllegalArgumentException if {@code setting} is not related with this Feature
      * @see ConfigValuesManager#setSettingToDefault(FeatureSetting)
      */
-    public Object get(FeatureSetting setting) {
+    public @Nullable Object get(FeatureSetting setting) {
         if (setting.getRelatedFeature() != this && !setting.isUniversal()) {
             throw new IllegalArgumentException(setting.getRelatedFeature() + " is not related to " + this);
         }

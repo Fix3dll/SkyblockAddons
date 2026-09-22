@@ -19,6 +19,7 @@ import com.google.gson.stream.JsonWriter;
 import com.mojang.authlib.GameProfile;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.util.StringUtil;
 import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.Nullable;
@@ -127,7 +128,7 @@ public class ItemsData {
      * A single SkyBlock item definition. All optional fields may be {@code null}
      * or their primitive default ({@code 0} / {@code false}).
      */
-    @Getter
+    @Getter @ToString
     public static class Item {
 
         /** Unique SkyBlock item ID, e.g. {@code "ARACK"} or {@code "INK_SACK:3"}. */

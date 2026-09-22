@@ -139,13 +139,7 @@ public class ItemUtils {
                 String rarityStr = matcher.group("rarity");
                 if (rarityStr == null || rarityStr.isBlank()) continue;
 
-                SkyblockRarity parsedRarity = null;
-                for (SkyblockRarity itemRarity : SkyblockRarity.values()) {
-                    if (itemRarity.getLoreName().equals(rarityStr)) {
-                        parsedRarity = itemRarity;
-                        break;
-                    }
-                }
+                SkyblockRarity parsedRarity = SkyblockRarity.getByLoreName(rarityStr);
 
                 // If a valid rarity is matched, we consider this the correct classification line.
                 if (parsedRarity != null) {

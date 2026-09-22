@@ -253,9 +253,10 @@ public class ConfigValuesManager {
     /**
      * Sets the setting to the default value. Note that this method does not trigger {@link #saveConfig()} afterward.
      * @param setting Feature related setting
+     * @return default value as {@link Object}
      * @exception NullPointerException if the default settings are not saved in defaults.json
      */
-    public void setSettingToDefault(FeatureSetting setting) {
+    public Object setSettingToDefault(FeatureSetting setting) {
         Feature feature = setting.getRelatedFeature();
         if (feature != null) {
             FeatureData<?> data = Objects.requireNonNull(
@@ -283,12 +284,13 @@ public class ConfigValuesManager {
                 LOGGER.info("{} has been set to default value.", setting.name());
             }
 
-            return;
+            return defaultValue;
         }
 
         if (Feature.DEVELOPER_MODE.isEnabled()) {
             LOGGER.error("Could not reset {} to its default value.", setting.name());
         }
+        return null;
     }
 
     /**

@@ -8,7 +8,6 @@ import com.fix3dll.skyblockaddons.config.PersistentValuesManager;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
 import com.fix3dll.skyblockaddons.core.ItemType;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
-import com.fix3dll.skyblockaddons.core.SkyblockRarity;
 import com.fix3dll.skyblockaddons.core.feature.Feature;
 import com.fix3dll.skyblockaddons.core.feature.FeatureData;
 import com.fix3dll.skyblockaddons.core.scheduler.Scheduler;
@@ -41,7 +40,6 @@ import com.fix3dll.skyblockaddons.utils.gson.GsonInitializableTypeAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.ItemTypeAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.PatternAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.SemanticVersionAdapter;
-import com.fix3dll.skyblockaddons.utils.gson.SkyblockRarityAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.String2DoubleMapAdapter;
 import com.fix3dll.skyblockaddons.utils.gson.UuidAdapter;
 import com.google.common.reflect.TypeToken;
@@ -115,7 +113,6 @@ public class SkyblockAddons implements ClientModInitializer {
 			.registerTypeAdapterFactory(new GsonInitializableTypeAdapter())
 			.registerTypeAdapter(Pattern.class, new PatternAdapter())
 			.registerTypeAdapter(SemanticVersion.class, new SemanticVersionAdapter())
-			.registerTypeAdapter(SkyblockRarity.class, new SkyblockRarityAdapter())
 			.registerTypeAdapter(UUID.class, new UuidAdapter())
 			.registerTypeAdapter(FeatureData.class, new FeatureDataAdapter())
 			.registerTypeAdapter(ConfigValues.class, new ConfigValuesAdapter())
