@@ -4,7 +4,7 @@
   "FROM_TO_PATTERN": "(?:From:|To:) (?:\\[.*?] )?(?<name>\\w{1,16})",
   "PET_LEVEL_PATTERN": "(§7\\[Lvl )(?<level>\\d+)(] )(§8\\[§.)?(?<cosmeticLevel>\\d+)?(.*)",
   "FAVORITE_PATTERN": "(?i)(§r)?§e⭐ ",
-  "TRACKED_ANIMAL_NAME_PATTERN": "\\[Lv[0-9]+](?: (?<mobType>[^a-zA-Z0-9]))? (?<rarity>[a-zA-Z]+) (?<animal>[a-zA-Z]+) .*❤",
+  "TRACKED_ANIMAL_NAME_PATTERN": "\\[Lv[0-9]+](?: \\p{Co}+)?(?: (?<mobType>[^a-zA-Z0-9]))? (?<rarity>[a-zA-Z]+) (?<animal>[a-zA-Z]+) .*❤",
   "TREVOR_FIND_ANIMAL_PATTERN": "\\[NPC] Trevor: You can find your (?<rarity>[A-Z]+) animal near the [a-zA-Z ]+\\.",
   "ANIMAL_DIED_PATTERN": "Your mob died randomly, you are rewarded [0-9]+ pelts?\\.",
   "ANIMAL_KILLED_PATTERN": "Killing the animal rewarded you [0-9]+ pelts?\\.",
