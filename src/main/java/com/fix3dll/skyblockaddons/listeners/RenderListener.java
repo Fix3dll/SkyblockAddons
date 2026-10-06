@@ -1,6 +1,8 @@
 package com.fix3dll.skyblockaddons.listeners;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.features.starlyn.StarlynContestManager;
+import com.fix3dll.skyblockaddons.features.events.EventReminderManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.CrimsonArmorAbilityStack;
 import com.fix3dll.skyblockaddons.core.EssenceType;
@@ -138,6 +140,8 @@ public class RenderListener {
     private static final Identifier SLASH_ICON = SkyblockAddons.identifier("icons/slash.png");
     private static final Identifier IRON_GOLEM_ICON = SkyblockAddons.identifier("icons/irongolem.png");
     private static final Identifier FARM_ICON = SkyblockAddons.identifier("icons/farm.png");
+    private static final Identifier MIRIA_ICON = SkyblockAddons.identifier("icons/miria.png");
+    private static final Identifier AGATHA_ICON = SkyblockAddons.identifier("icons/agatha.png");
     private static final Identifier RIFTSTALKER_BLOODFIEND = SkyblockAddons.identifier("vampire.png");
     private static final Identifier MORT_ICON = SkyblockAddons.identifier("icons/mort.png");
 
@@ -243,6 +247,17 @@ public class RenderListener {
                 drawText(graphics, Feature.FARM_EVENT_TIMER, scale, null);
                 poseStack.popMatrix();
             }
+            for (Feature timer : new Feature[]{Feature.MIRIA_CONTEST_TIMER, Feature.AGATHA_CONTEST_TIMER}) {
+                FeatureSetting setting = timer == Feature.MIRIA_CONTEST_TIMER
+                        ? FeatureSetting.MIRIA_CONTEST_TIMER_IN_OTHER_GAMES : FeatureSetting.AGATHA_CONTEST_TIMER_IN_OTHER_GAMES;
+                if (!timer.isEnabled(setting)) continue;
+                float scale = timer.getGuiScale();
+                Matrix3x2fStack poseStack = graphics.pose();
+                poseStack.pushMatrix();
+                poseStack.scale(scale);
+                drawText(graphics, timer, scale, null);
+                poseStack.popMatrix();
+            }
         }
     }
 
@@ -256,8 +271,9 @@ public class RenderListener {
 
         int scaledWidth = MC.getWindow().getGuiScaledWidth();
         int scaledHeight = MC.getWindow().getGuiScaledHeight();
-        if (titleFeature != null) {
-            String translationKey = switch (titleFeature) {
+        EventReminderManager.Notice reminder = EventReminderManager.currentTitle(titleFeature != null);
+        if (titleFeature != null || reminder != null) {
+            String translationKey = titleFeature == null ? null : switch (titleFeature) {
                 case FULL_INVENTORY_WARNING -> "messages.fullInventory";
                 case SUMMONING_EYE_ALERT -> "messages.summoningEyeFound";
                 case SPECIAL_ZEALOT_ALERT -> "messages.specialZealotFound";
@@ -268,8 +284,8 @@ public class RenderListener {
                 case BAL_BOSS_ALERT -> "messages.balBossWarning";
                 default -> null;
             };
-            if (translationKey != null) {
-                Component text = Component.literal(Translations.getMessage(translationKey));
+            if (translationKey != null || reminder != null) {
+                Component text = Component.literal(reminder != null ? reminder.message() : Translations.getMessage(translationKey));
                 int stringWidth = MC.font.width(text);
 
                 float scale = 4; // Scale is normally 4, but if it's larger than the screen, scale it down...
@@ -288,11 +304,22 @@ public class RenderListener {
                         text,
                         -MC.font.width(text) / 2F,
                         -20.0F,
-                        titleFeature.getColor()
+                        reminder != null ? reminder.feature().getColor() : titleFeature.getColor()
                 );
 
                 poseStack.popMatrix();
                 poseStack.popMatrix();
+
+                if (reminder != null && !reminder.crops().isEmpty()) {
+                    String crops = reminder.crops();
+                    float cropScale = Math.min(2, scaledWidth * 0.9F / Math.max(1, MC.font.width(crops)));
+                    poseStack.pushMatrix();
+                    poseStack.translate(scaledWidth / 2F, scaledHeight / 2F);
+                    poseStack.scale(cropScale);
+                    float cropY = ((-20 + MC.font.lineHeight) * scale + 8) / cropScale;
+                    DrawUtils.drawText(graphics, Component.literal(crops), -MC.font.width(crops) / 2F, cropY, ColorCode.WHITE.getColor());
+                    poseStack.popMatrix();
+                }
             }
         }
         if (subtitleFeature != null) {
@@ -858,6 +885,11 @@ public class RenderListener {
                     text = "Active: %02d:%02d".formatted(minutesFE - 40, diffFE.getSeconds() % 60);
                 }
             }
+            case MIRIA_CONTEST_TIMER, AGATHA_CONTEST_TIMER -> {
+                boolean miria = feature == Feature.MIRIA_CONTEST_TIMER;
+                int seconds = buttonLocation == null ? StarlynContestManager.getRemainingSeconds(miria) : 754;
+                text = "%02d:%02d".formatted(seconds / 60, seconds % 60);
+            }
             case SKILL_DISPLAY -> {
                 if (buttonLocation == null) {
                     text = skillText;
@@ -1202,6 +1234,8 @@ public class RenderListener {
 
             case DARK_AUCTION_TIMER:
             case FARM_EVENT_TIMER:
+            case MIRIA_CONTEST_TIMER:
+            case AGATHA_CONTEST_TIMER:
             case SKILL_DISPLAY:
             case BIRCH_PARK_RAINMAKER_TIMER:
             case DUNGEON_DEATH_COUNTER:
@@ -1229,9 +1263,14 @@ public class RenderListener {
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
             }
-            case FARM_EVENT_TIMER -> {
+            case FARM_EVENT_TIMER, MIRIA_CONTEST_TIMER, AGATHA_CONTEST_TIMER -> {
+                Identifier icon = switch (feature) {
+                    case MIRIA_CONTEST_TIMER -> MIRIA_ICON;
+                    case AGATHA_CONTEST_TIMER -> AGATHA_ICON;
+                    default -> FARM_ICON;
+                };
                 graphics.guiRenderState.addGuiElement(
-                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(FARM_ICON), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
+                        new BlitAbsoluteRenderState(RenderPipelines.GUI_TEXTURED, textureSetup(icon), graphics.pose(), x, y, 0, 0, 16, 16, 16, 16, -1, graphics.scissorStack.peek())
                 );
                 DrawUtils.drawText(graphics, renderComponent, x + 18, y + 4, color);
             }
