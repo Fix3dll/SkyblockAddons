@@ -2208,7 +2208,9 @@ public class RenderListener {
         if (main.getUtils().isOnRift()) return;
 
         Feature feature = Feature.PET_DISPLAY;
-        PetManager.Pet currentPet = main.getPetCacheManager().getCurrentPet();
+        PetManager.Pet currentPet = LocationUtils.isOn(Island.SAFARI)
+                ? main.getPetCacheManager().getPet(PetManager.SAFARI_PET_ID)
+                : main.getPetCacheManager().getCurrentPet();
         if (currentPet == null) return;
 
         Component displayName = Component.literal(currentPet.getDisplayName());
