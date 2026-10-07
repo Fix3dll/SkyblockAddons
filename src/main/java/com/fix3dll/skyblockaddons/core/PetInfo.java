@@ -1,5 +1,6 @@
 package com.fix3dll.skyblockaddons.core;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,5 +39,7 @@ public class PetInfo {
     private boolean noMove;
     @SerializedName("petSoulbound")
     private boolean petSoulbound;
+    @SerializedName("extraData")
+    private JsonObject extraData;
 
 }
