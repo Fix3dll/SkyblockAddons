@@ -163,6 +163,8 @@ public enum Feature {
     VITALITY_BAR(268, "settings.vitalityBar", new FeatureGuiData(DrawType.BAR, ColorCode.RED)),
     VITALITY_TEXT(269, "settings.vitalityNumber", new FeatureGuiData(DrawType.TEXT, ColorCode.RED)),
     REMAINING_BAITS_DISPLAY(270, "settings.remainingBaitsDisplay", new FeatureGuiData(DrawType.TEXT, ColorCode.AQUA)),
+    MIRIA_CONTEST_TIMER(271, "settings.miriasContestTimer", new FeatureGuiData(DrawType.TEXT, ColorCode.GOLD)),
+    AGATHA_CONTEST_TIMER(272, "settings.agathasContestTimer", new FeatureGuiData(DrawType.TEXT, ColorCode.GOLD)),
 
 
     // These are not actual features.

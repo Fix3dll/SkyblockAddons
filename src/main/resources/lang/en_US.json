@@ -209,6 +209,8 @@
     "otherDefenseStats": "Other Defense Stats (Soul Tether/Cell Alignment)",
     "hideSpawnPointPlayers": "Hide Players at Hub Spawn Point",
     "jacobsContestTimer": "Jacob's Contest Timer",
+    "miriasContestTimer": "Miria's Contest Timer",
+    "agathasContestTimer": "Agatha's Contest Timer",
     "dontReplaceRomanNumeralsInItemNames": "Don't Replace in Item Names",
     "backpackOpeningSound": "Leather Backpack Opening Sound",
     "devMode": "Developer Mode",
@@ -324,7 +326,26 @@
     "configImportButton": "Import Settings",
     "vitalityBar": "Vitality Bar",
     "vitalityNumber": "Vitality Number",
-    "remainingBaitsDisplay": "Remaining Baits Display"
+    "remainingBaitsDisplay": "Remaining Baits Display",
+    "eventReminderEnabled": "Show Reminder",
+    "eventReminderMinutes": "Reminder Lead Time",
+    "minutesBeforeEventStarts": "Minutes Before Event Starts",
+    "minutesBeforeContestEnds": "Minutes Before Contest Ends",
+    "reminderMinutesSuffix": " minutes",
+    "previewEventReminder": "Preview Reminder",
+    "jacobReminderSelectedCropsOnly": "Only Selected Crops",
+    "jacobReminderCalendarHelp": "Open /calendar and view the contest month.",
+    "jacobReminderNoCalendarHelp": "Unknown contest crops skip filtered reminders.",
+    "reminderCropWheat": "Wheat",
+    "reminderCropCarrot": "Carrot",
+    "reminderCropPotato": "Potato",
+    "reminderCropPumpkin": "Pumpkin",
+    "reminderCropMelon": "Melon",
+    "reminderCropSugarCane": "Sugar Cane",
+    "reminderCropCactus": "Cactus",
+    "reminderCropCocoaBeans": "Cocoa Beans",
+    "reminderCropMushroom": "Mushroom",
+    "reminderCropNetherWart": "Nether Wart"
   },
   "messages": {
     "enchants": "Enchants",
@@ -449,7 +470,11 @@
         "single": "\"%feature%\" configurations imported from clipboard successfully.",
         "multiple": "Specified configurations imported from clipboard successfully."
       }
-    }
+    },
+    "darkAuctionReminder": "Dark Auction in %time%",
+    "jacobContestReminder": "Jacob's Contest in %time%",
+    "miriaContestReminder": "Miria's Contest ends in %time%",
+    "agathaContestReminder": "Agatha's Contest ends in %time%"
   },
   "discordStatus": {
     "titleNone": "None",

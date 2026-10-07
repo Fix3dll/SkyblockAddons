@@ -1,6 +1,8 @@
 package com.fix3dll.skyblockaddons.listeners;
 
 import com.fix3dll.skyblockaddons.SkyblockAddons;
+import com.fix3dll.skyblockaddons.features.events.EventReminderManager;
+import com.fix3dll.skyblockaddons.features.events.JacobContestCalendar;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
@@ -261,6 +263,16 @@ public class ScreenListener {
 
         if (screen instanceof AbstractContainerScreen<?> containerScreen && containerScreen.getMenu() instanceof ChestMenu chestMenu) {
             SimpleContainer chestContainer = (SimpleContainer) chestMenu.getContainer();
+
+            String calendarTitle = containerScreen.getTitle().getString();
+            if (main.getUtils().isOnSkyblock() && JacobContestCalendar.isCalendarPage(calendarTitle)) {
+                java.util.List<JacobContestCalendar.DayEntry> days = new java.util.ArrayList<>();
+                for (int i = 0; i < chestContainer.getContainerSize(); i++) {
+                    ItemStack item = chestContainer.getItem(i);
+                    if (!item.isEmpty()) days.add(new JacobContestCalendar.DayEntry(item.getHoverName().getString(), ItemUtils.getItemLore(item)));
+                }
+                EventReminderManager.readCalendar(calendarTitle, days);
+            }
 
             // Save backpack colors
             if (inventoryType == InventoryType.STORAGE) {
