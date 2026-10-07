@@ -43,6 +43,8 @@ public class PetManager {
     @Getter private static final PetManager instance = new PetManager();
     private static final SkyblockAddons main = SkyblockAddons.getInstance();
 
+    public static final int SAFARI_PET_ID = -100;
+
     @Setter private static Map<String, PetItem> petItems;
 
     @Getter @Setter private volatile boolean cacheDirty = false;

@@ -4,6 +4,7 @@ import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.config.PetCacheManager;
 import com.fix3dll.skyblockaddons.core.ColorCode;
 import com.fix3dll.skyblockaddons.core.InventoryType;
+import com.fix3dll.skyblockaddons.core.Island;
 import com.fix3dll.skyblockaddons.core.PetInfo;
 import com.fix3dll.skyblockaddons.core.SkyblockEquipment;
 import com.fix3dll.skyblockaddons.core.SkyblockKeyBinding;
@@ -21,6 +22,7 @@ import com.fix3dll.skyblockaddons.gui.screens.SkyblockAddonsScreen;
 import com.fix3dll.skyblockaddons.mixin.hooks.AbstractContainerScreenHook;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
 import com.fix3dll.skyblockaddons.utils.ItemUtils;
+import com.fix3dll.skyblockaddons.utils.LocationUtils;
 import com.fix3dll.skyblockaddons.utils.TextUtils;
 import com.fix3dll.skyblockaddons.utils.Utils;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
@@ -56,6 +58,7 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.logging.log4j.Logger;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -516,33 +519,39 @@ public class ScreenListener {
             );
             ItemStack itemCopy = petItem.copy();
             Pet newPet = PetManager.getInstance().getPetFromItemStack(itemCopy);
+            PetInfo newPetInfo = newPet == null ? null : newPet.getPetInfo();
             Int2ObjectOpenHashMap<Pet> petMap = pcm.getData().getPetMap();
 
-            if (newPet != null) {
-                var iterator = petMap.int2ObjectEntrySet().fastIterator();
-                while (iterator.hasNext()) {
-                    Int2ObjectMap.Entry<Pet> entry = iterator.next();
-                    int entryKey = entry.getIntKey();
-                    Pet entryValue = entry.getValue();
+            if (newPetInfo != null) {
+                UUID newPetUid = newPetInfo.getUniqueId();
+                if (newPetUid != null) {
+                    var iterator = petMap.int2ObjectEntrySet().fastIterator();
+                    while (iterator.hasNext()) {
+                        Int2ObjectMap.Entry<Pet> entry = iterator.next();
+                        int entryKey = entry.getIntKey();
+                        Pet entryValue = entry.getValue();
 
-                    if (newPet.getPetInfo().getUniqueId().equals(entryValue.getPetInfo().getUniqueId())) {
-                        newPet.compressItem();
-                        petMap.put(entryKey, newPet);
-                        pcm.setCurrentPetIndex(entryKey, false);
+                        if (newPetUid.equals(entryValue.getPetInfo().getUniqueId())) {
+                            newPet.compressItem();
+                            petMap.put(entryKey, newPet);
+                            pcm.setCurrentPetIndex(entryKey, false);
 
-                        ItemStack oldPetItem = entryValue.getItemStack();
-                        if (oldPetItem == null) {
-                            pcm.saveValues();
-                        } else {
-                            oldPetItem.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data
-                                    .update(compoundTag -> compoundTag.remove("timestamp"))
-                            );
-                            if (!ItemStack.matches(oldPetItem, petItem)) {
+                            ItemStack oldPetItem = entryValue.getItemStack();
+                            if (oldPetItem == null) {
                                 pcm.saveValues();
+                            } else {
+                                oldPetItem.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data
+                                        .update(compoundTag -> compoundTag.remove("timestamp"))
+                                );
+                                if (!ItemStack.matches(oldPetItem, petItem)) {
+                                    pcm.saveValues();
+                                }
                             }
+                            break;
                         }
-                        break;
                     }
+                } else if (LocationUtils.isOn(Island.SAFARI)) {
+                    petMap.put(PetManager.SAFARI_PET_ID, newPet);
                 }
             }
             SkyblockEquipment.PET.setItemStack(itemCopy);
