@@ -551,7 +551,12 @@ public class ScreenListener {
                         }
                     }
                 } else if (LocationUtils.isOn(Island.SAFARI)) {
-                    petMap.put(PetManager.SAFARI_PET_ID, newPet);
+                    newPet.compressItem();
+                    Pet oldPet = petMap.put(PetManager.SAFARI_PET_ID, newPet);
+                    ItemStack oldPetItemStack = oldPet == null ? null : oldPet.getItemStack();
+                    if (oldPet == null || oldPetItemStack == null || !ItemStack.matches(oldPetItemStack, petItem)) {
+                        pcm.saveValues();
+                    }
                 }
             }
             SkyblockEquipment.PET.setItemStack(itemCopy);
