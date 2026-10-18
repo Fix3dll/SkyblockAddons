@@ -8,9 +8,8 @@ import lombok.Getter;
 import moe.nea.libautoupdate.UpdateData;
 import net.fabricmc.loader.api.SemanticVersion;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -60,11 +59,13 @@ public class OnlineData {
      * versions is not supported.
      */
     @SerializedName("disabledFeatures")
-    private HashMap<String, List<Integer>> disabledFeatures;
+    private Map<String, List<Integer>> disabledFeatures = Map.of();
     @SerializedName("dropSettings")
     private DropSettings dropSettings;
     @SerializedName("hypixelBrands")
-    private HashSet<Pattern> hypixelBrands;
+    private Set<Pattern> hypixelBrands = Set.of();
+    @SerializedName("shardResolution")
+    private Map<String, String> shardResolution = Map.of();
 
     @Getter
     public static class UpdateInfo {
@@ -95,9 +96,9 @@ public class OnlineData {
         @SerializedName("minimumHotbarRarity")
         private SkyblockRarity minimumHotbarRarity;
         @SerializedName("dontDropTheseItems")
-        private List<String> dontDropTheseItems;
+        private List<String> dontDropTheseItems = List.of();
         @SerializedName("allowDroppingTheseItems")
-        private List<String> allowDroppingTheseItems;
+        private List<String> allowDroppingTheseItems = List.of();
     }
 
     @Getter
