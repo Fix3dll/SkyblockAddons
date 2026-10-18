@@ -23,9 +23,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.awt.geom.Point2D;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -344,7 +344,7 @@ public enum Feature {
         OnlineData onlineData = SkyblockAddons.getInstance().getOnlineData();
         if (onlineData == null) return false; // It may not yet have been initialized.
 
-        HashMap<String, List<Integer>> disabledFeatures = onlineData.getDisabledFeatures();
+        Map<String, List<Integer>> disabledFeatures = onlineData.getDisabledFeatures();
 
         if (disabledFeatures.containsKey("all")) {
             List<Integer> allList = disabledFeatures.get("all");
