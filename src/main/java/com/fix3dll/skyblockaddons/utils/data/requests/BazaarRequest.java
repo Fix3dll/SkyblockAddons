@@ -95,6 +95,7 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
                                 .withColor(ColorCode.RED.getColor())
                 ));
             }
+            LOGGER.catching(ex);
             scheduleNextUpdate(System.currentTimeMillis());
         }
 

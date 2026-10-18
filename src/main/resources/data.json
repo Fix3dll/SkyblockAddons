@@ -56,6 +56,25 @@
   "hypixelBrands": [
     ".*Hypixel BungeeCord.*"
   ],
+  "shardResolution": {
+    "BOGGED": "SEA_ARCHER",
+    "LOTUSFISH": "LOTUS_FISH",
+    "INKLING": "NIGHT_SQUID",
+    "FIELD_MOUSE": "PEST",
+    "ZEALOT_BRUISER": "BRUISER",
+    "STRIDERSURFER": "STRIDER_SURFER",
+    "EARTHWORM": "TERMITE",
+    "FLIPFLOPPER": "FLIP_FLOPPER",
+    "PACKRAT": "PACKRAT_SKULL",
+    "BEETLE": "CROPEETLE",
+    "ABYSSAL_LANTERNFISH": "ABYSSAL_LANTERN",
+    "SEASHINE": "SEA_SHINE",
+    "WITHER_SPECTRE": "WITHER_SPECTER",
+    "LOCH_EMPEROR": "SEA_EMPEROR",
+    "INFERNO_DEMONLORD": "BURNINGSOUL",
+    "END_STONE_PROTECTOR": "ENDSTONE_PROTECTOR",
+    "CINDERBAT": "CINDER_BAT"
+  },
   "autoUpdateStable": null,
   "autoUpdateLatest": null
 }
