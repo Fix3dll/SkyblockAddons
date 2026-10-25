@@ -13,7 +13,6 @@ import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.google.gson.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Logger;
 
@@ -96,10 +95,10 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Object2DoubleMap
             }
 
             if (apiAuctionAverageLBinError.compareAndSet(true, false)) {
-                Minecraft.getInstance().execute(() -> Utils.sendMessage(
+                Utils.sendMessage(
                         Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiUpdated", "LBIN Averages"))
                                 .withColor(ColorCode.GREEN.getColor())
-                ));
+                );
             }
 
             scheduleNextUpdate();
@@ -108,10 +107,10 @@ public class LowestBinAveragesRequest extends RemoteFileRequest<Object2DoubleMap
         @Override
         public void failed(Throwable ex) {
             if (apiAuctionAverageLBinError.compareAndSet(false, true)) {
-                Minecraft.getInstance().execute(() -> Utils.sendMessage(
+                Utils.sendMessage(
                         Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiError", "LBIN Averages"))
                                 .withColor(ColorCode.RED.getColor())
-                ));
+                );
             }
             LOGGER.catching(ex);
             scheduleNextUpdate();

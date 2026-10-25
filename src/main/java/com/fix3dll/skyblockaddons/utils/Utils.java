@@ -227,7 +227,9 @@ public class Utils {
         if (!eventCanceled) {
             LocalPlayer player = MC.player;
             if (player != null) {
-                MC.gui.hud.getChat().addMessage(message, null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG);
+                MC.execute(() -> MC.gui.hud.getChat().addMessage(
+                        message, null, GuiMessageSource.SYSTEM_CLIENT, Utils.SBA_MESSAGE_TAG
+                ));
             }
         }
     }
