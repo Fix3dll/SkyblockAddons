@@ -4,9 +4,9 @@ import java.text.ParseException
 
 plugins {
     java
-    id("net.fabricmc.fabric-loom") version ("1.17-SNAPSHOT")
+    id("net.fabricmc.fabric-loom") version ("1.18-SNAPSHOT")
     id("com.gradleup.shadow") version ("9.6.1")
-    id("io.freefair.lombok") version ("9.5.0")
+    id("io.freefair.lombok") version ("9.8.2")
 }
 
 ext {
@@ -43,6 +43,7 @@ loom {
             systemProperties.put("mixin.debug", "true")
             systemProperties.put("devauth.enabled", "false")
             systemProperties.put("sba.data.online", "false")
+            preferGradleTask = false
         }
         remove(getByName("server"))
     }
