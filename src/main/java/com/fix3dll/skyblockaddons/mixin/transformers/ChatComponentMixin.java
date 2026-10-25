@@ -2,7 +2,8 @@ package com.fix3dll.skyblockaddons.mixin.transformers;
 
 import com.fix3dll.skyblockaddons.mixin.extensions.ChatComponentExtension;
 import com.fix3dll.skyblockaddons.mixin.extensions.GuiMessageLineExtension;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -47,12 +48,10 @@ public abstract class ChatComponentMixin implements ChatComponentExtension {
         return null;
     }
 
-    @WrapWithCondition(method = "addMessageToDisplayQueue", at = @At(value = "INVOKE", target = "Ljava/util/List;addFirst(Ljava/lang/Object;)V"))
-    public <E> boolean sba$addMessageToDisplayQueue(List<GuiMessage.Line> instance, E e, GuiMessage message) {
-        int prevSize = instance.size();
-        instance.addFirst(((GuiMessageLineExtension) e).sba$withParentComponent(message.content()));
-
-        return prevSize == instance.size(); // TODO mod compat?
+    @WrapOperation(method = "addMessageToDisplayQueue", at = @At(value = "INVOKE", target = "Ljava/util/List;addFirst(Ljava/lang/Object;)V"))
+    private static <E> void sba$addMessageToDisplayQueue(List<GuiMessage.Line> instance, E e, Operation<Void> original, GuiMessage message) {
+        // TODO mod compat?
+        original.call(instance, ((GuiMessageLineExtension) e).sba$withParentComponent(message.content()));
     }
 
 }
