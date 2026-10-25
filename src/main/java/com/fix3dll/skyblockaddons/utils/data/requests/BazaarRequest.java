@@ -11,7 +11,6 @@ import com.fix3dll.skyblockaddons.utils.data.DataFetchCallback;
 import com.fix3dll.skyblockaddons.utils.data.DataUtils;
 import com.fix3dll.skyblockaddons.utils.data.RemoteFileRequest;
 import com.fix3dll.skyblockaddons.utils.data.skyblockdata.BazaarData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Logger;
 
@@ -79,10 +78,10 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
             }
 
             if (apiBazaarError.compareAndSet(true, false)) {
-                Minecraft.getInstance().execute(() -> Utils.sendMessage(
+                Utils.sendMessage(
                         Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiUpdated", "Bazaar"))
                                 .withColor(ColorCode.GREEN.getColor())
-                ));
+                );
             }
             scheduleNextUpdate(result.getLastUpdated());
         }
@@ -90,10 +89,10 @@ public class BazaarRequest extends RemoteFileRequest<BazaarData> {
         @Override
         public void failed(Throwable ex) {
             if (apiBazaarError.compareAndSet(false, true)) {
-                Minecraft.getInstance().execute(() -> Utils.sendMessage(
+                Utils.sendMessage(
                         Component.literal(Translations.getMessage("messages.itemPricesInTooltip.apiError", "Bazaar"))
                                 .withColor(ColorCode.RED.getColor())
-                ));
+                );
             }
             LOGGER.catching(ex);
             scheduleNextUpdate(System.currentTimeMillis());
