@@ -92,7 +92,7 @@
   "NEXT_PERK_DATE_PATTERN": "Next set of perks in (?:(?<hours>\\d+)h)?(?: ?(?<minutes>\\d+)m)?(?: ?(?<seconds>\\d+)s)?!",
   "SIDEBAR_DATE_PATTERN": "(?<month>[\\w ]+) (?<day>\\d{1,2})(?:th|st|nd|rd)",
   "SIDEBAR_TIME_PATTERN": "(?<hour>\\d{1,2}):(?<minute>\\d{2})(?<period>am|pm)",
-  "PEST_PATTERN": " ൠ x\\d",
+  "PEST_PATTERN": " \\uE07F x\\d",
 
   "BASIC_REFORGING": "Reforge Item",
   "HEX_REFORGING": "The Hex ➜ Reforges",
