@@ -33,6 +33,8 @@ import com.fix3dll.skyblockaddons.features.enchants.EnchantManager;
 import com.fix3dll.skyblockaddons.features.fishing.FishParticleManager;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerTracker;
 import com.fix3dll.skyblockaddons.features.tablist.TabListParser;
+import com.fix3dll.skyblockaddons.features.starlyn.StarlynContestManager;
+import com.fix3dll.skyblockaddons.features.events.EventReminderManager;
 import com.fix3dll.skyblockaddons.gui.screens.IslandWarpGui;
 import com.fix3dll.skyblockaddons.utils.ActionBarParser;
 import com.fix3dll.skyblockaddons.utils.DevUtils;
@@ -235,6 +237,8 @@ public class PlayerListener {
         if (MC.player != null && entity == MC.player) {
             lastWorldJoin = Util.getMillis();
             timerTick = 1;
+            StarlynContestManager.clearObservation();
+            EventReminderManager.onWorldChange();
             main.getInventoryUtils().resetPreviousInventory();
             countedEndermen.clear();
             EndstoneProtectorManager.reset();
@@ -607,6 +611,8 @@ public class PlayerListener {
         timerTick++;
         ScoreboardManager.tick();
         if (mc.level == null) {
+            StarlynContestManager.clearObservation();
+            EventReminderManager.onWorldChange();
             // To be able to change the gui when the level is not loaded. For modmenu etc.
             main.getRenderListener().setGui();
         }
@@ -664,6 +670,8 @@ public class PlayerListener {
                 EndstoneProtectorManager.checkGolemStatus();
                 TabListParser.parse();
                 main.getUtils().parseSidebar();
+                StarlynContestManager.update();
+                EventReminderManager.update();
                 main.getInventoryUtils().checkIfInventoryIsFull(mc, player);
 
                 if (main.getUtils().isOnSkyblock()) {

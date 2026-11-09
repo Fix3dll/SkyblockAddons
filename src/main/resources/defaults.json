@@ -160,7 +160,9 @@
     "color": -22016,
     "settings": {
       "DARK_AUCTION_TIMER_IN_OTHER_GAMES": true,
-      "SHOW_ONLY_WHEN_SCORPIUS_IS_MAYOR": false
+      "SHOW_ONLY_WHEN_SCORPIUS_IS_MAYOR": false,
+      "EVENT_REMINDER_ENABLED": false,
+      "EVENT_REMINDER_MINUTES": 5
     }
   },
   "ITEM_PICKUP_LOG": {
@@ -799,7 +801,20 @@
     ],
     "color": -22016,
     "settings": {
-      "FARM_EVENT_TIMER_IN_OTHER_GAMES": true
+      "FARM_EVENT_TIMER_IN_OTHER_GAMES": true,
+      "EVENT_REMINDER_ENABLED": false,
+      "EVENT_REMINDER_MINUTES": 10,
+      "JACOB_REMINDER_SELECTED_CROPS_ONLY": false,
+      "JACOB_REMINDER_WHEAT": false,
+      "JACOB_REMINDER_CARROT": false,
+      "JACOB_REMINDER_POTATO": false,
+      "JACOB_REMINDER_PUMPKIN": false,
+      "JACOB_REMINDER_MELON": false,
+      "JACOB_REMINDER_SUGAR_CANE": false,
+      "JACOB_REMINDER_CACTUS": false,
+      "JACOB_REMINDER_COCOA_BEANS": false,
+      "JACOB_REMINDER_MUSHROOM": false,
+      "JACOB_REMINDER_NETHER_WART": false
     }
   },
   "OUTBID_ALERT_SOUND": {
@@ -1075,6 +1090,34 @@
     "color": -11141121,
     "settings": {
       "X_ALLIGNMENT": true
+    }
+  },
+  "MIRIA_CONTEST_TIMER": {
+    "value": false,
+    "anchorPoint": "TOP_RIGHT",
+    "coords": [
+      -70.0,
+      66.0
+    ],
+    "color": -22016,
+    "settings": {
+      "MIRIA_CONTEST_TIMER_IN_OTHER_GAMES": false,
+      "EVENT_REMINDER_ENABLED": false,
+      "EVENT_REMINDER_MINUTES": 10
+    }
+  },
+  "AGATHA_CONTEST_TIMER": {
+    "value": false,
+    "anchorPoint": "TOP_RIGHT",
+    "coords": [
+      -70.0,
+      84.5
+    ],
+    "color": -22016,
+    "settings": {
+      "AGATHA_CONTEST_TIMER_IN_OTHER_GAMES": false,
+      "EVENT_REMINDER_ENABLED": false,
+      "EVENT_REMINDER_MINUTES": 10
     }
   }
 }

@@ -3,6 +3,7 @@ package com.fix3dll.skyblockaddons.config;
 import com.fix3dll.skyblockaddons.SkyblockAddons;
 import com.fix3dll.skyblockaddons.core.SkyblockMayor;
 import com.fix3dll.skyblockaddons.features.FetchurManager;
+import com.fix3dll.skyblockaddons.features.events.JacobCrop;
 import com.fix3dll.skyblockaddons.features.backpacks.CompressedStorage;
 import com.fix3dll.skyblockaddons.features.dragontracker.DragonTrackerData;
 import com.fix3dll.skyblockaddons.features.slayertracker.SlayerTrackerData;
@@ -38,6 +39,8 @@ public class PersistentValuesManager extends AbstractPersistentDataManager<Persi
 
         private int oresMined = 0;
         private int seaCreaturesKilled = 0;
+
+        private Map<Long, Set<JacobCrop>> jacobContestCrops = new HashMap<>();
 
         private long lastTimeFetchur = 0L; // Last time the player gave Fetchur the correct item in ms from epoch
 

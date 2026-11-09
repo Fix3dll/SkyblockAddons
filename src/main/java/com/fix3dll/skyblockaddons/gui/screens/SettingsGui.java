@@ -10,6 +10,7 @@ import com.fix3dll.skyblockaddons.core.feature.FeatureSetting;
 import com.fix3dll.skyblockaddons.features.discordrpc.DiscordStatus;
 import com.fix3dll.skyblockaddons.features.dungeonmap.DungeonMapManager;
 import com.fix3dll.skyblockaddons.features.enchants.EnchantLayout;
+import com.fix3dll.skyblockaddons.features.events.EventReminderManager;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonArrow;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonCycling;
 import com.fix3dll.skyblockaddons.gui.buttons.ButtonInputFieldWrapper;
@@ -304,6 +305,38 @@ public class SettingsGui extends SkyblockAddonsScreen {
         int x;
         double y = getRowHeightSetting(row);
         switch (setting) {
+            case EVENT_REMINDER_ENABLED:
+                if (!EventReminderManager.isEventTimer(feature)) return;
+                setting.setUniversalFeature(feature);
+                addRenderableWidget(new ButtonSettingToggle(halfWidth - ButtonSettingToggle.WIDTH / 2D, y, setting.getMessage(), setting));
+                row++;
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonSolid(halfWidth - 75, y - 5, 150, 20, ButtonSolid.DEFAULT_BOX_COLOR,
+                        Translations.getMessage("settings.previewEventReminder"), () -> EventReminderManager.preview(feature)));
+                break;
+
+            case EVENT_REMINDER_MINUTES:
+                if (!EventReminderManager.isEventTimer(feature)) return;
+                boolean endReminder = feature == Feature.MIRIA_CONTEST_TIMER || feature == Feature.AGATHA_CONTEST_TIMER;
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 10,
+                        Translations.getMessage(endReminder ? "settings.minutesBeforeContestEnds" : "settings.minutesBeforeEventStarts"),
+                        true, ColorCode.GRAY.getColor()));
+                addRenderableWidget(new ButtonSlider(halfWidth - 75, y, 150, 20,
+                        EventReminderManager.leadMinutes(feature), 1, endReminder ? 19 : 59, 1,
+                        value -> feature.set(setting, Math.round(value)))
+                        .setSuffix(Translations.getMessage("settings.reminderMinutesSuffix")));
+                row += .3F;
+                break;
+
+            case JACOB_REMINDER_SELECTED_CROPS_ONLY:
+                addRenderableWidget(new ButtonSettingToggle(halfWidth - ButtonSettingToggle.WIDTH / 2D, y, setting.getMessage(), setting));
+                row++;
+                y = getRowHeightSetting(row);
+                addRenderableWidget(new ButtonText(halfWidth, (int) y - 8, Translations.getMessage("settings.jacobReminderCalendarHelp"), true, ColorCode.GRAY.getColor()));
+                addRenderableWidget(new ButtonText(halfWidth, (int) y + 4, Translations.getMessage("settings.jacobReminderNoCalendarHelp"), true, ColorCode.GRAY.getColor()));
+                row += .3F;
+                break;
+
             // These are for holding values.
             case DISCORD_RP_AUTO_MODE: case DISCORD_RP_CUSTOM_DETAILS: case DISCORD_RP_CUSTOM_STATE:
                 return;
