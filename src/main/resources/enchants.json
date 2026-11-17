@@ -557,15 +557,19 @@
       ]
     },
     "looting": {
-      "goodLevel": 3,
+      "goodLevel": 5,
       "loreName": "Looting",
-      "maxLevel": 5,
-      "nbtName": "looting",
+      "maxLevel": 7,
+      "nbtName": "looting_new",
       "appliedTo": [
         "SWORD",
         "FISHING_ROD",
         "LONGSWORD",
-        "GAUNTLET"
+        "GAUNTLET",
+        "PICKAXE",
+        "DRILL",
+        "AXE",
+        "BOW"
       ]
     },
     "luck": {
@@ -1841,7 +1845,7 @@
     ],
     [
       "ultimate_one_for_all",
-      "looting"
+      "looting_new"
     ],
     [
       "ultimate_one_for_all",
