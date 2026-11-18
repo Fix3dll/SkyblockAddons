@@ -188,18 +188,6 @@
         "BOOTS"
       ]
     },
-    "divine gift": {
-      "goodLevel": 3,
-      "loreName": "Divine Gift",
-      "maxLevel": 3,
-      "nbtName": "divine_gift",
-      "appliedTo": [
-        "SWORD",
-        "BOW",
-        "LONGSWORD",
-        "GAUNTLET"
-      ]
-    },
     "dragon tracer": {
       "goodLevel": 5,
       "loreName": "Dragon Tracer",
